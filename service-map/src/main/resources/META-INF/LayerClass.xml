@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LayerClass">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="LayerClass" 
+	       type="fi.nls.oskari.domain.map.wms.LayerClass" />
+
+    <resultMap id="LayerClassResult" class="LayerClass">
+        <result property="id" column="id" />
+        <result property="parent" column="parent" />
+        <result property="nameFi" column="nameFi" />
+        <result property="nameSv" column="nameSv" />
+        <result property="nameEn" column="nameEn" />
+        <result property="mapLayersSelectable" column="maplayers_selectable" />
+        <result property="legendImage" column="legend_image" />
+        <result property="dataUrl" column="dataUrl" />
+        <result property="groupMap" column="group_map" />
+        <result property="locale" column="locale"/>
+    </resultMap>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from portti_layerclass
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="LayerClassResult">
+      SELECT   id, namefi, namesv, nameen, maplayers_selectable, 
+	       parent, legend_image, dataurl, group_map, locale
+        FROM   portti_layerclass 
+       WHERE   id = #id#
+    </select>
+
+    <select id="findAll" resultMap="LayerClassResult">
+      SELECT   id, namefi, namesv, nameen, maplayers_selectable, 
+               parent, legend_image, dataurl, group_map, locale
+        FROM   portti_layerclass
+    </select>
+    
+    <select id="findWithParent" 
+	    parameterClass="int" 
+	    resultMap="LayerClassResult">
+      SELECT   id, namefi, namesv, nameen, maplayers_selectable, 
+               parent, legend_image, dataurl, group_map, locale
+        FROM   portti_layerclass 
+       WHERE   parent = #id#
+    </select>
+    
+    <select id="findWhereParentNotNull" resultMap="LayerClassResult">
+      SELECT   id, namefi, namesv, nameen, maplayers_selectable, 
+               parent, legend_image, dataurl, group_map, locale
+        FROM   portti_layerclass 
+       WHERE   parent IS NOT NULL
+    </select>
+    
+    <statement id="insert" 
+	       parameterClass="fi.nls.oskari.domain.map.wms.LayerClass" 
+	       resultClass="int">
+      INSERT INTO  portti_layerclass (
+                     parent, nameFi, nameSv, nameEn, maplayers_selectable, 
+                     legend_image, dataUrl, group_map, locale
+                   )
+           VALUES (
+                    #parent#, #nameFi#, #nameSv#, #nameEn#, 
+                    #mapLayersSelectable#, #legendImage#, #dataUrl#, #groupMap#, #locale#
+                  )
+    </statement>
+    
+    <update id="update" 
+	    parameterClass="fi.nls.oskari.domain.map.wms.LayerClass">
+      UPDATE   portti_layerclass
+         SET
+               parent = #parent#,
+               nameFi = #nameFi#,
+               nameSv = #nameSv#,
+               nameEn = #nameEn#,
+               maplayers_selectable = #mapLayersSelectable#,
+               legend_image = #legendImage#,
+               dataUrl = #dataUrl#,
+               group_map = #groupMap#,
+               locale = #locale#
+       WHERE   id = #id#
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        DELETE FROM portti_layerclass WHERE id = #id#
+    </delete>
+    
+</sqlMap>

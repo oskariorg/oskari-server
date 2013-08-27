@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="InspireTheme">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="InspireTheme" type="fi.nls.oskari.domain.map.InspireTheme" />
+
+    <resultMap id="InspireThemeResult" class="InspireTheme">
+        <result property="id" column="id" />
+        <result property="nameFi" column="nameFi" />
+        <result property="nameSv" column="nameSv" />
+        <result property="nameEn" column="nameEn" />
+    </resultMap>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from portti_inspiretheme
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="InspireThemeResult">
+        select id, namefi, namesv, nameen from portti_inspiretheme where id = #id#
+    </select>
+
+    <select id="findAll" resultMap="InspireThemeResult">
+        select id, namefi, namesv, nameen from portti_inspiretheme order by nameFi
+    </select>
+    
+    <statement id="insert" parameterClass="fi.nls.oskari.domain.map.InspireTheme" resultClass="int">
+        insert into portti_inspiretheme (nameFi, nameSv, nameEn)
+        values (#nameFi#, #nameSv#, #nameEn#)
+    </statement>
+    
+    <update id="update" parameterClass="fi.nls.oskari.domain.map.InspireTheme">
+        update portti_inspiretheme set
+            nameFi = #nameFi#,
+            nameSv = #nameSv#,
+            nameEn = #nameEn#
+        where id = #id#
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        delete from portti_inspiretheme where id = #id#
+    </delete>
+    
+</sqlMap>

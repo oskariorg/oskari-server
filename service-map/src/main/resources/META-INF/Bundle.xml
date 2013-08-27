@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Bundle">
+
+    <typeAlias
+        alias="Bundle"
+        type="fi.nls.oskari.domain.map.view.Bundle" />
+
+    <resultMap id="bundle" class="Bundle">
+        <result property="bundleId" column="id" />
+        <result property="name" column="name" />
+        <result property="startup" column="startup" />
+        <result property="state" column="state" />
+        <result property="config" column="config" />
+    </resultMap>
+
+    <statement id="add-bundle"
+               resultClass="java.lang.Long"
+               parameterClass="Bundle">
+      INSERT INTO portti_bundle (name, startup, config, state )
+           VALUES ( #name#, #startup#, #config#, #state# )
+        RETURNING id
+    </statement>
+
+    <select id="find-by-name"
+            parameterClass="java.lang.String"
+            resultMap="bundle">
+        SELECT id, name, startup, config, state
+        FROM portti_bundle
+        WHERE name = #name#
+    </select>
+
+</sqlMap>

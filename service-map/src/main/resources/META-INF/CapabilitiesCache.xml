@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CapabilitiesCache">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    
+    <typeAlias alias="CapabilitiesCache" type="fi.nls.oskari.domain.map.CapabilitiesCache" />
+    
+    <resultMap class="CapabilitiesCache" id="CapabilitiesCache">
+    	<result property="layerId" column="layer_id"/>
+    	<result property="data" column="data"/>
+    	<result property="version" column="WMSVersion"/>
+    </resultMap>
+    
+   
+    <select id="maxId" resultClass="int">
+        select max(layer_id) from portti_capabilities_cache
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="CapabilitiesCache">
+        select layer_id, data, "WMSversion" from portti_capabilities_cache where layer_id = #layerId#
+    </select>
+
+    <select id="findAll" resultMap="CapabilitiesCache">
+        select layer_id, data, "WMSversion" from portti_capabilities_cache 
+    </select>
+    
+    <statement id="insert" parameterClass="fi.nls.oskari.domain.map.CapabilitiesCache" resultClass="int">
+        insert into portti_capabilities_cache (layer_id, data, "WMSversion")
+        values (#layerId#, #data#, #version#)
+    </statement>
+    
+    <update id="update" parameterClass="fi.nls.oskari.domain.map.CapabilitiesCache">
+        update portti_capabilities_cache set
+            layer_id = #layerId#,
+            data = #data#,
+            "WMSversion" = #version#
+        where layer_id = #layerId#
+    </update>
+    
+    <delete id="delete" parameterClass="int">
+        delete from portti_capabilities_cache where layer_id = #layerId#
+    </delete>
+    
+</sqlMap>

@@ -1,0 +1,24 @@
+{    "users": [
+        {
+            "firstName": "Antti",
+            "id": 2,
+            "lastName": "Aalto",
+            "pass": "oskari",
+            "roles": [
+                3,
+                4
+            ],
+            "user": "admin"
+        },
+        {
+            "firstName": "Oskari",
+            "id": 3,
+            "lastName": "Olematon",
+            "pass": "user",
+            "roles": [
+                3
+            ],
+            "user": "user"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+  "roles": [
+    {
+        "id": 3,
+        "name": "Karttakäyttäjä"
+    },
+    {
+        "id": 4,
+        "name": "Admin"
+    }
+  ]
+}

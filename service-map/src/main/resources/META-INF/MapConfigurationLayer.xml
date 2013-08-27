@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MapConfigurationLayer">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="MapConfigurationLayer" type="fi.nls.oskari.domain.map.wms.MapConfigurationLayer" />
+    
+     <resultMap id="MapConfigurationLayerResult" class="MapConfigurationLayer">
+        <result property="id" column="id" />
+        <result property="map_config_id" column="map_config_id" />
+        <result property="rank" column="rank" />
+        <result property="layer_id" column="layer_id" />
+        <result property="base" column="base" />
+    </resultMap>
+
+   <select id="maxId" resultClass="int">
+        select max(id) from portti_map_conf_layers
+    </select>
+   
+    <select id="find" parameterClass="int" resultMap="MapConfigurationLayerResult">
+        SELECT id, map_config_id, rank, layer_id, base
+  FROM portti_map_conf_layers where map_config_id = #map_config_id#
+    </select>
+
+    <select id="findSelectedLayers" parameterClass="int" resultMap="MapConfigurationLayerResult">
+       SELECT id, map_config_id, rank, layer_id, base
+  FROM portti_map_conf_layers where map_config_id = #map_config_id# order by rank asc
+    </select>
+    
+    <statement id="insert" parameterClass="fi.nls.oskari.domain.map.wms.MapConfigurationLayer" resultClass="int">
+        INSERT INTO portti_map_conf_layers(map_config_id, rank, layer_id, base)
+        values (#map_config_id#, #rank#, #layer_id#, #base#)
+    </statement>
+    
+    <update id="delete" parameterClass="int">
+        delete from portti_map_conf_layers
+         where map_config_id = #map_config_id#
+    </update>
+
+</sqlMap>

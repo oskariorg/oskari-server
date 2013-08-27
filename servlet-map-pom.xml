@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.nls.paikkatietoikkuna</groupId>
+  <artifactId>map-portlet</artifactId>
+  <version>1.0</version>
+
+  <packaging>pom</packaging>
+
+  <name>Oskari map servlet</name>
+
+  <modules>
+    <module>shared-test-resources</module>
+
+    <module>service-base</module>
+    <module>service-permissions</module>
+    <module>service-map</module>
+
+    <module>service-search</module>
+    <module>service-OGC</module>
+    <module>service-control</module>
+
+    <module>control-base</module>
+    <module>control-wfs</module>
+
+    <module>servlet-map</module>
+  </modules>
+
+</project>

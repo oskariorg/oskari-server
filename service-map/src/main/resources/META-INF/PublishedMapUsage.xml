@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PublishedMapUsage">
+    
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="PublishedMapUsage" type="fi.nls.oskari.domain.map.PublishedMapUsage" />
+	<typeAlias alias="PublishedMapUrl" type="fi.nls.oskari.domain.map.PublishedMapUrl" />
+    
+    <resultMap id="publishedMapUsage" class="PublishedMapUsage">
+        <result property="publishedMapId" column="published_map_id" />
+        <result property="usageCount" column="usage_count" />
+        <result property="forceLock" column="force_lock" />
+    </resultMap>
+	
+	<resultMap id="publishedMapUrl" class="PublishedMapUrl">
+        <result property="publishedMapId" column="published_map_id" />
+        <result property="url" column="url" />
+    </resultMap>
+	
+	<select id="maxId" resultClass="int">
+        select max(id) from portti_published_map_usage
+    </select>
+	
+    <select id="maxIdStatistics" resultClass="int">
+        select max(id) from portti_published_map_statistics
+    </select>
+    
+    <select id="find" resultMap="publishedMapUsage" parameterClass="int">
+        SELECT id, published_map_id, usage_count, force_lock
+  FROM portti_published_map_usage where id=#id#
+    </select>
+	
+	 <select id="findByPublishedMapId" resultMap="publishedMapUsage" parameterClass="int">
+        SELECT id, published_map_id, usage_count, force_lock
+  FROM portti_published_map_usage where published_map_id=#id#
+    </select>
+	
+	<select id="findPublishedMapUrlsById" resultMap="publishedMapUrl" parameterClass="int">
+        SELECT id, published_map_id, url
+  FROM portti_published_map_urls where published_map_id=#id#
+    </select>
+	
+    <select id="findTotalCountById" resultClass="int" parameterClass="int">
+        select count_total_lifecycle from portti_published_map_statistics where published_map_id=#id#
+    </select>
+    
+    <select id="findAll" resultMap="publishedMapUsage">
+        SELECT id, published_map_id, usage_count, force_lock
+  FROM portti_published_map_usage order by published_map_id
+    </select>
+    
+    <statement id="insert" parameterClass="publishedMapUsage" resultClass="int">
+        insert into portti_published_map_usage 
+        (published_map_id, usage_count, force_lock) values
+		(#publishedMapId#, #usageCount#, #forceLock#)
+    </statement>
+    
+    <statement id="insertTotalCount" parameterClass="publishedMapUsage" resultClass="int">
+        insert into portti_published_map_statistics 
+        (published_map_id, count_total_lifecycle) values
+        (#publishedMapId#, #usageCountOfTotalLifecycle#)
+    </statement>
+    
+    <statement id="update" parameterClass="publishedMapUsage">
+        update portti_published_map_usage 
+		set usage_count=#usageCount#, force_lock=#forceLock#
+        where published_map_id=#publishedMapId#
+    </statement>
+      
+    <statement id="delete" parameterClass="int">
+        delete from portti_published_map_usage where id=#id#
+    </statement>
+	
+    <statement id="deleteTotalCount" parameterClass="int">
+        delete from portti_published_map_statistics where id=#id#
+    </statement>
+    
+    <statement id="selectForceLock" parameterClass="int" resultClass="boolean">
+        select force_lock from portti_published_map_usage where published_map_id=#publishedMapId#
+    </statement>
+    
+    <statement id="selectUsageCount" parameterClass="int" resultClass="int">
+        select usage_count from portti_published_map_usage where published_map_id=#publishedMapId#
+    </statement>
+    
+</sqlMap>
