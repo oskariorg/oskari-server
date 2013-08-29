@@ -36,7 +36,8 @@ public abstract class WFSHighlightParamHandler extends ParamHandler {
      */
     protected JSONObject getPostProcessorState(final ModifierParams params) {
         final JSONObject postprocessorState = getBundleState(params.getConfig(), BUNDLE_POSTPROCESSOR);
-        if(postprocessorState == null) {
+        // if we just constructed the state -> length == 0 -> add bundle to startupseq
+        if(postprocessorState.length() == 0) {
             // not yet initialized, add it to startup/create initial config
             return createPostProcessor(params);
         }
