@@ -30,7 +30,7 @@ public abstract class WFSHighlightParamHandler extends ParamHandler {
         }
     }
     /**
-     * Utility method to ensure postprocessor is just add 
+     * Utility method to ensure postprocessor is added to the startupseq
      * @param params
      * @return
      */
