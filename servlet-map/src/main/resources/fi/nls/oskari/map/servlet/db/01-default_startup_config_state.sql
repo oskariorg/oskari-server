@@ -19,12 +19,15 @@ DELETE FROM portti_view_supplement;
 INSERT INTO portti_view_supplement (app_startup, baseaddress, is_public, creator)
     VALUES ('mapfull', '/Oskari', true, 0);
 
-INSERT INTO portti_view (uuid, name, type, is_default, supplement_id)
+INSERT INTO portti_view (uuid, name, type, is_default, supplement_id, page, application, application_dev_prefix)
     VALUES ('b6c94ef2-5e15-4cb4-b849-3c5e357f8407',
             'default',
             'DEFAULT',
             true, 
-            0
+            0,
+            'index',
+            'servlet',
+            '/applications/sample'
     );
 
 -- OpenLayers;
@@ -162,7 +165,7 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
         (SELECT max(id) FROM portti_bundle), 
         2,
         '{
-            "globalMapAjaxUrl": "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=1&p_p_state=exclusive&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_Portti2Map_WAR_portti2mapportlet_fi.mml.baseportlet.CMD=ajax.jsp&",
+            "globalMapAjaxUrl": "[REPLACED BY GETAPP SETUP]",
             "imageLocation": "/Oskari/resources",
             "plugins" : [
                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
@@ -178,13 +181,7 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
               ],
               "layers": [
                  { "id": "base_2" }
-              ],
-              "user": {
-                   "firstName": "",
-                    "lastName": "",
-                    "loginName": "default@maanmittauslaitos.fi",
-                    "nickName": "10110"
-              }
+              ]
         }',
         '{
             "east": "517620",
@@ -337,7 +334,11 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
     VALUES  ('toolbar',
         (SELECT max(id) FROM portti_view WHERE name='default'), 
         (SELECT max(id) FROM portti_bundle), 
-        4,'{}','{}',
+        4,'{
+          "viewtools": {
+              "print" : false
+          }
+        }','{}',
         '{
             title : "Toolbar",
             fi : "toolbar",
@@ -429,7 +430,9 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
     VALUES  ('infobox',
         (SELECT max(id) FROM portti_view WHERE name='default'), 
         (SELECT max(id) FROM portti_bundle), 
-        6,'{}','{}',
+        6,'{
+          "adaptable": true
+        }','{}',
         '{
             title : "Info Box",
             fi : "infobox",
@@ -731,52 +734,6 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
         }');
 
 
--- UserGuide;
-
-INSERT INTO portti_bundle (name, startup) 
-    VALUES ('userguide',
-'{
-    title : "UserGuide",
-    fi : "userguide",
-    sv : "?",
-    en : "?",
-    bundlename : "userguide",
-    bundleinstancename : "userguide",
-    metadata : {
-        "Import-Bundle" : {
-            "userguide" : {
-                bundlePath : "/Oskari/packages/framework/bundle/"
-            }
-        },
-        "Require-Bundle-Instance" : []
-    },
-    instanceProps : {}
-}');
-
-INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, config, state, startup)
-    VALUES  ('userguide',
-        (SELECT max(id) FROM portti_view WHERE name='default'), 
-        (SELECT max(id) FROM portti_bundle), 
-        14,'{}','{}',
-        '{
-            title : "UserGuide",
-            fi : "userguide",
-            sv : "?",
-            en : "?",
-            bundlename : "userguide",
-            bundleinstancename : "userguide",
-            metadata : {
-                "Import-Bundle" : {
-                    "userguide" : {
-                        bundlePath : "/Oskari/packages/framework/bundle/"
-                    }
-                },
-                "Require-Bundle-Instance" : []
-            },
-            instanceProps : {}
-        }');
-
-
 -- Metadata Flyout;
 
 INSERT INTO portti_bundle (name, startup) 
@@ -896,7 +853,10 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
     VALUES  ('myplaces2',
         (SELECT max(id) FROM portti_view WHERE name='default'), 
         (SELECT max(id) FROM portti_bundle), 
-        17,'{}','{}',
+        17,'{
+          "queryUrl" : "[REPLACED BY HANDLER]",
+          "wmsUrl" : "/karttatiili/myplaces?myCat="
+        }','{}',
         '{
             title : "My places",
             fi : "Kohteet",
@@ -1013,7 +973,77 @@ INSERT INTO portti_view_bundle_seq (bundleinstance, view_id, bundle_id, seqno, c
                         }
         }');
 
+-- Backend Status;
 
- UPDATE portti_view_supplement SET app_startup = 'full-map', baseaddress = 'view'
-     WHERE id IN (SELECT supplement_id FROM portti_view WHERE type IN ('DEFAULT', 'USER'));
+
+INSERT INTO portti_bundle (name, startup)
+  VALUES ('backendstatus',
+          '{
+                              "title": "backendstatus",
+                              "bundleinstancename": "backendstatus",
+                              "fi": "backendstatus",
+                              "sv": "backendstatus",
+                              "en": "backendstatus",
+                              "bundlename": "backendstatus",
+                              "metadata": {
+                                  "Import-Bundle": {
+                                      "backendstatus": {
+                                          "bundlePath": "/Oskari/packages/framework/bundle/"
+                                      }
+                                  },
+                                  "Require-Bundle-Instance": [ ]
+                              },
+                              "instanceProps": {}
+                          }
+          }');
+
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
+  VALUES  (
+    (SELECT max(id) FROM portti_view WHERE name='default'),
+    (SELECT max(id) FROM portti_bundle),
+    19,'{}','{}',
+    '{
+                        "title": "backendstatus",
+                        "bundleinstancename": "backendstatus",
+                        "fi": "backendstatus",
+                        "sv": "backendstatus",
+                        "en": "backendstatus",
+                        "bundlename": "backendstatus",
+                        "metadata": {
+                            "Import-Bundle": {
+                                "backendstatus": {
+                                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                                }
+                            },
+                            "Require-Bundle-Instance": [ ]
+                        },
+                        "instanceProps": {}
+                    }
+    }');
+
+
+-- postprocessor bundle is not currently linked to any view but inserted with code;
+-- if a defined parameter is given, so this sql is a bit different from the usual bundle sqls;
+
+INSERT INTO portti_bundle (name, startup)
+  VALUES ('postprocessor',
+          '{
+                              "title": "postprocessor",
+                              "bundleinstancename": "postprocessor",
+                              "fi": "postprocessor",
+                              "sv": "postprocessor",
+                              "en": "postprocessor",
+                              "bundlename": "postprocessor",
+                              "metadata": {
+                                  "Import-Bundle": {
+                                      "postprocessor": {
+                                          "bundlePath": "/Oskari/packages/framework/bundle/"
+                                      }
+                                  },
+                                  "Require-Bundle-Instance": [ ]
+                              },
+                              "instanceProps": {}
+                          }
+          }');
+
 

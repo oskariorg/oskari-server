@@ -3,6 +3,7 @@
             "firstName": "Antti",
             "id": 2,
             "lastName": "Aalto",
+            "uuid": "asdf-asdf-asdf-asdf-asdf",
             "pass": "oskari",
             "roles": [
                 3,
@@ -13,6 +14,7 @@
         {
             "firstName": "Oskari",
             "id": 3,
+            "uuid": "fdsa-fdsa-fdsa-fdsa-fdsa",
             "lastName": "Olematon",
             "pass": "user",
             "roles": [

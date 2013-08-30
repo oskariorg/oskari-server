@@ -17,6 +17,7 @@ public class StandaloneUserService extends UserService {
 
     private final static String JSKEY_USER = "user";
     private final static String JSKEY_PASS = "pass";
+    private final static String JSKEY_UUID = "uuid";
     private final static String JSKEY_ROLES = "roles";
     private final static String JSKEY_USERS = "users";
     private final static String JSKEY_FIRSTNAME = "firstName";
@@ -78,6 +79,7 @@ public class StandaloneUserService extends UserService {
                     user.setId(jsuser.optLong(JSKEY_ID, 0));
                     user.setFirstname(jsuser.optString(JSKEY_FIRSTNAME));
                     user.setLastname(jsuser.optString(JSKEY_LASTNAME));
+                    user.setUuid(jsuser.optString(JSKEY_UUID));
                     // Roles
                     JSONArray roles = jsuser.optJSONArray(JSKEY_ROLES);
                     for (int k = 0; k < roles.length(); k++) {

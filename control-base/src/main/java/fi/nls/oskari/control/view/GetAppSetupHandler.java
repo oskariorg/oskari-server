@@ -43,7 +43,7 @@ public class GetAppSetupHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetAppSetupHandler.class);
 
-    public final static String PROPERTY_AJAXURL = "__AJAX_URL__";
+    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     public static final String PARAM_VIEW_ID = "viewId";
     public static final String PARAM_OLD_ID = "oldId";

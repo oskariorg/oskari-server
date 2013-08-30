@@ -55,14 +55,10 @@ public class DBHandler {
             System.out.println("/ Create DB");
             executeSqlFromFile(conn, "exampleLayersAndRoles.sql");
             System.out.println("/-  exampleLayersAndRoles.sql");
-            executeSqlFromFile(conn, "00-tables.sql");
-            System.out.println("/- 00-tables.sql");
+            executeSqlFromFile(conn, "00-create-tables.sql");
+            System.out.println("/- 00-create-tables.sql");
             executeSqlFromFile(conn, "01-default_startup_config_state.sql");
             System.out.println("/- 01-default_startup_config_state.sql");
-            executeSqlFromFile(conn, "05-post-processor-bundle.sql");
-            System.out.println("/- 05-post-processor-bundle.sql");
-            executeSqlFromFile(conn, "06-Backend-Status.sql");
-            System.out.println("/- 06-Backend-Status.sql");
             conn.commit();
 
         } catch (Exception e) {

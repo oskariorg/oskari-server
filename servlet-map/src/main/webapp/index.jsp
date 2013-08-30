@@ -3,12 +3,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>demo</title>
+<title>Standalone servlet - ${viewName}</title>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js">
+    </script>
+
 <!-- ############# css ################# -->
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/icons.css" />
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/forms.css" />
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/portal.css" />
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js">
-</script>
-
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/overwritten.css"/>
 <style type="text/css">
 @media screen {
   body {
@@ -62,7 +79,7 @@
 	<a href="/ajax/?action=logout">Logout</a>
   </c:when>
   <c:otherwise>
-   <form id="login" action='/ajax/?action=login' method="post" accept-charset="UTF-8">
+   <form id="login" action='${ajaxUrl}action=login' method="post" accept-charset="UTF-8">
 	    <input size="16" id="username" name="username" type="text" placeholder="Username" autofocus required>
 	    <input size="16" id="password" name="password" type="password" placeholder="Password" required>
 	    <input type="submit" id="submit" value="Log in">
@@ -79,6 +96,15 @@
 <!-- ############# Javascript ################# -->
 
 <!--  OSKARI -->
+
+<script type="text/javascript">
+    var ajaxUrl = '${ajaxUrl}';
+    var viewId = '${viewId}';
+    var language = '${language}';
+    var preloaded = ${preloaded};
+    var controlParams = ${controlParams};
+</script>
+
 <script type="text/javascript"
 	src="Oskari/bundles/bundle.js">
 </script>
@@ -88,8 +114,30 @@
 	src="Oskari/packages/openlayers/startup.js">
 </script>
 
-<script type="text/javascript" src="index.js">
+<c:if test="${preloaded}">
+    <!-- Pre-compiled application JS, empty unless created by build job -->
+    <script type="text/javascript"
+            src="/Oskari${path}/oskari.min.js">
+    </script>
+    <!-- Minified CSS for preload -->
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/oskari.min.css"
+            />
+    <%--language files --%>
+    <script type="text/javascript"
+            src="/Oskari${path}/oskari_lang_all.js">
+    </script>
+    <script type="text/javascript"
+            src="/Oskari${path}/oskari_lang_${language}.js">
+    </script>
+</c:if>
+
+<script type="text/javascript"
+        src="/Oskari${path}/index.js">
 </script>
+
 
 <!-- ############# /Javascript ################# -->
 </body>

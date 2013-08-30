@@ -15,7 +15,7 @@ CREATE TABLE portti_view_supplement (
    baseaddress      VARCHAR(512),
    creator          BIGINT        ,
    pubdomain        VARCHAR(512)  DEFAULT '',
-   lang             VARCHAR(2)    DEFAULT 'fi',
+   lang             VARCHAR(2)    DEFAULT 'en',
    width            INTEGER       DEFAULT 0,
    height           INTEGER       DEFAULT 0,
    is_public        BOOLEAN       DEFAULT FALSE,
@@ -31,9 +31,9 @@ CREATE TABLE portti_view (
    is_default       BOOLEAN       DEFAULT FALSE,
    type		    varchar(16)	  DEFAULT 'USER',
    description   VARCHAR(2000) ,
-   page character varying(128) DEFAULT 'view',
-   application character varying(128) DEFAULT 'full-map',
-   application_dev_prefix character varying(256) DEFAULT '/applications/paikkatietoikkuna.fi'
+   page character varying(128) DEFAULT 'index',
+   application character varying(128) DEFAULT 'servlet',
+   application_dev_prefix character varying(256) DEFAULT '/applications/sample'
 );
 
 
