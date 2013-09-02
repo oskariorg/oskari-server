@@ -5,7 +5,14 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <init-param>
+            <!-- Disables locking of static files -->
+            <param-name>useFileMappedBuffer</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
     <servlet>
         <servlet-name>mapFullServlet</servlet-name>
         <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
