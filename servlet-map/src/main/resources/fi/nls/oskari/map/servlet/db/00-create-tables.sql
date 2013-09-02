@@ -1,3 +1,8 @@
+-- NOTE!;
+-- THE FILE IS TOKENIZED WITH SEMICOLON CHARACTER!;
+-- EACH COMMENT _NEED_ TO END WITH A SEMICOLON OR OTHERWISE THE NEXT ACTUAL SQL IS NOT RUN!;
+-- ----------------------------------------------------------------------------------------;
+
 --DROP RULE IF EXISTS set_uuid ON portti_view;
 --DROP RULE IF EXISTS set_default_user ON portti_view_supplement;
 
@@ -13,7 +18,7 @@ CREATE TABLE portti_view_supplement (
    id               IDENTITY	  PRIMARY KEY,
    app_startup      VARCHAR(512),
    baseaddress      VARCHAR(512),
-   creator          BIGINT        ,
+   creator          BIGINT        DEFAULT -1,
    pubdomain        VARCHAR(512)  DEFAULT '',
    lang             VARCHAR(2)    DEFAULT 'en',
    width            INTEGER       DEFAULT 0,

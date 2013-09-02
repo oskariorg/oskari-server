@@ -126,6 +126,10 @@ public class MapFullServlet extends HttpServlet {
             // JSP
             try {
                 final String viewJSP = setupRenderParameters(params);
+                if(viewJSP == null) {
+                    // view not found
+                    return;
+                }
                 final String action = params.getHttpParam("action");
                 if (action != null) {
                     // login form handling/logout
@@ -184,7 +188,15 @@ public class MapFullServlet extends HttpServlet {
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
 
+            // Enable to show db contents for view related tables if an error occurs
+            /*
+            DBHandler.printQuery("SELECT * FROM portti_bundle");
+            DBHandler.printQuery("SELECT * FROM portti_view_supplement");
+            DBHandler.printQuery("SELECT * FROM portti_view");
+            DBHandler.printQuery("SELECT * FROM portti_view_bundle_seq");
+            */
             final View view = viewService.getViewWithConf(viewId);
+            log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             if (view == null) {
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
