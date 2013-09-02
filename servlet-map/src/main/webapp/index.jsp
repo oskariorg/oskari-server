@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Standalone servlet - ${viewName}</title>
+<title>Standalone servlet - ${viewName} view</title>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js">
     </script>
@@ -106,12 +106,7 @@
 </script>
 
 <script type="text/javascript"
-	src="Oskari/bundles/bundle.js">
-</script>
-
-<!--  OPENLAYERS -->
-<script type="text/javascript"
-	src="Oskari/packages/openlayers/startup.js">
+	src="/Oskari/bundles/bundle.js">
 </script>
 
 <c:if test="${preloaded}">
