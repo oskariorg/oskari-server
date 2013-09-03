@@ -1,10 +1,7 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
@@ -79,7 +76,7 @@ public class SaveViewHandler extends ActionHandler {
     }
 
 
-    private synchronized JSONObject getViewJson(final ActionParameters params) {
+    private synchronized JSONObject getViewJson(final ActionParameters params) throws ActionException {
 
         // View data JSON
         JSONObject viewJson;
@@ -89,7 +86,7 @@ public class SaveViewHandler extends ActionHandler {
             viewJson = new JSONObject(vjs);
 
         } catch (Exception ex) {
-            throw new RuntimeException("[AddViewHandler] Could not get View data");
+            throw new ActionParamsException("[AddViewHandler] Could not get View data : " + ex.toString() + " -- " + params.getHttpParam(VIEW_DATA));
         }
 
         return viewJson;

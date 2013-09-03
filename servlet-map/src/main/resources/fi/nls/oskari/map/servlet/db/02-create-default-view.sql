@@ -37,7 +37,7 @@ VALUES ('default',
 
 -- Start linking bundles;
 
--- 1. Openlayers;
+-- Openlayers;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -67,7 +67,7 @@ UPDATE portti_view_bundle_seq set startup = '{
          AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 2. Mapfull;
+-- Mapfull;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -178,7 +178,7 @@ UPDATE portti_view_bundle_seq set state = '{
          AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 3. Divmanazer;
+-- Divmanazer;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -205,7 +205,7 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'divmanazer')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
--- 4. Toolbar;
+-- Toolbar;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -235,13 +235,14 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 UPDATE portti_view_bundle_seq set config = '{
         "viewtools": {
-            "print" : false
+            "print" : false,
+            "link" : false
         }
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 5.statehandler;
+-- Statehandler;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -268,7 +269,7 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statehandler')
              AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
--- 6. Infobox;
+-- Infobox;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -301,7 +302,7 @@ UPDATE portti_view_bundle_seq set config = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'infobox')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
--- 7. Search;
+-- Search;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -329,7 +330,7 @@ UPDATE portti_view_bundle_seq set startup = '{
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 8. LayerSelector;
+-- LayerSelector;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -356,7 +357,7 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselector2')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
--- 9. LayerSelection;
+-- LayerSelection;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -384,35 +385,7 @@ UPDATE portti_view_bundle_seq set startup = '{
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 10. Personal data;
-
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
-  VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
-          (SELECT id FROM portti_bundle WHERE name = 'personaldata'),
-          (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')),
-          '{}','{}', '{}');
-
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Personal data",
-        "fi" : "personaldata",
-        "sv" : "personaldata",
-        "en" : "personaldata",
-        "bundlename" : "personaldata",
-        "bundleinstancename" : "personaldata",
-        "metadata" : {
-            "Import-Bundle" : {
-                "personaldata" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                 }
-             },
-             "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata')
-             AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
-
--- 11. Coordinate display;
+-- Coordinate display;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -440,7 +413,7 @@ UPDATE portti_view_bundle_seq set startup = '{
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 12. Metadata flyout;
+-- Metadata flyout;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
@@ -468,7 +441,7 @@ UPDATE portti_view_bundle_seq set startup = '{
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
--- 13. Feature data;
+-- Feature data;
 
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup)
   VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),

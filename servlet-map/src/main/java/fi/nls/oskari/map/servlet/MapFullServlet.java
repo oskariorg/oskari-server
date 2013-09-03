@@ -125,11 +125,6 @@ public class MapFullServlet extends HttpServlet {
         } else {
             // JSP
             try {
-                final String viewJSP = setupRenderParameters(params);
-                if(viewJSP == null) {
-                    // view not found
-                    return;
-                }
                 final String action = params.getHttpParam("action");
                 if (action != null) {
                     // login form handling/logout
@@ -139,10 +134,18 @@ public class MapFullServlet extends HttpServlet {
                     else if ("logout".equals(action)) {
                         HttpSession session = params.getRequest().getSession();
                         session.invalidate();
+                        log.debug("Logout");
                         params.getResponse().sendRedirect("/");
                         return;
                     }
                 }
+
+                final String viewJSP = setupRenderParameters(params);
+                if(viewJSP == null) {
+                    // view not found
+                    return;
+                }
+                log.debug("Forward to", viewJSP);
                 request.getRequestDispatcher(viewJSP).forward(request, response);
             }
             catch (IOException ignored) {}
@@ -194,6 +197,11 @@ public class MapFullServlet extends HttpServlet {
             DBHandler.printQuery("SELECT * FROM portti_view_supplement");
             DBHandler.printQuery("SELECT * FROM portti_view");
             DBHandler.printQuery("SELECT * FROM portti_view_bundle_seq");
+            */
+            // Enable to show db contents for layer permissions related tables if an error occurs
+            /*
+            DBHandler.printQuery("SELECT * FROM portti_resource_user");
+            DBHandler.printQuery("SELECT * FROM portti_permissions");
             */
             final View view = viewService.getViewWithConf(viewId);
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());

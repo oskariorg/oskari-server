@@ -6,8 +6,8 @@
             "uuid": "asdf-asdf-asdf-asdf-asdf",
             "pass": "oskari",
             "roles": [
-                3,
-                4
+                2,
+                3
             ],
             "user": "admin"
         },
@@ -18,7 +18,7 @@
             "lastName": "Olematon",
             "pass": "user",
             "roles": [
-                3
+                2
             ],
             "user": "user"
         }

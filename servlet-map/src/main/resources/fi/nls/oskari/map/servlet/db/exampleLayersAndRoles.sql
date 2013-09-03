@@ -138,7 +138,7 @@ CREATE TABLE portti_maplayer_metadata
    infourl character varying(2000),
    statusjson character varying(20000),
    CONSTRAINT portti_backendstatus_pkey PRIMARY KEY (id)
- )
+ );
 
  CREATE VIEW portti_backendalert as SELECT id,ts,maplayer_id,status,statusmessage,infourl,statusjson FROM portti_backendstatus WHERE NOT status is null AND NOT status = 'UNKNOWN' AND NOT status = 'OK';
 
@@ -149,7 +149,7 @@ CREATE VIEW portti_backendstatus_allknown AS
 -- Layer Class;
 INSERT INTO portti_layerclass (namefi, namesv, nameen, maplayers_selectable, group_map, locale) values ('Taustakartat','Bakgrundskartor','Background Maps',false, false, '{ fi:{name:"Taustakartat"},sv:{name:"Bakgrundskartor"},en:{name:"Background Maps"}}');
 INSERT INTO portti_layerclass (namefi, namesv, nameen, maplayers_selectable, group_map, locale, parent) values ('Taustakartat','Bakgrundskartor','Background Maps',false, false, '{ fi:{name:"Taustakartat"},sv:{name:"Bakgrundskartor"},en:{name:"Background Maps"}}',1);
-INSERT INTO portti_layerclass (namefi, namesv, nameen, maplayers_selectable, group_map, locale, parent) values ('Maanmittauslaitos','Lantmäteriverket','National Land Survey',true, false, '{ fi:{name:"Maanmittauslaitos"},sv:{name:"Lantmäteriverket"},en:{name:"National Land Survey"}}', null);
+INSERT INTO portti_layerclass (namefi, namesv, nameen, maplayers_selectable, group_map, locale) values ('Maanmittauslaitos','Lantmäteriverket','National Land Survey',true, false, '{ fi:{name:"Maanmittauslaitos"},sv:{name:"Lantmäteriverket"},en:{name:"National Land Survey"}}');
 
 -- Map Layers;
 
@@ -289,6 +289,8 @@ INSERT INTO portti_permissions (resource_user_id, permissions_type) values (5, '
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (6, 'VIEW_LAYER');
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (7, 'VIEW_LAYER');
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (8, 'VIEW_LAYER');
+INSERT INTO portti_permissions (resource_user_id, permissions_type) values (9, 'VIEW_LAYER');
+INSERT INTO portti_permissions (resource_user_id, permissions_type) values (10, 'VIEW_LAYER');
 
 
 

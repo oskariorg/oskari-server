@@ -1,11 +1,11 @@
 {
   "roles": [
     {
-        "id": 3,
+        "id": 2,
         "name": "Karttakäyttäjä"
     },
     {
-        "id": 4,
+        "id": 3,
         "name": "Admin"
     }
   ]
