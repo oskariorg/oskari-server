@@ -15,7 +15,7 @@ and further examples will be added in near future.
 
 * The server code is packaged as Maven modules. Get Maven from here [http://maven.apache.org/] and install it.
 
-* Both oskari-server and oskari folders need to be on the same folder level for example /work/oskari-server/ and /work/Oskari/
+* Both oskari-server and oskari folders need to be on the same folder level for example `/work/oskari-server/` and `/work/Oskari/`
     * This is configurable in the jetty webAppConfig resource paths
 
 * Note! Oskari frontend folder needs to be renamed to start with a capital O (oskari -> Oskari)
@@ -32,4 +32,4 @@ and further examples will be added in near future.
 * Run `mvn -f servlet-map-pom.xml install` in the `oskari-server` folder
     * This compiles all the modules and starts a jetty webserver hosting the example servlet
 
-* After compilation has completed and jetty has started - go to [http://localhost:2373] with your browser
+* After compilation has completed and jetty has started - go to [http://localhost:2373/] with your browser
