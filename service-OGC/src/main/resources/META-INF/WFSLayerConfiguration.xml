@@ -21,6 +21,7 @@
         <result property="GMLGeometryProperty" column="gml_geometry_property"/>
         <result property="SRSName" column="srs_name"/>
         <result property="GMLVersion" column="gml_version"/>
+        <result property="GML2Separator" column="gml2_separator"/>
         <result property="WFSVersion" column="wfs_version"/>
         <result property="maxFeatures" column="max_features"/>
         <result property="featureNamespace" column="feature_namespace"/>
@@ -66,6 +67,7 @@
 			l.gml_geometry_property,
   			l.srs_name,
 			l.gml_version,
+            l.gml2_separator,
 			l.wfs_version,
 			l.max_features,
 			l.feature_namespace,
