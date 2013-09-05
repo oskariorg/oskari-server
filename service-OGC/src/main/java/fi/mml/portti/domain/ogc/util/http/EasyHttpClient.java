@@ -2,6 +2,7 @@ package fi.mml.portti.domain.ogc.util.http;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -26,9 +27,7 @@ public class EasyHttpClient {
 	private static String proxyHost;
 	
 	private static Integer proxyPort;
-	
-	private static PropertyUtil propertyUtil;
-	
+
 	/**
 	 * Does an http post to given endpoint
 	 * 
@@ -91,12 +90,8 @@ public class EasyHttpClient {
 		if (proxyPort != null) {
 			return proxyPort;
 		}
-		
-		if (propertyUtil == null) {
-			propertyUtil = new PropertyUtil();
-		}
-		
-		proxyPort = Integer.parseInt(propertyUtil.get("easyhttpclient.proxy.port"));
+
+		proxyPort = ConversionHelper.getInt(PropertyUtil.getOptional("easyhttpclient.proxy.port"), -1);
 		return proxyPort;
 	}
 
@@ -104,12 +99,8 @@ public class EasyHttpClient {
 		if (proxyHost != null) {
 			return proxyHost;
 		}
-		
-		if (propertyUtil == null) {
-			propertyUtil = new PropertyUtil();
-		}
-		
-		proxyHost = propertyUtil.get("easyhttpclient.proxy.host");
+
+		proxyHost = PropertyUtil.getOptional("easyhttpclient.proxy.host");
 		return proxyHost;
 	}
 	
