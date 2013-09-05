@@ -1,38 +1,30 @@
 package fi.nls.oskari.control.view;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
+import fi.nls.oskari.control.view.modifier.param.ParamControl;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.view.*;
-import fi.nls.oskari.view.modifier.ViewModifierManager;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.Cookie;
-
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
+import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.map.view.util.ViewHelper;
+import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
-import fi.nls.oskari.control.view.modifier.param.ParamControl;
-import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.RequestHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.view.modifier.ViewModifierManager;
+import org.json.Cookie;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
@@ -63,6 +55,8 @@ public class GetAppSetupHandler extends ActionHandler {
     // for adding admin extra bundle(s) when admin user in action
     private Bundle adminBundle = null;
     private Bundle adminLayerRightsBundle = null;
+
+    private  Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
     private final Set<String> paramHandlers = new HashSet<String>();
     private final Map<String, BundleHandler> bundleHandlers = new HashMap<String, BundleHandler>();
@@ -99,18 +93,39 @@ public class GetAppSetupHandler extends ActionHandler {
             bundleHandlers.put(key, handlers.get(key));
         }
 
-        adminBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
-        if(adminBundle == null) {
-            log.warn("Couldn't get Admin-LayerSelector bundle template from DB!");
+
+       //Get dynamic bundles from properties
+       final String[] dynamicBundles = PropertyUtil.getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundles");
+
+        // Get roles for each dynamic bundle and retrieve bundles from db. Store bundles in <role,bundle> map.
+        Map <String, Bundle> requestedBundles = new HashMap<String, Bundle>();
+        for(String bundleId : dynamicBundles) {
+            final String[] rolesForBundle = PropertyUtil.getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundle."
+                                            + bundleId + ".roles");
+
+            for(String roleName : rolesForBundle) {
+                if(!bundlesForRole.containsKey(roleName)) {
+                    bundlesForRole.put(roleName, new ArrayList<Bundle>());
+                }
+
+                List<Bundle> list = bundlesForRole.get(roleName);
+                if( requestedBundles.containsKey(bundleId)) {
+                     list.add(requestedBundles.get(bundleId)) ;
+                } else {
+                    Bundle bundle = bundleService.getBundleTemplateByName(bundleId);
+                    if (bundle != null) {
+                        requestedBundles.put(bundleId, bundle);
+                        list.add(bundle);
+                    } else {
+                        log.info("Could not retrieve bundle by name " + bundleId);
+                    }
+                }
+            }
         }
-        adminLayerRightsBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERRIGHTS);
-        if(adminLayerRightsBundle == null) {
-            log.warn("Couldn't get Admin-LayerRights bundle template from DB!");
-        }
+
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
-
         // oldId => support for migrated published maps
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
         final boolean isOldPublishedMap = oldId != -1;
@@ -262,10 +277,20 @@ public class GetAppSetupHandler extends ActionHandler {
 
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
         // TODO: check if we can assume ViewTypes.DEFAULT for this.
-        if (params.getUser().isAdmin() && view.getType().equals(ViewTypes.DEFAULT)) {
-            log.debug("Adding admin bundles for user", params.getUser());
-            addBundle(modifierParams, ViewModifier.BUNDLE_ADMINLAYERSELECTOR, adminBundle);
-            addBundle(modifierParams, ViewModifier.BUNDLE_ADMINLAYERRIGHTS, adminLayerRightsBundle);
+
+        //add bundles according to role/rights
+
+        if (view.getType().equals(ViewTypes.DEFAULT)) {
+            log.debug("Adding bundles for user", params.getUser());
+
+            for(Role r : params.getUser().getRoles()) {
+                List<Bundle> bundles = bundlesForRole.get(r.getName());
+                if(bundles != null) {
+                    for(Bundle b : bundles) {
+                        addBundle(modifierParams, b.getName(), b);
+                    }
+                }
+            }
         }
 
         // write response

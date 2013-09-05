@@ -6,9 +6,8 @@ import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
-import fi.nls.oskari.domain.GuestUser;
+import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -19,15 +18,13 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
-import fi.nls.oskari.view.modifier.ViewModifierManager;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -39,7 +36,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -51,7 +51,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * To change this template use File | Settings | File Templates.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, MapLayerWorker.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, MapLayerWorker.class, PropertyUtil.class})
 public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
     final private GetAppSetupHandler handler = new GetAppSetupHandler();
@@ -59,6 +59,10 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private ViewService viewService = null;
     private BundleService bundleService = null;
     private PublishedMapRestrictionService restrictionService = null;
+    private PropertyUtil properties = null;
+
+    //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
+    //
 
     @Before
     public void setUp() throws Exception {
@@ -76,9 +80,9 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         PowerMockito.mockStatic(ParamControl.class);
         doNothing().when(ParamControl.class);
         */
+
         handler.init();
     }
-
 
     /**
      * Ignored since tests not finished yet
@@ -126,6 +130,8 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         // check that the response matches expected
         verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-3.json", this));
     }
+
+
 
     @Test
     public void testWithCoordinateParameterGiven() throws Exception {
@@ -177,6 +183,8 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
          *      at fi.nls.oskari.control.view.GetAppSetupHandler.handleAction(GetAppSetupHandler.java:136)
          */
     }
+
+
 
     private void mockBundleService() throws Exception {
 
