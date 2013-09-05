@@ -10,19 +10,20 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.cache.JedisManager;
 
 public class WFSLayerConfiguration {
-	public static final String KEY = "WFSLayer_";
+	public final static String KEY = "WFSLayer_";
 
     private final static String LAYER_ID = "layerId";
     private final static String NAME_LOCALES = "nameLocales";
     private final static String URL_PARAM = "URL";
     private final static String USERNAME = "username";
     private final static String PASSWORD = "password";
-    
-	private static final String LAYER_NAME = "layerName";
-    
+
+	private final static String LAYER_NAME = "layerName";
+
     private final static String GML_GEOMETRY_PROPERTY = "GMLGeometryProperty";
     private final static String SRS_NAME = "SRSName";
     private final static String GML_VERSION = "GMLVersion";
+    private final static String GML2_SEPARATOR = "GML2Separator";
     private final static String WFS_VERSION = "WFSVersion";
     private final static String MAX_FEATURES = "maxFeatures";
     private final static String FEATURE_NAMESPACE = "featureNamespace";
@@ -35,27 +36,27 @@ public class WFSLayerConfiguration {
     private final static String GEOMETRY_TYPE = "geometryType";
     private final static String GET_MAP_TILES = "getMapTiles";
     private final static String GET_FEATURE_INFO = "getFeatureInfo";
-    private static final String TILE_REQUEST = "tileRequest";
+    private final static String TILE_REQUEST = "tileRequest";
     private final static String WMS_LAYER_ID = "WMSLayerId";
 
     private final static String MIN_SCALE = "minScale";
     private final static String MAX_SCALE = "maxScale";
-    
+
     private final static String TEMPLATE_NAME = "templateName";
     private final static String TEMPLATE_DESCRIPTION = "templateDescription";
     private final static String TEMPLATE_TYPE = "templateType";
     private final static String REQUEST_TEMPLATE = "requestTemplate";
     private final static String RESPONSE_TEMPLATE = "responseTemplate";
-    
+
     private final static String SELECTION_SLD_STYLE = "selectionSLDStyle";
-    
+
     private final static String STYLES = "styles";
     private final static String ID = "id";
     private final static String NAME = "name";
     private final static String SLD_STYLE = "SLDStyle";
-    
-	private String layerId; 
-	private String nameLocales; 
+
+	private String layerId;
+	private String nameLocales;
 	private String URL;
 	private String username;
 	private String password;
@@ -65,16 +66,17 @@ public class WFSLayerConfiguration {
 	private String GMLGeometryProperty;
 	private String SRSName;
 	private String GMLVersion;
+    private boolean GML2Separator; // if srs url is in old format (# => :)
 	private String WFSVersion;
 	private int maxFeatures;
 	private String featureNamespace;
 	private String featureNamespaceURI;
 	private String featureElement;
-	
+
 	private String featureType;
 	private String selectedFeatureParams; // if needed?
 	private String featureParamsLocales;
-	private String geometryType; // 2D/3D	
+	private String geometryType; // 2D/3D
 	private boolean getMapTiles; // if PNG is drawn and send
 	private boolean getFeatureInfo; // if feature json is send
     private boolean tileRequest;
@@ -82,16 +84,16 @@ public class WFSLayerConfiguration {
 
 	private double minScale;
 	private double maxScale;
-	
+
 	// Template Model
 	private String templateName;
 	private String templateDescription;
 	private String templateType;
 	private String requestTemplate;
 	private String responseTemplate;
-	
+
 	private String selectionSLDStyle;
-	
+
 	private List<WFSSLDStyle> SLDStyles; // id, name, xml
 
     public String getLayerId() {
@@ -166,6 +168,16 @@ public class WFSLayerConfiguration {
 		GMLVersion = gMLVersion;
 	}
 
+    public String isGML2Separator() {
+        if(GML2Separator)
+            return "true";
+        return "false";
+    }
+
+    public void setGML2Separator(boolean GML2Separator) {
+        this.GML2Separator = GML2Separator;
+    }
+
 	public String getWFSVersion() {
 		return WFSVersion;
 	}
@@ -197,7 +209,7 @@ public class WFSLayerConfiguration {
 	public void setFeatureNamespaceURI(String featureNamespaceURI) {
 		this.featureNamespaceURI = featureNamespaceURI;
 	}
-	
+
 	public String getFeatureElement() {
 		return featureElement;
 	}
@@ -275,10 +287,10 @@ public class WFSLayerConfiguration {
 	public void setWMSLayerId(String wMSLayerId) {
 		WMSLayerId = wMSLayerId;
 	}
-	
+
 	/**
 	 * Gets min scale
-	 * 
+	 *
 	 * @return min scale
 	 */
 	public double getMinScale() {
@@ -287,16 +299,16 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Sets min scale
-	 * 
+	 *
 	 * @param minScale
 	 */
 	public void setMinScale(double minScale) {
 		this.minScale = minScale;
-	}	
+	}
 
 	/**
 	 * Gets max scale
-	 * 
+	 *
 	 * @return max scale
 	 */
 	public double getMaxScale() {
@@ -305,7 +317,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Sets max scale
-	 * 
+	 *
 	 * @param maxScale
 	 */
 	public void setMaxScale(double maxScale) {
@@ -315,7 +327,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Gets template name
-	 * 
+	 *
 	 * @return template name
 	 */
 	public String getTemplateName() {
@@ -324,7 +336,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Sets template name
-	 * 
+	 *
 	 * @param templateName
 	 */
 	public void setTemplateName(String templateName) {
@@ -333,7 +345,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Gets template description
-	 * 
+	 *
 	 * @return template description
 	 */
 	public String getTemplateDescription() {
@@ -342,7 +354,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Sets template description
-	 * 
+	 *
 	 * @param templateDescription
 	 */
 	public void setTemplateDescription(String templateDescription) {
@@ -351,7 +363,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Gets template type
-	 * 
+	 *
 	 * @return template type
 	 */
 	public String getTemplateType() {
@@ -360,7 +372,7 @@ public class WFSLayerConfiguration {
 
 	/**
 	 * Sets template type
-	 * 
+	 *
 	 * @param templateType
 	 */
 	public void setTemplateType(String templateType) {
@@ -407,7 +419,7 @@ public class WFSLayerConfiguration {
 			JedisManager.getInstance().returnJedis(jedis);
 		}
 	}
-	
+
 	public void destroy(String layerId) {
 		Jedis jedis = JedisManager.getInstance().getJedis();
 		try {
@@ -416,27 +428,28 @@ public class WFSLayerConfiguration {
 			JedisManager.getInstance().returnJedis(jedis);
 		}
 	}
-	
+
 	public String getAsJSON() {
 		final JSONObject root = new JSONObject();
-		
+
 		JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
 		JSONHelper.putValue(root, NAME_LOCALES, JSONHelper.createJSONObject(this.getNameLocales()));
 		JSONHelper.putValue(root, URL_PARAM, this.getURL());
 		JSONHelper.putValue(root, USERNAME, this.getUsername());
 		JSONHelper.putValue(root, PASSWORD, this.getPassword());
-		
+
 		JSONHelper.putValue(root, LAYER_NAME, this.getLayerName());
-		
+
 		JSONHelper.putValue(root, GML_GEOMETRY_PROPERTY, this.getGMLGeometryProperty());
 		JSONHelper.putValue(root, SRS_NAME, this.getSRSName());
 		JSONHelper.putValue(root, GML_VERSION, this.getGMLVersion());
+        JSONHelper.putValue(root, GML2_SEPARATOR, this.isGML2Separator());
 		JSONHelper.putValue(root, WFS_VERSION, this.getWFSVersion());
 		JSONHelper.putValue(root, MAX_FEATURES, this.getMaxFeatures());
 		JSONHelper.putValue(root, FEATURE_NAMESPACE, this.getFeatureNamespace());
 		JSONHelper.putValue(root, FEATURE_NAMESPACE_URI, this.getFeatureNamespaceURI());
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
-		
+
 		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
 		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONArray(this.getSelectedFeatureParams()));
 		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, JSONHelper.createJSONObject(this.getFeatureParamsLocales()));
@@ -445,18 +458,18 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, GET_FEATURE_INFO, this.isGetFeatureInfo());
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
-		
+
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());
-		
+
 		JSONHelper.putValue(root, TEMPLATE_NAME, this.getTemplateName());
 		JSONHelper.putValue(root, TEMPLATE_DESCRIPTION, this.getTemplateDescription());
 		JSONHelper.putValue(root, TEMPLATE_TYPE, this.getTemplateType());
 		JSONHelper.putValue(root, REQUEST_TEMPLATE, this.getRequestTemplate());
 		JSONHelper.putValue(root, RESPONSE_TEMPLATE, this.getResponseTemplate());
-		
+
 		JSONHelper.putValue(root, SELECTION_SLD_STYLE, this.getSelectionSLDStyle());
-    	
+
     	// styles
 		final JSONObject styleList = new JSONObject();
 		for (final WFSSLDStyle ls : this.getSLDStyles()) {
@@ -470,7 +483,7 @@ public class WFSLayerConfiguration {
 
 		return root.toString();
 	}
-	
+
 	public static String getCache(String layerId) {
 		return JedisManager.get(KEY + layerId);
 	}
