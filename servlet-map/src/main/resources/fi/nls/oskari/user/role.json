@@ -2,7 +2,7 @@
   "roles": [
     {
         "id": 2,
-        "name": "Karttakäyttäjä"
+        "name": "User"
     },
     {
         "id": 3,

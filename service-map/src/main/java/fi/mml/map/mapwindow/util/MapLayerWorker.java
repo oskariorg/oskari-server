@@ -126,6 +126,10 @@ public class MapLayerWorker {
                 //TODO this doesn't get the whole structure (causes the bug)
                 final Layer ml = mapLayerService.find(Integer
                         .parseInt(baseLayerIdstr));
+                if(ml == null) {
+                    // if maplayer was not found from db, ignore it
+                    continue;
+                }
                 LayerClass mapLayersClass = layerClassService.find(ml.getLayerClassId());
                 //FIXME addMapLayer takes in MapLayer, addMapLayers takes in List<Layer>...
                 List<Layer> mapLayers = new ArrayList<Layer>();
