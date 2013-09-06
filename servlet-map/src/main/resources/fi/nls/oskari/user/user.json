@@ -4,7 +4,7 @@
             "firstName": "Antti",
             "lastName": "Aalto",
             "uuid": "asdf-asdf-asdf-asdf-asdf",
-            "user": "admin"
+            "user": "admin",
             "pass": "oskari",
             "roles": [
                 2,
