@@ -39,8 +39,11 @@ public abstract class AnalysisMethodParams {
     public final String Y_LOWER = "{y_lower}";
     public final String X_UPPER = "{x_upper}";
     public final String Y_UPPER = "{y_upper}";
+    public final String REFERENCE_TYPE_WFS = "wfs";
+    public final String REFERENCE_TYPE_GS = "gs_vector";
 
     private String method = "";
+    private String wps_reference_type = "";
     private String href = "";
     private int layer_id = 0;
     private String serviceUrl = "";
@@ -52,6 +55,7 @@ public abstract class AnalysisMethodParams {
     private String xmlns = "";
     private String typeName = "";
     private String filter = "";
+    private String filter2 = "";
     private String geom = "";
     private String x_lower = "";
     private String y_lower = "";
@@ -64,6 +68,14 @@ public abstract class AnalysisMethodParams {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public String getWps_reference_type() {
+        return wps_reference_type;
+    }
+
+    public void setWps_reference_type(String wpsReferenceType) {
+        wps_reference_type = wpsReferenceType;
     }
 
     public String getBboxFilterTemplate() {
@@ -148,6 +160,14 @@ public abstract class AnalysisMethodParams {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    public String getFilter2() {
+        return filter2;
+    }
+
+    public void setFilter2(String filter2) {
+        this.filter2 = filter2;
     }
 
     public String getGeom() {

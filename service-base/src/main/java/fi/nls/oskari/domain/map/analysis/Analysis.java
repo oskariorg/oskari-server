@@ -1,6 +1,10 @@
 package fi.nls.oskari.domain.map.analysis;
 
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+
 
 public class Analysis {
 
@@ -196,9 +200,30 @@ public class Analysis {
                 break;
 
             }
-           
+
         }
-        select = select + " from analysis_data where analysis_id = "+Long.toString(this.getId());
+        select = select + " from analysis_data where analysis_id = "
+                + Long.toString(this.getId());
         this.setSelect_to_data(select);
+    }
+
+    public String getColx(int i) {
+        try
+        {
+        final Class c = this.getClass();
+        Class parameters[] = {};
+         Method m = c.getMethod("getCol"+String.valueOf(i),parameters);
+         String valu = (String) m.invoke(this);
+         return valu;
+        }
+        catch (Exception e)
+        {
+        
+        }
+       
+
+       
+        return null;
+
     }
 }
