@@ -12,8 +12,6 @@ DROP VIEW  portti_backendstatus_allknown IF EXISTS;
 DROP TABLE  portti_backendstatus IF EXISTS;
 
 
-
-
 CREATE TABLE portti_capabilities_cache
 (
   layer_id IDENTITY,
@@ -140,7 +138,7 @@ CREATE TABLE portti_maplayer_metadata
    CONSTRAINT portti_backendstatus_pkey PRIMARY KEY (id)
  );
 
- CREATE VIEW portti_backendalert as SELECT id,ts,maplayer_id,status,statusmessage,infourl,statusjson FROM portti_backendstatus WHERE NOT status is null AND NOT status = 'UNKNOWN' AND NOT status = 'OK';
+CREATE VIEW portti_backendalert as SELECT id,ts,maplayer_id,status,statusmessage,infourl,statusjson FROM portti_backendstatus WHERE NOT status is null AND NOT status = 'UNKNOWN' AND NOT status = 'OK';
 
 CREATE VIEW portti_backendstatus_allknown AS
  SELECT portti_backendstatus.id, portti_backendstatus.ts, portti_backendstatus.maplayer_id, portti_backendstatus.status, portti_backendstatus.statusmessage, portti_backendstatus.infourl, portti_backendstatus.statusjson
@@ -235,50 +233,21 @@ VALUES (3,'Peruskartta 1:20k','Grundkarta 1:20k','Topographic map 1:20k','perusk
 '{ fi:{name:"Taustakartta 1:20k",subtitle:""},sv:{name:"Bakgrundskarta 1:20k",subtitle:""},en:{name:"Background map 1:20k",subtitle:""}}');
 
 
-INSERT INTO portti_maplayer (layerclassid, namefi, namesv, nameen, wmsname, wmsurl, opacity,
-       style, minscale, maxscale, description_link, legend_image, inspire_theme_id,
-       dataurl, metadataurl, order_number, layer_type, locale)
-VALUES (3,'Maastokartta 1:50k','Terrängkarta 1:50k','Topographic map 1:50k','maastokartta_50k','http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',40,'',54000,26000,'','',2,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,'wmslayer',
-'{ fi:{name:"Maastokartta 1:50k",subtitle:""},sv:{name:"Terrängkarta 1:50k",subtitle:""},en:{name:"Topographic map 1:50k",subtitle:""}}');
-
-
 -- permissions;
-   
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(2, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
+-- adding permissions to roles with id 10110, 2, and 3;
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
 
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(2, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
-
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(2, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
-
-
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(3, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(3, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-(3, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
-
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('maastokartta_50k', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 10110, 'ROLE');
-
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('maastokartta_50k', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 2, 'ROLE');
-
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('maastokartta_50k', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 3, 'ROLE');
-
-
-
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
+INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
 
 INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
 ('peruskartta', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 2, 'ROLE');
 
 INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
 ('peruskartta', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 3, 'ROLE');
-
 
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (0, 'VIEW_LAYER');
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (1, 'VIEW_LAYER');
@@ -288,10 +257,6 @@ INSERT INTO portti_permissions (resource_user_id, permissions_type) values (4, '
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (5, 'VIEW_LAYER');
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (6, 'VIEW_LAYER');
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (7, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (8, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (9, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (10, 'VIEW_LAYER');
-
 
 
 INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Koordinaattijärjestelmät','Referenskoordinatsystem','Coordinate reference systems');
@@ -333,3 +298,4 @@ INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Taustakartat',
 INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Muut','Andra','Others');
 INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Opaskartat','Guidekartor','Guide maps');
 
+-- Add tutorial layers here;

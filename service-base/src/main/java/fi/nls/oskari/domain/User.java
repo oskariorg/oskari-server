@@ -1,6 +1,8 @@
 package fi.nls.oskari.domain;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,6 +37,20 @@ public class User {
     public boolean hasRole(String pRoleName) {
         for (Role r : getRoles()) {
             if (r.getName().equals(pRoleName)
+                    || r.getName().equalsIgnoreCase(Role.getAdminRoleName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAnyRoleIn(String[] pRoleName) {
+        if(pRoleName == null) {
+            return false;
+        }
+        final List<String> rolesToCheck = Arrays.asList(pRoleName);
+        for (Role r : getRoles()) {
+            if (rolesToCheck.contains(r.getName())
                     || r.getName().equalsIgnoreCase(Role.getAdminRoleName())) {
                 return true;
             }

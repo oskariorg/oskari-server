@@ -84,6 +84,9 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
 
     //TODO make this take in the id only, backend should figure out the layer type
     private Layer populateLayer(Layer layer) {
+        if(layer == null) {
+            return null;
+        }
         if (layer.getType().equals(Layer.TYPE_WFS)) {
             return findWFSLayer(layer.getId());
         } else if (layer.getType().equals(Layer.TYPE_STATS)) {
