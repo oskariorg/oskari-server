@@ -13,6 +13,9 @@ import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.stats.StatsLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
+//import fi.nls.oskari.wfs.WFSSLDStyle;
+
 import fi.nls.oskari.domain.map.wms.LayerClass;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -35,6 +38,7 @@ public class MapLayerWorker {
     private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+   private static WFSDbService wfsDbService = new WFSDbServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(MapLayerWorker.class);
@@ -120,6 +124,10 @@ public class MapLayerWorker {
                 //TODO this doesn't get the whole structure (causes the bug)
                 final Layer ml = mapLayerService.find(Integer
                         .parseInt(baseLayerIdstr));
+                if(ml == null) {
+                    // if maplayer was not found from db, ignore it
+                    continue;
+                }
                 LayerClass mapLayersClass = layerClassService.find(ml.getLayerClassId());
                 //FIXME addMapLayer takes in MapLayer, addMapLayers takes in List<Layer>...
                 List<Layer> mapLayers = new ArrayList<Layer>();
@@ -460,6 +468,30 @@ public class MapLayerWorker {
     }
 
     /**
+      * Constructs a style json
+      *
+      * @param styleJSON JSONObject to populate
+      * @param layer layer of which styles will be retrieved
+     */
+       private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
+          log.debug("populateLayerStyleOnJSONArray, WFS");
+
+          List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
+          try{
+            if ( styleList.size() > 0) {
+               for (WFSSLDStyle style : styleList) {
+                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());
+                 styleJSON.accumulate("styles", obj);
+               }
+            }
+            }catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+       }
+
+
+
+    /**
      * Constructs a formats json containing the most preferred supported format
      * 
      * @param wms WebMapService
@@ -560,9 +592,8 @@ public class MapLayerWorker {
      * @throws JSONException
      */
     private static void populateWfsJSON(JSONObject layerJson, Layer layer) throws JSONException{
-    	// TODO: link all the styles from new database table
         layerJson.put("style", layer.getStyle());
-        layerJson.put("styles", new JSONObject());
+        MapLayerWorker.populateLayerStylesOnJSONArray(layerJson, layer);
         layerJson.put("formats", new JSONObject());
         layerJson.put("isQueryable", true);
     }
@@ -577,7 +608,6 @@ public class MapLayerWorker {
         layerJson.put("style", layer.getStyle());
 
         WebMapService wms = MapLayerWorker.buildWebMapService(layer);
-
         if (wms != null) {
             MapLayerWorker.populateLayerStylesOnJSONArray(wms, layerJson);
             layerJson.put(

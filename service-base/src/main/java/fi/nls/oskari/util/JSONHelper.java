@@ -38,6 +38,13 @@ public class JSONHelper {
             throw new RuntimeException("Couldn't create JSONObject for " + content + "by key = " + key);
         }
     }
+    public static final JSONArray getJSONArray(final JSONObject content, String key) {
+        try {
+            return content.getJSONArray(key);
+        } catch (JSONException e) {
+            throw new RuntimeException("Could create JSONArray for " + content + "by key = " + key);
+        }
+    }
 
     public static JSONArray getEmptyIfNull(final JSONArray array) {
         if(array == null) {

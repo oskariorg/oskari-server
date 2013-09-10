@@ -19,11 +19,9 @@ public class ResponseHelper {
      */
     public static final void writeResponse(ActionParameters params, final Object response) {
         try {
-            /*
             if(response instanceof JSONObject) {
                 params.getResponse().setContentType("application/json");
             }
-            */
             params.getResponse().getWriter().print(response);
         } catch (IOException e) {
             // TODO Auto-generated catch block

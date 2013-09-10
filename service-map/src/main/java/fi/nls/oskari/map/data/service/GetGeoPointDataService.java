@@ -52,7 +52,10 @@ public class GetGeoPointDataService {
         
         String gfiResponse;
         try {
-            gfiResponse = IOHelper.getURL(params.getGFIUrl(), headers);
+            final String url = params.getGFIUrl();
+            log.debug("Calling GFI url:", url);
+            gfiResponse = IOHelper.getURL(url, headers);
+            log.debug("Got GFI response:", gfiResponse);
         } catch (IOException e) {
             log.error(e, "Couldn't call GFI URL with params:", params);
             return null;

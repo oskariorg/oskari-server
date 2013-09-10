@@ -81,7 +81,16 @@ public class ActionControl {
 		    addDefaultControls();
 		}
         if (actions.containsKey(action)) {
-            actions.get(action).handleAction(params);
+            try {
+                actions.get(action).handleAction(params);
+            } catch (Exception ex) {
+                if(ex instanceof ActionException) {
+                    throw (ActionException) ex;
+                }
+                else {
+                    throw new ActionException("Unhandled exception occured", ex);
+                }
+            }
         } else {
             throw new ActionParamsException("ActionRoute not defined: " + action);
         }

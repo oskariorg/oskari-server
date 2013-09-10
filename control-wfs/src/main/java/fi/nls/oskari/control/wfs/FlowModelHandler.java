@@ -32,7 +32,7 @@ public abstract class FlowModelHandler extends ActionHandler {
         super.init();
         if(!threadsInitialized) {
             threadsInitialized = true;
-            final int wfsThreadCount = ConversionHelper.getInt(PropertyUtil.get(PROPERTY_THREAD_COUNT), 1);
+            final int wfsThreadCount = ConversionHelper.getInt(PropertyUtil.get(PROPERTY_THREAD_COUNT), 5);
             WfsExecutorService.start(wfsThreadCount);
         }
     }

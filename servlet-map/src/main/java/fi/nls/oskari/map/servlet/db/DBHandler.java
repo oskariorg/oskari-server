@@ -11,7 +11,8 @@ import java.sql.*;
  */
 public class DBHandler {
 
-    public static void createContentIfNotCreated() {
+    private static Connection getConnection() throws SQLException {
+
         InitialContext ctx = null;
         DataSource ds = null;
         try {
@@ -20,11 +21,13 @@ public class DBHandler {
         } catch (NamingException e) {
             e.printStackTrace();
         }
-        Connection conn = null;
+        Connection conn = ds.getConnection();
+        return conn;
+    }
 
-
+    public static void createContentIfNotCreated() {
         try {
-            conn = ds.getConnection();
+            Connection conn = getConnection(); //ds.getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
             String[] types            = null;
 
@@ -55,17 +58,24 @@ public class DBHandler {
             System.out.println("/ Create DB");
             executeSqlFromFile(conn, "exampleLayersAndRoles.sql");
             System.out.println("/-  exampleLayersAndRoles.sql");
-            executeSqlFromFile(conn, "00-tables.sql");
-            System.out.println("/- 00-tables.sql");
-            executeSqlFromFile(conn, "01-default_startup_config_state.sql");
-            System.out.println("/- 01-default_startup_config_state.sql");
-            executeSqlFromFile(conn, "05-post-processor-bundle.sql");
-            System.out.println("/- 05-post-processor-bundle.sql");
-            executeSqlFromFile(conn, "06-Backend-Status.sql");
-            System.out.println("/- 06-Backend-Status.sql");
-            conn.commit();
+
+            executeSqlFromFile(conn, "00-create-tables.sql");
+            System.out.println("/- 00-create-tables.sql");
+
+            executeSqlFromFile(conn, "01-register-bundles.sql");
+            System.out.println("/- 01-register-bundles.sql");
+
+            executeSqlFromFile(conn, "02-create-default-view.sql");
+            System.out.println("/- 02-create-default-view.sql");
 
         } catch (Exception e) {
+            try {
+                printQuery("SELECT * FROM portti_bundle", conn);
+                printQuery("SELECT * FROM portti_view", conn);
+                printQuery("SELECT * FROM portti_view_bundle_seq", conn);
+            } catch (SQLException e1) {
+                e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             e.printStackTrace();
         }
 
@@ -106,6 +116,14 @@ public class DBHandler {
             return writer.toString();
         } else {
             return "";
+        }
+    }
+
+    public static void printQuery(final String sql) {
+        try {
+            printQuery(sql, getConnection());
+        }catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

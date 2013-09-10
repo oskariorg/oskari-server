@@ -1,4 +1,8 @@
 {"configuration": {
+    "admin-layerselector": {
+      "conf": {},
+      "state": {}
+    },
     "mapfull": {
         "state": {
             "selectedLayers": [
@@ -142,5 +146,22 @@
             },
             "Require-Bundle-Instance": []
         }
-    }
-]}
+   },
+        {
+          "bundleinstancename": "admin-layerselector",
+          "bundlename": "admin-layerselector",
+          "en": "admin-layerselector",
+          "fi": "admin-layerselector",
+          "instanceProps": {},
+          "metadata": {
+            "Import-Bundle": {
+              "admin-layerselector": {"bundlePath": "/Oskari/packages/integration/bundle/"},
+              "bb": {"bundlePath": "/Oskari/packages/integration/bundle/"}
+            },
+            "Require-Bundle-Instance": []
+          },
+          "sv": "admin-layerselector",
+          "title": "Admin layerselector"
+        }
+]
+}

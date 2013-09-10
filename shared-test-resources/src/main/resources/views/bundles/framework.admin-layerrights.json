@@ -1,0 +1,23 @@
+{
+    "startup" : {
+        "title" : "Admin layerrights",
+        "fi" : "admin-layerrights",
+        "sv" : "admin-layerrights",
+        "en" : "admin-layerrights",
+        "bundlename" : "admin-layerrights",
+        "bundleinstancename" : "admin-layerrights",
+        "metadata" : {
+            "Import-Bundle" : {
+                "admin-layerrights" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    },
+    "config" : {
+        "conf" : { },
+        "state" : { }
+    }
+}

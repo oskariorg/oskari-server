@@ -81,7 +81,6 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         handler.handleAction(params);
         // test that response was written once
         verifyResponseWritten(params);
-
         verifyResponseContent(ResourceHelper.readJSONResource("PublishHandlerTest-background-map.json", this));
     }
 	

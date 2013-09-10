@@ -19,7 +19,8 @@
          <xsl:if test="position() != 1">,</xsl:if> {
              "name" : "<xsl:value-of select="normalize-space(gml:name/.)"/>",
              "description" : "<xsl:value-of select="normalize-space(ows:place_desc/.)"/>",
-             "link" : "<xsl:value-of select="normalize-space(ows:link/.)"/>"
+             "link" : "<xsl:value-of select="normalize-space(ows:link/.)"/>",
+             "imageUrl" : "<xsl:value-of select="normalize-space(ows:image_url/.)"/>"
            }</xsl:for-each>]
      }}
    </xsl:template>

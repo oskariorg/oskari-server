@@ -6,8 +6,8 @@ import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -18,6 +18,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -33,14 +34,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
@@ -52,7 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {WFSHighlightParamHandler.class, MapLayerWorker.class, PropertyUtil.class})
-public class GetAppSetupHandlerTest extends JSONActionRouteTest {
+public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
     final private GetAppSetupHandler handler = new GetAppSetupHandler();
 
@@ -72,6 +69,8 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         restrictionService = mock(PublishedMapRestrictionServiceImpl.class);
         mockInternalServices();
 
+
+
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
         handler.setPublishedMapRestrictionService(restrictionService);
@@ -81,86 +80,46 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         doNothing().when(ParamControl.class);
         */
 
+        try {
+           PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundles","admin-layerselector, admin-layerrights");
+           PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerrights.roles", "Administrator");
+           PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerselector.roles", "Administrator, Karttajulkaisija_Tre");
+        } catch (DuplicateException ex) {
+                 //this method is called once for every test, duplicates don't matter.
+        }
+
         handler.init();
     }
 
-    /**
-     * Ignored since tests not finished yet
-     */
+
     @Test
-    public void testWithNoViewIdAndGuestUser() throws Exception {
-        final ActionParameters params = createActionParams();
-        handler.handleAction(params);
-
-        // check that view was loaded vith id 2 as we mocked the default view to be for guest user
-        verify(viewService, times(1)).getViewWithConf(2);
-
-        // check that the guest view matches
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-guest.json", this));
-    }
-
-    /**
-     * Ignored since tests not finished yet
-     */
-    @Test
-    public void testWithNoViewIdAndLoggedInUser() throws Exception {
+    public void testAddedLayerSelectorBundle () throws Exception {
         final ActionParameters params = createActionParams(getLoggedInUser());
+        Role r = new Role();
+        r.setName("Karttajulkaisija_Tre");
+        r.setId(42);
+        params.getUser().addRole(r);
         handler.handleAction(params);
 
-        // check that view was loaded vith id 1 as we mocked the default view to be logged in user
-        verify(viewService, times(1)).getViewWithConf(1);
-
-        // check that the user is written to the config
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-loggedin.json", this));
-    }
-
-    @Test
-    public void testWithViewIdGiven() throws Exception {
-        // setup params
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "3");
-        // TODO: setup a cookie with state and see that it shouldn't change the view since a specific non-default view was requested
-        // TODO: create a test without giving viewId and see that the cookie affects it
-        final ActionParameters params = createActionParams(parameters);
-        handler.handleAction(params);
-
-        // check that view was loaded vith id 3 as requested
-        verify(viewService, times(1)).getViewWithConf(3);
-
-        // check that the response matches expected
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-3.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties.json", this))  ;
     }
 
 
 
-    @Test
-    public void testWithCoordinateParameterGiven() throws Exception {
-        // setup params
-        Map<String, String> parameters = new HashMap<String, String>();
-        CoordinateParamHandler h = new CoordinateParamHandler();
-        parameters.put(h.getName(), "123_456");
-
-        final ActionParameters params = createActionParams(parameters);
+  @Test
+    public void testAddedLayerRightsBundle () throws Exception {
+        final ActionParameters params = createActionParams(getLoggedInUser());
+        Role r = new Role();
+        r.setName("Administrator");
+        r.setId(66);
+        params.getUser().addRole(r);
         handler.handleAction(params);
 
-        // coordinates should be set as in param and geolocation plugin should have been removed from config
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-coordinate-params.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties-admin.json", this))  ;
     }
 
-    @Test
-    public void testWithOldIdGiven() throws Exception {
-        // setup params
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "456");
-        parameters.put(GetAppSetupHandler.PARAM_OLD_ID, "123");
-        // TODO: setup a cookie with state and see that it shouldn't change the view since a migrated view was requested
-        final ActionParameters params = createActionParams(parameters);
-        handler.handleAction(params);
 
-        // check that view was not loaded with id, but with old Id
-        verify(viewService, never()).getViewWithConf(anyLong());
-        verify(viewService, times(1)).getViewWithConfByOldId(123);
-    }
+
     /* *********************************************
      * Service mocks
      * ********************************************
@@ -173,7 +132,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         // id 1 for logged in user
         doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
-        dummyView.setType(ViewTypes.USER);
+        dummyView.setType(ViewTypes.DEFAULT);
         doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
 
@@ -194,6 +153,10 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
 
         doReturn(
+                BundleTestHelper.loadBundle("framework.admin-layerrights")
+        ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERRIGHTS);
+
+        doReturn(
                 BundleTestHelper.loadBundle("framework.postprocessor")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_POSTPROCESSOR);
 
@@ -207,6 +170,31 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
                 });
     }
 
+   /* private void mockPropertyUtil() throws Exception {
+        final PropertyUtil properties = mock(PropertyUtil.class);
+
+        doReturn(
+                new String[]{"admin-layerselector", "admin-layerrights"}
+        ).when(properties).getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundles");
+
+
+        doReturn(
+                new String[]{"Administrator", "Karttajulkaisija_Tre"}
+        ).when(properties).getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundle.admin-layerselector.roles");
+
+        doReturn(
+                new String[]{"Administrator"}
+        ).when(properties).getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundle.admin-layerrights.roles");
+
+        whenNew(PropertyUtil.class).withNoArguments().
+                thenAnswer(new Answer<Object>() {
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        return properties;
+                    }
+                });
+
+    }
+*/
     private void mockInternalServices() throws Exception {
 
         final PermissionsService service = mock(PermissionsServiceIbatisImpl.class);

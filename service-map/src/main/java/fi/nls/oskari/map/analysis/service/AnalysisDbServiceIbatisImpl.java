@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.analysis.service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
@@ -57,12 +58,25 @@ public class AnalysisDbServiceIbatisImpl extends
 	        }
 	        return 0;
 	    }
-	 
+	    /**
+         * Get Analysis row  by id  
+         * 
+         * @param id
+         * @return analysis object
+         */
         public Analysis getAnalysisById(long id) {
             return queryForObject(getNameSpace() + ".findAnalysis", id);
         }
 
-      
+        /**
+         * Get Analysis rows of one user by uuid
+         * 
+         * @param user uuid
+         * @return List of analysis objects
+         */
+        public List<Analysis> getAnalysisByUid(String uid) {
+            return queryForList(getNameSpace() + ".findAnalysisByUid", uid);
+        }
 
 
 }
