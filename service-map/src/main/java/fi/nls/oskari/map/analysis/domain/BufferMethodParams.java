@@ -1,5 +1,7 @@
 package fi.nls.oskari.map.analysis.domain;
 
+// WPS execute parameters / case: WFS REFERENCE input 
+
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,6 +13,7 @@ import org.xml.sax.SAXException;
 public class BufferMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-buffer.xml";
+    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-buffer.xml";
 
     // xml template paths {}
     private final String DISTANCE = "{distance}";
@@ -40,7 +43,12 @@ public class BufferMethodParams extends AnalysisMethodParams {
 
     public Document getWPSXML() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
-        Document doc = this.getDocument(this.analysisMethodTemplate);
+        // Deprecated
+        Document doc = null;
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+            doc = this.getDocument(this.analysisMethodTemplate2);
+        else
+            doc = this.getDocument(this.analysisMethodTemplate);
 
         // TODO: set wfs query parameters
 
@@ -55,10 +63,17 @@ public class BufferMethodParams extends AnalysisMethodParams {
     public Document getWPSXML2() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
-        String doctemp = this.getTemplate(this.analysisMethodTemplate);
-
+        String doctemp = null;
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        else
+            doctemp = this.getTemplate(this.analysisMethodTemplate);
+        
         doctemp = doctemp.replace(HREF, this.getHref());
-        doctemp = doctemp.replace(MAXFEATURES, "100"); // capasity problems, if bigger than 100 - replace later with  this.getMaxFeatures());
+        doctemp = doctemp.replace(MAXFEATURES, "100"); // capasity problems, if
+                                                       // bigger than 100 -
+                                                       // replace later with
+                                                       // this.getMaxFeatures());
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
@@ -69,7 +84,7 @@ public class BufferMethodParams extends AnalysisMethodParams {
 
         // Filter
         String wfsfilter = "";
-        if (this.getFilter() != null ) {
+        if (this.getFilter() != null) {
             wfsfilter = this.getFilter();
         } else {
 

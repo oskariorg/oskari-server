@@ -27,7 +27,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (JSONException e) {
-            throw new RuntimeException("Could create JSONObject for " + content );
+            throw new RuntimeException("Couldn't create JSONObject for " + content );
         }
     }
 
@@ -35,7 +35,14 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (JSONException e) {
-            throw new RuntimeException("Could create JSONObject for " + content + "by key = " + key);
+            throw new RuntimeException("Couldn't create JSONObject for " + content + "by key = " + key);
+        }
+    }
+    public static final JSONArray getJSONArray(final JSONObject content, String key) {
+        try {
+            return content.getJSONArray(key);
+        } catch (JSONException e) {
+            throw new RuntimeException("Could create JSONArray for " + content + "by key = " + key);
         }
     }
 
@@ -86,7 +93,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (JSONException ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -96,7 +103,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -105,7 +112,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -116,7 +123,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -127,7 +134,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -138,7 +145,7 @@ public class JSONHelper {
 	            json.put(key, value);
 	            return true;
 	        } catch (Exception ignore) {
-	            log.warn("Cant put", key, "value", value, "to json");
+	            log.warn("Can't put", key, "value", value, "to json");
 	        }
 	        return false;
 	}
@@ -147,7 +154,7 @@ public class JSONHelper {
         try {
             return new JSONArray(content);
         } catch (Exception e) {
-            throw new RuntimeException("Could create JSONObject for " + content );
+            throw new RuntimeException("Couldn't create JSONObject for " + content );
         }
 	}
 

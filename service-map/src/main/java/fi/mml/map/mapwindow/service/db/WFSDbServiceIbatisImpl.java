@@ -1,17 +1,13 @@
 package fi.mml.map.mapwindow.service.db;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
+import fi.nls.oskari.domain.map.wfs.*;
+import fi.nls.oskari.service.db.BaseIbatisService;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ibatis.sqlmap.client.SqlMapClient;
-
-import fi.nls.oskari.domain.map.wfs.FeatureParameter;
-import fi.nls.oskari.domain.map.wfs.FeatureType;
-import fi.nls.oskari.domain.map.wfs.OwsOperation;
-import fi.nls.oskari.domain.map.wfs.WFSService;
-import fi.nls.oskari.service.db.BaseIbatisService;
 
 public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implements WFSDbService {
 	
@@ -61,7 +57,12 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 		
 		return wfsService;
 	}
-	
+
+    public List<WFSSLDStyle> findWFSLayerStyles(int wfsId) {
+        List<WFSSLDStyle> styleList = queryForList(getNameSpace() + ".findLayerStyles", wfsId);
+        return styleList;
+    }
+
 	@Override
 	public int insertWFSService(WFSService wfsService) {
 		Integer wfsServiceId = null;

@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 public class IntersectMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-intersect.xml";
+    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-intersect.xml";
     private final String bboxFilter2Template = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom2}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 
     // xml template paths {}
@@ -100,7 +101,12 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     public Document getWPSXML2() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
-        String doctemp = this.getTemplate(this.analysisMethodTemplate);
+        String doctemp = null;
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        else
+            doctemp = this.getTemplate(this.analysisMethodTemplate);
+
 
         // Replace {} variables in wps execute .xml
         doctemp = doctemp.replace(HREF, this.getHref());
@@ -135,17 +141,24 @@ public class IntersectMethodParams extends AnalysisMethodParams {
 
         doctemp = doctemp.replace(FILTER, wfsfilter);
 
-        // Bbox filter 2
-        String fbbox2 = this.getBboxFilter2Template();
-        fbbox2 = fbbox2.replace(GEOM2, this.getGeom2());
-        fbbox2 = fbbox2.replace(SRSNAME, this.getSrsName());
-        fbbox2 = fbbox2.replace(X_LOWER, this.getX_lower());
-        fbbox2 = fbbox2.replace(Y_LOWER, this.getY_lower());
-        fbbox2 = fbbox2.replace(X_UPPER, this.getX_upper());
-        fbbox2 = fbbox2.replace(Y_UPPER, this.getY_upper());
+        String wfsfilter2 = "";
+        if (this.getFilter2() != null ) {
+            wfsfilter2 = this.getFilter2();
+        } else {
 
-        doctemp = doctemp.replace(FILTER2, fbbox2);
+            // Bbox filter 2
+            String fbbox2 = this.getBboxFilter2Template();
+            fbbox2 = fbbox2.replace(GEOM2, this.getGeom2());
+            fbbox2 = fbbox2.replace(SRSNAME, this.getSrsName());
+            fbbox2 = fbbox2.replace(X_LOWER, this.getX_lower());
+            fbbox2 = fbbox2.replace(Y_LOWER, this.getY_lower());
+            fbbox2 = fbbox2.replace(X_UPPER, this.getX_upper());
+            fbbox2 = fbbox2.replace(Y_UPPER, this.getY_upper());
 
+            wfsfilter2 = fbbox2;
+        }
+
+        doctemp = doctemp.replace(FILTER2, wfsfilter2);
         Document doc = this.getDocument2(doctemp);
 
         return doc;

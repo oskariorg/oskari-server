@@ -1,11 +1,10 @@
 package fi.nls.oskari.domain.map.wfs;
 
-public class SelectedFeatureParameter {
+import fi.nls.oskari.domain.map.JSONLocalizedTitle;
+
+public class SelectedFeatureParameter extends JSONLocalizedTitle {
 	private int id;
 	private int selectedFeatureTypeId;
-	private String titleFi;
-	private String titleSv;
-	private String titleEn;
 	private FeatureParameter featureParameter;
 	private WFSLayerView wfsLayerView;
 	
@@ -13,8 +12,8 @@ public class SelectedFeatureParameter {
 	public String toString() {
 		return "SelectedFeatureParameter [featureParameter=" + featureParameter
 				+ ", id=" + id + ", selectedFeatureTypeId="
-				+ selectedFeatureTypeId + ", titleEn=" + titleEn + ", titleFi="
-				+ titleFi + ", titleSv=" + titleSv + ", wfsLayerView="
+				+ selectedFeatureTypeId + ", titleEn=" + getTitle("en") + ", titleFi="
+				+ getTitle("fi") + ", titleSv=" + getTitle("sv") + ", wfsLayerView="
 				+ wfsLayerView + "]";
 	}
 	
@@ -29,24 +28,6 @@ public class SelectedFeatureParameter {
 	}
 	public void setSelectedFeatureTypeId(int selectedFeatureTypeId) {
 		this.selectedFeatureTypeId = selectedFeatureTypeId;
-	}
-	public String getTitleFi() {
-		return titleFi;
-	}
-	public void setTitleFi(String titleFi) {
-		this.titleFi = titleFi;
-	}
-	public String getTitleSv() {
-		return titleSv;
-	}
-	public void setTitleSv(String titleSv) {
-		this.titleSv = titleSv;
-	}
-	public String getTitleEn() {
-		return titleEn;
-	}
-	public void setTitleEn(String titleEn) {
-		this.titleEn = titleEn;
 	}
 	public FeatureParameter getFeatureParameter() {
 		return featureParameter;

@@ -1,14 +1,14 @@
 package fi.nls.oskari.service.db;
 
-import java.io.Reader;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import com.ibatis.sqlmap.client.SqlMapSession;
+
+import java.io.Reader;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 
 public abstract class BaseIbatisService<E> implements BaseService<E> {
@@ -106,7 +106,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      * Queries for list with given param object
      * 
      * @param sqlId
-     * @param objectIdentifier
+     * @param o objectIdentifier
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -160,7 +160,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      * Queries for object
      * 
      * @param sqlId
-     * @param object
+     * @param o object
      * @return type F
      */
     @SuppressWarnings("unchecked")

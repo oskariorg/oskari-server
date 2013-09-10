@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 public class AggregateMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-aggregate.xml";
+    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-aggregate.xml";
     private final String functionsTemplate = "<wps:Input><ows:Identifier>function</ows:Identifier><wps:Data><wps:LiteralData>{functions}</wps:LiteralData></wps:Data></wps:Input>";
 
     // xml template paths {}
@@ -47,7 +48,11 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     public Document getWPSXML2() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
-        String doctemp = this.getTemplate(this.analysisMethodTemplate);
+        String doctemp = null;
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        else
+            doctemp = this.getTemplate(this.analysisMethodTemplate);
 
         doctemp = doctemp.replace(HREF, this.getHref());
         doctemp = doctemp.replace(MAXFEATURES, this.getMaxFeatures());

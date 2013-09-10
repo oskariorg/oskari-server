@@ -6,6 +6,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,23 +25,32 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
     private static final String PARM_KEY = "key";
     private static final String PARM_WMSURL = "wmsurl";
 
+    private String[] permittedRoles = new String[0];
+
+    @Override
+    public void init() {
+        super.init();
+        permittedRoles = PropertyUtil.getCommaSeparatedList("actionhandler.GetWSCapabilitiesHandler.roles");
+    }
+
     public void handleAction(ActionParameters params) throws ActionException {
 
         final String key = params.getHttpParam(PARM_KEY, "");
         final String wmsurl = params.getHttpParam(PARM_WMSURL, "");
 
-        if (!params.getUser().isAdmin()) {
+        if (wmsurl.isEmpty()) {
+            throw new ActionParamsException("Parameter 'wmsurl' missing");
+        }
+        if (!params.getUser().hasAnyRoleIn(permittedRoles)) {
             throw new ActionDeniedException("Unauthorized user tried to get wmsservices");
         }
-        if (!wmsurl.isEmpty()) {
-            final String response = GetWMSCapabilities.getResponse(wmsurl);
-            final JSONObject capabilities = GetWMSCapabilities.parseCapabilities(response);
-            if (key != null && !key.isEmpty()) {
-                // return a subset
-                ResponseHelper.writeResponse(params, findsubJson(key, capabilities));
-            } else {
-                ResponseHelper.writeResponse(params, capabilities);
-            }
+        final String response = GetWMSCapabilities.getResponse(wmsurl);
+        final JSONObject capabilities = GetWMSCapabilities.parseCapabilities(response);
+        if (key != null && !key.isEmpty()) {
+            // return a subset
+            ResponseHelper.writeResponse(params, findsubJson(key, capabilities));
+        } else {
+            ResponseHelper.writeResponse(params, capabilities);
         }
     }
     

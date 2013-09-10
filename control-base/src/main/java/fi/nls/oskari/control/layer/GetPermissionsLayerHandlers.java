@@ -71,7 +71,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler  {
 
             try {
                 JSONObject realJson = new JSONObject();
-                realJson.put(JSON_NAME, layer.getNameFi());
+                realJson.put(JSON_NAME, layer.getName("fi"));
                 realJson.put(JSON_NAMES_SPACE, layer.getWmsUrl());
                 realJson.put(JSON_RESOURCE_NAME, layer.getWmsName());
 
