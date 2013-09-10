@@ -42,3 +42,5 @@ and further examples will be added in near future.
 
 
 [Instructions for modifying the initial demo data](ModifyingInitialDemoData.md)
+
+[Instructions for adding your own ajax endpoints/action routes](service-control/README.md)
