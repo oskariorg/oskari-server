@@ -91,7 +91,6 @@ public class SaveLayerHandler extends ActionHandler {
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
                 addPermissionsForAdmin(ml);
-                
                 org.json.JSONObject mapJson = ml.toJSON();
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getNameFi());
 
@@ -108,26 +107,48 @@ public class SaveLayerHandler extends ActionHandler {
 
     private int insertCache(MapLayer ml) throws ActionException {
         // retrieve capabilities
-        CapabilitiesCache cc = new CapabilitiesCache();
 
+        CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
+        if (cc == null) {
+            cc = new CapabilitiesCache();
 
-        final String capabilitiesXML = GetWMSCapabilities.getResponse(ml.getWmsUrl());
-        cc.setLayerId(ml.getId());
-        cc.setData(capabilitiesXML);
-        cc.setVersion(ml.getVersion());
-
-        // update cache by inserting to db
-        return mapLayerService.insertCapabilities(cc);
+            String wmsUrl = getWmsUrl(ml.getWmsUrl());
+            final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
+            cc.setLayerId(ml.getId());
+            cc.setData(capabilitiesXML);
+            cc.setVersion(ml.getVersion());
+            // update cache by inserting to db
+            return   mapLayerService.insertCapabilities(cc);
+        } else {
+            updateCache(ml);
+        }
+        return ml.getId();
     }
 
     private void updateCache(MapLayer ml) throws ActionException {
         // retrieve capabilities
         CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
-        final String capabilitiesXML = GetWMSCapabilities.getResponse(ml.getWmsUrl());
+
+        String wmsUrl = getWmsUrl(ml.getWmsUrl());
+
+        final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
         cc.setData(capabilitiesXML);
         
         // update cache by updating db
         mapLayerService.updateCapabilities(cc);
+    }
+
+    private String getWmsUrl(String savedWmsUrl) {
+
+        String wmsUrl = savedWmsUrl;
+
+        //check if comma separated urls
+        if (wmsUrl.indexOf(",http:") > 0) {
+            wmsUrl = savedWmsUrl.substring(0,savedWmsUrl.indexOf(",http:"));
+        }
+
+        return wmsUrl;
+
     }
     
     private void handleRequestToMapLayer(HttpServletRequest request, MapLayer ml) {
