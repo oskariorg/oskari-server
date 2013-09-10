@@ -1,24 +1,21 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.Iterator;
-import java.util.List;
-
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.log.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.db.MapLayerService;
 import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
-
-import fi.nls.oskari.domain.map.Layer;
-import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-
+import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Get WMSservices out of portti_maplayer table
@@ -110,13 +107,12 @@ public class GetWmsServicesHandler extends ActionHandler {
             for (Layer ml : allMapLayers) {
                 JSONObject mapProperties = new JSONObject();
 
-                mapProperties.put("nameFi", ml.getNameFi());
-                mapProperties.put("nameSv", ml.getNameSv());
-                mapProperties.put("nameEn", ml.getNameEn());
+                List<String> languages = ml.getLanguages();
 
-                mapProperties.put("titleFi", ml.getTitleFi());
-                mapProperties.put("titleSv", ml.getTitleSv());
-                mapProperties.put("titleEn", ml.getTitleEn());
+                for (String lang : languages) {
+                    mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
+                    mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
+                }
 
                 mapProperties.put("wmsName", ml.getWmsName());
                 mapProperties.put("wmsUrl", ml.getWmsUrl());

@@ -14,12 +14,7 @@
     
     <resultMap id="wfsServiceResult" class="WFSService">
         <result property="id" column="id" />
-        <result property="titleFi" column="title_fi" />
-        <result property="titleSv" column="title_sv" />
-        <result property="titleEn" column="title_en" />
-        <result property="owsAbstractFi" column="abstract_fi" />
-        <result property="owsAbstractSv" column="abstract_sv" />
-        <result property="owsAbstractEn" column="abstract_en" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <result property="url" column="url" />        
         <result property="username" column="username" />
         <result property="password" column="password" />
@@ -35,9 +30,7 @@
         <result property="qname.prefix" column="name_prefix" />
         <result property="qname.localPart" column="name_local_part" />
         <result property="qname.namespaceURI" column="namespace_uri" />
-        <result property="wfsTitleFi" column="title_fi" />
-        <result property="wfsTitleSv" column="title_sv" />
-        <result property="wfsTitleEn" column="title_en" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <result property="schemaLocation" column="schema_location" />
         <result property="bboxParameterName" column="bbox_parameter" />
         <result property="licenseJson" column="license_json" />
@@ -71,24 +64,24 @@
     </select>
     
     <select id="find" resultMap="wfsServiceResult" parameterClass="int">
-        SELECT id, title_fi, title_sv, title_en, abstract_fi, abstract_sv, abstract_en, 
+        SELECT id, locale,
        url, username, password, gml_version, use_proxy, geonetwork_file_id, 
        gml2type_separator
   FROM portti_wfs_service where id=#id#
     </select>
     
     <select id="findAll" resultMap="wfsServiceResult">
-        SELECT id, title_fi, title_sv, title_en, abstract_fi, abstract_sv, abstract_en, 
+        SELECT id, locale,
        url, username, password, gml_version, use_proxy, geonetwork_file_id, 
        gml2type_separator
-  FROM portti_wfs_service order by title_fi
+  FROM portti_wfs_service order by locale
     </select>
     
     <select id="findFeatureTypesOfWFSService" resultMap="featureTypeResult">
-        select id, wfs_service_id, namespace_uri, name_local_part, name_prefix, title_fi, title_sv, title_en, schema_location, bbox_parameter, license_json
+        select id, wfs_service_id, namespace_uri, name_local_part, name_prefix, locale, schema_location, bbox_parameter, license_json
         from portti_feature_type
         where wfs_service_id=#id#
-        order by title_fi
+        order by locale
     </select>
     
     <select id="findFeatureParametersOfWFSService" resultMap="featureParameterResult">
@@ -110,17 +103,14 @@
     
     <statement id="insert" parameterClass="WFSService" resultClass="int">
         insert into portti_wfs_service (
-            title_fi, title_sv, title_en, abstract_fi, abstract_sv, 
-            abstract_en, url, username, password, gml_version, use_proxy, geonetwork_file_id)
+            locale, url, username, password, gml_version, use_proxy, geonetwork_file_id)
         values (
-            #titleFi#, #titleSv#, #titleEn#, #owsAbstractFi#, #owsAbstractSv#, 
-            #owsAbstractEn#, #url#, #username#, #password#, #gmlVersion#, #useProxy#, #geonetworkFileIdentifier#)
+            #locale#, #url#, #username#, #password#, #gmlVersion#, #useProxy#, #geonetworkFileIdentifier#)
     </statement>
     
     <statement id="update" parameterClass="WFSService">
         update portti_wfs_service 
-        set title_fi=#titleFi#, title_sv=#titleSv#, title_en=#titleEn#, 
-            abstract_fi=#owsAbstractFi#, abstract_sv=#owsAbstractSv#, abstract_en=#owsAbstractEn#,
+        set locale=#locale#,
             url=#url#, username=#username#, password=#password#, gml_version=#gmlVersion#, 
             use_proxy=#useProxy#, geonetwork_file_id=#geonetworkFileIdentifier#
         where id=#id#
@@ -129,10 +119,10 @@
     <statement id="insertFeatureTypes" parameterClass="FeatureType">
         insert into portti_feature_type 
             (wfs_service_id, namespace_uri, name_local_part, name_prefix, 
-            title_fi, title_sv, title_en, schema_location, bbox_parameter) 
+            locale, schema_location, bbox_parameter)
         values 
             (#wfsService.id#, #qname.namespaceURI#, #qname.localPart#, #qname.prefix#, 
-            #wfsTitleFi#, #wfsTitleSv#, #wfsTitleEn#, #schemaLocation#, #bboxParameterName#)
+            #locale#, #schemaLocation#, #bboxParameterName#)
     </statement>
     
     <statement id="insertFeatureParametersWithParentId" parameterClass="FeatureParameter">

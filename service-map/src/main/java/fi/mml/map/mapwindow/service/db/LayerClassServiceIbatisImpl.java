@@ -1,13 +1,13 @@
 package fi.mml.map.mapwindow.service.db;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.wms.LayerClass;
 import fi.nls.oskari.service.db.BaseIbatisService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LayerClass implementation for Ibatis
@@ -45,13 +45,11 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
 	public List<LayerClass> findWithParent(int parentId) {
 		return queryForList(getNameSpace() + ".findWithParent", parentId);
 	}
-	
-	@Override
+
 	public List<LayerClass> findWhereParentNotNull() {
 		return queryForList(getNameSpace() + ".findWhereParentNotNull");
 	}
-	
-	@Override
+
 	public List<LayerClass> findInspireThemeStructure() {
 		List<InspireTheme> allThemes = inspireThemeService.findAll();
 		
@@ -59,9 +57,7 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
 		List<LayerClass> layerClasses = new ArrayList<LayerClass>();
 		for(InspireTheme t: allThemes) {
 			LayerClass lc = new LayerClass();
-			lc.setNameFi(t.getNameFi());
-			lc.setNameSv(t.getNameSv());
-			lc.setNameEn(t.getNameEn());
+            lc.setNames(t.getNames());
 			lc.setId(t.getId());
 			layerClasses.add(lc);
 		}
@@ -70,9 +66,9 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
 		// Find basemaps. They are the ones that have parent layerclass set.
 		// Attach basemap to basemap parent
 		LayerClass backgroundMap = new LayerClass();
-		backgroundMap.setNameFi("Taustakartat");
-		backgroundMap.setNameSv("Bakgrundskartor");
-		backgroundMap.setNameEn("Background Maps");
+		backgroundMap.setName("fi", "Taustakartat");
+		backgroundMap.setName("sv", "Bakgrundskartor");
+		backgroundMap.setName("en", "Background Maps");
 		layerClasses.add(backgroundMap);
 		
 		List<LayerClass> baseMapLayers = findWhereParentNotNull();
@@ -84,13 +80,11 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
 		return layerClasses;
 	}
 	
-	
-	@Override
+
 	public List<LayerClass> findOrganizationalStructure() {
 		return findOrganizationalStructure(true);
 	}
 
-    @Override
     public List<LayerClass> findOrganizationalStructure(boolean showWithoutSublayers) {
         List<LayerClass> allLayers = findAll();
         fillMapLayersForClasses(allLayers);
@@ -110,9 +104,6 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
         return allLayers;
     }
 
-
-	
-	@Override
 	public LayerClass findOrganizationalStructureByClassId(int classId) {
 		LayerClass layerClass = this.find(classId);
 		//fillMapLayersForClasses(allLayers);

@@ -1,15 +1,6 @@
 package fi.mml.map.mapwindow.util;
 
-import java.security.MessageDigest;
-import java.util.*;
-
 import fi.mml.map.mapwindow.service.db.*;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
@@ -23,8 +14,16 @@ import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.stats.StatsLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.domain.map.wms.LayerClass;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -112,11 +111,6 @@ public class MapLayerWorker {
                         .findOrganizationalStructureByClassId(Integer
                                 .parseInt(baseLayerIdstr.substring(5)));
 
-                //TODO fix this so we won't run into troubles once we support arbitrary languages
-                mapBaseLayersClass.setNameEn(lc.getNameEn());
-                mapBaseLayersClass.setNameFi(lc.getNameFi());
-                mapBaseLayersClass.setNameSv(lc.getNameSv());
-
                 mapBaseLayersClass.setLocale(lc.getLocale());
 
                 mapBaseLayersClass.setParent(0);
@@ -162,7 +156,7 @@ public class MapLayerWorker {
 
 
         for (LayerClass layerClass : parentLayerClasses) {
-            List<LayerClass> allLayerClass = layerClass.getChildrens();
+            List<LayerClass> allLayerClass = layerClass.getChildren();
 
             if (allLayerClass.size() > 0) {
                 if (layerClass.getMapLayers().size() > 0) {
@@ -289,7 +283,9 @@ public class MapLayerWorker {
         layerJson.put("styles", new JSONObject()).put("formats", new JSONObject()).put("isQueryable", false).put("dataUrl", layerClass.getDataUrl());
 
         JSONObject localeNames = new JSONObject();
-        localeNames.put("fi", layerClass.getName("fi")).put("sv", layerClass.getName("sv")).put("en", layerClass.getName("en"));
+        for (Map.Entry<String, String> localization : layerClass.getNames().entrySet()) {
+            localeNames.put(localization.getKey(), localization.getValue());
+        }
         layerJson.put("names", localeNames);
         
         double minScale = 0;

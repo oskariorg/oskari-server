@@ -1,20 +1,17 @@
 package fi.nls.oskari.control.data;
 
-import java.util.List;
-
-import fi.nls.oskari.annotation.OskariActionRoute;
-import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-
-import fi.nls.oskari.domain.map.InspireTheme;
-
+import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-
+import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
 
 //import fi.nls.oskari.log.Logger;
 
@@ -40,9 +37,11 @@ public class GetInspireThemesHandler extends ActionHandler {
                 JSONObject themeProperties = new JSONObject();
 
                 themeProperties.put("id", it.getId());
-                themeProperties.put("nameFi", it.getNameFi());
-                themeProperties.put("nameSv", it.getNameSv());
-                themeProperties.put("nameEn", it.getNameEn());
+                Map<String, String> names = it.getNames();
+                for (Map.Entry<String, String> localization : it.getNames().entrySet()) {
+                    char first = Character.toUpperCase(localization.getKey().charAt(0));
+                    themeProperties.put("name" + first + localization.getKey().substring(1), localization.getValue());
+                }
                 themeJSON.accumulate(String.valueOf(it.getId()),
                         themeProperties);
             }
