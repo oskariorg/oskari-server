@@ -30,7 +30,7 @@ public class UserTest {
 
         user.addRole(4, Role.getAdminRoleName());
         assertTrue("Admin user should have any role", user.hasRole("any role what so ever"));
-        assertFalse(true);
+
     }
 
 }
