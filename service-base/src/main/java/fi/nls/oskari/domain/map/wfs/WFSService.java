@@ -10,7 +10,7 @@ public class WFSService extends OGCService {
 	}
 	
 	public WFSService(String title) {
-		super.setTitleFi(title);
+		super.setTitle("fi", title);
 	}
 	
 	public List<FeatureType> getFeatureTypes() {

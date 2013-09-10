@@ -7,6 +7,8 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 <sqlMapConfig>
 
   <settings enhancementEnabled="true" useStatementNamespaces="true"/>
+
+  <typeHandler javaType="org.json.JSONObject" jdbcType="VARCHAR" callback="fi.nls.oskari.domain.utils.JSONTypeHandler"/>
   
   <!-- Use liferay datasource -->
   <transactionManager type="JDBC" commitRequired="true">

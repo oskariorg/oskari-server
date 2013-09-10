@@ -1,25 +1,22 @@
 package fi.nls.oskari.control.layer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import fi.mml.map.mapwindow.service.db.LayerClassService;
 import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
-
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.domain.map.wms.LayerClass;
-import fi.nls.oskari.domain.map.wms.MapLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
+import fi.nls.oskari.domain.map.wms.LayerClass;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 /**
  * Admin insert/update of class layer or class sub layer
@@ -60,7 +57,6 @@ public class SaveOrganizationHandler extends ActionHandler {
                     LayerClass lc = new LayerClass();
                     lc.setId(layerClassId);
                     handleLayerClassNames(request, lc);
-                    setLocales(lc);
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
                     lc.setLegendImage(request.getParameter("sub_legend_image"));
@@ -75,10 +71,13 @@ public class SaveOrganizationHandler extends ActionHandler {
                     lc.setId(layerClassId);
                     handleLayerClassNames(request, lc);
 
-                    lc.setNameFi(request.getParameter("name_fi"));
-                    lc.setNameSv(request.getParameter("name_sv"));
-                    lc.setNameEn(request.getParameter("name_en"));
-                    setLocales(lc);
+                    Enumeration<String> paramNames = request.getParameterNames();
+                    while (paramNames.hasMoreElements()) {
+                        String nextName = paramNames.nextElement();
+                        if (nextName.indexOf("name_") == 0) {
+                            lc.setName(nextName.substring(5), request.getParameter(nextName));
+                        }
+                    }
 
                     layerClassService.update(lc);
                 }
@@ -90,10 +89,13 @@ public class SaveOrganizationHandler extends ActionHandler {
 
                     LayerClass lc = new LayerClass();
 
-                    lc.setNameFi(request.getParameter("name_fi"));
-                    lc.setNameSv(request.getParameter("name_sv"));
-                    lc.setNameEn(request.getParameter("name_en"));
-                    setLocales(lc);
+                    Enumeration<String> paramNames = request.getParameterNames();
+                    while (paramNames.hasMoreElements()) {
+                        String nextName = paramNames.nextElement();
+                        if (nextName.indexOf("name_") == 0) {
+                            lc.setName(nextName.substring(5), request.getParameter(nextName));
+                        }
+                    }
 
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -108,7 +110,6 @@ public class SaveOrganizationHandler extends ActionHandler {
                     LayerClass lc = new LayerClass();
 
                     handleLayerClassNames(request, lc);
-                    setLocales(lc);
                     
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -142,21 +143,12 @@ public class SaveOrganizationHandler extends ActionHandler {
         permissionsService.insertPermissions(permissions.getUniqueResourceName(), ADMIN_ID, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
     }
     private void handleLayerClassNames(HttpServletRequest request, LayerClass lc) {
-        lc.setNameFi(request.getParameter("sub_name_fi"));
-        lc.setNameSv(request.getParameter("sub_name_sv"));
-        lc.setNameEn(request.getParameter("sub_name_en"));
-    }
-
-    private void setLocales(final LayerClass lc) {
-        final JSONObject fi = JSONHelper.createJSONObject("name", lc.getNameFi());
-        final JSONObject sv = JSONHelper.createJSONObject("name", lc.getNameSv());
-        final JSONObject en = JSONHelper.createJSONObject("name", lc.getNameEn());
-
-        final JSONObject locales = new JSONObject();
-        JSONHelper.putValue(locales, "fi", fi);
-        JSONHelper.putValue(locales, "sv", sv);
-        JSONHelper.putValue(locales, "en", en);
-
-        lc.setLocale(locales.toString());
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String nextName = paramNames.nextElement();
+            if (nextName.indexOf("name_") == 0) {
+                lc.setName(nextName.substring(9), request.getParameter(nextName));
+            }
+        }
     }
 }
