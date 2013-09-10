@@ -115,11 +115,6 @@ public class MapLayerWorker {
                         .findOrganizationalStructureByClassId(Integer
                                 .parseInt(baseLayerIdstr.substring(5)));
 
-                //TODO fix this so we won't run into troubles once we support arbitrary languages
-                mapBaseLayersClass.setNameEn(lc.getNameEn());
-                mapBaseLayersClass.setNameFi(lc.getNameFi());
-                mapBaseLayersClass.setNameSv(lc.getNameSv());
-
                 mapBaseLayersClass.setLocale(lc.getLocale());
 
                 mapBaseLayersClass.setParent(0);
@@ -169,7 +164,7 @@ public class MapLayerWorker {
 
 
         for (LayerClass layerClass : parentLayerClasses) {
-            List<LayerClass> allLayerClass = layerClass.getChildrens();
+            List<LayerClass> allLayerClass = layerClass.getChildren();
 
             if (allLayerClass.size() > 0) {
                 if (layerClass.getMapLayers().size() > 0) {
@@ -296,7 +291,9 @@ public class MapLayerWorker {
         layerJson.put("styles", new JSONObject()).put("formats", new JSONObject()).put("isQueryable", false).put("dataUrl", layerClass.getDataUrl());
 
         JSONObject localeNames = new JSONObject();
-        localeNames.put("fi", layerClass.getName("fi")).put("sv", layerClass.getName("sv")).put("en", layerClass.getName("en"));
+        for (Map.Entry<String, String> localization : layerClass.getNames().entrySet()) {
+            localeNames.put(localization.getKey(), localization.getValue());
+        }
         layerJson.put("names", localeNames);
         
         double minScale = 0;

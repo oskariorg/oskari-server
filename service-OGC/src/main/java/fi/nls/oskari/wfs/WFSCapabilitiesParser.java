@@ -79,7 +79,7 @@ public class WFSCapabilitiesParser {
                 }
 
             }
-            log.debug("Keywords for WFS:", layer.getNameFi(), "- list:", resultKeywords);
+            log.debug("Keywords for WFS:", layer.getName("fi"), "- list:", resultKeywords);
             return resultKeywords.toArray(EMPTY_RESULT);
         }
         return EMPTY_RESULT;

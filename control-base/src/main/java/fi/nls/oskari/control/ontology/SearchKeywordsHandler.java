@@ -242,8 +242,8 @@ public class SearchKeywordsHandler extends ActionHandler {
         final List<LayerClass> allLayerClass = layerClassService.findOrganizationalStructure();
         for (LayerClass parentLayerClass : allLayerClass) {
             log.debug("parentLayerClass", parentLayerClass.getName("fi"),
-                    "- children", parentLayerClass.getChildrens().size(), "- layers", parentLayerClass.getMapLayers().size());
-            List<LayerClass> childLayerClass = parentLayerClass.getChildrens();
+                    "- children", parentLayerClass.getChildren().size(), "- layers", parentLayerClass.getMapLayers().size());
+            List<LayerClass> childLayerClass = parentLayerClass.getChildren();
             for (Layer layer : parentLayerClass.getMapLayers()) {
                 log.debug("  layer", layer.getName("fi"));
                 populateKeywordsForLayer(layer);

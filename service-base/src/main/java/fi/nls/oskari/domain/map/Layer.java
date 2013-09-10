@@ -2,12 +2,10 @@ package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
 
 import java.util.Date;
 
-public abstract class Layer implements Comparable<Layer> {
+public abstract class Layer extends JSONLocalizedNameAndTitle implements Comparable<Layer> {
 
     private Logger log = LogFactory.getLogger(Layer.class);
 	public static final String TYPE_WMS = "wmslayer";
@@ -15,19 +13,9 @@ public abstract class Layer implements Comparable<Layer> {
 	public static final String WMTS_LAYER = "wmtslayer";
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
-
-    public static final String LOCALE_NAME = "name";
-    public static final String LOCALE_SUBTITLE = "subtitle";
 	
 	private int id;
 	private String type;
-	private String nameFi;	
-	private String nameSv;	
-	private String nameEn;
-	
-	private String titleFi;	
-	private String titleSv;	
-	private String titleEn;
 	
 	private Integer opacity;
 	private Double minScale;
@@ -76,7 +64,6 @@ public abstract class Layer implements Comparable<Layer> {
 	private String selection_style;
 	private String version;
 	private Integer epsg;
-    private String locale;
 	
 	
 	public String getGeom() {
@@ -179,7 +166,7 @@ public abstract class Layer implements Comparable<Layer> {
 	}
 
 	public int compareTo(Layer l) {
-		return this.getNameFi().compareTo(l.getNameFi());
+		return this.getName("fi").compareTo(l.getName("fi"));
 	}
 	
 	@Override
@@ -190,8 +177,8 @@ public abstract class Layer implements Comparable<Layer> {
 				+ inspireThemeId + ", layerClassId=" + layerClassId
 				+ ", legendImage=" + legendImage + ", maxScale=" + maxScale
 				+ ", metadataUrl=" + metadataUrl + ", minScale=" + minScale
-				+ ", nameEn=" + nameEn + ", nameFi=" + nameFi + ", nameSv="
-				+ nameSv + ", opacity=" + opacity + ", orderNumber="
+				+ ", nameEn=" + getName("en") + ", nameFi=" + getName("fi") + ", nameSv="
+				+ getName("sv") + ", opacity=" + opacity + ", orderNumber="
 				+ orderNumber + ", style=" + style + ", type=" + type
 				+ ", wmsName=" + wmsName + ", wmsUrl=" + wmsUrl + "]";
 	}
@@ -199,55 +186,19 @@ public abstract class Layer implements Comparable<Layer> {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getNameFi() {
-		if (nameFi == null) {
-			return "";
-		}
-		return nameFi;
-	}
-	
-	public String getName(final String language) {
-        return getLocalizedValue(language, LOCALE_NAME);
-	}
-    
-    public String getTitle(final String language) {
-        return getLocalizedValue(language, LOCALE_SUBTITLE);
-    }
 
-    private String getLocalizedValue(String language, String key) {
-        try {
-            JSONObject loc = JSONHelper.getJSONObject(JSONHelper.createJSONObject(locale), language);
-            return JSONHelper.getStringFromJSON(loc, key , "");
-        } catch(Exception ex) {
-            log.error("Couldn't get", key, "from", locale, "for language", language, "- layerId:", getId(), "- name:", getNameFi());
-        }
-        return "";
-    }
-	
-	public void setNameFi(String nameFi) {
-		this.nameFi = nameFi;
-	}
-	public String getNameSv() {
-		return nameSv;
-	}
-	public void setNameSv(String nameSv) {
-		this.nameSv = nameSv;
-	}
-	public String getNameEn() {
-		return nameEn;
-	}
-	public void setNameEn(String nameEn) {
-		this.nameEn = nameEn;
-	}
 	public Integer getOpacity() {
 		return opacity;
 	}
@@ -349,30 +300,6 @@ public abstract class Layer implements Comparable<Layer> {
 		TileMatrixSetData = tileMatrixSetData;
 	}
 
-	public String getTitleFi() {
-		return titleFi;
-	}
-
-	public void setTitleFi(String titleFi) {
-		this.titleFi = titleFi;
-	}
-
-	public String getTitleSv() {
-		return titleSv;
-	}
-
-	public void setTitleSv(String titleSv) {
-		this.titleSv = titleSv;
-	}
-
-	public String getTitleEn() {
-		return titleEn;
-	}
-
-	public void setTitleEn(String titleEn) {
-		this.titleEn = titleEn;
-	}
-
     public String getSelection_style() {
         return selection_style;
     }
@@ -395,13 +322,5 @@ public abstract class Layer implements Comparable<Layer> {
 
     public Integer getEpsg() {
         return epsg;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 }

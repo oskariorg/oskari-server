@@ -1,35 +1,34 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import java.util.List;
-
+import fi.mml.map.mapwindow.service.db.MapLayerService;
+import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-
-import fi.mml.map.mapwindow.util.MapLayerWorker;
-
-import fi.nls.oskari.domain.map.Layer;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ServiceFactory;
-
-import fi.nls.oskari.util.ResponseHelper;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Get WMS map layers
  */
 @OskariActionRoute("GetMapLayers")
 public class GetMapLayersHandler extends ActionHandler {
+
+    /** Logger */
+    private static Logger log = LogFactory.getLogger(GetMapLayersHandler.class);
 
     final static String LANGUAGE_ATTRIBUTE = "lang";
 
@@ -47,7 +46,7 @@ public class GetMapLayersHandler extends ActionHandler {
                     .getLocale().getLanguage());
 
             boolean showEmpty = params.getUser().isAdmin();
-
+            log.warn("after showEmpty");
             final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
                     params.getUser(), lang, showEmpty);
 
@@ -56,7 +55,7 @@ public class GetMapLayersHandler extends ActionHandler {
             if (params.getUser().isAdmin()) {
                 adminlayers = makeMapLayersJson(layer_id);
             }
-            
+            log.warn("After adminlayers");
             if (layer_id.isEmpty()) {
                 ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
                         layers, adminlayers));
@@ -64,15 +63,17 @@ public class GetMapLayersHandler extends ActionHandler {
                 ResponseHelper.writeResponse(params, adminlayers);
             }
 
-        } catch (Exception e) {
-            throw new ActionException(
-                    "Couldn't request DB service - get map layers", e);
+        } catch (ActionException e) {
+            throw e;
+            /*throw new ActionException(
+                    "Couldn't request DB service - get map layers", e);*/
         }
     }
 
     private JSONObject makeMapLayersJson(final String layer_id)
             throws ActionException {
 
+        log.warn("makeMapLayerJSON");
         final List<Layer> allMapLayers = new ArrayList<Layer>();
         if (layer_id.isEmpty())
             allMapLayers.addAll(mapLayerService.findAll());
@@ -84,18 +85,18 @@ public class GetMapLayersHandler extends ActionHandler {
         final JSONObject mapJSON = new JSONObject();
 
         try {
-
-            // StringBuffer mapArray = new StringBuffer();
             for (Layer ml : allMapLayers) {
                 final JSONObject mapProperties = new JSONObject();
 
-                mapProperties.put("nameFi", ml.getNameFi());
-                mapProperties.put("nameSv", ml.getNameSv());
-                mapProperties.put("nameEn", ml.getNameEn());
+                List<String> languages = ml.getLanguages();
 
-                mapProperties.put("titleFi", ml.getTitleFi());
-                mapProperties.put("titleSv", ml.getTitleSv());
-                mapProperties.put("titleEn", ml.getTitleEn());
+                for (String lang : languages) {
+                    log.warn(lang);
+                    log.warn(ml.getName(lang));
+                    log.warn(ml.getTitle(lang));
+                    mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
+                    mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
+                }
 
                 mapProperties.put("wmsName", ml.getWmsName());
                 mapProperties.put("wmsUrl", ml.getWmsUrl());
