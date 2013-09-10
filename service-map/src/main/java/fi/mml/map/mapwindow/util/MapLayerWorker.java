@@ -1,15 +1,6 @@
 package fi.mml.map.mapwindow.util;
 
-import java.security.MessageDigest;
-import java.util.*;
-
 import fi.mml.map.mapwindow.service.db.*;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
@@ -22,9 +13,20 @@ import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.stats.StatsLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
+//import fi.nls.oskari.wfs.WFSSLDStyle;
+
 import fi.nls.oskari.domain.map.wms.LayerClass;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -36,6 +38,7 @@ public class MapLayerWorker {
     private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+   private static WFSDbService wfsDbService = new WFSDbServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(MapLayerWorker.class);
@@ -468,6 +471,30 @@ public class MapLayerWorker {
     }
 
     /**
+      * Constructs a style json
+      *
+      * @param styleJSON JSONObject to populate
+      * @param layer layer of which styles will be retrieved
+     */
+       private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
+          log.debug("populateLayerStyleOnJSONArray, WFS");
+
+          List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
+          try{
+            if ( styleList.size() > 0) {
+               for (WFSSLDStyle style : styleList) {
+                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());
+                 styleJSON.accumulate("styles", obj);
+               }
+            }
+            }catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+       }
+
+
+
+    /**
      * Constructs a formats json containing the most preferred supported format
      * 
      * @param wms WebMapService
@@ -568,9 +595,8 @@ public class MapLayerWorker {
      * @throws JSONException
      */
     private static void populateWfsJSON(JSONObject layerJson, Layer layer) throws JSONException{
-    	// TODO: link all the styles from new database table
         layerJson.put("style", layer.getStyle());
-        layerJson.put("styles", new JSONObject());
+        MapLayerWorker.populateLayerStylesOnJSONArray(layerJson, layer);
         layerJson.put("formats", new JSONObject());
         layerJson.put("isQueryable", true);
     }
@@ -585,7 +611,6 @@ public class MapLayerWorker {
         layerJson.put("style", layer.getStyle());
 
         WebMapService wms = MapLayerWorker.buildWebMapService(layer);
-
         if (wms != null) {
             MapLayerWorker.populateLayerStylesOnJSONArray(wms, layerJson);
             layerJson.put(
