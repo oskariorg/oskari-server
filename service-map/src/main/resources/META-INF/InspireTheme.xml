@@ -14,6 +14,11 @@
         <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </resultMap>
 
+    <parameterMap id="InspireThemeParameter" class="InspireTheme">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="id" />
+    </parameterMap>
+
     <select id="maxId" resultClass="int">
         select max(id) from portti_inspiretheme
     </select>
@@ -26,15 +31,15 @@
         select id, locale from portti_inspiretheme order by id
     </select>
     
-    <statement id="insert" parameterClass="fi.nls.oskari.domain.map.InspireTheme" resultClass="int">
+    <statement id="insert" parameterMap="InspireThemeParameter" resultClass="int">
         insert into portti_inspiretheme (locale)
-        values (#locale#)
+        values (?)
     </statement>
     
-    <update id="update" parameterClass="fi.nls.oskari.domain.map.InspireTheme">
+    <update id="update" parameterMap="InspireThemeParameter">
         update portti_inspiretheme set
-            locale = #locale#
-        where id = #id#
+            locale = ?
+        where id = ?
     </update>
     
     <delete id="delete" parameterClass="int">
