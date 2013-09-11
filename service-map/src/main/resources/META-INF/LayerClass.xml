@@ -28,6 +28,7 @@
         <parameter property="legendImage"  />
         <parameter property="dataUrl" />
         <parameter property="groupMap" />
+        <parameter property="id" />
     </parameterMap>
 
 
@@ -81,13 +82,13 @@
 	    parameterClass="fi.nls.oskari.domain.map.wms.LayerClass">
       UPDATE   portti_layerclass
          SET
-               locale = #locale#,
-               maplayers_selectable = #mapLayersSelectable#,
-               parent = #parent#,
-               legend_image = #legendImage#,
-               dataUrl = #dataUrl#,
-               group_map = #groupMap#
-       WHERE   id = #id#
+               locale = ?,
+               maplayers_selectable = ?,
+               parent = ?,
+               legend_image = ?,
+               dataUrl = ?,
+               group_map = ?
+       WHERE   id = ?
     </update>
     
     <delete id="delete" parameterClass="int">
