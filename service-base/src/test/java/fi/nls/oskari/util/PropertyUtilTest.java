@@ -1,5 +1,7 @@
 package fi.nls.oskari.util;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,13 +14,13 @@ import static org.junit.Assert.fail;
 
 /**
  * @author SMAKINEN
- * NOTE! Properties are not reset between tests so any changes in tests are visible to other tests.
  */
 public class PropertyUtilTest {
 
 
-    @BeforeClass
-    public static void setUp() {
+    //@BeforeClass
+    @Before
+    public void setUp() {
         Properties properties = new Properties();
         try {
             properties.load(PropertyUtilTest.class.getResourceAsStream("test.properties"));
@@ -26,6 +28,11 @@ public class PropertyUtilTest {
         } catch (Exception e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+    }
+
+    @After
+    public  void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Test
@@ -67,6 +74,7 @@ public class PropertyUtilTest {
     @Test
     public void testOptional() throws Exception {
         assertEquals("Should get 'localhost'", PropertyUtil.getOptional("redisHostname"), "localhost");
+        assertEquals("Should get '10'", PropertyUtil.getOptional("workerCount"), "10");
         assertEquals("Should get <null>", PropertyUtil.getOptional("non-existing-property"), null);
     }
 
