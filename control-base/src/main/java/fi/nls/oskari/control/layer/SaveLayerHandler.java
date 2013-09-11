@@ -95,7 +95,7 @@ public class SaveLayerHandler extends ActionHandler {
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer ", e);
+           throw new ActionException("Couldn't update/insert map layer ", e);
         }
     }
 

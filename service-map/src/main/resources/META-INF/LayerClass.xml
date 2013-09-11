@@ -12,13 +12,25 @@
 
     <resultMap id="LayerClassResult" class="LayerClass">
         <result property="id" column="id" />
-        <result property="parent" column="parent" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <result property="mapLayersSelectable" column="maplayers_selectable" />
+        <result property="parent" column="parent" />
         <result property="legendImage" column="legend_image" />
         <result property="dataUrl" column="dataUrl" />
         <result property="groupMap" column="group_map" />
-        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </resultMap>
+
+
+    <parameterMap id="LayerClassParameter" class="LayerClass">
+        <parameter property="id" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="mapLayersSelectable" />
+        <parameter property="parent" />
+        <parameter property="legendImage"  />
+        <parameter property="dataUrl" />
+        <parameter property="groupMap" />
+    </parameterMap>
+
 
     <select id="maxId" resultClass="int">
         select max(id) from portti_layerclass
@@ -26,14 +38,14 @@
 
     <select id="find" parameterClass="int" resultMap="LayerClassResult">
       SELECT   id, locale, maplayers_selectable,
-	       parent, legend_image, dataurl, group_map, locale
+               parent, legend_image, dataurl, group_map
         FROM   portti_layerclass 
        WHERE   id = #id#
     </select>
 
     <select id="findAll" resultMap="LayerClassResult">
       SELECT   id, locale, maplayers_selectable,
-               parent, legend_image, dataurl, group_map, locale
+               parent, legend_image, dataurl, group_map
         FROM   portti_layerclass
     </select>
     
@@ -41,28 +53,28 @@
 	    parameterClass="int" 
 	    resultMap="LayerClassResult">
       SELECT   id, locale, maplayers_selectable,
-               parent, legend_image, dataurl, group_map, locale
+               parent, legend_image, dataurl, group_map
         FROM   portti_layerclass 
        WHERE   parent = #id#
     </select>
     
     <select id="findWhereParentNotNull" resultMap="LayerClassResult">
       SELECT   id, locale, maplayers_selectable,
-               parent, legend_image, dataurl, group_map, locale
+               parent, legend_image, dataurl, group_map
         FROM   portti_layerclass 
        WHERE   parent IS NOT NULL
     </select>
     
     <statement id="insert" 
-	       parameterClass="fi.nls.oskari.domain.map.wms.LayerClass" 
+	       parameterMap="LayerClassParameter"
 	       resultClass="int">
       INSERT INTO  portti_layerclass (
-                     parent, locale, maplayers_selectable,
-                     legend_image, dataUrl, group_map, locale
+                     locale, maplayers_selectable, parent,
+                     legend_image, dataUrl, group_map
                    )
            VALUES (
-                    #parent#, #locale#,
-                    #mapLayersSelectable#, #legendImage#, #dataUrl#, #groupMap#, #locale#
+                    #locale#, #mapLayersSelectable#, #parent#,
+                    #legendImage#, #dataUrl#, #groupMap#
                   )
     </statement>
     
@@ -70,13 +82,12 @@
 	    parameterClass="fi.nls.oskari.domain.map.wms.LayerClass">
       UPDATE   portti_layerclass
          SET
-               parent = #parent#,
                locale = #locale#,
                maplayers_selectable = #mapLayersSelectable#,
+               parent = #parent#,
                legend_image = #legendImage#,
                dataUrl = #dataUrl#,
-               group_map = #groupMap#,
-               locale = #locale#
+               group_map = #groupMap#
        WHERE   id = #id#
     </update>
     

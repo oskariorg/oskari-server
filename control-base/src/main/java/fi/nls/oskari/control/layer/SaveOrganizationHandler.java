@@ -103,6 +103,7 @@ public class SaveOrganizationHandler extends ActionHandler {
                             "group_map"));
                     lc.setLegendImage(request.getParameter("sub_legend_image"));
                     lc.setDataUrl(request.getParameter("sub_data_url"));
+                    System.out.println(lc.getLocale().toString());
                     layerClassService.insert(lc);
 
                 } else { // New sub layer class
@@ -127,6 +128,7 @@ public class SaveOrganizationHandler extends ActionHandler {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ActionException("Couldn't update/insert map layer class",
                     e);
         }

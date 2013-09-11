@@ -3,6 +3,7 @@ package fi.nls.oskari.domain.map;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -35,16 +36,16 @@ public abstract class JSONLocalized {
     }
 
     protected void setLocalizedValue(String language, String key, String value) {
-        JSONObject localeJSON;
+        JSONObject localeJSON = new JSONObject();
         if (locale != null) {
             localeJSON =  locale;
-        } else {
-            localeJSON = JSONHelper.createJSONObject("{}");
         }
-        JSONObject loc = JSONHelper.getJSONObject(localeJSON, language);
-        if (loc == null) {
-            loc = new JSONObject();
+
+        JSONObject loc =  new JSONObject();
+        if (localeJSON.has(language)) {
+            loc = JSONHelper.getJSONObject(localeJSON, language);
         }
+
         JSONHelper.putValue(loc, key, value);
         JSONHelper.putValue(localeJSON, language, loc);
         locale = localeJSON;
