@@ -22,7 +22,6 @@
 
 
     <parameterMap id="LayerClassParameter" class="LayerClass">
-        <parameter property="id" />
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="mapLayersSelectable" />
         <parameter property="parent" />
@@ -73,8 +72,8 @@
                      legend_image, dataUrl, group_map
                    )
            VALUES (
-                    #locale#, #mapLayersSelectable#, #parent#,
-                    #legendImage#, #dataUrl#, #groupMap#
+                    ?, ?, ?,
+                    ?, ?, ?
                   )
     </statement>
     
