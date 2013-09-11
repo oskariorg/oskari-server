@@ -474,8 +474,6 @@ public class MapLayerWorker {
       * @param layer layer of which styles will be retrieved
      */
        private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
-          log.debug("populateLayerStyleOnJSONArray, WFS");
-
           List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
           try{
             if ( styleList.size() > 0) {
@@ -592,7 +590,7 @@ public class MapLayerWorker {
      * @throws JSONException
      */
     private static void populateWfsJSON(JSONObject layerJson, Layer layer) throws JSONException{
-        layerJson.put("style", layer.getStyle());
+        layerJson.put("style", "default");
         MapLayerWorker.populateLayerStylesOnJSONArray(layerJson, layer);
         layerJson.put("formats", new JSONObject());
         layerJson.put("isQueryable", true);
