@@ -132,7 +132,7 @@
         <parameter property="selection_style" />
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="epsg" />
-        <parameter property="layer_type" />
+        <parameter property="type" />
     </parameterMap>
 
     <parameterMap id="LayerUpdateParameter" class="Layer">
