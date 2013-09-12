@@ -26,6 +26,14 @@ public class PropertyUtil {
         log = logger;
     }
 
+    /**
+     * Clears all previously loaded properties, use with caution!
+     */
+    public static void clearProperties() {
+        properties.clear();
+        localization.clear();
+    }
+
     public static String getNecessary(final String propertyName) {
         if (!properties.contains(propertyName)) {
             throw new RuntimeException("Missing necassary property:"+propertyName);
