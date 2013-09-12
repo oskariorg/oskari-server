@@ -28,7 +28,7 @@
         <parameter property="legendImage"  />
         <parameter property="dataUrl" />
         <parameter property="groupMap" />
-        <parameter property="id" />
+
     </parameterMap>
 
 
