@@ -14,7 +14,11 @@
         <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </resultMap>
 
-    <parameterMap id="InspireThemeParameter" class="InspireTheme">
+    <parameterMap id="InspireThemeInsertParameter" class="InspireTheme">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+    </parameterMap>
+
+    <parameterMap id="InspireThemeUpdateParameter" class="InspireTheme">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="id" />
     </parameterMap>
@@ -31,12 +35,12 @@
         select id, locale from portti_inspiretheme order by id
     </select>
     
-    <statement id="insert" parameterMap="InspireThemeParameter" resultClass="int">
+    <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
         insert into portti_inspiretheme (locale)
         values (?)
     </statement>
     
-    <update id="update" parameterMap="InspireThemeParameter">
+    <update id="update" parameterMap="InspireThemeUpdateParameter">
         update portti_inspiretheme set
             locale = ?
         where id = ?

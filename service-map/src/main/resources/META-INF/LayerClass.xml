@@ -20,17 +20,24 @@
         <result property="groupMap" column="group_map" />
     </resultMap>
 
-
-    <parameterMap id="LayerClassParameter" class="LayerClass">
+    <parameterMap id="LayerClassInsertParameter" class="LayerClass">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="mapLayersSelectable" />
         <parameter property="parent" />
         <parameter property="legendImage"  />
         <parameter property="dataUrl" />
         <parameter property="groupMap" />
-
     </parameterMap>
 
+    <parameterMap id="LayerClassUpdateParameter" class="LayerClass">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="mapLayersSelectable" />
+        <parameter property="parent" />
+        <parameter property="legendImage"  />
+        <parameter property="dataUrl" />
+        <parameter property="groupMap" />
+        <parameter property="id" />
+    </parameterMap>
 
     <select id="maxId" resultClass="int">
         select max(id) from portti_layerclass
@@ -66,7 +73,7 @@
     </select>
     
     <statement id="insert" 
-	       parameterMap="LayerClassParameter"
+	       parameterMap="LayerClassInsertParameter"
 	       resultClass="int">
       INSERT INTO  portti_layerclass (
                      locale, maplayers_selectable, parent,
@@ -79,7 +86,7 @@
     </statement>
     
     <update id="update" 
-	    parameterClass="fi.nls.oskari.domain.map.wms.LayerClass">
+	    parameterMap="LayerClassUpdateParameter">
       UPDATE   portti_layerclass
          SET
                locale = ?,

@@ -63,7 +63,17 @@
         <result property="sldStyle" column="sld_style" />
     </resultMap>
 
-    <parameterMap id="WFSServiceParameter" class="WFSService">
+    <parameterMap id="WFSServiceInsertParameter" class="WFSService">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="url" />
+        <parameter property="username" />
+        <parameter property="password" />
+        <parameter property="gmlVersion" />
+        <parameter property="useProxy" />
+        <parameter property="geonetworkFileIdentifier" />
+    </parameterMap>
+
+    <parameterMap id="WFSServiceUpdateParameter" class="WFSService">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="url" />
         <parameter property="username" />
@@ -85,6 +95,17 @@
     </parameterMap>
 
     <parameterMap id="FeatureParameterParameter" class="FeatureParameter">
+        <parameter property="featureType.id" />
+        <parameter property="qname.namespaceURI" />
+        <parameter property="qname.localPart" />
+        <parameter property="qname.prefix" />
+        <parameter property="featureParameterType" />
+        <parameter property="xmlType" />
+        <parameter property="converterType" />
+        <parameter property="bboxQueryParameter" />
+    </parameterMap>
+
+    <parameterMap id="FeatureParameterWithParentParameter" class="FeatureParameter">
         <parameter property="featureType.id" />
         <parameter property="qname.namespaceURI" />
         <parameter property="qname.localPart" />
@@ -149,7 +170,7 @@
         and m.wfs_layer_style_id = s.id
     </select>
 
-    <statement id="insert" parameterMap="WFSServiceParameter" resultClass="int">
+    <statement id="insert" parameterMap="WFSServiceInsertParameter" resultClass="int">
         insert into portti_wfs_service (
         locale,
         url,
@@ -163,7 +184,7 @@
         ?, ?, ?, ?, ?, ?, ?)
     </statement>
 
-    <statement id="update" parameterMap="WFSServiceParameter">
+    <statement id="update" parameterMap="WFSServiceUpdateParameter">
         update portti_wfs_service
         set
         locale=?,
@@ -191,7 +212,7 @@
         (?, ?, ?, ?, ?, ?, ?)
     </statement>
 
-    <statement id="insertFeatureParametersWithParentId" parameterMap="FeatureParameterParameter">
+    <statement id="insertFeatureParametersWithParentId" parameterMap="FeatureParameterWithParentParameter">
         insert into portti_feature_parameter
         (
         feature_type_id,
