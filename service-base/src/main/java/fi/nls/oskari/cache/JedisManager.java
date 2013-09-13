@@ -22,17 +22,6 @@ public class JedisManager {
      * Blocking construction of instances from other classes by making constructor private
      */
     private JedisManager() {}
-    
-    /**
-     * Returns singleton instance of the manager
-     * 
-     * @return singleton
-     */
-    /*
-    public static final JedisManager getInstance() {
-        return instance;
-    }
-    */
 
     /**
      * Connects configured connection pool to a Redis server
