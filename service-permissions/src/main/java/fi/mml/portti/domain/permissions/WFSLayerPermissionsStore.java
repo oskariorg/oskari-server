@@ -72,50 +72,17 @@ public class WFSLayerPermissionsStore {
 	 * @param session
 	 */
 	public void save(String session) {
-
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-        Jedis jedis = JedisManager.getInstance().getJedis();
-
-		try {
-			jedis.setex(KEY + session, 86400,  getAsJSON()); // expire in 1 day
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.setex(KEY + session, 86400,  getAsJSON());
 	}
 
 	@JsonIgnore
 	public static void destroy(String session) {
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-
-        Jedis jedis = JedisManager.getInstance().getJedis();
-
-        try {
-			jedis.del(KEY + session);
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.del(KEY + session);
 	}
 	
 	@JsonIgnore
 	public static void destroyAll() {
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-
-		Jedis jedis = JedisManager.getInstance().getJedis();
-
-		try {
-			Set<String> keys = jedis.keys(KEY + "*");
-			if(keys.size() > 0) {
-				jedis.del(keys.toArray(new String[keys.size()]));
-			}
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.delAll(KEY);
 	}
 
 	/**

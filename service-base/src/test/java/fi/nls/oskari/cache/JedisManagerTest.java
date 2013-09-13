@@ -25,22 +25,19 @@ public class JedisManagerTest {
     public static void setUp() {
         JedisManager.connect(10, "localhost", 6379);
 
-        jedis = JedisManager.getInstance().getJedis();
+        //jedis = JedisManager.getInstance().getJedis();
         key = "lol";
         value = "lollol";
         hKey = "hlol";
 
-        jedis.set(key, value);
-        jedis.set(key.getBytes(), value.getBytes());
-        jedis.hset(hKey, key, value);
+        JedisManager.setex(key, 86400, value);
+        JedisManager.setex(key.getBytes(), 86400, value.getBytes());
+        JedisManager.hset(hKey, key, value);
     }
 
     @Test
     public void testGet() {
-        String test = jedis.get(key);
-        assertTrue("Should get 'lollol'", test.equals(value));
-
-        test = JedisManager.get(key);
+        String test = JedisManager.get(key);
         assertTrue("Should get 'lollol'", test.equals(value));
     }
 

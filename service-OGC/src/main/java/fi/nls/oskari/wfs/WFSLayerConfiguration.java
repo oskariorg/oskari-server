@@ -412,21 +412,11 @@ public class WFSLayerConfiguration {
 	}
 
 	public void save() {
-		Jedis jedis = JedisManager.getInstance().getJedis();
-		try {
-			jedis.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
 	}
 
 	public void destroy(String layerId) {
-		Jedis jedis = JedisManager.getInstance().getJedis();
-		try {
-			jedis.del(KEY + this.layerId);
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+		JedisManager.del(KEY + this.layerId);
 	}
 
 	public String getAsJSON() {
