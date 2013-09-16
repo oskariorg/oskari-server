@@ -73,7 +73,6 @@ public class GetMapLayersHandler extends ActionHandler {
     private JSONObject makeMapLayersJson(final String layer_id)
             throws ActionException {
 
-        log.warn("makeMapLayerJSON");
         final List<Layer> allMapLayers = new ArrayList<Layer>();
         if (layer_id.isEmpty())
             allMapLayers.addAll(mapLayerService.findAll());
@@ -91,9 +90,6 @@ public class GetMapLayersHandler extends ActionHandler {
                 List<String> languages = ml.getLanguages();
 
                 for (String lang : languages) {
-                    log.warn(lang);
-                    log.warn(ml.getName(lang));
-                    log.warn(ml.getTitle(lang));
                     mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
                     mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
                 }
