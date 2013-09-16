@@ -60,7 +60,7 @@
     <resultMap id="WFSLayerStyle" class="WFSLayerStyle" >
         <result property="id" column="id" />
         <result property="name" column="name" />
-        <result property="sldStyle" column="sld_style" />
+        <result property="SLDStyle" column="sld_style" />
     </resultMap>
 
     <parameterMap id="WFSServiceInsertParameter" class="WFSService">

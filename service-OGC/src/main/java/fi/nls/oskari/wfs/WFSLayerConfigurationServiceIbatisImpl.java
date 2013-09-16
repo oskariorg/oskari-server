@@ -3,6 +3,7 @@ package fi.nls.oskari.wfs;
 import java.util.List;
 
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 
 public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WFSLayerConfiguration> implements WFSLayerConfigurationService {
 
