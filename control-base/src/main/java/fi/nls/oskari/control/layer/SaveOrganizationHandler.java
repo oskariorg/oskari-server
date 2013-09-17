@@ -31,7 +31,8 @@ public class SaveOrganizationHandler extends ActionHandler {
     private static final String PARM_PARENT_ID = "parent_id";
     private static final String ADMIN_ID = "10113";
 
-    private static final String NAME_PREFIX = "sub_name_";
+    private static final String SUB_NAME_PREFIX = "sub_name_";
+    private static final String NAME_PREFIX = "name_";
 
 
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
@@ -53,12 +54,22 @@ public class SaveOrganizationHandler extends ActionHandler {
 
             // ************** UPDATE ************************
             if (!layercl_id.isEmpty()) {
-                if (!parentId.isEmpty()) {
+                if (parentId.isEmpty()) {
+
+                    int layerClassId = ConversionHelper.getInt(layercl_id, 0); // id
+                    LayerClass lc = new LayerClass();
+                    lc.setId(layerClassId);
+                    handleLocalizations(lc, NAME_PREFIX,  request);
+
+                    layerClassService.update(lc);
+
+                } else {
                     int layerClassId = ConversionHelper.getInt(layercl_id, 0); // sub_id
 
                     LayerClass lc = new LayerClass();
                     lc.setId(layerClassId);
-                    handleLocalizations(lc, request);
+                    handleLocalizations(lc, SUB_NAME_PREFIX, request);
+
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
                     lc.setLegendImage(request.getParameter("sub_legend_image"));
@@ -66,21 +77,6 @@ public class SaveOrganizationHandler extends ActionHandler {
                     lc.setParent(ConversionHelper.getInt(parentId, 0));
                     lc.setGroupMap(request.getParameterMap().containsKey(
                             "group_map"));
-                    layerClassService.update(lc);
-                } else {
-                    int layerClassId = ConversionHelper.getInt(layercl_id, 0); // id
-                    LayerClass lc = new LayerClass();
-                    lc.setId(layerClassId);
-                    handleLocalizations(lc, request);
-
-                    Enumeration<String> paramNames = request.getParameterNames();
-                    while (paramNames.hasMoreElements()) {
-                        String nextName = paramNames.nextElement();
-                        if (nextName.indexOf(NAME_PREFIX) == 0) {
-                            lc.setName(nextName.substring(NAME_PREFIX.length()), request.getParameter(nextName));
-                        }
-                    }
-
                     layerClassService.update(lc);
                 }
             }
@@ -91,7 +87,7 @@ public class SaveOrganizationHandler extends ActionHandler {
 
                     LayerClass lc = new LayerClass();
 
-                    handleLocalizations(lc, request);
+                    handleLocalizations(lc, NAME_PREFIX, request);
 
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -105,7 +101,7 @@ public class SaveOrganizationHandler extends ActionHandler {
 
                     LayerClass lc = new LayerClass();
 
-                    handleLocalizations(lc, request);
+                    handleLocalizations(lc, SUB_NAME_PREFIX, request);
                     
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -130,12 +126,12 @@ public class SaveOrganizationHandler extends ActionHandler {
     }
 
 
-    private void handleLocalizations(final LayerClass lc, final HttpServletRequest request) {
+    private void handleLocalizations(final LayerClass lc, final String nameprefix, final HttpServletRequest request) {
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             String nextName = paramNames.nextElement();
-            if (nextName.indexOf(NAME_PREFIX) == 0) {
-                lc.setName(nextName.substring(NAME_PREFIX.length()), request.getParameter(nextName));
+            if (nextName.indexOf(nameprefix) == 0) {
+                lc.setName(nextName.substring(nameprefix.length()), request.getParameter(nextName));
             }
         }
     }
