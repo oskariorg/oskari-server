@@ -6,11 +6,9 @@ DROP TABLE portti_resource_user IF EXISTS;
 DROP TABLE  portti_maplayer_metadata IF EXISTS;
 DROP TABLE  portti_capabilities_cache IF EXISTS;
 
-
 DROP VIEW portti_backendalert IF EXISTS;
 DROP VIEW  portti_backendstatus_allknown IF EXISTS;
 DROP TABLE  portti_backendstatus IF EXISTS;
-
 
 CREATE TABLE portti_capabilities_cache
 (
@@ -23,9 +21,7 @@ CREATE TABLE portti_capabilities_cache
 
 CREATE TABLE portti_inspiretheme (
   id IDENTITY,
-  namefi character varying(2000),
-  namesv character varying(2000),
-  nameen character varying(2000),
+  locale character varying(20000),
   CONSTRAINT portti_inspiretheme_pkey PRIMARY KEY (id)
 );
 
@@ -259,43 +255,45 @@ INSERT INTO portti_permissions (resource_user_id, permissions_type) values (6, '
 INSERT INTO portti_permissions (resource_user_id, permissions_type) values (7, 'VIEW_LAYER');
 
 
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Koordinaattijärjestelmät','Referenskoordinatsystem','Coordinate reference systems');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Paikannusruudustot','Geografiska rutnätssystem','Geographical grid systems');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Maastokartat','Terrängkartor','Topographic maps');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Paikannimet','Geografiska namn','Geographical names');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Hallinnolliset yksiköt','Administrativa enheter','Administrative units');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Osoitteet','Adresser','Addresses');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Kiinteistöt','Fastigheter','Cadastral parcels');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Liikenneverkot','Trafiknät','Transport networks');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Hydrografia','Hydrografi','Hydrography');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Suojellut alueet','Skyddade områden','Protected sites');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Korkeus','Höjd','Elevation');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Maanpeite','Landtäcke','Land cover');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Ortoilmakuvat','Ortofoto','Orthoimagery');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Geologia','Geologi','Geology');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Tilastoyksiköt','Statistiska enheter','Statistical units');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Rakennukset','Byggnader','Buildings');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Maaperä','Mark','Soil');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Maankäyttö','Markanvändning','Land use');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Väestön terveys ja turvallisuus','Människors hälsa och säkerhet','Human health and safety');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Yleishyödylliset ja muut julkiset palvelut','Allmännyttiga och offentliga tjänster','Utility and governmental services');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Ympäristön tilan seurantalaitteet','Nätverk och anläggningar för miljöövervakning','Environmental monitoring facilities');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Tuotanto- ja teollisuuslaitokset','Produktions- och industrianläggningar','Production and industrial facilities');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Maatalous- ja vesiviljelylaitokset','Jordbruks- och vattenbruksanläggningar','Agricultural and aquaculture facilities');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Väestöjakauma – demografia','Befolkningsfördelning','Population distribution - demography');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Aluesuunnittelu ja rajoitukset','Områden med särskild reglering','Area management/restriction zones');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Luonnonriskialueet','Naturliga riskområden','Natural risk zones');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Ilmakehän tila','Atmosfäriska förhållanden','Atmospheric conditions');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Ilmaston maantieteelliset ominaispiirteet','Geografiska meteorologiska förhållanden','Meteorological geographical features');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Merentutkimuksen maantieteelliset ominaispiirteet','Geografiska oceanografiska förhållanden','Oceanographic geographical features');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Merialueet','Havsområden','Sea regions');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Biomaantieteelliset alueet','Biogeografiska regioner','Bio-geographical regions');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Elinympäristöt ja biotoopit','Naturtyper och biotoper','Habitats and biotopes');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Lajien levinneisyys','Arters utbredning','Species distribution');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Energiavarat','Energiresurser','Energy resources');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Mineraalivarat','Mineralfyndigheter','Mineral resources');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Taustakartat','Bakgrundskartor','Background maps');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Muut','Andra','Others');
-INSERT INTO portti_inspiretheme (namefi, namesv, nameen) values ('Opaskartat','Guidekartor','Guide maps');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Koordinaattijärjestelmät"}, "sv": { "name" : "Referenskoordinatsystem"},"en": { "name" : "Coordinate reference systems"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Paikannusruudustot"}, "sv": { "name" : "Geografiska rutnätssystem"},"en": { "name" : "Geographical grid systems"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maastokartat"}, "sv": { "name" : "Terrängkartor"},"en": { "name" : "Topographic maps"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Paikannimet"}, "sv": { "name" : "Geografiska namn"},"en": { "name" : "Geographical names"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Hallinnolliset yksiköt"}, "sv": { "name" : "Administrativa enheter"},"en": { "name" : "Administrative units"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Osoitteet"}, "sv": { "name" : "Adresser"},"en": { "name" : "Addresses"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Kiinteistöt"}, "sv": { "name" : "Fastigheter"},"en": { "name" : "Cadastral parcels"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Liikenneverkot"}, "sv": { "name" : "Trafiknät"},"en": { "name" : "Transport networks"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Hydrografia"}, "sv": { "name" : "Hydrografi"},"en": { "name" : "Hydrography"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Suojellut alueet"}, "sv": { "name" : "Skyddade områden"},"en": { "name" : "Protected sites"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Korkeus"}, "sv": { "name" : "Höjd"},"en": { "name" : "Elevation"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maanpeite"}, "sv": { "name" : "Landtäcke"},"en": { "name" : "Land cover"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Ortoilmakuvat"}, "sv": { "name" : "Ortofoto"},"en": { "name" : "Orthoimagery"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Geologia"}, "sv": { "name" : "Geologi"},"en": { "name" : "Geology"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Korkeus"}, "sv": { "name" : "Höjd"},"en": { "name" : "Elevation"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Tilastoyksiköt"}, "sv": { "name" : "Statistiska enheter"},"en": { "name" : "Statistical units"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Rakennukset"}, "sv": { "name" : "Byggnader"},"en": { "name" : "Buildings"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maaperä"}, "sv": { "name" : "Mark"},"en": { "name" : "Soil"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maankäyttö"}, "sv": { "name" : "Markanvändning"},"en": { "name" : "Land use"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Väestön terveys ja turvallisuus"}, "sv": { "name" : "Människors hälsa och säkerhet"},"en": { "name" : "Human health and safety"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Yleishyödylliset ja muut julkiset palvelut"}, "sv": { "name" : "Allmännyttiga och offentliga tjänster"},"en": { "name" : "Utility and governmental services"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Ympäristön tilan seurantalaitteet"}, "sv": { "name" : "Nätverk och anläggningar för miljöövervakning"},"en": { "name" : "Environmental monitoring facilities"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Tuotanto- ja teollisuuslaitokset"}, "sv": { "name" : "Produktions- och industrianläggningar"},"en": { "name" : "Production and industrial facilities"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maatalous- ja vesiviljelylaitokset"}, "sv": { "name" : "Jordbruks- och vattenbruksanläggningar"},"en": { "name" : "Agricultural and aquaculture facilities"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Väestöjakauma – demografia"}, "sv": { "name" : "Befolkningsfördelning"},"en": { "name" : "Population distribution - demography"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Aluesuunnittelu ja rajoitukset"}, "sv": { "name" : "Områden med särskild reglering"},"en": { "name" : "Area management/restriction zones"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Luonnonriskialueet"}, "sv": { "name" : "Naturliga riskområden"},"en": { "name" : "Natural risk zones"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Ilmakehän tila"}, "sv": { "name" : "Atmosfäriska förhållanden"},"en": { "name" : "Atmospheric conditions"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Ilmaston maantieteelliset ominaispiirteet"}, "sv": { "name" : "Geografiska meteorologiska förhållanden"},"en": { "name" : "Meteorological geographical features"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Merentutkimuksen maantieteelliset ominaispiirteet"}, "sv": { "name" : "Geografiska oceanografiska förhållanden"},"en": { "name" : "Oceanographic geographical features"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Merialueet"}, "sv": { "name" : "Havsområden"},"en": { "name" : "Sea regions"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Biomaantieteelliset alueet"}, "sv": { "name" : "Biogeografiska regioner"},"en": { "name" : "Bio-geographical regions"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Elinympäristöt ja biotoopit"}, "sv": { "name" : "Naturtyper och biotoper"},"en": { "name" : "Habitats and biotopes"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Lajien levinneisyys"}, "sv": { "name" : "Arters utbredning"},"en": { "name" : "Species distribution"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Energiavarat"}, "sv": { "name" : "Energiresurser"},"en": { "name" : "Energy resources"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Mineraalivarat"}, "sv": { "name" : "Mineralfyndigheter"},"en": { "name" : "Mineral resources"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Taustakartat"}, "sv": { "name" : "Bakgrundskartor"},"en": { "name" : "Background maps"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Muut"}, "sv": { "name" : "Andra"},"en": { "name" : "Others"}}');
+INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Opaskartat"}, "sv": { "name" : "Guidekartor"},"en": { "name" : "Guide maps"}}');
+
 
 -- Add tutorial layers here;
