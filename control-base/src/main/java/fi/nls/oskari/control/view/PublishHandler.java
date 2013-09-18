@@ -437,7 +437,7 @@ public class PublishHandler extends ActionHandler {
         final List<MyPlaceCategory> myPlacesLayers = myPlaceService.getMyPlaceLayersById(publishedMyPlaces);
         for (MyPlaceCategory place : myPlacesLayers) {
             if (place.getUuid().equals(userUuid)) {
-                myPlaceService.updatePublisherName(Integer.parseInt(layerId), userUuid, publisherName); // make it public
+                myPlaceService.updatePublisherName(categoryId, userUuid, publisherName); // make it public
                 return true;
             }
         }
