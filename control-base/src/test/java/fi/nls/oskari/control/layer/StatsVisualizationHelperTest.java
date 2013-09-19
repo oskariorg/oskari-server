@@ -21,6 +21,7 @@ public class StatsVisualizationHelperTest {
 
     @BeforeClass
     public static void addLocales() throws Exception {
+        PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
             properties.load(StatsVisualizationHelperTest.class.getResourceAsStream("test.properties"));
