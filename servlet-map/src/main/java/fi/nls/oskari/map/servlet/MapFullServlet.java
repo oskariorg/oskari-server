@@ -43,7 +43,7 @@ public class MapFullServlet extends HttpServlet {
         InputStream in = null;
         try {
             Properties prop = new Properties();
-            in = MapFullServlet.class.getResourceAsStream("oskari.properties");
+            in = MapFullServlet.class.getResourceAsStream("/oskari.properties");
             prop.load(in);
             PropertyUtil.addProperties(prop);
         } catch (Exception e) {

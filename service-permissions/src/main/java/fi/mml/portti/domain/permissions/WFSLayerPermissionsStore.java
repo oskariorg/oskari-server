@@ -1,17 +1,13 @@
 package fi.mml.portti.domain.permissions;
 
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import fi.nls.oskari.log.LogFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import redis.clients.jedis.Jedis;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.cache.JedisManager;
@@ -20,6 +16,8 @@ import fi.nls.oskari.cache.JedisManager;
  * handles user's permissions
  * 
  * Contains a list of layers that user may use.
+ *
+ * Similar WFSLayerPermissionsStore class can be found in transport.
  */
 public class WFSLayerPermissionsStore {
 
@@ -72,50 +70,25 @@ public class WFSLayerPermissionsStore {
 	 * @param session
 	 */
 	public void save(String session) {
-
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-        Jedis jedis = JedisManager.getInstance().getJedis();
-
-		try {
-			jedis.setex(KEY + session, 86400,  getAsJSON()); // expire in 1 day
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.setex(KEY + session, 86400,  getAsJSON());
 	}
 
+    /**
+     * Destroys one session's permissions from redis
+     *
+     * @param session
+     */
 	@JsonIgnore
 	public static void destroy(String session) {
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-
-        Jedis jedis = JedisManager.getInstance().getJedis();
-
-        try {
-			jedis.del(KEY + session);
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.del(KEY + session);
 	}
-	
+
+    /**
+     * Destroys all permissions in redis
+     */
 	@JsonIgnore
 	public static void destroyAll() {
-        if (!JedisManager.isPoolInitialized()) {
-            return;
-        }
-
-		Jedis jedis = JedisManager.getInstance().getJedis();
-
-		try {
-			Set<String> keys = jedis.keys(KEY + "*");
-			if(keys.size() > 0) {
-				jedis.del(keys.toArray(new String[keys.size()]));
-			}
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+        JedisManager.delAll(KEY);
 	}
 
 	/**
@@ -128,12 +101,12 @@ public class WFSLayerPermissionsStore {
 		try {
 			return mapper.writeValueAsString(this);
 		} catch (JsonGenerationException e) {
-			log.error("JSON Generation failed", e);
-		} catch (JsonMappingException e) {
-			log.error("Mapping from Object to JSON String failed", e);
-		} catch (IOException e) {
-			log.error("IO failed", e);
-		}
+            log.error(e, "JSON Generation failed");
+        } catch (JsonMappingException e) {
+            log.error(e, "Mapping from Object to JSON String failed");
+        } catch (IOException e) {
+            log.error(e, "IO failed");
+        }
 		return null;
 	}
 

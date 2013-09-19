@@ -31,6 +31,9 @@ public class SaveOrganizationHandler extends ActionHandler {
     private static final String PARM_PARENT_ID = "parent_id";
     private static final String ADMIN_ID = "10113";
 
+    private static final String SUB_NAME_PREFIX = "sub_name_";
+    private static final String NAME_PREFIX = "name_";
+
 
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
@@ -51,12 +54,22 @@ public class SaveOrganizationHandler extends ActionHandler {
 
             // ************** UPDATE ************************
             if (!layercl_id.isEmpty()) {
-                if (!parentId.isEmpty()) {
+                if (parentId.isEmpty()) {
+
+                    int layerClassId = ConversionHelper.getInt(layercl_id, 0); // id
+                    LayerClass lc = new LayerClass();
+                    lc.setId(layerClassId);
+                    handleLocalizations(lc, NAME_PREFIX,  request);
+
+                    layerClassService.update(lc);
+
+                } else {
                     int layerClassId = ConversionHelper.getInt(layercl_id, 0); // sub_id
 
                     LayerClass lc = new LayerClass();
                     lc.setId(layerClassId);
-                    handleLayerClassNames(request, lc);
+                    handleLocalizations(lc, SUB_NAME_PREFIX, request);
+
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
                     lc.setLegendImage(request.getParameter("sub_legend_image"));
@@ -64,21 +77,6 @@ public class SaveOrganizationHandler extends ActionHandler {
                     lc.setParent(ConversionHelper.getInt(parentId, 0));
                     lc.setGroupMap(request.getParameterMap().containsKey(
                             "group_map"));
-                    layerClassService.update(lc);
-                } else {
-                    int layerClassId = ConversionHelper.getInt(layercl_id, 0); // id
-                    LayerClass lc = new LayerClass();
-                    lc.setId(layerClassId);
-                    handleLayerClassNames(request, lc);
-
-                    Enumeration<String> paramNames = request.getParameterNames();
-                    while (paramNames.hasMoreElements()) {
-                        String nextName = paramNames.nextElement();
-                        if (nextName.indexOf("name_") == 0) {
-                            lc.setName(nextName.substring(5), request.getParameter(nextName));
-                        }
-                    }
-
                     layerClassService.update(lc);
                 }
             }
@@ -89,13 +87,7 @@ public class SaveOrganizationHandler extends ActionHandler {
 
                     LayerClass lc = new LayerClass();
 
-                    Enumeration<String> paramNames = request.getParameterNames();
-                    while (paramNames.hasMoreElements()) {
-                        String nextName = paramNames.nextElement();
-                        if (nextName.indexOf("name_") == 0) {
-                            lc.setName(nextName.substring(5), request.getParameter(nextName));
-                        }
-                    }
+                    handleLocalizations(lc, NAME_PREFIX, request);
 
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -103,14 +95,13 @@ public class SaveOrganizationHandler extends ActionHandler {
                             "group_map"));
                     lc.setLegendImage(request.getParameter("sub_legend_image"));
                     lc.setDataUrl(request.getParameter("sub_data_url"));
-                    System.out.println(lc.getLocale().toString());
                     layerClassService.insert(lc);
 
                 } else { // New sub layer class
 
                     LayerClass lc = new LayerClass();
 
-                    handleLayerClassNames(request, lc);
+                    handleLocalizations(lc, SUB_NAME_PREFIX, request);
                     
                     lc.setMapLayersSelectable(request.getParameterMap()
                             .containsKey("sub_maplayers_selectable"));
@@ -134,6 +125,17 @@ public class SaveOrganizationHandler extends ActionHandler {
         }
     }
 
+
+    private void handleLocalizations(final LayerClass lc, final String nameprefix, final HttpServletRequest request) {
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String nextName = paramNames.nextElement();
+            if (nextName.indexOf(nameprefix) == 0) {
+                lc.setName(nextName.substring(nameprefix.length()), request.getParameter(nextName));
+            }
+        }
+    }
+
     private void addPermissionsForAdmin(LayerClass lc) {
 
         Permissions permissions = new Permissions();
@@ -143,14 +145,5 @@ public class SaveOrganizationHandler extends ActionHandler {
         permissions.getUniqueResourceName().setName(String.valueOf(lc.getId()));
 
         permissionsService.insertPermissions(permissions.getUniqueResourceName(), ADMIN_ID, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-    }
-    private void handleLayerClassNames(HttpServletRequest request, LayerClass lc) {
-        Enumeration<String> paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            String nextName = paramNames.nextElement();
-            if (nextName.indexOf("name_") == 0) {
-                lc.setName(nextName.substring(9), request.getParameter(nextName));
-            }
-        }
     }
 }

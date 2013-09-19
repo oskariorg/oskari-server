@@ -402,9 +402,10 @@ public class PublishHandler extends ActionHandler {
             for (int i = 0; i < selectedLayers.length(); ++i) {
                 JSONObject layer = selectedLayers.getJSONObject(i);
                 String layerId = layer.getString("id");
+                System.out.println("layerId:" + layerId);
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     // check publish right for published myplaces layer
-                    if (hasRightToPublishMyPlaceLayer(layerId, userUuid)) {
+                    if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
                         filteredList.put(layer);
                     }
                 } else if (layerId.startsWith(PREFIX_BASELAYER)) {
@@ -425,8 +426,7 @@ public class PublishHandler extends ActionHandler {
         return filteredList;
     }
 
-
-    private boolean hasRightToPublishMyPlaceLayer(final String layerId, final String userUuid) {
+    private boolean hasRightToPublishMyPlaceLayer(final String layerId, final String userUuid, final String publisherName) {
         final long categoryId = ConversionHelper.getLong(layerId.substring(PREFIX_MYPLACES.length()), -1);
         if (categoryId == -1) {
             log.warn("Error parsing layerId:", layerId);
@@ -434,10 +434,10 @@ public class PublishHandler extends ActionHandler {
         }
         final List<Long> publishedMyPlaces = new ArrayList<Long>();
         publishedMyPlaces.add(categoryId);
-
         final List<MyPlaceCategory> myPlacesLayers = myPlaceService.getMyPlaceLayersById(publishedMyPlaces);
         for (MyPlaceCategory place : myPlacesLayers) {
-            if (place.getUuid().equals(userUuid) && place.getPublisher_name() != null) {
+            if (place.getUuid().equals(userUuid)) {
+                myPlaceService.updatePublisherName(categoryId, userUuid, publisherName); // make it public
                 return true;
             }
         }

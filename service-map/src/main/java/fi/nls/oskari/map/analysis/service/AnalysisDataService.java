@@ -408,13 +408,14 @@ public class AnalysisDataService {
         final JSONObject listLayer = new JSONObject();
         try {
             List<Analysis> layers = analysisService.getAnalysisByUid(uid);
+            final JSONArray layersJSON = new JSONArray();
+            listLayer.put(JSKEY_ANALYSISLAYERS, layersJSON);
             for (Analysis al : layers) {
                 final JSONObject analyse_js = JSONHelper.createJSONObject(al
                         .getAnalyse_json());
                 // Parse analyse layer json out of analyse json
-                 
                 JSONObject analyselayer = getlayerJSON(analyse_js, al.getId());
-                listLayer.accumulate(JSKEY_ANALYSISLAYERS, analyselayer);
+                layersJSON.put(analyselayer);
             }
         } catch (Exception ex) {
             throw new ServiceException("Unable to get analysis layers", ex);

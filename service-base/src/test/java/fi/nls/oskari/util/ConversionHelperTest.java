@@ -2,12 +2,23 @@ package fi.nls.oskari.util;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author SMAKINEN
  */
 public class ConversionHelperTest {
+
+    @Test
+    public void testCount() {
+        assertEquals("'moo' should match 2 o's", 2, ConversionHelper.count("moo", "o"));
+        assertEquals("'moo' should match 1 oo", 1, ConversionHelper.count("moo", "oo"));
+        assertEquals("'moo' should match 1 moo", 1, ConversionHelper.count("moo", "moo"));
+        assertEquals("'moo' should match 1 mo", 1, ConversionHelper.count("moo", "mo"));
+        assertEquals("'moo' should not match 'kvaak", 0, ConversionHelper.count("moo", "kvaak"));
+        assertEquals("'wild**cards*' should match 3 *", 3, ConversionHelper.count("wild**cards*", "*"));
+    }
 
     @Test
     public void testGetString() {

@@ -14,7 +14,6 @@ import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.stats.StatsLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
-//import fi.nls.oskari.wfs.WFSSLDStyle;
 
 import fi.nls.oskari.domain.map.wms.LayerClass;
 import fi.nls.oskari.log.LogFactory;

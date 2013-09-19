@@ -17,7 +17,7 @@ public class DBHandler {
         DataSource ds = null;
         try {
             ctx = new InitialContext();
-            ds = (DataSource)ctx.lookup("java:/comp/env/jdbc/OskariPool");
+            ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/OskariPool");
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -27,16 +27,17 @@ public class DBHandler {
 
     public static void createContentIfNotCreated() {
         try {
-            Connection conn = getConnection(); //ds.getConnection();
+            Connection conn = getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
-            String[] types            = null;
 
-            ResultSet result = dbmeta.getTables(
-                null, null, "PORTTI_%", types ); 
+            final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
+            String[] types = null;
+
+            ResultSet result = dbmeta.getTables(null, null, "PORTTI_%", types);
             // Portti tables available ?
-            if(!result.next()) {
+            if (!result.next()) {
 
-                createContent(conn);
+                createContent(conn, dbName);
                 try {
                     conn.commit();
                 } catch (SQLException e1) {
@@ -48,24 +49,24 @@ public class DBHandler {
             //log.debug("db size:" + rs.getFetchSize());
         } catch (Exception e) {
             e.printStackTrace();
-         
+
         }
     }
 
-    public static void createContent(Connection conn) {
+    public static void createContent(Connection conn, final String dbname) {
 
         try {
             System.out.println("/ Create DB");
-            executeSqlFromFile(conn, "exampleLayersAndRoles.sql");
+            executeSqlFromFile(conn, "/sql/" + dbname + "/exampleLayersAndRoles.sql");
             System.out.println("/-  exampleLayersAndRoles.sql");
 
-            executeSqlFromFile(conn, "00-create-tables.sql");
+            executeSqlFromFile(conn, "/sql/" + dbname + "/00-create-tables.sql");
             System.out.println("/- 00-create-tables.sql");
 
-            executeSqlFromFile(conn, "01-register-bundles.sql");
+            executeSqlFromFile(conn, "/sql/" + dbname + "/01-register-bundles.sql");
             System.out.println("/- 01-register-bundles.sql");
 
-            executeSqlFromFile(conn, "02-create-default-view.sql");
+            executeSqlFromFile(conn, "/sql/" + dbname + "/02-create-default-view.sql");
             System.out.println("/- 02-create-default-view.sql");
 
         } catch (Exception e) {
@@ -96,7 +97,7 @@ public class DBHandler {
     }
 
 
-    private static String readFileAsString(String file) throws java.io.IOException{
+    private static String readFileAsString(String file) throws java.io.IOException {
 
         InputStream is = DBHandler.class.getResourceAsStream(file);
         if (is != null) {
@@ -122,7 +123,7 @@ public class DBHandler {
     public static void printQuery(final String sql) {
         try {
             printQuery(sql, getConnection());
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
