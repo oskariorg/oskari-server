@@ -16,10 +16,7 @@ import fi.nls.oskari.domain.map.CapabilitiesCache;
 import fi.nls.oskari.domain.map.wms.MapLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.GetWMSCapabilities;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -66,7 +63,7 @@ public class SaveLayerHandler extends ActionHandler {
                     mapLayerService.update(ml);
                     
                     org.json.JSONObject mapJson = ml.toJSON();
-                    mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName("fi"));
+                    mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
                     
                     // update cache
                     updateCache(ml);
@@ -86,7 +83,7 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setId(id);
                 addPermissionsForAdmin(ml);
                 org.json.JSONObject mapJson = ml.toJSON();
-                mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName("fi"));
+                mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
 
                 // update cache
                 insertCache(ml);

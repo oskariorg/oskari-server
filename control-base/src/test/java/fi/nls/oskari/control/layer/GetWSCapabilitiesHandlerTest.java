@@ -5,10 +5,12 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -17,8 +19,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -29,6 +33,20 @@ import static org.junit.Assert.assertTrue;
 public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     final private  GetWSCapabilitiesHandler handler = new  GetWSCapabilitiesHandler();
+
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(GetWSCapabilitiesHandlerTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
 
     @Before
     public void setUp() throws Exception {

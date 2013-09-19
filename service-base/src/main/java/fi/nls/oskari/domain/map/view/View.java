@@ -1,5 +1,7 @@
 package fi.nls.oskari.domain.map.view;
 
+import fi.nls.oskari.util.PropertyUtil;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -46,7 +48,7 @@ page -> page
     private boolean isPublic = false;
     private String type = null;
     private String pubDomain = "";
-    private String lang = "fi";
+    private String lang = PropertyUtil.getDefaultLanguage();
     private int width = 0;
     private int height = 0;
 

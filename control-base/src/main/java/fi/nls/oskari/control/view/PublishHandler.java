@@ -182,7 +182,7 @@ public class PublishHandler extends ActionHandler {
 
         final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, "paikkatietoikkuna.fi");
         final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
-        final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, "fi");
+        final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
         JSONArray newPlugins;
         JSONObject size;

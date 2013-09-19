@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import java.util.Locale;
-
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -11,8 +9,9 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-
 import org.json.JSONObject;
+
+import java.util.Locale;
 
 @OskariActionRoute("GetSearchResult")
 public class GetSearchResultHandler extends ActionHandler {
@@ -36,8 +35,7 @@ public class GetSearchResultHandler extends ActionHandler {
         if (!SearchWorker.STR_TRUE.equals(error)) {
             // write error message key
             ResponseHelper.writeResponse(params, error);
-        }
-        else {
+        } else {
             final Locale locale = params.getLocale();
 
             final SearchCriteria sc = new SearchCriteria();
@@ -45,13 +43,6 @@ public class GetSearchResultHandler extends ActionHandler {
 
             sc.setLocale(locale.getLanguage());
 
-            /*
-            sc.addChannel(RegisterOfNomenclatureChannelSearchService.ID);
-            // Temporarily removed
-            // sc.addChannel(RahuAddressChannelSearchService.ID);
-            sc.addChannel(MaastoAddressChannelSearchService.ID);
-            sc.addChannel(KTJkiiSearchChannel.ID);
-            */
             for(String channelId : channels) {
                 sc.addChannel(channelId);
             }

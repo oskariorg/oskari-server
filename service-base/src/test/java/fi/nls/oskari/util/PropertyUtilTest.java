@@ -3,6 +3,7 @@ package fi.nls.oskari.util;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
@@ -18,8 +19,10 @@ public class PropertyUtilTest {
         try {
             properties.load(PropertyUtilTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            fail("Should not throw exception" + e.getStackTrace());
+        } catch (IOException ioe) {
+            fail("Should not throw IOException:\n" + ioe.getStackTrace());
+        } catch(DuplicateException de) {
+            fail("Should not throw DuplicateException:\n" + de.getMessage());
         }
     }
 

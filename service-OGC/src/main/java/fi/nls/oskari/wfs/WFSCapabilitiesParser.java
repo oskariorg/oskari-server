@@ -5,6 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Parser;
 
@@ -22,6 +23,7 @@ public class WFSCapabilitiesParser {
     private WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
     private final Object EMPTY_OBJECT = new Object();
     private final String[] EMPTY_RESULT = new String[0];
+    private final String locale = PropertyUtil.getDefaultLanguage();
 
     public String[] getKeywordsForLayer(Layer layer) throws ServiceException {
         if(!Layer.TYPE_WFS.equals(layer.getType())) {
@@ -79,7 +81,7 @@ public class WFSCapabilitiesParser {
                 }
 
             }
-            log.debug("Keywords for WFS:", layer.getName("fi"), "- list:", resultKeywords);
+            log.debug("Keywords for WFS:", layer.getName(locale), "- list:", resultKeywords);
             return resultKeywords.toArray(EMPTY_RESULT);
         }
         return EMPTY_RESULT;

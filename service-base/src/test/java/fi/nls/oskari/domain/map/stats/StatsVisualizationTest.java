@@ -1,9 +1,30 @@
 package fi.nls.oskari.domain.map.stats;
 
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Properties;
+
 import static org.junit.Assert.*;
 
 public class StatsVisualizationTest {
+
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(StatsVisualizationTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
+
     @Test
     public void testIsValid() throws Exception {
         final StatsVisualization vis = new StatsVisualization();

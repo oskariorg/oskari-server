@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map.wfs;
 
 import fi.nls.oskari.domain.map.JSONLocalizedTitle;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class SelectedFeatureParameter extends JSONLocalizedTitle {
 	private int id;
@@ -10,11 +11,14 @@ public class SelectedFeatureParameter extends JSONLocalizedTitle {
 	
 	@Override
 	public String toString() {
-		return "SelectedFeatureParameter [featureParameter=" + featureParameter
-				+ ", id=" + id + ", selectedFeatureTypeId="
-				+ selectedFeatureTypeId + ", titleEn=" + getTitle("en") + ", titleFi="
-				+ getTitle("fi") + ", titleSv=" + getTitle("sv") + ", wfsLayerView="
-				+ wfsLayerView + "]";
+		String ret = "SelectedFeatureParameter [featureParameter=" + featureParameter
+				+ ", id=" + id + ", selectedFeatureTypeId=" + selectedFeatureTypeId;
+                for (String locale : PropertyUtil.getSupportedLocales()) {
+                   String lang = locale.split("_")[0];
+                   ret += ", title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1) + "=" + getTitle(lang);
+                }
+        ret += ", wfsLayerView=" + wfsLayerView + "]";
+        return ret;
 	}
 	
 	public int getId() {

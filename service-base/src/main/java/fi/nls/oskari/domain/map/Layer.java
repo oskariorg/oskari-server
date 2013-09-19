@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Date;
 
@@ -13,8 +14,8 @@ public abstract class Layer extends JSONLocalizedNameAndTitle implements Compara
 	public static final String WMTS_LAYER = "wmtslayer";
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
-	
-	private int id;
+
+    private int id;
 	private String type;
 	
 	private Integer opacity;
@@ -166,21 +167,28 @@ public abstract class Layer extends JSONLocalizedNameAndTitle implements Compara
 	}
 
 	public int compareTo(Layer l) {
-		return this.getName("fi").compareTo(l.getName("fi"));
+        String defaultLang = PropertyUtil.getDefaultLanguage();
+		return this.getName(defaultLang).compareTo(l.getName(defaultLang));
 	}
 	
 	@Override
 	public String toString() {
-		return "Layer [baseLayerIds=" + baseLayerIds
+		String ret =
+                "Layer [baseLayerIds=" + baseLayerIds
 				+ ", dataUrl=" + dataUrl + ", descriptionLink="
 				+ descriptionLink + ", id=" + id + ", inspireThemeId="
 				+ inspireThemeId + ", layerClassId=" + layerClassId
 				+ ", legendImage=" + legendImage + ", maxScale=" + maxScale
-				+ ", metadataUrl=" + metadataUrl + ", minScale=" + minScale
-				+ ", nameEn=" + getName("en") + ", nameFi=" + getName("fi") + ", nameSv="
-				+ getName("sv") + ", opacity=" + opacity + ", orderNumber="
-				+ orderNumber + ", style=" + style + ", type=" + type
-				+ ", wmsName=" + wmsName + ", wmsUrl=" + wmsUrl + "]";
+				+ ", metadataUrl=" + metadataUrl + ", minScale=" + minScale;
+        for (String locale : PropertyUtil.getSupportedLocales()) {
+            String lang = locale.split("_")[0];
+            String ucLang = Character.toUpperCase(lang.charAt(0)) + lang.substring(1);
+            ret += ", name" + ucLang + "=" + getName(lang);
+        }
+		ret +=  ", opacity=" + opacity + ", orderNumber=";
+        ret += orderNumber + ", style=" + style + ", type=" + type;
+		ret += ", wmsName=" + wmsName + ", wmsUrl=" + wmsUrl + "]";
+        return ret;
 	}
 	
 	public int getId() {

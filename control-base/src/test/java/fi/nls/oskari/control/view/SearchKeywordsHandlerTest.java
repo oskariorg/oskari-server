@@ -8,16 +8,17 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -31,6 +32,20 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
 
     private KeywordService keywordService = null;
     private PermissionsService permissionsService = null;
+
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(SearchKeywordsHandlerTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            //fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
 
     @Before
     public void setUp() throws Exception {

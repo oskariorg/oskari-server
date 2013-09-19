@@ -18,6 +18,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -25,6 +26,7 @@ import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -35,7 +37,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
@@ -63,7 +67,19 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
     //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
     //
-
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(GetAppSetupHandlerTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
     @Before
     public void setUp() throws Exception {
 
