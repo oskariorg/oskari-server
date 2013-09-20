@@ -12,7 +12,7 @@ Database recreation can be forced on startup by giving a system.property 'oskari
 
 NOTE! All comment lines need to end with ; character or the next SQL statement will not be run!
 
-The safe SQL file to edit for these is ´/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql´
+The safe SQL file to edit for these is `/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 # Adding a maplayer
 
@@ -67,11 +67,11 @@ After this the layer should be listed in layerselector for guests.
 
 ### 1. Add new users and roles
 
-* edit user.json and roles.json files in resource path ´oskari-server/servlet-map/src/main/resources/users/´
+* edit user.json and roles.json files in resource path `oskari-server/servlet-map/src/main/resources/users/`
 
 * role ids must match the ones referenced in portti_permission and portti_recource_user tables (see next subsection)
 
-Sample ´user.json´
+Sample `user.json`
 
     {
         "users": [
@@ -101,7 +101,7 @@ Sample ´user.json´
         ]
     }
 
-Sample ´role.json´
+Sample `role.json`
 
     {
       "roles": [
@@ -121,14 +121,14 @@ Sample ´role.json´
 
 ### 2. Add new user roles and permissions
 
-Add a role with an unique id to ´role.json´
+Add a role with an unique id to `role.json`
 
         {
             "id": 5,
             "name": "MyRole"
         }
 
-Add a user to ´user.json´ and link the new role to the user
+Add a user to `user.json` and link the new role to the user
 
             {
                 "id": 3,
@@ -143,7 +143,7 @@ Add a user to ´user.json´ and link the new role to the user
             }
 
 
-Edit script file ´oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql´
+Edit script file `oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 Add row to portti_resource_user table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
 

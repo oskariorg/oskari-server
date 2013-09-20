@@ -1,6 +1,7 @@
 # Using servlet with postgresql
 
 1) Install PostgreSQL: http://www.postgresql.org/ (tested with version 9.3)
+
 2) create a database with name oskaridb and change the connection pool in jetty-env.xml
 
     <New id="oskaridb" class="org.mortbay.jetty.plus.naming.Resource">
@@ -31,7 +32,8 @@
         <version>1.8.0.7</version>
     </dependency>
 
-5) Start the server with ´mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true´
+5) Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true`
+
 6) Open your browser with http://localhost:2373/?viewId=2 to see a new view loaded from the database.
     You should now see personaldata and publisher bundles started compared to the default view
 
