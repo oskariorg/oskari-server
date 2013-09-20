@@ -448,7 +448,10 @@ public class AnalysisDataService {
         final JSONObject listLayer = new JSONObject();
         try {
             List<Analysis> layers = analysisService.getAnalysisByUid(uid);
+            final JSONArray layersJSON = new JSONArray();
+            listLayer.put(JSKEY_ANALYSISLAYERS, layersJSON);
             for (Analysis al : layers) {
+
                 // Parse analyse layer json out analysis
                 JSONObject analyselayer = getlayerJSON(al);
                 listLayer.accumulate(JSKEY_ANALYSISLAYERS, analyselayer);

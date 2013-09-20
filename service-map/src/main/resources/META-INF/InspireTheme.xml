@@ -11,34 +11,39 @@
 
     <resultMap id="InspireThemeResult" class="InspireTheme">
         <result property="id" column="id" />
-        <result property="nameFi" column="nameFi" />
-        <result property="nameSv" column="nameSv" />
-        <result property="nameEn" column="nameEn" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
     </resultMap>
+
+    <parameterMap id="InspireThemeInsertParameter" class="InspireTheme">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+    </parameterMap>
+
+    <parameterMap id="InspireThemeUpdateParameter" class="InspireTheme">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="id" />
+    </parameterMap>
 
     <select id="maxId" resultClass="int">
         select max(id) from portti_inspiretheme
     </select>
 
     <select id="find" parameterClass="int" resultMap="InspireThemeResult">
-        select id, namefi, namesv, nameen from portti_inspiretheme where id = #id#
+        select id, locale from portti_inspiretheme where id = #id#
     </select>
 
     <select id="findAll" resultMap="InspireThemeResult">
-        select id, namefi, namesv, nameen from portti_inspiretheme order by nameFi
+        select id, locale from portti_inspiretheme order by id
     </select>
     
-    <statement id="insert" parameterClass="fi.nls.oskari.domain.map.InspireTheme" resultClass="int">
-        insert into portti_inspiretheme (nameFi, nameSv, nameEn)
-        values (#nameFi#, #nameSv#, #nameEn#)
+    <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
+        insert into portti_inspiretheme (locale)
+        values (?)
     </statement>
     
-    <update id="update" parameterClass="fi.nls.oskari.domain.map.InspireTheme">
+    <update id="update" parameterMap="InspireThemeUpdateParameter">
         update portti_inspiretheme set
-            nameFi = #nameFi#,
-            nameSv = #nameSv#,
-            nameEn = #nameEn#
-        where id = #id#
+            locale = ?
+        where id = ?
     </update>
     
     <delete id="delete" parameterClass="int">

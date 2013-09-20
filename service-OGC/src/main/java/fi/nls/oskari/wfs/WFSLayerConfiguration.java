@@ -4,11 +4,16 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import redis.clients.jedis.Jedis;
-
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.cache.JedisManager;
 
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
+
+/**
+ * Handles layer's configuration
+ *
+ * Similar WFSLayerStore class can be found in transport.
+ */
 public class WFSLayerConfiguration {
 	public final static String KEY = "WFSLayer_";
 
@@ -412,21 +417,11 @@ public class WFSLayerConfiguration {
 	}
 
 	public void save() {
-		Jedis jedis = JedisManager.getInstance().getJedis();
-		try {
-			jedis.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+		JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
 	}
 
 	public void destroy(String layerId) {
-		Jedis jedis = JedisManager.getInstance().getJedis();
-		try {
-			jedis.del(KEY + this.layerId);
-		} finally {
-			JedisManager.getInstance().returnJedis(jedis);
-		}
+		JedisManager.del(KEY + this.layerId);
 	}
 
 	public String getAsJSON() {

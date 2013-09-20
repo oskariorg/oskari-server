@@ -1,41 +1,81 @@
 package fi.nls.oskari.domain.map.wfs;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
- * Created with IntelliJ IDEA.
- * User: EVALANTO
- * Date: 5.9.2013
- * Time: 16:20
- * To change this template use File | Settings | File Templates.
+ * Handles WFS SLD styles
+ *
+ * Used in WFSLayerStore that handles the WFS configuration.
  */
 public class WFSSLDStyle {
-
-    private int id;
+    private String id;
     private String name;
-  private String sldStyle;
+    private String SLDStyle;
 
-
-    public int getId() {
+    /**
+     * Gets id
+     *
+     * @return id
+     */
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    /**
+     * Sets id
+     *
+     * @param id
+     */
+    public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets name
+     *
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getSldStyle() {
-        return sldStyle;
+    /**
+     * Gets SLD style
+     *
+     * @return SLD style (xml)
+     */
+    @JsonProperty("SLDStyle")
+    public String getSLDStyle() {
+        return SLDStyle;
     }
 
-    public void setSldStyle(String sldStyle) {
-        this.sldStyle = sldStyle;
+    /**
+     * Sets SLD style
+     *
+     * @param style
+     */
+    public void setSLDStyle(String style) {
+        this.SLDStyle = style;
     }
 
+    /**
+     * Print format
+     *
+     * @return object description
+     */
+    @JsonIgnore
+    public String toString() {
+        return "id: " + this.id + ", name: " + this.name + ", SLDStyle: "
+                + this.SLDStyle;
+    }
 }

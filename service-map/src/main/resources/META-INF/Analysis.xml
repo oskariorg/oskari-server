@@ -153,6 +153,19 @@
         where id = #id#
     </update>
 
+    <statement id="delete-analysis-data"
+               parameterClass="java.lang.Long">
+        DELETE FROM analysis_data WHERE analysis_id = #id#
+    </statement>
 
+    <statement id="delete-analysis"
+               parameterClass="java.lang.Long">
+        DELETE FROM analysis WHERE id = #id#
+    </statement>
 
+    <statement id="delete-analysis-style"
+               parameterClass="java.lang.Long">
+        <!-- Note! id is style_id from analysis table -->
+        DELETE FROM analysis_style WHERE id = #id#
+    </statement>
 </sqlMap>

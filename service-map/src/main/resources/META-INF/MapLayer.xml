@@ -24,12 +24,6 @@
         <result property="geom" column="geom" />
         <result property="type" column="layer_type" />
         <result property="layerClassId" column="layerClassId" />
-        <result property="nameFi" column="nameFi" />
-        <result property="nameSv" column="nameSv" />
-        <result property="nameEn" column="nameEn" />
-        <result property="titleFi" column="subtitle_fi" />
-        <result property="titleSv" column="subtitle_sv" />
-        <result property="titleEn" column="subtitle_en" />
         <result property="wmsName" column="wmsName" />
         <result property="wmsUrl" column="wmsUrl" />
         <result property="opacity" column="opacity" />
@@ -61,7 +55,7 @@
 		<result property="selection_style" column="selection_style"/>
         <result property="version" column="version"/>
         <result property="epsg" column="epsg"/>
-        <result property="locale" column="locale"/>
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
 
 
         <discriminator javaType="String" column="layer_type">
@@ -83,9 +77,7 @@
         <result property="id" column="id" />
         <result property="wfsLayerId" column="maplayer_id" />
         <result property="featureType.id" column="feature_type_id" />
-        <result property="titleFi" column="title_fi" />
-        <result property="titleSv" column="title_sv" />
-        <result property="titleEn" column="title_en" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <result property="maxNumDisplayedItems" column="max_num_displayed_items" />
         <result property="licenseJson" column="license_json" />
     </resultMap>
@@ -94,9 +86,7 @@
         <result property="id" column="id" />
         <result property="selectedFeatureTypeId" column="selected_feature_type_id" />
         <result property="featureParameter.id" column="feature_parameter_id" />
-        <result property="titleFi" column="title_fi" />
-        <result property="titleSv" column="title_sv" />
-        <result property="titleEn" column="title_en" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <result property="wfsLayerView" column="wfs_layer_view" />
     </resultMap>
 
@@ -112,10 +102,87 @@
         <result property="geometryproperty" column="geometryproperty" />
         <result property="externalid" column="externalid" />
     </resultMap>
+
+    <parameterMap id="LayerInsertParameter" class="Layer">
+        <parameter property="layerClassId" />
+        <parameter property="wmsName" />
+        <parameter property="wmsUrl" />
+        <parameter property="opacity" />
+        <parameter property="style" />
+        <parameter property="minScale" />
+        <parameter property="maxScale" />
+        <parameter property="descriptionLink" />
+        <parameter property="legendImage" />
+        <parameter property="inspireThemeId" />
+        <parameter property="dataUrl" />
+        <parameter property="metadataUrl" />
+        <parameter property="orderNumber" />
+        <parameter property="tileMatrixSetId" />
+        <parameter property="tileMatrixSetData" />
+        <parameter property="created" />
+        <parameter property="updated" />
+        <parameter property="wms_dcp_http" />
+        <parameter property="wms_parameter_layers" />
+        <parameter property="resource_url_scheme" />
+        <parameter property="resource_url_scheme_pattern" />
+        <parameter property="resource_url_client_pattern" />
+        <parameter property="resource_daily_max_per_ip" />
+        <parameter property="xslt" />
+        <parameter property="gfiType" />
+        <parameter property="selection_style" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="epsg" />
+        <parameter property="type" />
+    </parameterMap>
+
+    <parameterMap id="LayerUpdateParameter" class="Layer">
+        <parameter property="layerClassId" />
+        <parameter property="wmsName" />
+        <parameter property="wmsUrl" />
+        <parameter property="opacity" />
+        <parameter property="style" />
+        <parameter property="minScale" />
+        <parameter property="maxScale" />
+        <parameter property="descriptionLink" />
+        <parameter property="legendImage" />
+        <parameter property="inspireThemeId" />
+        <parameter property="dataUrl" />
+        <parameter property="metadataUrl" />
+        <parameter property="orderNumber" />
+        <parameter property="tileMatrixSetId" />
+        <parameter property="tileMatrixSetData" />
+        <parameter property="updated" />
+        <parameter property="wms_dcp_http" />
+        <parameter property="wms_parameter_layers" />
+        <parameter property="resource_url_scheme" />
+        <parameter property="resource_url_scheme_pattern" />
+        <parameter property="resource_url_client_pattern" />
+        <parameter property="resource_daily_max_per_ip" />
+        <parameter property="xslt" />
+        <parameter property="gfiType" />
+        <parameter property="selection_style" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="epsg" />
+        <parameter property="id" />
+    </parameterMap>
     
     <parameterMap id="wfsServicesOfLayersParam" class="Map">
         <parameter property="wfsLayerId" />
         <parameter property="wfsServiceId" />
+    </parameterMap>
+
+    <parameterMap id="SelectedFeatureTypeParameter" class="SelectedFeatureType">
+        <parameter property="wfsLayerId" />
+        <parameter property="featureType.id" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="maxNumDisplayedItems" />
+    </parameterMap>
+
+    <parameterMap id="SelectedFeatureParameterParameter" class="SelectedFeatureParameter">
+        <parameter property="selectedFeatureTypeId" />
+        <parameter property="featureParameter.id" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="wfsLayerView" />
     </parameterMap>
     
     <select id="maxId" resultClass="int">
@@ -133,12 +200,7 @@
   SELECT 
       l.id, 
       l.layerclassid, 
-      l.namefi, 
-      l.namesv, 
-      l.nameen,
-      l.subtitle_fi, 
-      l.subtitle_sv, 
-      l.subtitle_en, 
+      l.locale,
       l.wmsname, 
       l.wmsurl, 
       l.opacity, 
@@ -184,12 +246,7 @@
   SELECT 
       l.id, 
       l.layerclassid, 
-      l.namefi, 
-      l.namesv, 
-      l.nameen,
-      l.subtitle_fi, 
-      l.subtitle_sv, 
-      l.subtitle_en, 
+      l.locale,
       l.wmsname, 
       l.wmsurl, 
       l.opacity, 
@@ -231,12 +288,7 @@
   SELECT 
       l.id, 
       l.layerclassid, 
-      l.namefi, 
-      l.namesv, 
-      l.nameen,
-      l.subtitle_fi, 
-      l.subtitle_sv, 
-      l.subtitle_en, 
+      l.locale,
       l.wmsname, 
       l.wmsurl, 
       l.opacity, 
@@ -280,12 +332,7 @@
   SELECT 
       l.id, 
       l.layerclassid, 
-      l.namefi, 
-      l.namesv, 
-      l.nameen,
-      l.subtitle_fi, 
-      l.subtitle_sv, 
-      l.subtitle_en,  
+      l.locale,
       l.wmsname, 
       l.wmsurl, 
       l.opacity, 
@@ -332,12 +379,7 @@
   SELECT 
       l.id,
       l.layerclassid,
-      l.namefi,
-      l.namesv,
-      l.nameen,
-      l.subtitle_fi, 
-      l.subtitle_sv, 
-      l.subtitle_en,
+      l.locale,
       l.wmsname,
       l.wmsurl,
       l.opacity,
@@ -384,12 +426,12 @@
     </select>
     
     <select id="findSelectedFeatureTypes" parameterClass="int" resultMap="SelectedFeatureTypeResult">
-        select id, maplayer_id, feature_type_id, title_fi, title_sv, title_en, max_num_displayed_items, license_json
+        select id, maplayer_id, feature_type_id, locale, max_num_displayed_items, license_json
         from portti_selected_feature_type where maplayer_id=#id# order by id
     </select>
     
     <select id="findSelectedFeatureParameters" parameterClass="int" resultMap="SelectedFeatureParameterResult">
-        select id, selected_feature_type_id, feature_parameter_id, title_fi, title_sv, title_en, wfs_layer_view
+        select id, selected_feature_type_id, feature_parameter_id, locale, wfs_layer_view
         from portti_selected_feature_parameter where selected_feature_type_id=#id# order by id
     </select>
     
@@ -398,65 +440,88 @@
     FROM portti_stats_layer where maplayer_id=#id#
     </select>
     
-    <statement id="insert" parameterClass="Layer" resultClass="int">
-        insert into portti_maplayer (layerClassId, layer_type, nameFi, nameSv, nameEn, subtitle_fi, subtitle_sv, subtitle_en, wmsName, wmsUrl, opacity, style, minScale, maxScale, description_link, legend_image, inspire_theme_id, dataUrl, metadataUrl, order_number, tile_matrix_set_id, tile_matrix_set_data, created, updated,wms_dcp_http, wms_parameter_layers, resource_url_scheme, resource_url_scheme_pattern, resource_url_client_pattern, resource_daily_max_per_ip, xslt, gfi_type, selection_style, locale, epsg)
-        values (#layerClassId#, #type#, #nameFi#, #nameSv#, #nameEn#, #titleFi#, #titleSv#, #titleEn#,  #wmsName#, #wmsUrl#, #opacity#, #style#, #minScale#, #maxScale#, #descriptionLink#, #legendImage#, #inspireThemeId#, #dataUrl#, #metadataUrl#, #orderNumber#, #tileMatrixSetId#, #tileMatrixSetData#, #created#, #updated#, #wms_dcp_http#, #wms_parameter_layers#, #resource_url_scheme#, #resource_url_scheme_pattern#, #resource_url_client_pattern#, #resource_daily_max_per_ip#, #xslt#, #gfiType#, #selection_style#, #locale#, #epsg#)
+    <statement id="insert" parameterMap="LayerInsertParameter" resultClass="int">
+        insert into portti_maplayer (
+            layerClassId,
+            wmsName,
+            wmsUrl,
+            opacity,
+            style,
+            minScale,
+            maxScale,
+            description_link,
+            legend_image,
+            inspire_theme_id,
+            dataUrl,
+            metadataUrl,
+            order_number,
+            tile_matrix_set_id,
+            tile_matrix_set_data,
+            created,
+            updated,
+            wms_dcp_http,
+            wms_parameter_layers,
+            resource_url_scheme,
+            resource_url_scheme_pattern,
+            resource_url_client_pattern,
+            resource_daily_max_per_ip,
+            xslt,
+            gfi_type,
+            selection_style,
+            locale,
+            epsg,
+            layer_type)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
     
     <statement id="insertWfsServiceOfLayer" parameterMap="wfsServicesOfLayersParam">
         insert into portti_wfs_services_of_layers (maplayer_id, wfs_service_id) values (?, ?)
     </statement>
     
-    <statement id="insertSelectedFeatureTypes" parameterClass="SelectedFeatureType">
+    <statement id="insertSelectedFeatureTypes" parameterMap="SelectedFeatureTypeParameter">
         insert into portti_selected_feature_type 
-            (maplayer_id, feature_type_id, title_fi, title_sv, title_en, max_num_displayed_items) 
+            (maplayer_id, feature_type_id, locale, max_num_displayed_items)
         values 
-            (#wfsLayerId#, #featureType.id#, #titleFi#, #titleSv#, #titleEn#, #maxNumDisplayedItems#)
+            (?, ?, ?, ?)
     </statement>
     
-    <statement id="insertSelectedFeatureParameters" parameterClass="SelectedFeatureParameter">
+    <statement id="insertSelectedFeatureParameters" parameterMap="SelectedFeatureParameterParameter">
         insert into portti_selected_feature_parameter 
-            (selected_feature_type_id, feature_parameter_id, title_fi, title_sv, title_en, wfs_layer_view) 
+            (selected_feature_type_id, feature_parameter_id, locale, wfs_layer_view)
         values 
-            (#selectedFeatureTypeId#, #featureParameter.id#, #titleFi#, #titleSv#, #titleEn#, #wfsLayerView#)
+            (?, ?, ?, ?)
     </statement>
     
-    <update id="update" parameterClass="Layer">
+    <update id="update" parameterMap="LayerUpdateParameter">
         update portti_maplayer set
-            layerClassId = #layerClassId#, 
-            nameFi = #nameFi#, 
-            nameSv = #nameSv#, 
-            nameEn = #nameEn#,
-            subtitle_fi = #titleFi#,
-            subtitle_sv = #titleSv#,
-            subtitle_en = #titleEn#, 
-            wmsName = #wmsName#, 
-            wmsUrl = #wmsUrl#, 
-            opacity = #opacity#, 
-            style = #style#, 
-            minScale = #minScale#, 
-            maxScale = #maxScale#, 
-            description_link = #descriptionLink#, 
-            legend_image = #legendImage#,
-            inspire_theme_id = #inspireThemeId#,
-            dataUrl = #dataUrl#,
-            metadataUrl = #metadataUrl#,
-            order_number = #orderNumber#,
-            tile_matrix_set_id = #tileMatrixSetId#,
-            tile_matrix_set_data = #tileMatrixSetData#,
-            updated = #updated#,
-            wms_dcp_http = #wms_dcp_http#,
-			wms_parameter_layers = #wms_parameter_layers#,
-			resource_url_scheme = #resource_url_scheme#,
-			resource_url_scheme_pattern = #resource_url_scheme_pattern#,
-			resource_url_client_pattern = #resource_url_client_pattern#,
-			resource_daily_max_per_ip = #resource_daily_max_per_ip#,
-			xslt = #xslt#,
-			gfi_type = #gfiType#,
-            selection_style = #selection_style#,
-            locale = #locale#,
-            epsg = #epsg#
-        where id = #id#
+            layerClassId = ?,
+            wmsName = ?,
+            wmsUrl = ?,
+            opacity = ?,
+            style = ?,
+            minScale = ?,
+            maxScale = ?,
+            description_link = ?,
+            legend_image = ?,
+            inspire_theme_id = ?,
+            dataUrl = ?,
+            metadataUrl = ?,
+            order_number = ?,
+            tile_matrix_set_id = ?,
+            tile_matrix_set_data = ?,
+            updated = ?,
+            wms_dcp_http = ?,
+			wms_parameter_layers = ?,
+			resource_url_scheme = ?,
+			resource_url_scheme_pattern = ?,
+			resource_url_client_pattern = ?,
+			resource_daily_max_per_ip = ?,
+			xslt = ?,
+			gfi_type = ?,
+            selection_style = ?,
+            locale = ?,
+            epsg = ?
+        where id = ?
     </update>
     
     <delete id="delete" parameterClass="int">

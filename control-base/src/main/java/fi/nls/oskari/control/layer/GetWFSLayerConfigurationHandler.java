@@ -20,7 +20,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
-import fi.nls.oskari.wfs.WFSSLDStyle;
 
 @OskariActionRoute("GetWFSLayerConfiguration")
 public class GetWFSLayerConfigurationHandler extends ActionHandler {

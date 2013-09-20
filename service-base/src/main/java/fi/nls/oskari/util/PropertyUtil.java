@@ -1,6 +1,5 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.log.NullLogger;
 
@@ -13,10 +12,28 @@ public class PropertyUtil {
 
     private final static Properties properties = new Properties();
     private final static Map<Locale, Properties> localization = new HashMap<Locale, Properties>();
-    private final static Locale DEFAULT_LOCALE = new Locale("fi");
 
     // this cannot be fetched from LogFactory on init since LogFactory uses PropertyUtil -> results a ExceptionInInitializerError
     private static Logger log = new NullLogger(PropertyUtil.class.getCanonicalName());
+
+    public static String[] getSupportedLocales() {
+        String sl = properties.getProperty("oskari.locales", null);
+        if (sl == null) {
+            throw new RuntimeException("Missing necessary property: oskari.locales");
+
+        }
+        return sl.split("\\s*,\\s*");
+    }
+
+    public static String getDefaultLocale() {
+        return getSupportedLocales()[0];
+    }
+
+    public static String getDefaultLanguage() {
+        return getDefaultLocale().split("_")[0];
+    }
+
+
 
     /**
      * PropertyUtil defaults to NullLogger. Set a different logger with this method if needed.
@@ -26,16 +43,25 @@ public class PropertyUtil {
         log = logger;
     }
 
+    /**
+     * Clears all previously loaded properties, use with caution!
+     */
+    public static void clearProperties() {
+        properties.clear();
+        localization.clear();
+    }
+
     public static String getNecessary(final String propertyName) {
-        if (!properties.contains(propertyName)) {
-            throw new RuntimeException("Missing necassary property:"+propertyName);
+        String prop = getOptional(propertyName);
+        if (prop == null) {
+            throw new RuntimeException("Missing necessary property: " + propertyName);
         }
-        return properties.getProperty(propertyName);
+        return prop;
     }
 
     public static String[] getCommaSeparatedList(final String propertyName) {
 
-        final String propertiesList = get(DEFAULT_LOCALE, propertyName, null);
+        final String propertiesList = get(new Locale(getDefaultLanguage()), propertyName, null);
         if (propertiesList == null || propertiesList.isEmpty()) {
             return new String[0];
         }
@@ -44,15 +70,15 @@ public class PropertyUtil {
     }
 
     public static String getOptional(final String propertyName) {
-        return get(DEFAULT_LOCALE, propertyName, null);
+        return get(new Locale(getDefaultLanguage()), propertyName, null);
     }
 
     public static String get(final String propertyName) {
-        return get(DEFAULT_LOCALE, propertyName, "--" + propertyName + "--");
+        return get(new Locale(getDefaultLanguage()), propertyName, "--" + propertyName + "--");
     }
 
     public static String get(final String propertyName, final String defaultValue) {
-        return get(DEFAULT_LOCALE, propertyName, defaultValue);
+        return get(new Locale(getDefaultLanguage()), propertyName, defaultValue);
     }
     public static String get(final Locale locale, final String propertyName) {
         return get(locale, propertyName, "--" + propertyName + "--");

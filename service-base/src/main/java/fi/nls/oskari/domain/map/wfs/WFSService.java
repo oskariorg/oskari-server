@@ -1,5 +1,7 @@
 package fi.nls.oskari.domain.map.wfs;
 
+import fi.nls.oskari.util.PropertyUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,10 @@ public class WFSService extends OGCService {
 	}
 	
 	public WFSService(String title) {
-		super.setTitleFi(title);
+		super.setTitle(
+                PropertyUtil.getDefaultLanguage(),
+                title
+        );
 	}
 	
 	public List<FeatureType> getFeatureTypes() {

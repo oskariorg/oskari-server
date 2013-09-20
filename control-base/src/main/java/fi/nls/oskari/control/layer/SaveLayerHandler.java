@@ -1,15 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
-
 import fi.mml.map.mapwindow.service.db.LayerClassService;
 import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.MapLayerService;
@@ -17,19 +7,20 @@ import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
-import fi.nls.oskari.domain.map.CapabilitiesCache;
-import fi.nls.oskari.domain.map.Layer;
-import fi.nls.oskari.domain.map.wms.MapLayer;
-import fi.nls.oskari.log.Logger;
-
+import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.CapabilitiesCache;
+import fi.nls.oskari.domain.map.wms.MapLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.*;
 
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.GetWMSCapabilities;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Enumeration;
 
 /**
  * Admin insert/update of WMS map layer
@@ -72,7 +63,7 @@ public class SaveLayerHandler extends ActionHandler {
                     mapLayerService.update(ml);
                     
                     org.json.JSONObject mapJson = ml.toJSON();
-                    mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getNameFi());
+                    mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
                     
                     // update cache
                     updateCache(ml);
@@ -91,9 +82,8 @@ public class SaveLayerHandler extends ActionHandler {
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
                 addPermissionsForAdmin(ml);
-                
                 org.json.JSONObject mapJson = ml.toJSON();
-                mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getNameFi());
+                mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
 
                 // update cache
                 insertCache(ml);
@@ -102,47 +92,70 @@ public class SaveLayerHandler extends ActionHandler {
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer ", e);
+           throw new ActionException("Couldn't update/insert map layer ", e);
         }
     }
 
     private int insertCache(MapLayer ml) throws ActionException {
         // retrieve capabilities
-        CapabilitiesCache cc = new CapabilitiesCache();
 
+        CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
+        if (cc == null) {
+            cc = new CapabilitiesCache();
 
-        final String capabilitiesXML = GetWMSCapabilities.getResponse(ml.getWmsUrl());
-        cc.setLayerId(ml.getId());
-        cc.setData(capabilitiesXML);
-        cc.setVersion(ml.getVersion());
-
-        // update cache by inserting to db
-        return mapLayerService.insertCapabilities(cc);
+            String wmsUrl = getWmsUrl(ml.getWmsUrl());
+            final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
+            cc.setLayerId(ml.getId());
+            cc.setData(capabilitiesXML);
+            cc.setVersion(ml.getVersion());
+            // update cache by inserting to db
+            return   mapLayerService.insertCapabilities(cc);
+        } else {
+            updateCache(ml);
+        }
+        return ml.getId();
     }
 
     private void updateCache(MapLayer ml) throws ActionException {
         // retrieve capabilities
         CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
-        final String capabilitiesXML = GetWMSCapabilities.getResponse(ml.getWmsUrl());
+
+        String wmsUrl = getWmsUrl(ml.getWmsUrl());
+
+        final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
         cc.setData(capabilitiesXML);
         
         // update cache by updating db
         mapLayerService.updateCapabilities(cc);
+    }
+
+    private String getWmsUrl(String savedWmsUrl) {
+
+        String wmsUrl = savedWmsUrl;
+
+        //check if comma separated urls
+        if (wmsUrl.indexOf(",http:") > 0) {
+            wmsUrl = savedWmsUrl.substring(0,savedWmsUrl.indexOf(",http:"));
+        }
+
+        return wmsUrl;
+
     }
     
     private void handleRequestToMapLayer(HttpServletRequest request, MapLayer ml) {
 
         // FIXME: parameters are not filtered through getHttpParam, any reason for this?
         ml.setLayerClassId(new Integer(request.getParameter("lcId")));
-        ml.setNameFi(request.getParameter("nameFi"));
-        ml.setNameSv(request.getParameter("nameSv"));
-        ml.setNameEn(request.getParameter("nameEn"));
 
-        ml.setTitleFi(request.getParameter("titleFi"));
-        ml.setTitleSv(request.getParameter("titleSv"));
-        ml.setTitleEn(request.getParameter("titleEn"));
-
-        setLocales(ml);
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String nextName = paramNames.nextElement();
+            if (nextName.indexOf("name") == 0) {
+                ml.setName(nextName.substring(4).toLowerCase(), request.getParameter(nextName));
+            } else if (nextName.indexOf("title") == 0) {
+                ml.setTitle(nextName.substring(4).toLowerCase(), request.getParameter(nextName));
+            }
+        }
 
         ml.setWmsName(request.getParameter("wmsName"));
         ml.setWmsUrl(request.getParameter("wmsUrl"));
@@ -224,27 +237,5 @@ public class SaveLayerHandler extends ActionHandler {
         permissions.getUniqueResourceName().setName(ml.getWmsName());
         
         permissionsService.insertPermissions(permissions.getUniqueResourceName(), ADMIN_ID, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-    }
-
-    private void setLocales(MapLayer ml) {
-        JSONObject locales = new JSONObject();
-        JSONObject fi = new JSONObject();
-        JSONObject sv = new JSONObject();
-        JSONObject en = new JSONObject();
-
-        JSONHelper.putValue(fi, "name", ml.getNameFi());
-        JSONHelper.putValue(fi, "subtitle", ml.getTitleFi());
-
-        JSONHelper.putValue(sv, "name", ml.getNameSv());
-        JSONHelper.putValue(sv, "subtitle", ml.getTitleSv());
-
-        JSONHelper.putValue(en, "name", ml.getNameEn());
-        JSONHelper.putValue(en, "subtitle", ml.getTitleEn());
-
-        JSONHelper.putValue(locales, "fi", fi);
-        JSONHelper.putValue(locales, "sv", sv);
-        JSONHelper.putValue(locales, "en", en);
-
-        ml.setLocale(locales.toString());
     }
 }

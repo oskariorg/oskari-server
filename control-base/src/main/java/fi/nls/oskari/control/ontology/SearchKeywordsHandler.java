@@ -20,6 +20,7 @@ import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSCapabilitiesParser;
 import org.json.JSONArray;
@@ -241,17 +242,17 @@ public class SearchKeywordsHandler extends ActionHandler {
     private void populateKeywords() {
         final List<LayerClass> allLayerClass = layerClassService.findOrganizationalStructure();
         for (LayerClass parentLayerClass : allLayerClass) {
-            log.debug("parentLayerClass", parentLayerClass.getName("fi"),
-                    "- children", parentLayerClass.getChildrens().size(), "- layers", parentLayerClass.getMapLayers().size());
-            List<LayerClass> childLayerClass = parentLayerClass.getChildrens();
+            log.debug("parentLayerClass", parentLayerClass.getName(PropertyUtil.getDefaultLanguage()),
+                    "- children", parentLayerClass.getChildren().size(), "- layers", parentLayerClass.getMapLayers().size());
+            List<LayerClass> childLayerClass = parentLayerClass.getChildren();
             for (Layer layer : parentLayerClass.getMapLayers()) {
-                log.debug("  layer", layer.getName("fi"));
+                log.debug("  layer", layer.getName(PropertyUtil.getDefaultLanguage()));
                 populateKeywordsForLayer(layer);
             }
             for (LayerClass layerClass : childLayerClass) {
-                log.debug("  layerClass", layerClass.getName("fi"), "- children", childLayerClass.size(), "- layers", parentLayerClass.getMapLayers().size());
+                log.debug("  layerClass", layerClass.getName(PropertyUtil.getDefaultLanguage()), "- children", childLayerClass.size(), "- layers", parentLayerClass.getMapLayers().size());
                 for (Layer layer : layerClass.getMapLayers()) {
-                    log.debug("    layer", layer.getName("fi"));
+                    log.debug("    layer", layer.getName(PropertyUtil.getDefaultLanguage()));
                     populateKeywordsForLayer(layer);
                 }
             }

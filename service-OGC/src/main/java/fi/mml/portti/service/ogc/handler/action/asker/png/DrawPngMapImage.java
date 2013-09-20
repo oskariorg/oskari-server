@@ -1,25 +1,5 @@
 package fi.mml.portti.service.ogc.handler.action.asker.png;
 
-import java.awt.image.BufferedImage;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.visualization.SLDStore;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.map.MapContext;
-
-import org.geotools.styling.SLD;
-import org.geotools.styling.Style;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.FilterFactory2;
-
 import fi.mml.portti.service.ogc.OgcFlowException;
 import fi.mml.portti.service.ogc.executor.GetFeaturesWorker;
 import fi.mml.portti.service.ogc.executor.WFSResponseCapsule;
@@ -30,7 +10,25 @@ import fi.mml.portti.service.ogc.handler.action.asker.BaseAskerAction;
 import fi.nls.oskari.domain.map.wfs.FeatureType;
 import fi.nls.oskari.domain.map.wfs.SelectedFeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayer;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.visualization.SLDStore;
+import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.MapContext;
+import org.geotools.styling.SLD;
+import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.FilterFactory2;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 public class DrawPngMapImage extends BaseAskerAction implements OGCActionHandler {
 	
@@ -40,17 +38,19 @@ public class DrawPngMapImage extends BaseAskerAction implements OGCActionHandler
 	/** Logger */
 	private static Logger log = LogFactory.getLogger(DrawPngMapImage.class);
 
+    private static final String locale = PropertyUtil.getDefaultLanguage();
+
 	public void handleAction(final FlowModel flowModel) throws OgcFlowException {
 
 		WFSLayer wfsLayer = findWFSLayer(flowModel);
-		log.debug("Drawing image for wfs layer '" + wfsLayer.getNameFi() + "'");
+		log.debug("Drawing image for wfs layer '" + wfsLayer.getName(locale) + "'");
 		List<Future<WFSResponseCapsule>> futures = new ArrayList<Future<WFSResponseCapsule>>();
 		
 		/* Create workers */
 		log.debug("We have " + wfsLayer.getSelectedFeatureTypes().size() + " selected feature types");
 		for (SelectedFeatureType sft : wfsLayer.getSelectedFeatureTypes()) {
 			FeatureType ft = sft.getFeatureType();
-			log.debug("Processing featuretype '" + ft.getWfsTitleFi() + "'...");
+			log.debug("Processing featuretype '" + ft.getTitle(locale) + "'...");
 			
 			/* Create filter */
 			String geomName = ft.getBboxParameterName();

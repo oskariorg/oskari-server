@@ -3,11 +3,11 @@ package fi.mml.portti.service.ogc.handler.action.wfsservicewizard;
 import fi.mml.portti.service.ogc.handler.FlowModel;
 import fi.mml.portti.service.ogc.handler.OGCActionHandler;
 import fi.nls.oskari.domain.map.wfs.WFSService;
+import fi.nls.oskari.util.PropertyUtil;
 
 public class WfsServiceStoreAction  implements OGCActionHandler{
 	
 
-	@Override
 	public void handleAction(FlowModel flowModel) {
 		
 		WFSService wfsService = new WFSService();
@@ -17,7 +17,7 @@ public class WfsServiceStoreAction  implements OGCActionHandler{
 		//wfsService.setOwsAbstractSv(flowModel.getAsString(FlowModel.FLOW_PM_OWS_ABSTRACT_SV));
 		//wfsService.setPassword(flowModel.getAsString(FlowModel.FLOW_PM_PASSWORD));
 		//wfsService.setTitleEn(flowModel.getAsString(FlowModel.FLOW_PM_TITLE_EN));
-		wfsService.setTitleFi(flowModel.getAsString(FlowModel.FLOW_PM_TITLE_FI));
+		wfsService.setTitle(PropertyUtil.getDefaultLanguage(), flowModel.getAsString(FlowModel.FLOW_PM_TITLE_FI));
 		//wfsService.setTitleSv(flowModel.getAsString(FlowModel.FLOW_PM_TITLE_SV));
 		wfsService.setUrl(flowModel.getAsString(FlowModel.FLOW_PM_URL));
 		//wfsService.setUsername(flowModel.getAsString(FlowModel.FLOW_PM_USERNAME));

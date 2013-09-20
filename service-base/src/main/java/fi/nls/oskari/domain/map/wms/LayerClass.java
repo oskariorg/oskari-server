@@ -1,27 +1,21 @@
 package fi.nls.oskari.domain.map.wms;
 
+import fi.nls.oskari.domain.map.JSONLocalizedName;
+import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.util.PropertyUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.nls.oskari.domain.map.Layer;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
-
-public class LayerClass implements Comparable<LayerClass> {
+public class LayerClass extends JSONLocalizedName implements Comparable<LayerClass> {
 
 	private int id;
 	
 	private Integer parent;
 	
-	private List<LayerClass> childrens;
+	private List<LayerClass> children;
 	
 	private List<Layer> mapLayers;
-	
-	private String nameFi;
-	
-	private String nameSv;
-	
-	private String nameEn;
 	
 	private boolean mapLayersSelectable;
 	
@@ -30,58 +24,35 @@ public class LayerClass implements Comparable<LayerClass> {
 	private String dataUrl;
 	
 	private boolean groupMap;
-
-    private String locale;
 	
 	public LayerClass() {
 		this.mapLayers = new ArrayList<Layer>();
-		this.childrens = new ArrayList<LayerClass>();
+		this.children = new ArrayList<LayerClass>();
 	}
 	
 	public int compareTo(LayerClass lc) {
-		return this.getNameFi().compareTo(lc.getNameFi());
+        String defaultLang = PropertyUtil.getDefaultLanguage();
+		return this.getName(defaultLang).compareTo(lc.getName(defaultLang));
 	}
 
-    public String getName(final String language) {
-        JSONObject loc = JSONHelper.getJSONObject(JSONHelper.createJSONObject(locale), language);
-        return JSONHelper.getStringFromJSON(loc, "name" , "");
-    }
-    
-	public String getNameFi() {
-		if (nameFi == null) {
-			return "";
-		}
-		return nameFi;
-	}
-	public void setNameFi(String nameFi) {
-		this.nameFi = nameFi;
-	}
-	public String getNameSv() {
-		return nameSv;
-	}
-	public void setNameSv(String nameSv) {
-		this.nameSv = nameSv;
-	}
-	public String getNameEn() {
-		return nameEn;
-	}
-	public void setNameEn(String nameEn) {
-		this.nameEn = nameEn;
-	}
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public Integer getParent() {
 		return parent;
 	}
+
 	public void setParent(Integer parent) {
 		this.parent = parent;
 	}
+
 	public List<LayerClass> getChildren() {
-		return childrens;
+		return children;
 	}
 	
 	public List<Layer> getMapLayers() {
@@ -89,11 +60,11 @@ public class LayerClass implements Comparable<LayerClass> {
 	}
 	
 	public void addChildren(List<LayerClass> addedChildren) {
-		childrens.addAll(addedChildren);
+		children.addAll(addedChildren);
 	}
 	
 	public void addChild(LayerClass addedChild) {
-		childrens.add(addedChild);
+		children.add(addedChild);
 	}
 	
 	public void addMapLayers(List<Layer> addedMapLayers) {
@@ -136,23 +107,11 @@ public class LayerClass implements Comparable<LayerClass> {
 		this.groupMap = groupMap;
 	}
 
-	public List<LayerClass> getChildrens() {
-		return childrens;
-	}
-
-	public void setChildrens(List<LayerClass> childrens) {
-		this.childrens = childrens;
+	public void setChildren(List<LayerClass> children) {
+		this.children = children;
 	}
 
 	public void setMapLayers(List<Layer> mapLayers) {
 		this.mapLayers = mapLayers;
 	}
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
 }

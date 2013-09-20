@@ -80,7 +80,7 @@ public class SearchServiceImpl implements SearchService {
                             log.error("Couldn't instantiate class " + className + " for channel (InvocationTargetException)");
                         }
                     }
-                    log.error("Couldn't fing a no-args constructor for search channel class " + className);
+                    log.error("Couldn't find a no-args constructor for search channel class " + className);
                 }
             } catch (ClassNotFoundException cnfe) {
                 log.error("Invalid className for channel: " + cid + " = " + className);

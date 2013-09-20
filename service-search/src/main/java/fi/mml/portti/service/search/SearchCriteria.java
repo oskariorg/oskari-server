@@ -1,5 +1,7 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.util.PropertyUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,8 +15,8 @@ import java.util.Map;
 public class SearchCriteria implements Serializable {
 	private static final long serialVersionUID = -3217931790577562692L;
 
-	private String locale = "fi";
-	
+	private String locale = PropertyUtil.getDefaultLanguage();
+
     private final Map<String, Object> parameters = new HashMap<String, Object>();
 	
 	private MetadataCatalogueSearchCriteria metadataCatalogueSearchCriteria = new MetadataCatalogueSearchCriteria();

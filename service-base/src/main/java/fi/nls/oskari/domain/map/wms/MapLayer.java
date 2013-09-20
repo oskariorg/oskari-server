@@ -1,9 +1,11 @@
 package fi.nls.oskari.domain.map.wms;
 
+import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.domain.map.Layer;
+import java.util.Map;
 
 /**
  * This class represents WMS layer.
@@ -35,7 +37,7 @@ public class MapLayer extends Layer {
 	    json.put("updated", this.getUpdated());
 	    json.put("created", this.getCreated());
 	    
-	    json.put("name", this.getNameFi()); // TODO: need make better
+	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage())); // TODO: only default lang?
 	    
 	    json.put("wmsUrl", this.getWmsUrl());
         
@@ -45,15 +47,14 @@ public class MapLayer extends Layer {
 	    adminJSON.put("resource_url_scheme_pattern", "");
 	    adminJSON.put("layerType", this.getType());
 	    adminJSON.put("wmsName", this.getWmsName());
-	    
-	    
-	    adminJSON.put("titleFi", this.getTitleFi());
-	    adminJSON.put("titleSv", this.getTitleSv());
-	    adminJSON.put("titleEn", this.getTitleEn());
-	    
-	    adminJSON.put("nameFi", this.getNameFi());
-        adminJSON.put("nameSv", this.getNameSv());
-        adminJSON.put("nameEn", this.getNameEn());
+
+	    for (Map.Entry<String, String> localization : this.getTitles().entrySet()) {
+            adminJSON.put("title" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
+        }
+
+        for (Map.Entry<String, String> localization : this.getNames().entrySet()) {
+            adminJSON.put("name" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
+        }
 	    
 	    adminJSON.put("wms_parameter_layers","");
 	    adminJSON.put("inspireTheme", this.getInspireThemeId());

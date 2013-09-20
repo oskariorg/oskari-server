@@ -1,7 +1,12 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -13,6 +18,22 @@ import static org.junit.Assert.*;
  * To change this template use File | Settings | File Templates.
  */
 public class StatsVisualizationHelperTest {
+
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        PropertyUtil.clearProperties();
+        Properties properties = new Properties();
+        try {
+            properties.load(StatsVisualizationHelperTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
+
     final StatsVisualizationHelper helper = new StatsVisualizationHelper();
 
     @Test
