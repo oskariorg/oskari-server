@@ -122,8 +122,8 @@ public class DBHandler {
                 insertView(conn, "postgres-view.json");
                 insertView(conn, "publisher-template-view.json");
             } else {
-                executeSqlFromFile(conn, dbname, "/02-create-default-view.sql");
-                System.out.println("/- 02-create-default-view.sql");
+                executeSqlFromFile(conn, dbname, "/01-create-default-view.sql");
+                System.out.println("/- 01-create-default-view.sql");
             }
 
             executeSqlFromFile(conn, dbname, "exampleLayersAndRoles.sql");
