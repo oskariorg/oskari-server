@@ -69,6 +69,10 @@ public class PropertyUtil {
         return propertiesList.split("\\s*,\\s*");
     }
 
+    public static String getOptionalNonLocalized(final String propertyName) {
+        return properties.getProperty(propertyName);
+    }
+
     public static String getOptional(final String propertyName) {
         return get(new Locale(getDefaultLanguage()), propertyName, null);
     }
