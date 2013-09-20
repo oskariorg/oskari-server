@@ -26,8 +26,8 @@ public class StandaloneUserService extends UserService {
     private final static String JSKEY_ID = "id";
     private final static String JSKEY_NAME = "name";
 
-    private final static String FILE_JSON_USER = "user.json";
-    private final static String FILE_JSON_ROLE = "role.json";
+    private final static String FILE_JSON_USER = "/users/user.json";
+    private final static String FILE_JSON_ROLE = "/users/role.json";
 
     private Map<Long, String> roles = new HashMap<Long, String>();
 

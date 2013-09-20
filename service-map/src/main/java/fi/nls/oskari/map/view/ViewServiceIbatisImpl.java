@@ -260,11 +260,13 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                 }
             }
 
-            bundle.setViewId(view.getId());
-
-            queryForObject("View.add-bundle", bundle);
-
+            addBundleForView(view.getId(), bundle);
         }
+    }
+    public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException {
+        // TODO: maybe setup sequencenumber to last if not set?
+        bundle.setViewId(viewId);
+        queryForObject("View.add-bundle", bundle);
     }
 
 
