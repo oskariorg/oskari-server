@@ -16,7 +16,7 @@ public class LogFactory {
 
     public static Logger getLogger(final String name) {
 
-        final String className = PropertyUtil.getOptional("oskari.logger");
+        final String className = PropertyUtil.getOptionalNonLocalized("oskari.logger");
         if(className == null) {
             return new NullLogger(name);
         }
