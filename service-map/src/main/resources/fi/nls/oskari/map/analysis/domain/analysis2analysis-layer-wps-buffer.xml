@@ -18,7 +18,7 @@
                         outputFormat="{outputFormat}" {xmlns}>
                         <wfs:Query srsName="{srsName}"
                             typeName="{typeName}">
-                            {filter}</wfs:Query>
+                            {properties}{filter}</wfs:Query>
                     </wfs:GetFeature>
                 </wps:Body>
             </wps:Reference>
