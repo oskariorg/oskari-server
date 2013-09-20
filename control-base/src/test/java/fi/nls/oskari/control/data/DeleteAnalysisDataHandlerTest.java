@@ -6,13 +6,17 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -31,6 +35,21 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
     private final static Long NON_MATCHING_ID = 12345l;
     private final static Long ANOTHER_USERS_ANALYSIS_ID = 1l;
     private final static Long VALID_ANALYSIS_ID = 2l;
+
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        PropertyUtil.clearProperties();
+        Properties properties = new Properties();
+        try {
+            properties.load(DeleteAnalysisDataHandlerTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
 
     @Before
     public void setUp() throws Exception {

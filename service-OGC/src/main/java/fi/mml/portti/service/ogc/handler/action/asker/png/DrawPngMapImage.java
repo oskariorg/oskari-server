@@ -13,6 +13,7 @@ import fi.nls.oskari.domain.map.wfs.WFSLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.visualization.SLDStore;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
@@ -37,17 +38,19 @@ public class DrawPngMapImage extends BaseAskerAction implements OGCActionHandler
 	/** Logger */
 	private static Logger log = LogFactory.getLogger(DrawPngMapImage.class);
 
+    private static final String locale = PropertyUtil.getDefaultLanguage();
+
 	public void handleAction(final FlowModel flowModel) throws OgcFlowException {
 
 		WFSLayer wfsLayer = findWFSLayer(flowModel);
-		log.debug("Drawing image for wfs layer '" + wfsLayer.getName("fi") + "'");
+		log.debug("Drawing image for wfs layer '" + wfsLayer.getName(locale) + "'");
 		List<Future<WFSResponseCapsule>> futures = new ArrayList<Future<WFSResponseCapsule>>();
 		
 		/* Create workers */
 		log.debug("We have " + wfsLayer.getSelectedFeatureTypes().size() + " selected feature types");
 		for (SelectedFeatureType sft : wfsLayer.getSelectedFeatureTypes()) {
 			FeatureType ft = sft.getFeatureType();
-			log.debug("Processing featuretype '" + ft.getTitle("fi") + "'...");
+			log.debug("Processing featuretype '" + ft.getTitle(locale) + "'...");
 			
 			/* Create filter */
 			String geomName = ft.getBboxParameterName();

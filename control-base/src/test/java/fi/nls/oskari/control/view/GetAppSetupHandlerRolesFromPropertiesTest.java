@@ -26,6 +26,7 @@ import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -34,7 +35,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.Properties;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -61,6 +64,20 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
     //
 
+    @BeforeClass
+    public static void addLocales() throws Exception {
+        Properties properties = new Properties();
+        try {
+            properties.load(GetAppSetupHandlerRolesFromPropertiesTest.class.getResourceAsStream("test.properties"));
+            PropertyUtil.addProperties(properties);
+            String locales = PropertyUtil.getNecessary("oskari.locales");
+            if (locales == null)
+                fail("No darned locales");
+        } catch (DuplicateException e) {
+            fail("Should not throw exception" + e.getStackTrace());
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
 
@@ -80,17 +97,18 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         doNothing().when(ParamControl.class);
         */
 
+
         try {
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundles","admin-layerselector, admin-layerrights");
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerrights.roles", "Administrator");
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerselector.roles", "Administrator, Karttajulkaisija_Tre");
-        } catch (DuplicateException ex) {
+        } catch (DuplicateException e) {
                  //this method is called once for every test, duplicates don't matter.
+
         }
 
         handler.init();
     }
-
 
     @Test
     public void testAddedLayerSelectorBundle () throws Exception {
