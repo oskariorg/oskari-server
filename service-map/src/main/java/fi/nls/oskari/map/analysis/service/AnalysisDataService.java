@@ -32,6 +32,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +50,7 @@ public class AnalysisDataService {
     private static final String JSKEY_MINSCALE = "minScale";
     private static final String JSKEY_MAXSCALE = "maxScale";
     private static final String JSKEY_FIELDS = "fields";
+    private static final String JSKEY_LOCALES = "locales";
 
     private static final String JSKEY_ID = "id";
     private static final String JSKEY_SUBTITLE = "subtitle";
@@ -61,9 +63,10 @@ public class AnalysisDataService {
     private static final String LAYER_PREFIX = "analysis_";
     private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
-    private static final String ANALYSIS_ORGNAME = "";  // managed in front
-    private static final String ANALYSIS_INSPIRE = "";  // managed in front
+    private static final String ANALYSIS_ORGNAME = ""; // managed in front
+    private static final String ANALYSIS_INSPIRE = ""; // managed in front
     private static final String ANALYSIS_WPS_ELEMENT_NAME = "ana:analysis_data";
+    private static final List<String> HIDDEN_FIELDS = Arrays.asList("analysis_id");
 
     private static final Logger log = LogFactory
             .getLogger(AnalysisDataService.class);
@@ -82,7 +85,8 @@ public class AnalysisDataService {
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
-    final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
+    final String analysisRenderingUrl = PropertyUtil
+            .get(ANALYSIS_RENDERING_URL);
 
     public Analysis storeAnalysisData(final String featureset,
             AnalysisLayer analysislayer, String json, User user) {
@@ -210,15 +214,16 @@ public class AnalysisDataService {
                     geomcol = feature.getNodeName();
                     geometry = feature;
                 } else if (feature.getNodeName().indexOf("feature:") == 0) {
-                    // only parse 8 first text and/or numeric features
+                    // only parse 8 first text ( numeric results invalid behavior later use only text) 
+                    //TODO: get real type of fields(properties) and etc
                     // (excluding geometry)
-                    if (textFeatures.size() < 8 && numericFeatures.size() < 8) {
+                    if (textFeatures.size() < 8 && numericFeatures.size() < 8 && this.isHiddenField(feature) == false) {
                         // get node value
                         String strVal = feature.getTextContent();
                         Double dblVal = null;
                         // see if it's numeric
                         try {
-                            dblVal = Double.parseDouble(strVal);
+                          //   dblVal = Double.parseDouble(strVal); invalid behavior now, some field values are text and some numeric) 
                         } catch (NumberFormatException nfe) {
                             // ignore
                         }
@@ -320,7 +325,9 @@ public class AnalysisDataService {
 
     /**
      * Get analysis columns to Map
-     * @param analysis_id  Key to one analysis 
+     * 
+     * @param analysis_id
+     *            Key to one analysis
      * @return analysis columns
      */
     public Map<String, String> getAnalysisColumns(final String analysis_id) {
@@ -345,6 +352,37 @@ public class AnalysisDataService {
         }
         return null;
     }
+    
+    /**
+     * Get analysis columns to Map
+     * 
+     * @param analysis_id
+     *            Key to one analysis
+     * @return analysis columns
+     */
+    public String getAnalysisNativeColumns(final String analysis_id) {
+        if (analysis_id != null) {
+            final List<String> columnNames = new ArrayList<String>(); // key,
+            // name
+            Analysis analysis = analysisService
+                    .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
+            if (analysis != null) {
+                for (int j = 1; j < 11; j++) {
+                    String colx = analysis.getColx(j);
+                    if (colx != null && !colx.isEmpty()) {
+                        if (colx.indexOf("=") != -1) {
+                            columnNames.add(colx.split("=")[0]);
+                           
+                        }
+                    }
+
+                }
+                return columnNames.toString();
+            }
+        }
+        return null;
+    }
+
 
     /**
      * @param fieldsin
@@ -397,8 +435,10 @@ public class AnalysisDataService {
     }
 
     /**
-     * @param uid User uuid
-     * @param lang language
+     * @param uid
+     *            User uuid
+     * @param lang
+     *            language
      * @return Analysis layers of one user retreaved by uuid
      * @throws ServiceException
      */
@@ -411,11 +451,10 @@ public class AnalysisDataService {
             final JSONArray layersJSON = new JSONArray();
             listLayer.put(JSKEY_ANALYSISLAYERS, layersJSON);
             for (Analysis al : layers) {
-                final JSONObject analyse_js = JSONHelper.createJSONObject(al
-                        .getAnalyse_json());
-                // Parse analyse layer json out of analyse json
-                JSONObject analyselayer = getlayerJSON(analyse_js, al.getId());
-                layersJSON.put(analyselayer);
+
+                // Parse analyse layer json out analysis
+                JSONObject analyselayer = getlayerJSON(al);
+                listLayer.accumulate(JSKEY_ANALYSISLAYERS, analyselayer);
             }
         } catch (Exception ex) {
             throw new ServiceException("Unable to get analysis layers", ex);
@@ -426,17 +465,22 @@ public class AnalysisDataService {
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
     /**
-     * @param analyse_js  analyse wps parameters
-     * @param wpsid  analysis_id
+     * @param analyse_js
+     *            analyse wps parameters
+     * @param wpsid
+     *            analysis_id
      * @return analysis layer data for front mapservice
      * @throws JSONException
      */
-    public JSONObject getlayerJSON(JSONObject analyse_js, Long wpsid)
-    
-            throws JSONException {
+    public JSONObject getlayerJSON(Analysis al)
+
+    throws JSONException {
         JSONObject json = new JSONObject();
         // Add correct analyse layer_id to json
         try {
+            final JSONObject analyse_js = JSONHelper.createJSONObject(al
+                    .getAnalyse_json());
+            Long wpsid = al.getId();
             String newid = "-1";
             if (analyse_js.has(JSKEY_LAYERID)) {
                 if (analyse_js.getString(JSKEY_LAYERID).indexOf(LAYER_PREFIX) > -1)
@@ -471,9 +515,8 @@ public class AnalysisDataService {
                     1500000));
             json.put(JSKEY_MAXSCALE, ConversionHelper.getDouble(JSONHelper
                     .getStringFromJSON(analyse_js, JSKEY_MAXSCALE, "1"), 1));
-            json.put(JSKEY_FIELDS, JSONHelper.getJSONArray(analyse_js,
-                    JSKEY_FIELDS));
-
+            json.put(JSKEY_FIELDS, this.getAnalyseNativeFields(al));
+            json.put(JSKEY_LOCALES, this.getAnalyseFields(al));
             json.put(JSKEY_WPSURL, analysisRenderingUrl);
             json.put(JSKEY_WPSNAME, ANALYSIS_WPS_ELEMENT_NAME);
             json.put(JSKEY_WPSLAYERID, wpsid);
@@ -485,4 +528,74 @@ public class AnalysisDataService {
         return json;
     }
 
+    public JSONObject getAnalyseFieldsMapping(Analysis analysis) {
+        JSONObject fm = new JSONObject();
+        try {
+            if (analysis != null) {
+                for (int j = 1; j < 11; j++) {
+                    String colx = analysis.getColx(j);
+                    if (colx != null && !colx.isEmpty()) {
+                        if (colx.indexOf("=") != -1) {
+                            fm.put(colx.split("=")[0], colx.split("=")[1]);
+                        }
+                    }
+
+                }
+
+            }
+        } catch (Exception ex) {
+            log.debug("Unable to get analysis field mapping layer json", ex);
+        }
+        return fm;
+    }
+    public JSONArray getAnalyseFields(Analysis analysis) {
+        JSONArray fm = new JSONArray();
+        try {
+            if (analysis != null) {
+                // Fixed 1st is ID
+                fm.put("ID");
+                for (int j = 1; j < 11; j++) {
+                    String colx = analysis.getColx(j);
+                    if (colx != null && !colx.isEmpty()) {
+                        if (colx.indexOf("=") != -1) {
+                            fm.put(colx.split("=")[1]);
+                        }
+                    }
+
+                }
+
+            }
+        } catch (Exception ex) {
+            log.debug("Unable to get analysis field layer json", ex);
+        }
+        return fm;
+    }
+    public JSONArray getAnalyseNativeFields(Analysis analysis) {
+        JSONArray fm = new JSONArray();
+        try {
+            if (analysis != null) {
+                for (int j = 1; j < 11; j++) {
+                    String colx = analysis.getColx(j);
+                    if (colx != null && !colx.isEmpty()) {
+                        if (colx.indexOf("=") != -1) {
+                            fm.put(colx.split("=")[0]);
+                        }
+                    }
+
+                }
+
+            }
+        } catch (Exception ex) {
+            log.debug("Unable to get analysis field layer json", ex);
+        }
+        return fm;
+    }
+    private boolean isHiddenField(Node feature)
+    {
+        String[] acol = feature.getNodeName().split(":");
+        if (acol.length > 1) return HIDDEN_FIELDS.contains(acol[1]); 
+            
+        return false;
+    }
+    
 }

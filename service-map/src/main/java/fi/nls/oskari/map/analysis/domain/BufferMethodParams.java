@@ -81,7 +81,11 @@ public class BufferMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(DISTANCE, this.getDistance());
         doctemp = doctemp.replace(ATTRIBUTENAME, "");
-
+        
+        //Properties
+        if (this.getProperties() != null) {
+            doctemp = doctemp.replace(PROPERTIES, this.getProperties());
+        }
         // Filter
         String wfsfilter = "";
         if (this.getFilter() != null) {

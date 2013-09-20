@@ -104,8 +104,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- artifactId "oskari-control-base" is implied by adding extended actions -->
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>content-resources</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
+        <!-- artifactId "oskari-control-base" is implied by adding extended actions -->
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-wfs</artifactId>

@@ -116,7 +116,7 @@
                 <a href="/ajax/?action=logout">Logout</a>
             </c:when>
             <c:otherwise>
-                <form action='${ajaxUrl}action=login' method="post" accept-charset="UTF-8">
+                <form action='${ajaxUrl}action=login&viewId=${viewId}' method="post" accept-charset="UTF-8">
                     <input size="16" id="username" name="username" type="text" placeholder="Username" autofocus
                            required>
                     <input size="16" id="password" name="password" type="password" placeholder="Password" required>
@@ -149,7 +149,7 @@
 
 <!--  OPENLAYERS -->
 <script type="text/javascript"
-        src="Oskari/packages/openlayers/startup.js">
+        src="/Oskari/packages/openlayers/startup.js">
 </script>
 
 <c:if test="${preloaded}">

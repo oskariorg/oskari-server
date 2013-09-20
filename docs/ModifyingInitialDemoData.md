@@ -6,19 +6,23 @@ The HSQLDB is created on first call of the portlet. It creates a data folder und
 NOTE! Any modifications to the initial data SQL statements dont have any effect if the data dir is not
 removed and the server is restarted.
 
+Database recreation can be forced on startup by giving a system.property 'oskari.dropdb' with value 'true':
+
+    mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true
+
 NOTE! All comment lines need to end with ; character or the next SQL statement will not be run!
 
-The safe SQL file to edit for these is ´/oskari-server/servlet-map/src/main/resources/fi/nls/oskari/map/servlet/db/exampleLayersAndRoles.sql´
+The safe SQL file to edit for these is `/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 # Adding a maplayer
 
 Add the following sql at the end of the file to register a new WMS layer in to Oskari-server
 
     -- Add a layer under 'National Land Survey' layer class;
-    INSERT INTO portti_maplayer (layerclassid, namefi, namesv, nameen, wmsname, wmsurl, opacity,
+    INSERT INTO portti_maplayer (layerclassid, wmsname, wmsurl, opacity,
            style, minscale, maxscale, description_link, legend_image, inspire_theme_id,
            dataurl, metadataurl, order_number, layer_type, locale)
-    VALUES (3,'Maastokartta 1:50k','Terrängkarta 1:50k','Topographic map 1:50k','maastokartta_50k','http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',40,'',54000,26000,'','',2,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,'wmslayer',
+    VALUES (3,'maastokartta_50k','http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',40,'',54000,26000,'','',3,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,'wmslayer',
     '{ fi:{name:"Maastokartta 1:50k",subtitle:""},sv:{name:"Terrängkarta 1:50k",subtitle:""},en:{name:"Topographic map 1:50k",subtitle:""}}');
 
 After registering the layer it isn't visible to the users yet (even admin)
@@ -63,11 +67,11 @@ After this the layer should be listed in layerselector for guests.
 
 ### 1. Add new users and roles
 
-* edit user.json and roles.json files in resource path ´oskari-server/servlet-map/src/main/resources/fi/nls/oskari/user/´
+* edit user.json and roles.json files in resource path `oskari-server/servlet-map/src/main/resources/users/`
 
 * role ids must match the ones referenced in portti_permission and portti_recource_user tables (see next subsection)
 
-Sample ´user.json´
+Sample `user.json`
 
     {
         "users": [
@@ -97,7 +101,7 @@ Sample ´user.json´
         ]
     }
 
-Sample ´role.json´
+Sample `role.json`
 
     {
       "roles": [
@@ -113,18 +117,18 @@ Sample ´role.json´
     }
 
 * Login handling is implemented in `fi.nls.oskari.user.StandaloneUserService`
-* The Java class handling user related operations is configurable in `oskari-server/servlet-map/src/main/resources/fi/nls/oskari/map/servlet/oskari.properties`
+* The Java class handling user related operations is configurable in `oskari-server/servlet-map/src/main/resources/oskari.properties`
 
 ### 2. Add new user roles and permissions
 
-Add a role with an unique id to ´role.json´
+Add a role with an unique id to `role.json`
 
         {
             "id": 5,
             "name": "MyRole"
         }
 
-Add a user to ´user.json´ and link the new role to the user
+Add a user to `user.json` and link the new role to the user
 
             {
                 "id": 3,
@@ -139,7 +143,7 @@ Add a user to ´user.json´ and link the new role to the user
             }
 
 
-Edit script file ´oskari-server/servlet-map/src/main/resources/fi/nls/oskari/map/servlet/db/exampleLayersAndRoles.sql´
+Edit script file `oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 Add row to portti_resource_user table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
 
@@ -153,4 +157,4 @@ Add row to portti_permissions table, e.g. (change [YOUR ROLE ID] to 5 as in role
     INSERT INTO portti_permissions (resource_user_id, permissions_type)
         values (SELECT id FROM portti_resource_user WHERE resource_name='maastokartta_50k' AND externalid = [YOUR ROLE ID], 'VIEW_LAYER');
 
-Remove the HSQLDB data directory and restart the server. You should now be able to login with "myuser"/"mypass" and see the layer
+Remove the HSQLDB data directory (or reset the database with oskari.dropdb=true system property when restarting) and restart the server. You should now be able to login with "myuser"/"mypass" and see the layer
