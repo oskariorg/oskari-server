@@ -19,14 +19,18 @@ public class PropertyUtil {
     public static String[] getSupportedLocales() {
         String sl = properties.getProperty("oskari.locales", null);
         if (sl == null) {
-            throw new RuntimeException("Missing necessary property: oskari.locales");
+            sl = "en_US";
 
         }
         return sl.split("\\s*,\\s*");
     }
 
     public static String getDefaultLocale() {
-        return getSupportedLocales()[0];
+        String[] supportedLocales = getSupportedLocales();
+        if (supportedLocales != null && supportedLocales.length > 0 && supportedLocales[0] != null) {
+            return supportedLocales[0];
+        }
+        return "en_US";
     }
 
     public static String getDefaultLanguage() {
