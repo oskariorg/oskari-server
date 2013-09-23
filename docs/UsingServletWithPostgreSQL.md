@@ -37,4 +37,4 @@
 6) Open your browser with http://localhost:2373/?viewId=2 to see a new view loaded from the database.
     You should now see personaldata and publisher bundles started compared to the default view
 
-7) Adding [admin bundles for admin role](service-control/README.md)
+7) Adding [admin bundles for admin role](AddingBundlesBasedOnRole.md)

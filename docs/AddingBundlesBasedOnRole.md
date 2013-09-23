@@ -20,4 +20,7 @@ have values of comma-separated lists of role names.
 
 4) log in with the admin user 
 
-You should now see these two bundles added to the view.
+You should now see these two bundles added to the view. 
+
+Note! Dynamic bundles are only added for default view. If you want to use view 2 for default view you can add 
+a property `view.default=2` to `servlet-map/src/main/resources/oskari.properties`
