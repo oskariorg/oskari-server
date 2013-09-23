@@ -467,4 +467,3 @@ UPDATE portti_view_bundle_seq set startup = '{
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'featuredata')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-

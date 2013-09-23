@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER = "filter";
+    private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID","__fid","metaDataProperty","description","name","boundedBy","location","__centerX","__centerY");
 
     private static final String INTERNAL_FIELD_PREFIX = "__";
     private static final String LAYER_PREFIX = "analysis_";
@@ -134,12 +136,17 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             analysisLayer.setWpsLayerId(-1);
 
         } else {
+            
 
             Analysis analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
 
             analysisLayer.setWpsLayerId(analysis.getId()); // aka. analysis_id
+            // Analysis field mapping
+            analysisLayer.setLocaleFields(analysis);
+            analysisLayer.setNativeFields(analysis);
         }
+        // TODO: register layer to wfs2
 
         // Get analysisLayer JSON for response to front
         try {
@@ -222,10 +229,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         if (fields_in == null) {
             throw new ActionParamsException("Fields missing.");
         } else {
-            // Remove internal fields - begins with "__"
+            // Remove internal fields
             try {
                 for (int i = 0; i < fields_in.length(); i++) {
-                    if (fields_in.getString(i).indexOf(INTERNAL_FIELD_PREFIX) != 0)
+                    if (!HIDDEN_FIELDS.contains(fields_in.getString(i)))
                         fields.add(fields_in.getString(i));
                 }
             } catch (JSONException e) {
@@ -233,6 +240,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         "Method fields parameters missing.");
             }
             analysisLayer.setFields(fields);
+            
         }
 
         String style = json.optString("style");
@@ -267,6 +275,9 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
                             .getInputAnalysisId()));
+            // WFS Query properties
+            analysisLayer.getAnalysisMethodParams().setProperties(
+                    this.parseProperties(analysisLayer.getFields(),lc.getFeatureNamespace()));
 
         } else if (UNION_GEOM.equals(analysisMethod)) {
             // when analysisMethod == geo:union
@@ -795,6 +806,22 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         return wfs_filter;
     }
+    private String parseProperties(List<String> props, String ns) throws ActionParamsException {
+
+ 
+        try {
+          return  WFSFilterBuilder.parseProperties(props,
+                    ns);
+
+        } catch (Exception e) {
+            log.warn(e, "Properties parse failed");
+        }
+
+       
+
+        return null;
+    }
+
 
     /**
      * Build feature collection to geometry collection for union geom method

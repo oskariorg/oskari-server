@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.service.db.BaseService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -41,6 +42,7 @@ public interface ViewService extends BaseService<Object> {
     public long getDefaultViewId(final User user);
     
     public void updatePublishedView(View view, JSONObject json) throws ViewException;
-    
+
+    public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
 
 }

@@ -60,6 +60,7 @@
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.5</version>
         </dependency>
+
     </dependencies>
 
 </project>
