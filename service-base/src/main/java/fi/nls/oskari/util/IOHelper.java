@@ -134,7 +134,9 @@ public class IOHelper {
             throws IOException {
         final HttpURLConnection con = getConnection(pUrl);
         if (userName != null && !userName.isEmpty()) {
-            con.setRequestProperty(HEADER_AUTHORIZATION, "Basic " + encode64(userName + ':' + password).replaceAll("\r", "").replaceAll("\n", ""));
+            final String encoded = encode64(userName + ':' + password);
+            log.debug(encoded, " ---- > ", encoded.replaceAll("\r", "").replaceAll("\n", ""));
+            con.setRequestProperty(HEADER_AUTHORIZATION, "Basic " + encoded.replaceAll("\r", "").replaceAll("\n", ""));
         }
         return con;
     }
