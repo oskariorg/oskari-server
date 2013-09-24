@@ -65,7 +65,7 @@ public class GetLayerIds extends ActionHandler {
             result = mapper.writeValueAsString(layerIds);
             
             // put to cache
-            log.debug("saving session:", jsessionid);
+            log.warn("saving session:", jsessionid);
 	        WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(result);
 	        permissions.save(jsessionid);
             
