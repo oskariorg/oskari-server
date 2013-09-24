@@ -162,26 +162,52 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
-    "plugins" : [
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
-       { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
-       { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
-       { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
-       { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
-       { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
-       { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" }
-      ],
-      "layers": [
-         { "id": "base_35" }
-      ]
+    "plugins": [{
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+    }, {
+        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+    }, {
+        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+    }, {
+        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
+    }, {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+        "config": {
+            "mapUrlPrefix": {
+                "en": "//www.paikkatietoikkuna.fi/web/en/map-window?",
+                "fi": "//www.paikkatietoikkuna.fi/web/fi/kartta?",
+                "sv": "//www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
+            },
+            "termsUrl": {
+                "en": "//www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
+                "fi": "//www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
+                "sv": "//www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
+            }
+        }
+    }],
+    "layers": [{
+        "id": "base_35"
+    }]
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
@@ -261,10 +287,15 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
-        "viewtools": {
-            "print" : false
-        }
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
+    "viewtools": {
+        "print": false
+    },
+    "mapUrlPrefix": {
+        "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
+        "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
+        "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
+    }
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 
@@ -470,6 +501,16 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "changeInfoUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/profile",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/profiili",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/profil"
+    }
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
+    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
 --------------------------------------------
 -- 11. Publisher
 --------------------------------------------
@@ -499,6 +540,22 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 
+    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "loginUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/login",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login"
+    },
+    "registerUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
+    },
+    "urlPrefix": "www.paikkatietoikkuna.fi"
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
 --------------------------------------------
