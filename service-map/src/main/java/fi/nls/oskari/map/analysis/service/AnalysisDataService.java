@@ -175,6 +175,7 @@ public class AnalysisDataService {
         List<String> cols = new ArrayList<String>();
         List<String> geomcols = new ArrayList<String>();
         geomcols.add("feature:" + geometryProperty);
+        geomcols.add("feature:geometry");
 
         String geomcol = "";
 

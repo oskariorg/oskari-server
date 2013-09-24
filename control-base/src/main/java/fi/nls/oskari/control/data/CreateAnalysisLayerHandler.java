@@ -24,6 +24,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AggregateMethodParams;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
 import fi.nls.oskari.map.analysis.domain.BufferMethodParams;
 import fi.nls.oskari.map.analysis.domain.CollectGeometriesMethodParams;
 import fi.nls.oskari.map.analysis.domain.IntersectMethodParams;
@@ -51,7 +52,9 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER = "filter";
-    private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID","__fid","metaDataProperty","description","name","boundedBy","location","__centerX","__centerY");
+    private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
+            "__fid", "metaDataProperty", "description", "name", "boundedBy",
+            "location", "__centerX", "__centerY");
 
     private static final String INTERNAL_FIELD_PREFIX = "__";
     private static final String LAYER_PREFIX = "analysis_";
@@ -68,6 +71,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
     private static final String ANALYSIS_WPS_ELEMENT_NAME = "ana:analysis_data";
+    private static final String ANALYSIS_WFST_ELEMENT_NAME = "feature:analysis_data";
+    private static final String ANALYSIS_WPS_ELEMENT_BUG = "gml:analysis_data";
+    private static final String ANALYSIS_WFST_GEOMETRY = "feature:geometry";
+    private static final String ANALYSIS_WPS_UNION_GEOM = "gml:geom";
 
     private static final String BUFFER = "buffer";
     private static final String INTERSECT = "intersect";
@@ -82,7 +89,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FILTERS = "filters";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
-    final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
+    final String analysisRenderingUrl = PropertyUtil
+            .get(ANALYSIS_RENDERING_URL);
 
     /**
      * Handles action_route CreateAnalysisLayer
@@ -121,6 +129,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // Check, if any data in result set
         if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1)
             throw new ActionParamsException("WPS-execute returns 0 features");
+        if (analysisLayer.getMethod().equals(UNION)) {
+            // Harmonize namespaces and element names
+            featureSet = this.harmonizeElementNames(featureSet, analysisLayer);
+        }
 
         // Add data to analysis db if NOT aggregate
         if (analysisLayer.getMethod().equals(AGGREGATE)) {
@@ -129,14 +141,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             analysisLayer.setWpsLayerId(-1);
             analysisLayer.setResult(this.parseAggregateResults(featureSet,
                     analysisLayer));
-        } else if (analysisLayer.getMethod().equals(UNION_GEOM)) {
-            // resultset is geometrycollection - build featurecollection for
-            // wfst
-
-            analysisLayer.setWpsLayerId(-1);
-
         } else {
-            
 
             Analysis analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
@@ -146,7 +151,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             analysisLayer.setLocaleFields(analysis);
             analysisLayer.setNativeFields(analysis);
         }
-        // TODO: register layer to wfs2
 
         // Get analysisLayer JSON for response to front
         try {
@@ -182,7 +186,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         analysisLayer.setWpsUrl(analysisRenderingUrl);
         // analysis element name
         analysisLayer.setWpsName(ANALYSIS_WPS_ELEMENT_NAME);
-        
+
         analysisLayer.setInputAnalysisId(null);
         int id = 0;
         try {
@@ -240,7 +244,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         "Method fields parameters missing.");
             }
             analysisLayer.setFields(fields);
-            
+
         }
 
         String style = json.optString("style");
@@ -277,23 +281,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                             .getInputAnalysisId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
-                    this.parseProperties(analysisLayer.getFields(),lc.getFeatureNamespace()));
-
-        } else if (UNION_GEOM.equals(analysisMethod)) {
-            // when analysisMethod == geo:union
-
-            // Set params for WPS execute
-
-            CollectGeometriesMethodParams method = this
-                    .parseCollectGeometriesParams(lc, json, baseUrl);
-
-            analysisLayer.setAnalysisMethodParams(method);
-
-            // WFS filter
-            analysisLayer.getAnalysisMethodParams().setFilter(
-                    this.parseFilter(lc, filter, analysisLayer
-                            .getInputAnalysisId()));
-
+                    this.parseProperties(analysisLayer.getFields(), lc
+                            .getFeatureNamespace()));
         } else if (INTERSECT.equals(analysisMethod)) {
             JSONObject params;
             try {
@@ -392,23 +381,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             } catch (JSONException e) {
                 throw new ActionParamsException("Method parameters missing.");
             }
-            WFSLayerConfiguration lc2 = null;
-            int id2 = params.optInt(JSON_KEY_LAYERID);
-            if (id2 == 0) {
-                // ---- Analysis in analysis layer
-                if (getAnalysisInputId(params) != null) {
-                    id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
-                } else {
-                    throw new ActionParamsException("Layer 2 id is invalid");
-                }
-            }
-            // Get wfs layer configuration for union input 2
-            lc2 = layerConfigurationService.findConfiguration(id2);
 
             // Set params for WPS execute
 
-            UnionMethodParams method = this.parseUnionParams(lc2, lc, json,
-                    baseUrl);
+            UnionMethodParams method = this.parseUnionParams(lc, json, baseUrl);
             method.setWps_reference_type(analysisLayer.getInputType());
 
             analysisLayer.setAnalysisMethodParams(method);
@@ -480,59 +456,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     }
 
     /**
-     * Parses geo:CollectGeometries method parameters for WPS execute variables
-     * (not yet in use)
-     * 
-     * @param lc
-     *            WFS layer configuration
-     * @param json
-     *            Method parameters and layer info from the front
-     * @param baseUrl
-     *            Url for Geoserver WPS reference input (input
-     *            FeatureCollection)
-     * @return CollectGeometriesMethodParams parameters for WPS execution
-     ************************************************************************/
-    private CollectGeometriesMethodParams parseCollectGeometriesParams(
-            WFSLayerConfiguration lc, JSONObject json, String baseUrl)
-            throws ActionParamsException {
-        final CollectGeometriesMethodParams method = new CollectGeometriesMethodParams();
-
-        method.setMethod(UNION_GEOM);
-
-        try {
-            // Url for Geoserver WPS execute (subprocess of execute)
-
-            method.setLayer_id(ConversionHelper.getInt(lc.getLayerId(), 0));
-            method.setServiceUrl(lc.getURL());
-            baseUrl = baseUrl.replace("&", "&amp;");
-            method.setHref(baseUrl + String.valueOf(lc.getLayerId()));
-
-            method.setTypeName(lc.getFeatureNamespace() + ":"
-                    + lc.getFeatureElement());
-            method.setMaxFeatures(String.valueOf(lc.getMaxFeatures()));
-            method.setSrsName(lc.getSRSName());
-            method.setOutputFormat(DEFAULT_OUTPUT_FORMAT);
-            method.setVersion(lc.getWFSVersion());
-            method.setXmlns("xmlns:" + lc.getFeatureNamespace() + "=\""
-                    + lc.getFeatureNamespaceURI() + "\"");
-
-            method.setGeom(lc.getGMLGeometryProperty());
-
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
-            final JSONObject bbox = json.getJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
-
-        } catch (JSONException e) {
-            throw new ActionParamsException("Method parameters missing.");
-        }
-
-        return method;
-    }
-
-    /**
      * Parses AGGREGATE method parameters for WPS execute xml variables
      * 
      * @param lc
@@ -589,6 +512,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     /**
      * Parses UNION method parameters for WPS execute xml variables
+     * Originally vec:UnionFeatureCollection
+     * Changed to geom union (gs:feature + subprocess gs:CollectGeometries
      * 
      * @param lc
      *            WFS layer configuration
@@ -600,8 +525,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      * @return UnionMethodParams parameters for WPS execution
      ************************************************************************/
     private UnionMethodParams parseUnionParams(WFSLayerConfiguration lc,
-            WFSLayerConfiguration lc2, JSONObject json, String baseUrl)
-            throws ActionParamsException {
+            JSONObject json, String baseUrl) throws ActionParamsException {
         UnionMethodParams method = new UnionMethodParams();
         // 
         method.setMethod(UNION);
@@ -612,7 +536,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         method.setHref(baseUrl + String.valueOf(lc.getLayerId()));
         method.setTypeName(lc.getFeatureNamespace() + ":"
                 + lc.getFeatureElement());
-
+        method.setLocalTypeName(lc.getFeatureElement());
         method.setMaxFeatures(String.valueOf(lc.getMaxFeatures()));
         method.setSrsName(lc.getSRSName());
         method.setOutputFormat(DEFAULT_OUTPUT_FORMAT);
@@ -620,14 +544,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         method.setXmlns("xmlns:" + lc.getFeatureNamespace() + "=\""
                 + lc.getFeatureNamespaceURI() + "\"");
         method.setGeom(lc.getGMLGeometryProperty());
-
-        // Variable values of Union input 2
-        method.setHref2(baseUrl + String.valueOf(lc2.getLayerId()));
-        method.setTypeName2(lc2.getFeatureNamespace() + ":"
-                + lc2.getFeatureElement());
-        method.setXmlns2("xmlns:" + lc2.getFeatureNamespace() + "=\""
-                + lc2.getFeatureNamespaceURI() + "\"");
-        method.setGeom2(lc2.getGMLGeometryProperty());
 
         JSONObject bbox = null;
 
@@ -718,7 +634,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      * @return String baseurl for Geoserver WPS reference WFS data input
      ************************************************************************/
     public String getBaseProxyUrl(ActionParameters params) {
-        //TODO: baseurl setup to properties
+        // TODO: baseurl setup to properties
         String baseurl = params.getRequest().getRequestURL().toString().split(
                 "/portti2")[0];
 
@@ -806,60 +722,27 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         return wfs_filter;
     }
-    private String parseProperties(List<String> props, String ns) throws ActionParamsException {
 
- 
+    private String parseProperties(List<String> props, String ns)
+            throws ActionParamsException {
+
         try {
-          return  WFSFilterBuilder.parseProperties(props,
-                    ns);
+            return WFSFilterBuilder.parseProperties(props, ns);
 
         } catch (Exception e) {
             log.warn(e, "Properties parse failed");
         }
 
-       
-
         return null;
-    }
-
-
-    /**
-     * Build feature collection to geometry collection for union geom method
-     * (not yet in use)
-     * 
-     * @param analysisLayer
-     *            analysis input layer data
-     * @return
-     * @throws ActionParamsException
-     * @throws ServiceException
-     */
-    private String processFeatureSet(AnalysisLayer analysisLayer)
-            throws ActionParamsException, ServiceException {
-
-        String featureSet = null;
-        AnalysisWebProcessingService wps = new AnalysisWebProcessingService();
-        featureSet = wps.requestFeatureSet(analysisLayer);
-        try {
-            // JTS:union second step
-            // TODO: use other wps methods gs:Query and buffer(0)
-            if (analysisLayer.getMethod().equals(UNION_GEOM)) {
-                UnionGeomMethodParams method = new UnionGeomMethodParams();
-                method.setMethod(UNION_GEOM);
-                method.setGeomCollection(featureSet);
-                analysisLayer.setAnalysisMethodParams(method);
-                // Union geomcollection
-                featureSet = wps.requestFeatureSet(analysisLayer);
-            }
-        } catch (Exception e) {
-            throw new ActionParamsException("Geom union parse failed,");
-        }
-        return featureSet;
     }
 
     /**
      * Setup extra data for analysis layer when input is analysislayer
-     * @param analysisLayer analysis input layer data
-     * @param json wps analysis parameters
+     * 
+     * @param analysisLayer
+     *            analysis input layer data
+     * @param json
+     *            wps analysis parameters
      * @return false, if no id found
      */
     private boolean prepareAnalysis4Analysis(AnalysisLayer analysisLayer,
@@ -883,7 +766,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     }
 
     /**
-     * @param json wps analysis parameters
+     * @param json
+     *            wps analysis parameters
      * @return analysis id
      */
     private String getAnalysisInputId(JSONObject json) {
@@ -900,9 +784,37 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 return sids[2];
             }
         } catch (Exception e) {
-           log.debug("Decoding analysis layer id failed: ",e);
+            log.debug("Decoding analysis layer id failed: ", e);
         }
         return null;
+    }
+
+    private String harmonizeElementNames(String featureSet,
+            final AnalysisLayer analysisLayer) {
+
+        try {
+
+            final AnalysisMethodParams params = analysisLayer
+                    .getAnalysisMethodParams();
+            featureSet = featureSet.replace(ANALYSIS_WPS_ELEMENT_BUG,
+                    ANALYSIS_WFST_ELEMENT_NAME);
+            featureSet = featureSet.replace(ANALYSIS_WPS_UNION_GEOM, ANALYSIS_WFST_GEOMETRY);
+            featureSet = featureSet.replace(" NaN", "");
+            featureSet = featureSet.replace("srsDimension=\"3\"",  "srsDimension=\"2\"");
+
+        } catch (Exception e) {
+            log.debug("Harmonizing element names failed: ", e);
+        }
+        return featureSet;
+    }
+
+    private String stripNamespace(final String tag) {
+
+        String splitted[] = tag.split(":");
+        if (splitted.length > 1) {
+            return splitted[1];
+        }
+        return splitted[0];
     }
 
 }
