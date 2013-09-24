@@ -53,13 +53,16 @@ public class GeoServerProxyService {
     private static final String MY_PLACE_FEATURE_FILTER_XSL = "GetFeatureInfoMyPlaces.xsl";
     
 
-    private HttpURLConnection getConnection() throws MalformedURLException, IOException {
-
+    private static HttpURLConnection getConnection() throws IOException {
         final String myPlacesUrl = PropertyUtil.get("myplaces.ows.url");
+        return getConnection(myPlacesUrl);
+    }
+
+    private static HttpURLConnection getConnection(final String url) throws IOException {
         // myplaces needs geoserver auth
         final String myplacesUser = PropertyUtil.get("myplaces.user");
         final String myplacesUserPass = PropertyUtil.get("myplaces.password");
-        return IOHelper.getConnection(myPlacesUrl, myplacesUser, myplacesUserPass);
+        return IOHelper.getConnection(url, myplacesUser, myplacesUserPass);
     }
             
 
@@ -209,8 +212,8 @@ public class GeoServerProxyService {
                 + "&request=GetFeature" + "&maxFeatures=50"
                 + "&outputFormat=text/xml;%20subtype=gml/3.1.1"
                 + "&typeName=ows:" + typeName + "&FEATUREID=" + featureId;
-        URL geoserverUrl = new URL(geoserverAddress);
-        URLConnection geoserverCon = geoserverUrl.openConnection();
+
+        URLConnection geoserverCon = getConnection(geoserverAddress);
         if (geoserverCon == null)
             throw new RuntimeException("Could not get connection"
                     + " to GeoServer");
