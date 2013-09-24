@@ -39,34 +39,24 @@ public class GetMapLayersHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        try {
+        final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
+        final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
+                .getLocale().getLanguage());
 
-            final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
-            final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
-                    .getLocale().getLanguage());
+        boolean showEmpty = params.getUser().isAdmin();
+        final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
+                params.getUser(), lang, showEmpty);
 
-            boolean showEmpty = params.getUser().isAdmin();
-            log.warn("after showEmpty");
-            final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
-                    params.getUser(), lang, showEmpty);
+        JSONObject adminlayers = new JSONObject();
 
-            JSONObject adminlayers = new JSONObject();
-            
-            if (params.getUser().isAdmin()) {
-                adminlayers = makeMapLayersJson(layer_id);
-            }
-            log.warn("After adminlayers");
-            if (layer_id.isEmpty()) {
-                ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
-                        layers, adminlayers));
-            } else {
-                ResponseHelper.writeResponse(params, adminlayers);
-            }
-
-        } catch (ActionException e) {
-            throw e;
-            /*throw new ActionException(
-                    "Couldn't request DB service - get map layers", e);*/
+        if (params.getUser().isAdmin()) {
+            adminlayers = makeMapLayersJson(layer_id);
+        }
+        if (layer_id.isEmpty()) {
+            ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
+                    layers, adminlayers));
+        } else {
+            ResponseHelper.writeResponse(params, adminlayers);
         }
     }
 
