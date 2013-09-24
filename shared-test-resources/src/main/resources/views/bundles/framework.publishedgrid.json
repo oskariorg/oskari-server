@@ -1,0 +1,26 @@
+{
+    "startup" : {
+        "title": "Published Grid",
+        "bundleinstancename": "publishedgrid",
+        "fi": "publishedgrid",
+        "sv": "publishedgrid",
+        "en": "publishedgrid",
+        "bundlename": "publishedgrid",
+        "metadata": {
+            "Import-Bundle": {
+                "publishedgrid": {
+                    "bundlePath": "/Oskari/packages/statistics/bundle/"
+                },
+                "geostats": {
+                    "bundlePath": "/Oskari/packages/libraries/bundle/"
+                }
+            },
+            "Require-Bundle-Instance": [ ]
+        },
+        "instanceProps": {}
+    },
+    "config" : {
+        "conf" : { },
+        "state" : { }
+    }
+}

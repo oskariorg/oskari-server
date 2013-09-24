@@ -1,0 +1,15 @@
+[
+    {
+        "id": 1,
+        "keyword": "test",
+        "layers": [],
+        "shortcut": false
+    },
+    {
+        "id": 4,
+        "keyword": "parent",
+        "layers": [2],
+        "shortcut": false,
+        "type": "yk"
+    }
+]

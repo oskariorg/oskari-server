@@ -1,0 +1,186 @@
+{"configuration": {
+    "admin-layerrights": {
+      "conf": {},
+      "state": {}
+    },
+    "admin-layerselector": {
+      "conf": {},
+      "state": {}
+    },
+    "mapfull": {
+        "state": {
+            "selectedLayers": [
+                {
+                    "id": "base_35"
+                }
+            ],
+            "zoom": 1,
+            "east": "517620",
+            "north": "6874042"
+        },
+        "conf": {
+            "globalMapAjaxUrl": "--oskari.ajax.url.prefix--",
+            "plugins": [
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
+                },
+                {
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+                }
+            ],
+            "layers": [],
+            "imageLocation": "/Oskari/resources",
+            "user": {
+                "userID": 123,
+                "lastName": "Oskari",
+                "nickName": "Ozkari",
+                "userUUID": "my uuid is secrets",
+                "firstName": "Test",
+                "loginName": "test@oskari.org"
+            }
+        }
+    }
+}, "startupSequence": [
+    {
+        "instanceProps": {},
+        "title": "Map",
+        "fi": "mapfull",
+        "bundleinstancename": "mapfull",
+        "sv": "mapfull",
+        "en": "mapfull",
+        "bundlename": "mapfull",
+        "metadata": {
+            "Import-Bundle": {
+                "mapwmts": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "mapwfs": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "service-base": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "event-map-layer": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "request-map-layer": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "mapmodule-plugin": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "event-base": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "mapfull": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "core-base": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "oskariui": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "request-base": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "mapstats": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "domain": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "request-map": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "core-map": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "sandbox-base": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "service-map": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "mapanalysis": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "sandbox-map": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                },
+                "event-map": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance": []
+        }
+   },
+        {
+          "bundleinstancename": "admin-layerselector",
+          "bundlename": "admin-layerselector",
+          "en": "admin-layerselector",
+          "fi": "admin-layerselector",
+          "instanceProps": {},
+          "metadata": {
+            "Import-Bundle": {
+              "admin-layerselector": {"bundlePath": "/Oskari/packages/integration/bundle/"},
+              "bb": {"bundlePath": "/Oskari/packages/integration/bundle/"}
+            },
+            "Require-Bundle-Instance": []
+          },
+          "sv": "admin-layerselector",
+          "title": "Admin layerselector"
+        },
+        {
+          "bundleinstancename": "admin-layerrights",
+          "bundlename": "admin-layerrights",
+          "en": "admin-layerrights",
+          "fi": "admin-layerrights",
+          "instanceProps": {},
+          "metadata": {
+            "Import-Bundle": {
+              "admin-layerrights": {"bundlePath": "/Oskari/packages/framework/bundle/"}
+            },
+            "Require-Bundle-Instance": []
+          },
+          "sv": "admin-layerrights",
+          "title": "Admin layerrights"
+        }
+]
+}

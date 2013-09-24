@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PublishedMap">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <!-- typeAlias alias="WizardData" type="fi.mml.map.mappublisher.domain.WizardData" />
+    <typeAlias alias="MutualLayer" type="fi.mml.map.mappublisher.domain.MutualLayer" / -->
+	<typeAlias alias="TermsOfUse" type="fi.nls.oskari.map.publish.domain.TermsOfUse" />
+    
+    <!-- resultMap id="wizardDataResult" class="WizardData">
+        <result property="publishedMapId" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="sizeX" column="size_x" />
+        <result property="sizeY" column="size_y" />
+        <result property="isIndexMap" column="is_index_map" />
+        <result property="isZoomblock" column="is_zoom_block" />
+        <result property="isScale" column="is_scale" />
+        <result property="isFeatureInfoTool" column="is_feature_info_tool" />
+        <result property="isAddressBar" column="is_address_bar" />
+        <result property="isCenterMarker" column="is_center_marker" />
+        <result property="domainName" column="domain_name" />
+        <result property="mapName" column="map_name" />
+        <result property="language" column="language" />
+        <result property="zoomLvl" column="zoom_level" />
+        <result property="lon" column="center_longitude" />
+        <result property="lat" column="center_latitude" />
+        <result property="timeCreated" column="time_created" />
+        <result property="timeUpdated" column="time_updated" />
+    </resultMap -->
+    
+    <!-- resultMap id="mapLayersResult" class="MutualLayer">
+        <result property="publishedMapId" column="published_map_id" />
+        <result property="id" column="map_layer_id" />
+        <result property="type" column="map_layer_type" />
+        <result property="isFeatureInfoTool" column="is_feature_info_tool" />
+        <result property="opacity" column="opacity" />
+        <result property="orderRank" column="order_rank" />
+    </resultMap -->
+	
+	<resultMap id="termsOfUse" class="TermsOfUse">
+        <result property="userid" column="userid" />
+        <result property="agreed" column="agreed" />
+        <result property="time" column="time" />
+    </resultMap>
+    
+	<select id="findAgreedTermsOfUse" parameterClass="long" resultClass="TermsOfUse">
+        select user, agreed, time from portti_terms_of_use_for_publishing WHERE userid = #userid#
+    </select>
+    
+	<statement id="insertTermsOfUse" parameterClass="TermsOfUse">
+        insert into portti_terms_of_use_for_publishing (
+          userid, agreed, time)
+        values (#userid#, #agreed#, #time#)
+    </statement>    
+
+    <select id="maxId" resultClass="int">
+        select max(id) from portti_published_map
+    </select>
+    	
+    <!-- parameterMap id="findPublishedMapsByPublishedMapLayerParamMap" class="Map">
+        <parameter property="id" />
+        <parameter property="type"/>
+    </parameterMap>
+
+    <select id="find" resultMap="wizardDataResult" parameterClass="int">
+        SELECT id, user_id, size_x, size_y, is_index_map, is_zoom_block, is_scale, 
+	       is_feature_info_tool, is_address_bar, is_center_marker, domain_name, 
+	       map_name, language, zoom_level, center_longitude, center_latitude, 
+	       time_created, time_updated
+	FROM portti_published_map where id=#publishedMapId#
+    </select>
+    
+    <select id="findAll" resultMap="wizardDataResult">
+        SELECT id, user_id, size_x, size_y, is_index_map, is_zoom_block, is_scale, 
+	       is_feature_info_tool, is_address_bar, is_center_marker, domain_name, 
+	       map_name, language, zoom_level, center_longitude, center_latitude, 
+	       time_created, time_updated
+	FROM portti_published_map order by user_id, map_name
+    </select>
+    
+    <select id="findPublishedMapsOfUser" resultMap="wizardDataResult" parameterClass="long">
+        SELECT id, user_id, size_x, size_y, is_index_map, is_zoom_block, is_scale, 
+	       is_feature_info_tool, is_address_bar, is_center_marker, domain_name, 
+	       map_name, language, zoom_level, center_longitude, center_latitude, 
+	       time_created, time_updated
+	FROM portti_published_map where user_id=#userId#
+    </select>
+    
+    <select id="findAllPublishedMapLayers" resultMap="mapLayersResult">
+        select published_map_id, map_layer_id, map_layer_type, is_feature_info_tool, opacity, order_rank
+        from portti_published_map_layers
+        order by published_map_id, map_layer_type, order_rank
+    </select>
+    
+    <select id="findPublishedMapLayersOfUser" resultMap="mapLayersResult">
+        select l.published_map_id as published_map_id, l.map_layer_id as map_layer_id, 
+        l.map_layer_type as map_layer_type, l.is_feature_info_tool as is_feature_info_tool, 
+        l.opacity as opacity, l.order_rank as order_rank
+        from portti_published_map m, portti_published_map_layers l
+        where m.id=l.published_map_id
+        and m.user_id=#userId#
+        order by published_map_id, map_layer_type, order_rank
+    </select>
+    
+    <select id="findPublishedMapLayersByPublishedMapId" resultMap="mapLayersResult">
+        select published_map_id, map_layer_id, map_layer_type, is_feature_info_tool, opacity, order_rank
+        from portti_published_map_layers
+        where published_map_id=#publishedMapId#
+        order by map_layer_type, order_rank
+    </select>
+    
+    <select id="findPublishedMapsByPublishedMapLayer" resultClass="int" parameterMap="findPublishedMapsByPublishedMapLayerParamMap">
+        select published_map_id 
+        from portti_published_map_layers 
+        where map_layer_id=? and map_layer_type=?;
+    </select>
+    
+    <select id="findPublishedMapLayers" resultMap="wizardDataResult" parameterClass="long">
+       SELECT id, user_id, size_x, size_y, is_index_map, is_zoom_block, is_scale, 
+	       is_feature_info_tool, is_address_bar, is_center_marker, domain_name, 
+	       map_name, language, zoom_level, center_longitude, center_latitude, 
+	       time_created, time_updated
+	FROM portti_published_map where user_id=#userId#
+    </select>
+    
+    <statement id="insert" parameterClass="WizardData" resultClass="int">
+        insert into portti_published_map (
+            user_id, size_x, size_y, is_index_map, is_zoom_block, is_scale, 
+            is_feature_info_tool, is_address_bar, is_center_marker, domain_name, map_name, 
+            language, zoom_level, center_longitude, center_latitude)
+        values (
+            #userId#, #sizeX#, #sizeY#, #isIndexMap#, #isZoomblock#, #isScale#, 
+            #isFeatureInfoTool#, #isAddressBar#, #isCenterMarker#, #domainName#, #mapName#, 
+            #language#, #zoomLvl#, #lon#, #lat#)
+    </statement>
+    
+    <statement id="update" parameterClass="WizardData">
+        update portti_published_map set
+            size_x=#sizeX#, size_y=#sizeY#, is_index_map=#isIndexMap#, is_zoom_block=#isZoomblock#, 
+            is_scale=#isScale#, is_feature_info_tool=#isFeatureInfoTool#, is_address_bar=#isAddressBar#, 
+            is_center_marker=#isCenterMarker#, domain_name=#domainName#, map_name=#mapName#, language=#language#, 
+            zoom_level=#zoomLvl#, center_longitude=#lon#, center_latitude=#lat#, time_updated=CURRENT_TIMESTAMP
+        where id=#publishedMapId#
+    </statement>
+    
+    <statement id="insertPublishedMapLayers" parameterClass="MutualLayer">
+        insert into portti_published_map_layers (published_map_id, map_layer_id, map_layer_type, 
+        is_feature_info_tool, opacity, order_rank) 
+        values (#publishedMapId#, #id#, #type#, #isFeatureInfoTool#, #opacity#, #orderRank#)
+    </statement>
+    
+    <statement id="delete" parameterClass="int">
+        delete from portti_published_map where id=#publishedMapId#
+    </statement>
+    
+    <statement id="deletePublishedMapLayers" parameterClass="int">
+        delete from portti_published_map_layers where published_map_id=#publishedMapId#
+    </statement -->
+	
+    
+</sqlMap>
