@@ -282,7 +282,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
                     this.parseProperties(analysisLayer.getFields(), lc
-                            .getFeatureNamespace()));
+                            .getFeatureNamespace(),lc.getGMLGeometryProperty()));
         } else if (INTERSECT.equals(analysisMethod)) {
             JSONObject params;
             try {
@@ -723,11 +723,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         return wfs_filter;
     }
 
-    private String parseProperties(List<String> props, String ns)
+    private String parseProperties(List<String> props, String ns, String geom_prop)
             throws ActionParamsException {
 
         try {
-            return WFSFilterBuilder.parseProperties(props, ns);
+            return WFSFilterBuilder.parseProperties(props, ns, geom_prop);
 
         } catch (Exception e) {
             log.warn(e, "Properties parse failed");
