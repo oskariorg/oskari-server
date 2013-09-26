@@ -24,6 +24,8 @@
 
     <module>control-base</module>
     <module>control-wfs</module>
+    <module>control-example</module>
+
     <module>content-resources</module>
     
 

@@ -80,54 +80,43 @@ public class DBHandler {
         try {
             System.out.println("/ Create DB");
 
-            executeSqlFromFile(conn, dbname, "/00-create-tables.sql");
-            System.out.println("/- 00-create-tables.sql");
+            executeSqlFromFile(conn, dbname, "00-create-tables.sql");
+            System.out.println("/- Created tables");
 
-            System.out.println("/- registering bundles:");
-            registerBundle(conn, "framework", "001-openlayers-default-theme.sql");
-            registerBundle(conn, "framework", "002-mapfull.sql");
-            registerBundle(conn, "framework", "003-divmanazer.sql");
-            registerBundle(conn, "framework", "004-toolbar.sql");
-            registerBundle(conn, "framework", "005-statehandler.sql");
-            registerBundle(conn, "framework", "006-infobox.sql");
-            registerBundle(conn, "framework", "007-search.sql");
-            registerBundle(conn, "framework", "008-layerselector2.sql");
-            registerBundle(conn, "framework", "009-layerselection2.sql");
-            registerBundle(conn, "framework", "010-personaldata.sql");
-            registerBundle(conn, "framework", "011-publisher.sql");
-            registerBundle(conn, "framework", "012-coordinatedisplay.sql");
-            registerBundle(conn, "framework", "013-maplegend.sql");
-            registerBundle(conn, "framework", "014-userguide.sql");
-            registerBundle(conn, "framework", "015-metadataflyout.sql");
-            registerBundle(conn, "framework", "016-featuredata.sql");
-            registerBundle(conn, "framework", "017-myplaces2.sql");
-            registerBundle(conn, "framework", "018-guidedtour.sql");
-            registerBundle(conn, "framework", "019-backendstatus.sql");
-            registerBundle(conn, "framework", "020-printout.sql");
-            registerBundle(conn, "framework", "021-postprocessor.sql");
-            registerBundle(conn, "framework", "022-statsgrid.sql");
-            registerBundle(conn, "framework", "023-parcel.sql");
-            registerBundle(conn, "framework", "024-parcelselector.sql");
-            registerBundle(conn, "framework", "025-parcelinfo.sql");
-            registerBundle(conn, "framework", "026-promote.sql");
-            registerBundle(conn, "framework", "027-publishedgrid.sql");
-            registerBundle(conn, "framework", "028-featuredata2.sql");
-            registerBundle(conn, "framework", "029-admin-layerrights.sql");
-
-            registerBundle(conn, "integration", "001-admin-layerselector.sql");
-
-            if ("PostgreSQL".equals(dbname)) {
-                System.out.println("/- 01-adding view with bundles using ibatis");
-                insertView(conn, "default-view.json");
-                insertView(conn, "postgres-view.json");
-                insertView(conn, "publisher-template-view.json");
-            } else {
-                executeSqlFromFile(conn, dbname, "/01-create-default-view.sql");
-                System.out.println("/- 01-create-default-view.sql");
+            final String propertySetupFile = "/setup/" + ConversionHelper.getString(System.getProperty("oskari.setup"), "default") + ".json";
+            String setupJSON = IOHelper.readString(DBHandler.class.getResourceAsStream(propertySetupFile));
+            final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
+            if(setup.has("bundles")) {
+                System.out.println("/- registering bundles:");
+                final JSONObject bundlesSetup = setup.getJSONObject("bundles");
+                final JSONArray namespaces = bundlesSetup.names();
+                for(int namespaceIndex = 0; namespaceIndex < namespaces.length(); ++namespaceIndex) {
+                    final String namespace = namespaces.getString(namespaceIndex);
+                    final JSONArray namespaceBundles = bundlesSetup.getJSONArray(namespace);
+                    for(int i = 0; i < namespaceBundles.length(); ++i) {
+                        final String bundlesql = namespaceBundles.getString(i);
+                        registerBundle(conn, namespace, bundlesql);
+                    }
+                }
+            }
+            if(setup.has("views")) {
+                System.out.println("/- adding views using ibatis");
+                final JSONArray viewsListing = setup.getJSONArray("views");
+                for(int i = 0; i < viewsListing.length(); ++i) {
+                    final String viewConfFile = viewsListing.getString(i);
+                    insertView(conn, viewConfFile);
+                }
             }
 
-            executeSqlFromFile(conn, dbname, "exampleLayersAndRoles.sql");
-            System.out.println("/-  exampleLayersAndRoles.sql");
+            if(setup.has("sql")) {
+                System.out.println("/- running additional sql files");
+                final JSONArray viewsListing = setup.getJSONArray("sql");
+                for(int i = 0; i < viewsListing.length(); ++i) {
+                    final String sqlFileName = viewsListing.getString(i);
+                    System.out.println("/-  " + sqlFileName);
+                    executeSqlFromFile(conn, dbname, sqlFileName);
+                }
+            }
 
         } catch (Exception e) {
             try {
@@ -179,6 +168,9 @@ public class DBHandler {
                 if (bJSON.has("instance")) {
                     bundle.setBundleinstance(bJSON.getString("instance"));
                 }
+                if (bJSON.has("startup")) {
+                    bundle.setStartup(bJSON.getJSONObject("startup").toString());
+                }
                 if (bJSON.has("config")) {
                     bundle.setConfig(bJSON.getJSONObject("config").toString());
                 }
@@ -206,7 +198,7 @@ public class DBHandler {
     }
 
     private static void executeSqlFromFile(Connection conn, final String dbName, final String fileName) throws IOException, SQLException {
-        String sqlFile = readFileAsString(dbName, fileName);
+        String sqlFile = readSQLFileAsString(dbName, fileName);
         executeMultilineSql(conn, sqlFile);
     }
 
@@ -251,12 +243,16 @@ public class DBHandler {
         return result;
     }
 
-    private static String readFileAsString(final String dbName, final String fileName) throws java.io.IOException {
+    private static String readSQLFileAsString(final String dbName, final String fileName) throws java.io.IOException {
 
         try {
             InputStream is = DBHandler.class.getResourceAsStream("/sql/" + dbName + "/" + fileName);
             if (is == null) {
                 is = DBHandler.class.getResourceAsStream("/sql/" + fileName);
+                System.out.println("   file: /sql/" + fileName);
+            }
+            else {
+                System.out.println("   file: /sql/" + dbName + "/" + fileName);
             }
             return IOHelper.readString(is);
         } catch (Exception ex) {
