@@ -196,7 +196,7 @@ UPDATE portti_view_bundle_seq set config = '{
            "disconnectTime" : 30000,
            "backoffIncrement": 1000,
            "maxBackoff": 60000,
-           "maxNetworkDelay": 10000,
+           "maxNetworkDelay": 10000
          }
        },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
