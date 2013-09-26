@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Returns dummy response for CMS route
+ * Example route handling CMS integration. Returns dummy responses.
  * @author SMAKINEN
  */
 @OskariActionRoute("GetArticlesByTag")

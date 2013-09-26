@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Returns all roles in the system.
+ * Example route returning all roles in the system.
  * @author SMAKINEN
  */
 @OskariActionRoute("GetAllRoles")
