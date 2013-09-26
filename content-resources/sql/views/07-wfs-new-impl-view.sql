@@ -47,7 +47,7 @@ INSERT INTO portti_view (name, type, is_default, supplement_id, application, pag
 -- QUERY FOR VIEW ID AND MODIFY THE FOLLOWING STATEMENTS TO USE IT INSTEAD OF [VIEW_ID]
 --------------------------------------------
 
-SELECT id FROM portti_view WHERE application = 'mapwfs2'
+SELECT id FROM portti_view WHERE application = 'mapwfs2';
 
 
 --------------------------------------------
