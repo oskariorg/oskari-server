@@ -30,12 +30,12 @@ public class GetAnalysisLayersHandler extends ActionHandler {
 
             User user = params.getUser();
             JSONObject layers = new JSONObject();
-            if (!user.isGuest())
-                layers = analysisDataService.getListOfAllAnalysisLayers(user
-                        .getUuid(), lang);
+            if (!user.isGuest()) {
+                layers = analysisDataService.getListOfAllAnalysisLayers(
+                        user.getUuid(), lang);
+            }
 
             ResponseHelper.writeResponse(params, layers);
-
 
         } catch (Exception e) {
             throw new ActionException(

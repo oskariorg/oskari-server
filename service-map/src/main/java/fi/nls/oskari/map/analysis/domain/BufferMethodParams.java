@@ -86,6 +86,10 @@ public class BufferMethodParams extends AnalysisMethodParams {
         if (this.getProperties() != null) {
             doctemp = doctemp.replace(PROPERTIES, this.getProperties());
         }
+        else
+        {
+            doctemp = doctemp.replace(PROPERTIES, "");
+        }
         // Filter
         String wfsfilter = "";
         if (this.getFilter() != null) {

@@ -33,6 +33,7 @@ public abstract class AnalysisMethodParams {
     public final String SRSNAME = "{srsName}";
     public final String XMLNS = "{xmlns}";
     public final String TYPENAME = "{typeName}";
+    public final String LOCALTYPENAME = "{localTypeName}";
     public final String FILTER = "{filter}";
     public final String PROPERTIES = "{properties}";
     public final String GEOM = "{geom}";
@@ -55,6 +56,7 @@ public abstract class AnalysisMethodParams {
     private String srsName = "";
     private String xmlns = "";
     private String typeName = "";
+    private String localTypeName = "";
     private String properties = "";
     private String filter = "";
     private String filter2 = "";
@@ -154,6 +156,14 @@ public abstract class AnalysisMethodParams {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getLocalTypeName() {
+        return localTypeName;
+    }
+
+    public void setLocalTypeName(String localTypeName) {
+        this.localTypeName = localTypeName;
     }
 
     public String getProperties() {
