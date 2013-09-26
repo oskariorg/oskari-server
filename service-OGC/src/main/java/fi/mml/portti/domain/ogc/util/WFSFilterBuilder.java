@@ -279,11 +279,16 @@ public class WFSFilterBuilder {
 
     }
 
-    public static String parseProperties(List<String> props, String ns) {
+    public static String parseProperties(List<String> props, String ns, String geom_prop) {
         String query = "";
         for (String prop : props) {
             String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, ns + ":"
                     + prop);
+            query = query + temp;
+        }
+        if(!query.isEmpty())
+        {
+            String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
             query = query + temp;
         }
 
