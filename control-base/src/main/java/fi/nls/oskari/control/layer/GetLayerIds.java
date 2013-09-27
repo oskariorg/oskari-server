@@ -40,9 +40,7 @@ public class GetLayerIds extends ActionHandler {
         String result = null;
 
         String jsessionid = params.getRequest().getSession().getId();
-        if(params.getRequest().getCookies() != null) {
-            log.warn(params.getRequest().getCookies());
-        }
+
         // check cache
 	    boolean cache = ConversionHelper.getBoolean(params.getHttpParam("no-cache"), false);
 	    if(cache) {
