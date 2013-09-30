@@ -9,6 +9,8 @@ import fi.nls.oskari.cache.JedisManager;
 
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 
+import javax.xml.namespace.QName;
+
 /**
  * Handles layer's configuration
  *
@@ -100,6 +102,22 @@ public class WFSLayerConfiguration {
 	private String selectionSLDStyle;
 
 	private List<WFSSLDStyle> SLDStyles; // id, name, xml
+
+    /**
+     * Constructs a QName for feature element.
+     * @return
+     */
+    public QName getFeatureElementQName() {
+        /*
+        old db table        | new db table
+        portti_feature_type | portti_wfs_layer field
+        --------------------------------------------
+        namespace_uri       | feature_namespace_uri
+        localpart           | feature_element
+        name prefix         | feature_namespace
+        */
+        return new QName(getFeatureNamespaceURI(), getFeatureElement(), getFeatureNamespace());
+    }
 
     public String getLayerId() {
 		return layerId;
