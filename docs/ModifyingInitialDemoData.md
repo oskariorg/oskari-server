@@ -67,7 +67,7 @@ After this the layer should be listed in layerselector for guests.
 
 ### 1. Add new users and roles
 
-* edit user.json and roles.json files in resource path `oskari-server/servlet-map/src/main/resources/users/`
+* edit user.json and roles.json files in resource path `oskari-server/control-example/src/main/resources/users/`
 
 * role ids must match the ones referenced in portti_permission and portti_recource_user tables (see next subsection)
 

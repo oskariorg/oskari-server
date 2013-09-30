@@ -11,7 +11,7 @@
     
     <resultMap class="WFSLayerConfiguration" id="WFSLayerConfiguration">
         <result property="layerId" column="maplayer_id"/>
-        <result property="nameLocales" column="locales"/>
+        <result property="nameLocales" column="locale"/>
         <result property="URL" column="url"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
@@ -58,7 +58,7 @@
     <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration">
     	SELECT
 			l.maplayer_id,
-			l.locales,
+			map.locale,
 			l.url,
 			l.username,
 			l.password,

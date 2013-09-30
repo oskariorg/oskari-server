@@ -42,6 +42,8 @@
         "mapwfs2-view.json"
     ],
     "sql" : [
-        "exampleLayersAndRoles.sql"
+        "exampleLayersAndRoles.sql",
+        "create-wfs-tables.sql",
+        "example-wfslayer.sql"
     ]
 }
