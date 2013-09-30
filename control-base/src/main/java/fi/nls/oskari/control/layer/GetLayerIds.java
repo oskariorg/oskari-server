@@ -28,7 +28,7 @@ public class GetLayerIds extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetLayerIds.class);
     
-    private static final String LAYERIDS = "layerIds";
+    private static final String LAYER_IDS = "layerIds";
     private static final String ID = "id";
     
     
@@ -40,7 +40,7 @@ public class GetLayerIds extends ActionHandler {
         String result = null;
 
         String jsessionid = params.getRequest().getSession().getId();
-        
+
         // check cache
 	    boolean cache = ConversionHelper.getBoolean(params.getHttpParam("no-cache"), false);
 	    if(cache) {
@@ -61,11 +61,11 @@ public class GetLayerIds extends ActionHandler {
                 idList.add(Integer.parseInt(String.valueOf(entry.get(ID))));
             }
             Map<String,List<Integer>> layerIds = new HashMap<String,List<Integer>>();
-            layerIds.put(LAYERIDS, idList);
+            layerIds.put(LAYER_IDS, idList);
             result = mapper.writeValueAsString(layerIds);
             
             // put to cache
-            log.warn("saving session:", jsessionid);
+            log.debug("saving session:", jsessionid);
 	        WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(result);
 	        permissions.save(jsessionid);
             
