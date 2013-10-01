@@ -9,17 +9,12 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Get WMS map layers
@@ -77,12 +72,19 @@ public class GetMapLayersHandler extends ActionHandler {
             for (Layer ml : allMapLayers) {
                 final JSONObject mapProperties = new JSONObject();
 
-                List<String> languages = ml.getLanguages();
+                Set<String> languages = new HashSet<String>(ml.getLanguages());
+                // make sure we have entries for all supported languages just to be nice...
+                languages.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+                JSONObject names = new JSONObject();
+                JSONObject titles = new JSONObject();
 
                 for (String lang : languages) {
-                    mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
-                    mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
+                    names.put(lang, ml.getName(lang));
+                    titles.put(lang, ml.getTitle(lang));
                 }
+
+                mapProperties.put("name", names);
+                mapProperties.put("title", titles);
 
                 mapProperties.put("wmsName", ml.getWmsName());
                 mapProperties.put("wmsUrl", ml.getWmsUrl());

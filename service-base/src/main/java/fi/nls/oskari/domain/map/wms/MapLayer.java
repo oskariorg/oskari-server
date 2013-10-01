@@ -37,7 +37,7 @@ public class MapLayer extends Layer {
 	    json.put("updated", this.getUpdated());
 	    json.put("created", this.getCreated());
 	    
-	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage())); // TODO: only default lang?
+	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage()));
 	    
 	    json.put("wmsUrl", this.getWmsUrl());
         
@@ -48,13 +48,19 @@ public class MapLayer extends Layer {
 	    adminJSON.put("layerType", this.getType());
 	    adminJSON.put("wmsName", this.getWmsName());
 
+        JSONObject names = new JSONObject();
+        JSONObject titles = new JSONObject();
+
 	    for (Map.Entry<String, String> localization : this.getTitles().entrySet()) {
-            adminJSON.put("title" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
+            titles.put(localization.getKey(), localization.getValue());
         }
 
         for (Map.Entry<String, String> localization : this.getNames().entrySet()) {
-            adminJSON.put("name" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
+            names.put(localization.getKey(), localization.getValue());
         }
+
+        adminJSON.put("name", names);
+        adminJSON.put("title", titles);
 	    
 	    adminJSON.put("wms_parameter_layers","");
 	    adminJSON.put("inspireTheme", this.getInspireThemeId());
