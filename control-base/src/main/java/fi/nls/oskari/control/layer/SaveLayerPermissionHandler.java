@@ -70,7 +70,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
 
            permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
            permissions.setExternalId(layerPermission.getString("roleId"));
-           permissions.getUniqueResourceName().setType(Permissions.RESOUCE_TYPE_WMS_LAYER);
+           permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_WMS_LAYER);
            permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
            permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
 
@@ -81,7 +81,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
                deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
            }
 
-             if (layerPermission.getBoolean("isSelected")) {
+           if (layerPermission.getBoolean("isSelected")) {
                addPermissions(permissions,Permissions.PERMISSION_TYPE_PUBLISH);
            } else {
                log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);

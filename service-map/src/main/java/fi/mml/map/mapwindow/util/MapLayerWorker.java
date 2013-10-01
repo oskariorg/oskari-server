@@ -20,6 +20,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +39,7 @@ public class MapLayerWorker {
     private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-   private static WFSDbService wfsDbService = new WFSDbServiceIbatisImpl();
+    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(MapLayerWorker.class);
@@ -60,12 +62,12 @@ public class MapLayerWorker {
 
         List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         // Get the whole layerclass structure
@@ -91,12 +93,12 @@ public class MapLayerWorker {
         final String permissionType = getPermissionType(isPublished);
         final List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         permissionType);
 
         final List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         permissionType);
 
         final List<LayerClass> allLayerClassRoot = new ArrayList<LayerClass>();
@@ -316,10 +318,10 @@ public class MapLayerWorker {
 
         if (null != mapLayers && mapLayers.size() > 0) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, layerClass.getId() + "+", permissionsList);
         } else if ("groupMap".equals(layerJson.get("type")) || "base".equals(layerJson.get("type"))) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, layerClass.getId() + "+", permissionsList);
         } else {
             layerJson.put("baseLayerId", "").put("id", layerClass.getId());
         }
@@ -404,7 +406,7 @@ public class MapLayerWorker {
             } else {
                 layerJson.put("wmsName", layer.getWmsName());
             }
-            populatePermissionInformation(layerJson, roles, layer.getWmsName() + ":" + layer.getWmsUrl(), permissionsList);
+            populatePermissionInformation(layerJson, roles, layer.getWmsName() + "+" + layer.getWmsUrl(), permissionsList);
 
             layerJson.put("resource_url_client_pattern", layer.getResource_url_client_pattern());
 
@@ -473,7 +475,7 @@ public class MapLayerWorker {
       * @param layer layer of which styles will be retrieved
      */
        private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
-          List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
+          List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
           try{
             if ( styleList.size() > 0) {
                for (WFSSLDStyle style : styleList) {

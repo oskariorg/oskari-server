@@ -9,6 +9,8 @@ import fi.nls.oskari.cache.JedisManager;
 
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 
+import javax.xml.namespace.QName;
+
 /**
  * Handles layer's configuration
  *
@@ -100,6 +102,22 @@ public class WFSLayerConfiguration {
 	private String selectionSLDStyle;
 
 	private List<WFSSLDStyle> SLDStyles; // id, name, xml
+
+    /**
+     * Constructs a QName for feature element.
+     * @return
+     */
+    public QName getFeatureElementQName() {
+        /*
+        old db table        | new db table
+        portti_feature_type | portti_wfs_layer field
+        --------------------------------------------
+        namespace_uri       | feature_namespace_uri
+        localpart           | feature_element
+        name prefix         | feature_namespace
+        */
+        return new QName(getFeatureNamespaceURI(), getFeatureElement(), getFeatureNamespace());
+    }
 
     public String getLayerId() {
 		return layerId;
@@ -446,7 +464,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
 
 		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
-		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONArray(this.getSelectedFeatureParams()));
+		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONObject(this.getSelectedFeatureParams()));
 		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, JSONHelper.createJSONObject(this.getFeatureParamsLocales()));
 		JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
 		JSONHelper.putValue(root, GET_MAP_TILES, this.isGetMapTiles());

@@ -95,7 +95,10 @@ public interface PermissionsService extends BaseService<Permissions> {
 //    public List<Long> getListOfMaplayerIdsForViewPermissionByUser(User user);
     
     public boolean hasViewPermissionForLayerByLayerId(User user, long layerId);
-    
+
+    public boolean hasEditPermissionForLayerByLayerId(User user, long layerId);
+
+    public boolean hasAddLayerPermission(User user);
     
 	
 }

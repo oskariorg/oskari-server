@@ -35,8 +35,7 @@ public class PublishTermsOfUseServiceIbatisImpl extends BaseIbatisService<TermsO
         
         return -1;
     }
-    
-    @Override
+
     public TermsOfUse findByUserId(final long userId) {
         final TermsOfUse toe = queryForObject(getNameSpace() + ".findAgreedTermsOfUse", userId);
         return toe;
