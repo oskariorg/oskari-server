@@ -12,6 +12,7 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.CapabilitiesCache;
 import fi.nls.oskari.domain.map.wms.MapLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -38,8 +39,6 @@ public class SaveLayerHandler extends ActionHandler {
     
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARM_LAYER_ID = "layer_id";
-    
-    private static final String ADMIN_ID = "10113";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -51,12 +50,15 @@ public class SaveLayerHandler extends ActionHandler {
             final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
             final int mapLayerId = ConversionHelper.getInt(layer_id, 0);
             
-            if(!mapLayerService.hasPermissionToUpdate(params.getUser(), mapLayerId)) {
-                throw new ActionDeniedException("Unauthorized user tried to update layer - id=" + layer_id);
-            }
+
 
             // ************** UPDATE ************************
             if (!layer_id.isEmpty()) {
+
+                if(!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), mapLayerId)) {
+                    throw new ActionDeniedException("Unauthorized user tried to update layer - id=" + layer_id);
+                }
+
                 if (mapLayerId > 0) {
                     MapLayer ml = new MapLayer();
                     ml.setId(mapLayerId);
@@ -78,13 +80,21 @@ public class SaveLayerHandler extends ActionHandler {
             // ************** INSERT ************************
             else {
 
+                if(!permissionsService.hasAddLayerPermission(params.getUser())) {
+                    throw new ActionDeniedException("Unauthorized user tried to add layer - id=" + layer_id);
+                }
+
                 MapLayer ml = new MapLayer();
                 ml.setCreated(new Date(System.currentTimeMillis()));
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 handleRequestToMapLayer(request, ml);
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
-                addPermissionsForAdmin(ml);
+
+                final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
+
+                addPermissionsForRoles(ml, params.getUser(), externalIds);
+
                 org.json.JSONObject mapJson = ml.toJSON();
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName("fi"));
 
@@ -228,17 +238,24 @@ public class SaveLayerHandler extends ActionHandler {
         if (request.getParameter("epsg") != null) {
             ml.setEpsg(ConversionHelper.getInt(request.getParameter("epsg"),3067));
         }
-
     }
     
-    private void addPermissionsForAdmin(MapLayer ml) {
-        
+    private void addPermissionsForRoles(MapLayer ml, User user, final String[] externalIds) {
+
+
         Permissions permissions = new Permissions();
-        
-        permissions.getUniqueResourceName().setType(Permissions.RESOUCE_TYPE_WMS_LAYER);
+
+        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_WMS_LAYER);
         permissions.getUniqueResourceName().setNamespace(ml.getWmsUrl());
         permissions.getUniqueResourceName().setName(ml.getWmsName());
-        
-        permissionsService.insertPermissions(permissions.getUniqueResourceName(), ADMIN_ID, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+
+        // insert permissions
+        for (String externalId : externalIds) {
+           if(user.hasRoleWithId(ConversionHelper.getLong(externalId, -1))) {
+                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            }
+        }
+
     }
 }

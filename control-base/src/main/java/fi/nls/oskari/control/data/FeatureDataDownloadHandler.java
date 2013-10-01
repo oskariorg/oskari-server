@@ -59,7 +59,7 @@ public class FeatureDataDownloadHandler extends ActionHandler {
         User user = params.getUser();
         List<String> downloadPermissions = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         Permissions.PERMISSION_TYPE_DOWNLOAD);
         if (downloadPermissions == null)
             throw new RuntimeException("Could not get download permissions");
