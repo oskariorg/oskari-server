@@ -24,8 +24,7 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 	protected String getNameSpace() {
 		return "WFSService";
 	}
-	
-	@Override
+
 	public WFSService findWFSService(int wfsServiceId) {
 		
 		// search database
@@ -63,7 +62,6 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
         return styleList;
     }
 
-	@Override
 	public int insertWFSService(WFSService wfsService) {
 		Integer wfsServiceId = null;
 		SqlMapClient client = null;
@@ -88,8 +86,7 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 		}
 		return wfsServiceId;
 	}
-	
-	@Override
+
 	public void updateWFSService(WFSService wfsService) {
 		SqlMapClient client = null;
 		try {

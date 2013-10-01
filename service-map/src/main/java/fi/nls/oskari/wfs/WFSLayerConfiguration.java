@@ -464,7 +464,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
 
 		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
-		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONArray(this.getSelectedFeatureParams()));
+		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONObject(this.getSelectedFeatureParams()));
 		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, JSONHelper.createJSONObject(this.getFeatureParamsLocales()));
 		JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
 		JSONHelper.putValue(root, GET_MAP_TILES, this.isGetMapTiles());
