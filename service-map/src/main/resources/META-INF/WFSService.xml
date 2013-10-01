@@ -11,7 +11,6 @@
     <typeAlias alias="OwsOperation" type="fi.nls.oskari.domain.map.wfs.OwsOperation" />
     <typeAlias alias="FeatureType" type="fi.nls.oskari.domain.map.wfs.FeatureType" />
     <typeAlias alias="FeatureParameter" type="fi.nls.oskari.domain.map.wfs.FeatureParameter" />
-    <typeAlias alias="WFSLayerStyle" type="fi.nls.oskari.domain.map.wfs.WFSSLDStyle" />
 
 
     <resultMap id="wfsServiceResult" class="WFSService">
@@ -57,11 +56,6 @@
         <result property="url" column="url" />
     </resultMap>
 
-    <resultMap id="WFSLayerStyle" class="WFSLayerStyle" >
-        <result property="id" column="id" />
-        <result property="name" column="name" />
-        <result property="SLDStyle" column="sld_style" />
-    </resultMap>
 
     <parameterMap id="WFSServiceInsertParameter" class="WFSService">
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
@@ -163,12 +157,6 @@
         order by name
     </select>
 
-    <select id="findLayerStyles" resultMap="WFSLayerStyle">
-        select s.id, s.name, s.sld_style
-        from  portti_wfs_layer_style s, portti_wfs_layers_styles m, portti_wfs_layer l
-        where m.wfs_layer_id = l.id and l.maplayer_id = #id#
-        and m.wfs_layer_style_id = s.id
-    </select>
 
     <statement id="insert" parameterMap="WFSServiceInsertParameter" resultClass="int">
         insert into portti_wfs_service (

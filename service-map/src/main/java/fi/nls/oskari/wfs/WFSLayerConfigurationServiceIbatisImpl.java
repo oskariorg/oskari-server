@@ -12,13 +12,20 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
         return "WFSLayerConfiguration";
     }
 
-    public WFSLayerConfiguration findConfiguration(int id) {
-    	WFSLayerConfiguration conf = (WFSLayerConfiguration) queryForObject(getNameSpace() + ".findLayer", id);
-    	if(conf == null)
-    		return null;
-    	List<WFSSLDStyle> styles = queryForList(getNameSpace() + ".findStyles", id);
+    public WFSLayerConfiguration findConfiguration(final int id) {
+    	WFSLayerConfiguration conf = queryForObject(getNameSpace() + ".findLayer", id);
+    	if(conf == null) {
+            return null;
+        }
+    	final List<WFSSLDStyle> styles = findWFSLayerStyles(id);
     	conf.setSLDStyles(styles);
     	return conf;
     }
-    
+
+    public List<WFSSLDStyle> findWFSLayerStyles(final int layerId) {
+        List<WFSSLDStyle> styles = queryForList(getNameSpace() + ".findStylesForLayer", layerId);
+        return styles;
+    }
+
+
 }
