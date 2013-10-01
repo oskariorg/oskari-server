@@ -33,6 +33,16 @@ public class PropertyUtil {
         return "en_US";
     }
 
+    public static String[] getSupportedLanguages() {
+        String[] supportedLanguages = getSupportedLocales();
+        log.error("getSupportedLanguages", supportedLanguages.length);
+        for (int i = 0; i < supportedLanguages.length; i++) {
+            supportedLanguages[i] = supportedLanguages[i].split("_")[0];
+        }
+        log.error("returning");
+        return supportedLanguages;
+    }
+
     public static String getDefaultLanguage() {
         return getDefaultLocale().split("_")[0];
     }

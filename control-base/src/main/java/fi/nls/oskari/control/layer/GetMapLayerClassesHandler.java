@@ -48,9 +48,12 @@ public class GetMapLayerClassesHandler extends ActionHandler {
 
                 classProperties.put("id", lc.getId());
                 classProperties.put("parentid", lc.getParent());
+                JSONObject names = new JSONObject();
                 for (Map.Entry<String, String> localization : lc.getNames().entrySet()) {
+                    names.put(localization.getKey(), localization.getValue());
                     classProperties.put("name" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
                 }
+                classProperties.put("name", names);
                 classProperties.put("isgroupmap", lc.isGroupMap());
                 classProperties.put("isselectable", lc.isMapLayersSelectable());
                 if (lc.getChildren().isEmpty()) {

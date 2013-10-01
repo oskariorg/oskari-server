@@ -37,6 +37,9 @@ public class SaveLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARM_LAYER_ID = "layer_id";
 
+    private static final String LAYER_NAME_PREFIX = "name";
+    private static final String LAYER_TITLE_PREFIX = "title";
+
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
@@ -82,8 +85,9 @@ public class SaveLayerHandler extends ActionHandler {
                 }
 
                 MapLayer ml = new MapLayer();
-                ml.setCreated(new Date(System.currentTimeMillis()));
-                ml.setUpdated(new Date(System.currentTimeMillis()));
+                Date currentDate = new Date(System.currentTimeMillis());
+                ml.setCreated(currentDate);
+                ml.setUpdated(currentDate);
                 handleRequestToMapLayer(request, ml);
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
@@ -160,10 +164,10 @@ public class SaveLayerHandler extends ActionHandler {
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             String nextName = paramNames.nextElement();
-            if (nextName.indexOf("name") == 0) {
-                ml.setName(nextName.substring(4).toLowerCase(), request.getParameter(nextName));
-            } else if (nextName.indexOf("title") == 0) {
-                ml.setTitle(nextName.substring(4).toLowerCase(), request.getParameter(nextName));
+            if (nextName.indexOf(LAYER_NAME_PREFIX) == 0) {
+                ml.setName(nextName.substring(LAYER_NAME_PREFIX.length()).toLowerCase(), request.getParameter(nextName));
+            } else if (nextName.indexOf(LAYER_TITLE_PREFIX) == 0) {
+                ml.setTitle(nextName.substring(LAYER_TITLE_PREFIX.length()).toLowerCase(), request.getParameter(nextName));
             }
         }
 
