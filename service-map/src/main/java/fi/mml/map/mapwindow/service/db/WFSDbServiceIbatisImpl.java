@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Use WFSLayerConfigurationService instead
+ */
+@Deprecated
 public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implements WFSDbService {
 	
 	SqlMapClient sqlMapClient;
@@ -24,8 +28,7 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 	protected String getNameSpace() {
 		return "WFSService";
 	}
-	
-	@Override
+
 	public WFSService findWFSService(int wfsServiceId) {
 		
 		// search database
@@ -58,12 +61,6 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 		return wfsService;
 	}
 
-    public List<WFSSLDStyle> findWFSLayerStyles(int wfsId) {
-        List<WFSSLDStyle> styleList = queryForList(getNameSpace() + ".findLayerStyles", wfsId);
-        return styleList;
-    }
-
-	@Override
 	public int insertWFSService(WFSService wfsService) {
 		Integer wfsServiceId = null;
 		SqlMapClient client = null;
@@ -88,8 +85,7 @@ public class WFSDbServiceIbatisImpl extends BaseIbatisService<WFSService> implem
 		}
 		return wfsServiceId;
 	}
-	
-	@Override
+
 	public void updateWFSService(WFSService wfsService) {
 		SqlMapClient client = null;
 		try {

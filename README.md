@@ -35,8 +35,8 @@ and further examples will be added in near future.
 * After compilation has completed and jetty has started - go to [http://localhost:2373/] with your browser
 
 * You can login with username "user" and password "user" as a normal user or "admin"/"oskari" as an admin user (no real difference yet)
-    * These are configured in `oskari-server/servlet-map/src/main/resources/users/` user.json (and role.json)
-    * Login handling is implemented in `fi.nls.oskari.user.StandaloneUserService`
+    * These are configured in `oskari-server/control-example/src/main/resources/users/` user.json (and role.json)
+    * Login handling is implemented in `fi.nls.oskari.user.StandaloneUserService` in the oskari-server/control-example module
     * The Java class handling user related operations is configurable in `oskari-server/servlet-map/src/main/resources/oskari.properties`
 
 

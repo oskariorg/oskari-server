@@ -20,6 +20,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +39,7 @@ public class MapLayerWorker {
     private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-   private static WFSDbService wfsDbService = new WFSDbServiceIbatisImpl();
+    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(MapLayerWorker.class);
@@ -473,7 +475,7 @@ public class MapLayerWorker {
       * @param layer layer of which styles will be retrieved
      */
        private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
-          List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
+          List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
           try{
             if ( styleList.size() > 0) {
                for (WFSSLDStyle style : styleList) {

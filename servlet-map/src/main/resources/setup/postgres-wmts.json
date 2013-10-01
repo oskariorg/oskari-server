@@ -39,11 +39,11 @@
         "default-view.json",
         "postgres-view.json",
         "publisher-template-view.json",
-        "mapwfs2-view.json"
+        "wmts-view.json"
     ],
     "sql" : [
         "exampleLayersAndRoles.sql",
-        "create-wfs-tables.sql",
-        "example-wfslayer.sql"
+        "nlsfi-background-map-wmtslayer.sql",
+        "nlsfi-topographic-map-wmtslayer.sql"
     ]
 }
