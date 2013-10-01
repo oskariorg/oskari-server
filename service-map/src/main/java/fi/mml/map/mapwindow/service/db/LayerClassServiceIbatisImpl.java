@@ -65,6 +65,7 @@ public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> i
 		
 		// Find basemaps. They are the ones that have parent layerclass set.
 		// Attach basemap to basemap parent
+        // FIXME no hardcoded locales
 		LayerClass backgroundMap = new LayerClass();
 		backgroundMap.setName("fi", "Taustakartat");
 		backgroundMap.setName("sv", "Bakgrundskartor");

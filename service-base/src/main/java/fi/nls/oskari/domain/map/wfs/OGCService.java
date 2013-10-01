@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map.wfs;
 
 import fi.nls.oskari.domain.map.JSONLocalizedTitleAndAbstract;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +22,19 @@ public abstract class OGCService extends JSONLocalizedTitleAndAbstract {
 	
 	@Override
 	public String toString() {
-		return "OGCService [geonetworkFileIdentifier="
+		String ret =  "OGCService [geonetworkFileIdentifier="
 				+ geonetworkFileIdentifier + ", gmlVersion=" + gmlVersion
-				+ ", id=" + id + ", owsAbstractEn=" + getAbstract("en")
-				+ ", owsAbstractFi=" + getAbstract("fi") + ", owsAbstractSv="
-				+ getAbstract("sv") + ", password=" + password + ", titleEn="
-				+ getTitle("en") + ", titleFi=" + getTitle("fi") + ", titleSv=" + getTitle("fi")
-				+ ", url=" + url + ", useProxy=" + useProxy + ", username="
-				+ username + "]";
+				+ ", id=" + id;
+        for (String locale : PropertyUtil.getSupportedLocales()) {
+            String lang = locale.split("_")[0];
+            String ucLang = Character.toUpperCase(lang.charAt(0)) + lang.substring(1);
+            ret += ", owsAbstract" + ucLang + "=" + getAbstract(lang);
+            ret += ", title" + ucLang + "=" + getTitle(lang);
+        }
+		ret += ", password=" + password;
+		ret += ", url=" + url + ", useProxy=" + useProxy + ", username=";
+        ret += username + "]";
+        return ret;
 	}
 	
 	public int getId() {

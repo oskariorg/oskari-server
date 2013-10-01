@@ -13,7 +13,6 @@ import fi.nls.oskari.map.servlet.db.DBHandler;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.permission.UserService;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -43,7 +42,7 @@ public class MapFullServlet extends HttpServlet {
         InputStream in = null;
         try {
             Properties prop = new Properties();
-            in = MapFullServlet.class.getResourceAsStream("oskari.properties");
+            in = MapFullServlet.class.getResourceAsStream("/oskari.properties");
             prop.load(in);
             PropertyUtil.addProperties(prop);
         } catch (Exception e) {

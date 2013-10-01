@@ -2,31 +2,30 @@ package fi.nls.oskari.util;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author SMAKINEN
  */
 public class PropertyUtilTest {
 
-
-    //@BeforeClass
     @Before
     public void setUp() {
+        PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
             properties.load(PropertyUtilTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            fail("Should not throw exception" + e.getStackTrace());
+        } catch (IOException ioe) {
+            fail("Should not throw IOException:\n" + ioe.getStackTrace());
+        } catch(DuplicateException de) {
+            fail("Should not throw DuplicateException:\n" + de.getMessage());
         }
     }
 

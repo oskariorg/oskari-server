@@ -5,7 +5,12 @@ import java.io.ByteArrayOutputStream;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Encoder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,13 +38,17 @@ public class WFSFilterBuilder {
     public static final String KEY_BBOX = "bbox";
     public static final String CLEAN_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
-    private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
+    public static final String PROPERTY_TEMPLATE = "<wfs:PropertyName>{property}</wfs:PropertyName>";
+    public static final String PROPERTY_PROPERTY = "{property}";
+
+    private static final Logger log = LogFactory
+            .getLogger(WFSFilterBuilder.class);
     private static final FilterFactory2 ff = CommonFactoryFinder
             .getFilterFactory2(null);
 
     /**
-     * @param filter_js
-     *            sample
+     * @param filter_js Analysis filter
+     *            sample json syntax
      *            {
      *            "bbox" : {
      *            "bottom":6672660,"left":384863,"right":388283,"top":6674522
@@ -57,9 +66,9 @@ public class WFSFilterBuilder {
      *            "toimipaikat.14699"
      *            ],"filters":[{"caseSensitive":false,"attribute"
      *            :"postinumero","operator":"=","value":"00530"}]}
-     * @param srsName
-     * @param geom_elem
-     * @return
+     * @param srsName  name of GML coordinate reference system (e.g. EPSG:3067)
+     * @param geom_elem name of geometry property in FeatureCollection
+     * @return WFS filter in xml syntax
      */
     public static String parseWfsFilter(final JSONObject filter_js,
             String srsName, String geom_elem) {
@@ -204,6 +213,14 @@ public class WFSFilterBuilder {
         return null;
     }
 
+    /**
+     * Creates WFS BBOX filter for WFS query
+     * @param filter_js analysis filter json
+     * @param srsName   name of GML coordinate reference system
+     * @param geom_elem  name of geometry property in FeatureCollection
+     * @return WFS BBOX filter
+     * @throws JSONException
+     */
     private static Filter getBboxFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
         if (filter_js.has(KEY_BBOX)) {
@@ -216,11 +233,15 @@ public class WFSFilterBuilder {
         return null;
     }
 
+    /**
+     * WFS filter to xml string
+     * @param all
+     * @return filter in xml syntax
+     */
     private static String getFilterAsString(final Filter all) {
 
-        final org.geotools.xml.Configuration conf2 = new org.geotools.filter.v1_1.OGCConfiguration();
-        final org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(
-                conf2);
+        final Configuration conf2 = new org.geotools.filter.v1_1.OGCConfiguration();
+        final Encoder encoder = new Encoder(conf2);
         encoder.setIndenting(true);
         encoder.setIndentSize(2);
         final ByteArrayOutputStream ostream = new ByteArrayOutputStream();
@@ -234,6 +255,12 @@ public class WFSFilterBuilder {
         return null;
     }
 
+    /**
+     * Creates WFS filter for selected feature ids
+     * @param filter_js Analysis filter json
+     * @return
+     * @throws JSONException
+     */
     private static Filter getFeatureIdFilters(final JSONObject filter_js)
             throws JSONException {
         Set<FeatureId> selected = new HashSet<FeatureId>();
@@ -252,4 +279,19 @@ public class WFSFilterBuilder {
 
     }
 
+    public static String parseProperties(List<String> props, String ns, String geom_prop) {
+        String query = "";
+        for (String prop : props) {
+            String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, ns + ":"
+                    + prop);
+            query = query + temp;
+        }
+        if(!query.isEmpty())
+        {
+            String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
+            query = query + temp;
+        }
+
+        return query;
+    }
 }

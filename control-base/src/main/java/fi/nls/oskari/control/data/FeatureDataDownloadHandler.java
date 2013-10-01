@@ -47,7 +47,6 @@ public class FeatureDataDownloadHandler extends ActionHandler {
     public static final String PREFIX_WFS = "wfs+";
     public static final String SUFFIX_ACCEPT = "_accept";
     public static final String STR_NO = "no";
-    public static final String STR_FI = "fi";
     public static final String STR_TRUE = "true";
 
     // TODO: check the logic here, seems a bit off, no response on some paths/errors
@@ -194,7 +193,7 @@ public class FeatureDataDownloadHandler extends ActionHandler {
 
         String lang = params.getRequest().getParameter(KEY_LANGUAGE);
         if (lang == null)
-            lang = STR_FI;
+            lang = PropertyUtil.getDefaultLanguage();
 
         for (SelectedFeatureType featureType : featureTypes) {
             String id = String.valueOf(featureType.getId());

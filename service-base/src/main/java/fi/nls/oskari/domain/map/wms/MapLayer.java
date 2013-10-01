@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map.wms;
 
 import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +37,7 @@ public class MapLayer extends Layer {
 	    json.put("updated", this.getUpdated());
 	    json.put("created", this.getCreated());
 	    
-	    json.put("name", this.getName("fi")); // TODO: need make better
+	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage())); // TODO: only default lang?
 	    
 	    json.put("wmsUrl", this.getWmsUrl());
         

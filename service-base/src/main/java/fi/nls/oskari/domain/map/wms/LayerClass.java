@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map.wms;
 
 import fi.nls.oskari.domain.map.JSONLocalizedName;
 import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public class LayerClass extends JSONLocalizedName implements Comparable<LayerCla
 	}
 	
 	public int compareTo(LayerClass lc) {
-		return this.getName("fi").compareTo(lc.getName("fi"));
+        String defaultLang = PropertyUtil.getDefaultLanguage();
+		return this.getName(defaultLang).compareTo(lc.getName(defaultLang));
 	}
 
 	public int getId() {
