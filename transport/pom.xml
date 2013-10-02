@@ -39,6 +39,12 @@
                             <webAppConfig>
                                 <contextPath>/transport</contextPath>
                             </webAppConfig>
+                            <connectors>
+                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                                    <port>2374</port>
+                                    <maxIdleTime>60000</maxIdleTime>
+                                </connector>
+                            </connectors>
                         </configuration>
                     </plugin>
                     <plugin>

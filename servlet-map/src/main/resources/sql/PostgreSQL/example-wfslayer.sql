@@ -35,9 +35,9 @@ INSERT INTO portti_wfs_layer(
           'www.pkartta.fi',false, false);
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('wfs_layer', 'wfs+palvelupisteiden_kyselypalvelu');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+palvelupisteiden_kyselypalvelu');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'wfs_layer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', 10110);
+((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', 10110);
 
