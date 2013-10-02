@@ -81,7 +81,7 @@
     
     <resultMap id="publishPermissionsList" class="HashMap">
         <result property="resourceMapping" />
-        <result property="idList" />
+        <result property="externalId" />
     </resultMap>
     
    
