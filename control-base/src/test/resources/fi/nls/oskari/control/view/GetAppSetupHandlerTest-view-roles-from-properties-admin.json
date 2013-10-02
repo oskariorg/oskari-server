@@ -70,6 +70,10 @@
                 "userID": 123,
                 "lastName": "Oskari",
                 "nickName": "Ozkari",
+                "roles": [{
+                  "id": 66,
+                  "name": "Administrator"
+                }],
                 "userUUID": "my uuid is secrets",
                 "firstName": "Test",
                 "loginName": "test@oskari.org"

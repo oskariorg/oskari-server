@@ -30,37 +30,33 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	public void insertPermissions(
 			UniqueResourceName uniqueResourceName, String externalId, String externalIdType, String permissionsType) {
 		
-		// check if row already exists in the RESOURCE_USER table
-		Map<String, String> parameterResourceUsers = new HashMap<String, String>();
-		parameterResourceUsers.put("resourceName", uniqueResourceName.getName());
-		parameterResourceUsers.put("resourceNamespace", uniqueResourceName.getNamespace());
-		parameterResourceUsers.put("resourceType", uniqueResourceName.getType());		
-		parameterResourceUsers.put("externalId", externalId);
-		parameterResourceUsers.put("externalIdType", externalIdType);
-		
-		int resourceUserId = -1;
-		Integer resourceUserIdInteger = queryForObject(getNameSpace() + ".findResourceUserId", parameterResourceUsers);
-		
-		if (resourceUserIdInteger != null) {
-			resourceUserId = resourceUserIdInteger;
-		}
-		
-		// if row does not exist, insert into PORTTI_RESOURCE_USER table
-		Permissions p = new Permissions();
-		p.setUniqueResourceName(uniqueResourceName);
-		p.setExternalId(externalId);
-		p.setExternalIdType(externalIdType);		
-		
-		if (resourceUserId <= 0) {
-			resourceUserId = insert(p);
+		// check if row already exists in the "oskari_resource" table
+
+		Map<String, String> parameterResource = new HashMap<String, String>();
+
+        parameterResource.put("resourceType", uniqueResourceName.getType());
+        parameterResource.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
+
+        int resourceId = -1;
+
+        Integer resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
+
+		if (resourceIdInteger == null) {
+           resourceId = insert(getNameSpace() + ".insertResource", parameterResource);
 		}		
 		
-		// insert into PORTTI_PERMISSIONS table
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("resourceUserId", new Integer(resourceUserId));
-		paramMap.put("permissionsType", permissionsType);
-		
-		insert(getNameSpace() + ".insertPermissions", paramMap);
+
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("oskariResourceId", new Integer(resourceId));
+        paramMap.put("externalType", externalIdType);
+		paramMap.put("permission", permissionsType);
+        paramMap.put("externalId", externalId);
+
+        Integer permissionId = queryForObject(getNameSpace() + ".findPermission", paramMap);
+
+        if( permissionId == null) {
+            insert(getNameSpace() + ".insertPermission", paramMap);
+        }
 
 		WFSLayerPermissionsStore.destroyAll();
 	}
@@ -98,20 +94,22 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			String externalId,
 			String externalIdType,
 			String permissionsType) {
-		log.debug("Getting resources with granted " + permissionsType + " permissions to externalId='" + externalId 
+
+       log.debug("Getting resources with granted " + permissionsType + " permissions to externalId='" + externalId
 				+ "', externalIdType='" + externalIdType + "' for resource '" + resourceType + "'");
-		
-		Map<String, String> parameterMap = new HashMap<String, String>();
+
+
+        Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("resourceType", resourceType);
 		parameterMap.put("externalId", externalId);
 		parameterMap.put("externalType", externalIdType);
-		parameterMap.put("permissionsType", permissionsType);
+		parameterMap.put("permission", permissionsType);
 		
 		List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
 		List<String> resourceList = new ArrayList<String>();
 		
 		for (Map<String, String> resultMap : listOfMaps) {
-			resourceList.add(resultMap.get("resourceNamespace") + "+" + resultMap.get("resourceName"));
+           resourceList.add(resultMap.get("resourceMapping"));
 		}
 		
 		Collections.sort(resourceList);
@@ -132,12 +130,17 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			parameterMap.put("resourceType", resourceType);
 			parameterMap.put("externalId", String.valueOf(role.getId()));
 			parameterMap.put("externalType", Permissions.EXTERNAL_TYPE_ROLE);
-			parameterMap.put("permissionsType", permissionsType);
-			
-			List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);			
-			
-			for (Map<String, String> resultMap : listOfMaps) {
-				resourceSet.add(resultMap.get("resourceNamespace") + "+" + resultMap.get("resourceName"));
+			parameterMap.put("permission", permissionsType);
+
+         	List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
+
+				for (Map<String, String> resultMap : listOfMaps) {
+                String resourceMapping =  resultMap.get("resourceMapping");
+                if ("layerclass".equals(resourceType)) {
+                    resourceSet.add(resourceMapping.substring(4)); // TODO: fix this
+                } else {
+				    resourceSet.add(resourceMapping);
+                }
 			}
 		}
 		
@@ -146,11 +149,10 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
 		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);		
-		
+		//TODO: this
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceName", uniqueResourceName.getName());
-		parameterMap.put("resourceNamespace", uniqueResourceName.getNamespace());
-		parameterMap.put("resourceType", uniqueResourceName.getType());	
+		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
+		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
 		
 		List<Map<String, Object>> listOfMaps = queryForList(getNameSpace() + ".findPermissionsOfResource", parameterMap);
@@ -166,12 +168,15 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 				p = new Permissions();
 				p.setId(permissionsId);
 				p.setUniqueResourceName(new UniqueResourceName());
-				p.getUniqueResourceName().setName((String) resultMap.get("resourceName"));
-				p.getUniqueResourceName().setNamespace((String) resultMap.get("resourceNamespace"));
+				p.getUniqueResourceName().setName((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[0])); //TODO: fix this split is not good
+				p.getUniqueResourceName().setNamespace((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[1]));
 				p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
 				p.setExternalId((String) resultMap.get("externalId"));
-				p.setExternalIdType((String) resultMap.get("externalIdType"));
+				p.setExternalIdType((String) resultMap.get("externalType"));
 				permissionsMap.put(p.getId(), p);
+
+                // id, resource_mapping, resource_type, external_id,external_type
+
 			}
 			
 			p.getGrantedPermissions().add((String) resultMap.get("permissionsType"));
@@ -182,20 +187,17 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		return permissionsList;
 	}
 	
-	
-	public Set<String> getPublishPermissions() {
-		
-		
+
+    public Set<String> getPublishPermissions() {
+
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType",Permissions.RESOUCE_TYPE_WMS_LAYER);
+		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
 		List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findPublishPermissions", parameterMap);
 		
 		Set<String> permissions = new HashSet<String>();
 		
-		//List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);			
-		
 		for (Map<String, Object> resultMap : publishPermissions) {
-			permissions.add(resultMap.get("resourceName")+":"+ resultMap.get("resourceNamespace")+":"+resultMap.get("externalId") );
+            permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
 		}
 
 		return permissions;
@@ -204,32 +206,23 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	
 	public void deletePermissions(
 			UniqueResourceName uniqueResourceName, String externalId, String externalIdType, String permissionsType) {
-		Map<String, String> parameterMapPermissions = new HashMap<String, String>();
-		parameterMapPermissions.put("resourceName", uniqueResourceName.getName());
-		parameterMapPermissions.put("resourceNamespace", uniqueResourceName.getNamespace());
-		parameterMapPermissions.put("resourceType", uniqueResourceName.getType());		
-		parameterMapPermissions.put("externalId", externalId);
-		parameterMapPermissions.put("externalIdType", externalIdType);
-		parameterMapPermissions.put("permissionsType", permissionsType);
-		
-		// delete from PORTTI_PERMISSIONS table
-		delete(getNameSpace() + ".deletePermissions", parameterMapPermissions);
-		
-		// check if there still are permissions
-		Map<String, String> parameterResourceUsers = new HashMap<String, String>();
-		parameterResourceUsers.put("resourceName", uniqueResourceName.getName());
-		parameterResourceUsers.put("resourceNamespace", uniqueResourceName.getNamespace());
-		parameterResourceUsers.put("resourceType", uniqueResourceName.getType());		
-		parameterResourceUsers.put("externalId", externalId);
-		parameterResourceUsers.put("externalIdType", externalIdType);
-		
-		List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findPermissionsOfResourceUser", parameterMapPermissions);
-		
-		// if there are no permissions, delete from PORTTI_RESOURCE_USER table
-		if (listOfMaps.isEmpty()) {
-			delete(getNameSpace() + ".deleteResourceUsers", parameterMapPermissions);
-		}
-		
+
+        // get resource_id by by uniqueResourceName (resource_mapping)
+
+        Map<String, String> parameterDelete = new HashMap<String, String>();
+        parameterDelete.put("resourceMapping", uniqueResourceName.getNamespace() + "+" + uniqueResourceName.getName());
+        parameterDelete.put("externalId", externalId);
+        parameterDelete.put("externalType", externalIdType);
+        parameterDelete.put("permission",permissionsType);
+
+        Object oskariResourceObject =  queryForObject(getNameSpace() + ".findOskariResourceId", parameterDelete);
+
+        if (oskariResourceObject != null) {
+            long oskariResourceId = ((Long)oskariResourceObject).longValue();
+
+            delete(getNameSpace() + ".deletePermission",oskariResourceId);
+        }
+
 		WFSLayerPermissionsStore.destroyAll();
 	}
 
@@ -237,7 +230,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
 
         Map<String, Object> parameterMapPermissions = new HashMap<String, Object>();
-        parameterMapPermissions.put("permissionsType", permissionsType);
+        parameterMapPermissions.put("permission", permissionsType);
         parameterMapPermissions.put("idList", layeridList);
 
         List<Map<String, Object>> listOfPermissions = queryForList(getNameSpace() + ".findPermissionsForLayerIdList", parameterMapPermissions);
@@ -254,19 +247,19 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 
             Permissions perm = new Permissions();
             perm.setExternalId((String)rs.get("externalId"));
-            perm.setExternalIdType((String)rs.get("externalIdType"));
-            perm.getGrantedPermissions().add((String) rs.get("permissionsType"));
+            perm.setExternalIdType((String)rs.get("externalType"));
+            perm.getGrantedPermissions().add((String) rs.get("permission"));
             
             layerPermissions.add(perm);
         }
         return result;
     }
-    
+    // Done
     public Map<Long, List<Permissions>> getPermissionsForBaseLayers(List<Long> layeridList, String permissionsType) {
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
 
         Map<String, Object> parameterMapPermissions = new HashMap<String, Object>();
-        parameterMapPermissions.put("permissionsType", permissionsType);
+        parameterMapPermissions.put("permission", permissionsType);
         parameterMapPermissions.put("idList", layeridList);
 
         List<Map<String, Object>> listOfPermissions = queryForList(getNameSpace() + ".findPermissionsForBaseLayerIdList", parameterMapPermissions);
@@ -283,8 +276,8 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 
             Permissions perm = new Permissions();
             perm.setExternalId((String)rs.get("externalId"));
-            perm.setExternalIdType((String)rs.get("externalIdType"));
-            perm.getGrantedPermissions().add((String) rs.get("permissionsType"));
+            perm.setExternalIdType((String)rs.get("externalType"));
+            perm.getGrantedPermissions().add((String) rs.get("permission"));
             
             layerPermissions.add(perm);
         }
@@ -339,7 +332,8 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         List<Map<String,Object>> results = queryForList(getNameSpace() + ".findMaplayerIdsForViewPermissionsByExternalIds", hm);
         return results;
     }
-    
+
+    // Done
     public boolean hasViewPermissionForLayerByLayerId(User user, long layerId) {
         
         Map<String, Object> hm = new HashMap<String, Object>();
@@ -349,7 +343,33 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         return (queryForList(getNameSpace() + ".hasViewPermissionForLayerByLayerId", hm) != null);
         
     }
-    
+
+    public boolean hasEditPermissionForLayerByLayerId(User user, long layerId) {
+
+        if (user.isAdmin()) {
+            return true;
+        }
+
+        Map<String, Object> hm = new HashMap<String, Object>();
+        hm.put("id", layerId);
+        hm.put("idList", getExternalIdList(user));
+
+        return (queryForList(getNameSpace() + ".hasEditPermissionForLayerByLayerId", hm) != null);
+    }
+
+    public boolean hasAddLayerPermission(User user) {
+        if (user.isAdmin()) {
+            return true;
+        }
+
+        Map<String, Object> hm = new HashMap<String, Object>();
+        hm.put("resourceMapping", "generic-functionality");
+        hm.put("idList", getExternalIdList(user));
+
+        return (queryForList(getNameSpace() + ".hasExecutePermission", hm) != null);
+
+    }
+
     private List<String> getExternalIdList(User user) {
         List<String> externalIds = new ArrayList<String>();
         externalIds.add(String.valueOf(user.getId()));

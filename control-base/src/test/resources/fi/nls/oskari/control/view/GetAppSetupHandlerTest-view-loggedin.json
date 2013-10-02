@@ -62,6 +62,7 @@
                 "userID": 123,
                 "lastName": "Oskari",
                 "nickName": "Ozkari",
+                "roles": [],
                 "userUUID": "my uuid is secrets",
                 "firstName": "Test",
                 "loginName": "test@oskari.org"

@@ -11,30 +11,32 @@
 
     <resultMap id="permissionsResult" class="HashMap">
         <result property="id" column="id" />
-        <result property="resourceName" column="resource_name" />
-        <result property="resourceNamespace" column="resource_namespace" />
+        <result property="resourceMapping" column="resource_mapping" />
         <result property="resourceType" column="resource_type" />
-        <result property="externalId" column="externalid" />
-        <result property="externalIdType" column="externalid_type" />
-        <result property="permissionsType" column="permissions_type" />
+        <result property="externalId" column="external_id" />
+        <result property="externalIdType" column="external_type" />
+        <result property="permissions" column="permission" />
     </resultMap>
         
     <resultMap id="resourcesWithGrantedPermissionsResult" class="HashMap">
-        <result property="resourceNamespace" column="namespace" />
-        <result property="resourceName" column="name" />
+        <result property="resourceMapping" column="resource_mapping" />
     </resultMap>
-    
+
+    <!-- vanhentunut -->
     <parameterMap id="resourceUserIdAndPermissionsTypeParam" class="Map">
         <parameter property="resourceUserId" />
         <parameter property="permissionsType" />
     </parameterMap>
-    
+
+
+    <!-- fixed -->
     <parameterMap id="resourcesWithGrantedPermissionsParam" class="Map">
         <parameter property="resourceType" />
         <parameter property="externalId" />
         <parameter property="externalType"/>
-        <parameter property="permissionsType"/>
+        <parameter property="permission"/>
     </parameterMap>
+
     
     <parameterMap id="permissionsOfResourceParam" class="Map">
         <parameter property="resourceName" />
@@ -51,7 +53,8 @@
         <parameter property="externalIdType" />
         <parameter property="permissionsType"/>
     </parameterMap>
-    
+
+    <!-- vanhentunut -->
     <parameterMap id="resourceUserParam" class="Map">
         <parameter property="resourceName" />
         <parameter property="resourceNamespace" />
@@ -59,6 +62,12 @@
         <parameter property="externalId" />
         <parameter property="externalIdType" />
     </parameterMap>
+
+    <parameterMap id="resourceParam" class="Map">
+        <parameter property="resourceType" />
+        <parameter property="resourceMapping" />
+    </parameterMap>
+
    
     <parameterMap id="externalIdsAndLayerId" class="Map">
         <parameter property="idList" />
@@ -71,8 +80,7 @@
    
     
     <resultMap id="publishPermissionsList" class="HashMap">
-        <result property="resourceName" />
-        <result property="resourceNamespace" />
+        <result property="resourceMapping" />
         <result property="externalId" />
     </resultMap>
     
@@ -82,98 +90,139 @@
     <parameterMap id="publishPermissionsList3" class="HashMap">
         <parameter property="resourceType" />
     </parameterMap>
+
+    <parameterMap id="mapping_id" class="HashMap">
+        <parameter property="resourceMapping" />
+        <parameter property="externalId" />
+    </parameterMap>
     
     <select id="maxId" resultClass="int">
         select max(id) from portti_resource_user
     </select>
-    
-    
+
+
+<!-- uudet mappaukset -->
+    <parameterMap id="resourceMap" class="HashMap">
+        <parameter property="resourceMapping" />
+        <parameter property="resourceType" />
+    </parameterMap>
+
+    <parameterMap id="permissionMap" class="HashMap">
+        <parameter property="oskariResourceId" />
+        <parameter property="externalType" />
+        <parameter property="permission" />
+        <parameter property="externalId" />
+    </parameterMap>
+
+    <parameterMap id="layerPermissionResourceParams" class="Map">
+        <parameter property="resourceMapping" />
+        <parameter property="externalId" />
+        <parameter property="externalType" />
+        <parameter property="permission" />
+    </parameterMap>
+
+
+    <!-- fixed -->
     <select id="findPublishPermissions"  resultMap="publishPermissionsList">
        select 
-       	r.resource_name as resourceName,
-       	r.resource_namespace as resourceNamespace,
-       	r.externalid as externalId
+       	r.resource_mapping as resourceMapping,
+       	p.external_id as externalId
        from 
-       	portti_resource_user r, portti_permissions p  
- 	   where r.id=p.resource_user_id 
- 	   	and p.permissions_type = 'PUBLISH' 
- 	   	and r.externalid_type = 'ROLE'
+       	oskari_resource r, oskari_permission p
+ 	   where r.id=p.oskari_resource_id
+ 	   	and p.permission = 'PUBLISH'
+ 	   	and p.external_type = 'ROLE'
     </select>
     
     
-    
-    <select id="findResourceUserId" resultClass="int" parameterMap="resourceUserParam">
+    <!-- fixed -->
+    <select id="findResource" resultClass="int" parameterMap="resourceParam">
         select id
-        from portti_resource_user
-        where resource_name=?
-        and resource_namespace=?
-        and resource_type=?
-        and externalid=?
-        and externalid_type=?
+        from oskari_resource
+        where resource_type=?
+        and resource_mapping=?
     </select>
-    
+
+
+    <select id="findPermission" resultClass="int" parameterMap="permissionMap">
+        select
+            id
+        from
+            oskari_permission
+        where
+            oskari_resource_id = ?
+            and external_type = ?
+            and permission = ?
+            and external_id = ?
+    </select>
+
+
+    <!-- fixed -->
     <select id="findResourcesWithGrantedPermissions" resultMap="resourcesWithGrantedPermissionsResult" parameterMap="resourcesWithGrantedPermissionsParam">
-        select r.resource_namespace as namespace, r.resource_name as name
-        from portti_resource_user r, portti_permissions p
-        where r.id=p.resource_user_id
-        and r.resource_type=?
-        and r.externalid=?
-        and r.externalid_type=?
-        and p.permissions_type=?
+        select r.resource_mapping
+        from oskari_resource r, oskari_permission p
+        where r.id=p.oskari_resource_id
+        and (r.resource_type = 'wfs_layer'
+        or   r.resource_type=? )
+        and p.external_id=?
+        and p.external_type=?
+        and p.permission=?
     </select>
-    
+
+    <!--  fixed -->
     <select id="findPermissionsOfResource" resultMap="permissionsResult" parameterMap="permissionsOfResourceParam">
-        select r.id as id, r.resource_name as resource_name, r.resource_namespace as resource_namespace, 
-        r.resource_type as resource_type, r.externalid as externalid, r.externalid_type as externalid_type, 
-        p.permissions_type as permissions_type
-        from portti_resource_user r, portti_permissions p
-        where r.id=p.resource_user_id
-        and r.resource_name=?
-        and r.resource_namespace=?
-        and r.resource_type=?
-        and r.externalid_type=?
+        select r.id as id, r.resource_mapping  as resource_mapping,
+        r.resource_type as resource_type, p.external_id as externalId, p.external_type as externalType,
+        p.permission as permission
+        from oskari_resource r, oskari_permission p
+        where r.id=p.oskari_resource_id
+        and r.resource_mapping=?
+        and (r.resource_type = 'wfs_layer'
+        or   r.resource_type=? )
+        and p.external_type=?
     </select>
-    
+    <!-- check -->
     <select id="findPermissionsOfResourceUser" resultMap="permissionsResult" parameterMap="resourceUserParam">
-        select r.id as id, r.resource_name as resource_name, r.resource_namespace as resource_namespace, 
-        r.resource_type as resource_type, r.externalid as externalid, r.externalid_type as externalid_type, 
-        p.permissions_type as permissions_type
-        from portti_resource_user r, portti_permissions p
-        where r.id=p.resource_user_id
-        and r.resource_name=?
-        and r.resource_namespace=?
-        and r.resource_type=?
-        and r.externalid=?
-        and r.externalid_type=?
+        select r.id as id, r.resource_mapping  as resource_mapping,
+        r.resource_type as resource_type, p.external_id as externalId, p.external_type as externalType,
+        p.permission as permission
+        from oskari_resource r, oskari_permission p
+        where r.id=p.oskari_resource_id
+        and r.resource_mapping=?
+        nd (r.resource_type = 'wfs_layer'
+        or   r.resource_type=? )
+        and p.external_id=?
+        and p.external_type=?
     </select>
     
     <parameterMap id="layerPermissionParams" class="Map">
-        <parameter property="permissionsType" /> <!--  javaType="java.lang.String" -->
+        <parameter property="permissionType" /> <!--  javaType="java.lang.String" -->
         <parameter property="idList" /> <!--  javaType="java.util.List" -->
     </parameterMap>
-    
+
+    <!-- fixed -->
     <resultMap id="layerPermissionsResult" class="HashMap">
         <result property="layerId" column="layerId" />
-        <result property="externalId" column="externalid" />
-        <result property="externalIdType" column="externalid_type" />
-        <result property="permissionsType" column="permissions_type" />
+        <result property="externalId" column="external_id" />
+        <result property="externalType" column="external_type" />
+        <result property="permission" column="permission" />
     </resultMap>
-    
+
+    <!-- fixed -->
     <select id="findPermissionsForLayerIdList" resultMap="layerPermissionsResult" parameterMap="layerPermissionParams">
-        SELECT 
-            l.id as layerId, 
-            u.externalid, 
-            u.externalid_type, 
-            p.permissions_type
-      FROM 
-            portti_resource_user u, 
-            portti_permissions p, 
+        SELECT
+            l.id as layerId,
+            p.external_id as externalId,
+            p.external_type as externalType,
+            p.permission
+      FROM
+            oskari_resource u,
+            oskari_permission p,
             portti_maplayer l 
       WHERE
-            u.id = p.resource_user_id AND 
-            u.resource_name = l.wmsname AND 
-            u.resource_namespace = l.wmsurl 
-            <isNotEmpty property="permissionsType">AND p.permissions_type = #permissionsType#</isNotEmpty>
+            u.id = p.resource_user_id AND
+            u.resource_mapping = l.wmsurl || '+' || l.wmsname AND
+            <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
                 <iterate open="(" close=")" conjunction="," property="idList" >
@@ -183,21 +232,22 @@
       ORDER BY 
             l.id;
     </select>
-    
+
+    <!-- fixed -->
     <select id="findPermissionsForBaseLayerIdList" resultMap="layerPermissionsResult" parameterMap="layerPermissionParams">
         SELECT 
             l.id as layerId, 
-            u.externalid, 
-            u.externalid_type, 
-            p.permissions_type
+            p.external_id as externalId,
+            p.external_type as externalType,
+            p.permission
       FROM 
-            portti_resource_user u, 
-            portti_permissions p, 
+            oskari_resource u,
+            oskari_permission p,
             portti_layerclass l 
       WHERE
-            u.id = p.resource_user_id AND 
-            u.resource_name = CAST(l.id AS character varying) 
-            <isNotEmpty property="permissionsType">AND p.permissions_type = #permissionsType#</isNotEmpty>
+            u.id = p.oskari_resource_id AND
+            u.resource_mapping = '+' || CAST(l.id AS character varying)
+            <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
                 <iterate open="(" close=")" conjunction="," property="idList" >
@@ -207,16 +257,44 @@
       ORDER BY 
             l.id;
     </select>
-        
+
+    <!--   vanhentunut -->
     <statement id="insert" parameterClass="Permissions" resultClass="int">
         insert into portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type)
         values (#uniqueResourceName.name#, #uniqueResourceName.namespace#, #uniqueResourceName.type#, #externalId#, #externalIdType#)
     </statement>
-    
-    <statement id="insertPermissions" parameterMap="resourceUserIdAndPermissionsTypeParam">
-        insert into portti_permissions (resource_user_id, permissions_type) values (?, ?)
+
+    <!-- uusi -->
+    <statement id="insertResource" parameterMap="resourceMap" resultClass="int">
+        insert into oskari_resource (resource_mapping, resource_type)
+        values (?, ?)
     </statement>
-    
+
+
+    <!-- uusi -->
+    <statement id="insertPermission" parameterMap="permissionMap">
+        insert into oskari_permission (oskari_resource_id, external_type, permission, external_id) values (?, ?, ?, ?)
+    </statement>
+
+    <!-- uusi -->
+
+
+    <statement id="findOskariResourceId"  parameterMap="layerPermissionResourceParams" resultClass="long">
+        SELECT
+            r.id
+        FROM
+            oskari_resource r,
+            oskari_permission p
+        WHERE
+            r.id = p.oskari_resource_id AND
+            r.resource_mapping = ? AND
+            p.external_id = ? AND
+            p.external_type = ? AND
+            p.permission = ?
+    </statement>
+
+
+   <!--
     <statement id="deletePermissions" parameterMap="deletePermissionsParam">
         delete from portti_permissions where resource_user_id in
         (select id 
@@ -227,7 +305,14 @@
         and externalid=?
         and externalid_type=?) and permissions_type=?
     </statement>
-    
+
+                 -->
+
+    <statement id="deletePermission" parameterClass="long" resultClass="long">
+        delete from oskari_permission where oskari_resource_id = ?
+    </statement>
+
+        <!--
     <statement id="deleteResourceUsers" parameterMap="resourceUserParam">
         delete from portti_resource_user 
         where resource_name=?
@@ -236,46 +321,86 @@
         and externalid=?
         and externalid_type=?
     </statement>
-    
+
+    -->
+
+    <!-- fixed -->
     <select id="findMaplayerIdsForViewPermissionsByExternalIds" resultClass="HashMap" parameterMap="externalIds">
 	    SELECT 
 		    map.id
-		FROM 
-		    portti_permissions pp, 
-		    portti_resource_user pru, 
-		    portti_maplayer map 
+		FROM
+            oskari_resource osr,
+            oskari_permission op,
+            portti_maplayer map
 		WHERE
-		    pp.permissions_type = 'VIEW_LAYER' AND
-		    pru.id = pp.resource_user_id AND
-		    pru.resource_type = 'WMS_LAYER' AND
-		    pru.resource_namespace = map.wmsurl AND
-		    pru.resource_name = map.wmsname AND
-		    pru.externalId IN
+            op.permission = 'VIEW_LAYER' AND
+            osr.id = op.oskari_resource_id AND
+            osr.resource_type = 'maplayer' AND
+            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+            op.external_Id IN
 		    <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
             </iterate>
 		    
 		    
     </select>
-    
+    <!-- fixed -->
     <select id="hasViewPermissionForLayerByLayerId" resultClass="long" parameterMap="externalIdsAndLayerId">
         SELECT 
             map.id
         FROM 
-            portti_permissions pp, 
-            portti_resource_user pru, 
-            portti_maplayer map 
+            oskari_resource osr,
+            oskari_permission op,
+            portti_maplayer map
         WHERE
-            pp.permissions_type = 'VIEW_LAYER' AND
-            pru.id = pp.resource_user_id AND
-            pru.resource_type = 'WMS_LAYER' AND
-            pru.resource_namespace = map.wmsurl AND
-            pru.resource_name = map.wmsname AND
-            pru.externalId IN 
+            op.permission = 'VIEW_LAYER' AND
+            osr.id = op.oskari_resource_id AND
+            osr.resource_type = 'maplayer' AND
+            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+            op.external_Id IN
             <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
             </iterate> AND
             map.id = #id#
+    </select>
+
+
+    <!-- fixed -->
+    <select id="hasEditPermissionForLayerByLayerId" resultClass="long" parameterMap="externalIdsAndLayerId">
+        SELECT
+        map.id
+        FROM
+        oskari_resource or,
+        oskari_permission op,
+        portti_maplayer map
+        WHERE
+        op.permission = 'EDIT_LAYER' AND
+        or.id = op.oskari_resource_id AND
+        or.resource_type = 'maplayer' AND
+        or.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
+        op.external_Id IN
+        <iterate open="(" close=")" conjunction="," property="idList" >
+            #idList[]#
+        </iterate> AND
+        map.id = #id#
+    </select>
+
+
+    <select id="hasExecutePermission" parameterMap="mapping_id">
+    SELECT
+        r.resource_mapping
+    FROM
+        oskari_resource r,
+        oskari_permission p
+    WHERE
+        r.id = p.oskari_resource_id AND
+        r.resource_mapping = ? AND
+        p.external_id = IN
+        <iterate open="(" close=")" conjunction="," property="idList" >
+            #idList[]#
+        </iterate> AND
+        p.external_type = 'ROLE' AND
+        p.permission = 'ADD_MAPLAYER'
     </select>
     
     

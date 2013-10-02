@@ -62,12 +62,12 @@ public class MapLayerWorker {
 
         List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         // Get the whole layerclass structure
@@ -93,12 +93,12 @@ public class MapLayerWorker {
         final String permissionType = getPermissionType(isPublished);
         final List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         permissionType);
 
         final List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         permissionType);
 
         final List<LayerClass> allLayerClassRoot = new ArrayList<LayerClass>();
@@ -318,10 +318,10 @@ public class MapLayerWorker {
 
         if (null != mapLayers && mapLayers.size() > 0) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, "BASE+"+ layerClass.getId(), permissionsList);
         } else if ("groupMap".equals(layerJson.get("type")) || "base".equals(layerJson.get("type"))) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, "BASE+"+layerClass.getId(), permissionsList);
         } else {
             layerJson.put("baseLayerId", "").put("id", layerClass.getId());
         }
@@ -406,7 +406,7 @@ public class MapLayerWorker {
             } else {
                 layerJson.put("wmsName", layer.getWmsName());
             }
-            populatePermissionInformation(layerJson, roles, layer.getWmsName() + ":" + layer.getWmsUrl(), permissionsList);
+            populatePermissionInformation(layerJson, roles,layer.getWmsUrl() + "+" +  layer.getWmsName(), permissionsList);
 
             layerJson.put("resource_url_client_pattern", layer.getResource_url_client_pattern());
 

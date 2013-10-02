@@ -10,6 +10,7 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.wms.LayerClass;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -29,7 +30,6 @@ public class SaveOrganizationHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(SaveOrganizationHandler.class);
     private static final String PARM_LAYERCLASS_ID = "layerclass_id";
     private static final String PARM_PARENT_ID = "parent_id";
-    private static final String ADMIN_ID = "10113";
 
     private static final String SUB_NAME_PREFIX = "sub_name_";
     private static final String NAME_PREFIX = "name_";
@@ -113,7 +113,9 @@ public class SaveOrganizationHandler extends ActionHandler {
 
                     int id = layerClassService.insert(lc);
                     lc.setId(id);
-                    addPermissionsForAdmin(lc);
+
+                    final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
+                    addPermissionsForAdmin(lc, params.getUser(), externalIds);
 
                 }
             }
@@ -136,14 +138,18 @@ public class SaveOrganizationHandler extends ActionHandler {
         }
     }
 
-    private void addPermissionsForAdmin(LayerClass lc) {
-
+    private void addPermissionsForAdmin(final LayerClass lc, final User user, final String[] externalIds) {
         Permissions permissions = new Permissions();
-
-        permissions.getUniqueResourceName().setType(Permissions.RESOUCE_TYPE_LAYER_GROUP);
+        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_LAYER_GROUP);
         permissions.getUniqueResourceName().setNamespace("");
         permissions.getUniqueResourceName().setName(String.valueOf(lc.getId()));
 
-        permissionsService.insertPermissions(permissions.getUniqueResourceName(), ADMIN_ID, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+        // insert permissions
+        for (String externalId : externalIds) {
+            if(user.hasRoleWithId(ConversionHelper.getLong(externalId, -1))) {
+                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            }
+        }
     }
 }
