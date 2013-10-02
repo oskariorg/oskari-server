@@ -197,7 +197,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 		Set<String> permissions = new HashSet<String>();
 		
 		for (Map<String, Object> resultMap : publishPermissions) {
-			permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
+            permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
 		}
 
 		return permissions;
