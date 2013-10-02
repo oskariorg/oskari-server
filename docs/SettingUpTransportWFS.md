@@ -13,7 +13,7 @@
 
 4) Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Doskari.setup=postgres-mapwfs2`
 
-5) Go to oskari-server/transport, compile the transport service with `mvn clean install` and start the jetty service with `mvn jetty:run`. 
+5) Go to `oskari-server/transport`, compile the transport service with `mvn clean install` and start the jetty service with `mvn jetty:run`. 
 
 With default settings you now have:
 * redis running on port 6379

@@ -382,8 +382,7 @@ VALUES (
 );
 
 
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://karttamoottori.maanmittauslaitos.fi/maasto/wmts+taustakartta');
 
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('taustakartta', 'http://karttamoottori.maanmittauslaitos.fi/maasto/wmts', 'WMS_LAYER', 10110, 'ROLE');
-
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values ((SELECT MAX(id) FROM portti_resource_user), 'VIEW_LAYER');
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '10110');
