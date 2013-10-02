@@ -6,8 +6,8 @@
 DROP TABLE IF EXISTS portti_inspiretheme;
 DROP TABLE IF EXISTS portti_layerclass;
 DROP TABLE IF EXISTS portti_maplayer;
-DROP TABLE IF EXISTS portti_permissions;
-DROP TABLE IF EXISTS portti_resource_user;
+DROP TABLE IF EXISTS oskari_permission;
+DROP TABLE IF EXISTS oskari_resource;
 DROP TABLE IF EXISTS portti_maplayer_metadata;
 DROP TABLE IF EXISTS portti_capabilities_cache;
 
@@ -88,26 +88,6 @@ CREATE TABLE portti_maplayer (
 );
 
 
-
-CREATE TABLE portti_permissions (
-  id serial NOT NULL,
-  resource_user_id integer NOT NULL,
-  permissions_type character varying(100),
-  CONSTRAINT portti_permissions_pkey PRIMARY KEY (id)
-);
-
-
-CREATE TABLE portti_resource_user (
-  id serial NOT NULL,
-  resource_name character varying(1000),
-  resource_namespace character varying(1000),
-  resource_type character varying(100),
-  externalid character varying(1000),
-  externalid_type character varying(20),
-  CONSTRAINT portti_resource_user_pkey PRIMARY KEY (id)
-
-);
-
 CREATE TABLE portti_maplayer_metadata
 (
   id serial NOT NULL,
@@ -124,6 +104,22 @@ CREATE TABLE portti_maplayer_metadata
   CONSTRAINT portti_maplayer_metadata_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE oskari_resource
+(
+  id serial NOT NULL,
+  resource_type character varying(100) NOT NULL,
+  resource_mapping character varying(1000) NOT NULL,
+  CONSTRAINT type_mapping UNIQUE (resource_type, resource_mapping)
+);
+
+CREATE TABLE oskari_permission
+(
+  id serial NOT NULL,
+  oskari_resource_id bigint NOT NULL,
+  external_type character varying(100),
+  permission character varying(100),
+  external_id character varying(1000)
+);
 
 CREATE TABLE portti_backendstatus
 (
@@ -213,3 +209,4 @@ CREATE TABLE portti_terms_of_use_for_publishing
   agreed boolean NOT NULL DEFAULT false,
   "time" timestamp with time zone
 );
+
