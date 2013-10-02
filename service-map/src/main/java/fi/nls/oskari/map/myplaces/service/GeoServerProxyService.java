@@ -169,20 +169,25 @@ public class GeoServerProxyService {
 
     public static String getUuidFromGeoserver(String featureId)
             throws IOException, SAXException {
+        String uuidInXml = "";
+        InputStream is2 = null;
         HttpURLConnection geoserverCon = getGeoserverConnection(featureId);
         if (geoserverCon == null)
             throw new IOException("Could not get connection to GeoServer");
-        InputStream is2 = geoserverCon.getInputStream();
-        String uuidInXml = "";
-        DOMParser p2 = new DOMParser();
-        InputSource inputSource2 = new InputSource(is2);
-        p2.parse(inputSource2);
-        Document docu = p2.getDocument();
-        NodeList responseUUIDNode = docu.getElementsByTagName(OWS_UUID);
-        uuidInXml = responseUUIDNode.item(0).getTextContent();
-        uuidInXml = Jsoup.clean(uuidInXml, Whitelist.none());
-        geoserverCon.disconnect();
-        is2.close();
+        try{
+            is2 = geoserverCon.getInputStream();
+            DOMParser p2 = new DOMParser();
+            InputSource inputSource2 = new InputSource(is2);
+            p2.parse(inputSource2);
+            Document docu = p2.getDocument();
+            NodeList responseUUIDNode = docu.getElementsByTagName(OWS_UUID);
+            uuidInXml = responseUUIDNode.item(0).getTextContent();
+            uuidInXml = Jsoup.clean(uuidInXml, Whitelist.none());
+        }finally {
+            geoserverCon.disconnect();
+            if (is2 != null )
+                is2.close();
+        }
         return uuidInXml;
     }
 
