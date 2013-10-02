@@ -35,6 +35,7 @@ public class WFSLayerConfiguration {
     private final static String MAX_FEATURES = "maxFeatures";
     private final static String FEATURE_NAMESPACE = "featureNamespace";
     private final static String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
+    private static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
     private final static String FEATURE_ELEMENT = "featureElement";
 
     private final static String FEATURE_TYPE = "featureType";
@@ -78,6 +79,7 @@ public class WFSLayerConfiguration {
 	private int maxFeatures;
 	private String featureNamespace;
 	private String featureNamespaceURI;
+    private String geometryNamespaceURI;
 	private String featureElement;
 
 	private String featureType;
@@ -232,6 +234,14 @@ public class WFSLayerConfiguration {
 	public void setFeatureNamespaceURI(String featureNamespaceURI) {
 		this.featureNamespaceURI = featureNamespaceURI;
 	}
+
+    public String getGeometryNamespaceURI() {
+        return geometryNamespaceURI;
+    }
+
+    public void setGeometryNamespaceURI(String geometryNamespaceURI) {
+        this.geometryNamespaceURI = geometryNamespaceURI;
+    }
 
 	public String getFeatureElement() {
 		return featureElement;
@@ -461,6 +471,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, MAX_FEATURES, this.getMaxFeatures());
 		JSONHelper.putValue(root, FEATURE_NAMESPACE, this.getFeatureNamespace());
 		JSONHelper.putValue(root, FEATURE_NAMESPACE_URI, this.getFeatureNamespaceURI());
+        JSONHelper.putValue(root, GEOMETRY_NAMESPACE_URI, this.getGeometryNamespaceURI());
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
 
 		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
