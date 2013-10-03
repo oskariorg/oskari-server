@@ -90,30 +90,49 @@ VALUES (3,'peruskartta','http://a.karttatiili.fi/dataset/peruskarttarasteri/serv
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (2, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
 
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 10110, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 3, 'ROLE');
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values (3, '', 'WMS_LAYER_GROUP', 2, 'ROLE');
+-- add layerclasses as resource for mapping permissions (SELECT ('BASE+' || id) as id FROM portti_layerclass);
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('layerclass', 'BASE+1');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('layerclass', 'BASE+2');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('layerclass', 'BASE+3');
 
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('peruskartta', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 2, 'ROLE');
+-- give view_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+2'), 'ROLE', 'VIEW_LAYER', '10110');
 
-INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-('peruskartta', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms', 'WMS_LAYER', 3, 'ROLE');
+-- give view_layer permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+2'), 'ROLE', 'VIEW_LAYER', '2');
 
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (1, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (2, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (3, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (4, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (5, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (6, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (7, 'VIEW_LAYER');
-INSERT INTO portti_permissions (resource_user_id, permissions_type) values (8, 'VIEW_LAYER');
+-- give view_layer permission for the resource to ROLE 3 (admin);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+2'), 'ROLE', 'VIEW_LAYER', '3');
 
 
+-- give view_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+3'), 'ROLE', 'VIEW_LAYER', '10110');
+
+-- give view_layer permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+3'), 'ROLE', 'VIEW_LAYER', '2');
+
+-- give view_layer permission for the resource to ROLE 3 (admin);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT id FROM oskari_resource WHERE resource_type = 'layerclass' AND resource_mapping = 'BASE+3'), 'ROLE', 'VIEW_LAYER', '3');
+
+-- add layer as resource for mapping permissions;
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://a.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://b.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://c.karttatiili.fi/dataset/peruskarttarasteri/service/wms,http://d.karttatiili.fi/dataset/peruskarttarasteri/service/wms+peruskartta');
+
+-- give view_layer permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
+
+-- give view_layer permission for the resource to ROLE 3 (admin);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '3');
+
+-- setup inspire themes;
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Koordinaattijärjestelmät"}, "sv": { "name" : "Referenskoordinatsystem"},"en": { "name" : "Coordinate reference systems"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Paikannusruudustot"}, "sv": { "name" : "Geografiska rutnätssystem"},"en": { "name" : "Geographical grid systems"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maastokartat"}, "sv": { "name" : "Terrängkartor"},"en": { "name" : "Topographic maps"}}');

@@ -8,7 +8,6 @@ CREATE TABLE portti_wfs_layer
   id serial NOT NULL,
   maplayer_id bigint NOT NULL,
   layer_name character varying(256),
-  locales character varying(4000),
   url character varying(512),
   username character varying(256),
   "password" character varying(512),
@@ -31,6 +30,7 @@ CREATE TABLE portti_wfs_layer
   srs_name character varying,
   feature_element character varying(512),
   feature_namespace_uri character varying(512),
+  geometry_namespace_uri character varying(512),
   CONSTRAINT portti_wfs_layer_pkey PRIMARY KEY (id)
 )
 WITH (

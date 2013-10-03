@@ -10,15 +10,6 @@ DELETE FROM portti_view_bundle_seq;
 DELETE FROM portti_view;
 DELETE FROM portti_view_supplement;
 
--- Reset sequences;
-
---ALTER SEQUENCE portti_bundle_state_id_seq RESTART;
---ALTER SEQUENCE portti_bundle_config_id_seq RESTART;
---ALTER SEQUENCE portti_bundle_id_seq RESTART;
---ALTER SEQUENCE portti_view_id_seq RESTART;
---ALTER SEQUENCE portti_view_supplement_id_seq RESTART;
-
-
 -- View and supplement;
 -- TODO: supplement fields are not necessary to keep in own table, the ones still used should be moved to portti_view;
 INSERT INTO portti_view_supplement (is_public) VALUES (true);
