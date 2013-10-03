@@ -45,7 +45,7 @@ public class GetMapLayersHandler extends ActionHandler {
         JSONObject adminlayers = new JSONObject();
 
         if (params.getUser().isAdmin()) {
-            adminlayers = makeMapLayersJson(layer_id);
+            adminlayers = makeMapLayersAdminJson(layer_id);
         }
         if (layer_id.isEmpty()) {
             ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
@@ -55,7 +55,7 @@ public class GetMapLayersHandler extends ActionHandler {
         }
     }
 
-    private JSONObject makeMapLayersJson(final String layer_id)
+    private JSONObject makeMapLayersAdminJson(final String layer_id)
             throws ActionException {
 
         final List<Layer> allMapLayers = new ArrayList<Layer>();
@@ -72,58 +72,58 @@ public class GetMapLayersHandler extends ActionHandler {
             for (Layer ml : allMapLayers) {
                 final JSONObject mapProperties = new JSONObject();
 
-                Set<String> languages = new HashSet<String>(ml.getLanguages());
-                // make sure we have entries for all supported languages just to be nice...
-                languages.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+                mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
+                mapProperties.put("resource_url_scheme_pattern", ml.getResource_url_scheme_pattern());
+                mapProperties.put("layerType", ml.getType());
+                mapProperties.put("wmsName", ml.getWmsName());
+
                 JSONObject names = new JSONObject();
                 JSONObject titles = new JSONObject();
+                JSONArray locales = new JSONArray();
 
-                for (String lang : languages) {
+                Set<String> langs = new TreeSet<String>(ml.getLanguages());
+                // make sure we have entries for all supported languages just to be nice...
+                langs.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+
+
+                for (String lang : langs) {
                     names.put(lang, ml.getName(lang));
                     titles.put(lang, ml.getTitle(lang));
+                    JSONObject locale = new JSONObject();
+                    locale.put("lang", lang);
+                    locale.put("name", ml.getName(lang));
+                    locale.put("title", ml.getTitle(lang));
+                    locales.put(locale);
                 }
 
                 mapProperties.put("name", names);
                 mapProperties.put("title", titles);
+                mapProperties.put("locales", locales);
 
-                mapProperties.put("wmsName", ml.getWmsName());
-                mapProperties.put("wmsUrl", ml.getWmsUrl());
-                mapProperties.put("opacity", ml.getOpacity());
+                mapProperties.put("wms_parameter_layers", ml.getWms_parameter_layers());
+                mapProperties.put("inspireTheme", ml.getInspireThemeId());
+                mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
+                mapProperties.put("legendImage", ml.getLegendImage());
+                mapProperties.put("version", ml.getVersion());
+                mapProperties.put("selection_style", IOHelper.encode64(ml.getSelection_style()));
                 mapProperties.put("style", IOHelper.encode64(ml.getStyle()));
+                mapProperties.put("dataUrl", ml.getDataUrl());
+
+                mapProperties.put("epsg", ml.getEpsg());
+                mapProperties.put("opacity", ml.getOpacity());
+                mapProperties.put("gfiType", ml.getGfiType());
+                mapProperties.put("metadataUrl", ml.getMetadataUrl());
+                mapProperties.put("tileMatrixSetData", ml.getTileMatrixSetData());
                 mapProperties.put("minScale", ml.getMinScale());
                 mapProperties.put("maxScale", ml.getMaxScale());
 
+                mapProperties.put("resource_url_scheme", ml.getResource_url_scheme());
+                mapProperties.put("resource_daily_max_per_ip", ml.getResource_daily_max_per_ip());
                 mapProperties.put("descriptionLink", ml.getDescriptionLink());
-                mapProperties.put("legendImage", ml.getLegendImage());
-
-                mapProperties.put("inspireTheme", ml.getInspireThemeId());
-                mapProperties.put("dataUrl", ml.getDataUrl());
-                mapProperties.put("metadataUrl", ml.getMetadataUrl());
-                mapProperties.put("orderNumber", ml.getOrdernumber());
-
-                mapProperties.put("layerType", ml.getType());
-                mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
-                mapProperties.put("tileMatrixSetData", ml
-                        .getTileMatrixSetData());
-
-                mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
-                mapProperties.put("wms_parameter_layers", ml
-                        .getWms_parameter_layers());
-                mapProperties.put("resource_url_scheme", ml
-                        .getResource_url_scheme());
-                mapProperties.put("resource_url_scheme_pattern", ml
-                        .getResource_url_scheme_pattern());
-                mapProperties.put("resource_url_client_pattern", ml
-                        .getResource_url_client_pattern());
-                mapProperties.put("resource_daily_max_per_ip", ml
-                        .getResource_daily_max_per_ip());
-
                 mapProperties.put("xslt", IOHelper.encode64(ml.getXslt()));
-                mapProperties.put("gfiType", ml.getGfiType());
-                mapProperties.put("selection_style", IOHelper.encode64(ml
-                        .getSelection_style()));
-                mapProperties.put("version", ml.getVersion());
-                mapProperties.put("epsg", ml.getEpsg());
+                mapProperties.put("wmsUrl", ml.getWmsUrl());
+                mapProperties.put("orderNumber", ml.getOrdernumber());
+                mapProperties.put("resource_url_client_pattern", ml.getResource_url_client_pattern());
 
                 mapJSON.accumulate(String.valueOf(ml.getId()), mapProperties);
 
