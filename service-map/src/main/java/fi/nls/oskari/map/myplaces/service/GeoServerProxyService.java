@@ -268,8 +268,9 @@ public class GeoServerProxyService {
            } catch (IOException ex) {
                log.warn("Unable to close InputStream ", ex);
            }
-           if(connection != null)
+           if(connection != null){
                connection.disconnect();
+           }
         }
         return null;
     }
