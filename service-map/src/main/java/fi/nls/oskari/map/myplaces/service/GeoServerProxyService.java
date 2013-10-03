@@ -59,6 +59,8 @@ public class GeoServerProxyService {
     private static final String GEOSERVER_URL_PARAMS = "service=WFS&version=1.0.0&request=GetFeature&maxFeatures=50"+
                         "&outputFormat=text/xml;%20subtype=gml/3.1.1&typeName=ows:";
     private static final String URLPARAM_FEATURE = "&FEATUREID=";
+	private static final int DISTANCE_FACTOR = 5;
+	private static final int MAX_ZOOM_LEVEL = 12;
     
 
     private static HttpURLConnection getConnection() throws IOException {
@@ -328,7 +330,7 @@ public class GeoServerProxyService {
         XPathExpression expr4 = xpath4
                 .compile("//ogc:Distance[.='{DISTANCE}']");
         Node nd4 = (Node) expr4.evaluate(doc, XPathConstants.NODE);
-        nd4.setTextContent(String.valueOf(Math.pow(2, (12-zoomLevel))));
+        nd4.setTextContent(String.valueOf(DISTANCE_FACTOR*Math.pow(2,(MAX_ZOOM_LEVEL-zoomLevel))));
         
         
         // Use a Transformer for output

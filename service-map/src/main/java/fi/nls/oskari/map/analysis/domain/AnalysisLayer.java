@@ -19,6 +19,7 @@ public class AnalysisLayer {
     private String subtitle = "";
     private String inputType = "";
     private String inputAnalysisId = null;
+    
     private String orgName = "";
     private String inspire = "";
     private Integer opacity;
@@ -81,6 +82,7 @@ public class AnalysisLayer {
     public void setInputAnalysisId(String inputAnalysisId) {
         this.inputAnalysisId = inputAnalysisId;
     }
+    
 
     public String getOrgName() {
         return orgName;

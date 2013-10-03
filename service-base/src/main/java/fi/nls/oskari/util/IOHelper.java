@@ -253,6 +253,45 @@ public class IOHelper {
             throw new IOException(e);
         }
     }
+    /**
+     * Calls given URL and returns the response as String
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl, final String userName, final String password ) throws IOException {
+        return getURL(pUrl, userName, password, Collections.EMPTY_MAP);
+    }
+    /**
+     * Calls given URL with given http headers and returns the response as String.
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @param headers
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl, final String userName, final String password,
+                                final Map<String, String> headers) throws IOException {
+        return getURL(pUrl, userName, password, headers, DEFAULT_CHARSET);
+    }
+    /**
+     * Calls given URL with given http headers and returns the response interpreted with given charset as String
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @param headers
+     * @param charset
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl,final String userName, final String password,
+                                final Map<String, String> headers, final String charset) throws IOException {
+        final HttpURLConnection con = getConnection(pUrl, userName, password);
+        return getURL(con, headers, charset);
+    }
 
     /**
      * Writes the given http headers to the connection.

@@ -27,8 +27,6 @@ public class WFSLayerStoreTest {
 
         assertTrue("should get  'nimi' as 1.", store2.getFeatureParamsLocales("fi").get(0).equals("nimi"));
         assertTrue("should get  'osoite' as 2.", store2.getFeatureParamsLocales("fi").get(1).equals("osoite"));
-		String jsonResult2 = store2.getAsJSON();
-		assertTrue("should get same json", (jsonResult2.equals(jsonResult)));
 	}
 	
 	@Test(expected=IOException.class)
