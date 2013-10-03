@@ -228,9 +228,8 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 
     public Map<Long, List<Permissions>> getPermissionsForLayers(List<Long> layeridList, String permissionsType) {
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
-
         Map<String, Object> parameterMapPermissions = new HashMap<String, Object>();
-        parameterMapPermissions.put("permission", permissionsType);
+        parameterMapPermissions.put("permissionType", permissionsType);
         parameterMapPermissions.put("idList", layeridList);
 
         List<Map<String, Object>> listOfPermissions = queryForList(getNameSpace() + ".findPermissionsForLayerIdList", parameterMapPermissions);
@@ -249,7 +248,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
             perm.setExternalId((String)rs.get("externalId"));
             perm.setExternalIdType((String)rs.get("externalType"));
             perm.getGrantedPermissions().add((String) rs.get("permission"));
-            
+
             layerPermissions.add(perm);
         }
         return result;
@@ -259,7 +258,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
 
         Map<String, Object> parameterMapPermissions = new HashMap<String, Object>();
-        parameterMapPermissions.put("permission", permissionsType);
+        parameterMapPermissions.put("permissionType", permissionsType);
         parameterMapPermissions.put("idList", layeridList);
 
         List<Map<String, Object>> listOfPermissions = queryForList(getNameSpace() + ".findPermissionsForBaseLayerIdList", parameterMapPermissions);
