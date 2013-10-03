@@ -402,7 +402,6 @@ public class PublishHandler extends ActionHandler {
             for (int i = 0; i < selectedLayers.length(); ++i) {
                 JSONObject layer = selectedLayers.getJSONObject(i);
                 String layerId = layer.getString("id");
-                System.out.println("layerId:" + layerId);
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     // check publish right for published myplaces layer
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
@@ -447,6 +446,7 @@ public class PublishHandler extends ActionHandler {
 
 
     private boolean hasRightToPublishBaseLayer(final String layerId, final User user) {
+
         final long id = ConversionHelper.getLong(layerId.substring(PREFIX_BASELAYER.length()), -1);
         if (id == -1) {
             log.warn("Error parsing layerId:", layerId);
@@ -457,6 +457,7 @@ public class PublishHandler extends ActionHandler {
         Map<Long, List<Permissions>> map =
                 permissionsService.getPermissionsForBaseLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
         List<Permissions> permissions = map.get(id);
+
         boolean hasPermission = false;
         hasPermission = permissionsService.permissionGrantedForRolesOrUser(
                 user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);

@@ -26,6 +26,7 @@
         <result property="maxFeatures" column="max_features"/>
         <result property="featureNamespace" column="feature_namespace"/>
         <result property="featureNamespaceURI" column="feature_namespace_uri"/>
+        <result property="geometryNamespaceURI" column="geometry_namespace_uri"/>
         <result property="featureElement" column="feature_element"/>
         
         <result property="featureType" column="feature_type"/>
@@ -72,6 +73,7 @@
 			l.max_features,
 			l.feature_namespace,
 			l.feature_namespace_uri,
+            l.geometry_namespace_uri,
 			l.feature_element,
 			
 			l.feature_type,

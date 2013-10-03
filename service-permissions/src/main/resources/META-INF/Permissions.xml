@@ -81,7 +81,7 @@
     
     <resultMap id="publishPermissionsList" class="HashMap">
         <result property="resourceMapping" />
-        <result property="idList" />
+        <result property="externalId" />
     </resultMap>
     
    
@@ -203,8 +203,8 @@
     <!-- fixed -->
     <resultMap id="layerPermissionsResult" class="HashMap">
         <result property="layerId" column="layerId" />
-        <result property="externalId" column="external_id" />
-        <result property="externalType" column="external_type" />
+        <result property="externalId" column="externalId" />
+        <result property="externalType" column="externalType" />
         <result property="permission" column="permission" />
     </resultMap>
 
@@ -220,8 +220,8 @@
             oskari_permission p,
             portti_maplayer l 
       WHERE
-            u.id = p.resource_user_id AND
-            u.resource_mapping = l.wmsurl || '+' || l.wmsname AND
+            u.id = p.oskari_resource_id AND
+            u.resource_mapping = l.wmsurl || '+' || l.wmsname
             <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
@@ -246,15 +246,15 @@
             portti_layerclass l 
       WHERE
             u.id = p.oskari_resource_id AND
-            u.resource_mapping = '+' || CAST(l.id AS character varying)
-            <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
+            u.resource_mapping = 'BASE+' || CAST(l.id AS character varying)
+            <isNotEmpty property="permissionType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
                 <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
                 </iterate>
             </isNotEmpty>
-      ORDER BY 
+      ORDER BY
             l.id;
     </select>
 
@@ -329,14 +329,14 @@
 	    SELECT 
 		    map.id
 		FROM
-            oskari_resource or,
+            oskari_resource osr,
             oskari_permission op,
             portti_maplayer map
 		WHERE
             op.permission = 'VIEW_LAYER' AND
-            or.id = op.oskari_resource_id AND
-            or.resource_type = 'maplayer' AND
-            or.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
+            osr.id = op.oskari_resource_id AND
+            osr.resource_type = 'maplayer' AND
+            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
             op.external_Id IN
 		    <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
@@ -349,14 +349,14 @@
         SELECT 
             map.id
         FROM 
-            oskari_resource or,
+            oskari_resource osr,
             oskari_permission op,
             portti_maplayer map
         WHERE
             op.permission = 'VIEW_LAYER' AND
-            or.id = op.oskari_resource_id AND
-            or.resource_type = 'maplayer' AND
-            or.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
+            osr.id = op.oskari_resource_id AND
+            osr.resource_type = 'maplayer' AND
+            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
             op.external_Id IN
             <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#

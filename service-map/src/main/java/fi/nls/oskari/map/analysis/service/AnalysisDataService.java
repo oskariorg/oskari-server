@@ -378,7 +378,7 @@ public class AnalysisDataService {
                     }
 
                 }
-                return columnNames.toString();
+                return "{default:"+columnNames.toString()+"}";
             }
         }
         return null;
