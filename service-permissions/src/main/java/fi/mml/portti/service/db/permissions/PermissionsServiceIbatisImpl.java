@@ -42,9 +42,11 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         Integer resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
 
 		if (resourceIdInteger == null) {
-           resourceId = insert(getNameSpace() + ".insertResource", parameterResource);
-		}		
-		
+           insert(getNameSpace() + ".insertResource", parameterResource);
+           resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
+		}
+
+        resourceId = resourceIdInteger.intValue();
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("oskariResourceId", new Integer(resourceId));

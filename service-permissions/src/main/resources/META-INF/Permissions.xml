@@ -141,6 +141,7 @@
         from oskari_resource
         where resource_type=?
         and resource_mapping=?
+        limit 1
     </select>
 
 
@@ -154,6 +155,7 @@
             and external_type = ?
             and permission = ?
             and external_id = ?
+        limit 1
     </select>
 
 

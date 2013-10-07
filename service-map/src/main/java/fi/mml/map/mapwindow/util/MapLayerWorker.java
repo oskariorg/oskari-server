@@ -292,8 +292,11 @@ public class MapLayerWorker {
         layerJson.put("styles", new JSONObject()).put("formats", new JSONObject()).put("isQueryable", false).put("dataUrl", layerClass.getDataUrl());
 
         JSONObject localeNames = new JSONObject();
-        for (Map.Entry<String, String> localization : layerClass.getNames().entrySet()) {
-            localeNames.put(localization.getKey(), localization.getValue());
+        Set<String> langs = new TreeSet<String>(layerClass.getLanguages());
+        langs.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+        Map<String, String> names = layerClass.getNames();
+        for (String language : langs) {
+            localeNames.put(language, names.get(language));
         }
         layerJson.put("names", localeNames);
         

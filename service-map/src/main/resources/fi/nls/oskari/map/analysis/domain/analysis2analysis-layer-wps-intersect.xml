@@ -12,7 +12,7 @@
                         outputFormat="{outputFormat}" {xmlns}>
                         <wfs:Query srsName="{srsName}"
                             typeName="{typeName}">
-                            {filter}</wfs:Query>
+                            {properties}{filter}</wfs:Query>
                     </wfs:GetFeature>
                 </wps:Body>
      </wps:Reference>
@@ -47,7 +47,7 @@
     <wps:Input>
       <ows:Identifier>intersectionMode</ows:Identifier>
       <wps:Data>
-        <wps:LiteralData>INTERSECTION</wps:LiteralData>
+        <wps:LiteralData>SECOND</wps:LiteralData>
       </wps:Data>
     </wps:Input>
     <wps:Input>

@@ -59,7 +59,6 @@ public abstract class AnalysisMethodParams {
     private String localTypeName = "";
     private String properties = "";
     private String filter = "";
-    private String filter2 = "";
     private String geom = "";
     private String x_lower = "";
     private String y_lower = "";
@@ -182,13 +181,6 @@ public abstract class AnalysisMethodParams {
         this.filter = filter;
     }
 
-    public String getFilter2() {
-        return filter2;
-    }
-
-    public void setFilter2(String filter2) {
-        this.filter2 = filter2;
-    }
 
     public String getGeom() {
         return geom;

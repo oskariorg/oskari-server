@@ -118,7 +118,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
      * Get properties (native fields) of analysis layer
      * 
      * @param sid
-     * @return properties in array syntax eg. "["t1","t2",...]"
+     * @return properties in array syntax eg. "{default:["t1","t2",...]}"
      */
     private String getAnalysisFeatureProperties(String sid) {
         String properties = null; // Field names
