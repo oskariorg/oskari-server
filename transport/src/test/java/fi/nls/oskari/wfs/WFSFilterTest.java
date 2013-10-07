@@ -52,6 +52,14 @@ public class WFSFilterTest {
 		bounds.add(397380.0);
 		bounds.add(6697397.0);
     }
+
+    @Test
+    public void testDefaultBuffer() {
+        WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+        double buffer = wfsFilter.getDefaultBuffer(12, 6, "EPSG:3067");
+
+        assertTrue("Should get expected buffer size", buffer == 64.0d);
+    }
     
 	@Test
 	public void testLocation() {

@@ -81,6 +81,7 @@ public class WFSMapLayerJob extends Job {
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private List<List<Object>> featureValuesList;
     private List<String> processedFIDs = new ArrayList<String>();
+    private Units units = new Units();
 	
 	// API
 	private static final String PERMISSIONS_API = "GetLayerIds";
@@ -663,8 +664,12 @@ public class WFSMapLayerJob extends Job {
 	 */
 	private boolean validateMapScales() {
 		double scale = this.session.getMapScales().get((int)this.session.getLocation().getZoom());
-		log.debug("Scale:", scale, "[", layer.getMaxScale(), ",", layer.getMinScale(), "]");
-		if(layer.getMinScale() >= scale && layer.getMaxScale() <= scale) // min == biggest value
+        double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(), layer.getSRSName(), session.getLocation().getSrs());
+        double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(), layer.getSRSName(), session.getLocation().getSrs());
+
+		log.debug("Scale in:", layer.getSRSName(), scale, "[", layer.getMaxScale(), ",", layer.getMinScale(), "]");
+        log.debug("Scale in:", session.getLocation().getSrs(), scale, "[", maxScaleInMapSrs, ",", minScaleInMapSrs, "]");
+		if(minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) // min == biggest value
 			return true;
 		return false;
 	}
