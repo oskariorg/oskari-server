@@ -74,8 +74,13 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         if (json == null) {
             WFSLayerConfiguration lc = layerConfigurationService
                     .findConfiguration(id);
+
+            log.warn("id", id);
+            log.warn(lc);
+
             // Extra manage for analysis
             if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
+                log.warn("sid", sid);
                 // set id to original analysis id
                 lc.setLayerId(sid);
                 // Set analysis layer fields as id based
