@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+
 /*
 Methods using HttpRequest were moved from a class called wmshelper and are
 propably pretty much duplicate implementations of existing methods in this class.
@@ -30,6 +32,20 @@ public class IOHelper {
      */
     public static String readString(InputStream is) throws IOException {
         return readString(is, DEFAULT_CHARSET);
+    }
+
+    /**
+     * Reads the given input stream and converts its contents to a string using given charset
+     * @param conn connection used to get inputstream and detect gzip encoding
+     * @param charset
+     * @return
+     * @throws IOException
+     */
+    public static String readString(HttpURLConnection conn, final String charset) throws IOException {
+        if("gzip".equals(conn.getContentEncoding())) {
+            return readString(new GZIPInputStream(conn.getInputStream()), charset);
+        }
+        return readString(conn.getInputStream(), charset);
     }
 
     /**
@@ -65,6 +81,18 @@ public class IOHelper {
         return writer.toString();
     }
 
+    /**
+     * Reads the given input stream and returns its contents as a byte array.
+     * @param conn used to get inputstream and detect possible gzip encoding
+     * @return
+     * @throws IOException
+     */
+    public static byte[] readBytes(HttpURLConnection conn) throws IOException {
+        if("gzip".equals(conn.getContentEncoding())) {
+            return readBytes(new GZIPInputStream(conn.getInputStream()));
+        }
+        return readBytes(conn.getInputStream());
+    }
     /**
      * Reads the given input stream and returns its contents as a byte array.
      * @param is
@@ -252,6 +280,45 @@ public class IOHelper {
         } catch (Exception e) {
             throw new IOException(e);
         }
+    }
+    /**
+     * Calls given URL and returns the response as String
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl, final String userName, final String password ) throws IOException {
+        return getURL(pUrl, userName, password, Collections.EMPTY_MAP);
+    }
+    /**
+     * Calls given URL with given http headers and returns the response as String.
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @param headers
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl, final String userName, final String password,
+                                final Map<String, String> headers) throws IOException {
+        return getURL(pUrl, userName, password, headers, DEFAULT_CHARSET);
+    }
+    /**
+     * Calls given URL with given http headers and returns the response interpreted with given charset as String
+     * @param pUrl
+     * @param userName
+     * @param password
+     * @param headers
+     * @param charset
+     * @return
+     * @throws IOException
+     */
+    public static String getURL(final String pUrl,final String userName, final String password,
+                                final Map<String, String> headers, final String charset) throws IOException {
+        final HttpURLConnection con = getConnection(pUrl, userName, password);
+        return getURL(con, headers, charset);
     }
 
     /**

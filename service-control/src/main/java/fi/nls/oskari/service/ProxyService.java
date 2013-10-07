@@ -124,12 +124,41 @@ public class ProxyService {
         final HttpURLConnection connection = getConnection(config, params);
         try {
             IOHelper.writeToConnection(connection, payload);
-            final String response = IOHelper.readString(connection.getInputStream(), config.getEncoding());
+            //final String response = IOHelper.readString(connection.getInputStream(), config.getEncoding());
+            // giving whole connection detects possible gzip response
+            final String response = IOHelper.readString(connection, config.getEncoding());
             return response;
         } catch (Exception e) {
             throw new ActionException("Couldn't proxy request to service:" + serviceKey, e);
         }
     }
+    /**
+     * Proxies request to given service using the given params.
+     * @param serviceKey id to map the service
+     * @param params params that should be used when proxying
+     * @return Response from the service
+     * @throws ActionException if something goes wrong when proxying
+     */
+    public static byte[] proxyBinary(final String serviceKey, final ActionParameters params) throws ActionException {
+
+        if(!availableServices.containsKey(serviceKey)) {
+            throw new ActionParamsException("Service not available");
+        }
+        final byte[] payload = getPayload(params);
+        // get base config
+        final ProxyServiceConfig baseConfig = availableServices.get(serviceKey);
+        // getConfig returns a params based modified config
+        final ProxyServiceConfig config = baseConfig.getConfig(params);
+        final HttpURLConnection connection = getConnection(config, params);
+        try {
+            IOHelper.writeToConnection(connection, payload);
+            final byte[] response = IOHelper.readBytes(connection);
+            return response;
+        } catch (Exception e) {
+            throw new ActionException("Couldn't proxy request to service:" + serviceKey, e);
+        }
+    }
+
 
     /**
      * Gets the connection to the proxy service.

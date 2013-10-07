@@ -141,6 +141,7 @@
         from oskari_resource
         where resource_type=?
         and resource_mapping=?
+        limit 1
     </select>
 
 
@@ -154,6 +155,7 @@
             and external_type = ?
             and permission = ?
             and external_id = ?
+        limit 1
     </select>
 
 
@@ -203,8 +205,8 @@
     <!-- fixed -->
     <resultMap id="layerPermissionsResult" class="HashMap">
         <result property="layerId" column="layerId" />
-        <result property="externalId" column="external_id" />
-        <result property="externalType" column="external_type" />
+        <result property="externalId" column="externalId" />
+        <result property="externalType" column="externalType" />
         <result property="permission" column="permission" />
     </resultMap>
 
@@ -220,8 +222,8 @@
             oskari_permission p,
             portti_maplayer l 
       WHERE
-            u.id = p.resource_user_id AND
-            u.resource_mapping = l.wmsurl || '+' || l.wmsname AND
+            u.id = p.oskari_resource_id AND
+            u.resource_mapping = l.wmsurl || '+' || l.wmsname
             <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
@@ -246,15 +248,15 @@
             portti_layerclass l 
       WHERE
             u.id = p.oskari_resource_id AND
-            u.resource_mapping = '+' || CAST(l.id AS character varying)
-            <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
+            u.resource_mapping = 'BASE+' || CAST(l.id AS character varying)
+            <isNotEmpty property="permissionType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
                 <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
                 </iterate>
             </isNotEmpty>
-      ORDER BY 
+      ORDER BY
             l.id;
     </select>
 

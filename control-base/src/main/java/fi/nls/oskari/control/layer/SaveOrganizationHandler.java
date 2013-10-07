@@ -141,7 +141,7 @@ public class SaveOrganizationHandler extends ActionHandler {
     private void addPermissionsForAdmin(final LayerClass lc, final User user, final String[] externalIds) {
         Permissions permissions = new Permissions();
         permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_LAYER_GROUP);
-        permissions.getUniqueResourceName().setNamespace("");
+        permissions.getUniqueResourceName().setNamespace("BASE");
         permissions.getUniqueResourceName().setName(String.valueOf(lc.getId()));
 
         // insert permissions
