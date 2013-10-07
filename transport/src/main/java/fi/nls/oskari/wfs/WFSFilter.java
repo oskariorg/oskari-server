@@ -12,6 +12,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.referencing.CRS;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.json.JSONArray;
@@ -21,7 +22,11 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import javax.measure.unit.*;
+import javax.measure.converter.UnitConverter;
+import javax.measure.unit.Unit;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +42,7 @@ public class WFSFilter {
     public static final String GT_GEOM_LINESTRING = "LINESTRING";
     public static final String GT_GEOM_POLYGON = "POLYGON";
     public static final int CIRCLE_POINTS_COUNT = 10;
+    public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch
 
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String ANALYSIS_ID_FIELD = "analysis_id";
@@ -73,8 +79,7 @@ public class WFSFilter {
         this.layer = layer;
         this.session = session;
         this.transform = transform;
-        this.defaultBuffer = 2 * Math.pow(2, (12 - session.getLocation()
-                .getZoom())); // TODO: scale with CRS! (now made for EPSG:3067)
+        this.defaultBuffer = getDefaultBuffer(this.session.getMapScales().get((int)this.session.getLocation().getZoom()));
 
         // TODO: transforms to all filters
         if (session.getMapClick() != null) {
@@ -149,6 +154,14 @@ public class WFSFilter {
         } catch (IOException e) {
             log.error(e, "Encoding filter to String (xml) failed");
         }
+    }
+
+    /**
+     * Sets the default buffer.
+     */
+    public double getDefaultBuffer(double mapScale) {
+        log.debug("Default buffer size", mapScale*CONVERSION_FACTOR);
+        return mapScale * CONVERSION_FACTOR;
     }
 
     /**

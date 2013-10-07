@@ -31,7 +31,7 @@ public class WFSFilterTest {
 	
 	String result = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>509058.0 6858054.0</gml:lowerCorner><gml:upperCorner>513578.0 6860174.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 	String resultBounds = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>385800.0 6690267.0</gml:lowerCorner><gml:upperCorner>397380.0 6697397.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
-	String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393909.0 6692163.0 393905.94427191 6692172.404564037 393897.94427191 6692178.216904261 393888.05572809 6692178.216904261 393880.05572809 6692172.404564037 393877.0 6692163.0 393880.05572809 6692153.595435963 393888.05572809 6692147.783095739 393897.94427191 6692147.783095739 393905.94427191 6692153.595435963 393909.0 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
+	String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393905.00000648 6692163.0 393902.708209175 6692170.053426837 393896.70820593496 6692174.412684359 393889.29179406504 6692174.412684359 393883.291790825 6692170.053426837 393880.99999352 6692163.0 393883.291790825 6692155.946573163 393889.29179406504 6692151.587315641 393896.70820593496 6692151.587315641 393902.708209175 6692155.946573163 393905.00000648 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
 	String resultHighlightFeatures = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:FeatureId fid=\"toimipaikat.6398\"/></ogc:Filter>";
 	String resultGeoJson = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>394081.0 6691734.0 394361.0 6692574.0 393521.0 6692854.0 393241.0 6692014.0 394081.0 6691734.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
 
@@ -51,6 +51,14 @@ public class WFSFilterTest {
 		bounds.add(6690267.0);
 		bounds.add(397380.0);
 		bounds.add(6697397.0);
+    }
+
+    @Test
+    public void testDefaultBuffer() {
+        WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+        double buffer = wfsFilter.getDefaultBuffer(2400.0);
+
+        assertTrue("Should get expected buffer size", buffer == 5.08d);
     }
     
 	@Test
