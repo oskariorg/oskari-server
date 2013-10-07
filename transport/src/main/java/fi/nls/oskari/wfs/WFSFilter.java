@@ -42,7 +42,7 @@ public class WFSFilter {
     public static final String GT_GEOM_LINESTRING = "LINESTRING";
     public static final String GT_GEOM_POLYGON = "POLYGON";
     public static final int CIRCLE_POINTS_COUNT = 10;
-    public static final double CONVERSION_FACTOR = 2.54/1200;
+    public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch
 
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String ANALYSIS_ID_FIELD = "analysis_id";
