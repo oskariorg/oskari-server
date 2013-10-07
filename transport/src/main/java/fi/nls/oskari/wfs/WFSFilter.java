@@ -42,6 +42,7 @@ public class WFSFilter {
     public static final String GT_GEOM_LINESTRING = "LINESTRING";
     public static final String GT_GEOM_POLYGON = "POLYGON";
     public static final int CIRCLE_POINTS_COUNT = 10;
+    public static final double CONVERSION_FACTOR = 2.54/1200;
 
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String ANALYSIS_ID_FIELD = "analysis_id";
@@ -78,10 +79,7 @@ public class WFSFilter {
         this.layer = layer;
         this.session = session;
         this.transform = transform;
-        this.defaultBuffer = getDefaultBuffer(
-                session.getMapScales().size(),
-                session.getLocation().getZoom(),
-                session.getLocation().getSrs());
+        this.defaultBuffer = getDefaultBuffer(this.session.getMapScales().get((int)this.session.getLocation().getZoom()));
 
         // TODO: transforms to all filters
         if (session.getMapClick() != null) {
@@ -161,23 +159,9 @@ public class WFSFilter {
     /**
      * Sets the default buffer.
      */
-    public double getDefaultBuffer(int mapScalesSize, long zoomLevel, String srsName) {
-        CoordinateReferenceSystem mapCrs;
-        Unit<?> mapCrsUnit;
-        double sizeInMeters = 2 * Math.pow(2, ((mapScalesSize - 1) - zoomLevel));
-        double sizeInUnits = sizeInMeters;
-
-        try {
-            mapCrs = CRS.decode(srsName);
-            mapCrsUnit = mapCrs.getCoordinateSystem().getAxis(0).getUnit();
-            UnitConverter converter = SI.METER.getConverterTo(mapCrsUnit);
-            sizeInUnits = converter.convert(sizeInMeters);
-        } catch (Exception e) {
-            log.error(e, "CRS unit conversion failed");
-        }
-        log.debug("Size in meters", sizeInMeters);
-        log.debug("Size in crs units", sizeInUnits);
-        return sizeInUnits;
+    public double getDefaultBuffer(double mapScale) {
+        log.debug("Default buffer size", mapScale*CONVERSION_FACTOR);
+        return mapScale * CONVERSION_FACTOR;
     }
 
     /**

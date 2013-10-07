@@ -72,20 +72,20 @@ public class Units {
             toCrs = CRS.decode(toSrs);
             fromCrsUnit = fromCrs.getCoordinateSystem().getAxis(0).getUnit();
             toCrsUnit = toCrs.getCoordinateSystem().getAxis(0).getUnit();
-            toCrsUnitString = toCrsUnit.toString();
             fromCrsUnitString = fromCrsUnit.toString();
-
-            if (metersPerUnits.get(toCrsUnitString) == null) {
-                log.warn("Unknown unit", toCrsUnitString);
-                return scale;
-            }
-            toUnitFactor = metersPerUnits.get(toCrsUnitString);
+            toCrsUnitString = toCrsUnit.toString();
 
             if (metersPerUnits.get(fromCrsUnitString) == null) {
                 log.warn("Unknown unit", fromCrsUnitString);
                 return scale;
             }
             fromUnitFactor = metersPerUnits.get(fromCrsUnitString);
+
+            if (metersPerUnits.get(toCrsUnitString) == null) {
+                log.warn("Unknown unit", toCrsUnitString);
+                return scale;
+            }
+            toUnitFactor = metersPerUnits.get(toCrsUnitString);
 
             log.debug("Units: from unit", fromCrsUnitString, ", to unit", toCrsUnitString);
 
