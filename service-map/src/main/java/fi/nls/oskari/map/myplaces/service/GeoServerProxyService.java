@@ -200,7 +200,7 @@ public class GeoServerProxyService {
         if (dotIdx < 0)
             throw new IOException("Could not connect. No feature type in '" + featureId + "'");
         String typeName = featureId.substring(0, dotIdx);
-        String myPlacesUrl = PropertyUtil.get("myPlacesUrl");
+        String myPlacesUrl = PropertyUtil.get("myplaces.ows.url");
         myPlacesUrl = Jsoup.clean(myPlacesUrl, Whitelist.none());
         String geoserverAddress = myPlacesUrl + GEOSERVER_URL_PARAMS + typeName + URLPARAM_FEATURE + featureId;
         return  getConnection(geoserverAddress);
