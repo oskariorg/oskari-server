@@ -7,13 +7,6 @@ import java.util.ArrayList;
 import java.io.Serializable;
 
 public class View implements Serializable {
-/*
-    <result property="application" column="application" />
-    <result property="page" column="page" />
-    <result property="developmentPath" column="application_dev_prefix" />
-app_startup -> application
-page -> page
-    */
     private long id = -1;
     private long oldId = -1;
     private String name = null;

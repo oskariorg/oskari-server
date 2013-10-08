@@ -96,8 +96,13 @@ public class PublishHandler extends ActionHandler {
         if (bundleService == null) {
         	setBundleService(new BundleServiceIbatisImpl());
         }
-        
-        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(PropertyUtil.get("view.template.publish"), PUBLISHED_VIEW_TEMPLATE_ID);
+        final String publishTemplateIdProperty = PropertyUtil.getOptional("view.template.publish");
+        if(publishTemplateIdProperty == null) {
+            log.warn("Publish template id not configured (property: view.template.publish)!");
+        }
+        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
+        log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+
         publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
         if(publishedGridBundle == null) {
             log.warn("Couldn't get publishedGrid bundle template from DB!");
@@ -172,7 +177,7 @@ public class PublishHandler extends ActionHandler {
 
                 if (user.getId() != currentView.getCreator()) {
                     log.error("Trying to publish map, but couldnt determine user");
-                    throw new ActionException("No permissions to update this id:" + updateViewId);
+                    throw new ActionDeniedException("No permissions to update this id:" + updateViewId);
                 }
 
             }
@@ -180,7 +185,10 @@ public class PublishHandler extends ActionHandler {
             log.error("Some exception when try get publish id from pubdata json");
         }
 
-        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, "paikkatietoikkuna.fi");
+        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, null);
+        if(domain == null) {
+            throw new ActionParamsException("Domain missing");
+        }
         final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
@@ -208,23 +216,15 @@ public class PublishHandler extends ActionHandler {
                     + jsonex.getMessage());
         }
 
-
-        if (domain != null) {
-            currentView.setPubDomain(domain);
-        }
-
+        currentView.setPubDomain(domain);
         currentView.setName(name);
         currentView.setType(params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.PUBLISHED));
         currentView.setCreator(user.getId());
         currentView.setIsPublic(true);
-        currentView.setApplication("published-map");
-        currentView.setPage("published");
-        currentView.setDevelopmentPath("/applications/paikkatietoikkuna.fi");
+        // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
 
-
         JSONArray selectedLayers = null;
-
         try {
             selectedLayers = getPublishableLayers(mapfullState.getJSONArray(KEY_SELLAYERS), user);
         } catch (JSONException e) {

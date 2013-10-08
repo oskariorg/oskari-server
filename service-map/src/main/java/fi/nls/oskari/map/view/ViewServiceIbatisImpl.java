@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -271,8 +272,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
 
     public long getDefaultViewId() {
-        return ((Long) queryForObject("View.get-default-view-id", "DEFAULT"))
-                .longValue();
+        return getDefaultViewId(ViewTypes.DEFAULT);
     }
 
     /**
@@ -290,22 +290,24 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         if(user == null) {
             log.debug("Tried to get default view for <null> user");
         }
-
-        // Check the roles in given order and return the first match
-        for(String role : viewRoles) {
-            if(user.hasRole(role) &&
-                    defaultViewIds.containsKey(role)) {
-                log.debug("Default view found for role", role, ":", defaultViewIds.get(role));
-                return defaultViewIds.get(role);
+        else {
+            // Check the roles in given order and return the first match
+            for(String role : viewRoles) {
+                if(user.hasRole(role) &&
+                        defaultViewIds.containsKey(role)) {
+                    log.debug("Default view found for role", role, ":", defaultViewIds.get(role));
+                    return defaultViewIds.get(role);
+                }
             }
         }
+
         // property overrides db default, no particular reason for this
         if(defaultViewProperty != -1) {
             return defaultViewProperty;
         }
         // global default view property not defined, check db
         log.debug("No properties based default views matched user", user, ". Defaulting to DB.");
-        defaultViewProperty = getDefaultViewId();
+        defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
         return defaultViewProperty;
     }
 

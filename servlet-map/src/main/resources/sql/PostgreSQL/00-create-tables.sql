@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS portti_bundle;
 DROP TABLE IF EXISTS portti_view;
 DROP TABLE IF EXISTS portti_view_supplement;
 
+DROP TABLE IF EXISTS portti_published_map_usage;
+DROP TABLE IF EXISTS portti_published_map_statistics;
 DROP TABLE IF EXISTS portti_terms_of_use_for_publishing;
 
 CREATE TABLE portti_capabilities_cache
@@ -200,6 +202,24 @@ CREATE TABLE portti_view_bundle_seq (
   ON UPDATE NO ACTION ON DELETE NO ACTION,
    CONSTRAINT 	    view_seq	  UNIQUE (view_id, seqno)
 );
+
+CREATE TABLE portti_published_map_usage
+(
+  id serial NOT NULL,
+  published_map_id bigint NOT NULL,
+  usage_count bigint NOT NULL,
+  force_lock boolean NOT NULL DEFAULT false,
+  CONSTRAINT portti_published_map_usage_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE portti_published_map_statistics
+(
+  id serial NOT NULL,
+  published_map_id bigint NOT NULL,
+  count_total_lifecycle bigint NOT NULL,
+  CONSTRAINT portti_published_map_statistics_pkey PRIMARY KEY (id)
+);
+
 
 ------ Additional table not found in hsqldb - needed for publisher;
 

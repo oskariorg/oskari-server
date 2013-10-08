@@ -28,9 +28,6 @@ public class SaveViewHandler extends ActionHandler {
     private final static String VIEW_DATA = "viewData";
     private final static String VIEW_IS_PUBLIC = "viewIsPublic";
 
-    private static final long FULL_MAP_VIEW_TEMPLATE_ID = 1;
-    private static final String KEY_UPDATE_VIEW_ID = "Id";
-
     public void handleAction(final ActionParameters params) throws ActionException {
 
         if (params.getUser().isGuest()) {
@@ -94,10 +91,6 @@ public class SaveViewHandler extends ActionHandler {
 
     private synchronized View getCurrentView(final ActionParameters params) throws ActionException {
 
-        // Old id
-        long oldId = -1;
-        long currentViewId = -1;
-
         final String viewName = params.getHttpParam(VIEW_NAME);
         final String viewDescription = params.getHttpParam(VIEW_DESCRIPTION);
         if (viewName == null) {
@@ -106,47 +99,23 @@ public class SaveViewHandler extends ActionHandler {
         }
 
         // Access flag
-
         final boolean isPublic = ConversionHelper.getBoolean(params.getHttpParam(VIEW_IS_PUBLIC), false);
-        /*String pubString = params.getHttpParam(VIEW_IS_PUBLIC);
-        isPublic = pubString == null ? false : Boolean.valueOf(pubString);
-          */
-
         // Publication domain
         final String pubDomain = params.getHttpParam(PUBDOMAIN);
 
-        View currentView;
-        try {
-            // FIXME: checking on additional params but getting it from http params? wat?
-            if (params.getAdditionalParam(KEY_UPDATE_VIEW_ID) != null) {
-                currentViewId = Long.parseLong(params.getHttpParam(KEY_UPDATE_VIEW_ID));
-            } else {
-                //currentViewId = PublishHandler.PUBLISHED_VIEW_TEMPLATE_ID;
-                currentViewId = FULL_MAP_VIEW_TEMPLATE_ID;
-            }
-            currentView = viewService.getViewWithConf(currentViewId);
-
-        } catch (Exception ex) {
-            throw new ActionException("Could not fetch current view id:" + currentViewId);
+        // get default view id for the user
+        final long currentViewId = viewService.getDefaultViewId(params.getUser());
+        final View currentView = viewService.getViewWithConf(currentViewId);
+        if (currentView == null) {
+            throw new ActionParamsException("Could not fetch current view id:" + currentViewId);
         }
 
-
-        if (pubDomain != null) {
-            currentView.setPubDomain(pubDomain);
-        }
-
-        currentView.setOldId(oldId);
         currentView.setName(viewName);
         currentView.setDescription(viewDescription);
         currentView.setType(params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER));
         currentView.setCreator(params.getUser().getId());
         currentView.setIsPublic(isPublic);
-
-        // TODO: from properties view.template.
-        currentView.setApplication("full-map");
-        currentView.setPage("view");
-        currentView.setDevelopmentPath("/applications/paikkatietoikkuna.fi");
-
+        // application/page/devpath should be left as is in "template view"
         return currentView;
     }
 
