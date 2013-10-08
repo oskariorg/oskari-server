@@ -76,21 +76,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             // view with id not found
             return false;
         }
-        if(view.getId() <=3) {
-            log.debug("View id must be over 4:", view.getId());
-            // 1 == default view
-            // 2 == print view
-            // 3 == published view template
-            // these cannot be users views, though these shouldn't be hardcoded
-            return false;
-        }
-/*
-        if(!userUuid.equals(view.getUuid())) {
-            log.debug("Users uuid:", userUuid, "didn't match the one on view:", view.getUuid());
-            // uuid didn't match -> not users view
-            return false;
-        }
-        */
         if(user.isGuest()) {
             log.debug("User is default/guest user");
             return false;

@@ -13,11 +13,13 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -37,8 +39,14 @@ public class PublishHandlerTest extends JSONActionRouteTest {
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
 
+    @BeforeClass
+    public static void addProperties() throws Exception {
+        PropertyUtil.addProperty("view.template.publish", "3", true);
+    }
+
     @Before
     public void setUp() throws Exception {
+        // view.template.publish=3
     	// mock services for testing
     	mockViewService();
         myPlaceService = mock(MyPlacesServiceIbatisImpl.class);

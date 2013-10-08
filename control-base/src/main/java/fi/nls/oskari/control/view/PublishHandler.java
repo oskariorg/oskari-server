@@ -55,7 +55,7 @@ public class PublishHandler extends ActionHandler {
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_BASELAYER = "base_";
-    private static long PUBLISHED_VIEW_TEMPLATE_ID = 3;
+    private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
@@ -97,11 +97,13 @@ public class PublishHandler extends ActionHandler {
         	setBundleService(new BundleServiceIbatisImpl());
         }
         final String publishTemplateIdProperty = PropertyUtil.getOptional("view.template.publish");
+        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
         if(publishTemplateIdProperty == null) {
             log.warn("Publish template id not configured (property: view.template.publish)!");
         }
-        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
-        log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+        else {
+            log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+        }
 
         publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
         if(publishedGridBundle == null) {
@@ -110,6 +112,10 @@ public class PublishHandler extends ActionHandler {
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
+        if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+            log.error("Publish template id not configured (property: view.template.publish)!");
+            throw new ActionParamsException("Trying to publish map, but template isn't configured");
+        }
 
         final User user = params.getUser();
         long userId = user.getId();

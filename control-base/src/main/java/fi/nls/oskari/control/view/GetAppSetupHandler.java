@@ -51,11 +51,9 @@ public class GetAppSetupHandler extends ActionHandler {
 
     private static final long DEFAULT_USERID = 10110;
     private static String UNRESTRICTED_USAGE_ROLE = "";
+    private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
 
-    // for adding admin extra bundle(s) when admin user in action
-    private Bundle adminBundle = null;
-    private Bundle adminLayerRightsBundle = null;
-
+    // for adding extra bundle(s) for users with specific roles
     private  Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
     private final Set<String> paramHandlers = new HashSet<String>();
@@ -86,6 +84,7 @@ public class GetAppSetupHandler extends ActionHandler {
         ParamControl.addDefaultControls();
         paramHandlers.addAll(ParamControl.getHandlerKeys());
         UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRoles");
+        UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
 
         // Loads @OskariViewModifier annotated classes of type BundleHandler from classpath
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
@@ -177,9 +176,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if (view.getType().equals(ViewTypes.PUBLISHED)) {
             // Check referrer
             final String pubDomain = view.getPubDomain();
-            if (referer.endsWith("paikkatietoikkuna.fi")
-                    || referer.endsWith("nls.fi")
-                    || referer.endsWith(pubDomain)) {
+            if(isRefererDomain(referer, pubDomain)) {
                 log.info("Granted access to published view in domain:",
                         pubDomain, "for referer", referer);
             } else {
@@ -303,6 +300,24 @@ public class GetAppSetupHandler extends ActionHandler {
             throw new ActionException("Malformed startup sequence/config!",
                     jsonex);
         }
+    }
+
+    /**
+     * Checks if it's ok to continue loading requested map based on referer/views pubdomain.
+     * @param referer from headers
+     * @param pubdomain domain the map is published to
+     * @return true if referer ends with domains in UNRESTRICTED_USAGE_DOMAINS or the domain defined for the view.
+     */
+    private boolean isRefererDomain(final String referer, final String pubdomain) {
+        if(referer == null) {
+            return false;
+        }
+        for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
+            if(referer.endsWith(domain)) {
+                return true;
+            }
+        }
+         return referer.endsWith(pubdomain);
     }
 
     private JSONObject getConfiguration(final View view) throws ActionException {
