@@ -897,7 +897,6 @@ public class WFSLayerStore {
             } else if (GML2_SEPARATOR.equals(fieldName)) {
                 store.setGML2Separator(parser.getText());
             } else if (WFS_VERSION.equals(fieldName)) {
-
 				store.setWFSVersion(parser.getText());
 			} else if (MAX_FEATURES.equals(fieldName)) {
 				store.setMaxFeatures(parser.getIntValue());
@@ -910,26 +909,25 @@ public class WFSLayerStore {
             } else if (FEATURE_ELEMENT.equals(fieldName)) {
 				store.setFeatureElement(parser.getText());
 			} else if (FEATURE_TYPE.equals(fieldName)) {
-				
-				// HÄR HÄR
 				while (parser.nextToken() != JsonToken.END_OBJECT) {
 					String typeName = parser.getCurrentName();
 					parser.nextToken();
 					featureTypes.put(typeName, parser.getText());
 				}
 				store.setFeatureType(featureTypes);
-				
 			} else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
-                while (parser.nextToken() != JsonToken.END_OBJECT) {
-                    String localeName = parser.getCurrentName();
-                    List<String> featureParams = new ArrayList<String>();
-                    parser.nextToken();
-                    while (parser.nextToken() != JsonToken.END_ARRAY) {
-                        featureParams.add(parser.getText());
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        String localeName = parser.getCurrentName();
+                        List<String> featureParams = new ArrayList<String>();
+                        parser.nextToken();
+                        while (parser.nextToken() != JsonToken.END_ARRAY) {
+                            featureParams.add(parser.getText());
+                        }
+                        selectedFeatureParams.put(localeName, featureParams);
                     }
-                    selectedFeatureParams.put(localeName, featureParams);
+                    store.setSelectedFeatureParams(selectedFeatureParams);
                 }
-                store.setSelectedFeatureParams(selectedFeatureParams);
 			} else if (FEATURE_PARAMS_LOCALES.equals(fieldName)) {
 				while (parser.nextToken() != JsonToken.END_OBJECT) {
 					String localeName = parser.getCurrentName();
