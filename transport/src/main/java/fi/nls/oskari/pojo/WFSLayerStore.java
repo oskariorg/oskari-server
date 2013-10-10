@@ -847,6 +847,9 @@ public class WFSLayerStore {
         String fieldName = null;
         String valueName = null;
         parser.nextToken();
+        if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
+            throw new IllegalStateException("Configuration is not an object!");
+        }
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             fieldName = parser.getCurrentName();
             parser.nextToken();
@@ -857,23 +860,27 @@ public class WFSLayerStore {
             } else if (LAYER_ID.equals(fieldName)) {
                 store.setLayerId(parser.getText());
             } else if (NAME_LOCALES.equals(fieldName)) {
-                while (parser.nextToken() != JsonToken.END_OBJECT) {
-                    String localeName = parser.getCurrentName();
-                    locale = new HashMap<String, String>();
-                    parser.nextToken();
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
-                        valueName = parser.getCurrentName();
-                        if (NAME.equals(valueName)) {
-                            locale.put(valueName, parser.getText());
-                        } else if (SUBTITLE.equals(valueName)) {
-                            locale.put(valueName, parser.getText());
-                        } else {
-                            throw new IllegalStateException(
-                                    "Unrecognized value in layers '"
-                                            + valueName + "'!");
+                        String localeName = parser.getCurrentName();
+                        locale = new HashMap<String, String>();
+                        parser.nextToken();
+                        if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                                valueName = parser.getCurrentName();
+                                if (NAME.equals(valueName)) {
+                                    locale.put(valueName, parser.getText());
+                                } else if (SUBTITLE.equals(valueName)) {
+                                    locale.put(valueName, parser.getText());
+                                } else {
+                                    throw new IllegalStateException(
+                                            "Unrecognized value in layers '"
+                                                    + valueName + "'!");
+                                }
+                            }
                         }
+                        nameLocales.put(localeName, locale);
                     }
-                    nameLocales.put(localeName, locale);
                 }
                 store.setNameLocales(nameLocales);
             } else if (URL_PARAM.equals(fieldName)) {
@@ -909,11 +916,13 @@ public class WFSLayerStore {
             } else if (FEATURE_ELEMENT.equals(fieldName)) {
 				store.setFeatureElement(parser.getText());
 			} else if (FEATURE_TYPE.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					String typeName = parser.getCurrentName();
-					parser.nextToken();
-					featureTypes.put(typeName, parser.getText());
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        String typeName = parser.getCurrentName();
+                        parser.nextToken();
+                        featureTypes.put(typeName, parser.getText());
+                    }
+                }
 				store.setFeatureType(featureTypes);
 			} else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
@@ -921,23 +930,30 @@ public class WFSLayerStore {
                         String localeName = parser.getCurrentName();
                         List<String> featureParams = new ArrayList<String>();
                         parser.nextToken();
-                        while (parser.nextToken() != JsonToken.END_ARRAY) {
-                            featureParams.add(parser.getText());
+                        if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                            while (parser.nextToken() != JsonToken.END_ARRAY) {
+                                featureParams.add(parser.getText());
+                            }
                         }
                         selectedFeatureParams.put(localeName, featureParams);
                     }
-                    store.setSelectedFeatureParams(selectedFeatureParams);
                 }
+                store.setSelectedFeatureParams(selectedFeatureParams);
 			} else if (FEATURE_PARAMS_LOCALES.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					String localeName = parser.getCurrentName();
-					List<String> paramsLocale = new ArrayList<String>();
-					parser.nextToken();
-					while (parser.nextToken() != JsonToken.END_ARRAY) {
-						paramsLocale.add(parser.getText());
-					}
-					featureParamsLocales.put(localeName, paramsLocale);
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        String localeName = parser.getCurrentName();
+                        List<String> paramsLocale = new ArrayList<String>();
+                        parser.nextToken();
+
+                        if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                            while (parser.nextToken() != JsonToken.END_ARRAY) {
+                                paramsLocale.add(parser.getText());
+                            }
+                        }
+                        featureParamsLocales.put(localeName, paramsLocale);
+                    }
+                }
 				store.setFeatureParamsLocales(featureParamsLocales);
 			} else if (GEOMETRY_TYPE.equals(fieldName)) {
 				store.setGeometryType(parser.getText());
@@ -970,25 +986,29 @@ public class WFSLayerStore {
 			} else if (SELECTION_SLD_STYLE.equals(fieldName)) {
 				store.setSelectionSLDStyle(parser.getText());
 			} else if (STYLES.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					SLDStyle = new WFSSLDStyle();
-					parser.nextToken();
-					while (parser.nextToken() != JsonToken.END_OBJECT) {
-						valueName = parser.getCurrentName();
-						if (ID.equals(valueName)) {
-							SLDStyle.setId(parser.getText());
-						} else if (NAME.equals(valueName)) {
-							SLDStyle.setName(parser.getText());
-						} else if (SLD_STYLE.equals(valueName)) {
-							SLDStyle.setSLDStyle(parser.getText());
-						} else {
-							throw new IllegalStateException(
-									"Unrecognized value in layers '"
-											+ valueName + "'!");
-						}
-					}
-					SLDStyles.put(SLDStyle.getName(), SLDStyle);
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        SLDStyle = new WFSSLDStyle();
+                        parser.nextToken();
+                        if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                                valueName = parser.getCurrentName();
+                                if (ID.equals(valueName)) {
+                                    SLDStyle.setId(parser.getText());
+                                } else if (NAME.equals(valueName)) {
+                                    SLDStyle.setName(parser.getText());
+                                } else if (SLD_STYLE.equals(valueName)) {
+                                    SLDStyle.setSLDStyle(parser.getText());
+                                } else {
+                                    throw new IllegalStateException(
+                                            "Unrecognized value in layers '"
+                                                    + valueName + "'!");
+                                }
+                            }
+                        }
+                        SLDStyles.put(SLDStyle.getName(), SLDStyle);
+                    }
+                }
 				store.setStyles(SLDStyles);
 			} else {
 				throw new IllegalStateException("Unrecognized field '"
@@ -996,6 +1016,9 @@ public class WFSLayerStore {
 			}
 		}
 		parser.close();
+
+
+
 		return store;
 	}
 
