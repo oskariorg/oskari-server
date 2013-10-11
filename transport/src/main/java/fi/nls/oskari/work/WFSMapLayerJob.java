@@ -329,6 +329,7 @@ public class WFSMapLayerJob extends Job {
      */
     private boolean normalHandlers(List<Double> bounds, boolean first) {
         if(!this.requestHandler(bounds)) {
+            log.debug("Cancelled by request handler");
             return false;
         }
         if(first) {
@@ -435,6 +436,7 @@ public class WFSMapLayerJob extends Job {
         if(!this.sendFeatures) {
             return;
         }
+        log.debug("properties handler");
 
         List<String> selectedProperties = new ArrayList<String>();
         List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -458,6 +460,8 @@ public class WFSMapLayerJob extends Job {
      * Parses features values
      */
     private void featuresHandler() {
+        log.debug("features handler");
+
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
         this.featureValuesList = new ArrayList<List<Object>>();
