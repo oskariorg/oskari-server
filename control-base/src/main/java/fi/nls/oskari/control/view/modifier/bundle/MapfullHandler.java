@@ -80,6 +80,7 @@ public class MapfullHandler extends BundleHandler {
         copySelectedLayersToConfigLayers(mfConfigLayers, mfStateLayers);
 
         final boolean isMyplacesPresent = isBundlePresent(params.getStartupSequence(), BUNDLE_MYPLACES2);
+        final boolean useDirectURLForMyplaces = false;
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
         		params.getUser(), 
         		params.getLocale().getLanguage(), 
@@ -87,7 +88,8 @@ public class MapfullHandler extends BundleHandler {
         		params.getViewId(), 
         		params.getViewType(),
                 isMyplacesPresent,
-        		false);
+                useDirectURLForMyplaces,
+        		params.isModifyURLs());
         
         // overwrite layers
         try {
@@ -108,12 +110,34 @@ public class MapfullHandler extends BundleHandler {
         }
         return false;
     }
-    
+
+    public static JSONArray getFullLayerConfig(final JSONArray layersArray,
+                                               final User user, final String lang,
+                                               final String clientIP, final long viewID,
+                                               final String viewType, final boolean isMyplacesBundleLoaded,
+                                               final boolean useDirectURLForMyplaces) {
+        return getFullLayerConfig(layersArray, user, lang, clientIP, viewID, viewType, isMyplacesBundleLoaded, useDirectURLForMyplaces, false);
+    }
+
+    /**
+     * Creates JSON array of layer configurations.
+     * @param layersArray
+     * @param user
+     * @param lang
+     * @param clientIP
+     * @param viewID
+     * @param viewType
+     * @param isMyplacesBundleLoaded
+     * @param useDirectURLForMyplaces
+     * @param modifyURLs false to keep urls as is, true to modify them for easier proxy forwards
+     * @return
+     */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
     		final User user, final String lang, 
     		final String clientIP, final long viewID, 
     		final String viewType, final boolean isMyplacesBundleLoaded,
-            final boolean useDirectURLForMyplaces) {
+            final boolean useDirectURLForMyplaces,
+            final boolean modifyURLs) {
 
         // Create a list of layer ids
         final List<String> layerIdList = new ArrayList<String>();
@@ -150,7 +174,7 @@ public class MapfullHandler extends BundleHandler {
         
         final JSONObject struct = MapLayerWorker.getSelectedLayersStructure(
                 layerIdList, user, lang, clientIP,
-                ViewTypes.PUBLISHED.equals(viewType));
+                ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
             log.warn("getSelectedLayersStructure did not return layers when expanding:",
@@ -159,7 +183,7 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, isMyplacesBundleLoaded, useDirectURLForMyplaces);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, isMyplacesBundleLoaded, useDirectURLForMyplaces, modifyURLs);
         return prefetch;
     }
     
@@ -168,7 +192,8 @@ public class MapfullHandler extends BundleHandler {
             final User user,
             final long viewID,
             final boolean skipOwnMyPlacesLayers,
-            final boolean useDirectURL) {
+            final boolean useDirectURL,
+            final boolean modifyURLs) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
@@ -191,7 +216,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject myPlaceLayer = getMyPlacesJSON(mpLayer, useDirectURL, user.getUuid());
+            final JSONObject myPlaceLayer = getMyPlacesJSON(mpLayer, useDirectURL, user.getUuid(), modifyURLs);
             if(myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
             }
@@ -199,7 +224,8 @@ public class MapfullHandler extends BundleHandler {
     }
 
     private static JSONObject getMyPlacesJSON(final MyPlaceCategory mpLayer,
-            final boolean useDirectURL, final String uuid) {
+            final boolean useDirectURL, final String uuid,
+            final boolean modifyURLs) {
         try {
             final JSONObject myPlaceLayer = new JSONObject();
             myPlaceLayer.put("wmsName", "ows:my_places_categories");
@@ -211,6 +237,7 @@ public class MapfullHandler extends BundleHandler {
             myPlaceLayer.put("opacity", "90");
             myPlaceLayer.put("metaType", "published");
             // if useDirectURL -> geoserver URL
+            // TODO: check "modifyURLs" and prefix wmsurl if true
             if(useDirectURL) {
                 myPlaceLayer.put("wmsUrl", PropertyUtil.get("myplaces.wms.url") +
                 		"(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());

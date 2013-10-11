@@ -27,6 +27,23 @@ public class ModifierParams {
     private long viewId;
     private boolean locationModified = false;
     private boolean oldPublishedMap = false;
+    private boolean modifyURLs = false;
+
+    /**
+     * Boolean switch if urls should be provided as configured or modified to match proxy forwarding rules.
+     * @return true if URLs should be modified
+     */
+    public boolean isModifyURLs() {
+        return modifyURLs;
+    }
+
+    /**
+     * Boolean switch if urls should be provided as configured or modified to match proxy forwarding rules.
+     * @param modifyURLs true to modify URLs, false to keep URLs as is
+     */
+    public void setModifyURLs(boolean modifyURLs) {
+        this.modifyURLs = modifyURLs;
+    }
 
     /**
      * Referer information from the request
