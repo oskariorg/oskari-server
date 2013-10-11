@@ -207,7 +207,9 @@ public class WFSMapLayerJob extends Job {
 
         if(this.type.equals(TYPE_NORMAL)) { // tiles for grid
             if(!this.layer.isTileRequest()) { // make single request
-                this.normalHandlers(null, true);
+                if(!this.normalHandlers(null, true)) {
+                    return;
+                }
             }
 
 			List<List<Double>> grid = this.session.getGrid().getBounds();
@@ -216,19 +218,22 @@ public class WFSMapLayerJob extends Job {
 			int index = 0;
 			for(List<Double> bounds : grid) {
                 if(this.layer.isTileRequest()) { // make a request per tile
-                    this.normalHandlers(bounds, first);
+                    if(!this.normalHandlers(bounds, first)) {
+                        return;
+                    }
                 }
 				
 				if(!goNext()) return;
 				
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
-                    log.debug("In selected tiles");
+                    log.debug("In selected tiles", bounds);
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
 		   	 		}
 		   	 		
 					// get from cache
+                    log.debug("Getting from cache..");
 				    BufferedImage bufferedImage = getImageCache(bbox);
 			    	boolean fromCache = (bufferedImage != null);
 
