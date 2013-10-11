@@ -187,6 +187,7 @@ public class WFSMapLayerJob extends Job {
     	if(!goNext()) return;
     	this.getLayerConfiguration();
 		if(this.layer == null) {
+            log.error("Getting layer configuration failed");
 			return;
 		}
 
@@ -226,26 +227,22 @@ public class WFSMapLayerJob extends Job {
 				if(!goNext()) return;
 				
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
-                    log.debug("In selected tiles", bounds);
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
 		   	 		}
 		   	 		
 					// get from cache
-                    log.debug("Getting from cache..");
 				    BufferedImage bufferedImage = getImageCache(bbox);
 			    	boolean fromCache = (bufferedImage != null);
 
 			    	if(!fromCache) {
-                        log.debug("Not in cache");
 					    WFSImage image = new WFSImage(this.layer,
 					    		this.session.getTileSize(),
 					    		this.session.getLocation(),
 					    		bounds,
 					    		this.session.getLayers().get(this.layerId).getStyleName(),
 					    		this.features);
-                        log.debug("Drawing..");
 					    bufferedImage = image.draw();
                         if(bufferedImage == null) {
                             this.imageParsingFailed();
@@ -254,9 +251,7 @@ public class WFSMapLayerJob extends Job {
 
 					    // set to cache
 						if(!this.session.getGrid().isBoundsOnBoundary(index)) {
-                            log.debug("Setting to cache..");
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, true);
-                            log.debug("Cached");
 						} else { // non-persistent cache - for ie
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, false);
 						}
@@ -383,8 +378,6 @@ public class WFSMapLayerJob extends Job {
         	this.features = WFSCommunicator.parseSimpleFeatures(response, this.layer);        	
         }
 
-        log.debug("features", features);
-
 		// parsing failed
 		if(this.features == null) {
             log.warn("Parsing failed for layer",  this.layerId);
@@ -438,7 +431,6 @@ public class WFSMapLayerJob extends Job {
         if(!this.sendFeatures) {
             return;
         }
-        log.debug("properties handler");
 
         List<String> selectedProperties = new ArrayList<String>();
         List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -462,8 +454,6 @@ public class WFSMapLayerJob extends Job {
      * Parses features values
      */
     private void featuresHandler() {
-        log.debug("features handler");
-
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
         this.featureValuesList = new ArrayList<List<Object>>();
@@ -647,7 +637,7 @@ public class WFSMapLayerJob extends Job {
 		}
     	try {
     		this.layer = WFSLayerStore.setJSON(json);
-    	} catch (IOException e) {
+    	} catch (Exception e) {
             log.error(e, "JSON parsing failed for WFSLayerStore \n" + json);
     	}
 
