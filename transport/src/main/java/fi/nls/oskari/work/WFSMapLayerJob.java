@@ -383,6 +383,8 @@ public class WFSMapLayerJob extends Job {
         	this.features = WFSCommunicator.parseSimpleFeatures(response, this.layer);        	
         }
 
+        log.debug("features", features);
+
 		// parsing failed
 		if(this.features == null) {
             log.warn("Parsing failed for layer",  this.layerId);
