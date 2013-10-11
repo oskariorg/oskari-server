@@ -87,6 +87,20 @@ public class MapLayerWorker {
      */
     public static JSONObject getSelectedLayersStructure(List<String> layerList,
                                                         User user, String lang, String remoteIp, boolean isPublished) {
+        return getSelectedLayersStructure(layerList, user, lang, remoteIp, isPublished, false);
+    }
+    /**
+     * Gets all the selected map layers
+     * @param layerList List of selected layer IDs(?)
+     * @param user User
+     * @param lang Language
+     * @param remoteIp Remote IP
+     * @param isPublished Determines the permission type used for the layers
+     * @param modifyURLs true to modify urls for easier proxy forwarding/false to keep as is
+     * @return JSONObject containing the selected layers
+     */
+    public static JSONObject getSelectedLayersStructure(List<String> layerList,
+                                                        User user, String lang, String remoteIp, boolean isPublished, boolean modifyURLs) {
 
         final String permissionType = getPermissionType(isPublished);
         final List<String> resources = permissionsService
@@ -138,7 +152,7 @@ public class MapLayerWorker {
 
         return populateListOfMapLayersJSON(
                 allLayerClassRoot, resources, groupResources, lang,
-                false, user.getRoles(), false);
+                modifyURLs, user.getRoles(), false);
     }
 
     /**
@@ -379,7 +393,6 @@ public class MapLayerWorker {
             layerJson.put("baseLayerId", layerClass.getId());
 
             layerJson.put("orderNumber", layer.getOrdernumber());
-            layerJson.put("wmsUrl", layer.getWmsUrl());
             layerJson.put("opacity", layer.getOpacity());
 
             if (null != layer.getCreated()) {
@@ -389,14 +402,13 @@ public class MapLayerWorker {
             if (null != layer.getUpdated()) {
                 layerJson.put("updated", layer.getUpdated());
             }
-
             if (!isSecure) {
                 layerJson.put("wmsUrl", layer.getWmsUrl());
             } else {
-                // for easier apache routing on ssl hosts, maps all urls with prefix and id
+                // for easier proxy routing on ssl hosts, maps all urls with prefix and a simplified url
                 // so tiles can be fetched from same host from browsers p.o.v. and the actual url
-                // is proxied with a servlet filter on our server based on layer id
-                layerJson.put("wmsUrl", PropertyUtil.get("maplayer.wmsurl.secure") + layer.getId());
+                // is proxied with a proxy for example: /proxythis/<actual wmsurl>
+                layerJson.put("wmsUrl", PropertyUtil.get("maplayer.wmsurl.secure") + layer.getSimplifiedWmsUrl());
             }
 
             if (null != layer.getWms_parameter_layers() && !"".equals(layer.getWms_parameter_layers())) {
