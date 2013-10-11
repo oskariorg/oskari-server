@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "keyword": "test",
+        "layers": [],
+        "shortcut": false
+    },
+    {
+        "id": 2,
+        "keyword": "trial",
+        "layers": [],
+        "shortcut": false,
+        "type": "syn"
+    },
+    {
+        "id": 3,
+        "keyword": "testarossa",
+        "layers": [],
+        "shortcut": false
+    },
+    {
+        "id": 4,
+        "keyword": "parent",
+        "layers": [1],
+        "shortcut": false,
+        "type": "yk"
+    },
+    {
+        "id": 5,
+        "keyword": "sibling",
+        "layers": [],
+        "shortcut": false,
+        "type": "lk"
+    }
+]

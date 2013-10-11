@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+  <settings enhancementEnabled="true" useStatementNamespaces="true"/>
+  
+  <!-- Use liferay datasource -->
+  <transactionManager type="JDBC" commitRequired="true">
+    <dataSource type="JNDI">
+      <property name="DataSource" value="java:/comp/env/jdbc/omat_paikatPool" />
+    </dataSource>
+  </transactionManager>
+  
+  <sqlMap resource="META-INF/MyPlace.xml" />
+ 
+</sqlMapConfig>

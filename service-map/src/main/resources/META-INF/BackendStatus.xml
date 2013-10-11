@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BackendStatus">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    
+    <typeAlias alias="BackendStatus" type="fi.nls.oskari.domain.map.BackendStatus" />
+    
+    <resultMap class="BackendStatus" id="BackendStatus">
+        <result property="id" column="id"/>
+        <result property="ts" column="ts"/>
+        <result property="maplayer_id" column="maplayer_id"/>
+         <result property="status" column="status"/>
+        <result property="statusmessage" column="statusmessage"/>
+         <result property="infourl" column="infourl"/>
+        <result property="statusjson" column="statusjson"/>
+    </resultMap>
+    
+   
+    <select id="maxId" resultClass="int">
+        select max(id) from _backendalert
+    </select>
+
+  
+    <select id="findAll" resultMap="BackendStatus">
+        select id, ts, maplayer_id, status, statusmessage, infourl, statusjson from portti_backendalert 
+    </select>
+    
+    <select id="findAllKnown" resultMap="BackendStatus">
+        select
+            id,      
+		    ts,         
+		    maplayer_id, 
+		    status,     
+		    statusmessage,
+		    infourl,     
+		    statusjson   
+		from 
+			portti_backendstatus_allknown 
+    </select>
+
+</sqlMap>
