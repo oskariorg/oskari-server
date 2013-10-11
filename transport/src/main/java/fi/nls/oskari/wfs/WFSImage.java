@@ -44,9 +44,14 @@ import fi.nls.oskari.pojo.WFSLayerStore;
  * Image drawing for WFS layers 
  */
 public class WFSImage {
-	
     private static final Logger log = LogFactory.getLogger(WFSImage.class);
-    
+
+    // Maybe hazardous because static ImageIO setter (changes this setting for all!)
+    // NOT using disk for cache [ http://docs.oracle.com/javase/7/docs/api/javax/imageio/ImageIO.html#setUseCache(boolean) ]
+    static {
+        ImageIO.setUseCache(false);
+    }
+
     private static final String KEY = "WFSImage_";
 
     private static final String STYLE_DEFAULT = "default";
