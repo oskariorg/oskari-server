@@ -221,9 +221,8 @@ public class WFSMapLayerJob extends Job {
 				
 				if(!goNext()) return;
 				
-				// IMAGE HANDLING
-                log.debug("In selected tiles", this.sessionLayer.isTile(bounds));
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
+                    log.debug("In selected tiles");
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
@@ -234,12 +233,14 @@ public class WFSMapLayerJob extends Job {
 			    	boolean fromCache = (bufferedImage != null);
 
 			    	if(!fromCache) {
+                        log.debug("Not in cache");
 					    WFSImage image = new WFSImage(this.layer,
 					    		this.session.getTileSize(),
 					    		this.session.getLocation(),
 					    		bounds,
 					    		this.session.getLayers().get(this.layerId).getStyleName(),
 					    		this.features);
+                        log.debug("Drawing..");
 					    bufferedImage = image.draw();
                         if(bufferedImage == null) {
                             this.imageParsingFailed();
@@ -248,7 +249,9 @@ public class WFSMapLayerJob extends Job {
 
 					    // set to cache
 						if(!this.session.getGrid().isBoundsOnBoundary(index)) {
+                            log.debug("Setting to cache..");
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, true);
+                            log.debug("Cached");
 						} else { // non-persistent cache - for ie
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, false);
 						}
@@ -745,7 +748,7 @@ public class WFSMapLayerJob extends Job {
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FEATURE, values);
-   	 	
+
     	this.service.send(this.session.getClient(), TransportService.CHANNEL_FEATURE, output);
     }
 
