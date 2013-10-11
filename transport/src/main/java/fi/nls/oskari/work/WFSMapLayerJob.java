@@ -193,7 +193,7 @@ public class WFSMapLayerJob extends Job {
 		setResourceSending();
 
 		if(!validateMapScales()) {
-            log.warn("Map scale was not valid for layer",  this.layerId);
+            log.debug("Map scale was not valid for layer",  this.layerId);
 			return;
 		}
 
@@ -222,6 +222,7 @@ public class WFSMapLayerJob extends Job {
 				if(!goNext()) return;
 				
 				// IMAGE HANDLING
+                log.debug("In selected tiles", this.sessionLayer.isTile(bounds));
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
@@ -354,6 +355,7 @@ public class WFSMapLayerJob extends Job {
 
         // request failed
 		if(response == null) {
+            log.warn("Request failed for layer",  this.layerId);
 	   	 	output.put(OUTPUT_LAYER_ID, this.layerId);
 	   	 	output.put(OUTPUT_ONCE, true);
 	   	 	output.put(OUTPUT_MESSAGE, "wfs_request_failed");
@@ -374,6 +376,7 @@ public class WFSMapLayerJob extends Job {
 
 		// parsing failed
 		if(this.features == null) {
+            log.warn("Parsing failed for layer",  this.layerId);
 	   	 	output.put(OUTPUT_LAYER_ID, this.layerId);
 	   	 	output.put(OUTPUT_ONCE, true);
 	   	 	output.put(OUTPUT_MESSAGE, "features_parsing_failed");
@@ -384,6 +387,7 @@ public class WFSMapLayerJob extends Job {
 
         // 0 features found - send size
         if(this.type.equals(TYPE_MAP_CLICK) && this.features.size() == 0) {
+            log.debug("Empty result for map click",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
@@ -391,6 +395,7 @@ public class WFSMapLayerJob extends Job {
             log.debug(PROCESS_ENDED, getKey());
             return false;
         } else if(this.type.equals(TYPE_FILTER) && this.features.size() == 0) {
+            log.debug("Empty result for filter",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
             this.service.send(session.getClient(), TransportService.CHANNEL_FILTER, output);
@@ -398,12 +403,14 @@ public class WFSMapLayerJob extends Job {
             return false;
         } else {
             if(this.features.size() == 0) {
+                log.debug("Empty result",  this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURE, "empty");
                 this.service.send(session.getClient(), TransportService.CHANNEL_FEATURE, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             } else if(this.features.size() == layer.getMaxFeatures()) {
+                log.debug("Max feature result",  this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURE, "max");
                 this.service.send(session.getClient(), TransportService.CHANNEL_FEATURE, output);
