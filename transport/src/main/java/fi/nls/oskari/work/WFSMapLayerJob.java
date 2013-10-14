@@ -489,7 +489,7 @@ public class WFSMapLayerJob extends Job {
 
                 // send values
                 if(this.sendFeatures) {
-                    log.debug("feature values");
+                    log.debug("feature geometry", geometry);
                     Point centerPoint = WFSParser.getGeometryCenter(geometry);
                     log.debug("feature centerPoint");
 
