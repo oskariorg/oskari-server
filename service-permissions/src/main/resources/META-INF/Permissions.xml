@@ -97,7 +97,7 @@
     </parameterMap>
     
     <select id="maxId" resultClass="int">
-        select max(id) from portti_resource_user
+        select max(id) from oskari_resource
     </select>
 
 

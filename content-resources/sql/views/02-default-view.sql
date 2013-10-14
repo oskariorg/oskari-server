@@ -194,14 +194,14 @@ UPDATE portti_view_bundle_seq set config = '{
         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
         "config": {
             "mapUrlPrefix": {
-                "en": "//www.paikkatietoikkuna.fi/web/en/map-window?",
-                "fi": "//www.paikkatietoikkuna.fi/web/fi/kartta?",
-                "sv": "//www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
+                "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
+                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
+                "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
             },
             "termsUrl": {
-                "en": "//www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
-                "fi": "//www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
-                "sv": "//www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
+                "en": "http://www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
+                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
+                "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
             }
         }
     }],
