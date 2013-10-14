@@ -508,6 +508,7 @@ public class WFSMapLayerJob extends Job {
                         }
                     }
                     log.debug("feature properties");
+                    log.debug("feature center", centerPoint);
 
                     // center position (must be in properties also)
                     if(centerPoint != null) {
