@@ -416,7 +416,7 @@ public class WFSParser {
      * @return point
      */
     public static Point getGeometryCenter(Geometry geometry) {
-        if(geometry == null && geometry.getCoordinates().length > 0) {
+        if(geometry == null || geometry.getCoordinates().length == 0) {
             return null;
         }
 
