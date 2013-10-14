@@ -517,6 +517,7 @@ public class WFSMapLayerJob extends Job {
                         values.add(null);
                         values.add(null);
                     }
+                    log.debug("feature center pos added");
 
                     WFSParser.parseValuesForJSON(values);
                     log.debug("feature json");

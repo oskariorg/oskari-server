@@ -319,7 +319,8 @@ public class WFSParser {
      * 
      * @param values
      */
-    public static void parseValuesForJSON(List<Object> values) {    	
+    public static void parseValuesForJSON(List<Object> values) {
+        log.debug("parsing json");
 		Object value = null;
 		ReferencedEnvelope envelope = null;
 		Point point = null;
