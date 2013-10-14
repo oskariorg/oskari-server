@@ -207,33 +207,26 @@ public class WFSMapLayerJob extends Job {
         if(!goNext()) return;
 
         if(this.type.equals(TYPE_NORMAL)) { // tiles for grid
-            log.debug("layer before req");
             if(!this.layer.isTileRequest()) { // make single request
                 if(!this.normalHandlers(null, true)) {
-                    log.debug("layer fail req");
                     return;
                 }
             }
-            log.debug("layer after req");
 
 			List<List<Double>> grid = this.session.getGrid().getBounds();
 
-            log.debug("layer before loop");
             boolean first = true;
 			int index = 0;
 			for(List<Double> bounds : grid) {
-                log.debug("tile loop1");
                 if(this.layer.isTileRequest()) { // make a request per tile
                     if(!this.normalHandlers(bounds, first)) {
                         return;
                     }
                 }
-                log.debug("tile loop2");
 				
 				if(!goNext()) return;
 				
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
-                    log.debug("tile image handler");
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
@@ -244,18 +237,14 @@ public class WFSMapLayerJob extends Job {
 			    	boolean fromCache = (bufferedImage != null);
 
 			    	if(!fromCache) {
-                        log.debug("tile image drawing");
 					    WFSImage image = new WFSImage(this.layer,
 					    		this.session.getTileSize(),
 					    		this.session.getLocation(),
 					    		bounds,
 					    		this.session.getLayers().get(this.layerId).getStyleName(),
 					    		this.features);
-                        log.debug("tile image drawing2");
 					    bufferedImage = image.draw();
-                        log.debug("tile image drawing3");
                         if(bufferedImage == null) {
-                            log.debug("image parsing failed");
                             this.imageParsingFailed();
                             return;
                         }
@@ -268,7 +257,6 @@ public class WFSMapLayerJob extends Job {
 						}
 					}
 
-                    log.debug("image sending");
 		   	 		String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
 					this.sendWFSImage(url, bufferedImage, bbox, true);
 				}
@@ -443,6 +431,7 @@ public class WFSMapLayerJob extends Job {
         if(!this.sendFeatures) {
             return;
         }
+
         log.debug("properties handler");
 
         List<String> selectedProperties = new ArrayList<String>();
@@ -468,6 +457,7 @@ public class WFSMapLayerJob extends Job {
      */
     private void featuresHandler() {
         log.debug("features handler");
+
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
         this.featureValuesList = new ArrayList<List<Object>>();
@@ -483,13 +473,10 @@ public class WFSMapLayerJob extends Job {
 
                 // get feature geometry (transform if needed) and get geometry center
                 Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
-                log.debug("geometry center rdy");
 
                 // send values
                 if(this.sendFeatures) {
-                    log.debug("feature geometry", geometry);
                     Point centerPoint = WFSParser.getGeometryCenter(geometry);
-                    log.debug("feature center", centerPoint);
 
                     // selected values
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -507,6 +494,7 @@ public class WFSMapLayerJob extends Job {
                     }
 
                     try {
+                        log.debug("feature center", centerPoint);
                         log.debug("feature center x", centerPoint.getX());
                         log.debug("feature center y", centerPoint.getY());
 
