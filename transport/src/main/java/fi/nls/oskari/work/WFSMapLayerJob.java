@@ -473,11 +473,9 @@ public class WFSMapLayerJob extends Job {
         this.featureValuesList = new ArrayList<List<Object>>();
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
-            log.debug("feature", feature);
             List<Object> values = new ArrayList<Object>();
 
             String fid = feature.getIdentifier().getID();
-            log.debug("features id", fid);
             if (!this.processedFIDs.contains(fid)) {
                 // __fid value
                 values.add(fid);
@@ -491,7 +489,7 @@ public class WFSMapLayerJob extends Job {
                 if(this.sendFeatures) {
                     log.debug("feature geometry", geometry);
                     Point centerPoint = WFSParser.getGeometryCenter(geometry);
-                    log.debug("feature centerPoint");
+                    log.debug("feature center", centerPoint);
 
                     // selected values
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -507,8 +505,8 @@ public class WFSMapLayerJob extends Job {
                             }
                         }
                     }
-                    log.debug("feature properties");
-                    log.debug("feature center", centerPoint);
+                    log.debug("feature center x", centerPoint.getX());
+                    log.debug("feature center y", centerPoint.getY());
 
                     // center position (must be in properties also)
                     if(centerPoint != null) {
@@ -521,7 +519,6 @@ public class WFSMapLayerJob extends Job {
                     log.debug("feature center pos added");
 
                     WFSParser.parseValuesForJSON(values);
-                    log.debug("feature json");
 
                     if(this.type.equals(TYPE_NORMAL)) {
                         this.sendWFSFeature(values);
