@@ -505,17 +505,23 @@ public class WFSMapLayerJob extends Job {
                             }
                         }
                     }
-                    log.debug("feature center x", centerPoint.getX());
-                    log.debug("feature center y", centerPoint.getY());
 
-                    // center position (must be in properties also)
-                    if(centerPoint != null) {
-                        values.add(centerPoint.getX());
-                        values.add(centerPoint.getY());
-                    } else {
-                        values.add(null);
-                        values.add(null);
+                    try {
+                        log.debug("feature center x", centerPoint.getX());
+                        log.debug("feature center y", centerPoint.getY());
+
+                        // center position (must be in properties also)
+                        if(centerPoint != null) {
+                            values.add(centerPoint.getX());
+                            values.add(centerPoint.getY());
+                        } else {
+                            values.add(null);
+                            values.add(null);
+                        }
+                    } catch(Exception e) {
+                        log.error(e, "Failed to get center point");
                     }
+
                     log.debug("feature center pos added");
 
                     WFSParser.parseValuesForJSON(values);
