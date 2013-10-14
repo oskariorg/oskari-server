@@ -207,11 +207,14 @@ public class WFSMapLayerJob extends Job {
         if(!goNext()) return;
 
         if(this.type.equals(TYPE_NORMAL)) { // tiles for grid
+            log.debug("layer before req");
             if(!this.layer.isTileRequest()) { // make single request
                 if(!this.normalHandlers(null, true)) {
+                    log.debug("layer fail req");
                     return;
                 }
             }
+            log.debug("layer after req");
 
 			List<List<Double>> grid = this.session.getGrid().getBounds();
 
@@ -440,6 +443,7 @@ public class WFSMapLayerJob extends Job {
         if(!this.sendFeatures) {
             return;
         }
+        log.debug("properties handler");
 
         List<String> selectedProperties = new ArrayList<String>();
         List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -463,14 +467,17 @@ public class WFSMapLayerJob extends Job {
      * Parses features values
      */
     private void featuresHandler() {
+        log.debug("features handler");
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
         this.featureValuesList = new ArrayList<List<Object>>();
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
+            log.debug("feature", feature);
             List<Object> values = new ArrayList<Object>();
 
             String fid = feature.getIdentifier().getID();
+            log.debug("features id", fid);
             if (!this.processedFIDs.contains(fid)) {
                 // __fid value
                 values.add(fid);
@@ -478,10 +485,13 @@ public class WFSMapLayerJob extends Job {
 
                 // get feature geometry (transform if needed) and get geometry center
                 Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
+                log.debug("geometry center rdy");
 
                 // send values
                 if(this.sendFeatures) {
+                    log.debug("feature values");
                     Point centerPoint = WFSParser.getGeometryCenter(geometry);
+                    log.debug("feature centerPoint");
 
                     // selected values
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
@@ -497,6 +507,7 @@ public class WFSMapLayerJob extends Job {
                             }
                         }
                     }
+                    log.debug("feature properties");
 
                     // center position (must be in properties also)
                     if(centerPoint != null) {
@@ -508,12 +519,14 @@ public class WFSMapLayerJob extends Job {
                     }
 
                     WFSParser.parseValuesForJSON(values);
+                    log.debug("feature json");
 
                     if(this.type.equals(TYPE_NORMAL)) {
                         this.sendWFSFeature(values);
                     } else {
                         this.featureValuesList.add(values);
                     }
+                    log.debug("feature sent");
                 }
             } else {
                 log.warn("Found duplicate feature ID", fid);
