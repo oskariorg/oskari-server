@@ -215,14 +215,17 @@ public class WFSMapLayerJob extends Job {
 
 			List<List<Double>> grid = this.session.getGrid().getBounds();
 
+            log.debug("layer before loop");
             boolean first = true;
 			int index = 0;
 			for(List<Double> bounds : grid) {
+                log.debug("tile loop1");
                 if(this.layer.isTileRequest()) { // make a request per tile
                     if(!this.normalHandlers(bounds, first)) {
                         return;
                     }
                 }
+                log.debug("tile loop2");
 				
 				if(!goNext()) return;
 				
