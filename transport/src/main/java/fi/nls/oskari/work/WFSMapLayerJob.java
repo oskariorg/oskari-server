@@ -227,6 +227,7 @@ public class WFSMapLayerJob extends Job {
 				if(!goNext()) return;
 				
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
+                    log.debug("tile image handler");
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
@@ -237,14 +238,18 @@ public class WFSMapLayerJob extends Job {
 			    	boolean fromCache = (bufferedImage != null);
 
 			    	if(!fromCache) {
+                        log.debug("tile image drawing");
 					    WFSImage image = new WFSImage(this.layer,
 					    		this.session.getTileSize(),
 					    		this.session.getLocation(),
 					    		bounds,
 					    		this.session.getLayers().get(this.layerId).getStyleName(),
 					    		this.features);
+                        log.debug("tile image drawing2");
 					    bufferedImage = image.draw();
+                        log.debug("tile image drawing3");
                         if(bufferedImage == null) {
+                            log.debug("image parsing failed");
                             this.imageParsingFailed();
                             return;
                         }
@@ -257,6 +262,7 @@ public class WFSMapLayerJob extends Job {
 						}
 					}
 
+                    log.debug("image sending");
 		   	 		String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
 					this.sendWFSImage(url, bufferedImage, bbox, true);
 				}
