@@ -2,6 +2,7 @@ package fi.nls.oskari.control.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -90,6 +91,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String JSON_KEY_AGGRE_ATTRIBUTE = "attribute";
     private static final String JSON_KEY_FILTERS = "filters";
+    private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String analysisRenderingUrl = PropertyUtil
@@ -150,6 +152,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             Analysis analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
 
+            if (analysis == null) throw new ActionException("Unable to store Analysis data");
+
             analysisLayer.setWpsLayerId(analysis.getId()); // aka. analysis_id
             // Analysis field mapping
             analysisLayer.setLocaleFields(analysis);
@@ -191,9 +195,13 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // analysis element name
         analysisLayer.setWpsName(ANALYSIS_WPS_ELEMENT_NAME);
 
+
         analysisLayer.setInputAnalysisId(null);
         int id = 0;
         try {
+            // Analysis input property types
+            this.prepareFieldtypeMap(analysisLayer, json);
+
             String sid = json.getString(JSON_KEY_LAYERID);
 
             // Input is wfs layer or analaysis layer
@@ -738,10 +746,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         }
 
         // Build filter
-        final String[] srsCodes = lc.getSRSName().split(":");
-        final String srsCode = srsCodes[srsCodes.length - 1];
         final String wfs_filter = WFSFilterBuilder.parseWfsFilter(filter_js,
-                srsCode, lc.getGMLGeometryProperty());
+                lc.getSRSName(), lc.getGMLGeometryProperty());
 
         return wfs_filter;
     }
@@ -787,7 +793,35 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         }
         return false;
     }
+    /**
+     * Set analysis field types
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     * @param json
+     *            wps analysis parameters
+     * @return false, if no id found
+     */
+    private boolean prepareFieldtypeMap(AnalysisLayer analysisLayer,
+                                             JSONObject json) {
 
+        try {
+            if (json.has(JSON_KEY_FIELDTYPES)) {
+                JSONObject ftypes = json.getJSONObject(JSON_KEY_FIELDTYPES);
+                Iterator<?> keys = ftypes.keys();
+
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    final String value = ftypes.getString(key);
+                    analysisLayer.getFieldtypeMap().put(key.toUpperCase(), value);
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
     /**
      * @param json
      *            wps analysis parameters
@@ -812,6 +846,13 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         return null;
     }
 
+    /**
+     * Reform the featureset after WPS response for WFS-T
+     * (fix prefixes, propertynames, etc)
+     * @param featureSet
+     * @param analysisLayer
+     * @return
+     */
     private String harmonizeElementNames(String featureSet,
             final AnalysisLayer analysisLayer) {
 
@@ -852,6 +893,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         return featureSet;
     }
 
+    /**
+     * Remove prefix in xml element
+     * @param tag
+     * @return element name without prefix
+     */
     private String stripNamespace(final String tag) {
 
         String splitted[] = tag.split(":");

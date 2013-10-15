@@ -67,6 +67,8 @@ public class AnalysisDataService {
     private static final String ANALYSIS_INSPIRE = ""; // managed in front
     private static final String ANALYSIS_WPS_ELEMENT_NAME = "ana:analysis_data";
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("analysis_id");
+    private static final String NUMERIC_FIELD_TYPE = "numeric";
+    private static final String STRING_FIELD_TYPE = "string";
 
     private static final Logger log = LogFactory
             .getLogger(AnalysisDataService.class);
@@ -128,7 +130,7 @@ public class AnalysisDataService {
             // ----------------------------------
             final AnalysisMethodParams params = analysislayer
                     .getAnalysisMethodParams();
-            final String geometryProperty = stripNamespace(params.getGeom());
+            final String geometryProperty = this.stripNamespace(params.getGeom());
             // FIXME: wpsToWfst populates fields list AND returns the wfst
             // payload
             // this should be refactored so it returns an object with the fields
@@ -136,12 +138,20 @@ public class AnalysisDataService {
             // and remove the fields parameter from call
             List<String> fields = new ArrayList<String>();
             final String wfst = wpsToWfst(featureset, analysis.getUuid(),
-                    analysis.getId(), fields, geometryProperty);
+                    analysis.getId(), fields, analysislayer.getFieldtypeMap(), geometryProperty);
             log.debug("Produced WFS-T:\n" + wfst);
 
             final String response = IOHelper.httpRequestAction(wfsURL, wfst,
                     wpsUser, wpsUserPass, null, null, "application/xml");
             log.debug("Posted WFS-T, got", response);
+
+            // If exceptions, return null
+            // Check, if exception result set
+            if (response.indexOf("ows:Exception") > -1) return null;
+
+            // Check, if any inserted data
+            if (response.indexOf("totalInserted>0") > -1) return null;
+
 
             // Update col mapping and WPS layer Id into analysis table
             // ---------------------------------------
@@ -161,13 +171,14 @@ public class AnalysisDataService {
                     .debug(
                             "Unable to transform WPS to WFS-T or to store analysis data",
                             e);
+            return null;
         }
 
         return analysis;
     }
 
     private String wpsToWfst(String wps, String uuid, long analysis_id,
-            List<String> fields, String geometryProperty)
+            List<String> fields, Map<String,String> fieldTypes, String geometryProperty)
             throws ServiceException {
 
         final Document wpsDoc = createDoc(wps);
@@ -216,24 +227,17 @@ public class AnalysisDataService {
                     geometry = feature;
                 } else if (feature.getNodeName().indexOf("feature:") == 0) {
                     // only parse 8 first text ( numeric results invalid behavior later use only text) 
-                    //TODO: get real type of fields(properties) and etc
+                    //TODO: fix management of Date dateTime types later
                     // (excluding geometry)
                     if (textFeatures.size() < 8 && numericFeatures.size() < 8 && this.isHiddenField(feature) == false) {
                         // get node value
                         String strVal = feature.getTextContent();
                         Double dblVal = null;
-                        // see if it's numeric
-                        try {
-                          //   dblVal = Double.parseDouble(strVal); invalid behavior now, some field values are text and some numeric) 
-                        } catch (NumberFormatException nfe) {
-                            // ignore
-                        }
+                        String col = this.stripNamespace(feature.getNodeName());
+                        dblVal = this.getFieldAsNumeric(col, strVal, fieldTypes);
+
                         if (null != dblVal) {
                             numericFeatures.add(dblVal);
-                            String col = feature.getNodeName();
-                            String[] acol = feature.getNodeName().split(":");
-                            if (acol.length > 1)
-                                col = acol[1];
                             if (!cols.contains(col)) {
                                 String colmap = "n" + Integer.toString(ncount)
                                         + "=" + col;
@@ -243,10 +247,6 @@ public class AnalysisDataService {
                             }
                         } else {
                             textFeatures.add(strVal);
-                            String col = feature.getNodeName();
-                            String[] acol = feature.getNodeName().split(":");
-                            if (acol.length > 1)
-                                col = acol[1];
                             if (!cols.contains(col)) {
                                 String colmap = "t" + Integer.toString(tcount)
                                         + "=" + col;
@@ -355,7 +355,7 @@ public class AnalysisDataService {
     }
     
     /**
-     * Get analysis columns to Map
+     * Get analysis columns to Json string
      * 
      * @param analysis_id
      *            Key to one analysis
@@ -383,7 +383,42 @@ public class AnalysisDataService {
         }
         return null;
     }
+    /**
+     * Get analysis column types to Map
+     *
+     * @param analysis_id
+     *            Key to one analysis
+     * @return analysis columns and types
+     */
+    public JSONObject getAnalysisNativeColumnTypes(final String analysis_id) {
+        JSONObject columnTypes = new JSONObject(); // {fieldName1:type,fieldname2:type ... (type is string or numeric)
+        if (analysis_id == null) return columnTypes;
+        // name
+        try {
+            Analysis analysis = analysisService
+                    .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
+            if (analysis != null) {
+                for (int j = 1; j < 11; j++) {
+                    String colx = analysis.getColx(j);
+                    if (colx != null && !colx.isEmpty()) {
+                        if (colx.indexOf("=") != -1) {
+                            String field = colx.split("=")[0];
+                            String wfstype = STRING_FIELD_TYPE;
+                            if (field.substring(0, 1).equals("n")) wfstype = NUMERIC_FIELD_TYPE;
+                            //TODO: add "date" type management  (Date, dateTime)
 
+                            columnTypes.put(field, wfstype);
+                        }
+                    }
+
+                }
+                return columnTypes;
+            }
+        } catch (Exception ee) {
+            log.debug("Unable to get analysis field types", ee);
+        }
+        return columnTypes;
+    }
 
     /**
      * @param fieldsin
@@ -466,10 +501,8 @@ public class AnalysisDataService {
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
     /**
-     * @param analyse_js
-     *            analyse wps parameters
-     * @param wpsid
-     *            analysis_id
+     * @param al
+     *            analyse object
      * @return analysis layer data for front mapservice
      * @throws JSONException
      */
@@ -571,6 +604,12 @@ public class AnalysisDataService {
         }
         return fm;
     }
+
+    /**
+     * Get native field names
+     * @param analysis
+     * @return
+     */
     public JSONArray getAnalyseNativeFields(Analysis analysis) {
         JSONArray fm = new JSONArray();
         try {
@@ -591,6 +630,8 @@ public class AnalysisDataService {
         }
         return fm;
     }
+
+
     private boolean isHiddenField(Node feature)
     {
         String[] acol = feature.getNodeName().split(":");
@@ -598,5 +639,30 @@ public class AnalysisDataService {
             
         return false;
     }
-    
+
+    /**
+     *
+     * @param fieldName
+     * @param fieldTypes  field types like in WFS DescribeFeatureType
+     * @return true, if numeric value (int,double,long,..)
+     */
+    private Double getFieldAsNumeric(String fieldName, String strVal, Map<String,String> fieldTypes)
+    {
+        Double numericValue = null;
+       if(fieldTypes.containsKey(fieldName.toUpperCase()))
+       {
+           //Check type
+           if(fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE))
+           {
+               try {
+                   numericValue = Double.parseDouble(strVal);
+               } catch (NumberFormatException nfe) {
+                   // ignore
+               }
+           }
+       }
+        return numericValue;
+    }
+
+
 }
