@@ -64,7 +64,7 @@
             "config" : { 
                 "featureNS" : "http://oskari.org/myplaces",
                 "queryUrl" : "[REPLACED BY HANDLER]",
-                 "wmsUrl" : "kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=2&action_route=MyPlacesTile&myCat="
+                 "wmsUrl" : "/?action_route=MyPlacesTile&myCat="
              }
         },
     ]

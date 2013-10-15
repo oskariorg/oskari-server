@@ -49,3 +49,7 @@ Build with
  mvn -f servlet-map-pom.xml clean install -Doskari.dropdb=true -Doskari.setup=postgres-myplaces
 
 After opening  http://localhost:2373/?viewId=4 in your browser my_places and categories tables should be added to your database.
+
+6)
+You can  set feature namespace and ajax url according to your environment. Example configuration can be found in content-resources/json/views/postgres-myplaces-view.json.
+wmsUrl should be normal ajax url (default is /?) + action_route=MyPlacesTile&myCat=
