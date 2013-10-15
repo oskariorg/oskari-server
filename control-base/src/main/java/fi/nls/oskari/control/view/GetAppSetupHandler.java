@@ -232,6 +232,7 @@ public class GetAppSetupHandler extends ActionHandler {
         modifierParams.setViewId(view.getId());
         modifierParams.setStartupSequence(startupSequence);
         modifierParams.setOldPublishedMap(oldId != -1);
+        modifierParams.setModifyURLs(isSecure(params));
         modifierParams.setAjaxRouteParamName(ActionControl.PARAM_ROUTE);
 
         int locationModified = 0;
@@ -366,12 +367,21 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
     private String getBaseAjaxUrl(final ActionParameters params) {
-        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(),
-                PROPERTY_AJAXURL);
-        if ("true".equals(params.getHttpParam(PARAM_SSL))) {
+        final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
+        if (isSecure(params)) {
             return "/paikkatietoikkuna" + baseAjaxUrl;
         }
         return baseAjaxUrl;
+    }
+
+    /**
+     * Check if we are dealing with a forwarded "secure" url. This means that we will
+     * modify urls on the fly to match proxy forwards. Checks an http parameter "ssl" for boolean value.
+     * @param params
+     * @return
+     */
+    public static boolean isSecure(final ActionParameters params) {
+        return ConversionHelper.getBoolean(params.getHttpParam(PARAM_SSL), false);
     }
 
     private void modifyView(final View view, JSONObject myview) {

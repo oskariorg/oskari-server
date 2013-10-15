@@ -925,6 +925,13 @@ public class WFSLayerStore {
                 }
 				store.setFeatureType(featureTypes);
 			} else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
+
+                // TODO: remove after production is stable (deprecated)
+                if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                    while (parser.nextToken() != JsonToken.END_ARRAY) {
+                    }
+                }
+
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String localeName = parser.getCurrentName();

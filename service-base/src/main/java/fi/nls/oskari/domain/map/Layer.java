@@ -35,6 +35,7 @@ public abstract class Layer extends JSONLocalizedNameAndTitle implements Compara
 	private Integer layerClassId;
 	private String wmsName;
 	private String wmsUrl;
+    private String simplifiedWmsUrl;
 	private String style;
 	private String descriptionLink;
 	private String legendImage;
@@ -246,8 +247,40 @@ public abstract class Layer extends JSONLocalizedNameAndTitle implements Compara
 	public String getWmsUrl() {
 		return wmsUrl;
 	}
+
+    /**
+     * Returns a simplified version of the wms url. Splits it with comma-character, takes the first one and
+     * returns it after removing possible protocol.
+     * @return simplified version of wms url or an empty string if there is any problems creating it.
+     */
+    public String getSimplifiedWmsUrl() {
+        if(simplifiedWmsUrl != null) {
+            return simplifiedWmsUrl;
+        }
+        if(wmsUrl == null) {
+            return "";
+        }
+        final String[] splitted = wmsUrl.split("\\s*,\\s*");
+        if(splitted == null || splitted.length == 0 ) {
+            return "";
+        }
+
+        final String protocolSeparator = "://";
+        final int protocolIndex = splitted[0].indexOf(protocolSeparator);
+        if(protocolIndex == -1) {
+            // there was no protocol - weird but possible case
+            simplifiedWmsUrl = splitted[0].trim();
+        }
+        else {
+            simplifiedWmsUrl = splitted[0].substring(protocolIndex + protocolSeparator.length()).trim();
+        }
+        return simplifiedWmsUrl;
+    }
+
 	public void setWmsUrl(String wmsUrl) {
 		this.wmsUrl = wmsUrl;
+        // reset cached simplified url
+        this.simplifiedWmsUrl = null;
 	}
 	public String getStyle() {
 		return style;
