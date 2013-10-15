@@ -420,6 +420,9 @@ public class SessionStore {
 
 		String fieldName = null;
 		parser.nextToken();
+        if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
+            throw new IllegalStateException("Configuration is not an object!");
+        }
 		while (parser.nextToken() != JsonToken.END_OBJECT) {
 			fieldName = parser.getCurrentName();
 			parser.nextToken();
@@ -479,6 +482,9 @@ public class SessionStore {
 
 		String fieldName = null;
 		String valueName = null;
+        if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
+            throw new IllegalStateException("Configuration is not an object!");
+        }
 		while (parser.nextToken() != JsonToken.END_OBJECT) {
 			fieldName = parser.getCurrentName();
 			parser.nextToken();
@@ -497,55 +503,63 @@ public class SessionStore {
 			} else if (TransportService.PARAM_BROWSER_VERSION.equals(fieldName)) {
 				store.setBrowserVersion(parser.getValueAsLong());
 			} else if (TransportService.PARAM_LOCATION.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					valueName = parser.getCurrentName();
-					if (TransportService.PARAM_LOCATION_SRS.equals(valueName)) {
-						location.setSrs(parser.getText());
-					} else if (TransportService.PARAM_LOCATION_BBOX.equals(valueName)) {
-						List<Double> bbox = new ArrayList<Double>();
-						parser.nextToken(); // start array
-						while (parser.nextToken() != JsonToken.END_ARRAY) {
-							bbox.add(parser.getValueAsDouble());
-						}
-						location.setBbox(bbox);
-					} else if (TransportService.PARAM_LOCATION_ZOOM.equals(valueName)) {
-						location.setZoom(parser.getValueAsLong());
-					} else {
-						throw new IllegalStateException(
-								"Unrecognized value in location '" + valueName
-										+ " = " + parser.getText() + "' !");
-					}
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        valueName = parser.getCurrentName();
+                        if (TransportService.PARAM_LOCATION_SRS.equals(valueName)) {
+                            location.setSrs(parser.getText());
+                        } else if (TransportService.PARAM_LOCATION_BBOX.equals(valueName)) {
+                            List<Double> bbox = new ArrayList<Double>();
+                            parser.nextToken(); // start array
+                            while (parser.nextToken() != JsonToken.END_ARRAY) {
+                                bbox.add(parser.getValueAsDouble());
+                            }
+                            location.setBbox(bbox);
+                        } else if (TransportService.PARAM_LOCATION_ZOOM.equals(valueName)) {
+                            location.setZoom(parser.getValueAsLong());
+                        } else {
+                            throw new IllegalStateException(
+                                    "Unrecognized value in location '" + valueName
+                                            + " = " + parser.getText() + "' !");
+                        }
+                    }
+                }
 				store.setLocation(location);
 			} else if (TransportService.PARAM_GRID.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					valueName = parser.getCurrentName();
-					long value = parser.getValueAsLong();
-					if (TransportService.PARAM_ROWS.equals(valueName)) {
-						grid.setRows(((Long) value).intValue());
-					} else if (TransportService.PARAM_COLUMNS.equals(valueName)) {
-						grid.setColumns(((Long) value).intValue());
-					} else if (TransportService.PARAM_BOUNDS.equals(valueName)) {
-						List<List<Double>> bounds = new ArrayList<List<Double>>();
-						List<Double> bound = null;
-						if(parser.isExpectedStartArrayToken()) {
-							while (parser.nextToken() != JsonToken.END_ARRAY) {
-								if(parser.isExpectedStartArrayToken()) {
-									bound = new ArrayList<Double>();
-									while (parser.nextToken() != JsonToken.END_ARRAY) {
-										bound.add(parser.getValueAsDouble());
-									}
-									bounds.add(bound);
-								}
-							}
-						}
-						grid.setBounds(bounds);
-					} else {
-						throw new IllegalStateException(
-								"Unrecognized value in grid '" + valueName
-										+ " = " + parser.getText() + "' !");
-					}
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        valueName = parser.getCurrentName();
+                        long value = parser.getValueAsLong();
+                        if (TransportService.PARAM_ROWS.equals(valueName)) {
+                            grid.setRows(((Long) value).intValue());
+                        } else if (TransportService.PARAM_COLUMNS.equals(valueName)) {
+                            grid.setColumns(((Long) value).intValue());
+                        } else if (TransportService.PARAM_BOUNDS.equals(valueName)) {
+                            List<List<Double>> bounds = new ArrayList<List<Double>>();
+                            List<Double> bound = null;
+                            if(parser.isExpectedStartArrayToken()) {
+                                if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                    while (parser.nextToken() != JsonToken.END_ARRAY) {
+                                        if(parser.isExpectedStartArrayToken()) {
+                                            bound = new ArrayList<Double>();
+                                            if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                                while (parser.nextToken() != JsonToken.END_ARRAY) {
+                                                    bound.add(parser.getValueAsDouble());
+                                                }
+                                            }
+                                            bounds.add(bound);
+                                        }
+                                    }
+                                }
+                            }
+                            grid.setBounds(bounds);
+                        } else {
+                            throw new IllegalStateException(
+                                    "Unrecognized value in grid '" + valueName
+                                            + " = " + parser.getText() + "' !");
+                        }
+                    }
+                }
 				store.setGrid(grid);
 			} else if (TransportService.PARAM_TILE_SIZE.equals(fieldName)) {
 				if(parser.getCurrentToken() == JsonToken.START_OBJECT) {
@@ -585,32 +599,38 @@ public class SessionStore {
 				store.setMapSize(mapSize);
 			} else if (TransportService.PARAM_MAP_SCALES.equals(fieldName)) {
 				List<Double> scales = new ArrayList<Double>();
-				while (parser.nextToken() != JsonToken.END_ARRAY) {
-					scales.add(parser.getValueAsDouble());
-				}
+                if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                    while (parser.nextToken() != JsonToken.END_ARRAY) {
+                        scales.add(parser.getValueAsDouble());
+                    }
+                }
 				store.setMapScales(scales);
 			} else if (TransportService.PARAM_LAYERS.equals(fieldName)) {
-				while (parser.nextToken() != JsonToken.END_OBJECT) {
-					layer = new Layer();
-					parser.nextToken();
-					key = parser.getCurrentName(); //(Long.parseLong(parser.getCurrentName()));
-					layer.setId(key);
-					while (parser.nextToken() != JsonToken.END_OBJECT) {
-						valueName = parser.getCurrentName();
-						if (TransportService.PARAM_ID.equals(valueName)) {
-							layer.setId(parser.getText());         // parser.getValueAsLong());
-						} else if (TransportService.PARAM_LAYER_STYLE.equals(valueName)) {
-							layer.setStyleName(parser.getText());
-						} else if (TransportService.PARAM_LAYER_VISIBLE.equals(valueName)) {
-							layer.setVisible(parser.getValueAsBoolean());
-						} else {
-							throw new IllegalStateException(
-									"Unrecognized value in layers '"
-											+ valueName + "'!");
-						}
-					}
-					store.setLayer(key, layer);
-				}
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        layer = new Layer();
+                        parser.nextToken();
+                        key = parser.getCurrentName(); //(Long.parseLong(parser.getCurrentName()));
+                        layer.setId(key);
+                        if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                            while (parser.nextToken() != JsonToken.END_OBJECT) {
+                                valueName = parser.getCurrentName();
+                                if (TransportService.PARAM_ID.equals(valueName)) {
+                                    layer.setId(parser.getText());         // parser.getValueAsLong());
+                                } else if (TransportService.PARAM_LAYER_STYLE.equals(valueName)) {
+                                    layer.setStyleName(parser.getText());
+                                } else if (TransportService.PARAM_LAYER_VISIBLE.equals(valueName)) {
+                                    layer.setVisible(parser.getValueAsBoolean());
+                                } else {
+                                    throw new IllegalStateException(
+                                            "Unrecognized value in layers '"
+                                                    + valueName + "'!");
+                                }
+                            }
+                        }
+                        store.setLayer(key, layer);
+                    }
+                }
 			} else {
 				throw new IllegalStateException("Unrecognized field '"
 						+ fieldName + "'!");
