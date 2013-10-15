@@ -432,6 +432,8 @@ public class WFSMapLayerJob extends Job {
             return;
         }
 
+        log.debug("properties handler");
+
         List<String> selectedProperties = new ArrayList<String>();
         List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
 
@@ -454,6 +456,8 @@ public class WFSMapLayerJob extends Job {
      * Parses features values
      */
     private void featuresHandler() {
+        log.debug("features handler");
+
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
         this.featureValuesList = new ArrayList<List<Object>>();
