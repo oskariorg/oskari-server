@@ -204,6 +204,22 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 
 		return permissions;
 	}
+
+
+    public Set<String> getEditPermissions() {
+
+        Map<String, String> parameterMap = new HashMap<String, String>();
+        parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
+        List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findEditPermissions", parameterMap);
+
+        Set<String> permissions = new HashSet<String>();
+
+        for (Map<String, Object> resultMap : publishPermissions) {
+            permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
+        }
+
+        return permissions;
+    }
 	
 	
 	public void deletePermissions(
