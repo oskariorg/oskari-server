@@ -173,6 +173,13 @@ UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
     "plugins" : [
+       {
+           "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
+           "config" : {
+               "showAsDropdown" : false,
+               "baseLayers" : ["base_35", "base_2", "base_3"]
+           }
+       },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },

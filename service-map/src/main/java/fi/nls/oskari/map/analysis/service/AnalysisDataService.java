@@ -652,7 +652,7 @@ public class AnalysisDataService {
        if(fieldTypes.containsKey(fieldName.toUpperCase()))
        {
            //Check type
-           if(fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE))
+           if(fieldTypes.get(fieldName.toUpperCase()).equals(NUMERIC_FIELD_TYPE))
            {
                try {
                    numericValue = Double.parseDouble(strVal);
