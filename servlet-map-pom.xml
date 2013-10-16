@@ -6,7 +6,6 @@
   <groupId>fi.nls.paikkatietoikkuna</groupId>
   <artifactId>map-portlet</artifactId>
   <version>1.0</version>
-
   <packaging>pom</packaging>
 
   <name>Oskari map servlet</name>
@@ -25,7 +24,7 @@
     <module>control-base</module>
     <module>control-example</module>
     <module>control-wfs</module>
-
+    <module>control-myplaces</module>
     <module>content-resources</module>
     
 

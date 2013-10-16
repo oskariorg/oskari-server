@@ -30,7 +30,8 @@
                 ],
                 "layers": [
                     { "id": "base_2" }
-                ]
+                ],
+
             },
             "state" : {
                 "east": "517620",
@@ -59,6 +60,12 @@
         { "id" : "featuredata" },
         { "id" : "personaldata" },
         { "id" : "publisher" },
-        { "id" : "myplaces2" }
+        { "id" : "myplaces2",
+            "config" : { 
+                "featureNS" : "http://oskari.org/myplaces",
+                "queryUrl" : "[REPLACED BY HANDLER]",
+                 "wmsUrl" : "kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=2&action_route=MyPlacesTile&myCat="
+             }
+        },
     ]
 }
