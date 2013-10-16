@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -100,9 +102,38 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         handler.init();
     }
 
-    /**
-     * Ignored since tests not finished yet
-     */
+    @Test
+    public void testIsSecure() {
+        // no params test
+        assertFalse("isSecure should be false with default params", GetAppSetupHandler.isSecure(createActionParams()));
+
+        // TRUE CASES
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "true");
+        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'true'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+
+        parameters.clear();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "True");
+        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'True'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+
+        parameters.clear();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "TRUE");
+        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'TRUE'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+
+        // FALSE CASES
+        parameters.clear();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "false");
+        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'false'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+
+        parameters.clear();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "1");
+        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value '1'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+
+        parameters.clear();
+        parameters.put(GetAppSetupHandler.PARAM_SSL, "yes");
+        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'yes'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+    }
+
     @Test
     public void testWithNoViewIdAndGuestUser() throws Exception {
         final ActionParameters params = createActionParams();
@@ -115,9 +146,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-guest.json", this));
     }
 
-    /**
-     * Ignored since tests not finished yet
-     */
     @Test
     public void testWithNoViewIdAndLoggedInUser() throws Exception {
         final ActionParameters params = createActionParams(getLoggedInUser());

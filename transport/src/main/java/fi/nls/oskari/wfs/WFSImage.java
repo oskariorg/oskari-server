@@ -44,9 +44,14 @@ import fi.nls.oskari.pojo.WFSLayerStore;
  * Image drawing for WFS layers 
  */
 public class WFSImage {
-	
     private static final Logger log = LogFactory.getLogger(WFSImage.class);
-    
+
+    // Maybe hazardous because static ImageIO setter (changes this setting for all!)
+    // NOT using disk for cache [ http://docs.oracle.com/javase/7/docs/api/javax/imageio/ImageIO.html#setUseCache(boolean) ]
+    static {
+        ImageIO.setUseCache(false);
+    }
+
     private static final String KEY = "WFSImage_";
 
     private static final String STYLE_DEFAULT = "default";
@@ -137,7 +142,19 @@ public class WFSImage {
      * @return buffered image from cache
   	 */
 
-    public static BufferedImage getCache(String layerId, String styleName, String srs, Double[] bbox, long zoom, boolean persistent) {
+    public static BufferedImage getCache(String layerId,
+                                         String styleName,
+                                         String srs,
+                                         Double[] bbox,
+                                         long zoom,
+                                         boolean persistent) {
+        if(layerId == null ||
+                styleName == null ||
+                srs == null ||
+                bbox.length != 4) {
+            log.error("Cache key couldn't be created");
+            return null;
+        }
     	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
     	String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
     	if(!persistent) {
@@ -161,7 +178,21 @@ public class WFSImage {
      * @return buffered image from cache
   	 */
 
-    public static void setCache(BufferedImage bufferedImage, String layerId, String styleName, String srs, Double[] bbox, long zoom, boolean persistent) {
+    public static void setCache(BufferedImage bufferedImage,
+                                String layerId,
+                                String styleName,
+                                String srs,
+                                Double[] bbox,
+                                long zoom,
+                                boolean persistent) {
+        if(layerId == null ||
+                styleName == null ||
+                srs == null ||
+                bbox.length != 4) {
+            log.error("Cache key couldn't be created");
+            return;
+        }
+
     	byte[] byteImage = imageToBytes(bufferedImage);
     	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
     	String sKey = KEY + layerId + "_" + styleName + "_" + srs + "_" + sBbox + "_" + zoom;
@@ -180,6 +211,11 @@ public class WFSImage {
      * @return image
      */
     public static byte[] imageToBytes(BufferedImage bufferedImage) {
+        if(bufferedImage == null) {
+            log.error("No image given");
+            return null;
+        }
+
 		ByteArrayOutputStream byteaOutput = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(bufferedImage, "png", byteaOutput);

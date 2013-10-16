@@ -97,7 +97,7 @@
     </parameterMap>
     
     <select id="maxId" resultClass="int">
-        select max(id) from portti_resource_user
+        select max(id) from oskari_resource
     </select>
 
 
@@ -396,8 +396,8 @@
         oskari_permission p
     WHERE
         r.id = p.oskari_resource_id AND
-        r.resource_mapping = ? AND
-        p.external_id = IN
+        r.resource_mapping = 'generic-functionality' AND
+        p.external_id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#
         </iterate> AND

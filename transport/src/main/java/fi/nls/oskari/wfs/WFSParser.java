@@ -319,7 +319,7 @@ public class WFSParser {
      * 
      * @param values
      */
-    public static void parseValuesForJSON(List<Object> values) {    	
+    public static void parseValuesForJSON(List<Object> values) {
 		Object value = null;
 		ReferencedEnvelope envelope = null;
 		Point point = null;
@@ -416,7 +416,7 @@ public class WFSParser {
      * @return point
      */
     public static Point getGeometryCenter(Geometry geometry) {
-        if(geometry == null) {
+        if(geometry == null || geometry.getCoordinates().length == 0) {
             return null;
         }
 
