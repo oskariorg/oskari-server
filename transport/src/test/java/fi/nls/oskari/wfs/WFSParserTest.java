@@ -30,8 +30,10 @@ public class WFSParserTest {
 	private static String layerJSON = "{\"layerId\":216,\"nameLocales\":{\"fi\":{\"name\":\"Palvelupisteiden kyselypalvelu\",\"subtitle\":\"\"},\"sv\":{\"name\":\"Söktjänst för serviceställen\",\"subtitle\":\"\"},\"en\":{\"name\":\"Public services query service\",\"subtitle\":\"\"}},\"username\":\"\",\"password\":\"\",\"maxFeatures\":100,\"featureNamespace\":\"pkartta\",\"featureNamespaceURI\":\"www.pkartta.fi\",\"featureElement\":\"toimipaikat\",\"featureType\":{},\"selectedFeatureParams\":{},\"featureParamsLocales\":{},\"geometryType\":\"2d\",\"getMapTiles\":true,\"getFeatureInfo\":true,\"tileRequest\":false,\"minScale\":50000.0,\"maxScale\":1.0,\"templateName\":null,\"templateDescription\":null,\"templateType\":null,\"requestTemplate\":null,\"responseTemplate\":null,\"selectionSLDStyle\":null,\"styles\":{\"default\":{\"id\":\"1\",\"name\":\"default\",\"SLDStyle\":\"<?xml version=\\\"1.0\\\" encoding=\\\"ISO-8859-1\\\"?><StyledLayerDescriptor version=\\\"1.0.0\\\" xmlns=\\\"http://www.opengis.net/sld\\\" xmlns:ogc=\\\"http://www.opengis.net/ogc\\\" xmlns:xlink=\\\"http://www.w3.org/1999/xlink\\\" xmlns:xsi=\\\"http://www.w3.org/2001/XMLSchema-instance\\\" xsi:schemaLocation=\\\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd\\\"><NamedLayer><Name>Palvelupisteet</Name><UserStyle><Title>Palvelupisteiden tyyli</Title><Abstract/><FeatureTypeStyle><Rule><Title>Piste</Title><PointSymbolizer><Graphic><Mark><WellKnownName>circle</WellKnownName><Fill><CssParameter name=\\\"fill\\\">#FFFFFF</CssParameter></Fill><Stroke><CssParameter name=\\\"stroke\\\">#000000</CssParameter><CssParameter name=\\\"stroke-width\\\">2</CssParameter></Stroke></Mark><Size>12</Size></Graphic></PointSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>\"}},\"URL\":\"http://kartta.suomi.fi/geoserver/wfs\",\"GMLGeometryProperty\":\"the_geom\",\"SRSName\":\"EPSG:3067\",\"GMLVersion\":\"3.1.1\",\"WFSVersion\":\"1.1.0\",\"WMSLayerId\":null}";
 
 	String geomPointXML = "<example><gml:Point xmlns:gml=\"http://www.opengis.net/gml\" srsDimension=\"2\" srsName=\"http://www.opengis.net/gml/srs/epsg.xml#3067\"><gml:pos>385877.0 6671637.0</gml:pos></gml:Point></example>";
+    String multiSurfaceGeomXML = "<gml:MultiSurface xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"http://www.opengis.net/gml/srs/epsg.xml#3067\" ><gml:surfaceMember><gml:Surface srsName=\"http://www.opengis.net/gml/srs/epsg.xml#3067\"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension='2' count='40'>329408.761 6822136.694 329578.724 6822150.521 329779.535 6822083.635 329832.268 6822037.864 329858.803 6822026.926 329876.053 6822014.648 329973.222 6821972.197 329982.507 6821992.433 330014.344 6821978.836 330018.327 6821967.888 330078.356 6821951.642 330069.401 6821931.735 330066.747 6821914.489 330078.356 6821895.923 330237.213 6821830.916 330256.45 6821840.204 330331.24 6821805.381 330350.304 6821788.135 330344.673 6821778.517 330419.957 6821667.089 330486.946 6821634.916 330607.962 6821523.738 330635.858 6821507.892 330677.31 6821441.565 330744.967 6821412.371 330771.502 6821377.548 330736.35 6821384.847 330681.623 6821378.608 330613.966 6821377.838 330526.081 6821387.496 330428.574 6821425.968 330333.063 6821483.017 330260.095 6821550.673 330155.299 6821664.1 330170.059 6821708.871 329914.025 6821905.211 329828.128 6821967.558 329666.279 6822050.802 329547.052 6822105.85 329408.761 6822136.694</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface></gml:surfaceMember></gml:MultiSurface>";
+    String surfaceGeomXML = "<gml:Surface xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"http://www.opengis.net/gml/srs/epsg.xml#3067\"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList srsDimension='2' count='40'>329408.761 6822136.694 329578.724 6822150.521 329779.535 6822083.635 329832.268 6822037.864 329858.803 6822026.926 329876.053 6822014.648 329973.222 6821972.197 329982.507 6821992.433 330014.344 6821978.836 330018.327 6821967.888 330078.356 6821951.642 330069.401 6821931.735 330066.747 6821914.489 330078.356 6821895.923 330237.213 6821830.916 330256.45 6821840.204 330331.24 6821805.381 330350.304 6821788.135 330344.673 6821778.517 330419.957 6821667.089 330486.946 6821634.916 330607.962 6821523.738 330635.858 6821507.892 330677.31 6821441.565 330744.967 6821412.371 330771.502 6821377.548 330736.35 6821384.847 330681.623 6821378.608 330613.966 6821377.838 330526.081 6821387.496 330428.574 6821425.968 330333.063 6821483.017 330260.095 6821550.673 330155.299 6821664.1 330170.059 6821708.871 329914.025 6821905.211 329828.128 6821967.558 329666.279 6822050.802 329547.052 6822105.85 329408.761 6822136.694</gml:posList></gml:LinearRing></gml:exterior></gml:PolygonPatch></gml:patches></gml:Surface>";
 
-	@BeforeClass
+    @BeforeClass
     public static void setUp() {
 		try {
 			session = SessionStore.setJSON(sessionJSON);
@@ -75,5 +77,18 @@ public class WFSParserTest {
 		assertTrue("Should get valid geometry", geom1 != null);
 		assertTrue("Should get x = 385877.0", geom1.getCoordinate().x == 385877.0);
 		assertTrue("Should get y = 6671637.0", geom1.getCoordinate().y ==  6671637.0);
+        assertTrue("Should be NOT EMPTY", !geom1.isEmpty());
+
+        // empty result - can't handle multi surface
+        Geometry geom2 = parser.parseGeometry(multiSurfaceGeomXML);
+        System.out.println(geom2);
+        assertTrue("Should get valid geometry", geom2 != null);
+        assertTrue("Should be EMPTY", geom2.isEmpty());
+
+        // same geom than geom2 but in flat surface (no multi surface)
+        Geometry geom3 = parser.parseGeometry(surfaceGeomXML);
+        System.out.println(geom3);
+        assertTrue("Should get valid geometry", geom3 != null);
+        assertTrue("Should be NOT EMPTY", !geom3.isEmpty());
 	}
 }
