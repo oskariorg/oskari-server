@@ -177,7 +177,7 @@ UPDATE portti_view_bundle_seq set config = '{
            "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
            "config" : {
                "showAsDropdown" : false,
-               "baseLayers" : ["base_35", "base_2", "base_3"]
+               "baseLayers" : ["base_2", "24", "base_35"]
            }
        },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
