@@ -51,9 +51,9 @@ After this you can log in as a regular user and see the added layer. Guest shoul
 
 Add permission for guest user
 
-    -- give view_layer permission for the resource to ROLE 2 (logged in user);
+    -- give view_layer permission for the resource to ROLE 10110 (guest);
     INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '3');
+    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '10110');
 
 After this the layer should be listed in layerselector for guests.
 

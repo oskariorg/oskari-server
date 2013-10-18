@@ -35,6 +35,8 @@
 5) Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Doskari.setup=postgres-default`
 
 6) Open your browser with http://localhost:2373/?viewId=2 to see a new view loaded from the database.
-    You should now see personaldata and publisher bundles started compared to the default view
+    You should now see personaldata and publisher bundles started compared to the default view.
+    Note in some environments the jettyEnvXml needs to be specified in servlet-map/pom.xml to be able to connect to
+    the database. If the connection fails, enable jettyEnvXml in pom.xml and try again.
 
 7) Adding [admin bundles for admin role](AddingBundlesBasedOnRole.md)

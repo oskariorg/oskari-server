@@ -57,6 +57,7 @@ public class LayersParamHandler extends ParamHandler {
 
         // Skipping myplaces_.* as they get created in JS
         if (layerId.startsWith(PREFIX_MYPLACES)) {
+            // FIXME: handle same way as UNRESTRICTED_USAGE_DOMAINS in GetAppSetupHandler?
             if (!(referer.endsWith("paikkatietoikkuna.fi")
                     || referer.endsWith("nls.fi"))) {
                 // not paikkatietoikkuna or nls -> skip myplaces layer

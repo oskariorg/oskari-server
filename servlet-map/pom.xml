@@ -32,7 +32,7 @@
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopKey>STOP</stopKey>
                     <stopPort>9999</stopPort>
-                    <jettyEnvXml>${jetty.env.conf}</jettyEnvXml>
+                    <!-- jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml -->
                     <webAppConfig>
                         <contextPath>/</contextPath>
 
