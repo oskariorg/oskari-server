@@ -45,7 +45,7 @@
 <body>
 <div id="contentMap">
     <div id="mapdiv">
-        <div class="mapplugins left"></div>
+        <div class="mapplugins top right"></div>
     </div>
 </div>
 

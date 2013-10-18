@@ -162,7 +162,15 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
-    "plugins": [{
+    "plugins": [
+    {
+        "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
+        "config" : {
+            "showAsDropdown" : true,
+            "baseLayers" : ["base_35", "base_2", "base_3"]
+        }
+    },
+    {
         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
     }, {
         "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
@@ -553,6 +561,11 @@ UPDATE portti_view_bundle_seq set config = '{
         "en": "https://www.paikkatietoikkuna.fi/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
         "fi": "https://www.paikkatietoikkuna.fi/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
         "sv": "https://www.paikkatietoikkuna.fi/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
+    },
+    "publishedMapUrl": {
+        "en": "www.paikkatietoikkuna.fi/published/en/",
+        "fi": "www.paikkatietoikkuna.fi/published/fi/",
+        "sv": "www.paikkatietoikkuna.fi/published/sv/"
     },
     "urlPrefix": "www.paikkatietoikkuna.fi"
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 

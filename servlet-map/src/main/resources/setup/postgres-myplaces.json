@@ -42,6 +42,7 @@
         "postgres-myplaces-view.json"
     ],
     "sql" : [
-        "exampleLayersAndRoles.sql"
+        "create-myplaces-tables.sql",
+        "exampleLayersAndRoles.sql"  
     ]
 }

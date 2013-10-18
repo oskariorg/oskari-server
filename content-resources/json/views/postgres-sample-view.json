@@ -1,5 +1,5 @@
 {
-    "name" : "Postgres/myplaces enabled",
+    "name" : "Postgres/sample enabled",
     "type" : "USER",
     "default" : false,
     "public" : true,
@@ -30,8 +30,7 @@
                 ],
                 "layers": [
                     { "id": "base_2" }
-                ],
-
+                ]
             },
             "state" : {
                 "east": "517620",
@@ -67,12 +66,23 @@
                 }
             }
         },
+        { "id" : "publisher" ,
+            "config" : {
+                "publishedMapUrl": {
+                    "en": "localhost:2373/?viewId=",
+                    "fi": "localhost:2373/?viewId=",
+                    "sv": "localhost:2373/?viewId="
+                }
+            }
+        },
         { "id" : "myplaces2",
-            "config" : { 
+            "config" : {
                 "featureNS" : "http://oskari.org/myplaces",
                 "queryUrl" : "[REPLACED BY HANDLER]",
                  "wmsUrl" : "/?action_route=MyPlacesTile&myCat="
              }
         },
+        { "id" : "maplegend" },
+        { "id" : "userguide" }
     ]
 }

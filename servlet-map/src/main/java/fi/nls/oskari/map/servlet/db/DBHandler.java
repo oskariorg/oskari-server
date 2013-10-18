@@ -52,7 +52,7 @@ public class DBHandler {
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
             String[] types = null;
 
-            ResultSet result = dbmeta.getTables(null, null, "PORTTI_%", types);
+            ResultSet result = dbmeta.getTables(null, null, "portti_%", types);
             final String propertyDropDB = System.getProperty("oskari.dropdb");
 
             // Portti tables available ?
