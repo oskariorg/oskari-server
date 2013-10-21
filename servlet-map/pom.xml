@@ -84,13 +84,11 @@
                         <artifactId>hsqldb</artifactId>
                         <version>1.8.0.7</version>
                     </dependency>
-                    <!--
                     <dependency>
                         <groupId>postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>8.4-702.jdbc4</version>
                     </dependency>
-                    -->
                 </dependencies>
             </plugin>
         </plugins>

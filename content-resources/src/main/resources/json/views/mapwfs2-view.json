@@ -1,0 +1,154 @@
+{
+    "name" : "Mapwfs 2",
+    "type" : "USER",
+    "default" : false,
+    "public" : true,
+    "oskari" : {
+        "application" : "servlet",
+        "page" : "index",
+        "development_prefix" : "/applications/sample"
+    },
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
+        {
+            "id" : "mapfull",
+            "startup" : {
+                "title" : "Map",
+                "fi" : "mapfull",
+                "sv" : "mapfull",
+                "en" : "mapfull",
+                "bundlename" : "mapfull",
+                "bundleinstancename" : "mapfull",
+                "metadata" : {
+                    "Import-Bundle" : {
+                        "core-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "domain" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapmodule-plugin" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwfs2" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwmts" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "oskariui" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapfull" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        }
+                    },
+                    "Require-Bundle-Instance" : []
+                },
+                "instanceProps" : {}
+            },
+            "config" : {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                        "config" : {
+                            "ignoredLayerTypes" : ["WFS"],
+                            "infoBox": false
+                        }
+                    },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                            "contextPath" : "/transport",
+                            "hostname" : "localhost",
+                            "port" : "2374",
+                            "lazy" : true,
+                            "disconnectTime" : 30000,
+                            "backoffIncrement": 1000,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000
+                        }
+                    },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" }
+                ],
+                "layers": [
+                ]
+            },
+            "state" : {
+                "east": "517620",
+                "north": "6874042",
+                "selectedLayers": [{"id": "base_2"}],
+                "zoom": 1
+            }
+        },
+        { "id" : "divmanazer" },
+        {
+            "id" : "toolbar",
+            "config" : {
+                "viewtools": {
+                    "print" : false,
+                    "link" : false
+                }
+            }
+        },
+        { "id" : "infobox" },
+        { "id" : "statehandler" },
+        { "id" : "search" },
+        { "id" : "layerselector2" },
+        { "id" : "layerselection2" },
+        { "id" : "coordinatedisplay" },
+        { "id" : "metadataflyout" },
+        { "id" : "featuredata2",
+            "config" : {
+                "selectionTools": true
+            }
+        },
+        { "id" : "personaldata" },
+        { "id" : "publisher" },
+        { "id" : "maplegend" },
+        { "id" : "userguide" }
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "name" : "Publisher template",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
+    "oskari" : {
+        "application" : "servlet",
+        "page" : "published",
+        "development_prefix" : "/applications/sample"
+    },
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
+        {
+            "id" : "mapfull",
+            "config" : {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
+                ],
+                "layers": [
+                ]
+            },
+            "state" : {
+                "east": "517620",
+                "north": "6874042",
+                "selectedLayers": [],
+                "zoom": 1
+            }
+        },
+        { "id" : "infobox" }
+    ]
+}
