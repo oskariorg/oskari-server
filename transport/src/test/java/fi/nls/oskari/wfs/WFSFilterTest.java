@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.Before;
@@ -13,7 +14,7 @@ import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import fi.nls.oskari.pojo.Filter;
+import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.WFSLayerStore;
 import fi.nls.oskari.utils.XMLHelper;
@@ -21,7 +22,8 @@ import fi.nls.oskari.utils.XMLHelper;
 public class WFSFilterTest {
 	private SessionStore session;
 	private WFSLayerStore layer;
-	private Filter geojsonFilter;
+    private WFSMapLayerJob.Type type;
+	private GeoJSONFilter geojsonFilter;
 	private List<Double> emptyBounds;
 	private List<Double> bounds;
 	
@@ -43,7 +45,7 @@ public class WFSFilterTest {
 		} catch (IOException e) {
 			fail("Should not throw exception");
 		}
-		geojsonFilter = Filter.setParamsJSON(geojson);
+		geojsonFilter = GeoJSONFilter.setParamsJSON(geojson);
 		
 		emptyBounds = null;
 		bounds = new ArrayList<Double>();
@@ -55,7 +57,8 @@ public class WFSFilterTest {
 
     @Test
     public void testDefaultBuffer() {
-        WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+        WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, emptyBounds, null);
         double buffer = wfsFilter.getDefaultBuffer(2400.0);
 
         assertTrue("Should get expected buffer size", buffer == 5.08d);
@@ -63,7 +66,9 @@ public class WFSFilterTest {
     
 	@Test
 	public void testLocation() {
-		WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+        type = WFSMapLayerJob.Type.NORMAL;
+		WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, emptyBounds, null);
 		String filterStr = wfsFilter.getXML();
 		OMElement filter = null;
 		if(filterStr != null) {
@@ -75,7 +80,9 @@ public class WFSFilterTest {
 
 	@Test
 	public void testBounds() {
-		WFSFilter wfsFilter = new WFSFilter(layer, session, bounds, null);
+        type = WFSMapLayerJob.Type.NORMAL;
+		WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, bounds, null);
 		String filterStr = wfsFilter.getXML();
 		OMElement filter = null;
 		if(filterStr != null) {
@@ -87,9 +94,11 @@ public class WFSFilterTest {
 
 	@Test
 	public void testMapClick() {
+        type = WFSMapLayerJob.Type.MAP_CLICK;
 		session.setMapClick(new Coordinate(393893.0, 6692163.0));
 
-		WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+		WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, emptyBounds, null);
 		String filterStr = wfsFilter.getXML();
 		OMElement filter = null;
 		if(filterStr != null) {
@@ -101,26 +110,29 @@ public class WFSFilterTest {
 	
 	@Test
 	public void testGeoJson() {
+        type = WFSMapLayerJob.Type.GEOJSON;
     	session.setFilter(geojsonFilter);
 
-    	WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+    	WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, emptyBounds, null);
     	String filterStr = wfsFilter.getXML();
     	OMElement filter = null;
 		if(filterStr != null) {
 	        StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
 	        filter = staxOMBuilder.getDocumentElement();
 		}
-		System.out.println(filter);
 		assertTrue("Should get expected resultGeoJson", filter.toString().equals(resultGeoJson));
 	}
 	
 	@Test
 	public void testHighlight() {
+        type = WFSMapLayerJob.Type.HIGHLIGHT;
     	List<String> featureIds = new ArrayList<String>();
     	featureIds.add("toimipaikat.6398");
 		session.getLayers().get("216").setHighlightedFeatureIds(featureIds);
 
-		WFSFilter wfsFilter = new WFSFilter(layer, session, emptyBounds, null);
+		WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, emptyBounds, null);
 		String filterStr = wfsFilter.getXML();
 		OMElement filter = null;
 		if(filterStr != null) {

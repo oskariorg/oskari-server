@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -42,7 +43,7 @@ public class WFSCommunicator {
 	 * @return xml payload
 	 */
 	@SuppressWarnings("unchecked")
-	public static String createRequestPayload(final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
+	public static String createRequestPayload(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
 		OMFactory factory = OMAbstractFactory.getOMFactory();
 
 		// namespaces
@@ -119,7 +120,15 @@ public class WFSCommunicator {
 		}
 
 		// load filter
-		WFSFilter wfsFilter = new WFSFilter(layer, session, bounds, transform);
+        /*
+        for(key in map) {
+            if(layer.getLayerId().startsWith(key)) {
+                WFSFilter wfsFilter = Class. map.get(key);
+            }
+        }
+        */
+		WFSFilter wfsFilter = new WFSFilter();
+        wfsFilter.init(type, layer, session, bounds, transform);
 		String filterStr = wfsFilter.getXML();
 		if(filterStr != null) {
 	        StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);

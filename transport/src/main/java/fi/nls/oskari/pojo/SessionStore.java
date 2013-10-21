@@ -48,7 +48,7 @@ public class SessionStore {
 	private List<Double> mapScales;
 	private Map<String, Layer> layers;
 	private Coordinate mapClick; // passed parameter - not saved
-	private Filter filter; // passed parameter - not saved
+	private GeoJSONFilter filter; // passed parameter - not saved
 	private boolean keepPrevious = false; // passed parameter - not saved
 
 	/**
@@ -342,7 +342,7 @@ public class SessionStore {
 	 * @return filter
 	 */
 	@JsonIgnore
-	public Filter getFilter() {
+	public GeoJSONFilter getFilter() {
 		return filter;
 	}
 
@@ -351,7 +351,7 @@ public class SessionStore {
 	 * 
 	 * @param filter
 	 */
-	public void setFilter(Filter filter) {
+	public void setFilter(GeoJSONFilter filter) {
 		this.filter = filter;
 	}
 

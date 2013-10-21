@@ -201,7 +201,7 @@ public class WFSImage {
     	}
     	byte[] key = sKey.getBytes();
 
-		JedisManager.setex(key, 604800, byteImage);
+		JedisManager.setex(key, 86400, byteImage);
 	}
     
     /**

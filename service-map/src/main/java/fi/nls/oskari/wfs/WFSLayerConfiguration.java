@@ -43,6 +43,7 @@ public class WFSLayerConfiguration {
     private final static String FEATURE_PARAMS_LOCALES = "featureParamsLocales";
     private final static String GEOMETRY_TYPE = "geometryType";
     private final static String GET_MAP_TILES = "getMapTiles";
+    private static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
     private final static String GET_FEATURE_INFO = "getFeatureInfo";
     private final static String TILE_REQUEST = "tileRequest";
     private final static String WMS_LAYER_ID = "WMSLayerId";
@@ -86,7 +87,8 @@ public class WFSLayerConfiguration {
 	private String selectedFeatureParams; // if needed?
 	private String featureParamsLocales;
 	private String geometryType; // 2D/3D
-	private boolean getMapTiles; // if PNG is drawn and send
+	private boolean getMapTiles; // if tile images are drawn and send
+    private boolean getHighlightImage; // if highlight image is drawn and send
 	private boolean getFeatureInfo; // if feature json is send
     private boolean tileRequest;
 	private String WMSLayerId;
@@ -293,6 +295,16 @@ public class WFSLayerConfiguration {
 		this.getMapTiles = getMapTiles;
 	}
 
+    public String isGetHighlightImage() {
+        if(getHighlightImage)
+            return "true";
+        return "false";
+    }
+
+    public void setGetHighlightImage(boolean getHighlightImage) {
+        this.getHighlightImage = getHighlightImage;
+    }
+
 	public String isGetFeatureInfo() {
 		if(getFeatureInfo)
 			return "true";
@@ -479,6 +491,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, JSONHelper.createJSONObject(this.getFeatureParamsLocales()));
 		JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
 		JSONHelper.putValue(root, GET_MAP_TILES, this.isGetMapTiles());
+        JSONHelper.putValue(root, GET_HIGHLIGHT_IMAGE, this.isGetHighlightImage());
 		JSONHelper.putValue(root, GET_FEATURE_INFO, this.isGetFeatureInfo());
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());

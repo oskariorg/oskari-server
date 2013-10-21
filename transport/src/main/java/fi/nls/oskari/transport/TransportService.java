@@ -2,13 +2,11 @@ package fi.nls.oskari.transport;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -23,7 +21,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.Filter;
+import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Grid;
 import fi.nls.oskari.pojo.Layer;
 import fi.nls.oskari.pojo.Location;
@@ -34,8 +32,6 @@ import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.work.Job;
 import fi.nls.oskari.work.JobQueue;
 import fi.nls.oskari.work.WFSMapLayerJob;
-
-import redis.clients.jedis.Jedis;
 
 /**
  * Handles all incoming requests (channels) and manages Job queues
@@ -372,8 +368,7 @@ public class TransportService extends AbstractService {
      * @param layerId
      */
     private void initMapLayerJob(SessionStore store, String layerId) {
-        Job job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_NORMAL, store,
-                layerId);
+        Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
         jobs.remove(job);
         jobs.add(job);
     }
@@ -393,7 +388,7 @@ public class TransportService extends AbstractService {
         String layerId = layer.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
         if (store.containsLayer(layerId)) {
             // first remove from jobs then from store
-            Job job = new WFSMapLayerJob(this, "normal", store, layerId);
+            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
 
             store.removeLayer(layerId);
@@ -450,7 +445,7 @@ public class TransportService extends AbstractService {
         Layer layer = store.getLayers().get(layerId);
         if(layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
-            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_NORMAL, store, layerId);
+            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
             jobs.add(job);
         }
@@ -501,7 +496,7 @@ public class TransportService extends AbstractService {
                 this.save(store);
                 if(tmpLayer.isVisible()) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-                    Job job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_NORMAL, store, layerId, false, true); // no features
+                    Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
                     jobs.remove(job);
                     jobs.add(job);
                 }
@@ -550,8 +545,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_MAP_CLICK,
-                        store, e.getValue().getId(), true, false);
+                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -567,7 +561,7 @@ public class TransportService extends AbstractService {
      * @param json
      */
     private void setFilter(SessionStore store, String json) {
-        Filter filter = Filter.setParamsJSON(json);
+        GeoJSONFilter filter = GeoJSONFilter.setParamsJSON(json);
 
         // stores geojson, but doesn't save
         store.setFilter(filter);
@@ -576,8 +570,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_FILTER,
-                        store, e.getValue().getId(), true, false);
+                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -609,7 +602,7 @@ public class TransportService extends AbstractService {
 	    		this.save(store);
 	    		if(layerVisible) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-		    		Job job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_NORMAL, store, layerId);
+		    		Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
 		        	jobs.remove(job);
 		        	jobs.add(job);
 	    		}
@@ -651,7 +644,7 @@ public class TransportService extends AbstractService {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
             	// job without feature sending
-    			Job job = new WFSMapLayerJob(this, WFSMapLayerJob.TYPE_HIGHLIGHT, store, layerId, false, true);
+    			Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
 	        	jobs.remove(job);
 	        	jobs.add(job);
     		}
