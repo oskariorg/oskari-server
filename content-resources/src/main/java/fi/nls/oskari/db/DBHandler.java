@@ -149,7 +149,7 @@ public class DBHandler {
                 throw new RuntimeException("Error reading file " + propertySetupFile);
             }
 
-            log.info("/ Create DB");
+            log.info("/ Initializing DB");
             final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
             if(setup.has("create")) {
                 log.info("/- running create scripts:");
@@ -159,9 +159,9 @@ public class DBHandler {
                     System.out.println("/-  " + sqlFileName);
                     executeSqlFromFile(conn, dbname, sqlFileName);
                 }
+                log.info("/- Created tables");
             }
             //executeSqlFromFile(conn, dbname, "00-create-tables.sql");
-            log.info("/- Created tables");
 
             if(setup.has("bundles")) {
                 log.info("/- registering bundles:");
@@ -206,7 +206,9 @@ public class DBHandler {
         JSONObject view = JSONHelper.createJSONObject(json);
         log.debug(view);
         try {
-            executeSingleSql(conn, "INSERT INTO portti_view_supplement (is_public) VALUES (" + view.getBoolean("public") + ")");
+            final String creator = view.optString("creator");
+            executeSingleSql(conn, "INSERT INTO portti_view_supplement (is_public, creator) VALUES (" + view.getBoolean("public") +
+                    "," + ConversionHelper.getLong(creator, -1) + " )");
             Map<String, String> supplementResult = selectSql(conn, "SELECT max(id) as id FROM portti_view_supplement");
             final long supplementId = ConversionHelper.getLong(supplementResult.get("id"), -1);
 

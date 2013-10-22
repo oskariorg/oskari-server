@@ -4,9 +4,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-map</artifactId>
+    <artifactId>oskari-search-nls</artifactId>
     <packaging>jar</packaging>
-    <name>Map Service</name>
+    <name>NLS Search Service</name>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -23,10 +23,9 @@
         </plugins>
     </build>
     <dependencies>
-
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-search</artifactId>
+            <artifactId>oskari-base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -35,28 +34,53 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.10.0</version>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>fi.mml</groupId>
+            <artifactId>aitta-rekisterihaku</artifactId>
+            <version>1.3</version>
         </dependency>
 
         <dependency>
             <groupId>fi.mml</groupId>
-            <artifactId>capabilities</artifactId>
-            <version>1.3.0</version>
+            <artifactId>java_projections</artifactId>
+            <version>2.0</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.5.0</version>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.1.0.7.0-Production</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml</groupId>
+            <artifactId>jsr173</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>java3d</groupId>
+            <artifactId>vecmath</artifactId>
+            <version>1.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>fi.mml</groupId>
-            <artifactId>wms</artifactId>
-            <version>1.1.1</version>
+            <artifactId>nameregister</artifactId>
+            <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
