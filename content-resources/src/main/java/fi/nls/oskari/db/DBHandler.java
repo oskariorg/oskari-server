@@ -1,7 +1,9 @@
-package fi.nls.oskari.map.servlet.db;
+package fi.nls.oskari.db;
 
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
@@ -9,11 +11,11 @@ import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -27,21 +29,85 @@ import java.util.jar.JarFile;
 
 /**
  * @author EVAARASMAKI
+ * @author SMAKINEN
  */
 public class DBHandler {
 
-    private static Connection getConnection() throws SQLException {
-
-        InitialContext ctx = null;
-        DataSource ds = null;
+    static {
+        // populate properties before initializing logger since logger implementation is
+        // configured in properties
+        InputStream in = null;
         try {
-            ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/OskariPool");
-        } catch (NamingException e) {
+            Properties prop = new Properties();
+            in = DBHandler.class.getResourceAsStream("/db.properties");
+            prop.load(in);
+            PropertyUtil.addProperties(prop);
+        } catch (Exception e) {
+            System.out.println("Error when populating properties!");
             e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
         }
-        Connection conn = ds.getConnection();
-        return conn;
+    }
+    private static Logger log = LogFactory.getLogger(DBHandler.class);
+
+    public static void main(String[] args) {
+        // initialize db with demo data if tables are not present
+        createContentIfNotCreated();
+    }
+
+    public static void debugPrintDBContents() {
+        // Enable to show db contents for view related tables if an error occurs
+        printQuery("SELECT * FROM portti_bundle");
+        printQuery("SELECT * FROM portti_view_supplement");
+        printQuery("SELECT * FROM portti_view");
+        printQuery("SELECT * FROM portti_view_bundle_seq");
+
+        // Enable to show db contents for layer permissions related tables if an error occurs
+        printQuery("SELECT * FROM portti_resource_user");
+        printQuery("SELECT * FROM portti_permissions");
+    }
+
+    /**
+     * Returns connection based on db.properties.
+     * Prefers a datasource -> property 'datasource' (defaults to "jdbc/OskariPool").
+     * Falls back to db url -> property 'url' (defaults to "jdbc:postgresql://localhost:5432/oskaridb")
+     * Username and password ('user' and 'pass' properties)
+     * @return connection to the database
+     * @throws SQLException if connection cannot be fetched
+     */
+    public static Connection getConnection() throws SQLException {
+
+        final String datasource = PropertyUtil.get("datasource", "jdbc/OskariPool");
+        try {
+            final InitialContext ctx = new InitialContext();
+            final DataSource ds = (DataSource) ctx.lookup("java:/comp/env/" + datasource);
+            return ds.getConnection();
+        } catch (Exception e) {
+            log.info("Couldn't find connection pool with name", datasource);
+        }
+
+        final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
+        try {
+            final Properties connectionProps = new Properties();
+            final String user = PropertyUtil.getOptional("user");
+            if(user != null) connectionProps.put("user", user);
+
+            final String pass = PropertyUtil.getOptional("pass");
+            if(pass != null) connectionProps.put("password", pass);
+
+            final Connection conn = DriverManager.getConnection(url, connectionProps);
+            if(conn != null) {
+                log.info("Using connection:", url);
+                return conn;
+            }
+        } catch (Exception e) {
+            log.warn(e, "Couldn't get connection with url", url);
+        }
+        throw new SQLException("Couldn't get db connection! Aborting...");
     }
 
     public static void createContentIfNotCreated() {
@@ -57,37 +123,48 @@ public class DBHandler {
 
             // Portti tables available ?
             if ("true".equals(propertyDropDB) || !result.next()) {
-                System.out.println("Creating db for " + dbName);
+                log.info("Creating db for " + dbName);
 
                 createContent(conn, dbName);
                 try {
                     conn.commit();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (SQLException e) {
+                    log.error(e, "Couldn't commit changes!");
                 }
             }
 
             result.close();
-            //log.debug("db size:" + rs.getFetchSize());
         } catch (Exception e) {
-            e.printStackTrace();
-
+            log.error(e, "Error creating db content!");
         }
     }
 
     public static void createContent(Connection conn, final String dbname) {
 
         try {
-            System.out.println("/ Create DB");
-
-            executeSqlFromFile(conn, dbname, "00-create-tables.sql");
-            System.out.println("/- Created tables");
 
             final String propertySetupFile = "/setup/" + ConversionHelper.getString(System.getProperty("oskari.setup"), "default") + ".json";
             String setupJSON = IOHelper.readString(DBHandler.class.getResourceAsStream(propertySetupFile));
+            if(setupJSON == null || setupJSON.isEmpty()) {
+                throw new RuntimeException("Error reading file " + propertySetupFile);
+            }
+
+            log.info("/ Create DB");
             final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
+            if(setup.has("create")) {
+                log.info("/- running create scripts:");
+                final JSONArray createScripts = setup.getJSONArray("create");
+                for(int i = 0; i < createScripts.length(); ++i) {
+                    final String sqlFileName = createScripts.getString(i);
+                    System.out.println("/-  " + sqlFileName);
+                    executeSqlFromFile(conn, dbname, sqlFileName);
+                }
+            }
+            //executeSqlFromFile(conn, dbname, "00-create-tables.sql");
+            log.info("/- Created tables");
+
             if(setup.has("bundles")) {
-                System.out.println("/- registering bundles:");
+                log.info("/- registering bundles:");
                 final JSONObject bundlesSetup = setup.getJSONObject("bundles");
                 final JSONArray namespaces = bundlesSetup.names();
                 for(int namespaceIndex = 0; namespaceIndex < namespaces.length(); ++namespaceIndex) {
@@ -100,7 +177,7 @@ public class DBHandler {
                 }
             }
             if(setup.has("views")) {
-                System.out.println("/- adding views using ibatis");
+                log.info("/- adding views using ibatis");
                 final JSONArray viewsListing = setup.getJSONArray("views");
                 for(int i = 0; i < viewsListing.length(); ++i) {
                     final String viewConfFile = viewsListing.getString(i);
@@ -109,7 +186,7 @@ public class DBHandler {
             }
 
             if(setup.has("sql")) {
-                System.out.println("/- running additional sql files");
+                log.info("/- running additional sql files");
                 final JSONArray viewsListing = setup.getJSONArray("sql");
                 for(int i = 0; i < viewsListing.length(); ++i) {
                     final String sqlFileName = viewsListing.getString(i);
@@ -119,23 +196,15 @@ public class DBHandler {
             }
 
         } catch (Exception e) {
-            try {
-                printQuery("SELECT * FROM portti_bundle", conn);
-                printQuery("SELECT * FROM portti_view", conn);
-                printQuery("SELECT * FROM portti_view_bundle_seq", conn);
-            } catch (SQLException e1) {
-                System.out.println("Error printing debug info");
-            }
-            e.printStackTrace();
+            log.error(e, "Error creating content");
         }
-
     }
 
     private static long insertView(Connection conn, final String viewfile) throws IOException, SQLException {
-        System.out.println("/ - /json/views/" + viewfile);
+        log.info("/ - /json/views/" + viewfile);
         String json = IOHelper.readString(DBHandler.class.getResourceAsStream("/json/views/" + viewfile));
         JSONObject view = JSONHelper.createJSONObject(json);
-        System.out.println(view);
+        log.debug(view);
         try {
             executeSingleSql(conn, "INSERT INTO portti_view_supplement (is_public) VALUES (" + view.getBoolean("public") + ")");
             Map<String, String> supplementResult = selectSql(conn, "SELECT max(id) as id FROM portti_view_supplement");
@@ -181,18 +250,17 @@ public class DBHandler {
                 viewObj.addBundle(bundle);
                 viewService.addBundleForView(viewId, bundle);
             }
-            System.out.println("Added view from file: " + viewfile + "/viewId is:" + viewId);
+            log.info("Added view from file: " + viewfile + "/viewId is:" + viewId);
             return viewId;
         } catch (Exception ex) {
-            System.err.println("Unable to insert view! ");
-            ex.printStackTrace();
+            log.error(ex, "Unable to insert view! ");
         }
         return -1;
     }
 
 
     private static void registerBundle(Connection conn, final String namespace, final String bundlefile) throws IOException, SQLException {
-        System.out.println("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
+        log.info("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
         String sqlContents = IOHelper.readString(DBHandler.class.getResourceAsStream("/sql/views/01-bundles/" + namespace + "/" + bundlefile));
         executeMultilineSql(conn, sqlContents);
     }
@@ -249,15 +317,14 @@ public class DBHandler {
             InputStream is = DBHandler.class.getResourceAsStream("/sql/" + dbName + "/" + fileName);
             if (is == null) {
                 is = DBHandler.class.getResourceAsStream("/sql/" + fileName);
-                System.out.println("   file: /sql/" + fileName);
+                log.info("   file: /sql/" + fileName);
             }
             else {
-                System.out.println("   file: /sql/" + dbName + "/" + fileName);
+                log.info("   file: /sql/" + dbName + "/" + fileName);
             }
             return IOHelper.readString(is);
         } catch (Exception ex) {
-            System.err.println("Error reading sql file for dbName " + dbName + " and file " + fileName);
-            System.err.println("  " + ex.getMessage());
+            log.error("Error reading sql file for dbName", dbName, "and file", fileName, "  ", ex.getMessage());
         }
         return "";
     }
@@ -267,7 +334,7 @@ public class DBHandler {
         try {
             printQuery(sql, getConnection());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.warn(ex, "Error printing query");
         }
     }
 
@@ -277,25 +344,25 @@ public class DBHandler {
 
         ResultSet rs = stmt.executeQuery(sql);
 
-        System.out.println("/-----------------------------");
+        log.info("/-----------------------------");
 
         ResultSetMetaData metaData = rs.getMetaData();
         int count = metaData.getColumnCount();
 
         for (int i = 1; i < count; i++) {
-            System.out.print(metaData.getColumnName(i) + " | ");
+            log.info(metaData.getColumnName(i) + " | ");
         }
-        System.out.println();
+        log.info("--");
 
         while (rs.next()) {
 
             for (int i = 1; i < count; i++) {
-                System.out.print(rs.getString(i) + " | ");
+                log.info(rs.getString(i) + " | ");
             }
-            System.out.println();
+            log.info("--");
 
         }
-        System.out.println("-----------------------------/");
+        log.info("-----------------------------/");
     }
 
     /**

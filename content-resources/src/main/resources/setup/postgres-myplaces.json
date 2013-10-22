@@ -1,4 +1,7 @@
 {
+    "create" : [
+        "00-create-tables.sql"
+    ],
     "bundles" : {
         "framework" : [
             "001-openlayers-default-theme.sql",
@@ -39,17 +42,10 @@
         "default-view.json",
         "postgres-view.json",
         "publisher-template-view.json",
-        "postgres-myplaces-view.json",
-        "postgres-sample-view.json"
+        "postgres-myplaces-view.json"
     ],
     "sql" : [
         "create-myplaces-tables.sql",
-        "exampleLayersAndRoles.sql",
-        "example-terrainlayer.sql",
-        "create-wfs-tables.sql",
-        "example-wfslayer.sql",
-        "nlsfi-background-map-wmtslayer.sql",
-        "nlsfi-orthophoto-map-wmtslayer.sql",
-        "nlsfi-topographics-map-wmtslayer.sql"
+        "exampleLayersAndRoles.sql"  
     ]
 }
