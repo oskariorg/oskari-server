@@ -1,7 +1,7 @@
 
 --------------------------------------------
 --------------------------------------------
--- Creates a default map view for logged in users (paikkatietoikkuna.fi)
+-- Creates a default map view for guest users
 -- Notice these statements should be executed in the same order they are listed here
 -- for startupsequence to work correctly
 --------------------------------------------
@@ -10,41 +10,54 @@
 ---- Checking bundle order ---
 SELECT b.name, s.config, s.state, s.startup
     FROM portti_view_bundle_seq s, portti_bundle b 
-    WHERE s.bundle_id = b.id AND s.view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')
-    ORDER BY s.seqno;
+    WHERE s.bundle_id = b.id AND s.view_id = 
+        (SELECT max(v.id) FROM portti_view v, portti_view_supplement s 
+            WHERE v.supplement_id = s.id AND s.app_startup = 'full-map_guest')
+    ORDER BY s.view_id, s.seqno;
 
 
 --------------------------------------------
 -- Supplement
 -- TODO: This should be refactored so view is inserted first 
 -- and supplement should contain some sane values
+--   app_startup == js app folder
+--   baseaddress == jsp-file
 --------------------------------------------
 
-INSERT INTO portti_view_supplement (app_startup, baseaddress)
-    VALUES ('full-map', 'view');
+INSERT INTO portti_view_supplement (app_startup, baseaddress, is_public, old_id)
+    VALUES ('full-map_guest', 'view', true, -1);
 
 --------------------------------------------
 -- View
 --------------------------------------------
 
 INSERT INTO portti_view (name, type, is_default, supplement_id, application, page, application_dev_prefix)
-    VALUES ('default', 
-            'DEFAULT', 
-            true, 
-            (SELECT max(id) FROM portti_view_supplement),
-             'full-map',
+    VALUES ('Guest default view', 
+            'USER', 
+             false, 
+             (SELECT max(id) FROM portti_view_supplement),
+             'full-map_guest',
              'view',
              '/applications/paikkatietoikkuna.fi');
+
+
+
+--------------------------------------------
+-- QUERY FOR VIEW ID AND MODIFY THE FOLLOWING STATEMENTS TO USE IT INSTEAD OF [VIEW_ID]
+--------------------------------------------
+
+SELECT id FROM portti_view v WHERE application = 'full-map_guest'
+
 
 --------------------------------------------
 -- 1. Openlayers
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+       VALUES ([VIEW_ID], 
         (SELECT id FROM portti_bundle WHERE name = 'openlayers-default-theme'), 
-        1, '{}','{}', '{}');
+        1, '{}','{}', '{}', 'openlayers-default-theme');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -67,18 +80,18 @@ UPDATE portti_view_bundle_seq set startup = '{
      },
      "instanceProps" : {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'openlayers-default-theme') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 2. Mapfull
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+       VALUES ([VIEW_ID], 
         (SELECT id FROM portti_bundle WHERE name = 'mapfull'), 
-        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-        '{}','{}', '{}');
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+        '{}','{}', '{}', 'mapfull');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -141,9 +154,6 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapanalysis" : {
-                "bundlePath" : "/Oskari/packages/framework/bundle/"
-            },
             "oskariui" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
@@ -155,51 +165,35 @@ UPDATE portti_view_bundle_seq set startup = '{
     },
     "instanceProps" : {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
-    "plugins": [
-    {
-        "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
-        "config" : {
-            "showAsDropdown" : true,
-            "baseLayers" : ["base_35", "base_2", "base_3"]
-        }
-    },
-    {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
-    }, {
-        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
-    }, {
-        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
-    }, {
-        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
-    }, {
-        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin"
-    }, {
-        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
-    }, {
-        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+    "plugins" : [
+       {
+           "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
+           "config" : {
+               "showAsDropdown" : false,
+               "baseLayers" : ["base_2", "24", "base_35"]
+           }
+       },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+       { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
+       { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
         "config": {
             "mapUrlPrefix": {
                 "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
@@ -212,13 +206,11 @@ UPDATE portti_view_bundle_seq set config = '{
                 "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
             }
         }
-    }],
-    "layers": [{
-        "id": "base_35"
-    }]
+      }],
+      "layers": [
+      ]
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
+    AND view_id=[VIEW_ID];
 
 -- update proper state for view
 UPDATE portti_view_bundle_seq set state = '{
@@ -227,7 +219,7 @@ UPDATE portti_view_bundle_seq set state = '{
     "selectedLayers": [{"id": "base_35"}],
     "zoom": 1
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 
 --------------------------------------------
@@ -235,11 +227,11 @@ UPDATE portti_view_bundle_seq set state = '{
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'divmanazer'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'divmanazer');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -259,18 +251,18 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps": {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'divmanazer') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 4. Toolbar
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'toolbar'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'toolbar');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -290,33 +282,27 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
-    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];
 
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
-    "viewtools": {
-        "print": false
-    },
-    "mapUrlPrefix": {
-        "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
-        "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
-        "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
-    }
-}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
+        "viewtools": {
+            "print" : false
+        }
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 5.statehandler
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'statehandler'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'statehandler');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -336,26 +322,25 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statehandler') 
-    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];
 
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "logUrl" : "/log/maplink.png"
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statehandler') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 6. Infobox
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'infobox'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'infobox');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -375,14 +360,14 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps": {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'infobox') 
-    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];
 
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "adaptable": true
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'infobox') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 
 --------------------------------------------
@@ -390,11 +375,11 @@ UPDATE portti_view_bundle_seq set config = '{
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'search'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'search');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -414,18 +399,18 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'search') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 8. LayerSelector
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'layerselector2'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'layerselector2');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -445,18 +430,18 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselector2') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 9. LayerSelection
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'layerselection2'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'layerselection2');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -476,235 +461,18 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselection2') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
--- 10. Personal data
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'personaldata'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Personal data",
-        "fi" : "personaldata",
-        "sv" : "personaldata",
-        "en" : "personaldata",
-        "bundlename" : "personaldata",
-        "bundleinstancename" : "personaldata",
-        "metadata" : {
-            "Import-Bundle" : {
-                "personaldata" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                 }
-             },
-             "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
--- update proper config for view
-UPDATE portti_view_bundle_seq set config = '{
-    "changeInfoUrl": {
-        "en": "https://www.paikkatietoikkuna.fi/web/en/profile",
-        "fi": "https://www.paikkatietoikkuna.fi/web/fi/profiili",
-        "sv": "https://www.paikkatietoikkuna.fi/web/sv/profil"
-    }
-}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 11. Publisher
+-- 10. Feature data
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'publisher'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Map publisher",
-        "fi" : "publisher",
-        "sv" : "publisher",
-        "en" : "publisher",
-        "bundlename" : "publisher",
-        "bundleinstancename" : "publisher",
-        "metadata" : {
-            "Import-Bundle" : {
-                "publisher" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                }
-            },
-            "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
--- update proper config for view
-UPDATE portti_view_bundle_seq set config = '{
-    "loginUrl": {
-        "en": "https://www.paikkatietoikkuna.fi/web/en/login",
-        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login",
-        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login"
-    },
-    "registerUrl": {
-        "en": "https://www.paikkatietoikkuna.fi/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
-        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
-        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
-    },
-    "publishedMapUrl": {
-        "en": "www.paikkatietoikkuna.fi/published/en/",
-        "fi": "www.paikkatietoikkuna.fi/published/fi/",
-        "sv": "www.paikkatietoikkuna.fi/published/sv/"
-    },
-    "urlPrefix": "www.paikkatietoikkuna.fi"
-}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 12. Coordinate display
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'coordinatedisplay'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Coordinate display",
-        "fi" : "coordinatedisplay",
-        "sv" : "coordinatedisplay",
-        "en" : "coordinatedisplay",
-        "bundlename" : "coordinatedisplay",
-        "bundleinstancename" : "coordinatedisplay",
-        "metadata" : {
-            "Import-Bundle" : {
-                "coordinatedisplay" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                }
-            },
-            "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'coordinatedisplay') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 13. Map Legend
---------------------------------------------
-
--- add bundle to view 
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'maplegend'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Map legend",
-        "fi" : "maplegend",
-        "sv" : "maplegend",
-        "en" : "maplegend",
-        "bundlename" : "maplegend",
-        "bundleinstancename" : "maplegend",
-        "metadata" : {
-            "Import-Bundle" : {
-                "maplegend" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                }
-            },
-            "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'maplegend') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 14. User Guide
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'userguide'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "User Guide",
-        "fi" : "userguide",
-        "sv" : "userguide",
-        "en" : "userguide",
-        "bundlename" : "userguide",
-        "bundleinstancename" : "userguide",
-        "metadata" : {
-            "Import-Bundle" : {
-                "userguide" : {
-                    "bundlePath" : "/Oskari/packages/framework/bundle/"
-                }
-            },
-            "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'userguide') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 15. Metadata flyout
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'metadataflyout'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "Metadata Flyout",
-        "fi" : "metadataflyout",
-        "sv" : "metadataflyout",
-        "en" : "metadataflyout",
-        "bundlename" : "metadataflyout",
-        "bundleinstancename" : "metadataflyout",
-        "metadata" : {
-            "Import-Bundle" : {
-                "metadataflyout" : {
-                    "bundlePath" : "/Oskari/packages/catalogue/bundle/"
-                }
-            },
-            "Require-Bundle-Instance" : []
-        },
-        "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'metadataflyout') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
---------------------------------------------
--- 16. Feature data
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'featuredata'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'featuredata');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -724,63 +492,322 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'featuredata') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "selectionTools": true
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'featuredata') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 
 --------------------------------------------
--- 17. My Places
+-- 11. Promote - Personal data
+--    NOTE! Check that seqno in WHERE matches the correct promote
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-    (SELECT id FROM portti_bundle WHERE name = 'myplaces2'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'promote'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'personaldata');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
-        "title" : "My places",
-        "fi" : "Kohteet",
-        "sv" : "Platsar",
-        "en" : "Places",
-        "bundlename" : "myplaces2",
-        "bundleinstancename" : "myplaces2",
+        "title" : "Personal data",
+        "fi" : "personaldata",
+        "sv" : "personaldata",
+        "en" : "personaldata",
+        "bundlename" : "promote",
+        "bundleinstancename" : "personaldata",
         "metadata" : {
             "Import-Bundle" : {
-                "myplaces2" : {
+                "promote" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                 }
+             },
+             "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'promote') 
+    AND seqno = 11
+    AND view_id=[VIEW_ID];
+
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+        "__name": "Personaldata",
+        "title": {
+            "en": "My data",
+            "fi": "Omat tiedot",
+            "sv": "Mina uppgifter"
+        },
+        "desc": {
+            "en": "You can save map views and browse maps that you have embedded on other websites in My data.",
+            "fi": "Omiin tietoihin voit tallentaa omia karttanäkymiä ja kohteita sekä nähdä muille sivustoille julkaisemasi kartat.",
+            "sv": "Du kan lagra dina egna kartvyer och titta på kartor som du har inbäddat på andra webbplatser i Mina uppgifter."
+        },
+        "signup": {
+            "en": "Log in",
+            "fi": "Kirjaudu palveluun",
+            "sv": "Logga in"
+        },
+        "signupUrl": {
+            "en": "/web/en/login",
+            "fi": "/web/fi/login",
+            "sv": "/web/sv/login"
+        },
+        "register": {
+            "en": "Register",
+            "fi": "Rekisteröidy",
+            "sv": "Rekisteröidy"
+        },
+        "registerUrl": {
+            "en": "/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+            "fi": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+            "sv": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
+
+        },
+        "toolbarButtons": {
+            "myplaces": {
+                "point": {
+                    "iconCls": "myplaces-draw-point",
+                    "tooltip": {
+                        "fi": "Lisää piste - Kirjaudu sisään käyttääksesi",
+                        "sv": "Tillägg punkt - Logga in för att använda",
+                        "en": "Add point - Log in to use"
+                    }
+                },
+                "line": {
+                    "iconCls": "myplaces-draw-line",
+                    "tooltip": {
+                        "fi": "Lisää viiva - Kirjaudu sisään käyttääksesi",
+                        "sv": "Tillägg linje - Logga in för att använda",
+                        "en": "Add line - Log in to use"
+                    }
+                },
+                "area": {
+                    "iconCls": "myplaces-draw-area",
+                    "tooltip": {
+                        "fi": "Lisää alue - Kirjaudu sisään käyttääksesi",
+                        "sv": "Tillägg område - Logga in för att använda",
+                        "en": "Add area - Log in to use"
+                    }
+                }
+            }
+        }
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
+    AND seqno = 11
+    AND view_id=[VIEW_ID];
+
+
+
+--------------------------------------------
+-- 12. Promote - Publisher 
+--    NOTE! Check that seqno in WHERE matches the correct promote
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'promote'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'publisher');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "Map publisher",
+        "fi" : "publisher",
+        "sv" : "publisher",
+        "en" : "publisher",
+        "bundlename" : "promote",
+        "bundleinstancename" : "publisher",
+        "metadata" : {
+            "Import-Bundle" : {
+                "promote" : {
                     "bundlePath" : "/Oskari/packages/framework/bundle/"
                 }
             },
             "Require-Bundle-Instance" : []
         },
         "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'myplaces2') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
+    AND seqno = 12
+    AND view_id=[VIEW_ID];
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
-        "queryUrl" : "[REPLACED BY HANDLER]",
-        "wmsUrl" : "/karttatiili/myplaces?myCat="
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'myplaces2') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+        "__name": "Publisher",
+        "title": {
+            "en": "Create map",
+            "fi": "Julkaise kartta",
+            "sv": "Definiera karta"
+        },
+        "desc": {
+            "en": "You need to log in before using the embedding function.",
+            "fi": "Voit käyttää julkaisutoimintoa kirjauduttuasi palveluun.",
+            "sv": "Logga in i tjänsten för att definiera en karta som ska inbäddas."
+        },
+        "signup": {
+            "en": "Log in",
+            "fi": "Kirjaudu sisään",
+            "sv": "Logga in"
+        },
+        "signupUrl": {
+            "en": "/web/en/login",
+            "fi": "/web/fi/login",
+            "sv": "/web/sv/login"
+        },
+        "register": {
+            "en": "Register",
+            "fi": "Rekisteröidy",
+            "sv": "Registrera dig"
+        },
+        "registerUrl": {
+            "en": "/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+            "fi": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+            "sv": "/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
+        }
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
+    AND seqno = 12
+    AND view_id=[VIEW_ID];
+
+
 
 --------------------------------------------
--- 18. Guided tour
+-- 13. Coordinate display
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'coordinatedisplay'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'coordinatedisplay');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "Coordinate display",
+        "fi" : "coordinatedisplay",
+        "sv" : "coordinatedisplay",
+        "en" : "coordinatedisplay",
+        "bundlename" : "coordinatedisplay",
+        "bundleinstancename" : "coordinatedisplay",
+        "metadata" : {
+            "Import-Bundle" : {
+                "coordinatedisplay" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'coordinatedisplay') 
+    AND view_id=[VIEW_ID];
+
+--------------------------------------------
+-- 14. Map Legend
+--------------------------------------------
+
+-- add bundle to view 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'maplegend'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'maplegend');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "Map legend",
+        "fi" : "maplegend",
+        "sv" : "maplegend",
+        "en" : "maplegend",
+        "bundlename" : "maplegend",
+        "bundleinstancename" : "maplegend",
+        "metadata" : {
+            "Import-Bundle" : {
+                "maplegend" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'maplegend') 
+    AND view_id=[VIEW_ID];
+
+--------------------------------------------
+-- 15. User Guide
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'userguide'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'userguide');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "User Guide",
+        "fi" : "userguide",
+        "sv" : "userguide",
+        "en" : "userguide",
+        "bundlename" : "userguide",
+        "bundleinstancename" : "userguide",
+        "metadata" : {
+            "Import-Bundle" : {
+                "userguide" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'userguide') 
+    AND view_id=[VIEW_ID];
+
+--------------------------------------------
+-- 16. Metadata flyout
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'metadataflyout'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'metadataflyout');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "Metadata Flyout",
+        "fi" : "metadataflyout",
+        "sv" : "metadataflyout",
+        "en" : "metadataflyout",
+        "bundlename" : "metadataflyout",
+        "bundleinstancename" : "metadataflyout",
+        "metadata" : {
+            "Import-Bundle" : {
+                "metadataflyout" : {
+                    "bundlePath" : "/Oskari/packages/catalogue/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'metadataflyout') 
+    AND view_id=[VIEW_ID];
+
+--------------------------------------------
+-- 17. Guided tour
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'guidedtour'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'guidedtour');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -800,18 +827,18 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'guidedtour') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
--- 19. Backend status
+-- 18. Backend status
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'backendstatus'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'backendstatus');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -831,18 +858,20 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps": {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'backendstatus') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
+
+
 
 --------------------------------------------
--- 20. Printout
+-- 19. Printout
 --------------------------------------------
 
 -- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-    VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
     (SELECT id FROM portti_bundle WHERE name = 'printout'), 
-    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-    '{}','{}', '{}');
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'printout');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
@@ -862,28 +891,28 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps": {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'printout') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "backendConfiguration" : { 
             "formatProducers" : { 
                 "application/pdf" : "http://wps.paikkatietoikkuna.fi/dataset/map/process/imaging/service/thumbnail/maplink.pdf?", 
-                "image/png" : "http://wps.paikkatietoikkuna.fi/dataset/map/process/imaging/service/thumbnail/maplink.png?"
-            }
+                "image/png" : "http://wps.paikkatietoikkuna.fi/dataset/map/process/imaging/service/thumbnail/maplink.png?"  
+            } 
         }
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'printout') 
-    AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
--- 21. Stats grid
+-- 20. Stats grid
 --------------------------------------------
 
 -- add bundle to view
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-       	(SELECT id FROM portti_bundle WHERE name = 'statsgrid'), 
-       	(SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
+       VALUES ([VIEW_ID], 
+        (SELECT id FROM portti_bundle WHERE name = 'statsgrid'), 
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
         '{}','{}', '{}');
 
 -- update proper startup for view
@@ -907,7 +936,7 @@ UPDATE portti_view_bundle_seq set startup = '{
     },
     "instanceProps": {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statsgrid') 
-	AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
@@ -916,36 +945,4 @@ UPDATE portti_view_bundle_seq set config = '{
         "stateful" : true,
         "viewClazz": "Oskari.statistics.bundle.statsgrid.StatsView"
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statsgrid') 
-	AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
-
-
---------------------------------------------
--- 22. Analyse
---------------------------------------------
-
--- add bundle to view
-INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
-        (SELECT id FROM portti_bundle WHERE name = 'analyse'), 
-        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
-        '{}','{}', '{}');
-
--- update proper startup for view
-UPDATE portti_view_bundle_seq set startup = '{
-    "title": "Statistics grid",
-    "bundleinstancename": "analyse",
-    "fi": "analyse",
-    "sv": "analyse",
-    "en": "analyse",
-    "bundlename": "analyse",
-    "metadata": {
-        "Import-Bundle": {
-            "analyse": {
-                "bundlePath": "/Oskari/packages/analysis/bundle/"
-            }
-        },
-        "Require-Bundle-Instance": [ ]
-    },
-    "instanceProps": {}
-}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'analyse') 
-    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];

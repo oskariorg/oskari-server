@@ -1,4 +1,7 @@
 {
+    "create" : [
+        "00-create-tables.sql"
+    ],
     "bundles" : {
         "framework" : [
             "001-openlayers-default-theme.sql",
@@ -38,9 +41,12 @@
     "views" : [
         "default-view.json",
         "postgres-view.json",
-        "publisher-template-view.json"
+        "publisher-template-view.json",
+        "mapwfs2-view.json"
     ],
     "sql" : [
-        "exampleLayersAndRoles.sql"
+        "exampleLayersAndRoles.sql",
+        "create-wfs-tables.sql",
+        "example-wfslayer.sql"
     ]
 }
