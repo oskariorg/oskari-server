@@ -5,13 +5,13 @@ import java.util.List;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 /**
@@ -22,13 +22,9 @@ import fi.nls.oskari.util.PropertyUtil;
  * Similar WFSLayerPermissionsStore class can be found in oskari-permissions.
  */
 public class WFSLayerPermissionsStore {
-
-
 	private static final Logger log = LogFactory.getLogger(WFSLayerPermissionsStore.class);
 
 	public static final String KEY = "Permission_";
-	public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
-	public static final String ANALYSIS_PREFIX = "analysis_";
 
 	private List<String> layerIds;
 
@@ -111,16 +107,25 @@ public class WFSLayerPermissionsStore {
 	public static String getCache(String session) {
 		return JedisManager.get(KEY + session);
 	}
-	  /**
-     * Return base wfs id, if analysis_ layer
-     * @param sid
-     * @return  id
-     */
-    private String getBaseLayerId(String sid) {
 
-        String id = sid;
-        if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
-            id = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
+	/**
+     * Return base wfs id, if analysis_ layer
+     * @param id
+     * @return id
+     */
+    @JsonIgnore
+    private String getBaseLayerId(String id) {
+        // TODO: should check analysis & myplaces rights for the type's layer id (not WFS layer id)
+        //
+        /*
+        for(key in map) {
+            if(layer.getLayerId().startsWith(key)) {
+                // get type id
+            }
+        }
+        */
+        if (id.startsWith(AnalysisFilter.ANALYSIS_PREFIX)) {
+            id = PropertyUtil.get(AnalysisFilter.ANALYSIS_BASE_LAYER_ID);
         }
         return id;
     }

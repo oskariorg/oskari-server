@@ -16,8 +16,8 @@ import fi.nls.oskari.log.Logger;
  * 
  * @see SessionStore
  */
-public class Filter {  
-	private static final Logger log = LogFactory.getLogger(Filter.class);
+public class GeoJSONFilter {
+	private static final Logger log = LogFactory.getLogger(GeoJSONFilter.class);
 			
 	private JSONObject geojson;
 	private JSONArray features;
@@ -67,8 +67,8 @@ public class Filter {
 	 * @return object
 	 */
 	@JsonIgnore
-	public static Filter setParamsJSON(String json) {
-		Filter filter = new Filter();
+	public static GeoJSONFilter setParamsJSON(String json) {
+        GeoJSONFilter filter = new GeoJSONFilter();
 
         JSONObject data = null;
 		try {

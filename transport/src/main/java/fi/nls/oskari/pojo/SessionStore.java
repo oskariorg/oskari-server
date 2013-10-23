@@ -17,20 +17,13 @@ import org.codehaus.jackson.map.JsonMappingException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import redis.clients.jedis.Jedis;
-
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
 
 /**
  * Handles user's session (current state)
  */
 public class SessionStore {
-
-    public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
-    public static final String ANALYSIS_PREFIX = "analysis_";
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
 	public static final String KEY = "Session_";
@@ -48,7 +41,7 @@ public class SessionStore {
 	private List<Double> mapScales;
 	private Map<String, Layer> layers;
 	private Coordinate mapClick; // passed parameter - not saved
-	private Filter filter; // passed parameter - not saved
+	private GeoJSONFilter filter; // passed parameter - not saved
 	private boolean keepPrevious = false; // passed parameter - not saved
 
 	/**
@@ -342,7 +335,7 @@ public class SessionStore {
 	 * @return filter
 	 */
 	@JsonIgnore
-	public Filter getFilter() {
+	public GeoJSONFilter getFilter() {
 		return filter;
 	}
 
@@ -351,7 +344,7 @@ public class SessionStore {
 	 * 
 	 * @param filter
 	 */
-	public void setFilter(Filter filter) {
+	public void setFilter(GeoJSONFilter filter) {
 		this.filter = filter;
 	}
 
@@ -671,19 +664,4 @@ public class SessionStore {
 			return false;
 		return true;
 	}
-	 /**
-	 * @param sid layer id
-	 * @return layer id without prefix
-	 */
-	private static  Long getLayerId(String sid) {
-
-	        long layerId = 0;
-	        if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
-	            layerId = ConversionHelper.getLong(PropertyUtil
-	                    .get(ANALYSIS_BASELAYER_ID), 0);
-	        } else {
-	            layerId = ConversionHelper.getLong(sid, 0);
-	        }
-	        return layerId;
-	    }
 }

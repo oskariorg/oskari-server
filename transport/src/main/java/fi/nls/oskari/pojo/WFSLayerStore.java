@@ -60,6 +60,7 @@ public class WFSLayerStore {
     private static final String FEATURE_PARAMS_LOCALES = "featureParamsLocales";
     private static final String GEOMETRY_TYPE = "geometryType";
     private static final String GET_MAP_TILES = "getMapTiles";
+    private static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
     private static final String GET_FEATURE_INFO = "getFeatureInfo";
     private static final String TILE_REQUEST = "tileRequest";
     private static final String WMS_LAYER_ID = "WMSLayerId";
@@ -106,7 +107,8 @@ public class WFSLayerStore {
     private Map<String, List<String>> selectedFeatureParams; // if needed?
     private Map<String, List<String>> featureParamsLocales;
     private String geometryType; // 2D/3D
-    private boolean getMapTiles; // if PNG is drawn and send
+    private boolean getMapTiles; // if normal images are drawn and send
+    private boolean getHighlightImage; // if highlight is drawn and send
     private boolean getFeatureInfo; // if feature json is send
     private boolean tileRequest; // if tile requests are made (map request
                                  // default)
@@ -556,6 +558,28 @@ public class WFSLayerStore {
     }
 
     /**
+     * Checks if should get highlight image
+     *
+     * @return <code>true</code> if should get highlight image; <code>false</code>
+     *         otherwise.
+     */
+    public boolean isGetHighlightImage() {
+        return getHighlightImage;
+    }
+
+    /**
+     * Sets if getting highlight image
+     *
+     * @param getHighlightImage
+     */
+    public void setGetHighlightImage(String getHighlightImage) {
+        if (getHighlightImage.equals("true"))
+            this.getHighlightImage = true;
+        else
+            this.getHighlightImage = false;
+    }
+
+    /**
      * Checks if should get feature info
      * 
      * @return <code>true</code> if should get feature info; <code>false</code>
@@ -966,7 +990,9 @@ public class WFSLayerStore {
 				store.setGeometryType(parser.getText());
 			} else if (GET_MAP_TILES.equals(fieldName)) {
 				store.setGetMapTiles(parser.getText());
-			} else if (GET_FEATURE_INFO.equals(fieldName)) {
+			} else if (GET_HIGHLIGHT_IMAGE.equals(fieldName)) {
+                store.setGetHighlightImage(parser.getText());
+            } else if (GET_FEATURE_INFO.equals(fieldName)) {
 				store.setGetFeatureInfo(parser.getText());
 			} else if (TILE_REQUEST.equals(fieldName)) {
 				store.setTileRequest(parser.getText());

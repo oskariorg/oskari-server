@@ -34,6 +34,7 @@
         <result property="featureParamsLocales" column="feature_params_locales"/>
         <result property="geometryType" column="geometry_type"/>
         <result property="getMapTiles" column="get_map_tiles"/>
+        <result property="getHighlightImage" column="get_highlight_image"/>
         <result property="getFeatureInfo" column="get_feature_info"/>
         <result property="tileRequest" column="tile_request"/>
         <result property="WMSLayerId" column="wms_layer_id"/>
@@ -81,6 +82,7 @@
 			l.feature_params_locales,
 			l.geometry_type,
 			l.get_map_tiles,
+            l.get_highlight_image,
 			l.get_feature_info,
             l.tile_request,
 			l.wms_layer_id,

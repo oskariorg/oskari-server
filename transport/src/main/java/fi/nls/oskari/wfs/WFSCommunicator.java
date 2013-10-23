@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -33,6 +35,8 @@ public class WFSCommunicator {
 	private static final String VERSION_1_0_0 = "1.0.0";
 	private static final String VERSION_1_1_0 = "1.1.0";
 
+    private static final String PROPERTY_PREFIX_EXT = "wfs.extension.";
+
 	/**
 	 * Creates request payload for WFS 1.1.0 (default request type)
 	 * 
@@ -42,7 +46,7 @@ public class WFSCommunicator {
 	 * @return xml payload
 	 */
 	@SuppressWarnings("unchecked")
-	public static String createRequestPayload(final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
+	public static String createRequestPayload(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
 		OMFactory factory = OMAbstractFactory.getOMFactory();
 
 		// namespaces
@@ -77,58 +81,57 @@ public class WFSCommunicator {
 		root.addAttribute(service);
 		root.addAttribute(maxFeatures);
 		// query
-		try
-		{
-		OMElement query = factory.createOMElement("Query", wfs);
-		OMAttribute typeName = factory.createOMAttribute("typeName", null, 
-				layer.getFeatureNamespace() + ":" + layer.getFeatureElement());
-		OMAttribute srsName = factory.createOMAttribute("srsName", null, layer.getSRSName());
-		query.addAttribute(typeName);
-		query.addAttribute(srsName);
-		root.addChild(query);
+		try {
+            OMElement query = factory.createOMElement("Query", wfs);
+            OMAttribute typeName = factory.createOMAttribute("typeName", null,
+                    layer.getFeatureNamespace() + ":" + layer.getFeatureElement());
+            OMAttribute srsName = factory.createOMAttribute("srsName", null, layer.getSRSName());
+            query.addAttribute(typeName);
+            query.addAttribute(srsName);
+            root.addChild(query);
 
 
-		List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-        if(selectedProperties != null) {
-            selectedProperties = (ArrayList<String>) ((ArrayList<String>) selectedProperties).clone();
-        }
-		if(!layer.isGetFeatureInfo()) {
-			if(layer.isGetMapTiles()) { // only geometry
-				OMElement property = factory.createOMElement("PropertyName", wfs);
-				property.setText(layer.getGMLGeometryProperty());
-				query.addChild(property);
-			}
-		} else if(selectedProperties == null || selectedProperties.isEmpty()) {
-			// empty selection, and features wanted - give all (also map tiles
-		} else {
-			if(layer.isGetMapTiles()) {
-				selectedProperties.add(layer.getGMLGeometryProperty());
-			}
-		}
-		// loop for all properties
-		if(selectedProperties != null) {
-			for(String prop : selectedProperties) {		  
-				OMElement property = factory.createOMElement("PropertyName", wfs);
-				if(!prop.contains(":")) {
-					property.setText(layer.getFeatureNamespace() + ":" + prop);
-				} else {
-					property.setText(prop);
-				}
-				query.addChild(property);	
-			}
-		}
+            List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
+            if(selectedProperties != null) {
+                selectedProperties = (ArrayList<String>) ((ArrayList<String>) selectedProperties).clone();
+            }
+            if(!layer.isGetFeatureInfo()) {
+                if(layer.isGetMapTiles()) { // only geometry
+                    OMElement property = factory.createOMElement("PropertyName", wfs);
+                    property.setText(layer.getGMLGeometryProperty());
+                    query.addChild(property);
+                }
+            } else if(selectedProperties == null || selectedProperties.isEmpty()) {
+                // empty selection, and features wanted - give all (also map tiles
+            } else {
+                if(layer.isGetMapTiles()) {
+                    selectedProperties.add(layer.getGMLGeometryProperty());
+                }
+            }
+            // loop for all properties
+            if(selectedProperties != null) {
+                for(String prop : selectedProperties) {
+                    OMElement property = factory.createOMElement("PropertyName", wfs);
+                    if(!prop.contains(":")) {
+                        property.setText(layer.getFeatureNamespace() + ":" + prop);
+                    } else {
+                        property.setText(prop);
+                    }
+                    query.addChild(property);
+                }
+            }
 
-		// load filter
-		WFSFilter wfsFilter = new WFSFilter(layer, session, bounds, transform);
-		String filterStr = wfsFilter.getXML();
-		if(filterStr != null) {
-	        StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
-	        OMElement filter = staxOMBuilder.getDocumentElement();
-			query.addChild(filter);
-		}
+            // load filter
+            WFSFilter wfsFilter = constructFilter(layer.getLayerId());
+            String filterStr = wfsFilter.create(type, layer, session, bounds, transform);
+            if(filterStr != null) {
+                StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
+                OMElement filter = staxOMBuilder.getDocumentElement();
+                query.addChild(filter);
+            }
 		}
 		catch (Exception e){
-		    log.debug("error: "+e.getMessage());
+		    log.error(e, "Failed to create payload");
 		}
 
 		return root.toString();
@@ -215,5 +218,33 @@ public class WFSCommunicator {
 		
 		return handled;
 	}
+
+    /**
+     * Constructs a filter for specific layer type
+     *
+     * Layer type is checked from layer's prefix before the first '_'
+     *
+     * @param layerId
+     *
+     * @return filter instance
+     */
+    public static WFSFilter constructFilter(String layerId) {
+        String[] layer = layerId.split("_");
+
+        if(layer.length > 1) {
+            String filterClassName = PropertyUtil.getOptional(PROPERTY_PREFIX_EXT + layer[0]);
+            try {
+                final Class filterClass = Class.forName(filterClassName);
+                System.out.println(filterClass);
+                return (WFSFilter) filterClass.newInstance();
+            } catch (Exception e) {
+                log.error(e, "Error constructing a filter for layer:", layerId, filterClassName);
+                return null;
+            }
+        }
+
+        // if not found or no prefix
+        return new WFSFilter();
+    }
 }
 

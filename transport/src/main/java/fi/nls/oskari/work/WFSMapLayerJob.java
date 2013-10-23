@@ -34,10 +34,23 @@ public class WFSMapLayerJob extends Job {
 	
 	private static final Logger log = LogFactory.getLogger(WFSMapLayerJob.class);
 
-    public static final String TYPE_NORMAL = "normal";
-    public static final String TYPE_HIGHLIGHT = "highlight";
-    public static final String TYPE_MAP_CLICK = "mapClick";
-    public static final String TYPE_FILTER = "filter";
+    public static enum Type {
+        NORMAL ("normal"),
+        HIGHLIGHT ("highlight"),
+        MAP_CLICK ("mapClick"),
+        GEOJSON("geoJSON");
+
+        private final String name;
+
+        private Type(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
 
     public static final String OUTPUT_LAYER_ID = "layerId";
     public static final String OUTPUT_ONCE = "once";
@@ -73,11 +86,13 @@ public class WFSMapLayerJob extends Job {
 	private boolean layerPermission;
 	private boolean reqSendFeatures;
 	private boolean reqSendImage;
+    private boolean reqSendHighlight;
 	private boolean sendFeatures;
 	private boolean sendImage;
+    private boolean sendHighlight;
     private MathTransform transformService;
     private MathTransform transformClient;
-	private String type;
+	private Type type;
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private List<List<Object>> featureValuesList;
     private List<String> processedFIDs = new ArrayList<String>();
@@ -100,8 +115,8 @@ public class WFSMapLayerJob extends Job {
 	 * @param store
 	 * @param layerId
 	 */
-	public WFSMapLayerJob(TransportService service, String type, SessionStore store, String layerId) {
-		this(service, type, store, layerId, true, true);
+	public WFSMapLayerJob(TransportService service, Type type, SessionStore store, String layerId) {
+		this(service, type, store, layerId, true, true, true);
     }
 	
 	/**
@@ -115,9 +130,10 @@ public class WFSMapLayerJob extends Job {
 	 * @param layerId
 	 * @param reqSendFeatures
 	 * @param reqSendImage
+     * @param reqSendHighlight
 	 */
-	public WFSMapLayerJob(TransportService service, String type, SessionStore store, String layerId,
-			boolean reqSendFeatures, boolean reqSendImage) {
+	public WFSMapLayerJob(TransportService service, Type type, SessionStore store, String layerId,
+			boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
 		this.service = service;
         this.type = type;
 		this.session = store;
@@ -128,6 +144,7 @@ public class WFSMapLayerJob extends Job {
 		this.layerPermission = false;
 		this.reqSendFeatures = reqSendFeatures;
 		this.reqSendImage = reqSendImage;
+        this.reqSendHighlight = reqSendHighlight;
         this.transformService = null;
         this.transformClient = null;
     }
@@ -206,13 +223,16 @@ public class WFSMapLayerJob extends Job {
 
         if(!goNext()) return;
 
-        if(this.type.equals(TYPE_NORMAL)) { // tiles for grid
+        log.debug(this.type);
+
+        if(this.type == Type.NORMAL) { // tiles for grid
             if(!this.layer.isTileRequest()) { // make single request
                 if(!this.normalHandlers(null, true)) {
                     return;
                 }
             }
 
+            log.debug("normal tile images handling");
 			List<List<Double>> grid = this.session.getGrid().getBounds();
 
             boolean first = true;
@@ -223,7 +243,7 @@ public class WFSMapLayerJob extends Job {
                         return;
                     }
                 }
-				
+
 				if(!goNext()) return;
 				
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
@@ -267,36 +287,40 @@ public class WFSMapLayerJob extends Job {
 				}
 				index++;
 			}
-		} else if(this.type.equals(TYPE_HIGHLIGHT)) {
-            if(!this.requestHandler(null)) {
-                return;
-            }
-            this.featuresHandler();
-            if(!goNext()) return;
-
-            // IMAGE HANDLING
-            if(this.sendImage) {
-                Location location = this.session.getLocation();
-                WFSImage image = new WFSImage(this.layer,
-                        this.session.getMapSize(),
-                        this.session.getLocation(),
-                        TYPE_HIGHLIGHT,
-                        this.features);
-                BufferedImage bufferedImage = image.draw();
-                if(bufferedImage == null) {
-                    this.imageParsingFailed();
+		} else if(this.type == Type.HIGHLIGHT) {
+            if(this.sendHighlight) {
+                if(!this.requestHandler(null)) {
                     return;
                 }
+                this.featuresHandler();
+                if(!goNext()) return;
 
-                Double[] bbox = location.getBboxArray();
+                log.debug("highlight image handling", this.features.size());
 
-                // cache (non-persistant)
-                setImageCache(bufferedImage, TYPE_HIGHLIGHT, bbox, false);
+                // IMAGE HANDLING
+                    log.debug("sending");
+                    Location location = this.session.getLocation();
+                    WFSImage image = new WFSImage(this.layer,
+                            this.session.getMapSize(),
+                            this.session.getLocation(),
+                            Type.HIGHLIGHT.toString(),
+                            this.features);
+                    BufferedImage bufferedImage = image.draw();
+                    if(bufferedImage == null) {
+                        this.imageParsingFailed();
+                        return;
+                    }
 
-                String url = createImageURL(TYPE_HIGHLIGHT, bbox);
-                this.sendWFSImage(url, bufferedImage, bbox, false);
+                    Double[] bbox = location.getBboxArray();
+
+                    // cache (non-persistant)
+                    setImageCache(bufferedImage, Type.HIGHLIGHT.toString(), bbox, false);
+
+                    String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
+                    log.debug("url");
+                    this.sendWFSImage(url, bufferedImage, bbox, false);
             }
-        } else if(this.type.equals(TYPE_MAP_CLICK)) {
+        } else if(this.type == Type.MAP_CLICK) {
             if(!this.requestHandler(null)) {
                 return;
             }
@@ -305,7 +329,7 @@ public class WFSMapLayerJob extends Job {
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
             }
-        } else if(this.type.equals(TYPE_FILTER)) {
+        } else if(this.type == Type.GEOJSON) {
             if(!this.requestHandler(null)) {
                 return;
             }
@@ -314,6 +338,8 @@ public class WFSMapLayerJob extends Job {
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_FILTER);
             }
+        } else {
+            log.error("Type is not handled", this.type);
         }
 
         log.debug(PROCESS_ENDED, getKey());
@@ -347,7 +373,7 @@ public class WFSMapLayerJob extends Job {
 	private boolean requestHandler(List<Double> bounds) {
         BufferedReader response = null;
         if(layer.getTemplateType() == null) { // default
-            String payload = WFSCommunicator.createRequestPayload(this.layer, this.session, bounds, this.transformService);
+            String payload = WFSCommunicator.createRequestPayload(this.type, this.layer, this.session, bounds, this.transformService);
             log.debug("Request data\n", this.layer.getURL(), "\n", payload);
 	    	if(!goNext()) return false;
 			response = HttpHelper.postRequestReader(this.layer.getURL(), "", payload, this.layer.getUsername(), this.layer.getPassword());
@@ -390,7 +416,7 @@ public class WFSMapLayerJob extends Job {
 		}
 
         // 0 features found - send size
-        if(this.type.equals(TYPE_MAP_CLICK) && this.features.size() == 0) {
+        if(this.type == Type.MAP_CLICK && this.features.size() == 0) {
             log.debug("Empty result for map click",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
@@ -398,7 +424,7 @@ public class WFSMapLayerJob extends Job {
             this.service.send(session.getClient(), TransportService.CHANNEL_MAP_CLICK, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
-        } else if(this.type.equals(TYPE_FILTER) && this.features.size() == 0) {
+        } else if(this.type == Type.GEOJSON && this.features.size() == 0) {
             log.debug("Empty result for filter",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
@@ -504,7 +530,7 @@ public class WFSMapLayerJob extends Job {
 
                     WFSParser.parseValuesForJSON(values);
 
-                    if(this.type.equals(TYPE_NORMAL)) {
+                    if(this.type == Type.NORMAL) {
                         this.sendWFSFeature(values);
                     } else {
                         this.featureValuesList.add(values);
@@ -538,7 +564,7 @@ public class WFSMapLayerJob extends Job {
      * @param bbox
      * @param persistent
      */
-    private void setImageCache(BufferedImage bufferedImage, String style, Double[] bbox, boolean persistent) {
+    private void setImageCache(BufferedImage bufferedImage, final String style, Double[] bbox, boolean persistent) {
         WFSImage.setCache(
                 bufferedImage,
                 this.layerId,
@@ -569,20 +595,20 @@ public class WFSMapLayerJob extends Job {
      *         otherwise.
      */
     private boolean validateType() {
-        if(this.type.equals(TYPE_HIGHLIGHT)) {
+        if(this.type == Type.HIGHLIGHT) {
             if(this.sessionLayer.getHighlightedFeatureIds() != null &&
                     this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
                 return true;
             }
-        } else if(this.type.equals(TYPE_MAP_CLICK)) {
+        } else if(this.type == Type.MAP_CLICK) {
             if(session.getMapClick() != null) {
                 return true;
             }
-        } else if(this.type.equals(TYPE_FILTER)) {
+        } else if(this.type == Type.GEOJSON) {
             if(session.getFilter() != null) {
                 return true;
             }
-        } else if(this.type.equals(TYPE_NORMAL)) {
+        } else if(this.type == Type.NORMAL) {
             return true;
         }
         return false;
@@ -663,12 +689,17 @@ public class WFSMapLayerJob extends Job {
 		// layer configuration is the default
 		this.sendFeatures = layer.isGetFeatureInfo();
 		this.sendImage = layer.isGetMapTiles();
+        this.sendHighlight = layer.isGetHighlightImage();
 
 		// if request defines false and layer configuration allows
-		if(!this.reqSendFeatures && layer.isGetFeatureInfo())
+		if(!this.reqSendFeatures && this.sendFeatures)
 			this.sendFeatures = false;
-		if(!this.reqSendImage && layer.isGetMapTiles())
+		if(!this.reqSendImage && this.sendImage)
 			this.sendImage = false;
+        if(!this.reqSendHighlight && this.sendHighlight)
+            this.sendHighlight = false;
+
+        log.debug("send - features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
 	}
 
 	/**
@@ -695,7 +726,7 @@ public class WFSMapLayerJob extends Job {
      * @param style
      * @param bbox
      */
-    private String createImageURL(String style, Double[] bbox) {
+    private String createImageURL(final String style, Double[] bbox) {
         return "/image" +
                 "?" + OUTPUT_LAYER_ID + "=" + this.layerId +
                 "&" + OUTPUT_STYLE + "=" + style +
