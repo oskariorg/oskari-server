@@ -1,0 +1,49 @@
+{
+    "create" : [
+        "00-create-tables.sql"
+    ],
+    "bundles" : {
+        "framework" : [
+            "001-openlayers-default-theme.sql",
+            "002-mapfull.sql",
+            "003-divmanazer.sql",
+            "004-toolbar.sql",
+            "005-statehandler.sql",
+            "006-infobox.sql",
+            "007-search.sql",
+            "008-layerselector2.sql",
+            "009-layerselection2.sql",
+            "010-personaldata.sql",
+            "011-publisher.sql",
+            "012-coordinatedisplay.sql",
+            "013-maplegend.sql",
+            "014-userguide.sql",
+            "015-metadataflyout.sql",
+            "016-featuredata.sql",
+            "017-myplaces2.sql",
+            "018-guidedtour.sql",
+            "019-backendstatus.sql",
+            "020-printout.sql",
+            "021-postprocessor.sql",
+            "022-statsgrid.sql",
+            "023-parcel.sql",
+            "024-parcelselector.sql",
+            "025-parcelinfo.sql",
+            "026-promote.sql",
+            "027-publishedgrid.sql",
+            "028-featuredata2.sql",
+            "029-admin-layerrights.sql"
+        ],
+        "integration" : [
+            "001-admin-layerselector.sql"
+        ]
+    },
+    "views" : [
+        "default-view.json",
+        "postgres-view.json",
+        "publisher-template-view.json"
+    ],
+    "sql" : [
+        "exampleLayersAndRoles.sql"
+    ]
+}

@@ -16,7 +16,7 @@ import java.util.TreeMap;
 public class SearchServiceImpl implements SearchService {
 
     /** logger */
-    private Logger log = LogFactory.getLogger(this.getClass());
+    private static Logger log = LogFactory.getLogger(SearchServiceImpl.class);
 
     /** Available channels */
     private Map<String, SearchableChannel> availableChannels = null;
