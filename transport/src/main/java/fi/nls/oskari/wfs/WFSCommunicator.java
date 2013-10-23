@@ -235,7 +235,6 @@ public class WFSCommunicator {
             String filterClassName = PropertyUtil.getOptional(PROPERTY_PREFIX_EXT + layer[0]);
             try {
                 final Class filterClass = Class.forName(filterClassName);
-                System.out.println(filterClass);
                 return (WFSFilter) filterClass.newInstance();
             } catch (Exception e) {
                 log.error(e, "Error constructing a filter for layer:", layerId, filterClassName);
