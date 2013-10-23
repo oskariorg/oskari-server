@@ -133,6 +133,18 @@
  	   	and p.permission = 'PUBLISH'
  	   	and p.external_type = 'ROLE'
     </select>
+
+
+    <select id="findEditPermissions"  resultMap="publishPermissionsList">
+        select
+        r.resource_mapping as resourceMapping,
+        p.external_id as externalId
+        from
+        oskari_resource r, oskari_permission p
+        where r.id=p.oskari_resource_id
+        and p.permission = 'EDIT_LAYER'
+        and p.external_type = 'ROLE'
+    </select>
     
     
     <!-- fixed -->

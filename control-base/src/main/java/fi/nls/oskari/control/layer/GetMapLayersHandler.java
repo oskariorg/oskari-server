@@ -2,6 +2,8 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.MapLayerService;
 import fi.mml.map.mapwindow.util.MapLayerWorker;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -22,6 +24,9 @@ import java.util.*;
 @OskariActionRoute("GetMapLayers")
 public class GetMapLayersHandler extends ActionHandler {
 
+
+    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+
     /** Logger */
     private static Logger log = LogFactory.getLogger(GetMapLayersHandler.class);
 
@@ -38,7 +43,7 @@ public class GetMapLayersHandler extends ActionHandler {
         final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
                 .getLocale().getLanguage());
 
-        boolean showEmpty = params.getUser().isAdmin();
+        boolean showEmpty = permissionsService.hasAddLayerPermission(params.getUser());
         final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
                 params.getUser(), lang, showEmpty);
 

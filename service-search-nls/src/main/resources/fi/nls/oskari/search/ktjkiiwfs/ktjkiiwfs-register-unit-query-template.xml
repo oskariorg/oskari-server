@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<wfs:GetFeature version="1.1.0" xmlns:gml="http://www.opengis.net/gml"
+xmlns:ktjkiiwfs="http://xml.nls.fi/ktjkiiwfs/2010/02"
+xmlns:ogc="http://www.opengis.net/ogc"
+xmlns:wfs="http://www.opengis.net/wfs"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wf http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query srsName="EPSG:3067" typeName="ktjkiiwfs:RekisteriyksikonTietoja">
+    <wfs:PropertyName>ktjkiiwfs:kiinteistotunnus</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:olotila</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:rekisteriyksikkolaji</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:rekisterointipvm</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:lakkaamispvm</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:nimi</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:maapintaala</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:vesipintaala</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:rekisteriyksikonPalstanTietoja/ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:tekstiKartalla</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:rekisteriyksikonPalstanTietoja/ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:rekisteriyksikonKiinteistotunnus</wfs:PropertyName>
+    <wfs:PropertyName>ktjkiiwfs:rekisteriyksikonPalstanTietoja/ktjkiiwfs:RekisteriyksikonPalstanTietoja/ktjkiiwfs:tunnuspisteSijainti</wfs:PropertyName>
+    <ogc:Filter>
+      <ogc:PropertyIsEqualTo>
+        <ogc:PropertyName>ktjkiiwfs:kiinteistotunnus</ogc:PropertyName>
+        <ogc:Literal>{REGISTER-UNIT-ID}</ogc:Literal>
+      </ogc:PropertyIsEqualTo>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>

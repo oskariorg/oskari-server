@@ -34,5 +34,9 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isAdminRole() {
+        return (getAdminRoleName().equals(getName()));
+    }
     
 }
