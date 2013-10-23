@@ -47,8 +47,7 @@ public class TransportService extends AbstractService {
 
         Properties properties = new Properties();
         try {
-            properties.load(TransportService.class
-                    .getResourceAsStream("config.properties"));
+            properties.load(TransportService.class.getResourceAsStream("config.properties"));
             PropertyUtil.addProperties(properties);
         } catch (Exception e) {
             System.err.println("Configuration could not be loaded");
@@ -329,10 +328,8 @@ public class TransportService extends AbstractService {
         // layers
         Map<String, Layer> layers = store.getLayers();
         for (Layer layer : layers.values()) {
-
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
         	initMapLayerJob(store, layer.getId());
-
         }
     }
 
@@ -657,7 +654,6 @@ public class TransportService extends AbstractService {
      * @param params
      */
     @SuppressWarnings("unchecked")
-
 	private Grid parseGrid(Map<String, Object> params) {
     	Grid grid = new Grid();
     	

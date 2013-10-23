@@ -10,11 +10,6 @@ import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.work.WFSMapLayerJob;
-import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.geometry.jts.JTS;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.operation.MathTransform;
@@ -29,12 +24,11 @@ import java.util.List;
 public class AnalysisFilter extends WFSFilter {
     private static final Logger log = LogFactory.getLogger(AnalysisFilter.class);
 
+    public static final String ANALYSIS_BASE_LAYER_ID = "analysis.baselayer.id";
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String ANALYSIS_ID_FIELD = "analysis_id";
 
     private static final FilterFactory2 ff = WFSFilter.getFilterFactory2();
-
-    private WFSLayerStore layer;
 
     public AnalysisFilter() {
         super();
@@ -46,83 +40,84 @@ public class AnalysisFilter extends WFSFilter {
      * Filter types: bbox (location|tile), coordinate (map click), geojson
      * (custom filter), highlight (feature filter)
      *
+     * @param type
      * @param layer
      * @param session
      * @param bounds
+     * @param transform
      */
-    public void init(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+    @Override
+    public String create(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
                      final List<Double> bounds, final MathTransform transform) {
-        super.init(type, layer, session, bounds, transform);
-        this.layer = super.getWFSLayerStore();
+        if(type == null || layer == null || session == null) {
+            log.error("Parameters not set (type, layer, session)", type, layer, session);
+            return null;
+        }
+        super.create(type, layer, session, bounds, transform, false);
+
+        Filter filter = null;
+        if(type == WFSMapLayerJob.Type.HIGHLIGHT) {
+            log.debug("Filter: highlight");
+            List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
+            filter = super.initFeatureIdFilter(featureIds);
+        } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
+            log.debug("Filter: map click");
+            Coordinate coordinate = session.getMapClick();
+            filter = super.initCoordinateFilter(coordinate);
+
+            // Analysis id
+            Filter idFilter = initIdFilter(layer.getLayerId());
+            filter = ff.and(filter, idFilter);
+
+        } else if(type == WFSMapLayerJob.Type.GEOJSON) {
+            log.debug("Filter: GeoJSON");
+            GeoJSONFilter geoJSONFilter = session.getFilter();
+            filter = super.initGeoJSONFilter(geoJSONFilter);
+
+            // Analysis id
+            Filter idFilter = initIdFilter(layer.getLayerId());
+            filter = ff.and(filter, idFilter);
+
+        } else if(type == WFSMapLayerJob.Type.NORMAL) {
+            log.debug("Filter: normal");
+            Location location;
+            if(bounds != null) {
+                location = new Location(session.getLocation().getSrs());
+                location.setBbox(bounds);
+            } else {
+                location = session.getLocation();
+            }
+            filter = super.initBBOXFilter(location);
+
+            // Analysis id
+            Filter idFilter = initIdFilter(layer.getLayerId());
+            filter = ff.and(filter, idFilter);
+
+        } else {
+            log.error("Failed to create a filter (invalid type)");
+        }
+
+        return createXML(filter);
     }
+
     /**
-     * Initializes coordinate filter (map click)
+     * Creates WFS analysis id filter
      *
-     * @param coordinate
-     */
-    @Override
-    public Filter initCoordinateFilter(Coordinate coordinate) {
-        Filter filter = super.initCoordinateFilter(coordinate);
-
-        // Analysis id
-        Filter anal = getAnalysisIdFilter();
-        if (anal != null)
-            filter = ff.and(filter, anal);
-
-        return filter;
-    }
-
-    /**
-     * Inits filter for select tool (geojson features)
-     */
-    @Override
-    // TODO: MAYBE DOESN'T WORK CORRECTLY =/
-    public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter) {
-        Filter filter = super.initGeoJSONFilter(geoJSONFilter);
-
-        // Analysis id
-        Filter anal = getAnalysisIdFilter();
-        if (anal != null)
-            filter = ff.and(filter, anal);
-
-        return filter;
-    }
-
-    /**
-     * Initializes bounding box filter (normal)
+     * @param layerId
      *
-     * @param location
+     * @return id equal WFS filter
      */
-    @Override
-    public Filter initBBOXFilter(Location location) {
-        Filter filter = super.initBBOXFilter(location);
-
-        // Analysis id
-        Filter anal = getAnalysisIdFilter();
-        if (anal != null)
-            filter = ff.and(filter, anal);
-
-        return filter;
-    }
-
-    /**
-     * Creates WFS analysis id filter, if layer begins with "analysis_"
-     *
-     * @return analysis_id equal WFS filter
-     */
-    public Filter getAnalysisIdFilter() {
-        log.debug("Layer id " + layer.getLayerId());
-        if(!layer.getLayerId().startsWith(ANALYSIS_PREFIX)) {
-            log.error("Failed to create analysis id filter (not an analysis layer)", layer.getLayerId());
+    public Filter initIdFilter(String layerId) {
+        if(layerId == null || !layerId.startsWith(ANALYSIS_PREFIX)) {
+            log.error("Failed to create analysis id filter (not an analysis layer)", layerId);
             return null;
         }
 
-        // add analysis_id filter
-        Filter anal = null;
-        String[] values = layer.getLayerId().split("_");
-        String analysisId = values[values.length - 1];
-        anal = ff.equal(ff.property(ANALYSIS_ID_FIELD), ff.literal(analysisId), false);
+        // create analysis id filter
+        String[] values = layerId.split("_");
+        String id = values[values.length - 1]; // TODO: add to redis?
+        Filter idFilter = ff.equal(ff.property(ANALYSIS_ID_FIELD), ff.literal(id), false);
 
-        return anal;
+        return idFilter;
     }
 }

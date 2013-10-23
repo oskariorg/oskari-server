@@ -6,8 +6,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.transport.TransportService;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
@@ -35,7 +39,16 @@ public class WFSCommunicatorTest {
     @BeforeClass
     public static void setUp() {
 		JedisManager.connect(10, "localhost", 6379);
-		
+
+        Properties properties = new Properties();
+        try {
+            properties.load(TransportService.class.getResourceAsStream("config.properties"));
+            PropertyUtil.addProperties(properties);
+        } catch (Exception e) {
+            System.err.println("Configuration could not be loaded");
+            e.printStackTrace();
+        }
+
 		try {
 			session = SessionStore.setJSON(sessionJSON);
 			layer = WFSLayerStore.setJSON(layerJSON);
@@ -71,4 +84,22 @@ public class WFSCommunicatorTest {
 		assertTrue("Should get valid features", features != null);
 		assertTrue("Should get features", features.size() > 0);
 	}
+
+    @Test
+    public void testFilterConstruct() {
+        String layerId = "216";
+        WFSFilter filter = WFSCommunicator.constructFilter(layerId);
+        assertTrue("Should be instance of default", (filter instanceof WFSFilter));
+
+        layerId = "analysis_216_710";
+        filter = WFSCommunicator.constructFilter(layerId);
+        assertTrue("Should be instance of analysis", (filter instanceof AnalysisFilter));
+    }
+
+    @Test
+    public void testFailingFilterConstruct() throws NullPointerException {
+        String layerId = "nonexistent_216";
+        WFSFilter filter = WFSCommunicator.constructFilter(layerId);
+        assertTrue("Should be null", filter == null);
+    }
 }

@@ -26,6 +26,7 @@ import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.operation.MathTransform;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,12 +49,8 @@ public class WFSFilter {
     private static final GeometryFactory gf = JTSFactoryFinder.getGeometryFactory(null);
     private static final GeometricShapeFactory gsf = new GeometricShapeFactory(gf);
 
-    private WFSMapLayerJob.Type type;
     private WFSLayerStore layer;
-    private SessionStore session;
-    private List<Double> bounds;
     private MathTransform transform;
-
     private double defaultBuffer;
 
     private String xml;
@@ -82,67 +79,90 @@ public class WFSFilter {
     }
 
     /**
-     * Init a filter for WFS request payload (XML)
+     * Create a filter for WFS request payload (XML)
      *
      * Filter types: bbox (location|tile), coordinate (map click), geojson
      * (custom filter), highlight (feature filter)
      *
+     * @param type
      * @param layer
      * @param session
      * @param bounds
+     * @param transform
+     *
+     * @return xml
      */
-    public void init(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+    public String create(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
                      final List<Double> bounds, final MathTransform transform) {
-        this.type = type;
-        this.layer = layer;
-        this.session = session;
-        this.bounds = bounds;
-        this.transform = transform;
-        this.defaultBuffer = getDefaultBuffer(this.session.getMapScales().get((int)this.session.getLocation().getZoom()));
-
-        Filter filter = null;
-        if(this.type == WFSMapLayerJob.Type.HIGHLIGHT) {
-            log.debug("Filter: highlight");
-            List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
-            filter = initFeatureIdFilter(featureIds);
-        } else if(this.type == WFSMapLayerJob.Type.MAP_CLICK) {
-            log.debug("Filter: map click");
-            Coordinate coordinate = session.getMapClick();
-            filter =initCoordinateFilter(coordinate);
-        } else if(this.type == WFSMapLayerJob.Type.GEOJSON) {
-            log.debug("Filter: GeoJSON");
-            GeoJSONFilter geoJSONFilter = session.getFilter();
-            filter = initGeoJSONFilter(geoJSONFilter);
-        } else if(this.type == WFSMapLayerJob.Type.NORMAL) {
-            log.debug("Filter: normal");
-            Location location;
-            if(this.bounds != null) {
-                location = new Location(session.getLocation().getSrs());
-                location.setBbox(this.bounds);
-            } else {
-                location = session.getLocation();
-            }
-            filter = initBBOXFilter(location);
-        } else {
-            log.error("Failed to create a filter (invalid type)");
-        }
-
-        initXML(filter);
+        return create(type, layer, session, bounds, transform, true);
     }
 
     /**
-     * Gets filter as XML
-     * 
+     * Create a filter for WFS request payload (XML)
+     *
+     * Filter types: bbox (location|tile), coordinate (map click), geojson
+     * (custom filter), highlight (feature filter)
+     *
+     * @param type
+     * @param layer
+     * @param session
+     * @param bounds
+     * @param transform
+     * @param createFilter
+     *
      * @return xml
      */
-    public String getXML() {
-        return this.xml;
+    public String create(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+                     final List<Double> bounds, final MathTransform transform, boolean createFilter) {
+        if(type == null || layer == null || session == null) {
+            log.error("Parameters not set (type, layer, session)", type, layer, session);
+            return null;
+        }
+        this.layer = layer;
+        this.transform = transform;
+        this.defaultBuffer = getDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
+
+        if(createFilter) {
+            Filter filter = null;
+            if(type == WFSMapLayerJob.Type.HIGHLIGHT) {
+                log.debug("Filter: highlight");
+                List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
+                filter = initFeatureIdFilter(featureIds);
+            } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
+                log.debug("Filter: map click");
+                Coordinate coordinate = session.getMapClick();
+                filter = initCoordinateFilter(coordinate);
+            } else if(type == WFSMapLayerJob.Type.GEOJSON) {
+                log.debug("Filter: GeoJSON");
+                GeoJSONFilter geoJSONFilter = session.getFilter();
+                filter = initGeoJSONFilter(geoJSONFilter);
+            } else if(type == WFSMapLayerJob.Type.NORMAL) {
+                log.debug("Filter: normal");
+                Location location;
+                if(bounds != null) {
+                    location = new Location(session.getLocation().getSrs());
+                    location.setBbox(bounds);
+                } else {
+                    location = session.getLocation();
+                }
+                filter = initBBOXFilter(location);
+            } else {
+                log.error("Failed to create a filter (invalid type)");
+            }
+
+            return createXML(filter);
+        }
+        return null;
     }
 
     /**
      * Inits XML String
+     *
+     * @param filter
+     *
+     * @return xml
      */
-    private String initXML(Filter filter) {
+    public String createXML(Filter filter) {
         if(filter == null) {
             log.error("Failed to create XML for the filter (null)");
             return null;
@@ -172,6 +192,10 @@ public class WFSFilter {
 
     /**
      * Sets the default buffer.
+     *
+     * @param mapScale
+     *
+     * return default buffer
      */
     public double getDefaultBuffer(double mapScale) {
         log.debug("Default buffer size", mapScale*CONVERSION_FACTOR);
@@ -182,6 +206,8 @@ public class WFSFilter {
      * Initializes feature filter (highlight)
      *
      * @param featureIds
+     *
+     * @return filter
      */
     public Filter initFeatureIdFilter(List<String> featureIds) {
         if(featureIds == null || featureIds.size() == 0) {
@@ -203,6 +229,8 @@ public class WFSFilter {
      * Initializes coordinate filter (map click)
      *
      * @param coordinate
+     *
+     * @return filter
      */
     public Filter initCoordinateFilter(Coordinate coordinate) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
@@ -229,17 +257,15 @@ public class WFSFilter {
         Filter filter = ff.intersects(ff.property(layer
                 .getGMLGeometryProperty()), ff.literal(polygon));
 
-        // Analysis id
-        AnalysisFilter analysis = new AnalysisFilter();
-        Filter anal = analysis.getAnalysisIdFilter();
-        if (anal != null)
-            filter = ff.and(filter, anal);
-
         return filter;
     }
 
     /**
      * Inits filter for select tool (geojson features)
+     *
+     * @param geoJSONFilter
+     *
+     * @return filter
      */
     public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter) {
         if(geoJSONFilter == null || geoJSONFilter.getFeatures() == null || this.defaultBuffer == 0.0d) {
@@ -247,15 +273,14 @@ public class WFSFilter {
             return null;
         }
         Filter filter = null;
-
-        Polygon polygon = null;
+        List<Filter> geometryFilters = new ArrayList<Filter>();
         Filter tmpFilter = null;
+        Polygon polygon = null;
 
-        JSONArray features = (JSONArray) session.getFilter().getFeatures();
+        JSONArray features = (JSONArray) geoJSONFilter.getFeatures();
         try {
             for (int i = 0; i < features.length(); i++) {
                 polygon = null;
-                tmpFilter = null;
                 JSONObject feature = (JSONObject) features.get(i);
                 JSONObject geometry = (JSONObject) feature.get("geometry");
 
@@ -298,23 +323,18 @@ public class WFSFilter {
                 tmpFilter = ff.intersects(ff.property(layer
                         .getGMLGeometryProperty()), ff.literal(polygon));
 
-                if (filter == null) { // first
-                    filter = tmpFilter;
-                } else { // if many filters, combine with or
-                    filter = ff.or(filter, tmpFilter);
-                }
-                // TODO: try to get the analysis filter to work outside the iteration
-                // OTHERWISE: have to get the Filter as a param and add in the loop =/
-                // Analysis id
-                AnalysisFilter analysis = new AnalysisFilter();
-                Filter anal = analysis.getAnalysisIdFilter();
-                if (anal != null)
-                    filter = ff.and(filter, anal);
+                geometryFilters.add(tmpFilter);
             }
         } catch (JSONException e) {
             log.error(e, "Reading geojson data failed");
         } catch (Exception e) {
             log.error(e, "Generating geometries from geojson failed");
+        }
+
+        if(geometryFilters.size() > 1) {
+            filter = ff.or(geometryFilters);
+        } else {
+            filter = tmpFilter;
         }
 
         return filter;
@@ -324,6 +344,8 @@ public class WFSFilter {
      * Initializes bounding box filter (normal)
      *
      * @param location
+     *
+     * @return filter
      */
     public Filter initBBOXFilter(Location location) {
         if(location == null || this.layer == null) {
@@ -333,12 +355,6 @@ public class WFSFilter {
 
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
                 location.getTransformEnvelope(layer.getSRSName(), true));
-
-        // Analysis id
-        AnalysisFilter analysis = new AnalysisFilter();
-        Filter anal = analysis.getAnalysisIdFilter();
-        if (anal != null)
-            filter = ff.and(filter, anal);
 
         return filter;
     }

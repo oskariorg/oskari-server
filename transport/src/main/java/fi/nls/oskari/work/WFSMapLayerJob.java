@@ -38,7 +38,7 @@ public class WFSMapLayerJob extends Job {
         NORMAL ("normal"),
         HIGHLIGHT ("highlight"),
         MAP_CLICK ("mapClick"),
-        GEOJSON("filter");
+        GEOJSON("geoJSON");
 
         private final String name;
 
@@ -223,6 +223,8 @@ public class WFSMapLayerJob extends Job {
 
         if(!goNext()) return;
 
+        log.debug(this.type);
+
         if(this.type == Type.NORMAL) { // tiles for grid
             if(!this.layer.isTileRequest()) { // make single request
                 if(!this.normalHandlers(null, true)) {
@@ -336,6 +338,8 @@ public class WFSMapLayerJob extends Job {
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_FILTER);
             }
+        } else {
+            log.error("Type is not handled", this.type);
         }
 
         log.debug(PROCESS_ENDED, getKey());
@@ -693,7 +697,9 @@ public class WFSMapLayerJob extends Job {
 		if(!this.reqSendImage && this.sendImage)
 			this.sendImage = false;
         if(!this.reqSendHighlight && this.sendHighlight)
-            this.reqSendHighlight = false;
+            this.sendHighlight = false;
+
+        log.debug("send - features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
 	}
 
 	/**
