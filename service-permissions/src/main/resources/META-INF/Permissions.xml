@@ -384,14 +384,14 @@
         SELECT
         map.id
         FROM
-        oskari_resource or,
+        oskari_resource ore,
         oskari_permission op,
         portti_maplayer map
         WHERE
         op.permission = 'EDIT_LAYER' AND
-        or.id = op.oskari_resource_id AND
-        or.resource_type = 'maplayer' AND
-        or.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
+        ore.id = op.oskari_resource_id AND
+        ore.resource_type = 'maplayer' AND
+        ore.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#
