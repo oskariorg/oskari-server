@@ -391,7 +391,7 @@
         op.permission = 'EDIT_LAYER' AND
         ore.id = op.oskari_resource_id AND
         ore.resource_type = 'maplayer' AND
-        ore.resource_mapping = map.wmsurl || + '+' || map.wmsname AND
+        ore.resource_mapping = map.wmsurl || '+' || map.wmsname AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#
