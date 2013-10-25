@@ -5,8 +5,11 @@ import fi.mml.portti.domain.ogc.util.http.HttpPostResponse;
 import fi.mml.portti.service.ogc.OgcFlowException;
 import fi.nls.oskari.domain.map.wfs.FeatureParameter;
 import fi.nls.oskari.domain.map.wfs.FeatureType;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureCollections;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Parser;
 import org.json.JSONException;
@@ -26,6 +29,7 @@ import java.util.*;
 
 
 public class GetFeaturesXmlParser {
+    private static final Logger log = LogFactory.getLogger(GetFeaturesXmlParser.class);
 
     public static FeatureCollection<SimpleFeatureType, SimpleFeature> parseFeatures(HttpPostResponse response, final FeatureType featureType) throws OgcFlowException {
         try {
@@ -55,10 +59,14 @@ public class GetFeaturesXmlParser {
             if (parseResult instanceof FeatureCollection) {
                 features = (FeatureCollection<SimpleFeatureType, SimpleFeature>) parseResult;
             } else {
+                features = FeatureCollections.newCollection();
+                log.warn("Error getting feature collection from server: ", parseResult);
+                /*
                 throw new RuntimeException("We are trying to cast GeoTools parse results to FeatureCollection but it seems that GeoTools " +
                         "has returned data in '" + parseResult.getClass().getName() + "'. This is a problem. This can be due to a fact that " +
                         "GeoTools is not able to access XSD:s for WFS service. " +
                         "Check this discussion: 'http://osgeo-org.1803224.n2.nabble.com/WFS-MultiSurfaces-are-returned-inside-Hashmap-instead-of-FeatureCollection-td6283266.html'");
+                        */
             }
 
             return features;
