@@ -259,8 +259,8 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         service.setUrl(configuration.getURL());
         service.setUsername(configuration.getUsername());
         service.setPassword(configuration.getPassword());
-        // use proxy not available in new transport - default to true
-        service.setUseProxy(true);
+        // use proxy not available in new transport - default to false
+        service.setUseProxy(false);
         wfsLayer.getSelectedWfsServices().add(service);
 
         final FeatureType ft = new FeatureType();

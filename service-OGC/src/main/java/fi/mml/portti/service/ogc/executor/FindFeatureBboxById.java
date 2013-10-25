@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
@@ -37,6 +40,7 @@ import fi.nls.oskari.domain.map.wfs.WFSLayer;
 public class FindFeatureBboxById {
 
     private static final MapLayerService wfsLayerDbService = new MapLayerServiceIbatisImpl();
+    private final static Logger log = LogFactory.getLogger(FindFeatureBboxById.class);
 	/**
 	 * Find bounding box of wfs_features by wfs feature ids
 	 * 
@@ -47,19 +51,21 @@ public class FindFeatureBboxById {
 	public double[] getFeatureBbox(List<SearchResultItem> list, String wfs_id) {
 
 		double[] bbox = { 0.0, 0.0, 0.0, 0.0 };
-		WFSLayer wfsLayer = wfsLayerDbService.findWFSLayer(Integer
-				.parseInt(wfs_id));
-		FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools
-				.getDefaultHints());
-		String myfeaids = "";
-		for (SearchResultItem item : list) {
-			myfeaids += item.getResourceId() + ",";
-		}
+        final int layerId = ConversionHelper.getInt(wfs_id, -1);
+        if(layerId == -1) {
+            log.debug("Couldn't get wfs layer id. List:", list);
+            return bbox;
+        }
+		final WFSLayer wfsLayer = wfsLayerDbService.findWFSLayer(layerId);
+        final String[] featureIdsWithQnames = new String[list.size()];
+        for(int i = 0; i < featureIdsWithQnames.length; ++i) {
+            featureIdsWithQnames[i] = list.get(i).getResourceId();
+        }
 
 		List<Future<WFSResponseCapsule>> futures = new ArrayList<Future<WFSResponseCapsule>>();
-		String[] featureIdsWithQnames = myfeaids.split(",");
 
 		/* Create workers */
+        final FilterFactory ff = CommonFactoryFinder.getFilterFactory(GeoTools.getDefaultHints());
 		for (SelectedFeatureType sft : wfsLayer.getSelectedFeatureTypes()) {
 			Set<FeatureId> fids = findFeatureIdsForQname(ff, sft
 					.getFeatureType().getQname().toString(),
@@ -137,6 +143,7 @@ public class FindFeatureBboxById {
 				result.add(ff.featureId(featureIdWithQname));
 			}
 		}
+        log.debug("findFeatureIdsForQname - qname:", requestedQname, "- featureIds:", featureIdsWithQnames, "- Result:\n", result);
 		return result;
 	}
 }
