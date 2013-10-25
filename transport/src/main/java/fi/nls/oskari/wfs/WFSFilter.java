@@ -15,6 +15,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.json.JSONArray;
@@ -145,7 +146,8 @@ public class WFSFilter {
                 } else {
                     location = session.getLocation();
                 }
-                filter = initBBOXFilter(location);
+
+                filter = initEnlargedBBOXFilter(location, layer);
             } else {
                 log.error("Failed to create a filter (invalid type)");
             }
@@ -347,14 +349,37 @@ public class WFSFilter {
      *
      * @return filter
      */
-    public Filter initBBOXFilter(Location location) {
-        if(location == null || this.layer == null) {
+    public static Filter initBBOXFilter(Location location, WFSLayerStore layer) {
+        if(location == null || layer == null) {
             log.error("Failed to create BBOX filter (location or layer is unset)");
             return null;
         }
 
+        ReferencedEnvelope envelope = location.getEnvelope();
+        envelope = location.getTransformEnvelope(envelope, layer.getSRSName(), true);
         Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
-                location.getTransformEnvelope(layer.getSRSName(), true));
+                envelope);
+
+        return filter;
+    }
+
+    /**
+     * Initializes enlarged bounding box filter (normal)
+     *
+     * @param location
+     *
+     * @return filter
+     */
+    public static Filter initEnlargedBBOXFilter(Location location, WFSLayerStore layer) {
+        if(location == null || layer == null) {
+            log.error("Failed to create BBOX filter (location or layer is unset)");
+            return null;
+        }
+
+        ReferencedEnvelope enlargedEnvelope = location.getEnlargedEnvelope();
+        enlargedEnvelope = location.getTransformEnvelope(enlargedEnvelope, layer.getSRSName(), true);
+        Filter filter = ff.bbox(ff.property(layer.getGMLGeometryProperty()),
+                enlargedEnvelope);
 
         return filter;
     }

@@ -87,7 +87,7 @@ public class AnalysisFilter extends WFSFilter {
             } else {
                 location = session.getLocation();
             }
-            filter = super.initBBOXFilter(location);
+            filter = super.initEnlargedBBOXFilter(location, layer);
 
             // Analysis id
             Filter idFilter = initIdFilter(layer.getLayerId());

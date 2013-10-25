@@ -30,6 +30,7 @@ public class Location {
 	private long zoom;
 	private ReferencedEnvelope envelope = null;
 	private CoordinateReferenceSystem crs = null;
+    private ReferencedEnvelope enlargedEnvelope = null;
 
 	/**
 	 * Constructs object without parameters
@@ -161,6 +162,19 @@ public class Location {
 		this.zoom = zoom;
 	}
 
+    /**
+     * Gets CRS
+     *
+     * @return crs
+     */
+    @JsonIgnore
+    public CoordinateReferenceSystem getCrs() {
+        if(this.crs == null) {
+            this.getEnvelope();
+        }
+        return this.crs;
+    }
+
 	/**
 	 * Key definition
 	 * 
@@ -204,20 +218,20 @@ public class Location {
 	/**
 	 * Transforms envelope to target CRS
 	 *
-	 * @param bbox
+	 * @param env
 	 * @param target
 	 * @param lenient
 	 * @return envelope
 	 */
 	@JsonIgnore
-	public ReferencedEnvelope getTransformEnvelope(ReferencedEnvelope bbox, String target, boolean lenient) {
-		if(bbox == null) {
+	public ReferencedEnvelope getTransformEnvelope(ReferencedEnvelope env, String target, boolean lenient) {
+		if(env == null) {
 			if(this.envelope == null) {
 				this.getEnvelope();
 			}
-			bbox = this.envelope;
+            env = this.envelope;
             if(this.getSrs().equals(target)) {
-                return bbox;
+                return env;
             }
 		}
 
@@ -226,7 +240,7 @@ public class Location {
 
 		try {
 			targetCRS = CRS.decode(target);
-			envelope = bbox.transform(targetCRS, lenient);
+			envelope = env.transform(targetCRS, lenient);
 		} catch (TransformException e) {
 			log.error(e, "Transforming failed");
 		} catch (FactoryException e) {
@@ -250,7 +264,6 @@ public class Location {
 		return getTransformEnvelope(null, target, lenient);
 	}
 
-    @JsonIgnore
     /**
      * Creates a transform object for geometries
      *
@@ -260,6 +273,7 @@ public class Location {
      * @param lenient
      * @return transform
      */
+    @JsonIgnore
     public MathTransform getTransformForClient(String source, boolean lenient) {
         CoordinateReferenceSystem sourceCRS = null;
         try {
@@ -271,7 +285,6 @@ public class Location {
         return getTransformForClient(sourceCRS, lenient);
     }
 
-    @JsonIgnore
     /**
      * Creates a transform object for geometries
      *
@@ -281,6 +294,7 @@ public class Location {
      * @param lenient
      * @return transform
      */
+    @JsonIgnore
     public MathTransform getTransformForClient(CoordinateReferenceSystem source, boolean lenient) {
         if(this.crs == null) {
             this.getEnvelope();
@@ -289,7 +303,6 @@ public class Location {
         return this.getTransform(source, this.crs, lenient);
     }
 
-    @JsonIgnore
     /**
      * Creates a transform object for geometries
      *
@@ -299,6 +312,7 @@ public class Location {
      * @param lenient
      * @return transform
      */
+    @JsonIgnore
     public MathTransform getTransformForService(String target, boolean lenient) {
         CoordinateReferenceSystem targetCRS = null;
         try {
@@ -310,7 +324,6 @@ public class Location {
         return getTransformForService(targetCRS, lenient);
     }
 
-    @JsonIgnore
     /**
      * Creates a transform object for geometries
      *
@@ -320,6 +333,7 @@ public class Location {
      * @param lenient
      * @return transform
      */
+    @JsonIgnore
     public MathTransform getTransformForService(CoordinateReferenceSystem target, boolean lenient) {
         if(this.crs == null) {
             this.getEnvelope();
@@ -328,7 +342,6 @@ public class Location {
         return this.getTransform(this.crs, target, lenient);
     }
 
-    @JsonIgnore
     /**
      * Creates a transform object for geometries
      *
@@ -337,6 +350,7 @@ public class Location {
      * @param lenient
      * @return transform
      */
+    @JsonIgnore
     public MathTransform getTransform(CoordinateReferenceSystem source, CoordinateReferenceSystem target, boolean lenient) {
         try {
             return CRS.findMathTransform(source, target, lenient);
@@ -344,6 +358,84 @@ public class Location {
             log.error(e, "Transforming failed");
         }
         return null;
+    }
+
+    /**
+     * Creates a scaled envelope
+     *
+     * The scale factor must be greather than 0. A value greater than 1 will grow the bounds whereas
+     * a value of less than 1 will shrink the bounds.
+     *
+     * @param factor
+     * @return envelope
+     */
+    @JsonIgnore
+    public ReferencedEnvelope getScaledEnvelope(double factor) {
+        if(factor <= 0) {
+            log.error("Scaling failed because invalid factor value (should be greater than 0)", factor);
+            return null;
+        }
+
+        ReferencedEnvelope envelope = this.getEnvelope();
+        double width = envelope.getWidth() * (factor - 1.0) / 2.0;
+        double height = envelope.getHeight() * (factor - 1.0) / 2.0;
+
+        return new ReferencedEnvelope(
+                this.getLeft() - width, // x1
+                this.getRight() + width, // x2
+                this.getBottom() - height, // y1
+                this.getTop() + height, // y2
+                this.crs
+        );
+    }
+
+
+    /**
+     * Sets a enlarged envelope
+     *
+     * Adds one tile sized buffer to every direction of the envelope.
+     *
+     * @param bbox
+     */
+    @JsonIgnore
+    public void setEnlargedEnvelope(List<Double> bbox) {
+        if(bbox.size() != 4) {
+            log.error("Failed to create enlarged envelope because bbox was invalid");
+            return;
+        }
+
+        if(this.crs == null) {
+            this.getEnvelope();
+        }
+
+        double width = bbox.get(2) - bbox.get(0);
+        double height = bbox.get(3) - bbox.get(1);
+
+        this.enlargedEnvelope = new ReferencedEnvelope(
+                this.getLeft() - width, // x1
+                this.getRight() + width, // x2
+                this.getBottom() - height, // y1
+                this.getTop() + height, // y2
+                this.crs);
+    }
+
+    /**
+     * Gets a enlarged envelope
+     *
+     * Used in safe requests of WFS data (removing possibility of missing features on boundaries)
+     *
+     * @return envelope
+     */
+    @JsonIgnore
+    public ReferencedEnvelope getEnlargedEnvelope() {
+        if(this.enlargedEnvelope == null) {
+            log.error("Enlarged envelope not created");
+            if(this.envelope == null) {
+                this.getEnvelope();
+            }
+            return this.envelope;
+        }
+        return this.enlargedEnvelope;
     }
 
 	/**
