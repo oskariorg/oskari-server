@@ -447,6 +447,13 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselector2') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config='{
+   "showSearchSuggestions" : true
+}'
+WHERE bundle_id = (SELECT id from portti_bundle WHERE name = 'layerselector2') 
+AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
 --------------------------------------------
 -- 9. LayerSelection
 --------------------------------------------
@@ -477,6 +484,7 @@ UPDATE portti_view_bundle_seq set startup = '{
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselection2') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
 
 --------------------------------------------
 -- 10. Personal data
@@ -515,7 +523,12 @@ UPDATE portti_view_bundle_seq set config = '{
         "en": "https://www.paikkatietoikkuna.fi/web/en/profile",
         "fi": "https://www.paikkatietoikkuna.fi/web/fi/profiili",
         "sv": "https://www.paikkatietoikkuna.fi/web/sv/profil"
-    }
+    },
+    "publishedMapUrl": {
+        "en": "/web/en/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
+        "fi": "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
+        "sv": "/web/sv/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId="
+    }  
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
@@ -767,6 +780,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "queryUrl" : "[REPLACED BY HANDLER]",
+        "featureNS" : "http://www.paikkatietoikkuna.fi",
         "wmsUrl" : "/karttatiili/myplaces?myCat="
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'myplaces2') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
