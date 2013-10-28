@@ -207,7 +207,20 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" }
+       { 
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+        "config": {
+            "mapUrlPrefix": {
+                "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
+                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
+                "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
+            },
+            "termsUrl": {
+                "en": "http://www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
+                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
+                "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
+            }
+        } }
       ],
       "layers": [
       ]
@@ -291,6 +304,11 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
         "viewtools": {
             "print" : false
+        },
+        "mapUrlPrefix": {
+            "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
+            "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
+            "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
         }
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
     AND view_id=[VIEW_ID];
@@ -434,6 +452,13 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselector2') 
     AND view_id=[VIEW_ID];
 
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config='{
+   "showSearchSuggestions" : true
+}'
+WHERE bundle_id = (SELECT id from portti_bundle WHERE name = 'layerselector2') 
+AND view_id=[VIEW_ID];
+
 --------------------------------------------
 -- 9. LayerSelection
 --------------------------------------------
@@ -535,6 +560,21 @@ UPDATE portti_view_bundle_seq set startup = '{
     AND view_id=[VIEW_ID];
 
 
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "changeInfoUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/profile",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/profiili",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/profil"
+    },
+    "publishedMapUrl": {
+        "en": "/web/en/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
+        "fi": "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
+        "sv": "/web/sv/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId="
+    }  
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
+    AND view_id=[VIEW_ID];
+    
 --------------------------------------------
 -- 12. Publisher 
 --------------------------------------------
@@ -566,6 +606,26 @@ UPDATE portti_view_bundle_seq set startup = '{
     }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'publisher')
     AND view_id=[VIEW_ID];
 
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "loginUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/login",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login"
+    },
+    "registerUrl": {
+        "en": "https://www.paikkatietoikkuna.fi/web/en/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+        "fi": "https://www.paikkatietoikkuna.fi/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
+        "sv": "https://www.paikkatietoikkuna.fi/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
+    },
+    "publishedMapUrl": {
+        "en": "www.paikkatietoikkuna.fi/published/en/",
+        "fi": "www.paikkatietoikkuna.fi/published/fi/",
+        "sv": "www.paikkatietoikkuna.fi/published/sv/"
+    },
+    "urlPrefix": "www.paikkatietoikkuna.fi"
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publisher') 
+    AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 13. Coordinate display
@@ -874,6 +934,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
         "queryUrl" : "[REPLACED BY HANDLER]",
+        "featureNS" : "http://www.paikkatietoikkuna.fi",
         "wmsUrl" : "/karttatiili/myplaces?myCat="
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'myplaces2') 
     AND view_id=[VIEW_ID];

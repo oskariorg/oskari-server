@@ -289,6 +289,11 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
         "viewtools": {
             "print" : false
+        },
+        "mapUrlPrefix": {
+            "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
+            "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
+            "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
         }
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
     AND view_id=[VIEW_ID];
@@ -431,6 +436,13 @@ UPDATE portti_view_bundle_seq set startup = '{
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'layerselector2') 
     AND view_id=[VIEW_ID];
+
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config='{
+   "showSearchSuggestions" : true
+}'
+WHERE bundle_id = (SELECT id from portti_bundle WHERE name = 'layerselector2') 
+AND view_id=[VIEW_ID];
 
 --------------------------------------------
 -- 9. LayerSelection
