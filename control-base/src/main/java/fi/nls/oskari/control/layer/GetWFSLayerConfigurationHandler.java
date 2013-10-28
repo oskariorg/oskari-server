@@ -41,6 +41,10 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     public static final String ANALYSIS_PREFIX = "analysis_";
 
+    // My places
+    public static final String MYPLACES_BASELAYER_ID = "analysis.baselayer.id";
+    public static final String MYPLACES_PREFIX = "myplaces_";
+
     public void handleAction(ActionParameters params) throws ActionException {
 
         final JSONObject root = new JSONObject();
@@ -110,6 +114,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         String id = sid;
         if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
             id = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
+        }
+        else if (sid.indexOf(MYPLACES_PREFIX) == 0) {
+            id = PropertyUtil.get(MYPLACES_BASELAYER_ID);
         }
         return id;
     }
