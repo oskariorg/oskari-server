@@ -178,6 +178,10 @@ public class IOHelper {
      */
     public static void writeToConnection(final HttpURLConnection con,
                                          final String postData) throws IOException {
+        if(postData == null) {
+            log.info("Nothing to write to connection:", con.getURL());
+            return;
+        }
         writeToConnection(con, postData.getBytes());
     }
 

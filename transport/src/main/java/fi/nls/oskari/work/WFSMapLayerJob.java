@@ -6,6 +6,7 @@ import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
+import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.WFSParser;
 
@@ -17,6 +18,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import org.opengis.filter.Filter;
 import org.opengis.referencing.operation.MathTransform;
 
 import java.awt.image.BufferedImage;
@@ -70,6 +72,7 @@ public class WFSMapLayerJob extends Job {
     public static final String OUTPUT_IMAGE_HEIGHT= "height";
     public static final String OUTPUT_IMAGE_URL = "url";
     public static final String OUTPUT_IMAGE_DATA = "data";
+    public static final String OUTPUT_BOUNDARY_TILE = "boundaryTile";
 
     public static final String BROWSER_MSIE = "msie";
     
@@ -96,6 +99,7 @@ public class WFSMapLayerJob extends Job {
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private List<List<Object>> featureValuesList;
     private List<String> processedFIDs = new ArrayList<String>();
+    private WFSImage image = null;
     private Units units = new Units();
 	
 	// API
@@ -220,6 +224,11 @@ public class WFSMapLayerJob extends Job {
             this.transformService = this.session.getLocation().getTransformForService(this.layer.getCrs(), true);
             this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
         }
+        // init enlarged envelope
+        List<List<Double>> grid = this.session.getGrid().getBounds();
+        if(grid.size() > 0) {
+            this.session.getLocation().setEnlargedEnvelope(grid.get(0));
+        }
 
         if(!goNext()) return;
 
@@ -233,7 +242,6 @@ public class WFSMapLayerJob extends Job {
             }
 
             log.debug("normal tile images handling");
-			List<List<Double>> grid = this.session.getGrid().getBounds();
 
             boolean first = true;
 			int index = 0;
@@ -255,22 +263,24 @@ public class WFSMapLayerJob extends Job {
 					// get from cache
 				    BufferedImage bufferedImage = getImageCache(bbox);
 			    	boolean fromCache = (bufferedImage != null);
+                    boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary(index);
 
 			    	if(!fromCache) {
-					    WFSImage image = new WFSImage(this.layer,
-					    		this.session.getTileSize(),
-					    		this.session.getLocation(),
-					    		bounds,
-					    		this.session.getLayers().get(this.layerId).getStyleName(),
-					    		this.features);
-					    bufferedImage = image.draw();
+                        if(this.image == null) {
+                            this.image = new WFSImage(this.layer,
+                                    this.session.getLayers().get(this.layerId).getStyleName());
+                        }
+					    bufferedImage = this.image.draw(this.session.getTileSize(),
+                                this.session.getLocation(),
+                                bounds,
+                                this.features);
                         if(bufferedImage == null) {
                             this.imageParsingFailed();
                             return;
                         }
 
 					    // set to cache
-						if(!this.session.getGrid().isBoundsOnBoundary(index)) {
+						if(!isboundaryTile) {
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, true);
 						} else { // non-persistent cache - for ie
                             setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, false);
@@ -278,7 +288,7 @@ public class WFSMapLayerJob extends Job {
 					}
 
 		   	 		String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
-					this.sendWFSImage(url, bufferedImage, bbox, true);
+					this.sendWFSImage(url, bufferedImage, bbox, true, isboundaryTile);
 				}
 
 				if(first) {
@@ -300,12 +310,13 @@ public class WFSMapLayerJob extends Job {
                 // IMAGE HANDLING
                     log.debug("sending");
                     Location location = this.session.getLocation();
-                    WFSImage image = new WFSImage(this.layer,
-                            this.session.getMapSize(),
+                    if(this.image == null) {
+                        this.image = new WFSImage(this.layer,
+                            Type.HIGHLIGHT.toString());
+                    }
+                    BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
                             this.session.getLocation(),
-                            Type.HIGHLIGHT.toString(),
                             this.features);
-                    BufferedImage bufferedImage = image.draw();
                     if(bufferedImage == null) {
                         this.imageParsingFailed();
                         return;
@@ -318,7 +329,7 @@ public class WFSMapLayerJob extends Job {
 
                     String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
                     log.debug("url");
-                    this.sendWFSImage(url, bufferedImage, bbox, false);
+                    this.sendWFSImage(url, bufferedImage, bbox, false, false);
             }
         } else if(this.type == Type.MAP_CLICK) {
             if(!this.requestHandler(null)) {
@@ -447,6 +458,8 @@ public class WFSMapLayerJob extends Job {
             }
         }
 
+        log.debug("Features count", this.features.size());
+
         return true;
     }
 
@@ -484,11 +497,22 @@ public class WFSMapLayerJob extends Job {
     private void featuresHandler() {
         log.debug("features handler");
 
+        // create filter of screen area
+        Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
+
         // send feature info
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
+
         this.featureValuesList = new ArrayList<List<Object>>();
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
+
+            // if is not in shown area -> skip
+            if(!screenBBOXFilter.evaluate(feature)) {
+                //log.debug("Not selected");
+                continue;
+            }
+
             List<Object> values = new ArrayList<Object>();
 
             String fid = feature.getIdentifier().getID();
@@ -661,7 +685,9 @@ public class WFSMapLayerJob extends Job {
             if(this.session.getRoute() != null && !this.session.getRoute().equals("")) {
                 cookies = ROUTE_COOKIE_NAME + this.session.getRoute();
             }
-			json = HttpHelper.getRequest(getAPIUrl() + LAYER_CONFIGURATION_API + this.layerId, cookies);
+            // NOTE: result is not handled
+			String result = HttpHelper.getRequest(getAPIUrl() + LAYER_CONFIGURATION_API + this.layerId, cookies);
+            json = WFSLayerStore.getCache(this.layerId);
 			if(json == null)
 				return;
 		}
@@ -818,7 +844,7 @@ public class WFSMapLayerJob extends Job {
      * @param bbox
      * @param isTiled
      */
-    private void sendWFSImage(String url, BufferedImage bufferedImage, Double[] bbox, boolean isTiled) {    	
+    private void sendWFSImage(String url, BufferedImage bufferedImage, Double[] bbox, boolean isTiled, boolean isboundaryTile) {
     	if(bufferedImage == null) {
             log.warn("Failed to send image");
     		return;
@@ -841,6 +867,7 @@ public class WFSMapLayerJob extends Job {
    	 	output.put(OUTPUT_IMAGE_ZOOM, location.getZoom());
    	 	output.put(OUTPUT_IMAGE_TYPE, this.type); // "normal" | "highlight"
    	 	output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+        output.put(OUTPUT_BOUNDARY_TILE, isboundaryTile);
    	 	output.put(OUTPUT_IMAGE_WIDTH, tileSize.getWidth());
    	 	output.put(OUTPUT_IMAGE_HEIGHT, tileSize.getHeight());
    	 	output.put(OUTPUT_IMAGE_URL, url);

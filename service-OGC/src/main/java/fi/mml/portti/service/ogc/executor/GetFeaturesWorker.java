@@ -6,7 +6,9 @@ import static org.geotools.data.wfs.protocol.wfs.GetFeature.ResultType.RESULTS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.util.IOHelper;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
@@ -119,8 +122,7 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         encoder.encode(gft, WFS.GetFeature, baos);
         String payload = baos.toString();
-        
-        log.debug(payload);
+
         
 //# This is dirty fix cause bug on Arc 9.3 server
         if (featureType.getWfsService().isGml2typeSeparator()) {
@@ -129,8 +131,9 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         String url = featureType.getWfsService().getUrl();
         String username = featureType.getWfsService().getUsername(); 
         String password = featureType.getWfsService().getPassword();
-        boolean useProxy = featureType.getWfsService().isUseProxy();
-        HttpPostResponse response = EasyHttpClient.post(url, username, password, payload, useProxy);
+        //boolean useProxy = featureType.getWfsService().isUseProxy();
+        // TODO: refactor whole "easy http client" out of here
+        HttpPostResponse response = EasyHttpClient.post(url, username, password, payload);
         
         if (!response.wasSuccessful()) {
         throw new RuntimeException("Failed to perform query to url '" + url + "'\n" +

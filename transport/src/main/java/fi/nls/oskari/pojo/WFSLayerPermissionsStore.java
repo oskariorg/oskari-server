@@ -6,6 +6,7 @@ import java.util.List;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
+import fi.nls.oskari.wfs.extension.MyPlacesFilter;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -115,17 +116,11 @@ public class WFSLayerPermissionsStore {
      */
     @JsonIgnore
     private String getBaseLayerId(String id) {
-        // TODO: should check analysis & myplaces rights for the type's layer id (not WFS layer id)
-        //
-        /*
-        for(key in map) {
-            if(layer.getLayerId().startsWith(key)) {
-                // get type id
-            }
-        }
-        */
+        // TODO: should check analysis & myplaces rights for the type's layer id (not for WFS layer id)
         if (id.startsWith(AnalysisFilter.ANALYSIS_PREFIX)) {
             id = PropertyUtil.get(AnalysisFilter.ANALYSIS_BASE_LAYER_ID);
+        } else if(id.startsWith(MyPlacesFilter.MY_PLACES_PREFIX)) {
+            id = PropertyUtil.get(MyPlacesFilter.MY_PLACES_BASE_LAYER_ID);
         }
         return id;
     }

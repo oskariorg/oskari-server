@@ -59,62 +59,27 @@ public class WFSImage {
 
     private static final String DEFAULT_SLD = "sld_default.xml";
     private static final String HIGHLIGHT_SLD = "sld_highlight.xml";
-    
-    private WFSLayerStore layer;
+
+    private Style style;
+
     private Location location; // location of the tile (modified if not map)
-    private String styleName;
     private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private int imageWidth = 0;
     private int imageHeight = 0;
-    
-    /**
-     * Constructor for tile image
-     * 
-     * @param layer
-     * @param tile
-     * @param location
-     * @param bounds
-     * @param styleName
-     * @param features
-     */
-    public WFSImage(WFSLayerStore layer, 
-			Tile tile, 
-			Location location, 
-			List<Double> bounds, 
-			String styleName,
-			FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
 
-    	this.layer = layer;
-    	this.location = new Location(location.getSrs());
-    	this.location.setBbox(bounds);
-    	this.styleName = styleName;
-    	this.features = features;
-
-		this.imageWidth = tile.getWidth();
-		this.imageHeight = tile.getHeight();
-    }
-    
     /**
-     * Constructor for map image
-     * 
+     * Constructor for image of certain layer and style
+     *
      * @param layer
-     * @param tile
-     * @param location
      * @param styleName
-     * @param features
      */
-    public WFSImage(WFSLayerStore layer, 
-			Tile tile, 
-			Location location,
-			String styleName,
-			FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
-    	this.layer = layer;
-    	this.location = location;
-    	this.styleName = styleName;
-    	this.features = features;
-    	
-		this.imageWidth = tile.getWidth();
-		this.imageHeight = tile.getHeight();
+    public WFSImage(WFSLayerStore layer, String styleName) {
+        if(layer == null || styleName == null) {
+            log.error("Failed to construct image (undefined params)");
+            return;
+        }
+
+        this.style = getSLDStyle(layer, styleName);
     }
     
   	/**
@@ -257,39 +222,77 @@ public class WFSImage {
     public static String bytesToBase64(byte[] byteImage) {
     	return new String(Base64.encodeBase64(byteImage));
     }
-    	
+
+
     /**
-     * Creates a tile image of the WFS layer's data
-     * 
+     * Creates a image of the WFS layer's data
+     *
+     * @param tile
+     * @param location
+     * @param features
+     *
      * @return image
      */
-	public BufferedImage draw() {
-		if (layer == null ||
-				imageWidth == 0 ||
-				imageHeight == 0 ||
-				location == null ||
-				styleName == null ||
-				features == null) {
+    public BufferedImage draw(Tile tile,
+                              Location location,
+                              FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
+        return draw(tile, location, null, features);
+    }
+
+    /**
+     * Creates a image of the WFS layer's data
+     *
+     * @param tile
+     * @param location
+     * @param bounds
+     * @param features
+     *
+     * @return image
+     */
+    public BufferedImage draw(final Tile tile,
+                              final Location location,
+                              final List<Double> bounds,
+                              final FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
+
+        if(bounds == null) {
+            this.location = location;
+        } else {
+            this.location = new Location(location.getSrs());
+            this.location.setBbox(bounds);
+        }
+
+        this.features = features;
+
+        this.imageWidth = tile.getWidth();
+        this.imageHeight = tile.getHeight();
+
+        if (imageWidth == 0 ||
+                imageHeight == 0 ||
+                this.location == null ||
+                style == null ||
+                features == null) {
             log.warn("Not enough information to draw");
             log.warn(imageWidth);
             log.warn(imageHeight);
             log.warn(location);
-            log.warn(styleName);
+            log.warn(style);
             log.warn(features);
-			return null; // TODO: possibility to send error picture (now empty)
-		}
-		
+            return null;
+        }
+
+        return this.draw();
+    }
+
+    /**
+     * Creates a image of the WFS layer's data
+     * 
+     * @return image
+     */
+	private BufferedImage draw() {
 		MapContent content = new MapContent();
 		MapViewport viewport = new MapViewport();
 
-        // TODO: make this in advance - no need to generate per image
-		CoordinateReferenceSystem crs = null;
-		try {
-			crs = CRS.decode(location.getSrs());
-		} catch (Exception e) {
-			log.error(e, "CRS decoding failed");
-		}
-		
+		CoordinateReferenceSystem crs = location.getCrs();
 		Rectangle screenArea = new Rectangle(0, 0, imageWidth, imageHeight); // image size		
 		ReferencedEnvelope bounds = new ReferencedEnvelope(
 				location.getLeft(), // x1
@@ -306,27 +309,7 @@ public class WFSImage {
 
         // TODO: style could be done before coming to image loop (1 timer!) - here slows down!
         if(features.size() > 0) {
-            Style style;
-            if(layer.getStyles().containsKey(styleName)) {
-                style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
-            }
-            else if(styleName.equals(STYLE_HIGHLIGHT)) {
-                if(layer.getSelectionSLDStyle() != null) {
-                    style = createSLDStyle(layer.getSelectionSLDStyle());
-                } else { // default highlight
-                    style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
-                }
-            } else {
-                if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
-                    style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
-                }
-                else { // default
-                    style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
-                }
-            }
-
             Layer featureLayer = new FeatureLayer(features, style);
-
             content.addLayer(featureLayer);
         }
 
@@ -355,7 +338,35 @@ public class WFSImage {
 		content.dispose();
 	    return image;
 	}
-	
+
+
+    private Style getSLDStyle(WFSLayerStore layer, String styleName) {
+        Style style;
+        if(layer.getStyles().containsKey(styleName)) {
+            style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
+        }
+        else if(styleName.equals(STYLE_HIGHLIGHT)) {
+            if(layer.getSelectionSLDStyle() != null) {
+                style = createSLDStyle(layer.getSelectionSLDStyle());
+            } else { // default highlight
+                style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
+            }
+        } else {
+            if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
+                style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
+            }
+            else { // default
+                style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
+            }
+        }
+
+        if(style == null) {
+            log.error("Failed to get SLD style (default failed)");
+        }
+
+        return style;
+    }
+
 	/**
 	 * Parses SLD style from a String (XML)
 	 * 

@@ -37,6 +37,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     private final static String ERROR_NOT_FOUND = "id wasn't found";
     private final static String ERROR_NO_PERMISSION = "no permissions to view the layer";
 
+    private final static String RESULT = "result";
+    private final static String RESULT_SUCCESS = "success";
+
     // Analysis
     public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     public static final String ANALYSIS_PREFIX = "analysis_";
@@ -97,10 +100,10 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
                 // response parsing
                 return;
             }
-            json = lc.getAsJSON();
             lc.save();
         }
-        ResponseHelper.writeResponse(params, json);
+        JSONHelper.putValue(root, RESULT, RESULT_SUCCESS);
+        ResponseHelper.writeResponse(params, root);
     }
 
     /**

@@ -84,26 +84,24 @@ public class WFSImageTest {
     
 	@Test
 	public void testMap() {
-		WFSImage mapImage = new WFSImage(layer, 
-	    		session.getTileSize(), 
-	    		session.getLocation(),
-	    		session.getLayers().get(layer.getLayerId()).getStyleName(),
-	    		features);
+		WFSImage mapImage = new WFSImage(layer,
+	    		session.getLayers().get(layer.getLayerId()).getStyleName());
 		
-		BufferedImage bufferedMapImage = mapImage.draw();
+		BufferedImage bufferedMapImage = mapImage.draw(session.getTileSize(),
+                session.getLocation(),
+                features);
 		assertTrue("Should get image", bufferedMapImage != null);
 	}
   
 	@Test
 	public void testTile() {
-		WFSImage tileImage = new WFSImage(layer, 
-	    		session.getTileSize(), 
-	    		session.getLocation(),
-	    		bounds,
-	    		session.getLayers().get(layer.getLayerId()).getStyleName(),
-	    		features);
+		WFSImage tileImage = new WFSImage(layer,
+	    		session.getLayers().get(layer.getLayerId()).getStyleName());
 		
-		BufferedImage bufferedTileImage = tileImage.draw();
+		BufferedImage bufferedTileImage = tileImage.draw(session.getTileSize(),
+                session.getLocation(),
+                bounds,
+                features);
 		assertTrue("Should get image", bufferedTileImage != null);
 		
  		Double[] bbox = new Double[4];
