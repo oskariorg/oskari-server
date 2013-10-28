@@ -685,7 +685,9 @@ public class WFSMapLayerJob extends Job {
             if(this.session.getRoute() != null && !this.session.getRoute().equals("")) {
                 cookies = ROUTE_COOKIE_NAME + this.session.getRoute();
             }
-			json = HttpHelper.getRequest(getAPIUrl() + LAYER_CONFIGURATION_API + this.layerId, cookies);
+            // NOTE: result is not handled
+			String result = HttpHelper.getRequest(getAPIUrl() + LAYER_CONFIGURATION_API + this.layerId, cookies);
+            json = WFSLayerStore.getCache(this.layerId);
 			if(json == null)
 				return;
 		}

@@ -35,9 +35,15 @@ public class LocationTest {
 	public void testTransformEnvelope() {
 		// transformed envelope
 		ReferencedEnvelope transformed = location.getTransformEnvelope("EPSG:4326", true);
+        System.out.println(transformed.getMinX());
+        System.out.println(transformed.getMinY());
+
 		assertTrue("should get transformed coordinates", 
-				(transformed.getMinX() == 64.71499289327947 && transformed.getMinY() == 25.3399808304302));
-	}
+				(transformed.getMinX() >= 64.71499289327947 - 64.71499289327947*0.00001 &&
+                        transformed.getMinX() <= 64.71499289327947*1.00001 &&
+                        transformed.getMinY() >= 25.3399808304302 - 25.3399808304302*0.00001 &&
+                        transformed.getMinY() <= 25.3399808304302*1.00001));
+    }
 
     @Test
     public void testScaledEnvelope() {
