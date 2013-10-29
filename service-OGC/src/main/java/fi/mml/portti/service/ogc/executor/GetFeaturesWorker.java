@@ -105,6 +105,7 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         /* Create Query Filter */        
         Query query = new DefaultQuery(featureType.getQname().getPrefix() + ":" + featureType.getQname().getLocalPart(), filter, propNames);
         query.setMaxFeatures(selectedFeatureType.getMaxNumDisplayedItems());
+
         
         /* Create GetFeature */
         String gmlVersion = featureType.getWfsService().getGmlVersion();
@@ -130,6 +131,13 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         // FIXME: this is generated in front of actual srsname, we need to remove it since servers can handle it
         // maybe find a better way to deal with it
         payload = payload.replaceAll("urn:x-ogc:def:crs:", "");
+
+        // FIXME: find a better way to add the namespace declaration, this again is a dirty hack but since
+        // wfs will be replaced soon by transport, this is a quick workaround
+        final String namespaceHack = "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"";
+        payload = payload.replaceAll(namespaceHack, namespaceHack +
+                " xmlns:" + featureType.getQname().getPrefix() + "=\"" + featureType.getQname().getNamespaceURI() + "\"");
+
 
         String url = featureType.getWfsService().getUrl();
         String username = featureType.getWfsService().getUsername(); 
