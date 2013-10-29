@@ -123,11 +123,14 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         encoder.encode(gft, WFS.GetFeature, baos);
         String payload = baos.toString();
 
-        
-//# This is dirty fix cause bug on Arc 9.3 server
+        //# This is dirty fix cause bug on Arc 9.3 server
         if (featureType.getWfsService().isGml2typeSeparator()) {
         	payload = payload.replaceAll("epsg.xml#3067", "epsg.xml:3067");
         }
+        // FIXME: this is generated in front of actual srsname, we need to remove it since servers can handle it
+        // maybe find a better way to deal with it
+        payload = payload.replaceAll("urn:x-ogc:def:crs:", "");
+
         String url = featureType.getWfsService().getUrl();
         String username = featureType.getWfsService().getUsername(); 
         String password = featureType.getWfsService().getPassword();
