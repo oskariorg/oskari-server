@@ -6,7 +6,9 @@ import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Dummy wrapper for getting existing ibatis configs to work with standalone DBHandler
@@ -32,32 +34,37 @@ public class IbatisDataSourceFactory implements DataSourceFactory {
 
             @Override
             public PrintWriter getLogWriter() throws SQLException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;
             }
 
             @Override
             public void setLogWriter(PrintWriter out) throws SQLException {
-                //To change body of implemented methods use File | Settings | File Templates.
             }
 
             @Override
             public void setLoginTimeout(int seconds) throws SQLException {
-                //To change body of implemented methods use File | Settings | File Templates.
+
             }
 
             @Override
             public int getLoginTimeout() throws SQLException {
-                return 0;  //To change body of implemented methods use File | Settings | File Templates.
+                return 0;
             }
 
             @Override
             public <T> T unwrap(Class<T> iface) throws SQLException {
-                return null;  //To change body of implemented methods use File | Settings | File Templates.
+                return null;
             }
 
             @Override
             public boolean isWrapperFor(Class<?> iface) throws SQLException {
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
+                return false;
+            }
+
+            // required for java 7
+            public Logger getParentLogger()
+                    throws SQLFeatureNotSupportedException {
+                throw new SQLFeatureNotSupportedException("Not implemented");
             }
         };
         return source;
