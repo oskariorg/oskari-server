@@ -15,15 +15,17 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import fi.nls.oskari.util.*;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @OskariActionRoute("Publish")
 public class PublishHandler extends ActionHandler {
@@ -55,7 +57,18 @@ public class PublishHandler extends ActionHandler {
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_BASELAYER = "base_";
-    private static long PUBLISHED_VIEW_TEMPLATE_ID = 3;
+    private static final String LOGO_PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin";
+    private static final Set<String> CLASS_WHITELIST;
+    static {
+        CLASS_WHITELIST = new TreeSet<String>();
+        CLASS_WHITELIST.add("center");
+        CLASS_WHITELIST.add("top");
+        CLASS_WHITELIST.add("right");
+        CLASS_WHITELIST.add("bottom");
+        CLASS_WHITELIST.add("right");
+        CLASS_WHITELIST.add("with-panbuttons");
+    }
+    private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
@@ -96,15 +109,36 @@ public class PublishHandler extends ActionHandler {
         if (bundleService == null) {
         	setBundleService(new BundleServiceIbatisImpl());
         }
-        
-        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(PropertyUtil.get("view.template.publish"), PUBLISHED_VIEW_TEMPLATE_ID);
+        final String publishTemplateIdProperty = PropertyUtil.getOptional("view.template.publish");
+        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
+        if(publishTemplateIdProperty == null) {
+            log.warn("Publish template id not configured (property: view.template.publish)!");
+        }
+        else {
+            log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+        }
+
         publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
         if(publishedGridBundle == null) {
             log.warn("Couldn't get publishedGrid bundle template from DB!");
         }        
     }
 
+    private static String[] filterClasses(String[] classes) {
+        Set<String> filteredClasses = new TreeSet<String>();
+        for (int i = 0; i < classes.length; i++) {
+            if (CLASS_WHITELIST.contains(classes[i])) {
+                filteredClasses.add(classes[i]);
+            }
+        }
+        return filteredClasses.toArray(new String[filteredClasses.size()]);
+    }
+
     public void handleAction(ActionParameters params) throws ActionException {
+        if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+            log.error("Publish template id not configured (property: view.template.publish)!");
+            throw new ActionParamsException("Trying to publish map, but template isn't configured");
+        }
 
         final User user = params.getUser();
         long userId = user.getId();
@@ -172,7 +206,7 @@ public class PublishHandler extends ActionHandler {
 
                 if (user.getId() != currentView.getCreator()) {
                     log.error("Trying to publish map, but couldnt determine user");
-                    throw new ActionException("No permissions to update this id:" + updateViewId);
+                    throw new ActionDeniedException("No permissions to update this id:" + updateViewId);
                 }
 
             }
@@ -180,7 +214,10 @@ public class PublishHandler extends ActionHandler {
             log.error("Some exception when try get publish id from pubdata json");
         }
 
-        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, "paikkatietoikkuna.fi");
+        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, null);
+        if(domain == null) {
+            throw new ActionParamsException("Domain missing");
+        }
         final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
@@ -208,23 +245,15 @@ public class PublishHandler extends ActionHandler {
                     + jsonex.getMessage());
         }
 
-
-        if (domain != null) {
-            currentView.setPubDomain(domain);
-        }
-
+        currentView.setPubDomain(domain);
         currentView.setName(name);
         currentView.setType(params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.PUBLISHED));
         currentView.setCreator(user.getId());
         currentView.setIsPublic(true);
-        currentView.setApplication("published-map");
-        currentView.setPage("published");
-        currentView.setDevelopmentPath("/applications/paikkatietoikkuna.fi");
+        // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
 
-
         JSONArray selectedLayers = null;
-
         try {
             selectedLayers = getPublishableLayers(mapfullState.getJSONArray(KEY_SELLAYERS), user);
         } catch (JSONException e) {
@@ -254,13 +283,40 @@ public class PublishHandler extends ActionHandler {
             throw new RuntimeException("Could not get default plugins");
         }
 
+        // see if the plugin is already in the template
         for (int i = newPlugins.length(); --i >= 0; ) {
             boolean alreadyAdded = false;
             JSONObject newPlugin = null;
+            JSONObject location = null;
             try {
                 newPlugin = newPlugins.getJSONObject(i);
+                // sanitize plugin.config.location.classes
+                location = null;
+                if (newPlugin.has("config") && newPlugin.getJSONObject("config").has("location")) {
+                    location = newPlugin.getJSONObject("config").getJSONObject("location");
+                    if (location.has("classes")) {
+                        String classes = location.getString("classes");
+                        if (classes != null && classes.length() > 0) {
+                            String[] filteredClasses = filterClasses(classes.split(" "));
+                            location.put("classes", StringUtils.join(filteredClasses, " "));
+                        }
+                    }
+                    // Make sure we don't have inline css set
+                    if (location.has("top")) {
+                        location.remove("top");
+                    }
+                    if (location.has("right")) {
+                        location.remove("right");
+                    }
+                    if (location.has("bottom")) {
+                        location.remove("bottom");
+                    }
+                    if (location.has("left")) {
+                        location.remove("left");
+                    }
+                }
             } catch (JSONException e) {
-                throw new RuntimeException("Could not loop new plugins");
+                throw new RuntimeException("Could not loop new plugins", e);
             }
             for (int j = plugins.length(); --j >= 0; ) {
                 JSONObject plugin = null;
@@ -268,20 +324,29 @@ public class PublishHandler extends ActionHandler {
                     plugin = plugins.getJSONObject(j);
                 } catch (JSONException e) {
                     throw new RuntimeException("Could not loop"
-                            + " default plugins");
+                            + " default plugins", e);
                 }
                 try {
                     String newPluginId = newPlugin.getString(KEY_ID);
                     String pluginId = plugin.getString(KEY_ID);
-                    if (newPluginId.equals(pluginId))
+                    if (newPluginId.equals(pluginId)) {
                         alreadyAdded = true;
+                        // copy plugin classes
+                        if (location != null) {
+                            if (!plugin.has("config")) {
+                                plugin.put("config", new JSONObject());
+                            }
+                            plugin.getJSONObject("config").put("location", location);
+                        }
+                    }
                 } catch (JSONException e) {
                     throw new RuntimeException("Could not compare"
-                            + " plugin IDs");
+                            + " plugin IDs", e);
                 }
             }
-            if (!alreadyAdded)
+            if (!alreadyAdded) {
                 plugins.put(newPlugin);
+            }
         }
 
         try {
@@ -402,7 +467,6 @@ public class PublishHandler extends ActionHandler {
             for (int i = 0; i < selectedLayers.length(); ++i) {
                 JSONObject layer = selectedLayers.getJSONObject(i);
                 String layerId = layer.getString("id");
-                System.out.println("layerId:" + layerId);
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     // check publish right for published myplaces layer
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
@@ -447,6 +511,7 @@ public class PublishHandler extends ActionHandler {
 
 
     private boolean hasRightToPublishBaseLayer(final String layerId, final User user) {
+
         final long id = ConversionHelper.getLong(layerId.substring(PREFIX_BASELAYER.length()), -1);
         if (id == -1) {
             log.warn("Error parsing layerId:", layerId);
@@ -457,6 +522,7 @@ public class PublishHandler extends ActionHandler {
         Map<Long, List<Permissions>> map =
                 permissionsService.getPermissionsForBaseLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
         List<Permissions> permissions = map.get(id);
+
         boolean hasPermission = false;
         hasPermission = permissionsService.permissionGrantedForRolesOrUser(
                 user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);

@@ -59,6 +59,7 @@
                 "userID": -1,
                 "lastName": "guest",
                 "nickName": "guest",
+                "roles": [],
                 "userUUID": "",
                 "firstName": "guest",
                 "loginName": ""

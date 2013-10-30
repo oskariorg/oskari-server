@@ -44,6 +44,18 @@ public class User {
         return false;
     }
 
+    public boolean hasRoleWithId(long pRoleId) {
+        if(isAdmin()) {
+            return true;
+        }
+        for (Role r : getRoles()) {
+            if (r.getId() == pRoleId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean hasAnyRoleIn(String[] pRoleName) {
         if(pRoleName == null) {
             return false;

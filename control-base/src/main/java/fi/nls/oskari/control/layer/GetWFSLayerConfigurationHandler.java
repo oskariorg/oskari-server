@@ -37,9 +37,16 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     private final static String ERROR_NOT_FOUND = "id wasn't found";
     private final static String ERROR_NO_PERMISSION = "no permissions to view the layer";
 
+    private final static String RESULT = "result";
+    private final static String RESULT_SUCCESS = "success";
+
     // Analysis
     public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     public static final String ANALYSIS_PREFIX = "analysis_";
+
+    // My places
+    public static final String MYPLACES_BASELAYER_ID = "analysis.baselayer.id";
+    public static final String MYPLACES_PREFIX = "myplaces_";
 
     public void handleAction(ActionParameters params) throws ActionException {
 
@@ -74,8 +81,13 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         if (json == null) {
             WFSLayerConfiguration lc = layerConfigurationService
                     .findConfiguration(id);
+
+            log.warn("id", id);
+            log.warn(lc);
+
             // Extra manage for analysis
             if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
+                log.warn("sid", sid);
                 // set id to original analysis id
                 lc.setLayerId(sid);
                 // Set analysis layer fields as id based
@@ -88,10 +100,10 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
                 // response parsing
                 return;
             }
-            json = lc.getAsJSON();
             lc.save();
         }
-        ResponseHelper.writeResponse(params, json);
+        JSONHelper.putValue(root, RESULT, RESULT_SUCCESS);
+        ResponseHelper.writeResponse(params, root);
     }
 
     /**
@@ -106,6 +118,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
             id = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
         }
+        else if (sid.indexOf(MYPLACES_PREFIX) == 0) {
+            id = PropertyUtil.get(MYPLACES_BASELAYER_ID);
+        }
         return id;
     }
 
@@ -113,7 +128,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
      * Get properties (native fields) of analysis layer
      * 
      * @param sid
-     * @return properties in array syntax eg. "["t1","t2",...]"
+     * @return properties in array syntax eg. "{default:["t1","t2",...]}"
      */
     private String getAnalysisFeatureProperties(String sid) {
         String properties = null; // Field names

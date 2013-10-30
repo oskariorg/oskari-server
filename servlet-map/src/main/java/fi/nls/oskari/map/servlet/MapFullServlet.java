@@ -4,16 +4,15 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
+import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.servlet.db.DBHandler;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.permission.UserService;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -89,8 +88,11 @@ public class MapFullServlet extends HttpServlet {
 
     @Override
     public void init() {
-        // initialize db with demo data if tables are not present
-        DBHandler.createContentIfNotCreated();
+
+        // create initial content
+        if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
+            DBHandler.createContentIfNotCreated();
+        }
 
         // init jedis
         JedisManager.connect(ConversionHelper.getInt(PropertyUtil
@@ -108,6 +110,7 @@ public class MapFullServlet extends HttpServlet {
         isDevelopmentMode = "true".equals(PropertyUtil.get(KEY_DEVELOPMENT));
         // Get version from init params
         version = getServletConfig().getInitParameter(KEY_VERSION);
+
     }
 
     /**
@@ -191,25 +194,13 @@ public class MapFullServlet extends HttpServlet {
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
 
-            // Enable to show db contents for view related tables if an error occurs
-            /*
-            DBHandler.printQuery("SELECT * FROM portti_bundle");
-            DBHandler.printQuery("SELECT * FROM portti_view_supplement");
-            DBHandler.printQuery("SELECT * FROM portti_view");
-            DBHandler.printQuery("SELECT * FROM portti_view_bundle_seq");
-            */
-            // Enable to show db contents for layer permissions related tables if an error occurs
-            /*
-            DBHandler.printQuery("SELECT * FROM portti_resource_user");
-            DBHandler.printQuery("SELECT * FROM portti_permissions");
-            */
             final View view = viewService.getViewWithConf(viewId);
-            log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             if (view == null) {
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
             }
             log.debug("Serving view with id:", view.getId());
+            log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             request.setAttribute("viewId", view.getId());
 
             // viewJSP might change if using dev override

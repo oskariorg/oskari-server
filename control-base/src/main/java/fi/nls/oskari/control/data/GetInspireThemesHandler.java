@@ -37,11 +37,16 @@ public class GetInspireThemesHandler extends ActionHandler {
                 JSONObject themeProperties = new JSONObject();
 
                 themeProperties.put("id", it.getId());
-                Map<String, String> names = it.getNames();
+                JSONObject names = new JSONObject();
+
+
                 for (Map.Entry<String, String> localization : it.getNames().entrySet()) {
-                    char first = Character.toUpperCase(localization.getKey().charAt(0));
-                    themeProperties.put("name" + first + localization.getKey().substring(1), localization.getValue());
+                    names.put(localization.getKey(), localization.getValue());
+                    //char first = Character.toUpperCase(localization.getKey().charAt(0));
+                    //themeProperties.put("name" + first + localization.getKey().substring(1), localization.getValue());
+
                 }
+                themeProperties.put("name", names);
                 themeJSON.accumulate(String.valueOf(it.getId()),
                         themeProperties);
             }

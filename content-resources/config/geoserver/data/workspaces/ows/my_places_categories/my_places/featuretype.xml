@@ -1,0 +1,34 @@
+<featureType>
+  <id>FeatureTypeInfoImpl-197ef75:1331046d030:-7f5c</id>
+  <name>my_places</name>
+  <nativeName>my_places</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl-5040a49e:12704d4341f:-7f76</id>
+  </namespace>
+  <title>Omat paikat</title>
+  <srs>EPSG:3067</srs>
+  <nativeBoundingBox>
+    <minx>237252.516</minx>
+    <maxx>3431044.5</maxx>
+    <miny>6606091.5</miny>
+    <maxy>7674909.0</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>20.402</minx>
+    <maxx>70.422</maxx>
+    <miny>51.291</miny>
+    <maxy>69.057</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <advertised>true</advertised>
+  <metadata>
+    <entry key="cachingEnabled">false</entry>
+  </metadata>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--1ecf8266:132d81a231b:-7df7</id>
+  </store>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+</featureType>

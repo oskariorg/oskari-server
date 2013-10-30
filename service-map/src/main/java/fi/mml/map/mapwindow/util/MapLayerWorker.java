@@ -20,6 +20,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +39,7 @@ public class MapLayerWorker {
     private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
-   private static WFSDbService wfsDbService = new WFSDbServiceIbatisImpl();
+    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(MapLayerWorker.class);
@@ -60,12 +62,12 @@ public class MapLayerWorker {
 
         List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         // Get the whole layerclass structure
@@ -105,12 +107,12 @@ public class MapLayerWorker {
         final String permissionType = getPermissionType(isPublished);
         final List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
                         permissionType);
 
         final List<String> groupResources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOUCE_TYPE_LAYER_GROUP, user,
+                        Permissions.RESOURCE_TYPE_LAYER_GROUP, user,
                         permissionType);
 
         final List<LayerClass> allLayerClassRoot = new ArrayList<LayerClass>();
@@ -175,6 +177,9 @@ public class MapLayerWorker {
         final Set<String> permissionsList = permissionsService
                 .getPublishPermissions();
 
+        final Set<String> editAccessList = permissionsService
+                .getEditPermissions();
+
 
         for (LayerClass layerClass : parentLayerClasses) {
             List<LayerClass> allLayerClass = layerClass.getChildren();
@@ -185,13 +190,13 @@ public class MapLayerWorker {
                     //System.out.println("mapLayers");
                     accumulateJSONs(listLayer, layerClass,
                             layerClass, resources, groupResources, lang,
-                            isSecure, roles, permissionsList, showEmpty);
+                            isSecure, roles, permissionsList, editAccessList, showEmpty);
                 }
                 for (LayerClass lc : allLayerClass) {
                     // Parent's children
                     accumulateJSONs(listLayer, lc, layerClass, resources,
                             groupResources, lang, isSecure, roles,
-                            permissionsList, showEmpty);
+                            permissionsList, editAccessList, showEmpty);
 
                 }
 
@@ -200,7 +205,7 @@ public class MapLayerWorker {
                 //System.out.println("Parent doesn't have a parent... so is it a base class?");
                 accumulateJSONs(listLayer, layerClass, layerClass,
                         resources, groupResources, lang, isSecure,
-                        roles, permissionsList, showEmpty);
+                        roles, permissionsList, editAccessList, showEmpty);
             } else { //empty, base or grouplayer
 
             }
@@ -225,7 +230,7 @@ public class MapLayerWorker {
                                         LayerClass parentLayerClass, final List<String> resources,
                                         final List<String> groupResources, final String lang,
                                         boolean isSecure, Collection<Role> roles,
-                                        Set<String> permissionsList, final boolean showEmpty) {
+                                        Set<String> permissionsList, final Set<String> editAccessList, final boolean showEmpty) {
         try {
 
             // Handle only those layers that can be found in resources.
@@ -236,7 +241,7 @@ public class MapLayerWorker {
                 if (groupResources.contains("+" + layerClass.getId())) {
                     JSONObject layerJson = populateMapLayersJson(
                             parentLayerClass, layerClass, lang, isSecure,
-                            roles, permissionsList, showEmpty);
+                            roles, permissionsList, editAccessList, showEmpty);
                     listLayer.accumulate("layers", layerJson);
                 }
                 // aaand nothing.
@@ -247,7 +252,7 @@ public class MapLayerWorker {
                     // why do we only pass on layers that have an iTheme?
                     if (resources.contains(layer.getWmsUrl() + "+" + layer.getWmsName())) {
                         JSONObject layerJson = populateLayerJson(layer, layerClass, lang,
-                                isSecure, roles, permissionsList, inspireThemeService.find(layer.getInspireThemeId()));
+                                isSecure, roles, permissionsList, editAccessList, inspireThemeService.find(layer.getInspireThemeId()));
                         listLayer.accumulate("layers", layerJson);
                     }
 
@@ -276,7 +281,9 @@ public class MapLayerWorker {
                                                     final String lang,
                                                     boolean isSecure,
                                                     Collection<Role> roles,
-                                                    Set<String> permissionsList, final boolean showEmpty)
+                                                    final Set<String> permissionsList,
+                                                    final Set<String> editAccessList,
+                                                    final boolean showEmpty)
             throws JSONException {
         JSONObject layerJson = new JSONObject();
 
@@ -304,8 +311,11 @@ public class MapLayerWorker {
         layerJson.put("styles", new JSONObject()).put("formats", new JSONObject()).put("isQueryable", false).put("dataUrl", layerClass.getDataUrl());
 
         JSONObject localeNames = new JSONObject();
-        for (Map.Entry<String, String> localization : layerClass.getNames().entrySet()) {
-            localeNames.put(localization.getKey(), localization.getValue());
+        Set<String> langs = new TreeSet<String>(layerClass.getLanguages());
+        langs.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+        Map<String, String> names = layerClass.getNames();
+        for (String language : langs) {
+            localeNames.put(language, names.get(language));
         }
         layerJson.put("names", localeNames);
         
@@ -322,7 +332,7 @@ public class MapLayerWorker {
                 }
 
                 JSONObject subLayer = populateLayerJson(mapLayer, layerClass, lang,
-                        isSecure, roles, permissionsList, inspireThemeService.find(mapLayer.getInspireThemeId()));
+                        isSecure, roles, permissionsList, editAccessList, inspireThemeService.find(mapLayer.getInspireThemeId()));
                 accumulateOrAppendJSON(mapLayers.size() > 1, layerJson, "subLayer", subLayer);
             }
         }
@@ -330,10 +340,10 @@ public class MapLayerWorker {
 
         if (null != mapLayers && mapLayers.size() > 0) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, "BASE+"+ layerClass.getId(), permissionsList, editAccessList);
         } else if ("groupMap".equals(layerJson.get("type")) || "base".equals(layerJson.get("type"))) {
             layerJson.put("id", "base_" + layerClass.getId()).put("baseLayerId", layerClass.getId());
-            populatePermissionInformation(layerJson, roles, layerClass.getId() + ":", permissionsList);
+            populatePermissionInformation(layerJson, roles, "BASE+"+layerClass.getId(), permissionsList, editAccessList);
         } else {
             layerJson.put("baseLayerId", "").put("id", layerClass.getId());
         }
@@ -361,10 +371,11 @@ public class MapLayerWorker {
     private static JSONObject populateLayerJson(final Layer layer,
                                                 final LayerClass layerClass,
                                                 final String lang,
-                                                boolean isSecure,
-                                                Collection<Role> roles,
-                                                Set<String> permissionsList,
-                                                InspireTheme iTheme) {
+                                                final boolean isSecure,
+                                                final Collection<Role> roles,
+                                                final Set<String> permissionsList,
+                                                final Set<String> editAccessList,
+                                                final InspireTheme iTheme) {
         JSONObject layerJson = new JSONObject();
         try {
             layerJson.put("orgName", layerClass.getName(lang));
@@ -416,7 +427,9 @@ public class MapLayerWorker {
             } else {
                 layerJson.put("wmsName", layer.getWmsName());
             }
-            populatePermissionInformation(layerJson, roles, layer.getWmsName() + ":" + layer.getWmsUrl(), permissionsList);
+
+            populatePermissionInformation(layerJson, roles,layer.getWmsUrl() + "+" +  layer.getWmsName(), permissionsList,
+                    editAccessList);
 
             layerJson.put("resource_url_client_pattern", layer.getResource_url_client_pattern());
 
@@ -485,7 +498,7 @@ public class MapLayerWorker {
       * @param layer layer of which styles will be retrieved
      */
        private static void populateLayerStylesOnJSONArray(JSONObject styleJSON, Layer layer) {
-          List<WFSSLDStyle> styleList = wfsDbService.findWFSLayerStyles(layer.getId());
+          List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
           try{
             if ( styleList.size() > 0) {
                for (WFSSLDStyle style : styleList) {
@@ -551,23 +564,30 @@ public class MapLayerWorker {
      * @param permissionsList List of user permissions
      * @throws JSONException
      */
-    private static void populatePermissionInformation(JSONObject layerJson,
-            Collection<Role> roles, String layerPermissionKey,
-            Set<String> permissionsList) throws JSONException {
+    private static void populatePermissionInformation(final JSONObject layerJson,
+            final Collection<Role> roles, final String layerPermissionKey,
+            final Set<String> permissionsList, final Set<String> editAccessList) throws JSONException {
 
-        JSONObject permission;
+        JSONObject permission = new JSONObject();
+        layerJson.put("permissions", permission);
 
         for (Role role : roles) {
-            permission = new JSONObject();
-            if ("Guest".equals(role.getName())) {
+
+            if (role.isAdminRole()) {
+                permission.put("edit", "true");
+                permission.put("publish", PUBLICATION_PERMISSION_OK);
+                break;
+            }
+
+            if ("Guest".equals(role.getName())) {   // TODO: need refactoring, check user.isGuest()
                 permission.put("publish", NO_PUBLICATION_PERMISSION); // Guest role
-                layerJson.put("permissions", permission);
                 return;
             } else {
+                if (editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
+                    permission.put("edit", "true");
+                }
                 if (permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
                     permission.put("publish", PUBLICATION_PERMISSION_OK);
-                    layerJson.put("permissions", permission);
-                    break;
                 }
 
             }

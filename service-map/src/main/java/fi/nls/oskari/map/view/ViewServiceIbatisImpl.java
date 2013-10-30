@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -75,21 +76,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             // view with id not found
             return false;
         }
-        if(view.getId() <=3) {
-            log.debug("View id must be over 4:", view.getId());
-            // 1 == default view
-            // 2 == print view
-            // 3 == published view template
-            // these cannot be users views, though these shouldn't be hardcoded
-            return false;
-        }
-/*
-        if(!userUuid.equals(view.getUuid())) {
-            log.debug("Users uuid:", userUuid, "didn't match the one on view:", view.getUuid());
-            // uuid didn't match -> not users view
-            return false;
-        }
-        */
         if(user.isGuest()) {
             log.debug("User is default/guest user");
             return false;
@@ -271,8 +257,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
 
     public long getDefaultViewId() {
-        return ((Long) queryForObject("View.get-default-view-id", "DEFAULT"))
-                .longValue();
+        return getDefaultViewId(ViewTypes.DEFAULT);
     }
 
     /**
@@ -290,22 +275,24 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         if(user == null) {
             log.debug("Tried to get default view for <null> user");
         }
-
-        // Check the roles in given order and return the first match
-        for(String role : viewRoles) {
-            if(user.hasRole(role) &&
-                    defaultViewIds.containsKey(role)) {
-                log.debug("Default view found for role", role, ":", defaultViewIds.get(role));
-                return defaultViewIds.get(role);
+        else {
+            // Check the roles in given order and return the first match
+            for(String role : viewRoles) {
+                if(user.hasRole(role) &&
+                        defaultViewIds.containsKey(role)) {
+                    log.debug("Default view found for role", role, ":", defaultViewIds.get(role));
+                    return defaultViewIds.get(role);
+                }
             }
         }
+
         // property overrides db default, no particular reason for this
         if(defaultViewProperty != -1) {
             return defaultViewProperty;
         }
         // global default view property not defined, check db
         log.debug("No properties based default views matched user", user, ". Defaulting to DB.");
-        defaultViewProperty = getDefaultViewId();
+        defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
         return defaultViewProperty;
     }
 

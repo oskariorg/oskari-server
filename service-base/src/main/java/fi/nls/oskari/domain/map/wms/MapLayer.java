@@ -2,10 +2,11 @@ package fi.nls.oskari.domain.map.wms;
 
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class represents WMS layer.
@@ -37,7 +38,7 @@ public class MapLayer extends Layer {
 	    json.put("updated", this.getUpdated());
 	    json.put("created", this.getCreated());
 	    
-	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage())); // TODO: only default lang?
+	    json.put("name", this.getName(PropertyUtil.getDefaultLanguage()));
 	    
 	    json.put("wmsUrl", this.getWmsUrl());
         
@@ -48,13 +49,27 @@ public class MapLayer extends Layer {
 	    adminJSON.put("layerType", this.getType());
 	    adminJSON.put("wmsName", this.getWmsName());
 
-	    for (Map.Entry<String, String> localization : this.getTitles().entrySet()) {
-            adminJSON.put("title" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
+        JSONObject names = new JSONObject();
+        JSONObject titles = new JSONObject();
+        JSONArray locales = new JSONArray();
+
+        Set<String> langs = new TreeSet<String>(getLanguages());
+        // make sure we have entries for all supported languages just to be nice...
+        langs.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+
+        for (String lang : langs) {
+            names.put(lang, getName(lang));
+            titles.put(lang, getTitle(lang));
+            JSONObject locale = new JSONObject();
+            locale.put("lang", lang);
+            locale.put("name", getName(lang));
+            locale.put("title", getTitle(lang));
+            locales.put(locale);
         }
 
-        for (Map.Entry<String, String> localization : this.getNames().entrySet()) {
-            adminJSON.put("name" + Character.toUpperCase(localization.getKey().charAt(0)) + localization.getKey().substring(1), localization.getValue());
-        }
+        adminJSON.put("name", names);
+        adminJSON.put("title", titles);
+        adminJSON.put("locales", locales);
 	    
 	    adminJSON.put("wms_parameter_layers","");
 	    adminJSON.put("inspireTheme", this.getInspireThemeId());
@@ -81,10 +96,7 @@ public class MapLayer extends Layer {
         adminJSON.put("orderNumber", this.getOrdernumber());
 	    
 	    json.put("admin", adminJSON);
-        
-	    
-	   
-	    
+
 	    return json;
 	}
 }

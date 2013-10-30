@@ -30,7 +30,10 @@ public abstract class JSONLocalized {
             JSONObject loc = JSONHelper.getJSONObject(locale, language);
             return JSONHelper.getStringFromJSON(loc, key , "");
         } catch(Exception ex) {
-            log.error("Couldn't get", key, "from", locale, "for language", language, "- json:", locale.toString());
+            // if we log 'this' to get the actual object, we might go into infinite loop
+            // (since this.toString() might use getLocalizedValue() method)
+            // just log class
+            log.info("Couldn't get", key, "from", locale, "for language", language, "in", this.getClass());
         }
         return "";
     }

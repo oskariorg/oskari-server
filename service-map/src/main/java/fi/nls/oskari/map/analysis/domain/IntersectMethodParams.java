@@ -10,8 +10,10 @@ import org.xml.sax.SAXException;
 
 public class IntersectMethodParams extends AnalysisMethodParams {
 
-    private final String analysisMethodTemplate = "analysis-layer-wps-intersect.xml";
-    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-intersect.xml";
+    private final String analysisMethodTemplate1 = "wfs2wfs-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate3 = "analysis2wfs-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate4 = "wfs2analysis-layer-wps-intersect2.xml";
     private final String bboxFilter2Template = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom2}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 
     // xml template paths {}
@@ -23,6 +25,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private final String GEOM2 = "{geom2}";
     private final String FIELDA1 = "{fieldA1}";
     private final String FIELDB1 = "{fieldB1}";
+    private final String SRSNAME2 = "{srsName2}";
 
     private String href2 = "";
     private String xmlns2 = "";
@@ -31,6 +34,8 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private String geom2 = "";
     private String fieldA1 = "";
     private String fieldB1 = "";
+    private String properties2 = "";
+    private String wps_reference_type2 = "";
 
     public String getFieldA1() {
         return fieldA1;
@@ -92,6 +97,22 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         this.filter2 = filter2;
     }
 
+    public String getProperties2() {
+        return properties2;
+    }
+
+    public void setProperties2(String properties2) {
+        this.properties2 = properties2;
+    }
+
+    public String getWps_reference_type2() {
+        return wps_reference_type2;
+    }
+
+    public void setWps_reference_type2(String wpsReferenceType2) {
+        wps_reference_type2 = wpsReferenceType2;
+    }
+
     public Document getWPSXML() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
@@ -102,11 +123,16 @@ public class IntersectMethodParams extends AnalysisMethodParams {
             SAXException, ParserConfigurationException {
 
         String doctemp = null;
-        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
             doctemp = this.getTemplate(this.analysisMethodTemplate2);
-        else
-            doctemp = this.getTemplate(this.analysisMethodTemplate);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate1);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate4);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate3);
 
+        if(doctemp == null) return null;
 
         // Replace {} variables in wps execute .xml
         doctemp = doctemp.replace(HREF, this.getHref());
@@ -122,7 +148,18 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(TYPENAME2, this.getTypeName2());
         doctemp = doctemp.replace(FIELDA1, this.getFieldA1());
         doctemp = doctemp.replace(FIELDB1, this.getFieldB1());
-
+        doctemp = doctemp.replace(SRSNAME2, this.getSrsName());
+        
+       
+        //Properties
+        if (this.getProperties() != null) {
+            doctemp = doctemp.replace(PROPERTIES, this.getProperties());
+        }
+        else
+        {
+            doctemp = doctemp.replace(PROPERTIES, "");
+        }
+        
         // Filter
         String wfsfilter = "";
         if (this.getFilter() != null ) {
@@ -140,6 +177,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         }
 
         doctemp = doctemp.replace(FILTER, wfsfilter);
+        
 
         String wfsfilter2 = "";
         if (this.getFilter2() != null ) {

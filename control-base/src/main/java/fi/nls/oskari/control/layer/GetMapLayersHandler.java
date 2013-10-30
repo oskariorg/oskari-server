@@ -2,6 +2,8 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.MapLayerService;
 import fi.mml.map.mapwindow.util.MapLayerWorker;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -9,23 +11,21 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Get WMS map layers
  */
 @OskariActionRoute("GetMapLayers")
 public class GetMapLayersHandler extends ActionHandler {
+
+
+    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     /** Logger */
     private static Logger log = LogFactory.getLogger(GetMapLayersHandler.class);
@@ -39,38 +39,28 @@ public class GetMapLayersHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        try {
+        final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
+        final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
+                .getLocale().getLanguage());
 
-            final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
-            final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
-                    .getLocale().getLanguage());
+        boolean showEmpty = permissionsService.hasAddLayerPermission(params.getUser());
+        final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
+                params.getUser(), lang, showEmpty);
 
-            boolean showEmpty = params.getUser().isAdmin();
-            log.warn("after showEmpty");
-            final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
-                    params.getUser(), lang, showEmpty);
+        JSONObject adminlayers = new JSONObject();
 
-            JSONObject adminlayers = new JSONObject();
-            
-            if (params.getUser().isAdmin()) {
-                adminlayers = makeMapLayersJson(layer_id);
-            }
-            log.warn("After adminlayers");
-            if (layer_id.isEmpty()) {
-                ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
-                        layers, adminlayers));
-            } else {
-                ResponseHelper.writeResponse(params, adminlayers);
-            }
-
-        } catch (ActionException e) {
-            throw e;
-            /*throw new ActionException(
-                    "Couldn't request DB service - get map layers", e);*/
+        if (params.getUser().isAdmin()) {
+            adminlayers = makeMapLayersAdminJson(layer_id);
+        }
+        if (layer_id.isEmpty()) {
+            ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
+                    layers, adminlayers));
+        } else {
+            ResponseHelper.writeResponse(params, adminlayers);
         }
     }
 
-    private JSONObject makeMapLayersJson(final String layer_id)
+    private JSONObject makeMapLayersAdminJson(final String layer_id)
             throws ActionException {
 
         final List<Layer> allMapLayers = new ArrayList<Layer>();
@@ -87,51 +77,58 @@ public class GetMapLayersHandler extends ActionHandler {
             for (Layer ml : allMapLayers) {
                 final JSONObject mapProperties = new JSONObject();
 
-                List<String> languages = ml.getLanguages();
+                mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
+                mapProperties.put("resource_url_scheme_pattern", ml.getResource_url_scheme_pattern());
+                mapProperties.put("layerType", ml.getType());
+                mapProperties.put("wmsName", ml.getWmsName());
 
-                for (String lang : languages) {
-                    mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
-                    mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
+                JSONObject names = new JSONObject();
+                JSONObject titles = new JSONObject();
+                JSONArray locales = new JSONArray();
+
+                Set<String> langs = new TreeSet<String>(ml.getLanguages());
+                // make sure we have entries for all supported languages just to be nice...
+                langs.addAll(Arrays.asList(PropertyUtil.getSupportedLanguages()));
+
+
+                for (String lang : langs) {
+                    names.put(lang, ml.getName(lang));
+                    titles.put(lang, ml.getTitle(lang));
+                    JSONObject locale = new JSONObject();
+                    locale.put("lang", lang);
+                    locale.put("name", ml.getName(lang));
+                    locale.put("title", ml.getTitle(lang));
+                    locales.put(locale);
                 }
 
-                mapProperties.put("wmsName", ml.getWmsName());
-                mapProperties.put("wmsUrl", ml.getWmsUrl());
-                mapProperties.put("opacity", ml.getOpacity());
+                mapProperties.put("name", names);
+                mapProperties.put("title", titles);
+                mapProperties.put("locales", locales);
+
+                mapProperties.put("wms_parameter_layers", ml.getWms_parameter_layers());
+                mapProperties.put("inspireTheme", ml.getInspireThemeId());
+                mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
+                mapProperties.put("legendImage", ml.getLegendImage());
+                mapProperties.put("version", ml.getVersion());
+                mapProperties.put("selection_style", IOHelper.encode64(ml.getSelection_style()));
                 mapProperties.put("style", IOHelper.encode64(ml.getStyle()));
+                mapProperties.put("dataUrl", ml.getDataUrl());
+
+                mapProperties.put("epsg", ml.getEpsg());
+                mapProperties.put("opacity", ml.getOpacity());
+                mapProperties.put("gfiType", ml.getGfiType());
+                mapProperties.put("metadataUrl", ml.getMetadataUrl());
+                mapProperties.put("tileMatrixSetData", ml.getTileMatrixSetData());
                 mapProperties.put("minScale", ml.getMinScale());
                 mapProperties.put("maxScale", ml.getMaxScale());
 
+                mapProperties.put("resource_url_scheme", ml.getResource_url_scheme());
+                mapProperties.put("resource_daily_max_per_ip", ml.getResource_daily_max_per_ip());
                 mapProperties.put("descriptionLink", ml.getDescriptionLink());
-                mapProperties.put("legendImage", ml.getLegendImage());
-
-                mapProperties.put("inspireTheme", ml.getInspireThemeId());
-                mapProperties.put("dataUrl", ml.getDataUrl());
-                mapProperties.put("metadataUrl", ml.getMetadataUrl());
-                mapProperties.put("orderNumber", ml.getOrdernumber());
-
-                mapProperties.put("layerType", ml.getType());
-                mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
-                mapProperties.put("tileMatrixSetData", ml
-                        .getTileMatrixSetData());
-
-                mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
-                mapProperties.put("wms_parameter_layers", ml
-                        .getWms_parameter_layers());
-                mapProperties.put("resource_url_scheme", ml
-                        .getResource_url_scheme());
-                mapProperties.put("resource_url_scheme_pattern", ml
-                        .getResource_url_scheme_pattern());
-                mapProperties.put("resource_url_client_pattern", ml
-                        .getResource_url_client_pattern());
-                mapProperties.put("resource_daily_max_per_ip", ml
-                        .getResource_daily_max_per_ip());
-
                 mapProperties.put("xslt", IOHelper.encode64(ml.getXslt()));
-                mapProperties.put("gfiType", ml.getGfiType());
-                mapProperties.put("selection_style", IOHelper.encode64(ml
-                        .getSelection_style()));
-                mapProperties.put("version", ml.getVersion());
-                mapProperties.put("epsg", ml.getEpsg());
+                mapProperties.put("wmsUrl", ml.getWmsUrl());
+                mapProperties.put("orderNumber", ml.getOrdernumber());
+                mapProperties.put("resource_url_client_pattern", ml.getResource_url_client_pattern());
 
                 mapJSON.accumulate(String.valueOf(ml.getId()), mapProperties);
 

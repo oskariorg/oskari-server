@@ -6,7 +6,9 @@ import static org.geotools.data.wfs.protocol.wfs.GetFeature.ResultType.RESULTS;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.util.IOHelper;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
@@ -102,6 +105,7 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         /* Create Query Filter */        
         Query query = new DefaultQuery(featureType.getQname().getPrefix() + ":" + featureType.getQname().getLocalPart(), filter, propNames);
         query.setMaxFeatures(selectedFeatureType.getMaxNumDisplayedItems());
+
         
         /* Create GetFeature */
         String gmlVersion = featureType.getWfsService().getGmlVersion();
@@ -119,18 +123,28 @@ public class GetFeaturesWorker implements Callable<WFSResponseCapsule> {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         encoder.encode(gft, WFS.GetFeature, baos);
         String payload = baos.toString();
-        
-        log.debug(payload);
-        
-//# This is dirty fix cause bug on Arc 9.3 server
+
+        //# This is dirty fix cause bug on Arc 9.3 server
         if (featureType.getWfsService().isGml2typeSeparator()) {
         	payload = payload.replaceAll("epsg.xml#3067", "epsg.xml:3067");
         }
+        // FIXME: this is generated in front of actual srsname, we need to remove it since servers can handle it
+        // maybe find a better way to deal with it
+        payload = payload.replaceAll("urn:x-ogc:def:crs:", "");
+
+        // FIXME: find a better way to add the namespace declaration, this again is a dirty hack but since
+        // wfs will be replaced soon by transport, this is a quick workaround
+        final String namespaceHack = "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"";
+        payload = payload.replaceAll(namespaceHack, namespaceHack +
+                " xmlns:" + featureType.getQname().getPrefix() + "=\"" + featureType.getQname().getNamespaceURI() + "\"");
+
+
         String url = featureType.getWfsService().getUrl();
         String username = featureType.getWfsService().getUsername(); 
         String password = featureType.getWfsService().getPassword();
-        boolean useProxy = featureType.getWfsService().isUseProxy();
-        HttpPostResponse response = EasyHttpClient.post(url, username, password, payload, useProxy);
+        //boolean useProxy = featureType.getWfsService().isUseProxy();
+        // TODO: refactor whole "easy http client" out of here
+        HttpPostResponse response = EasyHttpClient.post(url, username, password, payload);
         
         if (!response.wasSuccessful()) {
         throw new RuntimeException("Failed to perform query to url '" + url + "'\n" +

@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
@@ -37,6 +38,12 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_NICKNAME = "nickName";
     private static final String KEY_USERUUID = "userUUID";
     private static final String KEY_USERID = "userID";
+
+
+    private final static String KEY_ROLE_ID = "id";
+    private final static String KEY_ROLE_NAME = "name";
+    private final static String KEY_ROLES = "roles";
+
     
     private static final String KEY_PLUGINS = "plugins";
     public static final String KEY_CONFIG = "config";
@@ -313,7 +320,27 @@ public class MapfullHandler extends BundleHandler {
             userData.put(KEY_NICKNAME, user.getScreenname());
             userData.put(KEY_USERUUID, user.getUuid());
             userData.put(KEY_USERID, user.getId());
+
+            populateUserRoles(userData, user);
+
             mapfullConfig.put(KEY_USER, userData);
+        } catch (JSONException jsonex) {
+            log.warn("Unable to populate user data:", user);
+        }
+    }
+
+    private void populateUserRoles(final JSONObject userData, final User user) {
+        try {
+            JSONArray userRoles = new JSONArray();
+
+            for (Role role: user.getRoles()) {
+                JSONObject roleData = new JSONObject();
+                roleData.put(KEY_ROLE_ID, role.getId());
+                roleData.put(KEY_ROLE_NAME, role.getName());
+                userRoles.put(roleData);
+            }
+            userData.put(KEY_ROLES, userRoles);
+
         } catch (JSONException jsonex) {
             log.warn("Unable to populate user data:", user);
         }

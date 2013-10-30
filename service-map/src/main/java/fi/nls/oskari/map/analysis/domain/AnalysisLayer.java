@@ -19,6 +19,7 @@ public class AnalysisLayer {
     private String subtitle = "";
     private String inputType = "";
     private String inputAnalysisId = null;
+    
     private String orgName = "";
     private String inspire = "";
     private Integer opacity;
@@ -27,6 +28,7 @@ public class AnalysisLayer {
     private List<String> fields = new ArrayList<String>();
     private List<String> locales = new ArrayList<String>();
     private Map<String, String> fieldsMap = new ConcurrentHashMap<String, String>();
+    private Map<String, String> fieldtypeMap = new ConcurrentHashMap<String, String>();
 
     private List<String> aggreFunctions;
     private String style;
@@ -81,6 +83,7 @@ public class AnalysisLayer {
     public void setInputAnalysisId(String inputAnalysisId) {
         this.inputAnalysisId = inputAnalysisId;
     }
+    
 
     public String getOrgName() {
         return orgName;
@@ -144,6 +147,14 @@ public class AnalysisLayer {
 
     public void setFieldsMap(Map<String, String> fieldsMap) {
         this.fieldsMap = fieldsMap;
+    }
+
+    public Map<String, String> getFieldtypeMap() {
+        return fieldtypeMap;
+    }
+
+    public void setFieldtypeMap(Map<String, String> fieldtypeMap) {
+        this.fieldtypeMap = fieldtypeMap;
     }
 
     public List<String> getAggreFunctions() {

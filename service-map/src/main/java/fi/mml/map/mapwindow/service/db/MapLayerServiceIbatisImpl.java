@@ -21,6 +21,12 @@ import fi.nls.oskari.domain.map.wfs.WFSService;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
+
+import javax.xml.namespace.QName;
 
 /**
  * LayerClass implementation for Ibatis
@@ -30,6 +36,7 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         implements MapLayerService {
 
     private CapabilitiesCacheService capabilitiesCacheService = new CapabilitiesCacheServiceIbatisImpl();
+    private WFSLayerConfigurationService wfsConfigService = new WFSLayerConfigurationServiceIbatisImpl();
     private Logger log = LogFactory.getLogger(MapLayerServiceIbatisImpl.class);
 
     @Override
@@ -87,6 +94,7 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         if(layer == null) {
             return null;
         }
+
         if (layer.getType().equals(Layer.TYPE_WFS)) {
             return findWFSLayer(layer.getId());
         } else if (layer.getType().equals(Layer.TYPE_STATS)) {
@@ -233,57 +241,37 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         // find WFS layer
         WFSLayer wfsLayer = queryForObject(getNameSpace() + ".find",
                 new Integer(wfsLayerId));
+        return populateWFSLayer(wfsLayer);
+    }
+
+    public WFSLayer populateWFSLayer(WFSLayer wfsLayer) {
 
         if (wfsLayer == null) {
-            throw new RuntimeException("WFS Layer (id=" + wfsLayerId
-                    + ") not found in the database.");
+            throw new RuntimeException("WFS Layer not found in the database.");
         }
 
-        // find selected WFS services and feature types
-        List<Integer> selectedWfsServiceIds = queryForList(getNameSpace()
-                + ".findSelectedWfsServices", wfsLayerId);
+        final WFSLayerConfiguration configuration = wfsConfigService.findConfiguration(wfsLayer.getId());
 
-        Map<Integer, FeatureType> featureTypeMap = new HashMap<Integer, FeatureType>();
+        // for backwards compatibility - these need to be defined
+        final WFSService service = new WFSService();
+        service.setGmlVersion(configuration.getGMLVersion());
+        service.setGml2typeSeparator(ConversionHelper.getBoolean(configuration.isGML2Separator(), false));
+        service.setUrl(configuration.getURL());
+        service.setUsername(configuration.getUsername());
+        service.setPassword(configuration.getPassword());
+        // use proxy not available in new transport - default to false
+        service.setUseProxy(false);
+        wfsLayer.getSelectedWfsServices().add(service);
 
-        WFSDbService wfsDbService = new WFSDbServiceIbatisImpl(
-                getSqlMapClient()) {
-            @Override
-            protected SqlMapClient getSqlMapClient() {
-                return sqlMapClient;
-            }
-        };
+        final FeatureType ft = new FeatureType();
+        ft.setQname(configuration.getFeatureElementQName());
+        ft.setWfsService(service);
+        ft.setBboxParameterName(configuration.getGMLGeometryProperty());
 
-        for (int selectedWfsServiceId : selectedWfsServiceIds) {
-            WFSService wfsService = wfsDbService
-                    .findWFSService(selectedWfsServiceId);
-            wfsLayer.getSelectedWfsServices().add(wfsService);
-
-            for (FeatureType featureType : wfsService.getFeatureTypes()) {
-                featureType.setWfsService(wfsService);
-                featureTypeMap.put(featureType.getId(), featureType);
-            }
-        }
-
-        // find selected feature types and parameters
-        List<SelectedFeatureType> selectedFeatureTypes = queryForList(
-                getNameSpace() + ".findSelectedFeatureTypes", wfsLayerId);
-
-        for (SelectedFeatureType selectedFeatureType : selectedFeatureTypes) {
-            List<SelectedFeatureParameter> selectedFeatureParameters = queryForList(
-                    getNameSpace() + ".findSelectedFeatureParameters",
-                    selectedFeatureType.getId());
-
-            selectedFeatureType
-                    .setSelectedFeatureParameters(selectedFeatureParameters);
-            FeatureType featureType = featureTypeMap.get(selectedFeatureType
-                    .getFeatureType().getId());
-
-            if (featureType != null) {
-                selectedFeatureType.setFeatureType(featureType);
-            }
-        }
-
-        wfsLayer.setSelectedFeatureTypes(selectedFeatureTypes);
+        final SelectedFeatureType sft = new SelectedFeatureType();
+        sft.setMaxNumDisplayedItems(configuration.getMaxFeatures());
+        sft.setFeatureType(ft);
+        wfsLayer.getSelectedFeatureTypes().add(sft);
 
         return wfsLayer;
     }

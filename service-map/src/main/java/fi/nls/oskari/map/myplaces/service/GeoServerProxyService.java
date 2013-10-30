@@ -29,12 +29,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public class GeoServerProxyService {
@@ -43,14 +43,24 @@ public class GeoServerProxyService {
     private final static String WFS_INSERT = "wfs:Insert";
     private final static String WFS_DELETE = "wfs:Delete";
     private final static String WFS_UPDATE = "wfs:Update";
-    
+
+    private final static String WFS_FEATURECOLLECTION = "wfs:FeatureCollection";
     private final static String FEATURE_UUID = "feature:uuid";
     private final static String OGC_FEATURE_ID = "ogc:FeatureId";
     private final static String FID = "fid";
     private final static String OGC_LITERAL = "ogc:Literal";
+    private final static String OWS_UUID = "ows:uuid";
     
     private static final String MY_PLACE_FEATURE_FILTER_XML = "GetFeatureInfoMyPlaces.xml";
     private static final String MY_PLACE_FEATURE_FILTER_XSL = "GetFeatureInfoMyPlaces.xsl";
+    private static final String POST_REQUEST = "POST";
+    private static final String XML_VERSION_TAG= "<?xml version=\"1.0\"?>\r\n";
+
+    private static final String GEOSERVER_URL_PARAMS = "service=WFS&version=1.0.0&request=GetFeature&maxFeatures=50"+
+                        "&outputFormat=text/xml;%20subtype=gml/3.1.1&typeName=ows:";
+    private static final String URLPARAM_FEATURE = "&FEATUREID=";
+	private static final int DISTANCE_FACTOR = 5;
+	private static final int MAX_ZOOM_LEVEL = 12;
     
 
     private static HttpURLConnection getConnection() throws IOException {
@@ -70,9 +80,9 @@ public class GeoServerProxyService {
             throws MalformedURLException, IOException, PermissionException {
 
         // check that the users UUID matches the one in POST data XML
-        if ("POST".equals(request.getMethod())) {
+        if (POST_REQUEST.equals(request.getMethod())) {
             final StringBuffer sb = new StringBuffer();
-            sb.append("<?xml version=\"1.0\"?>\r\n");
+            sb.append(XML_VERSION_TAG);
             sb.append(request.getPostData());
             log.debug("Posted XML:", sb.toString());
             
@@ -87,7 +97,7 @@ public class GeoServerProxyService {
         IOHelper.writeHeaders(con, request.getHeaders());
 
         try {
-            if ("POST".equals(request.getMethod())) {
+            if (POST_REQUEST.equals(request.getMethod())) {
                 /*
                 con.setRequestMethod(request.getMethod());
                 con.setDoOutput(true);
@@ -111,43 +121,18 @@ public class GeoServerProxyService {
     }
 
 
-    public String convertStreamToString(InputStream is) throws IOException {
-        /*
-         * To convert the InputStream to String we use the Reader.read(char[]
-         * buffer) method. We iterate until the Reader return -1 which means
-         * there's no more data to read. We use the StringWriter class to
-         * produce the string.
-         */
-        if (is == null) {
-            return "";
-        }
-        final Writer writer = new StringWriter();
-        final char[] buffer = new char[1024];
-        try {
-            final Reader reader = new BufferedReader(new InputStreamReader(is,
-                    "UTF-8"));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
-            }
-        } finally {
-            is.close();
-        }
-        return writer.toString();
-    }
-
-
     private static String getUUIDfromXml(final StringBuffer sb)
             throws IOException {
 
-        InputStream is = new ByteArrayInputStream(sb.toString().getBytes(
-                "UTF-8"));
+        InputStream is = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
         InputSource inputSource = new InputSource(is);
         DOMParser p = new DOMParser();
         try {
             p.parse(inputSource);
         } catch (SAXException e) {
             throw new IOException("Error parsing XML", e);
+        }finally {
+            is.close();
         }
         Document doc = p.getDocument();
 
@@ -168,10 +153,8 @@ public class GeoServerProxyService {
             String featureId = featureIdNode.item(0).getAttributes()
                     .getNamedItem(FID).getTextContent();
             featureId = Jsoup.clean(featureId, Whitelist.none());
-            InputStream is2;
             try {
-                is2 = getInputStreamFromGeoserver(featureId);
-                uuidInXml = getUuidFromGeoserver(is2);
+                uuidInXml = getUuidFromGeoserver(featureId);
             } catch (SAXException e) {
                 throw new IOException("Error parsing XML", e);
             }
@@ -186,47 +169,51 @@ public class GeoServerProxyService {
         return uuidInXml;
     }
 
-    public static String getUuidFromGeoserver(InputStream is2)
+    public static String getUuidFromGeoserver(String featureId)
             throws IOException, SAXException {
         String uuidInXml = "";
-        DOMParser p2 = new DOMParser();
-        InputSource inputSource2 = new InputSource(is2);
-        p2.parse(inputSource2);
-        Document docu = p2.getDocument();
-        NodeList responseUUIDNode = docu.getElementsByTagName("ows:uuid");
-        uuidInXml = responseUUIDNode.item(0).getTextContent();
-        uuidInXml = Jsoup.clean(uuidInXml, Whitelist.none());
+        InputStream is2 = null;
+        HttpURLConnection geoserverCon = getGeoserverConnection(featureId);
+        if (geoserverCon == null)
+            throw new IOException("Could not get connection to GeoServer");
+        try{
+            is2 = geoserverCon.getInputStream();
+            DOMParser p2 = new DOMParser();
+            InputSource inputSource2 = new InputSource(is2);
+            p2.parse(inputSource2);
+            Document docu = p2.getDocument();
+            NodeList responseUUIDNode = docu.getElementsByTagName(OWS_UUID);
+            uuidInXml = responseUUIDNode.item(0).getTextContent();
+            uuidInXml = Jsoup.clean(uuidInXml, Whitelist.none());
+        }finally {
+            geoserverCon.disconnect();
+            if (is2 != null )
+                is2.close();
+        }
         return uuidInXml;
     }
 
-    public static InputStream getInputStreamFromGeoserver(String featureId)
+    public static HttpURLConnection getGeoserverConnection(String featureId)
             throws IOException, SAXException {
         featureId = Jsoup.clean(featureId, Whitelist.none());
         int dotIdx = featureId.indexOf('.');
         if (dotIdx < 0)
-            throw new RuntimeException("No type in '" + featureId + "'");
+            throw new IOException("Could not connect. No feature type in '" + featureId + "'");
         String typeName = featureId.substring(0, dotIdx);
-        String myPlacesUrl = PropertyUtil.get("myPlacesUrl");
+        String myPlacesUrl = PropertyUtil.get("myplaces.ows.url");
         myPlacesUrl = Jsoup.clean(myPlacesUrl, Whitelist.none());
-        String geoserverAddress = myPlacesUrl + "service=WFS&version=1.0.0"
-                + "&request=GetFeature" + "&maxFeatures=50"
-                + "&outputFormat=text/xml;%20subtype=gml/3.1.1"
-                + "&typeName=ows:" + typeName + "&FEATUREID=" + featureId;
-
-        URLConnection geoserverCon = getConnection(geoserverAddress);
-        if (geoserverCon == null)
-            throw new RuntimeException("Could not get connection"
-                    + " to GeoServer");
-        InputStream is2 = geoserverCon.getInputStream();
-
-        return is2;
+        String geoserverAddress = myPlacesUrl + GEOSERVER_URL_PARAMS + typeName + URLPARAM_FEATURE + featureId;
+        return  getConnection(geoserverAddress);
     }
     
     public JSONObject getFeatureInfo(final double lat, final double lon, final int zoom, final String id, final String uuid) {
 
+        HttpURLConnection connection = null;
+        InputStream respInStream = null;
+        InputStream xsltInStream = null;
         try {
             final String categoryId = id.substring(id.indexOf("_")+1);
-            URLConnection connection = getConnection();
+            connection = getConnection();
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-type", "application/xml");
             
@@ -240,13 +227,14 @@ public class GeoServerProxyService {
             factory.setNamespaceAware(true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
-            InputStream respInStream = connection.getInputStream();
+            respInStream = connection.getInputStream();
+
             org.w3c.dom.Document document = builder.parse(respInStream);
-            InputStream xsltInStream = this.getClass().getResourceAsStream(MY_PLACE_FEATURE_FILTER_XSL);
+            xsltInStream = this.getClass().getResourceAsStream(MY_PLACE_FEATURE_FILTER_XSL);
             StreamSource stylesource = new StreamSource(xsltInStream);
             
-            String nof = document.getElementsByTagName("wfs:FeatureCollection").item(0).getAttributes().getNamedItem("numberOfFeatures").getTextContent(); 
-            
+            String nof = document.getElementsByTagName(WFS_FEATURECOLLECTION).item(0).getAttributes().getNamedItem("numberOfFeatures").getTextContent();
+
             if (!"0".equals(nof)) {
                 String transformedResponse = GetGeoPointDataService.getFormatedJSONString(document, stylesource);
                 JSONObject response = new JSONObject();
@@ -269,6 +257,22 @@ public class GeoServerProxyService {
             log.error("TransformerException when trying do wfs query for my places", e);
         } catch (JSONException e) {
             log.error("JSONException when trying do wfs query for my places", e);
+        } finally {
+           try{
+            if(respInStream != null)
+                respInStream.close();
+           } catch ( IOException ex) {
+               log.warn("Unable to close InputStream ", ex);
+           }
+           try {
+               if(xsltInStream != null)
+                   xsltInStream.close();
+           } catch (IOException ex) {
+               log.warn("Unable to close InputStream ", ex);
+           }
+           if(connection != null){
+               connection.disconnect();
+           }
         }
         return null;
     }
@@ -326,7 +330,7 @@ public class GeoServerProxyService {
         XPathExpression expr4 = xpath4
                 .compile("//ogc:Distance[.='{DISTANCE}']");
         Node nd4 = (Node) expr4.evaluate(doc, XPathConstants.NODE);
-        nd4.setTextContent(String.valueOf(Math.pow(2, (12-zoomLevel))));
+        nd4.setTextContent(String.valueOf(DISTANCE_FACTOR*Math.pow(2,(MAX_ZOOM_LEVEL-zoomLevel))));
         
         
         // Use a Transformer for output

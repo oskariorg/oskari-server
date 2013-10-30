@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Village">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="Village" type="fi.nls.oskari.search.village.Village" />
+    
+    <select id="findAll" resultClass="Village">
+        SELECT kuntanro, fi, sv, wgs84wkt, yleistetty_bbox
+        FROM porttikuntabbox 
+        ORDER BY fi
+    </select>
+
+</sqlMap>

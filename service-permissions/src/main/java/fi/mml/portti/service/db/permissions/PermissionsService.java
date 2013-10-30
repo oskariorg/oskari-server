@@ -84,6 +84,7 @@ public interface PermissionsService extends BaseService<Permissions> {
 	
 	
 	public Set<String> getPublishPermissions();
+    public Set<String> getEditPermissions();
 
     public Map<Long, List<Permissions>> getPermissionsForLayers(List<Long> layeridList, String permissionsType);
     public Map<Long, List<Permissions>> getPermissionsForBaseLayers(List<Long> layeridList, String permissionsType);
@@ -95,7 +96,10 @@ public interface PermissionsService extends BaseService<Permissions> {
 //    public List<Long> getListOfMaplayerIdsForViewPermissionByUser(User user);
     
     public boolean hasViewPermissionForLayerByLayerId(User user, long layerId);
-    
+
+    public boolean hasEditPermissionForLayerByLayerId(User user, long layerId);
+
+    public boolean hasAddLayerPermission(User user);
     
 	
 }

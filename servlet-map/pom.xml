@@ -32,7 +32,7 @@
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <stopKey>STOP</stopKey>
                     <stopPort>9999</stopPort>
-                    <jettyEnvXml>${jetty.env.conf}</jettyEnvXml>
+                    <!-- jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml -->
                     <webAppConfig>
                         <contextPath>/</contextPath>
 
@@ -84,13 +84,11 @@
                         <artifactId>hsqldb</artifactId>
                         <version>1.8.0.7</version>
                     </dependency>
-                    <!--
                     <dependency>
                         <groupId>postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>8.4-702.jdbc4</version>
                     </dependency>
-                    -->
                 </dependencies>
             </plugin>
         </plugins>
@@ -116,7 +114,16 @@
             <artifactId>oskari-control-wfs</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-example</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+ <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-myplaces</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

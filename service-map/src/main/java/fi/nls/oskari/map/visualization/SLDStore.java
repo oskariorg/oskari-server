@@ -15,10 +15,19 @@ public class SLDStore {
 
     private static final Logger log = LogFactory.getLogger(SLDStore.class);
     private final static Map<String, String> sldCache = new HashMap<String, String>();
+    private static String defaultSLD = null;
+    static {
+        try {
+            defaultSLD = IOHelper.readString(SLDStore.class.getResourceAsStream("default.sld"));
+        }
+        catch(Exception ex) {
+            log.warn(ex, "Error loading default SLD");
+        }
+    }
 
     public static String getSLD(final String wmsName) {
         if(wmsName == null) {
-            return "";
+            return defaultSLD;
         }
         // return from cache if loaded already
         if(sldCache.containsKey(wmsName)) {
@@ -26,9 +35,9 @@ public class SLDStore {
         }
         try {
             final String resource = IOHelper.readString(SLDStore.class.getResourceAsStream(wmsName + ".sld"));
-            if(resource == null) {
-                // default to "";
-                return "";
+            if(resource == null || resource.isEmpty()) {
+                // default to default.sld;
+                return defaultSLD;
             }
             // populate cache
             sldCache.put(wmsName, resource);

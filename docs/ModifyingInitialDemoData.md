@@ -31,35 +31,29 @@ After registering the layer it isn't visible to the users yet (even admin)
 
 Add the following sql at the end of the file to make the new layer visible to users by role
 
-Add permission for admin user:
+Add layer as resource so we can map permissions for it (resource_mapping=wmsurl+wmsname):
 
-    INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-    ('maastokartta_50k', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',
-    'WMS_LAYER', 3, 'ROLE');
+    INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms+maastokartta_50k');
 
-    INSERT INTO portti_permissions (resource_user_id, permissions_type) values
-        (SELECT id FROM portti_resource_user WHERE resource_name='maastokartta_50k' AND externalid = 3, 'VIEW_LAYER');
+    -- give view_layer permission for the resource to ROLE 3 (admin);
+    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '3');
 
 After this you can log in as admin on the browser and see the added layer. Guest or regular user shouldn't see it listed in the layerselector.
 
 Add permission for logged in user
-    INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-    ('maastokartta_50k', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',
-    'WMS_LAYER', 2, 'ROLE');
 
-    INSERT INTO portti_permissions (resource_user_id, permissions_type) values
-        (SELECT id FROM portti_resource_user WHERE resource_name='maastokartta_50k' AND externalid = 2, 'VIEW_LAYER');
+    -- give view_layer permission for the resource to ROLE 2 (logged in user);
+    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
 
 After this you can log in as a regular user and see the added layer. Guest shouldn't see it listed in the layerselector.
 
 Add permission for guest user
 
-    INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-    ('maastokartta_50k', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',
-    'WMS_LAYER', 10110, 'ROLE');
-
-    INSERT INTO portti_permissions (resource_user_id, permissions_type) values
-        (SELECT id FROM portti_resource_user WHERE resource_name='maastokartta_50k' AND externalid = 10110, 'VIEW_LAYER');
+    -- give view_layer permission for the resource to ROLE 10110 (guest);
+    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '10110');
 
 After this the layer should be listed in layerselector for guests.
 
@@ -67,7 +61,7 @@ After this the layer should be listed in layerselector for guests.
 
 ### 1. Add new users and roles
 
-* edit user.json and roles.json files in resource path `oskari-server/servlet-map/src/main/resources/users/`
+* edit user.json and roles.json files in resource path `oskari-server/control-example/src/main/resources/users/`
 
 * role ids must match the ones referenced in portti_permission and portti_recource_user tables (see next subsection)
 
@@ -145,16 +139,10 @@ Add a user to `user.json` and link the new role to the user
 
 Edit script file `oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
 
-Add row to portti_resource_user table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
+Add row to oskari_permission table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
 
-    INSERT INTO portti_resource_user (resource_name, resource_namespace, resource_type, externalid, externalid_type) values
-    ('maastokartta_50k', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',
-        'WMS_LAYER', [YOUR ROLE ID], 'ROLE');
-
-
-Add row to portti_permissions table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
-
-    INSERT INTO portti_permissions (resource_user_id, permissions_type)
-        values (SELECT id FROM portti_resource_user WHERE resource_name='maastokartta_50k' AND externalid = [YOUR ROLE ID], 'VIEW_LAYER');
+    -- give view_layer permission for the resource to ROLE 2 (logged in user);
+    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '[YOUR ROLE ID]');
 
 Remove the HSQLDB data directory (or reset the database with oskari.dropdb=true system property when restarting) and restart the server. You should now be able to login with "myuser"/"mypass" and see the layer
