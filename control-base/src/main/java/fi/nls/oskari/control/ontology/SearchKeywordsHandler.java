@@ -67,7 +67,11 @@ public class SearchKeywordsHandler extends ActionHandler {
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
-
+        if(params.getUser().isAdmin()) {
+            // TODO: remove this once we have a real populating code
+            // admins can now call route with populate action
+            forDebugging(params);
+        }
         final String keyword = params.getHttpParam("keyword", null);
         final String lang = params.getHttpParam("lang", null);
         if(keyword == null) {
