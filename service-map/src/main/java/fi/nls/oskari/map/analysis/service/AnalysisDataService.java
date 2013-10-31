@@ -65,7 +65,8 @@ public class AnalysisDataService {
     private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
     private static final String ANALYSIS_ORGNAME = ""; // managed in front
     private static final String ANALYSIS_INSPIRE = ""; // managed in front
-    private static final String ANALYSIS_WPS_ELEMENT_NAME = "ana:analysis_data";
+    private static final String ANALYSIS_WPS_RENDERING_ELEMENT_NAME = "ana:analysis_data_style";
+    private static final String ANALYSIS_GEOMETRY_FIELD = "geometry";
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("analysis_id");
     private static final String NUMERIC_FIELD_TYPE = "numeric";
     private static final String STRING_FIELD_TYPE = "string";
@@ -157,9 +158,12 @@ public class AnalysisDataService {
             // ---------------------------------------
             // if analysis in analysis - fix field names to original
             if (analysislayer.getInputType().equals(
-                    ANALYSIS_INPUT_TYPE_GS_VECTOR))
-                fields = this.SwapAnalysisInAnalysisFields(fields,
-                        analysislayer.getInputAnalysisId());
+                    ANALYSIS_INPUT_TYPE_GS_VECTOR)) {
+                if (analysislayer.getInputAnalysisId() != null) {
+                    fields = this.SwapAnalysisInAnalysisFields(fields,
+                            analysislayer.getInputAnalysisId());
+                }
+            }
             analysis.setCols(fields);
 
             log.debug("Update analysis row", analysis);
@@ -378,6 +382,8 @@ public class AnalysisDataService {
                     }
 
                 }
+                // Add geometry for filter and for highlight
+                columnNames.add(ANALYSIS_GEOMETRY_FIELD);
                 return "{default:"+columnNames.toString()+"}";
             }
         }
@@ -517,7 +523,7 @@ public class AnalysisDataService {
             Long wpsid = al.getId();
             String newid = "-1";
             if (analyse_js.has(JSKEY_LAYERID)) {
-                if (analyse_js.getString(JSKEY_LAYERID).indexOf(LAYER_PREFIX) > -1)
+                if (analyse_js.getString(JSKEY_LAYERID).indexOf(LAYER_PREFIX) == 0)
                 // analyse in Analysislayer (prefix + base analysis wfs layer id
                 // +
                 // analysis_id)
@@ -552,7 +558,7 @@ public class AnalysisDataService {
             json.put(JSKEY_FIELDS, this.getAnalyseNativeFields(al));
             json.put(JSKEY_LOCALES, this.getAnalyseFields(al));
             json.put(JSKEY_WPSURL, analysisRenderingUrl);
-            json.put(JSKEY_WPSNAME, ANALYSIS_WPS_ELEMENT_NAME);
+            json.put(JSKEY_WPSNAME, ANALYSIS_WPS_RENDERING_ELEMENT_NAME);
             json.put(JSKEY_WPSLAYERID, wpsid);
             json.put(JSKEY_RESULT, "");
         } catch (Exception ex) {
@@ -597,7 +603,8 @@ public class AnalysisDataService {
                     }
 
                 }
-
+                // Add geometry for filter and for highlight
+                fm.put(ANALYSIS_GEOMETRY_FIELD);
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);
@@ -623,7 +630,8 @@ public class AnalysisDataService {
                     }
 
                 }
-
+                // Add geometry for filter and for highlight
+                fm.put(ANALYSIS_GEOMETRY_FIELD);
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);

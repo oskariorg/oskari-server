@@ -48,6 +48,8 @@ public class WFSLayerConfiguration {
     private final static String TILE_REQUEST = "tileRequest";
     private final static String WMS_LAYER_ID = "WMSLayerId";
 
+   // for json, if needed private final static String WPS_PARAMS = "wps_params";
+
     private final static String MIN_SCALE = "minScale";
     private final static String MAX_SCALE = "maxScale";
 
@@ -95,6 +97,8 @@ public class WFSLayerConfiguration {
 
 	private double minScale;
 	private double maxScale;
+
+    private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
 
 	// Template Model
 	private String templateName;
@@ -369,8 +373,24 @@ public class WFSLayerConfiguration {
 		this.maxScale = maxScale;
 	}
 
+    /**
+     * Get wps params for WFS layer eg {input_type:gs_vector}
+     * (default is {})
+     * @return
+     */
+    public String getWps_params() {
+        return wps_params;
+    }
 
-	/**
+    /**
+     * Set wps_params (basic field value in portti_wfs_layer)
+     * @param wps_params
+     */
+    public void setWps_params(String wps_params) {
+        this.wps_params = wps_params;
+    }
+
+    /**
 	 * Gets template name
 	 *
 	 * @return template name
@@ -455,6 +475,7 @@ public class WFSLayerConfiguration {
 	public void setSLDStyles(List<WFSSLDStyle> sLDStyles) {
 		SLDStyles = sLDStyles;
 	}
+
 
 	public void save() {
 		JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day

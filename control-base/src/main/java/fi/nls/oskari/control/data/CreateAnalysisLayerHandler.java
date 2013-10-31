@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,25 +52,32 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String PARAM_FILTER = "filter";
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
             "__fid", "metaDataProperty", "description", "name", "boundedBy",
-            "location", "__centerX", "__centerY");
+            "location", "__centerX", "__centerY", "geometry", "geom", "the_geom","uuid");
 
     private static final String INTERNAL_FIELD_PREFIX = "__";
     private static final String LAYER_PREFIX = "analysis_";
+    private static final String MYPLACES_LAYER_PREFIX = "myplaces_";
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
-    private static final String FILTER_ID_TEMPLATE1 = "{\"filters\":[{\"caseSensitive\":false,\"attribute\":\"analysis_id\",\"operator\":\"=\",\"value\":\"{analysisId}\"}]}";
-    private static final String FILTER_ID_TEMPLATE2 = "{\"caseSensitive\":false,\"attribute\":\"analysis_id\",\"operator\":\"=\",\"value\":\"{analysisId}\"}";
-    private static final String FILTER_ID_TEMPLATE3 = "[{\"caseSensitive\":false,\"attribute\":\"analysis_id\",\"operator\":\"=\",\"value\":\"{analysisId}\"}]";
+    private static final String FILTER_ID_TEMPLATE1 = "{\"filters\":[{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}\"}]}";
+    private static final String FILTER_ID_TEMPLATE2 = "{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}}\"}";
+    private static final String FILTER_ID_TEMPLATE3 = "[{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}\"}]";
+
     private static final String GEOSERVER_WPS_URL = "geoserver.wps.url";
 
     private static final String ANALYSIS_INPUT_TYPE_WFS = "wfs";
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
     private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
-    private static final String ANALYSIS_WPS_ELEMENT_NAME = "ana:analysis_data";
+    private static final String ANALYSIS_WPS_RENDERING_ELEMENT_NAME = "ana:analysis_data_style";
     private static final String ANALYSIS_WPS_ELEMENT_LOCALNAME = "analysis_data";
+    private static final String ANALYSIS_PROPERTY_NAME = "analysis_id";
+    private static final String WPS_INPUT_TYPE = "input_type";
+
+    private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
+    private static final String MYPLACES_PROPERTY_NAME = "category_id";
 
     private static final String ANALYSIS_WFST_GEOMETRY = "feature:geometry>";
     private static final String ANALYSIS_WPS_UNION_GEOM = "gml:geom>";
@@ -94,6 +98,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
+    final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
     final String analysisRenderingUrl = PropertyUtil
             .get(ANALYSIS_RENDERING_URL);
 
@@ -193,7 +198,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // analysis rendering url
         analysisLayer.setWpsUrl(analysisRenderingUrl);
         // analysis element name
-        analysisLayer.setWpsName(ANALYSIS_WPS_ELEMENT_NAME);
+        analysisLayer.setWpsName(ANALYSIS_WPS_RENDERING_ELEMENT_NAME);
 
 
         analysisLayer.setInputAnalysisId(null);
@@ -204,13 +209,19 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
             String sid = json.getString(JSON_KEY_LAYERID);
 
-            // Input is wfs layer or analaysis layer
-            if (sid.indexOf(LAYER_PREFIX) > -1) {
+            // Input is wfs layer or analaysis layer or my places
+            if (sid.indexOf(LAYER_PREFIX) == 0 ) {
                 // Analysislayer is input
-                // eg. analyse_216_340
                 if (!this.prepareAnalysis4Analysis(analysisLayer, json))
                     throw new ActionParamsException(
                             "AnalysisInAnalysis parameters are invalid");
+                id = analysisLayer.getId();
+            }
+            else if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+                // myplaces is input
+                if (!this.prepareAnalysis4Myplaces(analysisLayer, json))
+                    throw new ActionParamsException(
+                            "AnalysisInMyPlaces parameters are invalid");
                 id = analysisLayer.getId();
             } else {
                 // Wfs layer id
@@ -231,20 +242,26 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
 
+        // Set WFS input type, other than analysis_ and myplaces_- default is REFERENCE
+        this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
+
         // Extract parameters for analysis methods from layer
 
         String name = json.optString("name");
         if (name.isEmpty()) {
-            throw new ActionParamsException("Fields missing.");
+            throw new ActionParamsException("Analysis name missing.");
         } else {
             analysisLayer.setName(name);
         }
 
         JSONArray fields_in = json.optJSONArray("fields");
         List<String> fields = new ArrayList<String>();
+
         if (fields_in == null) {
             throw new ActionParamsException("Fields missing.");
         } else {
+            // Add fields of WFS service, if empty and all fields mode on
+            if(fields_in.length() == 0) fields_in = this.getWfsFields(analysisLayer);
             // Remove internal fields
             try {
                 for (int i = 0; i < fields_in.length(); i++) {
@@ -290,7 +307,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
-                            .getInputAnalysisId()));
+                            .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
                     this
@@ -310,10 +327,14 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             try {
                 sid = params.getString(JSON_KEY_LAYERID);
                 // Input is wfs layer or analaysis layer
-                if (sid.indexOf(LAYER_PREFIX) > -1) {
+                if (sid.indexOf(LAYER_PREFIX) == 0) {
                     // Analysislayer is input
                     // eg. analyse_216_340
                     id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
+
+                }else if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+                    // Myplaces is input
+                    id2 = ConversionHelper.getInt(myplacesBaseLayerId, 0);
 
                 } else {
                     // Wfs layer id
@@ -333,19 +354,27 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     json, baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            if (sid.indexOf(LAYER_PREFIX) > -1) {
+            if (sid.indexOf(LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
+            // Set WFS input type, other than analysis_ and myplaces_- default is REFERENCE
+            this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
 
             // WFS filter
 
             method.setFilter(this.parseFilter(lc, filter, analysisLayer
-                    .getInputAnalysisId()));
+                    .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
 
-            method.setFilter2(this.parseFilter(lc2, null, this
+            if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+            method.setFilter2(this.parseFilter(lc2, null, null, this
                     .getAnalysisInputId(params)));
+            }
+                else {
+                method.setFilter2(this.parseFilter(lc2, null, this
+                        .getAnalysisInputId(params), null));
+            }
             // WFS Query properties
             method.setProperties(this.parseProperties(
                     analysisLayer.getFields(), lc.getFeatureNamespace(), lc
@@ -363,9 +392,14 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         .optString(JSON_KEY_AGGRE_ATTRIBUTE);
                 if (analysisLayer.getInputType().equals(
                         ANALYSIS_INPUT_TYPE_GS_VECTOR))
+                {
+                    if(analysisLayer.getInputAnalysisId() != null)
+                    {
                     aggre_field = analysisDataService
                             .SwitchField2AnalysisField(aggre_field,
                                     analysisLayer.getInputAnalysisId());
+                    }
+                }
                 JSONArray aggre_func_in = json.getJSONObject(
                         JSON_KEY_METHODPARAMS).optJSONArray(JSON_KEY_FUNCTIONS);
                 List<String> aggre_funcs = new ArrayList<String>();
@@ -401,7 +435,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
-                            .getInputAnalysisId()));
+                            .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
 
         } else if (UNION.equals(analysisMethod)) {
             JSONObject params;
@@ -419,7 +453,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // WFS filter
 
             method.setFilter(this.parseFilter(lc, filter, analysisLayer
-                    .getInputAnalysisId()));
+                    .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
 
             analysisLayer.setAnalysisMethodParams(method);
 
@@ -711,34 +745,61 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      * @throws ActionParamsException
      ************************************************************************/
     private String parseFilter(WFSLayerConfiguration lc, String filter,
-            String analysisId) throws ActionParamsException {
+            String analysisId, String categoryId) throws ActionParamsException {
 
         JSONObject filter_js = null;
         try {
             if (filter == null) {
+                String idfilter = null;
                 if (analysisId != null) {
                     // Add analysis id filter when analysis in analysis
-                    filter_js = JSONHelper.createJSONObject(FILTER_ID_TEMPLATE1
-                            .replace("{analysisId}", analysisId));
+                    idfilter = FILTER_ID_TEMPLATE1.replace("{propertyName}", ANALYSIS_PROPERTY_NAME);
+                    idfilter = idfilter.replace("{propertyValue}", analysisId);
+                } else if (categoryId != null) {
+                    // Add category id filter when myplaces in analysis
+                    idfilter = FILTER_ID_TEMPLATE1.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
+                    idfilter = idfilter.replace("{propertyValue}", categoryId);
                 }
+                if (idfilter != null) filter_js = JSONHelper.createJSONObject(idfilter);
+
             } else {
                 filter_js = JSONHelper.createJSONObject(filter);
                 // Add analysis id filter when analysis in analysis
                 if (filter_js.has(JSON_KEY_FILTERS)) {
+                    String idfilter = null;
                     if (analysisId != null) {
+                        // Add analysis id filter when analysis in analysis
+                        idfilter = FILTER_ID_TEMPLATE2.replace("{propertyName}", ANALYSIS_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", analysisId);
+                    } else if (categoryId != null) {
+                        // Add category id filter when myplaces in analysis
+                        idfilter = FILTER_ID_TEMPLATE2.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", categoryId);
+                    }
+                    if (idfilter != null) {
                         JSONObject analysis_id_filter = JSONHelper
-                                .createJSONObject(FILTER_ID_TEMPLATE2.replace(
-                                        "{analysisId}", analysisId));
+                                .createJSONObject(idfilter);
                         filter_js.getJSONArray(JSON_KEY_FILTERS).put(
                                 analysis_id_filter);
                     }
+
                 } else {
+                    String idfilter = null;
                     if (analysisId != null) {
+                        // Add analysis id filter when analysis in analysis
+                        idfilter = FILTER_ID_TEMPLATE3.replace("{propertyName}", ANALYSIS_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", analysisId);
+                    } else if (categoryId != null) {
+                        // Add category id filter when myplaces in analysis
+                        idfilter = FILTER_ID_TEMPLATE3.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", categoryId);
+                    }
+                    if (idfilter != null) {
                         JSONArray idfilter_js = JSONHelper
-                                .createJSONArray(FILTER_ID_TEMPLATE3.replace(
-                                        "{analysisId}", analysisId));
+                                .createJSONArray(idfilter);
                         filter_js.put(JSON_KEY_FILTERS, idfilter_js);
                     }
+
                 }
             }
         } catch (JSONException e) {
@@ -794,6 +855,56 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         return false;
     }
     /**
+     * Setup extra data for analysis layer when input is myplaces
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     * @param json
+     *            wps analysis parameters
+     * @return false, if no id found
+     */
+    private boolean prepareAnalysis4Myplaces(AnalysisLayer analysisLayer,
+                                             JSONObject json) {
+
+        try {
+
+            String sid = this.getAnalysisInputId(json);
+            if (sid != null) {
+
+                analysisLayer.setId(ConversionHelper.getInt(
+                        myplacesBaseLayerId, 0));
+                analysisLayer.setInputType(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                analysisLayer.setInputCategoryId(sid);
+                return true;
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+
+    /**
+     * Use gs_vector input type, when wfs input layer is in the same server as WPS service
+     * @param wps_params
+     * @param analysisLayer
+     */
+    private void setWpsInputLayerType(String wps_params, AnalysisLayer analysisLayer) {
+
+        try {
+
+            if (!wps_params.equals("{}")) {
+                JSONObject json = JSONHelper.createJSONObject(wps_params);
+                if(json.has(WPS_INPUT_TYPE))
+                {
+                    if(json.getString(WPS_INPUT_TYPE).equals(ANALYSIS_INPUT_TYPE_GS_VECTOR))analysisLayer.setInputType(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
+    /**
      * Set analysis field types
      *
      * @param analysisLayer
@@ -813,7 +924,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     final String value = ftypes.getString(key);
-                    analysisLayer.getFieldtypeMap().put(key.toUpperCase(), value);
+                    analysisLayer.getFieldtypeMap().put(key, value);
                 }
             }
 
@@ -821,6 +932,31 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         }
         return false;
+    }
+    /**
+     * Get WFS service field names
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     *
+     * @return field names
+     */
+    private JSONArray getWfsFields(AnalysisLayer analysisLayer) {
+         JSONArray fields = new JSONArray();
+        try {
+            Map<String,String> map = analysisLayer.getFieldtypeMap();
+            if (map != null)
+            {
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    fields.put( entry.getKey());
+                }
+            }
+
+
+        } catch (Exception e) {
+
+        }
+        return fields;
     }
     /**
      * @param json
@@ -832,13 +968,13 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         try {
 
             String sid = json.optString(JSON_KEY_LAYERID);
-            if (sid.indexOf(LAYER_PREFIX) == -1)
+            if (sid.indexOf(LAYER_PREFIX) == 0 && sid.indexOf(MYPLACES_LAYER_PREFIX) == 0)
                 return null;
             String sids[] = sid.split("_");
-            if (sids.length > 2) {
-                // Old analysis is input for analysis (layerid:
-                // analysis_216_340)
-                return sids[2];
+            if (sids.length > 1) {
+                // Old analysis is input for analysis or myplaces
+
+                return sids[sids.length-1];
             }
         } catch (Exception e) {
             log.debug("Decoding analysis layer id failed: ", e);
