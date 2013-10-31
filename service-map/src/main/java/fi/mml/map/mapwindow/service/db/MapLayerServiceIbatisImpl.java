@@ -266,9 +266,7 @@ public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         final FeatureType ft = new FeatureType();
         ft.setQname(configuration.getFeatureElementQName());
         ft.setWfsService(service);
-        // we need to strip possible namespace for old implementation
-        final String[] geomProps = configuration.getGMLGeometryProperty().split(":");
-        ft.setBboxParameterName(geomProps[geomProps.length - 1]);
+        ft.setBboxParameterName(configuration.getGMLGeometryProperty());
 
         final SelectedFeatureType sft = new SelectedFeatureType();
         sft.setMaxNumDisplayedItems(configuration.getMaxFeatures());

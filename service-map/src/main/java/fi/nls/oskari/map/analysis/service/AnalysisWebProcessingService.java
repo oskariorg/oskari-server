@@ -27,7 +27,31 @@ public class AnalysisWebProcessingService {
 
     private static final String GEOSERVER_WPS_URL = "geoserver.wps.url";
 
-    public String requestFeatureSet(final AnalysisLayer analysisLayer)
+    /**
+     * Get WPS results as wfs FeatureCollection
+     * @param analysisLayer WPS method params
+     * @return response of WPS (xml FeatureCollection)
+     * @throws ServiceException
+     */
+    public String requestFeatureSet(final AnalysisLayer analysisLayer)  throws ServiceException {
+        try {
+            // 1) Get Analysis Specific WPS XML
+            final AnalysisMethodParams methodParams = analysisLayer
+                    .getAnalysisMethodParams();
+            final Document doc = methodParams.getWPSXML2();
+            return this.requestWPS(doc);
+        } catch (Exception e) {
+            throw new ServiceException("requestFeatureSet failed due to wps request build", e);
+        }
+    }
+
+    /**
+     *  Get WPS execute response
+     * @param doc  WPS execute request (xml)
+     * @return
+     * @throws ServiceException
+     */
+    private String requestWPS(final Document doc)
             throws ServiceException {
         InputStream inp = null;
         try {
@@ -41,11 +65,6 @@ public class AnalysisWebProcessingService {
                     "application/xml; charset=UTF-8");
 
             final OutputStream outs = connection.getOutputStream();
-
-            // 1) Get Analysis Specific WPS XML
-            final AnalysisMethodParams methodParams = analysisLayer
-                    .getAnalysisMethodParams();
-            final Document doc = methodParams.getWPSXML2();
 
             // 2) Transform XML to POST body
             // Use a Transformer for output

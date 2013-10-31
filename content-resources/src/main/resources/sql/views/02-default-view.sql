@@ -928,6 +928,7 @@ UPDATE portti_view_bundle_seq set config = '{
         "name": "StatsGrid",
         "sandbox": "sandbox",
         "stateful" : true,
+        "tileClazz": "Oskari.statistics.bundle.statsgrid.Tile",
         "viewClazz": "Oskari.statistics.bundle.statsgrid.StatsView"
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'statsgrid') 
 	AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');

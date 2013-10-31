@@ -89,6 +89,11 @@ public class MapFullServlet extends HttpServlet {
     @Override
     public void init() {
 
+        // create initial content
+        if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
+            DBHandler.createContentIfNotCreated();
+        }
+
         // init jedis
         JedisManager.connect(ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_POOL_SIZE), 30), PropertyUtil
@@ -106,10 +111,6 @@ public class MapFullServlet extends HttpServlet {
         // Get version from init params
         version = getServletConfig().getInitParameter(KEY_VERSION);
 
-        // create initial content
-        if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
-            DBHandler.createContentIfNotCreated();
-        }
     }
 
     /**
@@ -194,12 +195,12 @@ public class MapFullServlet extends HttpServlet {
                     viewService.getDefaultViewId(params.getUser()));
 
             final View view = viewService.getViewWithConf(viewId);
-            log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             if (view == null) {
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
             }
             log.debug("Serving view with id:", view.getId());
+            log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             request.setAttribute("viewId", view.getId());
 
             // viewJSP might change if using dev override

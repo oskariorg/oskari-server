@@ -33,28 +33,26 @@ import java.util.jar.JarFile;
  */
 public class DBHandler {
 
-    static {
-        // populate properties before initializing logger since logger implementation is
-        // configured in properties
+    private static Logger log = LogFactory.getLogger(DBHandler.class);
+
+    public static void main(String[] args) {
+        // populate standalone properties
         InputStream in = null;
         try {
-            Properties prop = new Properties();
+            final Properties prop = new Properties();
             in = DBHandler.class.getResourceAsStream("/db.properties");
             prop.load(in);
             PropertyUtil.addProperties(prop);
+            // replace logger after properties are populated
+            log = LogFactory.getLogger(DBHandler.class);
         } catch (Exception e) {
             System.out.println("Error when populating properties!");
             e.printStackTrace();
         } finally {
             try {
                 in.close();
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) { }
         }
-    }
-    private static Logger log = LogFactory.getLogger(DBHandler.class);
-
-    public static void main(String[] args) {
         // initialize db with demo data if tables are not present
         createContentIfNotCreated();
     }

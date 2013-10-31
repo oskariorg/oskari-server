@@ -14,8 +14,9 @@ public class SLDStoreTest {
         // gtk_wfs should be present
         assertNotSame("Expect 'gtk_wfs' to return some content", "", SLDStore.getSLD("gtk_wfs"));
 
-        // fail cases -> return empty string
-        assertEquals("Expect <null> to return empty SLD", "", SLDStore.getSLD(null));
-        assertEquals("Expect 'test dummy random stuff' to return empty SLD", "", SLDStore.getSLD("test dummy random stuff"));
+        final String defaultSLD = SLDStore.getSLD("default");
+        // fail cases -> return default sld
+        assertEquals("Expect <null> to return default SLD", defaultSLD, SLDStore.getSLD(null));
+        assertEquals("Expect 'test dummy random stuff' to return default SLD", defaultSLD, SLDStore.getSLD("test dummy random stuff"));
     }
 }
