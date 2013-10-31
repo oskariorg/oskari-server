@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fi.nls.oskari.util.ConversionHelper;
+
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.view.modifier.ModifierParams;
 
@@ -19,10 +21,17 @@ public class StatsgridParamHandler extends ParamHandler {
     private static final String PARAM_METHODID = "methodId";
     private static final String PARAM_MANUALBREAKSINPUT = "manualBreaksInput";
     private static final String PARAM_NUMBEROFCLASSES = "numberOfClasses";
+    private static final String PARAM_CLASSIFICATIONMODE = "classificationMode";
+
     private static final String PARAM_INDICATORS = "indicators";
     private static final String KEY_INDICATOR = "indicator";
     private static final String KEY_YEAR = "year";
     private static final String KEY_GENDER = "gender";
+
+    private static final String PARAM_COLORS = "colors";
+    private static final String KEY_COLORSET = "set";
+    private static final String KEY_COLORINDEX = "index";
+    private static final String KEY_COLORFLIPPED = "flipped";
 
     
     public boolean handleParam(final ModifierParams params) throws ModifierException {
@@ -30,11 +39,13 @@ public class StatsgridParamHandler extends ParamHandler {
         if(paramValues == null) {
             return false;
         }
-        log.debug("\n\n\nStatsgridParamHandler got:", paramValues, "\n\n\n\n\n");
+        log.debug("StatsgridParamHandler got:", paramValues, "\n");
 
     	final String[] parts = paramValues.split("-");
-    	if (parts.length != 2) {
+
+    	if (parts.length != 2 && parts.length != 3) {
     		// We need both value and indicator list, if not provided we bail
+            // optional colors part is the third one
     		return false;
     	}
     	// parse values and indicators
@@ -52,7 +63,7 @@ public class StatsgridParamHandler extends ParamHandler {
         }
 
     	// parse values
-    	if (values.length < 4) {
+    	if (values.length < 5) {
     		// We need all known values, if not provided we bail
     		// manualBreaksInput is optional, but we only use the first 5
     		return false;
@@ -63,6 +74,7 @@ public class StatsgridParamHandler extends ParamHandler {
         final String currentColumn = values[1];
         final String methodId = values[2];
         final String numberOfClasses = values[3];
+        final String classificationMode = values[4];
         
        
         try {
@@ -71,16 +83,46 @@ public class StatsgridParamHandler extends ParamHandler {
             statsgridState.put(PARAM_CURRENTCOLUMN, currentColumn);
             statsgridState.put(PARAM_METHODID, methodId);
             statsgridState.put(PARAM_NUMBEROFCLASSES, numberOfClasses);
-            if (values.length > 4) {
+            statsgridState.put(PARAM_CLASSIFICATIONMODE, classificationMode);
+            if (values.length > 5) {
             	// parse optional parameters 
-                final String manualBreaksInput = values[4];
+                final String manualBreaksInput = values[5];
             	statsgridState.put(PARAM_MANUALBREAKSINPUT, manualBreaksInput);
+            }
+            if (parts.length == 3) {
+                final String[] colors = parts[2].split(",");
+                JSONObject colorsJson = getColorsJson(colors);
+                if (colorsJson != null) {
+                    statsgridState.put(PARAM_COLORS, colorsJson);
+                }
             }
             statsgridState.put(PARAM_INDICATORS, indicatorsJson);
         } catch (JSONException je) {
             throw new ModifierException("Could not replace statsgrid state!");
         }
         return false;
+    }
+
+    public static JSONObject getColorsJson(final String[] colors) {
+        if (colors.length == 3) {
+            final JSONObject colorsJson = new JSONObject();
+            final String colorSet = colors[0];
+            final int colorIndex = ConversionHelper.getInt(colors[1], 0);
+            final Boolean colorsFlipped = ConversionHelper.getBoolean(colors[2], false);
+
+            try {
+                colorsJson.put(KEY_COLORSET, colorSet);
+                colorsJson.put(KEY_COLORINDEX, colorIndex);
+                colorsJson.put(KEY_COLORFLIPPED, colorsFlipped);
+
+                return colorsJson;
+            } catch (JSONException je) {
+                log.warn("Could not create colors JSON from params:", colors);
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
     
     public static JSONObject getIndicatorJson(final String[] indicatorParam, final String referer) throws ModifierException {
