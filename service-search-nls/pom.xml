@@ -44,24 +44,6 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>fi.mml</groupId>
-            <artifactId>aitta-rekisterihaku</artifactId>
-            <version>1.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.mml</groupId>
-            <artifactId>java_projections</artifactId>
-            <version>2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.1.0.7.0-Production</version>
-        </dependency>
         <dependency>
             <groupId>javax.xml</groupId>
             <artifactId>jsr173</artifactId>
@@ -87,5 +69,19 @@
             <version>4.4</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+      	    <groupId>org.deegree2</groupId>
+                <artifactId>deegree2-core</artifactId>
+                <version>2.6-pre1</version>
+        </dependency>
+</dependencies>
+<repositories>
+    <repository>
+        <id>deegree-repo</id>
+        <url>http://repo.deegree.org/content/groups/public/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
 </project>
