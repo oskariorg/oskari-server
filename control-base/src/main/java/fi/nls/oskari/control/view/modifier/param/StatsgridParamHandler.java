@@ -63,7 +63,7 @@ public class StatsgridParamHandler extends ParamHandler {
         }
 
     	// parse values
-    	if (values.length < 5) {
+    	if (values.length < 4) {
     		// We need all known values, if not provided we bail
     		// manualBreaksInput is optional, but we only use the first 5
     		return false;
@@ -74,7 +74,6 @@ public class StatsgridParamHandler extends ParamHandler {
         final String currentColumn = values[1];
         final String methodId = values[2];
         final String numberOfClasses = values[3];
-        final String classificationMode = values[4];
         
        
         try {
@@ -83,8 +82,11 @@ public class StatsgridParamHandler extends ParamHandler {
             statsgridState.put(PARAM_CURRENTCOLUMN, currentColumn);
             statsgridState.put(PARAM_METHODID, methodId);
             statsgridState.put(PARAM_NUMBEROFCLASSES, numberOfClasses);
-            statsgridState.put(PARAM_CLASSIFICATIONMODE, classificationMode);
-            if (values.length > 5) {
+            if (values.length == 5) {
+                final String classificationMode = values[4];
+                statsgridState.put(PARAM_CLASSIFICATIONMODE, classificationMode);
+            }
+            if (values.length == 6) {
             	// parse optional parameters 
                 final String manualBreaksInput = values[5];
             	statsgridState.put(PARAM_MANUALBREAKSINPUT, manualBreaksInput);
