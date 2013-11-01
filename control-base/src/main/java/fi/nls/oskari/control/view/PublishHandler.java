@@ -65,7 +65,7 @@ public class PublishHandler extends ActionHandler {
         CLASS_WHITELIST.add("top");
         CLASS_WHITELIST.add("right");
         CLASS_WHITELIST.add("bottom");
-        CLASS_WHITELIST.add("right");
+        CLASS_WHITELIST.add("left");
         CLASS_WHITELIST.add("with-panbuttons");
     }
     private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
