@@ -127,7 +127,17 @@ public class WFSFilterBuilder {
                 final String attribute = filter_item.optString(KEY_ATTRIBUTE);
                 final Object value = filter_item.opt(KEY_VALUE);
 
-                final Filter filter = getFilter(operator, attribute, value);
+                Filter filter = getFilter(operator, attribute, value);
+
+                if (filter == null) {
+                    // Special case for NOT like operator
+                    filter = getNotFilter(operator, attribute, value);
+                    if (filter != null) {
+                        isAnd = false;
+                        isOr = false;
+                        isNot = true;
+                    }
+                }
 
                 if (filter != null) {
                     if (isAnd)
@@ -181,6 +191,13 @@ public class WFSFilterBuilder {
         }
     }
 
+    /**
+     * Creates a filter based on given parameters in analysis
+     * @param operator filter operator
+     * @param attribute WFS property name
+     * @param value  filter property value
+     * @return
+     */
     private static Filter getFilter(final String operator,
             final String attribute, final Object value) {
         final boolean matchCase = false;
@@ -213,6 +230,26 @@ public class WFSFilterBuilder {
         return null;
     }
 
+    /**
+     * Creates a filter based on given parameters in analysis
+     * Only for operator  "~≠"  NOT like
+     * @param operator filter operator
+     * @param attribute WFS property name
+     * @param value  filter property value
+     * @return
+     */
+    private static Filter getNotFilter(final String operator,
+                                    final String attribute, final Object value) {
+        final boolean matchCase = false;
+
+        if ("~≠".equals(operator)) {
+            List<Filter> nlikes = new ArrayList<Filter>();
+            nlikes.add(ff.like(ff.property(attribute), (String) value, "*", "#",
+                    "!", matchCase));
+            return ff.and(nlikes);
+        }
+        return null;
+    }
     /**
      * Creates WFS BBOX filter for WFS query
      * @param filter_js analysis filter json
@@ -288,6 +325,7 @@ public class WFSFilterBuilder {
         }
         if(!query.isEmpty())
         {
+            // geometry is not retreaved, if this is lacking
             String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
             query = query + temp;
         }

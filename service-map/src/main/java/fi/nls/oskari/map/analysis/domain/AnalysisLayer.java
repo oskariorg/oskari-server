@@ -19,6 +19,7 @@ public class AnalysisLayer {
     private String subtitle = "";
     private String inputType = "";
     private String inputAnalysisId = null;
+    private String inputCategoryId = null;
     
     private String orgName = "";
     private String inspire = "";
@@ -316,4 +317,11 @@ public class AnalysisLayer {
         }
     }
 
+    public void setInputCategoryId(String inputCategoryId) {
+        this.inputCategoryId = inputCategoryId;
+    }
+
+    public String getInputCategoryId() {
+        return inputCategoryId;
+    }
 }
