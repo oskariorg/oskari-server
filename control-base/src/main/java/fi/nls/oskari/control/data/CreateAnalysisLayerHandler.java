@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.data;
 
+import java.net.URL;
 import java.util.*;
 
 import org.json.JSONArray;
@@ -97,10 +98,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FILTERS = "filters";
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
 
-    final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
-    final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
-    final String analysisRenderingUrl = PropertyUtil
-            .get(ANALYSIS_RENDERING_URL);
+    final private static String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
+    final private static String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
+    final private static String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
+    final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
+
 
     /**
      * Handles action_route CreateAnalysisLayer
@@ -692,13 +694,19 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      * @return String baseurl for Geoserver WPS reference WFS data input
      ************************************************************************/
     public String getBaseProxyUrl(ActionParameters params) {
-        // TODO: baseurl setup to properties
-        String baseurl = params.getRequest().getRequestURL().toString().split(
-                "/portti2")[0];
+        String baseurl = GEOSERVER_PROXY_BASE_URL;
+        if(baseurl == null) {
+            try {
+                final URL url = new URL(params.getRequest().getRequestURL().toString());
+                baseurl = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
+            }
+            catch (Exception ignored) { }
+        }
 
         final String baseAjaxUrl = PropertyUtil.get(params.getLocale(),
                 GetAppSetupHandler.PROPERTY_AJAXURL);
         baseurl = baseurl + baseAjaxUrl + PARAMS_PROXY;
+        log.debug("Analysis baseURL:", baseurl);
         return baseurl;
     }
 
