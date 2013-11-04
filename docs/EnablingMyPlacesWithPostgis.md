@@ -71,5 +71,5 @@ content-resources/src/main/resources/json/views/postgres-myplaces-view.json
 
 wmsUrl should be normal ajax url (default is /?) + action_route=MyPlacesTile&myCat=
 
-You may also need to change service-map/src/main/resources/fi/nls/oskari/map/myplaces/serviceGetFeatureInfoMyPlaces.xsl to point to your geoserver location.
+You may also need to change service-map/src/main/resources/fi/nls/oskari/map/myplaces/service/GetFeatureInfoMyPlaces.xsl to point to your geoserver location.
 
