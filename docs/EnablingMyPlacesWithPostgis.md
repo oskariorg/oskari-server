@@ -66,5 +66,10 @@ Build with
 A Logged in user should be able to use myplaces
 
 7) You can set feature namespace and ajax url according to your environment.
-Example configuration can be found in content-resources/json/views/postgres-myplaces-view.json.
+Example configuration can be found in 
+content-resources/src/main/resources/json/views/postgres-myplaces-view.json
+
 wmsUrl should be normal ajax url (default is /?) + action_route=MyPlacesTile&myCat=
+
+You may also need to change service-map/src/main/resources/fi/nls/oskari/map/myplaces/serviceGetFeatureInfoMyPlaces.xsl to point to your geoserver location.
+
