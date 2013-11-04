@@ -618,7 +618,14 @@ public class AnalysisParser {
             // Add field name
             final AggregateMethodParams aggreParams = (AggregateMethodParams) analysisLayer
                     .getAnalysisMethodParams();
-            json.put("fieldName", aggreParams.getAggreField1());
+            String fieldName = aggreParams.getAggreField1();
+            if(analysisLayer.getInputAnalysisId() != null)
+            {
+                fieldName = analysisDataService
+                        .SwitchField2OriginalField(fieldName,
+                                analysisLayer.getInputAnalysisId());
+            }
+            json.put("fieldName", fieldName);
             return json.toString();
 
         } catch (JSONException e) {

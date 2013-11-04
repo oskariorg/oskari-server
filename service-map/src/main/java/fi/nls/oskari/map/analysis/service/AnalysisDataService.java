@@ -300,11 +300,13 @@ public class AnalysisDataService {
     }
 
     /**
+     * Switch field name to analysis field name
+     * (nop, if field name already analysis field name)
      * @param field_in
      *            original field name
      * @param analysis_id
      *            analysis_id of input analysis
-     * @return List of field names mapping
+     * @return field name in analysis (eg.t1)
      */
     public String SwitchField2AnalysisField(String field_in, String analysis_id) {
 
@@ -320,7 +322,29 @@ public class AnalysisDataService {
 
         return field_in;
     }
+    /**
+     * Switch field name to original field name
+     * (nop, if field name already analysis field name)
+     * @param field_in
+     *            analysis field name (eg. t1)
+     * @param analysis_id
+     *            analysis_id of input analysis
+     * @return field name in original wfs layer (eg. rakennustunnus)
+     */
+    public String SwitchField2OriginalField(String field_in, String analysis_id) {
 
+        Map<String, String> colnames = this.getAnalysisColumns(analysis_id);
+
+        for (Map.Entry<String, String> entry : colnames.entrySet()) {
+            String key = entry.getKey();
+            if (key.toUpperCase().equals(field_in.toUpperCase())) {
+                return entry.getValue();
+            }
+
+        }
+
+        return field_in;
+    }
     /**
      * @param uid
      *            User uuid
