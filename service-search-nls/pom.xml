@@ -70,18 +70,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-      	    <groupId>org.deegree2</groupId>
-                <artifactId>deegree2-core</artifactId>
-                <version>2.6-pre1</version>
+            <groupId>org.deegree</groupId>
+            <artifactId>deegree</artifactId>
+            <version>2</version>
         </dependency>
 </dependencies>
-<repositories>
-    <repository>
-        <id>deegree-repo</id>
-        <url>http://repo.deegree.org/content/groups/public/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
 </project>

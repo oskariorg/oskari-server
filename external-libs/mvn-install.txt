@@ -3,6 +3,16 @@ mvn install:install-file -Dfile=capabilities_1_3_0.jar -DgroupId=fi.mml -Dartifa
 
 mvn install:install-file -Dfile=wms111.jar -DgroupId=fi.mml -DartifactId=wms -Dversion=1.1.1 -Dpackaging=jar
 
+
+mvn install:install-file -Dfile=aitta-rekisterihaku-1.3.jar -DgroupId=fi.mml -DartifactId=aitta-rekisterihaku -Dversion=1.3 -Dpackaging=jar
+
+mvn install:install-file -Dfile=deegree2.jar -DgroupId=org.deegree -DartifactId=deegree -Dversion=2 -Dpackaging=jar
+
+
+mvn install:install-file -Dfile=java_projections-2.0.jar -DgroupId=fi.mml -DartifactId=java_projections -Dversion=2.0 -Dpackaging=jar
+
 mvn install:install-file -Dfile=nameregister.jar -DgroupId=fi.mml -DartifactId=nameregister -Dversion=1.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=ojdbc6.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.1.0.7.0-Production -Dpackaging=jar
 
 mvn install:install-file -Dfile=liferay-rhino.jar -DgroupId=com.liferay.rhino -DartifactId=liferay-rhino -Dversion=1.0 -Dpackaging=jar
