@@ -1,6 +1,7 @@
 {
     "create" : [
-        "00-create-tables.sql"
+        "00-create-tables.sql",
+        "create-myplaces-tables.sql"
     ],
     "bundles" : {
         "framework" : [
@@ -45,7 +46,6 @@
         "postgres-myplaces-view.json"
     ],
     "sql" : [
-        "create-myplaces-tables.sql",
         "exampleLayersAndRoles.sql"  
     ]
 }
