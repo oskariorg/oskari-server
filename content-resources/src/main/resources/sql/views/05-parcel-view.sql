@@ -12,20 +12,18 @@ SELECT b.name, s.config, s.state, s.startup
     FROM portti_view_bundle_seq s, portti_bundle b 
     WHERE s.bundle_id = b.id AND s.view_id = 
         (SELECT max(v.id) FROM portti_view v, portti_view_supplement s 
-            WHERE v.supplement_id = s.id AND s.app_startup = 'parcel')
-    ORDER BY v.id, s.seqno;
+            WHERE v.supplement_id = s.id AND v.page = 'parcel')
+    ORDER BY s.view_id, s.seqno;
 
 
 --------------------------------------------
 -- Supplement
 -- TODO: This should be refactored so view is inserted first 
 -- and supplement should contain some sane values
---   app_startup == js app folder
---   baseaddress == jsp-file
 --------------------------------------------
 
-INSERT INTO portti_view_supplement (app_startup, baseaddress, is_public, lang, old_id)
-    VALUES ('parcel', 'parcel', true, 'fi', -1);
+INSERT INTO portti_view_supplement (is_public, lang, creator)
+    VALUES (true, 'fi', 10110);
 
 --------------------------------------------
 -- View
