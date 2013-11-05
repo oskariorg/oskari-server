@@ -410,7 +410,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             } else if (PROPERTY_IS_COMP_OPERATION.equals(operationType)) {
                 PropertyIsCOMPOperation op = new PropertyIsCOMPOperation(
                         operationId,
-                        new PropertyName(searchElementName),
+                        new PropertyName(new QualifiedName(searchElementName)),
                         new Literal(searchCriterion),
                         false);
 
