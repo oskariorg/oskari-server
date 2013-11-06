@@ -13,6 +13,13 @@ public class AnalysisStyle {
     private long dot_size;
     private long border_width;
     private String border_color;
+    private String dot_shape;
+    private String stroke_linejoin;
+    private int fill_pattern;
+    private String stroke_linecap;
+    private String stroke_dasharray;
+    private String border_linejoin;
+    private String border_dasharray;
 
     public void populateFromJSON(final JSONObject stylejs) throws JSONException {
         try {
@@ -24,9 +31,17 @@ public class AnalysisStyle {
             setFill_color(stylejs.getJSONObject("area").optString("fillColor"));
             setStroke_color(stylejs.getJSONObject("line").optString("color"));
             setStroke_width(stylejs.getJSONObject("line").optInt("size"));
-        } catch(Exception ex) {
+            setDot_shape("");
+            setStroke_linejoin("");
+            setFill_pattern(-1);
+            setStroke_linecap("");
+            setStroke_dasharray("");
+            setBorder_linejoin("");
+            setBorder_dasharray("");
+        } catch (Exception ex) {
             throw new JSONException(ex);
         }
+
     }
 
     public long getId() {
@@ -77,5 +92,60 @@ public class AnalysisStyle {
     public void setBorder_color(String borderColor) {
         border_color = borderColor;
     }
-   
+
+    public String getDot_shape() {
+        return dot_shape;
+    }
+
+    public void setDot_shape(String dot_shape) {
+        this.dot_shape = dot_shape;
+    }
+
+    public String getStroke_linejoin() {
+        return stroke_linejoin;
+    }
+
+    public void setStroke_linejoin(String stroke_linejoin) {
+        this.stroke_linejoin = stroke_linejoin;
+    }
+
+    public int getFill_pattern() {
+        return fill_pattern;
+    }
+
+    public void setFill_pattern(int fill_pattern) {
+        this.fill_pattern = fill_pattern;
+    }
+
+    public String getStroke_linecap() {
+        return stroke_linecap;
+    }
+
+    public void setStroke_linecap(String stroke_linecap) {
+        this.stroke_linecap = stroke_linecap;
+    }
+
+    public String getStroke_dasharray() {
+        return stroke_dasharray;
+    }
+
+    public void setStroke_dasharray(String stroke_dasharray) {
+        this.stroke_dasharray = stroke_dasharray;
+    }
+
+    public String getBorder_linejoin() {
+        return border_linejoin;
+    }
+
+    public void setBorder_linejoin(String border_linejoin) {
+        this.border_linejoin = border_linejoin;
+    }
+
+    public String getBorder_dasharray() {
+        return border_dasharray;
+    }
+
+    public void setBorder_dasharray(String border_dasharray) {
+        this.border_dasharray = border_dasharray;
+    }
 }
