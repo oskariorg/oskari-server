@@ -40,6 +40,7 @@ public class AnalysisLayer {
     private long wpsLayerId = 0;
     private AnalysisMethodParams analysisMethodParams;
     private String filter;
+    private List<Long> mergeAnalysisIds;
 
     public String getType() {
         return type;
@@ -221,6 +222,14 @@ public class AnalysisLayer {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public List<Long> getMergeAnalysisIds() {
+        return mergeAnalysisIds;
+    }
+
+    public void setMergeAnalysisIds(List<Long> mergeAnalysisIds) {
+        this.mergeAnalysisIds = mergeAnalysisIds;
     }
 
     public JSONObject getJSON() throws JSONException {

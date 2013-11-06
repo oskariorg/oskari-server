@@ -25,6 +25,7 @@ public class Analysis {
     private String col9;
     private String col10;
     private String select_to_data;
+    private long old_id;
 
     public long getId() {
         return id;
@@ -32,6 +33,14 @@ public class Analysis {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getOld_id() {
+        return old_id;
+    }
+
+    public void setOld_id(long old_id) {
+        this.old_id = old_id;
     }
 
     public String getUuid() {

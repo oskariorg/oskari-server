@@ -174,6 +174,61 @@ public class AnalysisDataService {
     }
 
     /**
+     * Merge analyses to one new analyse
+     * @param analysislayer data for new analyse
+     * @param json params of executed analyse
+     * @param user
+     * @return Analysis (stored analysis)
+     */
+
+    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) {
+
+        final AnalysisStyle style = new AnalysisStyle();
+        Analysis analysis = null;
+
+        try {
+            // Insert style row
+            final JSONObject stylejs = JSONHelper
+                    .createJSONObject(analysislayer.getStyle());
+            style.populateFromJSON(stylejs);
+        } catch (JSONException e) {
+            log.debug("Unable to get AnalysisLayer style JSON", e);
+        }
+        // FIXME: do we really want to insert possibly empty style??
+        log.debug("Adding style", style);
+        styleService.insertAnalysisStyleRow(style);
+        // Get analysis Ids for to merge
+        List<Long> ids = analysislayer.getMergeAnalysisIds();
+        // at least two layers must be  for merge
+        if(ids.size() < 2) return null;
+
+        try {
+            // Insert analysis row - use old for seed
+            analysis = analysisService.getAnalysisById(ids.get(0));
+            // --------------------
+            analysis.setAnalyse_json(json.toString());
+            analysis.setLayer_id(analysislayer.getId());
+            analysis.setName(analysislayer.getName());
+            analysis.setStyle_id(style.getId());
+            analysis.setUuid(user.getUuid());
+            analysis.setOld_id(ids.get(0));
+            log.debug("Adding analysis row", analysis);
+            analysisService.insertAnalysisRow(analysis);
+
+            // Merge analysis_data
+            // ----------------------------------
+            log.debug("Merge analysis_data rows", analysis);
+            analysisService.mergeAnalysis(analysis, ids);
+
+
+        } catch (Exception e) {
+            log.debug("Unable to join and merge analysis data", e);
+            return null;
+        }
+
+        return analysis;
+    }
+    /**
      * Get analysis columns to Map
      * 
      * @param analysis_id
@@ -487,7 +542,5 @@ public class AnalysisDataService {
         }
         return fm;
     }
-
-
 
 }
