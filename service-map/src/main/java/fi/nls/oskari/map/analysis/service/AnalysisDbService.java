@@ -15,5 +15,6 @@ public interface AnalysisDbService extends BaseService<Analysis> {
         public List<Analysis> getAnalysisByUid(String uid);
         public void deleteAnalysisById(final long id) throws ServiceException;
         public void deleteAnalysis(final Analysis analysis) throws ServiceException;
+        public void mergeAnalysis(final Analysis analysis, final List<Long> ids) throws ServiceException;
 
 }

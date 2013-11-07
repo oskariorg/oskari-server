@@ -105,5 +105,33 @@ public class AnalysisDbServiceIbatisImpl extends
         }
     }
 
+    public void mergeAnalysis(final Analysis analysis, final List<Long> ids) throws ServiceException {
+        if (ids == null) {
+            throw new ServiceException("Tried to merge analysis with <null> param");
+        }
+
+        if (ids.size() > 1) {
+            final SqlMapSession session = openSession();
+            try {
+                session.startTransaction();
+                // replace data of old analysises to new analysis
+                for (long id : ids) {
+                    analysis.setOld_id(id);
+                    session.update(getNameSpace() + ".merge-analysis-data", analysis);
+                }
+                for (long id : ids) {
+                    Analysis analysis_old = queryForObject(getNameSpace() + ".findAnalysis", id);
+                    session.delete(getNameSpace() + ".delete-analysis", id);
+                    // style is for now 1:1 to analysis so we can delete it here
+                    session.delete(getNameSpace() + ".delete-analysis-style", analysis_old.getStyle_id());
+                }
+                session.commitTransaction();
+            } catch (Exception e) {
+                throw new ServiceException("Error merging analysis data with id:" + ids.get(0), e);
+            } finally {
+                endSession(session);
+            }
+        }
+    }
 
 }
