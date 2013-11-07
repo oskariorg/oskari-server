@@ -1,5 +1,6 @@
 package fi.nls.oskari.domain.map.analysis;
 
+import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,13 +32,13 @@ public class AnalysisStyle {
             setFill_color(stylejs.getJSONObject("area").optString("fillColor"));
             setStroke_color(stylejs.getJSONObject("line").optString("color"));
             setStroke_width(stylejs.getJSONObject("line").optInt("size"));
-            setDot_shape("");
-            setStroke_linejoin("");
-            setFill_pattern(-1);
-            setStroke_linecap("");
-            setStroke_dasharray("");
-            setBorder_linejoin("");
-            setBorder_dasharray("");
+            setDot_shape(stylejs.getJSONObject("dot").optString("shape"));
+            setStroke_linejoin(stylejs.getJSONObject("line").optString("corner"));
+            setFill_pattern(ConversionHelper.getInt(stylejs.getJSONObject("area").optString("fillStyle"), -1));
+            setStroke_linecap(stylejs.getJSONObject("line").optString("cap"));
+            setStroke_dasharray(stylejs.getJSONObject("line").optString("style"));
+            setBorder_linejoin(stylejs.getJSONObject("area").optString("lineCorner"));
+            setBorder_dasharray(stylejs.getJSONObject("area").optString("lineStyle"));
         } catch (Exception ex) {
             throw new JSONException(ex);
         }
