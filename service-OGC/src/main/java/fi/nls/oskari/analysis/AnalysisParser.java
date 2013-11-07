@@ -855,7 +855,7 @@ public class AnalysisParser {
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     final String value = ftypes.getString(key);
-                    analysisLayer.getFieldtypeMap().put(key, value);
+                    analysisLayer.getFieldtypeMap().put(key.toUpperCase(), value);
                 }
             }
 

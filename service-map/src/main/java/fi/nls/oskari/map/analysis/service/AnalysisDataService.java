@@ -272,6 +272,8 @@ public class AnalysisDataService {
             Analysis analysis = analysisService
                     .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
             if (analysis != null) {
+                // fixed extra becauseof WFS
+               // columnNames.add("__fid");
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
@@ -313,7 +315,7 @@ public class AnalysisDataService {
                             if (field.substring(0, 1).equals("n")) wfstype = NUMERIC_FIELD_TYPE;
                             //TODO: add "date" type management  (Date, dateTime)
 
-                            columnTypes.put(field, wfstype);
+                            columnTypes.put(field.toUpperCase(), wfstype);
                         }
                     }
 
@@ -509,6 +511,8 @@ public class AnalysisDataService {
                 }
                 // Add geometry for filter and for highlight
                 fm.put(ANALYSIS_GEOMETRY_FIELD);
+                fm.put("x");
+                fm.put("y");
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);
@@ -525,6 +529,8 @@ public class AnalysisDataService {
         JSONArray fm = new JSONArray();
         try {
             if (analysis != null) {
+                // Fixed 1st is ID
+                fm.put("__fid");
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
@@ -536,11 +542,12 @@ public class AnalysisDataService {
                 }
                 // Add geometry for filter and for highlight
                 fm.put(ANALYSIS_GEOMETRY_FIELD);
+                fm.put("__centerX");
+                fm.put("__centerY");
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);
         }
         return fm;
     }
-
 }

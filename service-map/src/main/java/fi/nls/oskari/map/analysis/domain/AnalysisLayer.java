@@ -14,6 +14,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 
 public class AnalysisLayer {
     private final String type = "analysislayer";
+    private final String ANALYSIS_GEOMETRY_FIELD = "geometry";
     private int id = 0;
     private String name = "";
     private String subtitle = "";
@@ -302,6 +303,10 @@ public class AnalysisLayer {
                 }
 
             }
+            // Add geometry for filter and for highlight
+            this.locales.add(ANALYSIS_GEOMETRY_FIELD);
+            this.locales.add("x");
+            this.locales.add("y");
 
         }
 
@@ -312,7 +317,7 @@ public class AnalysisLayer {
         if (analysis != null) {
             this.fields.clear();
             // Fixed 1st is ID
-            this.fields.add("ID");
+            this.fields.add("__fid");
             for (int j = 1; j < 11; j++) {
                 String colx = analysis.getColx(j);
                 if (colx != null && !colx.isEmpty()) {
@@ -322,6 +327,9 @@ public class AnalysisLayer {
                 }
 
             }
+            this.fields.add(ANALYSIS_GEOMETRY_FIELD);
+            this.fields.add("__centerX");
+            this.fields.add("__centerY");
 
         }
     }
