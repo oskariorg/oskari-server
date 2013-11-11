@@ -37,7 +37,7 @@ public class AnalysisParser {
 
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
-            "__fid", "metaDataProperty", "description", "name", "boundedBy",
+            "__fid", "metaDataProperty", "description", "boundedBy", "name",
             "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
 
 
@@ -207,6 +207,8 @@ public class AnalysisParser {
         analysisLayer.setMethod(analysisMethod);
 
         analysisLayer.setAggreFunctions(null);
+        analysisLayer.setMergeAnalysisLayers(null);
+
         //------------------LAYER_UNION -----------------------
         if (LAYER_UNION.equals(analysisMethod)) {
          JSONObject params;
@@ -218,18 +220,26 @@ public class AnalysisParser {
                 JSONArray sids = params.optJSONArray(JSON_KEY_LAYERS);
                 // Loop merge layers - get analysis ids
                 List<Long> ids = new ArrayList<Long>();
+                List<String> mergelays = new ArrayList<String>();
                 if (sids == null) {
                     throw new ServiceException("merge layers missing");
                 } else {
                     try {
                         for (int i = 0; i < sids.length(); i++) {
                             Long aid = this.getAnalysisId(sids.getString(i));
-                            if (aid > 0) ids.add(aid);
+                            if (aid > 0)
+                            {
+                                ids.add(aid);
+                                mergelays.add(sids.getString(i));
+                            }
                         }
                     } catch (JSONException e) {
                         throw new ServiceException("Merge layers missing.");
                     }
+                    // Merge analysis Ids
                     analysisLayer.setMergeAnalysisIds(ids);
+                    // Merge analysis Layers
+                    analysisLayer.setMergeAnalysisLayers(mergelays);
                 }
         }
         //------------------ BUFFER -----------------------
@@ -855,7 +865,7 @@ public class AnalysisParser {
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     final String value = ftypes.getString(key);
-                    analysisLayer.getFieldtypeMap().put(key.toUpperCase(), value);
+                    analysisLayer.getFieldtypeMap().put(key, value);
                 }
             }
 

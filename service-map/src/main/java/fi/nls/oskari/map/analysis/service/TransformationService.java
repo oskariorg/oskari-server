@@ -204,10 +204,10 @@ public class TransformationService {
     private Double getFieldAsNumeric(String fieldName, String strVal, Map<String,String> fieldTypes)
     {
         Double numericValue = null;
-       if(fieldTypes.containsKey(fieldName.toUpperCase()))
+       if(fieldTypes.containsKey(fieldName))
        {
            //Check type
-           if(fieldTypes.get(fieldName.toUpperCase()).equals(NUMERIC_FIELD_TYPE))
+           if(fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE))
            {
                try {
                    numericValue = Double.parseDouble(strVal);

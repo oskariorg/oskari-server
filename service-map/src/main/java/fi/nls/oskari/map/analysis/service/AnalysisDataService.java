@@ -315,7 +315,7 @@ public class AnalysisDataService {
                             if (field.substring(0, 1).equals("n")) wfstype = NUMERIC_FIELD_TYPE;
                             //TODO: add "date" type management  (Date, dateTime)
 
-                            columnTypes.put(field.toUpperCase(), wfstype);
+                            columnTypes.put(field, wfstype);
                         }
                     }
 
@@ -371,7 +371,7 @@ public class AnalysisDataService {
 
         for (Map.Entry<String, String> entry : colnames.entrySet()) {
             String key = entry.getKey();
-            if (entry.getValue().toUpperCase().equals(field_in.toUpperCase())) {
+            if (entry.getValue().equals(field_in)) {
                 return key;
             }
 
@@ -394,7 +394,7 @@ public class AnalysisDataService {
 
         for (Map.Entry<String, String> entry : colnames.entrySet()) {
             String key = entry.getKey();
-            if (key.toUpperCase().equals(field_in.toUpperCase())) {
+            if (key.equals(field_in)) {
                 return entry.getValue();
             }
 

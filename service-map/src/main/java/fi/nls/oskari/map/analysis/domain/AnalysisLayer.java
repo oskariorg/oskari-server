@@ -42,6 +42,7 @@ public class AnalysisLayer {
     private AnalysisMethodParams analysisMethodParams;
     private String filter;
     private List<Long> mergeAnalysisIds;
+    private List<String> mergeAnalysisLayers;
 
     public String getType() {
         return type;
@@ -233,6 +234,14 @@ public class AnalysisLayer {
         this.mergeAnalysisIds = mergeAnalysisIds;
     }
 
+    public List<String> getMergeAnalysisLayers() {
+        return mergeAnalysisLayers;
+    }
+
+    public void setMergeAnalysisLayers(List<String> mergeAnalysisLayers) {
+        this.mergeAnalysisLayers = mergeAnalysisLayers;
+    }
+
     public JSONObject getJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
@@ -260,6 +269,13 @@ public class AnalysisLayer {
         json.put("wpsName", this.getWpsName());
         json.put("wpsLayerId", this.getWpsLayerId());
         json.put("result", this.getResult());
+        JSONArray mlayers = new JSONArray();
+        if (this.getMergeAnalysisLayers() != null) {
+            for (String lay : this.getMergeAnalysisLayers()) {
+                mlayers.put(lay);
+            }
+        }
+        json.put("mergeLayers", mlayers);
 
         return json;
     }
