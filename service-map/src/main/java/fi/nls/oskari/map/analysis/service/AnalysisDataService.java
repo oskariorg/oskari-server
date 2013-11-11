@@ -174,6 +174,61 @@ public class AnalysisDataService {
     }
 
     /**
+     * Merge analyses to one new analyse
+     * @param analysislayer data for new analyse
+     * @param json params of executed analyse
+     * @param user
+     * @return Analysis (stored analysis)
+     */
+
+    public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) {
+
+        final AnalysisStyle style = new AnalysisStyle();
+        Analysis analysis = null;
+
+        try {
+            // Insert style row
+            final JSONObject stylejs = JSONHelper
+                    .createJSONObject(analysislayer.getStyle());
+            style.populateFromJSON(stylejs);
+        } catch (JSONException e) {
+            log.debug("Unable to get AnalysisLayer style JSON", e);
+        }
+        // FIXME: do we really want to insert possibly empty style??
+        log.debug("Adding style", style);
+        styleService.insertAnalysisStyleRow(style);
+        // Get analysis Ids for to merge
+        List<Long> ids = analysislayer.getMergeAnalysisIds();
+        // at least two layers must be  for merge
+        if(ids.size() < 2) return null;
+
+        try {
+            // Insert analysis row - use old for seed
+            analysis = analysisService.getAnalysisById(ids.get(0));
+            // --------------------
+            analysis.setAnalyse_json(json.toString());
+            analysis.setLayer_id(analysislayer.getId());
+            analysis.setName(analysislayer.getName());
+            analysis.setStyle_id(style.getId());
+            analysis.setUuid(user.getUuid());
+            analysis.setOld_id(ids.get(0));
+            log.debug("Adding analysis row", analysis);
+            analysisService.insertAnalysisRow(analysis);
+
+            // Merge analysis_data
+            // ----------------------------------
+            log.debug("Merge analysis_data rows", analysis);
+            analysisService.mergeAnalysis(analysis, ids);
+
+
+        } catch (Exception e) {
+            log.debug("Unable to join and merge analysis data", e);
+            return null;
+        }
+
+        return analysis;
+    }
+    /**
      * Get analysis columns to Map
      * 
      * @param analysis_id
@@ -217,6 +272,8 @@ public class AnalysisDataService {
             Analysis analysis = analysisService
                     .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
             if (analysis != null) {
+                // fixed extra becauseof WFS
+               // columnNames.add("__fid");
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
@@ -314,7 +371,7 @@ public class AnalysisDataService {
 
         for (Map.Entry<String, String> entry : colnames.entrySet()) {
             String key = entry.getKey();
-            if (entry.getValue().toUpperCase().equals(field_in.toUpperCase())) {
+            if (entry.getValue().equals(field_in)) {
                 return key;
             }
 
@@ -337,7 +394,7 @@ public class AnalysisDataService {
 
         for (Map.Entry<String, String> entry : colnames.entrySet()) {
             String key = entry.getKey();
-            if (key.toUpperCase().equals(field_in.toUpperCase())) {
+            if (key.equals(field_in)) {
                 return entry.getValue();
             }
 
@@ -454,6 +511,8 @@ public class AnalysisDataService {
                 }
                 // Add geometry for filter and for highlight
                 fm.put(ANALYSIS_GEOMETRY_FIELD);
+                fm.put("x");
+                fm.put("y");
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);
@@ -470,6 +529,8 @@ public class AnalysisDataService {
         JSONArray fm = new JSONArray();
         try {
             if (analysis != null) {
+                // Fixed 1st is ID
+                fm.put("__fid");
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
@@ -481,13 +542,12 @@ public class AnalysisDataService {
                 }
                 // Add geometry for filter and for highlight
                 fm.put(ANALYSIS_GEOMETRY_FIELD);
+                fm.put("__centerX");
+                fm.put("__centerY");
             }
         } catch (Exception ex) {
             log.debug("Unable to get analysis field layer json", ex);
         }
         return fm;
     }
-
-
-
 }

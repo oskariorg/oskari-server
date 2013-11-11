@@ -1,0 +1,248 @@
+{
+    "name": "WMTS example",
+    "type": "USER",
+    "default": false,
+    "public": true,
+    "oskari": {
+        "application": "servlet",
+        "page": "index",
+        "development_prefix": "/applications/elf"
+    },
+    "bundles": [
+        {
+            "id": "openlayers-default-theme"
+        }, {
+            "id": "mapfull",
+            "startup": {
+                "title": "Map",
+                "fi": "mapfull",
+                "sv": "mapfull",
+                "en": "mapfull",
+                "bundlename": "mapfull",
+                "bundleinstancename": "mapfull",
+                "metadata": {
+                    "Import-Bundle": {
+                        "core-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map-layer": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map-layer": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-base": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-map": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "domain": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapmodule-plugin": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwfs2": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwmts": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "oskariui": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapfull": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
+                        }
+                    },
+                    "Require-Bundle-Instance": []
+                },
+                "instanceProps": {}
+            },
+            "config": {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins": [
+                    {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+                    } , {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config": {
+                            "backoffIncrement": 1000,
+                            "contextPath": "/transport-0.0.1",
+                            "disconnectTime": 30000,
+                            "hostname": "localhost",
+                            "lazy": true,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000,
+                            "port": "8888"
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                        "config": {
+                            "ignoredLayerTypes": ["WFS"],
+                            "infoBox": false
+                        }
+                    }
+                ],
+                "layers": [
+                    {
+                        "type": "base",
+                        "id": "base_35",
+                        "name": "Background Map Series",
+                        "subLayer": [
+                            {
+                                "wmsName": "taustakartta_800k",
+                                "type": "wmslayer",
+                                "id": 800,
+                                "wmsUrl": "http://karttatiili.fi/dataset/inspire/service/wms?",
+                                "maxScale": 200000,
+                                "minScale": 400000
+                            }, {
+                                "wmsName": "taustakartta_2000k",
+                                "type": "wmslayer",
+                                "id": 2000,
+                                "wmsUrl": "http://karttatiili.fi/dataset/inspire/service/wms?",
+                                "maxScale": 400000,
+                                "minScale": 800000
+                            }, {
+                                "wmsName": "taustakartta_4000k",
+                                "type": "wmslayer",
+                                "id": 4000,
+                                "wmsUrl": "http://karttatiili.fi/dataset/inspire/service/wms?",
+                                "maxScale": 800000
+                            }, {
+                                "wmsName": "taustakartta_8000k",
+                                "type": "wmslayer",
+                                "id": 8000,
+                                "wmsUrl": "http://karttatiili.fi/dataset/inspire/service/wms?",
+                                "maxScale": 2000000,
+                                "minScale": 2214570
+                            }
+                        ],
+                        "inspire": "NLS",
+                        "orgName": "National Land Survey of Finland"
+                    }
+                ],
+                "mapOptions": {
+                    "resolutions": [781.25, 390.625, 156.25, 78.125, 39.0625],
+                    "maxExtent": {
+                        "left": 2600000,
+                        "bottom": 1300000,
+                        "right": 6000000,
+                        "top": 5500000
+                    },
+                    "srsName": "EPSG:3035"
+                },
+                "projectionDefs": {
+                    "EPSG:3035": "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs",
+                    "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs",
+                    "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+                }
+            },
+            "state": {
+                "selectedLayers": [
+                    {
+                        "id": "base_35"
+                    }
+                ],
+                "zoom": 1,
+                "north": "4244531.25",
+                "east": "5046875"
+            }
+        }, {
+            "id": "divmanazer"
+        }, {
+            "id": "toolbar",
+            "config": {
+                "viewtools": {
+                    "print": false,
+                    "link": false
+                }
+            }
+        }, {
+            "id": "infobox"
+        }, {
+            "id": "statehandler"
+        }, {
+            "id": "search"
+        }, {
+            "id": "layerselector2"
+        }, {
+            "id": "layerselection2"
+        }, {
+            "id": "coordinatedisplay"
+        }, {
+            "id": "metadataflyout"
+        }, {
+            "id": "personaldata" ,
+            "config": {
+                "publishedMapUrl": {
+                    "en": "/?viewId=",
+                    "fi": "/?viewId=",
+                    "sv": "/?viewId="
+                }
+            }
+        }, {
+            "id": "publisher" ,
+            "config": {
+                "publishedMapUrl": {
+                    "en": "localhost:2373/?viewId=",
+                    "fi": "localhost:2373/?viewId=",
+                    "sv": "localhost:2373/?viewId="
+                }
+            }
+        }, {
+            "id": "maplegend"
+        }, {
+            "id": "userguide"
+        }, {
+            "id": "featuredata2",
+            "config": {
+                "selectionTools": true
+            }
+        }
+    ]
+}

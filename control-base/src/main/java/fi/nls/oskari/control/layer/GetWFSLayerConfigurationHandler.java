@@ -45,7 +45,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     public static final String ANALYSIS_PREFIX = "analysis_";
 
     // My places
-    public static final String MYPLACES_BASELAYER_ID = "analysis.baselayer.id";
+    public static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
     public static final String MYPLACES_PREFIX = "myplaces_";
 
     public void handleAction(ActionParameters params) throws ActionException {
@@ -88,10 +88,16 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
             // Extra manage for analysis
             if (sid.indexOf(ANALYSIS_PREFIX) > -1) {
                 log.warn("sid", sid);
-                // set id to original analysis id
+                // set id to original analysis layer id
                 lc.setLayerId(sid);
                 // Set analysis layer fields as id based
                 lc.setSelectedFeatureParams(getAnalysisFeatureProperties(sid));
+            }
+            // Extra manage for analysis
+            else if (sid.indexOf(MYPLACES_PREFIX) > -1) {
+                log.warn("sid", sid);
+                // set id to original my places layer id
+                lc.setLayerId(sid);
             }
             if (lc == null) {
                 JSONHelper.putValue(root, ERROR, ERROR_NOT_FOUND);

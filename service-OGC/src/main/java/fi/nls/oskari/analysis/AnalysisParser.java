@@ -37,7 +37,7 @@ public class AnalysisParser {
 
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
-            "__fid", "metaDataProperty", "description", "name", "boundedBy",
+            "__fid", "metaDataProperty", "description", "boundedBy", "name",
             "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
 
 
@@ -73,12 +73,14 @@ public class AnalysisParser {
     private static final String INTERSECT = "intersect";
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
+    private static final String LAYER_UNION = "layer_union";
 
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LAYERID = "layerId";
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String JSON_KEY_AGGRE_ATTRIBUTE = "attribute";
     private static final String JSON_KEY_FILTERS = "filters";
+    private static final String JSON_KEY_LAYERS = "layers";
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
@@ -205,8 +207,43 @@ public class AnalysisParser {
         analysisLayer.setMethod(analysisMethod);
 
         analysisLayer.setAggreFunctions(null);
+        analysisLayer.setMergeAnalysisLayers(null);
 
-        if (BUFFER.equals(analysisMethod)) {
+        //------------------LAYER_UNION -----------------------
+        if (LAYER_UNION.equals(analysisMethod)) {
+         JSONObject params;
+            try {
+           params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+        } catch (JSONException e) {
+            throw new ServiceException("Method parameters missing.");
+        }
+                JSONArray sids = params.optJSONArray(JSON_KEY_LAYERS);
+                // Loop merge layers - get analysis ids
+                List<Long> ids = new ArrayList<Long>();
+                List<String> mergelays = new ArrayList<String>();
+                if (sids == null) {
+                    throw new ServiceException("merge layers missing");
+                } else {
+                    try {
+                        for (int i = 0; i < sids.length(); i++) {
+                            Long aid = this.getAnalysisId(sids.getString(i));
+                            if (aid > 0)
+                            {
+                                ids.add(aid);
+                                mergelays.add(sids.getString(i));
+                            }
+                        }
+                    } catch (JSONException e) {
+                        throw new ServiceException("Merge layers missing.");
+                    }
+                    // Merge analysis Ids
+                    analysisLayer.setMergeAnalysisIds(ids);
+                    // Merge analysis Layers
+                    analysisLayer.setMergeAnalysisLayers(mergelays);
+                }
+        }
+        //------------------ BUFFER -----------------------
+        else if (BUFFER.equals(analysisMethod)) {
             // when analysisMethod == vec:BufferFeatureCollection
 
             // Set params for WPS execute
@@ -227,6 +264,7 @@ public class AnalysisParser {
                             .parseProperties(analysisLayer.getFields(), lc
                                     .getFeatureNamespace(), lc
                                     .getGMLGeometryProperty()));
+            //------------------ INTERSECT -----------------------
         } else if (INTERSECT.equals(analysisMethod)) {
             JSONObject params;
             try {
@@ -294,7 +332,7 @@ public class AnalysisParser {
                     .getGMLGeometryProperty()));
 
             analysisLayer.setAnalysisMethodParams(method);
-
+            //------------------ AGGREGATE -----------------------
         } else if (AGGREGATE.equals(analysisMethod)) {
 
             // 1 to n aggregate wps tasks
@@ -349,7 +387,7 @@ public class AnalysisParser {
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
-
+            //------------------ UNION -----------------------
         } else if (UNION.equals(analysisMethod)) {
             JSONObject params;
             try {
@@ -871,7 +909,7 @@ public class AnalysisParser {
         try {
 
             String sid = json.optString(JSON_KEY_LAYERID);
-            if (sid.indexOf(LAYER_PREFIX) == 0 && sid.indexOf(MYPLACES_LAYER_PREFIX) == 0)
+            if (sid.indexOf(LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
                 return null;
             String sids[] = sid.split("_");
             if (sids.length > 1) {
@@ -883,6 +921,20 @@ public class AnalysisParser {
             log.debug("Decoding analysis layer id failed: ", e);
         }
         return null;
+    }
+    private Long getAnalysisId(String sid) {
+
+        long id = 0;
+        try {
+            String sids[] = sid.split("_");
+            if (sids.length > 1) {
+
+               id= Long.parseLong( sids[sids.length-1]);
+            }
+        } catch (Exception e) {
+           id=0;
+        }
+        return id;
     }
 
     /**

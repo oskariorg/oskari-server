@@ -152,6 +152,12 @@
 
         where id = #id#
     </update>
+    <update id="merge-analysis-data" parameterClass="Analysis">
+    update
+    analysis_data set
+    analysis_id = #id#
+    WHERE analysis_id = #old_id#
+    </update>
 
     <statement id="delete-analysis-data"
                parameterClass="java.lang.Long">
@@ -168,4 +174,10 @@
         <!-- Note! id is style_id from analysis table -->
         DELETE FROM analysis_style WHERE id = #id#
     </statement>
+    <statement id=" delete-analysis-style-by-analysis-id"
+               parameterClass="java.lang.Long">
+        <!-- Note! id is style_id from analysis table -->
+        DELETE FROM analysis_style WHERE id = #id#
+    </statement>
+
 </sqlMap>

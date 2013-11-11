@@ -45,6 +45,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String INTERSECT = "intersect";
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
+    private static final String LAYER_UNION = "layer_union";
 
 
     final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
@@ -57,10 +58,14 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      ************************************************************************/
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final String analyse = params.getHttpParam(PARAM_ANALYSE);
+       final String analyse = params.getHttpParam(PARAM_ANALYSE);
+        // Test
+        //final String analyse = "{\"name\":\"layerUnionTest_\",\"method\":\"layer_union\",\"fields\":[],\"fieldTypes\":{\"t3\":\"string\",\"t2\":\"string\",\"t1\":\"string\",\"t4\":\"string\",\"t5\":\"string\",\"t6\":\"string\",\"t7\":\"string\",\"t8\":\"string\"},\"layerId\":\"analysis_778_799\",\"layerType\":\"analysis\",\"methodParams\":{\"layers\":[\"analysis_778_799\",\"analysis_778_800\",\"analysis_778_801\"]},\"style\":{\"dot\":{\"size\":\"4\",\"color\":\"#CC9900\"},\"line\":{\"size\":\"2\",\"color\":\"#CC9900\"},\"area\":{\"size\":\"2\",\"lineColor\":\"#CC9900\",\"fillColor\":\"#FFDC00\"}}}";
+
         if (analyse == null) {
             throw new ActionParamsException("analyse parameter missing");
         }
+
         // filter conf data
         final String filter = params.getHttpParam(PARAM_FILTER);
 
@@ -72,55 +77,62 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         } catch (ServiceException e) {
             throw new ActionException("Unable to parse analysis", e);
         }
+        Analysis analysis = null;
 
-        // Generate WPS XML
-        String featureSet;
-        try {
-            featureSet = wpsService.requestFeatureSet(analysisLayer);
-        } catch (ServiceException e) {
-            throw new ActionException("Unable to get WPS Feature Set", e);
-        }
-        // Check, if exception result set
-        if (featureSet.indexOf("ows:Exception") > -1)
-            throw new ActionParamsException(
-                    "WPS-execute returns ows:Exception: " + featureSet);
-
-        // Check, if any data in result set
-        if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1)
-            throw new ActionParamsException("WPS-execute returns 0 features");
-        if (analysisLayer.getMethod().equals(UNION)
-                || analysisLayer.getMethod().equals(INTERSECT)) {
-            // Harmonize namespaces and element names
-            featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-        }
-
-        // Add data to analysis db if NOT aggregate
-        if (analysisLayer.getMethod().equals(AGGREGATE)) {
-            // No store to analysis db for aggregate - set results in to the
-            // response
-            //Save analysis results - use union of input data
-            analysisLayer.setWpsLayerId(-1);
-            analysisLayer.setResult(analysisParser.parseAggregateResults(featureSet,
-                    analysisLayer));
-
-            try {
-                analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, baseUrl);
-            } catch (ServiceException e) {
-                throw new ActionException("Unable to parse analysis for aggregate union", e);
-            }
+        if (analysisLayer.getMethod().equals(LAYER_UNION)) {
+            // no WPS for merge analysis
+            analysis = analysisDataService.mergeAnalysisData(
+                    analysisLayer, analyse, params.getUser());
+        } else {
+            // Generate WPS XML
+            String featureSet;
             try {
                 featureSet = wpsService.requestFeatureSet(analysisLayer);
+            } catch (ServiceException e) {
+                throw new ActionException("Unable to get WPS Feature Set", e);
+            }
+            // Check, if exception result set
+            if (featureSet.indexOf("ows:Exception") > -1)
+                throw new ActionParamsException(
+                        "WPS-execute returns ows:Exception: " + featureSet);
+
+            // Check, if any data in result set
+            if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1)
+                throw new ActionParamsException("WPS-execute returns 0 features");
+            if (analysisLayer.getMethod().equals(UNION)
+                    || analysisLayer.getMethod().equals(INTERSECT)) {
                 // Harmonize namespaces and element names
                 featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-                featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer);
-            } catch (ServiceException e) {
-                throw new ActionException("Unable to get WPS Feature Set for union", e);
             }
 
-        }
+            // Add data to analysis db if NOT aggregate
+            if (analysisLayer.getMethod().equals(AGGREGATE)) {
+                // No store to analysis db for aggregate - set results in to the
+                // response
+                //Save analysis results - use union of input data
+                analysisLayer.setWpsLayerId(-1);
+                analysisLayer.setResult(analysisParser.parseAggregateResults(featureSet,
+                        analysisLayer));
 
-            Analysis analysis = analysisDataService.storeAnalysisData(
+                try {
+                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, baseUrl);
+                } catch (ServiceException e) {
+                    throw new ActionException("Unable to parse analysis for aggregate union", e);
+                }
+                try {
+                    featureSet = wpsService.requestFeatureSet(analysisLayer);
+                    // Harmonize namespaces and element names
+                    featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
+                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer);
+                } catch (ServiceException e) {
+                    throw new ActionException("Unable to get WPS Feature Set for union", e);
+                }
+
+            }
+
+            analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
+        }
 
             if (analysis == null) throw new ActionException("Unable to store Analysis data");
 
