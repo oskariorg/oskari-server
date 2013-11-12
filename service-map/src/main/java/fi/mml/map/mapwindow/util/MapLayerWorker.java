@@ -504,7 +504,9 @@ public class MapLayerWorker {
                JSONArray arr = new JSONArray();
                for (WFSSLDStyle style : styleList) {
                  JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());;
-                 arr.put(obj);
+                 if(obj.length() > 0) {
+                     arr.put(obj);
+                 }
                }
                styleJSON.put("styles", arr);
             }
