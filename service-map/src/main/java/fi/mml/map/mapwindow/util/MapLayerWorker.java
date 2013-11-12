@@ -501,10 +501,12 @@ public class MapLayerWorker {
           List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
           try{
             if ( styleList.size() > 0) {
+               JSONArray arr = new JSONArray();
                for (WFSSLDStyle style : styleList) {
-                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());
-                 styleJSON.accumulate("styles", obj);
+                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());;
+                 arr.put(obj);
                }
+               styleJSON.put("styles", arr);
             }
             }catch (Exception e) {
               throw new RuntimeException(e);

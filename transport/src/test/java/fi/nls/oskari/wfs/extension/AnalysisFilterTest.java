@@ -140,6 +140,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
+        System.out.println(filter.toString());
         assertTrue("Should get expected resultHighlightFeatures", filter.toString().equals(resultHighlightFeatures));
     }
 

@@ -76,7 +76,7 @@ public class TTFMarkFactoryOskari implements MarkFactory {
         String[] fontElements = markUrl.substring(9).split("#");
 
         // look up the font
-        Font font = FontCache.getDefaultInsance().getFont(fontElements[0]);
+        Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/dot-markers.ttf"));
         
         if (font == null) {
             throw new IllegalArgumentException("Unknown font " + fontElements[0]);
