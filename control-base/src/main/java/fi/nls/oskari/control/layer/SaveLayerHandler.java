@@ -99,6 +99,10 @@ public class SaveLayerHandler extends ActionHandler {
                 org.json.JSONObject mapJson = ml.toJSON();
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
 
+                // update keywords
+                GetLayerKeywords glk = new GetLayerKeywords();
+                glk.updateLayerKeywords(id, ml.getDataUrl());
+
                 // update cache
                 insertCache(ml);
 
