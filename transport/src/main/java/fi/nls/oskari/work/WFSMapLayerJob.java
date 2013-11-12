@@ -268,7 +268,9 @@ public class WFSMapLayerJob extends Job {
 			    	if(!fromCache) {
                         if(this.image == null) {
                             this.image = new WFSImage(this.layer,
-                                    this.session.getLayers().get(this.layerId).getStyleName());
+                                    this.session.getClient(),
+                                    this.session.getLayers().get(this.layerId).getStyleName(),
+                                    null);
                         }
 					    bufferedImage = this.image.draw(this.session.getTileSize(),
                                 this.session.getLocation(),
@@ -308,28 +310,30 @@ public class WFSMapLayerJob extends Job {
                 log.debug("highlight image handling", this.features.size());
 
                 // IMAGE HANDLING
-                    log.debug("sending");
-                    Location location = this.session.getLocation();
-                    if(this.image == null) {
-                        this.image = new WFSImage(this.layer,
+                log.debug("sending");
+                Location location = this.session.getLocation();
+                if(this.image == null) {
+                    this.image = new WFSImage(this.layer,
+                            this.session.getClient(),
+                            this.session.getLayers().get(this.layerId).getStyleName(),
                             Type.HIGHLIGHT.toString());
-                    }
-                    BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
-                            this.session.getLocation(),
-                            this.features);
-                    if(bufferedImage == null) {
-                        this.imageParsingFailed();
-                        return;
-                    }
+                }
+                BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
+                        this.session.getLocation(),
+                        this.features);
+                if(bufferedImage == null) {
+                    this.imageParsingFailed();
+                    return;
+                }
 
-                    Double[] bbox = location.getBboxArray();
+                Double[] bbox = location.getBboxArray();
 
-                    // cache (non-persistant)
-                    setImageCache(bufferedImage, Type.HIGHLIGHT.toString(), bbox, false);
+                // cache (non-persistant)
+                setImageCache(bufferedImage, Type.HIGHLIGHT.toString(), bbox, false);
 
-                    String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
-                    log.debug("url");
-                    this.sendWFSImage(url, bufferedImage, bbox, false, false);
+                String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
+                log.debug("url");
+                this.sendWFSImage(url, bufferedImage, bbox, false, false);
             }
         } else if(this.type == Type.MAP_CLICK) {
             if(!this.requestHandler(null)) {

@@ -1,4 +1,5 @@
 */target
+*/*/target
 */.settings
 */.classpath
 */.project
@@ -8,3 +9,4 @@
 .project
 /data/
 /servlet-map/src/main/webapp/WEB-INF/jetty-env.xml
+transport.log
