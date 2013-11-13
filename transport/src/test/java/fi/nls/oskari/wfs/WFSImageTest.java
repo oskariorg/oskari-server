@@ -85,7 +85,9 @@ public class WFSImageTest {
 	@Test
 	public void testMap() {
 		WFSImage mapImage = new WFSImage(layer,
-	    		session.getLayers().get(layer.getLayerId()).getStyleName());
+                "test",
+	    		session.getLayers().get(layer.getLayerId()).getStyleName(),
+                null);
 		
 		BufferedImage bufferedMapImage = mapImage.draw(session.getTileSize(),
                 session.getLocation(),
@@ -96,7 +98,9 @@ public class WFSImageTest {
 	@Test
 	public void testTile() {
 		WFSImage tileImage = new WFSImage(layer,
-	    		session.getLayers().get(layer.getLayerId()).getStyleName());
+                "test",
+	    		session.getLayers().get(layer.getLayerId()).getStyleName(),
+                null);
 		
 		BufferedImage bufferedTileImage = tileImage.draw(session.getTileSize(),
                 session.getLocation(),

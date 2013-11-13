@@ -163,6 +163,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "ui-components" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance" : []

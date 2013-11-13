@@ -115,8 +115,8 @@
   			s.sld_style
   			
 		FROM portti_wfs_layer l
-		LEFT OUTER JOIN portti_wfs_layers_styles ls ON ls.wfs_layer_id = l.id
-		LEFT OUTER JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
+		JOIN portti_wfs_layers_styles ls ON ls.wfs_layer_id = l.id
+		JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
 		WHERE l.maplayer_id = #id#
     </select>
 

@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.pojo.WFSCustomStyleStore;
+import fi.nls.oskari.util.IOHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -20,7 +22,6 @@ import org.geotools.map.FeatureLayer;
 import org.geotools.map.Layer;
 import org.geotools.map.MapContent;
 import org.geotools.map.MapViewport;
-import org.geotools.referencing.CRS;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.sld.SLDConfiguration;
@@ -32,8 +33,6 @@ import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import redis.clients.jedis.Jedis;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Location;
@@ -52,13 +51,15 @@ public class WFSImage {
         ImageIO.setUseCache(false);
     }
 
-    private static final String KEY = "WFSImage_";
+    public static final String KEY = "WFSImage_";
+    public static final String PREFIX_CUSTOM_STYLE = "oskari_custom";
 
-    private static final String STYLE_DEFAULT = "default";
-    private static final String STYLE_HIGHLIGHT = "highlight";
+    public static final String STYLE_DEFAULT = "default";
+    public static final String STYLE_HIGHLIGHT = "highlight";
 
-    private static final String DEFAULT_SLD = "sld_default.xml";
-    private static final String HIGHLIGHT_SLD = "sld_highlight.xml";
+    public static final String DEFAULT_SLD = "sld_default.xml";
+    public static final String HIGHLIGHT_SLD = "sld_highlight.xml";
+    public static final String OSKARI_CUSTOM_SLD = "sld_oskari_custom.xml";
 
     private Style style;
 
@@ -67,21 +68,49 @@ public class WFSImage {
     private int imageWidth = 0;
     private int imageHeight = 0;
 
+    WFSCustomStyleStore customStyle;
+    private boolean isHighlight = false;
+
     /**
      * Constructor for image of certain layer and style
      *
      * @param layer
      * @param styleName
      */
-    public WFSImage(WFSLayerStore layer, String styleName) {
+    public WFSImage(WFSLayerStore layer, String client, String styleName, String highlightStyleName) {
         if(layer == null || styleName == null) {
             log.error("Failed to construct image (undefined params)");
             return;
         }
 
-        this.style = getSLDStyle(layer, styleName);
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
+            try {
+                this.customStyle = WFSCustomStyleStore.create(client, layer.getLayerId());
+                if(this.customStyle == null) {
+                    this.style = null;
+                    log.error("WFSCustomStyleStore not created", client, layer.getLayerId());
+                    return;
+                }
+                this.customStyle.setGeometry(layer.getGMLGeometryProperty()); // set the geometry name
+                if(highlightStyleName == null) {
+                    this.style = createCustomSLDStyle();
+                } else {
+                    isHighlight = true;
+                    this.style = createCustomSLDStyle();
+                }
+            } catch(Exception e) {
+                this.style = null;
+                log.error(e, "JSON parsing failed for WFSCustomStyleStore");
+                return;
+            }
+        } else if(highlightStyleName == null) {
+            this.style = getSLDStyle(layer, styleName);
+        } else {
+            isHighlight = true;
+            this.style = getSLDStyle(layer, highlightStyleName);
+        }
     }
-    
+
   	/**
   	 * Gets bufferedImage from cache (persistant)
   	 * 
@@ -91,7 +120,6 @@ public class WFSImage {
      * @param zoom
      * @return buffered image from cache
   	 */
-
     public static BufferedImage getCache(String layerId, String styleName, String srs, Double[] bbox, long zoom) {
     	return getCache(layerId, styleName, srs, bbox, zoom, true);
 	}
@@ -106,7 +134,6 @@ public class WFSImage {
      * @param persistent
      * @return buffered image from cache
   	 */
-
     public static BufferedImage getCache(String layerId,
                                          String styleName,
                                          String srs,
@@ -120,6 +147,12 @@ public class WFSImage {
             log.error("Cache key couldn't be created");
             return null;
         }
+
+        // no persistent cache for custom styles (only for image route)
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
+            return null;
+        }
+
     	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
     	String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
     	if(!persistent) {
@@ -142,7 +175,6 @@ public class WFSImage {
      * @param persistent
      * @return buffered image from cache
   	 */
-
     public static void setCache(BufferedImage bufferedImage,
                                 String layerId,
                                 String styleName,
@@ -156,6 +188,11 @@ public class WFSImage {
                 bbox.length != 4) {
             log.error("Cache key couldn't be created");
             return;
+        }
+
+        // no persistent cache for custom styles
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
+            persistent = false;
         }
 
     	byte[] byteImage = imageToBytes(bufferedImage);
@@ -249,10 +286,10 @@ public class WFSImage {
      *
      * @return image
      */
-    public BufferedImage draw(final Tile tile,
-                              final Location location,
-                              final List<Double> bounds,
-                              final FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
+    public BufferedImage draw(Tile tile,
+                              Location location,
+                              List<Double> bounds,
+                              FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
 
         if(bounds == null) {
             this.location = location;
@@ -276,7 +313,7 @@ public class WFSImage {
             log.warn(imageHeight);
             log.warn(location);
             log.warn(style);
-            log.warn(features);
+            log.warn(features.isEmpty());
             return null;
         }
 
@@ -396,4 +433,23 @@ public class WFSImage {
 		}
 		return SLD.styles(sld)[0]; 
 	}
+
+    /**
+     * Creates own sld style by replacing
+     *
+     * @return sld
+     */
+    public Style createCustomSLDStyle() {
+        InputStream resource = WFSImage.class.getResourceAsStream(OSKARI_CUSTOM_SLD);
+        try {
+            String xml = IOHelper.readString(resource, "ISO-8859-1");
+            customStyle.replaceValues(xml, isHighlight);
+            xml = customStyle.getSld();
+            return createSLDStyle(xml);
+        } catch(Exception e) {
+            log.error(e, "Failed to get Own SLD Style");
+            log.error(resource);
+        }
+        return null;
+    }
 }
