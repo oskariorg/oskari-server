@@ -35,7 +35,7 @@ public class DBHandler {
 
     private static Logger log = LogFactory.getLogger(DBHandler.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // populate standalone properties
         InputStream in = null;
         try {
@@ -53,8 +53,14 @@ public class DBHandler {
                 in.close();
             } catch (Exception ignored) { }
         }
-        // initialize db with demo data if tables are not present
-        createContentIfNotCreated();
+        final String addView = System.getProperty("oskari.addview");
+        if(addView != null) {
+            insertView(getConnection(), addView);
+        }
+        else {
+            // initialize db with demo data if tables are not present
+            createContentIfNotCreated();
+        }
     }
 
     public static void debugPrintDBContents() {
@@ -159,7 +165,6 @@ public class DBHandler {
                 }
                 log.info("/- Created tables");
             }
-            //executeSqlFromFile(conn, dbname, "00-create-tables.sql");
 
             if(setup.has("bundles")) {
                 log.info("/- registering bundles:");
