@@ -339,7 +339,7 @@ public class Location {
             this.getEnvelope();
         }
 
-        return this.getTransform(this.crs, target, lenient);
+        return getTransform(this.crs, target, lenient);
     }
 
     /**
@@ -351,7 +351,7 @@ public class Location {
      * @return transform
      */
     @JsonIgnore
-    public MathTransform getTransform(CoordinateReferenceSystem source, CoordinateReferenceSystem target, boolean lenient) {
+    public static MathTransform getTransform(CoordinateReferenceSystem source, CoordinateReferenceSystem target, boolean lenient) {
         try {
             return CRS.findMathTransform(source, target, lenient);
         } catch (Exception e) {

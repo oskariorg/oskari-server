@@ -83,7 +83,8 @@ public class WFSImage {
             return;
         }
 
-        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
+        // TODO: possibility to change the custom style store key to sessionID (it is hard without connection to get client)
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE) && client != null) {
             try {
                 this.customStyle = WFSCustomStyleStore.create(client, layer.getLayerId());
                 if(this.customStyle == null) {
@@ -92,6 +93,8 @@ public class WFSImage {
                     return;
                 }
                 this.customStyle.setGeometry(layer.getGMLGeometryProperty()); // set the geometry name
+                log.debug(layer.getGMLGeometryProperty());
+
                 if(highlightStyleName == null) {
                     this.style = createCustomSLDStyle();
                 } else {

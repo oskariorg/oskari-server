@@ -121,7 +121,6 @@ public class WFSFilter {
         }
         this.layer = layer;
         this.transform = transform;
-        this.defaultBuffer = getDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
 
         if(createFilter) {
             Filter filter = null;
@@ -131,10 +130,16 @@ public class WFSFilter {
                 filter = initFeatureIdFilter(featureIds);
             } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
                 log.debug("Filter: map click");
+                if(this.defaultBuffer == 0.0d) {
+                    this.defaultBuffer = getDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
+                }
                 Coordinate coordinate = session.getMapClick();
                 filter = initCoordinateFilter(coordinate);
             } else if(type == WFSMapLayerJob.Type.GEOJSON) {
                 log.debug("Filter: GeoJSON");
+                if(this.defaultBuffer == 0.0d) {
+                    this.defaultBuffer = getDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
+                }
                 GeoJSONFilter geoJSONFilter = session.getFilter();
                 filter = initGeoJSONFilter(geoJSONFilter);
             } else if(type == WFSMapLayerJob.Type.NORMAL) {
