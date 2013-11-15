@@ -71,8 +71,12 @@ public class SaveLayerHandler extends ActionHandler {
                     mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
                     
                     // update cache
-                    updateCache(ml);
-                    
+                    try {
+                        updateCache(ml);
+                    } catch (ActionException ae) {
+                        // Cache update failed, no biggie
+                        mapJson.put("warn", "metadataReadFailure");
+                    }
                     ResponseHelper.writeResponse(params, mapJson.toString());
                 }
             }
@@ -104,8 +108,12 @@ public class SaveLayerHandler extends ActionHandler {
                 glk.updateLayerKeywords(id, ml.getDataUrl());
 
                 // update cache
-                insertCache(ml);
-
+                try {
+                    insertCache(ml);
+                } catch (ActionException ae) {
+                    // Cache update failed, no biggie
+                    mapJson.put("warn", "metadataReadFailure");
+                }
                 ResponseHelper.writeResponse(params, mapJson.toString());
             }
 

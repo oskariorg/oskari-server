@@ -106,14 +106,14 @@ public class KeywordServiceIbatisImpl extends BaseIbatisService<Keyword> impleme
         // check if keyword is already inserted with matching language and return the id without inserting!
         final Keyword dbKey = findExactKeyword(keyword.getValue(), keyword.getLang());
         if(dbKey != null) {
-            log.debug("Keyword already saved:", keyword, "->", dbKey);
+            log.warn("Keyword already saved:", keyword, "->", dbKey);
             keyword.setId(dbKey.getId());
             return dbKey.getId();
         }
-        log.debug("Adding keyword:", keyword);
+        log.warn("Adding keyword:", keyword);
         final Long id = queryForObject(getNameSpace() + ".add-keyword", keyword);
         keyword.setId(id);
-        log.debug("Got keyword id:", id);
+        log.warn("Got keyword id:", id);
         return id;
     }
 
