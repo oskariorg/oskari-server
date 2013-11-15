@@ -349,7 +349,10 @@ public class WFSImage {
 
         // TODO: style could be done before coming to image loop (1 timer!) - here slows down!
         if(features.size() > 0) {
+            log.debug(features.features().next());
+            log.debug(style);
             Layer featureLayer = new FeatureLayer(features, style);
+            log.debug(featureLayer);
             content.addLayer(featureLayer);
         }
 
