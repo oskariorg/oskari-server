@@ -479,7 +479,6 @@ public class WFSMapLayerJob extends Job {
             log.error("Type is not handled", this.type);
         }
 
-        running = false;
         log.debug(PROCESS_ENDED, getKey());
 	}
 
