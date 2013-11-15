@@ -59,16 +59,6 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         final HttpServletResponse response = params.getResponse();
         response.setContentType("application/json");
 
-        PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
-        if (!permissionsService.hasViewPermissionForLayerByLayerId(params
-                .getUser(), id)) {
-            JSONHelper.putValue(root, ERROR, ERROR_NO_PERMISSION);
-            ResponseHelper.writeResponse(params, root);
-            // FIXME: throw ActionDeniedException instead and modify client
-            // response parsing
-            return;
-        }
-
         if (id == 0) {
             JSONHelper.putValue(root, ERROR, ERROR_NO_ID);
             ResponseHelper.writeResponse(params, root);
