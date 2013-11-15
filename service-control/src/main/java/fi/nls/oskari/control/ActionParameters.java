@@ -98,6 +98,20 @@ public class ActionParameters {
     /**
      * Returns a cleaned up (think XSS) value for the requested parameter
      * @param key parameter name
+     * @return cleaned up value for the parameter
+     * @throws ActionParamsException if parameter is not found or is empty
+     */
+    public String getRequiredParam(final String key) throws ActionParamsException {
+        final String value = RequestHelper.cleanString(getRequest().getParameter(key));
+        if(value == null || value.isEmpty()) {
+            throw new ActionParamsException("Required parameter '" + key + "' missing!");
+        }
+        return value;
+    }
+
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
      * @return cleaned up value for the parameter or null if not found
      */
     public String getHttpParam(final String key) {

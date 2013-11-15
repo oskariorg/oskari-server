@@ -149,6 +149,19 @@ public class IOHelper {
         return debug;
     }
 
+    public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
+        final String contentType = con.getContentType();
+        final String[] values = contentType.split(";");
+
+        for (String value : values) {
+            value = value.trim();
+
+            if (value.toLowerCase().startsWith("charset=")) {
+                return value.substring("charset=".length());
+            }
+        }
+        return defaultCharset;
+    }
     /**
      * Opens a HttpURLConnection to given url and sets up basic authentication with given user/pass.
      * @param pUrl
