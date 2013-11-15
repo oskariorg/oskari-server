@@ -33,10 +33,22 @@
                 padding: 0;
             }
 
+            #loginbar {
+                padding: 10px 10px 0 16px;
+                color: #CCC;
+                vertical-align: bottom;
+                margin-bottom: 8px;
+                margin-top: 20px;
+            }
+            #loginbar a {
+                color: #FFDE00;
+                font-size: 8pt;
+                line-height: 150%;
+            }
             #mapdiv {
                 width: 100%;
+                background : white;
             }
-
             #maptools {
                 background-color: #333438;
                 height: 100%;
@@ -96,6 +108,43 @@
 </head>
 <body>
 
+
+<!--  CLIPPER -->
+<script type="text/javascript"
+        src="/Oskari/libraries/clipper/clipper.js">
+</script>
+
+<!--  JSTS -->
+<script type="text/javascript"
+        src="/Oskari/libraries/jsts/javascript.util.js">
+</script>
+
+<script type="text/javascript"
+        src="/Oskari/libraries/jsts/jsts.js">
+</script>
+
+<!-- ############# css ################# -->
+<link
+        rel="stylesheet"
+        type="text/css"
+        href="/Oskari${path}/css/icons.css" />
+<link
+        rel="stylesheet"
+        type="text/css"
+        href="/Oskari${path}/css/forms.css" />
+<link
+        rel="stylesheet"
+        type="text/css"
+        href="/Oskari${path}/css/portal.css" />
+
+<link
+        rel="stylesheet"
+        type="text/css"
+        href="/Oskari${path}/css/overwritten.css"/>
+
+<style type="text/css">
+</style>
+<!-- ############# /css ################# -->
 <nav id="maptools">
     <div id="loginbar">
     </div>
@@ -126,7 +175,7 @@
         </c:choose>
     </div>
 </nav>
-<div id="contentMap">
+<div id="contentMap" class="oskariui container-fluid">
     <div id="menutoolbar" class="container-fluid"></div>
     <div class="row-fluid" style="height: 100%; background-color:white;">
         <div class="oskariui-left"></div>
@@ -138,20 +187,19 @@
         </div>
     </div>
 </div>
-
-
 <!-- ############# Javascript ################# -->
+
 
 <!--  OSKARI -->
 
 <script type="text/javascript">
-    var ajaxUrl = '${ajaxUrl}';
+    var ajaxUrl = '${ajaxUrl}&';
     var viewId = '${viewId}';
-    var language = '${language}';
+    <%-- NOTE!!! HARDCODED LANGUAGE SINCE PARCEL BUNBLES ONLY HAS FINNISH LOCALIZATION --%>
+    var language = 'fi';
     var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
-
 <script type="text/javascript"
         src="/Oskari/bundles/bundle.js">
 </script>
@@ -159,6 +207,10 @@
 <!--  OPENLAYERS -->
 <script type="text/javascript"
         src="/Oskari/packages/openlayers/startup.js">
+</script>
+
+<!-- Q -->
+<script type="text/javascript" src="${urlPrefix}/Oskari/libraries/q/q.min.js">
 </script>
 
 <c:if test="${preloaded}">
@@ -177,7 +229,7 @@
             src="/Oskari${path}/oskari_lang_all.js">
     </script>
     <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_${language}.js">
+            src="/Oskari${path}/oskari_lang_${themeDisplay.locale.language}.js">
     </script>
 </c:if>
 
@@ -185,7 +237,7 @@
         src="/Oskari${path}/index.js">
 </script>
 
-
 <!-- ############# /Javascript ################# -->
+
 </body>
 </html>
