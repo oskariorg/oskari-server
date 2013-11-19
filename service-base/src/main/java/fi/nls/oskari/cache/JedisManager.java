@@ -17,6 +17,8 @@ public class JedisManager {
     private static JedisPool pool;
 
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
+
+    public static final int EXPIRY_TIME_DAY = 86400;
     
     /**
      * Blocking construction of instances from other classes by making constructor private

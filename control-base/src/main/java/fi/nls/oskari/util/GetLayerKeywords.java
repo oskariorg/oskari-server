@@ -257,6 +257,7 @@ public class GetLayerKeywords {
             log.warn("Failed to fetch metadata for layer " + layerId + ":", e.getMessage());
             return null;
         }
+        log.warn("Got layer data for layer " + layerId + " with uuid " + uuid);
         return doc;
     }
 
