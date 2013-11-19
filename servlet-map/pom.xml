@@ -9,6 +9,7 @@
     <name>Oskari map Servlet</name>
     <version>1.0-SNAPSHOT</version>
     <build>
+        <finalName>oskari-map</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
