@@ -92,8 +92,8 @@ public class WFSImage {
                     log.error("WFSCustomStyleStore not created", client, layer.getLayerId());
                     return;
                 }
-                this.customStyle.setGeometry(layer.getGMLGeometryProperty()); // set the geometry name
-                log.debug(layer.getGMLGeometryProperty());
+                this.customStyle.setGeometry(layer.getGMLGeometryProperty().replaceAll("^[^_]*:", "")); // set the geometry name
+                log.debug(this.customStyle.getGeometry());
 
                 if(highlightStyleName == null) {
                     this.style = createCustomSLDStyle();
@@ -347,12 +347,8 @@ public class WFSImage {
 		viewport.setBounds(bounds);
         viewport.setMatchingAspectRatio(true);
 
-        // TODO: style could be done before coming to image loop (1 timer!) - here slows down!
         if(features.size() > 0) {
-            log.debug(features.features().next());
-            log.debug(style);
             Layer featureLayer = new FeatureLayer(features, style);
-            log.debug(featureLayer);
             content.addLayer(featureLayer);
         }
 

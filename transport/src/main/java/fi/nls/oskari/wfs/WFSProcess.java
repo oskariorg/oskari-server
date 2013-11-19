@@ -26,6 +26,10 @@ public class WFSProcess {
 
         // get layer configuration
         WFSLayerStore layer = WFSMapLayerJob.getLayerConfiguration(layerId, session, null);
+        if(layer == null) {
+            log.warn("No layer configuration", layerId);
+            return null;
+        }
 
         // create session
         SessionStore store = new SessionStore();
