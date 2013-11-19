@@ -71,6 +71,9 @@ update portti_bundle set startup='{
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "ui-components": {
+                "bundlePath": "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance" : []

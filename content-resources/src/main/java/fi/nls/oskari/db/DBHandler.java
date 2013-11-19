@@ -125,8 +125,9 @@ public class DBHandler {
             ResultSet result = dbmeta.getTables(null, null, "portti_%", types);
             final String propertyDropDB = System.getProperty("oskari.dropdb");
 
+            final boolean tablesExist = result.next();
             // Portti tables available ?
-            if ("true".equals(propertyDropDB) || !result.next()) {
+            if ("true".equals(propertyDropDB) || !tablesExist) {
                 log.info("Creating db for " + dbName);
 
                 createContent(conn, dbName);
@@ -135,6 +136,9 @@ public class DBHandler {
                 } catch (SQLException e) {
                     log.error(e, "Couldn't commit changes!");
                 }
+            }
+            else if(tablesExist) {
+                log.info("Existing tables found in db. Use 'oskari.dropdb=true' system property to override.");
             }
 
             result.close();

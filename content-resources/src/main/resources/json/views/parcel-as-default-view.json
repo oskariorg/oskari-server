@@ -67,7 +67,7 @@
         { "id" : "metadataflyout" },
         { "id" : "parcel",
             "config" : {
-                "queryUrl" : "/?action_route=GetProxyRequest&serviceId=property",
+                "queryUrl" : "/oskari-map/?action_route=GetProxyRequest&serviceId=property",
                 "parcelFeatureType" : "PalstanTietoja",
                 "registerUnitFeatureType" : "RekisteriyksikonTietoja",
                 "hideSomeToolbarButtons" : "hide",

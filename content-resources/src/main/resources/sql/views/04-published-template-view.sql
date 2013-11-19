@@ -153,6 +153,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "statsgrid" : {
                 "bundlePath" : "/Oskari/packages/statistics/bundle/"
+            },
+            "ui-components": {
+                "bundlePath": "/Oskari/packages/framework/bundle/"
             }
 
         },

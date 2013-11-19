@@ -5,9 +5,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.commons.codec.binary.Base64;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -23,6 +26,16 @@ public class IOHelper {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String DEFAULT_CHARSET = "UTF-8";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
+
+    private static SSLSocketFactory TRUSTED_FACTORY;
+    private static HostnameVerifier TRUSTED_VERIFIER;
+
+    private static boolean trustAllCerts = false;
+    private static boolean trustAllHosts = false;
+    static {
+        trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
+        trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
+    }
 
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
@@ -126,7 +139,10 @@ public class IOHelper {
             throws IOException {
         log.debug("Opening connection to", pUrl);
         final URL url = new URL(pUrl);
-        return (HttpURLConnection) url.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        if(trustAllCerts) trustAllCerts(conn);
+        if(trustAllHosts) trustAllHosts(conn);
+        return conn;
     }
 
     /**
@@ -537,4 +553,54 @@ public class IOHelper {
     }
 
 
+    public static void trustAllCerts(final HttpURLConnection connection) throws IOException {
+        if (connection instanceof HttpsURLConnection) {
+            ((HttpsURLConnection) connection).setSSLSocketFactory(getTrustedFactory());
+        }
+    }
+    public static void trustAllHosts(final HttpURLConnection connection) {
+        if (connection instanceof HttpsURLConnection) {
+            ((HttpsURLConnection) connection).setHostnameVerifier(getTrustedVerifier());
+        }
+    }
+    private static SSLSocketFactory getTrustedFactory() throws IOException {
+        if (TRUSTED_FACTORY == null) {
+            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+
+                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                    // Intentionally left blank
+                }
+
+                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                    // Intentionally left blank
+                }
+            } };
+            try {
+                SSLContext context = SSLContext.getInstance("TLS");
+                context.init(null, trustAllCerts, new SecureRandom());
+                TRUSTED_FACTORY = context.getSocketFactory();
+            } catch (Exception e) {
+                IOException ioException = new IOException(
+                        "Security exception configuring SSL context");
+                ioException.initCause(e);
+                throw ioException;
+            }
+        }
+
+        return TRUSTED_FACTORY;
+    }
+
+    private static HostnameVerifier getTrustedVerifier() {
+        if (TRUSTED_VERIFIER == null)
+            TRUSTED_VERIFIER = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+        return TRUSTED_VERIFIER;
+    }
 }
