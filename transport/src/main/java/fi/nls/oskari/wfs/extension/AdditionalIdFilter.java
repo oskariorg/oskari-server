@@ -58,6 +58,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initFeatureIdFilter(featureIds);
         } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
             log.debug("Filter: map click");
+            super.setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             Coordinate coordinate = session.getMapClick();
             filter = super.initCoordinateFilter(coordinate);
 
@@ -67,6 +68,7 @@ public class AdditionalIdFilter extends WFSFilter {
 
         } else if(type == WFSMapLayerJob.Type.GEOJSON) {
             log.debug("Filter: GeoJSON");
+            super.setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
             filter = super.initGeoJSONFilter(geoJSONFilter);
 
