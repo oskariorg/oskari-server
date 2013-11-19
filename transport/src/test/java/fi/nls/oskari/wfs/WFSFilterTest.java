@@ -62,10 +62,10 @@ public class WFSFilterTest {
     @Test
     public void testDefaultBuffer() {
         WFSFilter wfsFilter = new WFSFilter();
-        wfsFilter.create(type, layer, session, emptyBounds, null);
-        double buffer = wfsFilter.getDefaultBuffer(2400.0);
-
-        assertTrue("Should get expected buffer size", buffer == 5.08d);
+        double mapScale = session.getMapScales().get((int) session.getLocation().getZoom());
+        wfsFilter.setDefaultBuffer(mapScale);
+        double buffer = wfsFilter.getDefaultBuffer();
+        assertTrue("Should get expected buffer size", buffer > 24.00d && buffer < 24.001d);
     }
     
 	@Test
