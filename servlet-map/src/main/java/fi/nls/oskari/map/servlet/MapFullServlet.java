@@ -39,21 +39,8 @@ public class MapFullServlet extends HttpServlet {
     static {
         // populate properties before initializing logger since logger implementation is
         // configured in properties
-        InputStream in = null;
-        try {
-            Properties prop = new Properties();
-            in = MapFullServlet.class.getResourceAsStream("/oskari.properties");
-            prop.load(in);
-            PropertyUtil.addProperties(prop);
-        } catch (Exception e) {
-            System.out.println("Error when populating properties!");
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (Exception ignored) {
-            }
-        }
+        addProperties("/oskari.properties", false);
+        addProperties("/oskari-ext.properties", true);
     }
 
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
@@ -326,5 +313,21 @@ public class MapFullServlet extends HttpServlet {
     public void destroy() {
         ActionControl.teardown();
         super.destroy();
+    }
+
+    public static void addProperties(final String propertiesFile, final boolean overwrite) {
+        InputStream in = null;
+        try {
+            Properties prop = new Properties();
+            in = MapFullServlet.class.getResourceAsStream(propertiesFile);
+            prop.load(in);
+            PropertyUtil.addProperties(prop, overwrite);
+        } catch (Exception ignored) {
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
+        }
     }
 }
