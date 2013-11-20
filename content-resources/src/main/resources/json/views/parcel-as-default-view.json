@@ -4,9 +4,9 @@
     "default" : true,
     "public" : true,
     "oskari" : {
-        "application" : "servlet",
+        "application" : "parcel",
         "page" : "parcel",
-        "development_prefix" : "/applications/sample"
+        "development_prefix" : "/applications"
     },
     "bundles" : [
         { "id" : "openlayers-default-theme" },
