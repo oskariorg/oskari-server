@@ -235,11 +235,13 @@ public class GetPreviewHandler extends ActionHandler {
             jsonstatedata.put(KEY_SELECTEDLAYERS, selectedlayers);
             jsonprint.put(KEY_STATE, jsonstatedata);
 
+
+            final boolean useDirectURLForMyplaces = false;
             // populate layer details
             final JSONArray fullLayersConfigJson = MapfullHandler
                     .getFullLayerConfig(configLayers, params.getUser(), params
                             .getLocale().getLanguage(), params.getClientIp(),
-                            PRINT_VIEW, ViewTypes.PRINT, false, true);
+                            PRINT_VIEW, ViewTypes.PRINT, false, useDirectURLForMyplaces);
 
             // GeoJson graphics layers + styles
             if (geojs != null) {
