@@ -236,7 +236,7 @@ public class GetPreviewHandler extends ActionHandler {
             jsonprint.put(KEY_STATE, jsonstatedata);
 
 
-            final boolean useDirectURLForMyplaces = false;
+            final boolean useDirectURLForMyplaces = true;
             // populate layer details
             final JSONArray fullLayersConfigJson = MapfullHandler
                     .getFullLayerConfig(configLayers, params.getUser(), params
