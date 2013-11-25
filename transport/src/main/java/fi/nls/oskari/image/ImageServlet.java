@@ -81,7 +81,7 @@ public class ImageServlet extends HttpServlet {
             style = TYPE_HIGHLIGHT + "_" + session;
         } else {
             style = ConversionHelper.getString(request.getParameter(PARAM_STYLE), DEFAULT_STYLE);
-            if(style.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
+            if(style.startsWith(WFSImage.PREFIX_CUSTOM_STYLE) || style.equals(TYPE_HIGHLIGHT)) {
                 style += "_" + session;
             }
         }
