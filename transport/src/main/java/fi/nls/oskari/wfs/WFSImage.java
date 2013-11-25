@@ -70,6 +70,9 @@ public class WFSImage {
 
     WFSCustomStyleStore customStyle;
     private boolean isHighlight = false;
+    private boolean isTile = false;
+
+    private double bufferSize;
 
     /**
      * Constructor for image of certain layer and style
@@ -82,6 +85,9 @@ public class WFSImage {
             log.error("Failed to construct image (undefined params)");
             return;
         }
+
+        // TODO: get the bufferSize from layer configuration (put it in db)
+        bufferSize = 1.0;
 
         // TODO: possibility to change the custom style store key to sessionID (it is hard without connection to get client)
         if(styleName.startsWith(PREFIX_CUSTOM_STYLE) && client != null) {
@@ -299,6 +305,8 @@ public class WFSImage {
         } else {
             this.location = new Location(location.getSrs());
             this.location.setBbox(bounds);
+            // enlarge if tile
+            this.isTile = true;
         }
 
         this.features = features;
@@ -333,16 +341,18 @@ public class WFSImage {
 		MapViewport viewport = new MapViewport();
 
 		CoordinateReferenceSystem crs = location.getCrs();
-		Rectangle screenArea = new Rectangle(0, 0, imageWidth, imageHeight); // image size		
-		ReferencedEnvelope bounds = new ReferencedEnvelope(
-				location.getLeft(), // x1
-				location.getRight(), // x2
-				location.getBottom(), // y1
-				location.getTop(), // y2
-				crs
-		); // map coordinates
+        ReferencedEnvelope bounds = location.getEnvelope();
+        Rectangle screenArea;
+        if(isTile) {
+            double width = (location.getRight() - location.getLeft())/2 * bufferSize;
+            double height = (location.getTop() - location.getBottom())/2 * bufferSize;
+            bounds = location.createEnlargedEnvelope(width, height);
+            screenArea = new Rectangle(0, 0, imageWidth+(int)(imageWidth*bufferSize), imageHeight+(int)(imageWidth*bufferSize));
+        } else {
+            screenArea = new Rectangle(0, 0, imageWidth, imageHeight); // image size
+        }
 
-		viewport.setCoordinateReferenceSystem(crs);
+        viewport.setCoordinateReferenceSystem(crs);
 		viewport.setScreenArea(screenArea);
 		viewport.setBounds(bounds);
         viewport.setMatchingAspectRatio(true);
@@ -364,7 +374,15 @@ public class WFSImage {
 	 * @return image
 	 */
 	private BufferedImage saveImage(MapContent content) {
-	    BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage image;
+        if(isTile) {
+            image = new BufferedImage(
+                    imageWidth+(int)(imageWidth*bufferSize),
+                    imageHeight+(int)(imageWidth*bufferSize),
+                    BufferedImage.TYPE_4BYTE_ABGR);
+        } else {
+            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
+        }
 
 	    GTRenderer renderer = new StreamingRenderer();
 	    renderer.setMapContent(content);
@@ -373,8 +391,22 @@ public class WFSImage {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		renderer.paint(g, new Rectangle(imageWidth, imageHeight), content.getViewport().getBounds());
+		if(isTile) {
+            renderer.paint(g, new Rectangle(imageWidth+(int)(imageWidth*bufferSize), imageHeight+(int)(imageWidth*bufferSize)), content.getViewport().getBounds());
+        } else{
+            renderer.paint(g, new Rectangle(imageWidth, imageHeight), content.getViewport().getBounds());
+        }
+
 		content.dispose();
+
+        if(isTile) {
+            try {
+                image = image.getSubimage((int)(imageWidth*bufferSize)/2, (int)(imageWidth*bufferSize)/2, imageWidth, imageHeight);
+            } catch(Exception e) {
+                log.error(e, "image cropping failed");
+            }
+        }
+
 	    return image;
 	}
 
