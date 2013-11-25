@@ -67,12 +67,13 @@ public class WFSImage {
     private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private int imageWidth = 0;
     private int imageHeight = 0;
+    private double bufferSize = 0.0d;
+    private int bufferedImageWidth = 0;
+    private int bufferedImageHeight = 0;
 
     WFSCustomStyleStore customStyle;
     private boolean isHighlight = false;
     private boolean isTile = false;
-
-    private double bufferSize;
 
     /**
      * Constructor for image of certain layer and style
@@ -86,8 +87,17 @@ public class WFSImage {
             return;
         }
 
-        // TODO: get the bufferSize from layer configuration (put it in db)
-        bufferSize = 1.0;
+        // check if tile buffer is given
+        String tileBufferKey;
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
+            tileBufferKey = PREFIX_CUSTOM_STYLE;
+        } else {
+            tileBufferKey = styleName;
+        }
+        if(layer.getTileBuffer().containsKey(tileBufferKey)) {
+            bufferSize = layer.getTileBuffer().get(tileBufferKey);
+        }
+        log.debug(tileBufferKey, "=", bufferSize);
 
         // TODO: possibility to change the custom style store key to sessionID (it is hard without connection to get client)
         if(styleName.startsWith(PREFIX_CUSTOM_STYLE) && client != null) {
@@ -157,16 +167,14 @@ public class WFSImage {
             return null;
         }
 
-        // no persistent cache for custom styles (only for image route)
-        if(styleName.startsWith(PREFIX_CUSTOM_STYLE)) {
-            return null;
-        }
-
     	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
     	String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
     	if(!persistent) {
     		sKey = sKey + "_temp";
     	}
+
+        log.debug("cache key", sKey);
+
     	byte[] key = sKey.getBytes();
     	byte[] bytes = JedisManager.get(key);
     	if(bytes != null)
@@ -300,19 +308,24 @@ public class WFSImage {
                               List<Double> bounds,
                               FeatureCollection<SimpleFeatureType, SimpleFeature> features) {
 
+        this.imageWidth = tile.getWidth();
+        this.imageHeight = tile.getHeight();
+
         if(bounds == null) {
             this.location = location;
         } else {
             this.location = new Location(location.getSrs());
             this.location.setBbox(bounds);
-            // enlarge if tile
+
+            // enlarge if tile and buffer is defined
             this.isTile = true;
+            if(bufferSize != 0.0d) {
+                this.bufferedImageWidth = imageWidth+(int)(imageWidth*bufferSize);
+                this.bufferedImageHeight = imageHeight+(int)(imageWidth*bufferSize);
+            }
         }
 
         this.features = features;
-
-        this.imageWidth = tile.getWidth();
-        this.imageHeight = tile.getHeight();
 
         if (imageWidth == 0 ||
                 imageHeight == 0 ||
@@ -342,12 +355,13 @@ public class WFSImage {
 
 		CoordinateReferenceSystem crs = location.getCrs();
         ReferencedEnvelope bounds = location.getEnvelope();
+
         Rectangle screenArea;
-        if(isTile) {
+        if(isTile && bufferSize != 0.0d) {
             double width = (location.getRight() - location.getLeft())/2 * bufferSize;
             double height = (location.getTop() - location.getBottom())/2 * bufferSize;
             bounds = location.createEnlargedEnvelope(width, height);
-            screenArea = new Rectangle(0, 0, imageWidth+(int)(imageWidth*bufferSize), imageHeight+(int)(imageWidth*bufferSize));
+            screenArea = new Rectangle(0, 0, bufferedImageWidth, bufferedImageHeight);
         } else {
             screenArea = new Rectangle(0, 0, imageWidth, imageHeight); // image size
         }
@@ -375,10 +389,9 @@ public class WFSImage {
 	 */
 	private BufferedImage saveImage(MapContent content) {
         BufferedImage image;
-        if(isTile) {
-            image = new BufferedImage(
-                    imageWidth+(int)(imageWidth*bufferSize),
-                    imageHeight+(int)(imageWidth*bufferSize),
+        if(isTile && bufferSize != 0.0d) {
+            image = new BufferedImage(bufferedImageWidth,
+                    bufferedImageHeight,
                     BufferedImage.TYPE_4BYTE_ABGR);
         } else {
             image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
@@ -391,26 +404,33 @@ public class WFSImage {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		if(isTile) {
-            renderer.paint(g, new Rectangle(imageWidth+(int)(imageWidth*bufferSize), imageHeight+(int)(imageWidth*bufferSize)), content.getViewport().getBounds());
-        } else{
+		if(isTile && bufferSize != 0.0d) {
+            renderer.paint(g, new Rectangle(bufferedImageWidth,
+                    bufferedImageHeight),
+                    content.getViewport().getBounds());
+            try {
+                image = image.getSubimage((int)(imageWidth*bufferSize)/2,
+                        (int)(imageWidth*bufferSize)/2,
+                        imageWidth,
+                        imageHeight);
+            } catch(Exception e) {
+                log.error(e, "Image cropping failed");
+            }
+        } else {
             renderer.paint(g, new Rectangle(imageWidth, imageHeight), content.getViewport().getBounds());
         }
 
 		content.dispose();
-
-        if(isTile) {
-            try {
-                image = image.getSubimage((int)(imageWidth*bufferSize)/2, (int)(imageWidth*bufferSize)/2, imageWidth, imageHeight);
-            } catch(Exception e) {
-                log.error(e, "image cropping failed");
-            }
-        }
-
 	    return image;
 	}
 
-
+    /**
+     * Creates SLD style
+     *
+     * @param layer
+     * @param styleName
+     * @return style
+     */
     private Style getSLDStyle(WFSLayerStore layer, String styleName) {
         Style style;
         if(layer.getStyles().containsKey(styleName)) {

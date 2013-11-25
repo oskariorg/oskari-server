@@ -63,6 +63,7 @@ public class WFSLayerStore {
     private static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
     private static final String GET_FEATURE_INFO = "getFeatureInfo";
     private static final String TILE_REQUEST = "tileRequest";
+    private final static String TILE_BUFFER = "tileBuffer";
     private static final String WMS_LAYER_ID = "WMSLayerId";
 
     private static final String MIN_SCALE = "minScale";
@@ -110,8 +111,8 @@ public class WFSLayerStore {
     private boolean getMapTiles; // if normal images are drawn and send
     private boolean getHighlightImage; // if highlight is drawn and send
     private boolean getFeatureInfo; // if feature json is send
-    private boolean tileRequest; // if tile requests are made (map request
-                                 // default)
+    private boolean tileRequest; // if tile requests are made (map request default)
+    private Map<String, Double> tileBuffer;
     private String WMSLayerId;
 
     private double minScale;
@@ -624,6 +625,24 @@ public class WFSLayerStore {
     }
 
     /**
+     * Gets tile buffer
+     *
+     * @return tile buffer
+     */
+    public Map<String, Double> getTileBuffer() {
+        return tileBuffer;
+    }
+
+    /**
+     * Sets tile buffer
+     *
+     * @param tileBuffer
+     */
+    public void setTileBuffer(Map<String, Double> tileBuffer) {
+        this.tileBuffer = tileBuffer;
+    }
+
+    /**
      * Gets WMS layer id
      * 
      * @return WMS layer id
@@ -863,6 +882,7 @@ public class WFSLayerStore {
         Map<String, String> featureTypes = new HashMap<String, String>();
         Map<String, List<String>> selectedFeatureParams = new HashMap<String, List<String>>();
         Map<String, List<String>> featureParamsLocales = new HashMap<String, List<String>>();
+        Map<String, Double> tileBuffers = new HashMap<String, Double>();
         Map<String, WFSSLDStyle> SLDStyles = new HashMap<String, WFSSLDStyle>();
         WFSSLDStyle SLDStyle = null;
 
@@ -996,7 +1016,16 @@ public class WFSLayerStore {
 				store.setGetFeatureInfo(parser.getText());
 			} else if (TILE_REQUEST.equals(fieldName)) {
 				store.setTileRequest(parser.getText());
-			} else if (WMS_LAYER_ID.equals(fieldName)) {
+			}  else if (TILE_BUFFER.equals(fieldName)) {
+                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+                    while (parser.nextToken() != JsonToken.END_OBJECT) {
+                        String styleName = parser.getCurrentName();
+                        parser.nextToken();
+                        tileBuffers.put(styleName, parser.getValueAsDouble());
+                    }
+                }
+                store.setTileBuffer(tileBuffers);
+            } else if (WMS_LAYER_ID.equals(fieldName)) {
 				store.setWMSLayerId(parser.getText());
 			} 
 			
