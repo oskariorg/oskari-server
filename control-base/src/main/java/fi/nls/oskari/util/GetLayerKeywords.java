@@ -60,10 +60,42 @@ public class GetLayerKeywords {
         Document doc = getLayerData(layerId, uuid, getBaseUrl());
         if (doc != null) {
             // extract keywords from metadata
-            List<Keyword> keywords = getLayerKeywords(layerId, uuid, doc);
+            List<Keyword> keywords = parseLayerKeywords(layerId, uuid, doc);
             // shove keywords + relations to db
             saveKeywords(layerId, keywords);
         }
+    }
+
+    public String[] getLayerKeywords(Integer layerId, String uuid) {
+        if (layerId == null) {
+            //log.warn("No layerId, skipping");
+            return new String[0];
+        }
+        if (uuid == null || uuid.isEmpty()) {
+            //log.warn("No UUID for layer " + layerId + ", skipping");
+            return new String[0];
+        }
+        // fetch layer metadata
+        Document doc = getLayerData(layerId, uuid, getBaseUrl());
+        if (doc == null) {
+            return new String[0];
+        }
+        // extract keywords from metadata
+        List<Keyword> keywords = null;
+        try {
+            keywords = parseLayerKeywords(layerId, uuid, doc);
+        } catch (XPathExpressionException e) {
+            log.warn("Invalid XPath expression for layer ", layerId);
+            return new String[0];
+        } catch (URISyntaxException e) {
+            log.warn("Invalid URI for layer ", layerId);
+            return new String[0];
+        } catch (TransformerException e) {
+            log.warn("XML transform failed for layer ", layerId);
+            return new String[0];
+        }
+        // shove keywords + relations to db
+        return keywords.toArray(new String[keywords.size()]);
     }
 
     private void initLocaleMapping() {
@@ -111,7 +143,7 @@ public class GetLayerKeywords {
         return new MetadataNamespaceContext();
     }
 
-    private List<Keyword> getLayerKeywords(Integer layerId, String uuid, Document doc) throws XPathExpressionException, URISyntaxException, TransformerException {
+    private List<Keyword> parseLayerKeywords(Integer layerId, String uuid, Document doc) throws XPathExpressionException, URISyntaxException, TransformerException {
         Element root = doc.getDocumentElement();
         if (root == null) {
             throw new RuntimeException("Root is null");

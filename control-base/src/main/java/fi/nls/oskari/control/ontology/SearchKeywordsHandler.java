@@ -18,17 +18,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSCapabilitiesParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author SMAKINEN
@@ -241,6 +236,7 @@ public class SearchKeywordsHandler extends ActionHandler {
      */
     private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
     private static final WFSCapabilitiesParser wfsCapabilitiesparser = new WFSCapabilitiesParser();
+    private GetLayerKeywords getLayerKeywords = new GetLayerKeywords();
     private final String[] EMPTY_RESULT = new String[0];
 
     private void populateKeywords() {
@@ -277,6 +273,7 @@ public class SearchKeywordsHandler extends ActionHandler {
     }
 
     private String[] getKeywordsForLayer(final Layer layer) {
+        Set<String> layerKeywords = new HashSet<String>();
         try {
             if(Layer.TYPE_WMS.equals(layer.getType())) {
                 WebMapService wms = WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getWmsName());
@@ -284,11 +281,15 @@ public class SearchKeywordsHandler extends ActionHandler {
                     log.warn("Error parsing keywords for layer", layer);
                     return EMPTY_RESULT;
                 }
-                return wms.getKeywords();
+                layerKeywords.addAll(Arrays.asList(wms.getKeywords()));
             }
             else if(Layer.TYPE_WFS.equals(layer.getType())) {
-                return wfsCapabilitiesparser.getKeywordsForLayer(layer);
+                layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));
             }
+            if (layer.getDataUrl() != null) {
+                layerKeywords.addAll(Arrays.asList(getLayerKeywords.getLayerKeywords(layer.getId(), layer.getDataUrl())));
+            }
+            return layerKeywords.toArray(new String[layerKeywords.size()]);
         } catch (Exception e) {
             log.error(e, "Error parsing keywords for layer", layer);
         }
