@@ -75,14 +75,18 @@ public class ImageServlet extends HttpServlet {
 
 	    String layerId = request.getParameter(PARAM_LAYER_ID);
         String type = ConversionHelper.getString(request.getParameter(PARAM_TYPE), DEFAULT_TYPE);
+
         String style;
         if(type.equals(TYPE_HIGHLIGHT)) {
-            style = TYPE_HIGHLIGHT;
+            style = TYPE_HIGHLIGHT + "_" + session;
         } else {
             style = ConversionHelper.getString(request.getParameter(PARAM_STYLE), DEFAULT_STYLE);
+            if(style.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
+                style += "_" + session;
+            }
         }
 
-	    String srs = ConversionHelper.getString(request.getParameter(PARAM_SRS), DEFAULT_SRS);
+        String srs = ConversionHelper.getString(request.getParameter(PARAM_SRS), DEFAULT_SRS);
 
 	    Double[] bbox = new Double[4];
         String bboxstr = ConversionHelper.getString(request.getParameter(PARAM_BBOX), null);

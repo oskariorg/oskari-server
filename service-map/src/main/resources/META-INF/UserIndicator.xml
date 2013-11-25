@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserIndicator">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="UserIndicator" type="fi.nls.oskari.domain.map.indicator.UserIndicator" />
+
+
+    <resultMap id="UserIndicatorResult" class="UserIndicator">
+        <result property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="title" column="title" />
+        <result property="source" column="source" />
+        <result property="material" column="material" />
+        <result property="year" column="year" />
+        <result property="data" column="data" />
+        <result property="published" column="published" />
+    </resultMap>
+
+
+
+    <parameterMap id="UserIndicatorInsertParameter" class="UserIndicator">
+        <parameter property="userId" />
+        <parameter property="title" />
+        <parameter property="source" />
+        <parameter property="material" />
+        <parameter property="year" />
+        <parameter property="data" />
+        <parameter property="published" />
+    </parameterMap>
+
+    <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
+        <parameter property="userId" />
+        <parameter property="title" />
+        <parameter property="source" />
+        <parameter property="material" />
+        <parameter property="year" />
+        <parameter property="data" />
+        <parameter property="published" />
+        <parameter property="id" />
+    </parameterMap>
+
+
+    <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
+      SELECT
+          id,
+          user_id,
+          title,
+          source,
+          material,
+          year,
+          data,
+          published
+      FROM
+          oskari_user_indicator
+      WHERE
+          user_id = #userId#
+    </select>
+
+
+<select id="findAll" resultMap="UserIndicatorResult">
+      SELECT
+            id,
+            user_id,
+            title,
+            source,
+            material,
+            year,
+            data,
+            published
+      FROM
+            oskari_user_indicator
+    </select>
+
+    <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">
+        insert into oskari_user_indicator (
+            user_id,
+            title,
+            source,
+            material,
+            year,
+            data,
+            published)
+        values (?, ?, ?, ?, ?, ?, ?)
+    </statement>
+
+
+    <update id="update" parameterMap="LayerUpdateParameter">
+        update oskari_user_indicator set
+            user_id = ?,
+            title = ?,
+            source = ?,
+            material = ?,
+            year = ?,
+            data = ?,
+            published = ?
+        where id = ?
+    </update>
+
+    <delete id="delete" parameterClass="int">
+        delete from oskari_user_indicator where id = #id#
+    </delete>
+
+</sqlMap>
