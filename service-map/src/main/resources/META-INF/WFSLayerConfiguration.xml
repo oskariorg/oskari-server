@@ -37,6 +37,7 @@
         <result property="getHighlightImage" column="get_highlight_image"/>
         <result property="getFeatureInfo" column="get_feature_info"/>
         <result property="tileRequest" column="tile_request"/>
+        <result property="tileBuffer" column="tile_buffer"/>
         <result property="WMSLayerId" column="wms_layer_id"/>
 
         <result property="wps_params" column="wps_params"/>
@@ -87,6 +88,7 @@
             l.get_highlight_image,
 			l.get_feature_info,
             l.tile_request,
+            l.tile_buffer,
 			l.wms_layer_id,
 			l.wps_params,
 			
@@ -115,8 +117,8 @@
   			s.sld_style
   			
 		FROM portti_wfs_layer l
-		JOIN portti_wfs_layers_styles ls ON ls.wfs_layer_id = l.id
-		JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
+		LEFT OUTER JOIN portti_wfs_layers_styles ls ON ls.wfs_layer_id = l.id
+		LEFT OUTER JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
 		WHERE l.maplayer_id = #id#
     </select>
 

@@ -157,9 +157,11 @@ public class HttpHelper {
 						.trustAllHosts()
 						.send(data);
 			}
-			if(request.ok() || request.code() == 304)
+			if(request.ok() || request.code() == 304) {
+                // default charset is UTF-8
+                log.debug("request charset:", request.charset());
 				response = request.bufferedReader();
-			else {
+            } else {
 				handleHTTPError("POST", url, request.code());
 			}
 			

@@ -27,6 +27,7 @@ CREATE TABLE portti_wfs_layer
   get_map_tiles boolean NOT NULL DEFAULT true,
   get_feature_info boolean NOT NULL DEFAULT true,
   tile_request boolean NOT NULL DEFAULT false,
+  tile_buffer character varying(512) default '{}',
   wms_layer_id integer,
   wps_params character varying(256) default '{}',
   srs_name character varying,

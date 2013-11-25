@@ -102,20 +102,4 @@ public class WFSCommunicatorTest {
         WFSFilter filter = WFSCommunicator.constructFilter(layerId);
         assertTrue("Should be null", filter == null);
     }
-
-
-    @Test
-    public void testRaHu() {
-        String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
-        assertTrue("Should get defined result with bounds", payload.equals(boundsResult));
-
-        // request (maplayer_id 216)
-        BufferedReader response = HttpHelper.postRequestReader(layer.getURL(), "text/xml", payload, layer.getUsername(), layer.getPassword());
-        assertTrue("Should get valid response", response != null);
-
-        // parse
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSCommunicator.parseSimpleFeatures(response, layer);
-        assertTrue("Should get valid features", features != null);
-        assertTrue("Should get features", features.size() > 0);
-    }
 }
