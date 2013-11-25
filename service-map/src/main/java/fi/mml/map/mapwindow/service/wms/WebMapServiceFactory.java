@@ -21,7 +21,7 @@ public class WebMapServiceFactory {
 	private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
     static long wmsCachedtime = 0;
     static long wmsExpirationTime = 12*60*60*1000;
-    static Map<String, CapabilitiesCache> wmsCache = new HashMap<String, CapabilitiesCache>();
+    static Map<String, WebMapService> wmsCache = new HashMap<String, WebMapService>();
 
 
 	
@@ -38,23 +38,23 @@ public class WebMapServiceFactory {
 	public static WebMapService buildWebMapService(int layerId, String layerName) throws WebMapServiceParseException {
 
 		if (wmsCachedtime + wmsExpirationTime < System.currentTimeMillis()) {
-			wmsCache = new HashMap<String, CapabilitiesCache>();
+			wmsCache = new HashMap<String, WebMapService>();
 			wmsCachedtime = System.currentTimeMillis();
 		}
 		WebMapService wms = null;
-		CapabilitiesCache cc =null;
+        // TODO: cache!! this is called whenever a layer JSON is created!!
 		if (wmsCache.containsKey("wmsCache_"+layerId)) {
-			cc = wmsCache.get("wmsCache_"+layerId);
+			wms = wmsCache.get("wmsCache_"+layerId);
 		} else {
-			cc = mapLayerService.getCapabilitiesCache(layerId);
-			wmsCache.put("wmsCache_"+layerId, cc);
+            CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(layerId);
+            if (cc != null && "1.3.0".equals(cc.getVersion().trim())) {
+                wms = new WebMapServiceV1_3_0_Impl("from DataBase", cc.getData().trim(), layerName);
+            } else if (cc != null && "1.1.1".equals(cc.getVersion().trim())) {
+                wms = new WebMapServiceV1_1_1_Impl("from DataBase", cc.getData().trim(), layerName);
+            }
+			wmsCache.put("wmsCache_"+layerId, wms);
 		}
-		
-		if (cc != null && "1.3.0".equals(cc.getVersion().trim())) {
-			wms = new WebMapServiceV1_3_0_Impl("from DataBase", cc.getData().trim(), layerName);
-		} else if (cc != null && "1.1.1".equals(cc.getVersion().trim())) {
-			wms = new WebMapServiceV1_1_1_Impl("from DataBase", cc.getData().trim(), layerName);
-		}
+
 		
 		return wms;
 	}
