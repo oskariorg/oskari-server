@@ -13,10 +13,22 @@ public class UserIndicator {
     long userId;
     String title;
     String source;
-    String material;
+    long material;
     int year;
     String data;
     boolean published;
+    String description;
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
 
     public long getId() {
         return id;
@@ -50,11 +62,11 @@ public class UserIndicator {
         this.source = source;
     }
 
-    public String getMaterial() {
+    public long getMaterial() {
         return material;
     }
 
-    public void setMaterial(String material) {
+    public void setMaterial(long material) {
         this.material = material;
     }
 

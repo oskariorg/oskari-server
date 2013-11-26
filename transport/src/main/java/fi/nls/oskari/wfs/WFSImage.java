@@ -167,13 +167,16 @@ public class WFSImage {
             return null;
         }
 
+        // no persistent cache for custom styles
+        if(styleName.startsWith(PREFIX_CUSTOM_STYLE) && persistent) {
+            return null;
+        }
+
     	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
     	String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
     	if(!persistent) {
     		sKey = sKey + "_temp";
     	}
-
-        log.debug("cache key", sKey);
 
     	byte[] key = sKey.getBytes();
     	byte[] bytes = JedisManager.get(key);
@@ -218,6 +221,7 @@ public class WFSImage {
     	if(!persistent) {
     		sKey = sKey + "_temp";
     	}
+
     	byte[] key = sKey.getBytes();
 
 		JedisManager.setex(key, 86400, byteImage);
