@@ -33,6 +33,7 @@
                 "zoom": 1
             }
         },
-        { "id" : "infobox" }
+        { "id" : "infobox" },
+        { "id" : "toolbar" }
     ]
 }

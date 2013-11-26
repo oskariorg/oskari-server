@@ -520,6 +520,8 @@ UPDATE portti_view_bundle_seq set config = '{
       "registerUnitFeatureType" : "RekisteriyksikonTietoja",
       "hideSomeToolbarButtons" : "hide",
       "transactionUrl" : "",
+      "wfstFeatureNS" : "http://www.oskari.org",
+      "wfstUrl" :  "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=2&action_route=PreParcel",
       "stickyLayerIds" : [99,90]
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'parcel') 
     AND view_id=[VIEW_ID];
