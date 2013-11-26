@@ -15,7 +15,7 @@
         <result property="userId" column="user_id" />
         <result property="title" column="title" />
         <result property="source" column="source" />
-        <result property="material" column="material" />
+        <result property="material" column="layer_id" />
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
@@ -51,7 +51,7 @@
           user_id,
           title,
           source,
-          material,
+          layer_id,
           year,
           data,
           published
@@ -68,7 +68,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published
@@ -82,7 +82,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published
@@ -97,7 +97,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published)
@@ -110,7 +110,7 @@
             user_id = ?,
             title = ?,
             source = ?,
-            material = ?,
+            layer_id = ?,
             year = ?,
             data = ?,
             published = ?
