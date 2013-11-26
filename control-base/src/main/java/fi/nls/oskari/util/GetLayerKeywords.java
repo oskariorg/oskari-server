@@ -66,38 +66,6 @@ public class GetLayerKeywords {
         }
     }
 
-    public String[] getLayerKeywords(Integer layerId, String uuid) {
-        if (layerId == null) {
-            //log.warn("No layerId, skipping");
-            return new String[0];
-        }
-        if (uuid == null || uuid.isEmpty()) {
-            //log.warn("No UUID for layer " + layerId + ", skipping");
-            return new String[0];
-        }
-        // fetch layer metadata
-        Document doc = getLayerData(layerId, uuid, getBaseUrl());
-        if (doc == null) {
-            return new String[0];
-        }
-        // extract keywords from metadata
-        List<Keyword> keywords = null;
-        try {
-            keywords = parseLayerKeywords(layerId, uuid, doc);
-        } catch (XPathExpressionException e) {
-            log.warn("Invalid XPath expression for layer ", layerId);
-            return new String[0];
-        } catch (URISyntaxException e) {
-            log.warn("Invalid URI for layer ", layerId);
-            return new String[0];
-        } catch (TransformerException e) {
-            log.warn("XML transform failed for layer ", layerId);
-            return new String[0];
-        }
-        // shove keywords + relations to db
-        return keywords.toArray(new String[keywords.size()]);
-    }
-
     private void initLocaleMapping() {
         String[] languages = Locale.getISOLanguages();
         localeMap = new HashMap<String, Locale>(languages.length);

@@ -287,7 +287,7 @@ public class SearchKeywordsHandler extends ActionHandler {
                 layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));
             }
             if (layer.getDataUrl() != null) {
-                layerKeywords.addAll(Arrays.asList(getLayerKeywords.getLayerKeywords(layer.getId(), layer.getDataUrl())));
+                getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getDataUrl());
             }
             return layerKeywords.toArray(new String[layerKeywords.size()]);
         } catch (Exception e) {
