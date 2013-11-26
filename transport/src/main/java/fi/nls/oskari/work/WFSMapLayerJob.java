@@ -346,6 +346,11 @@ public class WFSMapLayerJob extends Job {
             this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
         }
 
+        String cacheStyleName = this.session.getLayers().get(this.layerId).getStyleName();
+        if(cacheStyleName.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
+            cacheStyleName += "_" + this.session.getSession();
+        }
+
         // init enlarged envelope
         List<List<Double>> grid = this.session.getGrid().getBounds();
         if(grid.size() > 0) {
@@ -405,9 +410,9 @@ public class WFSMapLayerJob extends Job {
 
 					    // set to cache
 						if(!isboundaryTile) {
-                            setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, true);
+                            setImageCache(bufferedImage, cacheStyleName, bbox, true);
 						} else { // non-persistent cache - for ie
-                            setImageCache(bufferedImage, this.session.getLayers().get(this.layerId).getStyleName(), bbox, false);
+                            setImageCache(bufferedImage, cacheStyleName, bbox, false);
 						}
 					}
 
@@ -451,10 +456,9 @@ public class WFSMapLayerJob extends Job {
                 Double[] bbox = location.getBboxArray();
 
                 // cache (non-persistant)
-                setImageCache(bufferedImage, Type.HIGHLIGHT.toString(), bbox, false);
+                setImageCache(bufferedImage, Type.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
 
                 String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
-                log.debug("url");
                 this.sendWFSImage(url, bufferedImage, bbox, false, false);
             }
         } else if(this.type == Type.MAP_CLICK) {
@@ -698,6 +702,7 @@ public class WFSMapLayerJob extends Job {
      * Sets image to cache
      *
      * @param bufferedImage
+     * @param style
      * @param bbox
      * @param persistent
      */

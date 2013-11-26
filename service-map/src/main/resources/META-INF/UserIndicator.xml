@@ -58,7 +58,7 @@
       FROM
           oskari_user_indicator
       WHERE
-          user_id = #userId#
+          user_id = #id#
     </select>
 
 
@@ -74,6 +74,22 @@
             published
       FROM
             oskari_user_indicator
+    </select>
+
+    <select id="findAllOfUser" resultMap="UserIndicatorResult">
+        SELECT
+            id,
+            user_id,
+            title,
+            source,
+            material,
+            year,
+            data,
+            published
+        FROM
+            oskari_user_indicator
+        WHERE
+            user_id = #userId#
     </select>
 
     <statement id="insert" parameterMap="UserIndicatorInsertParameter" resultClass="int">

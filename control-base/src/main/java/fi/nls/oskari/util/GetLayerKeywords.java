@@ -60,7 +60,7 @@ public class GetLayerKeywords {
         Document doc = getLayerData(layerId, uuid, getBaseUrl());
         if (doc != null) {
             // extract keywords from metadata
-            List<Keyword> keywords = getLayerKeywords(layerId, uuid, doc);
+            List<Keyword> keywords = parseLayerKeywords(layerId, uuid, doc);
             // shove keywords + relations to db
             saveKeywords(layerId, keywords);
         }
@@ -111,7 +111,7 @@ public class GetLayerKeywords {
         return new MetadataNamespaceContext();
     }
 
-    private List<Keyword> getLayerKeywords(Integer layerId, String uuid, Document doc) throws XPathExpressionException, URISyntaxException, TransformerException {
+    private List<Keyword> parseLayerKeywords(Integer layerId, String uuid, Document doc) throws XPathExpressionException, URISyntaxException, TransformerException {
         Element root = doc.getDocumentElement();
         if (root == null) {
             throw new RuntimeException("Root is null");

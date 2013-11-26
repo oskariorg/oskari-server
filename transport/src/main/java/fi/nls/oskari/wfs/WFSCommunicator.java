@@ -171,6 +171,7 @@ public class WFSCommunicator {
 				features = (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
 			}
 		} catch (Exception e) {
+            e.printStackTrace();
 			if(!errorHandled)
 				log.error(e, "Features couldn't be parsed");
 		}
