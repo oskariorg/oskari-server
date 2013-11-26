@@ -3,6 +3,8 @@ package fi.mml.map.mapwindow.service.db;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: EVAARASMAKI
@@ -15,4 +17,9 @@ public class UserIndicatorServiceImpl extends BaseIbatisService<UserIndicator> i
     protected String getNameSpace() {
         return "UserIndicator";
     }
+
+   public List<UserIndicator> findAllOfUser(long userID){
+      return queryForList(getNameSpace()+".findAllOfUser", userID);
+   }
+  //
 }

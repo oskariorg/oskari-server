@@ -17,13 +17,13 @@ import fi.nls.oskari.domain.map.indicator.UserIndicator;
  * To change this template use File | Settings | File Templates.
  */
 
-@OskariActionRoute("SaveUserIndicator")
+//@OskariActionRoute("SaveUserIndicator")
 public class SaveUserIndicatorHandler extends ActionHandler {
 
 
     private static UserIndicatorService userIndicatorService = new UserIndicatorServiceImpl();
 
-    private static String PARAM_INDICATOR_ID = "id";
+    protected static String PARAM_INDICATOR_ID = "id";
     private static String PARAM_INDICATOR_TITLE = "title";
     private static String PARAM_INDICATOR_SOURCE = "source";
     private static String PARAM_INDICATOR_MATERIAL = "material"; //WMS- layer
@@ -56,7 +56,7 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         ui.setUserId(params.getUser().getId());
         ui.setTitle(params.getHttpParam(PARAM_INDICATOR_TITLE));
         ui.setSource(params.getHttpParam(PARAM_INDICATOR_SOURCE));
-        ui.setMaterial(params.getHttpParam(PARAM_INDICATOR_MATERIAL));
+        ui.setMaterial(Long.parseLong(params.getHttpParam(PARAM_INDICATOR_MATERIAL)));
         ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
         ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));
         ui.setPublished(Boolean.parseBoolean(params.getHttpParam(PARAM_INDICATOR_PUBLISHED)));
