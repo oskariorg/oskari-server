@@ -1,7 +1,6 @@
-package fi.nls.oskari.control;
+package fi.nls.oskari.control.view.modifier.param;
 
 import fi.nls.oskari.annotation.OskariViewModifier;
-import fi.nls.oskari.control.view.modifier.param.ParamHandler;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;

@@ -78,7 +78,7 @@ public class GeoServerProxyService {
             
 
     public String proxy(final ProxyRequest request, final User user)
-            throws MalformedURLException, IOException, PermissionException {
+            throws  IOException, PermissionException {
 
         // check that the users UUID matches the one in POST data XML
         if (POST_REQUEST.equals(request.getMethod())) {
@@ -92,7 +92,28 @@ public class GeoServerProxyService {
                 throw new PermissionException("UUID didn't match with XML");
             }
         }
+        return getResponse(request);
+    }
 
+    /**
+     *  Proxy without user check
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    public String proxy(final ProxyRequest request)
+            throws  IOException  {
+        return getResponse(request);
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    private String getResponse(final ProxyRequest request)
+            throws IOException {
         final HttpURLConnection con = IOHelper.getConnection(request.getUrl() + request.getParamsAsQueryString(),
                 request.getUserName(), request.getPassword());
         IOHelper.writeHeaders(con, request.getHeaders());

@@ -35,9 +35,9 @@ public class PreParcelHandler  extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
+    //    if (params.getUser().isGuest()) {
+    //        throw new ActionDeniedException("Session expired");
+    //    }
 
         final ProxyRequest req = new ProxyRequest();
 
@@ -48,7 +48,7 @@ public class PreParcelHandler  extends ActionHandler {
             req.addParam(key, params.getHttpParam(key));
         }
 
-        // myplaces needs geoserver auth
+        // preparcel needs geoserver auth
         req.setUrl(PropertyUtil.get("preparcel.oskari.url"));
         req.setUserName(PropertyUtil.get("preparcel.user"));
         req.setPassword(PropertyUtil.get("preparcel.password"));
@@ -64,13 +64,14 @@ public class PreParcelHandler  extends ActionHandler {
             }
             try {
                 final String postData = IOHelper.readString(request.getInputStream());
+                //TODO: kvp_uid check to post data
                 req.setPostData(postData);
             } catch (IOException e) {
                 throw new ActionException("Couldn't read POST data from request", e);
             }
         }
         try {
-            final String response = proxyService.proxy(req, params.getUser());
+            final String response = proxyService.proxy(req);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception e) {
             throw new ActionException("Couldn't proxy request to GeoServer", e);
