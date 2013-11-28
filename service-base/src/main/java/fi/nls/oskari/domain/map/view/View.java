@@ -148,4 +148,13 @@ public class View implements Serializable {
         }
         this.bundles.add(bundle);
     }
+
+    public void removeBundle(final String bundleName) {
+        this.bundles.remove(getBundleByName(bundleName));
+        int seqNo = 0;
+        for (Bundle bundle : this.bundles) {
+            bundle.setSeqNo(seqNo);
+            seqNo++;
+        }
+    }
 }

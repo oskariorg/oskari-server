@@ -15,7 +15,7 @@
         <result property="userId" column="user_id" />
         <result property="title" column="title" />
         <result property="source" column="source" />
-        <result property="material" column="material" />
+        <result property="material" column="layer_id" />
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
@@ -44,6 +44,9 @@
         <parameter property="id" />
     </parameterMap>
 
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_user_indicator
+    </select>
 
     <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
       SELECT
@@ -51,7 +54,7 @@
           user_id,
           title,
           source,
-          material,
+          layer_id,
           year,
           data,
           published
@@ -68,7 +71,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published
@@ -82,7 +85,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published
@@ -97,7 +100,7 @@
             user_id,
             title,
             source,
-            material,
+            layer_id,
             year,
             data,
             published)
@@ -105,12 +108,12 @@
     </statement>
 
 
-    <update id="update" parameterMap="LayerUpdateParameter">
+    <update id="update" parameterMap="UserIndicatorUpdateParameter">
         update oskari_user_indicator set
             user_id = ?,
             title = ?,
             source = ?,
-            material = ?,
+            layer_id = ?,
             year = ?,
             data = ?,
             published = ?

@@ -54,6 +54,7 @@ public class PublishHandler extends ActionHandler {
 
     public static final String KEY_GRIDSTATE = "gridState";
     private Bundle publishedGridBundle = null;
+    private Bundle publishedToolbarBundle = null;
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_BASELAYER = "base_";
@@ -118,9 +119,13 @@ public class PublishHandler extends ActionHandler {
         }
 
         publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
+        publishedToolbarBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_TOOLBAR);
         if(publishedGridBundle == null) {
             log.warn("Couldn't get publishedGrid bundle template from DB!");
-        }        
+        }
+        if (publishedToolbarBundle == null) {
+            log.warn("Couldn't get toolbar bundle template from DB!");
+        }
     }
 
     private static String[] filterClasses(String[] classes) {
@@ -171,7 +176,7 @@ public class PublishHandler extends ActionHandler {
             infoboxState = new JSONObject(infoboxBundle.getState());
             infoboxConfig = new JSONObject(infoboxBundle.getConfig());
         } catch (JSONException e) {
-            log.error("Could not create JSONs of defaults:", infoboxBundle);
+            log.error("Couldn't create JSONs of defaults:", infoboxBundle);
             throw new ActionParamsException("Corrupted bundle data");
         }
 
@@ -204,7 +209,7 @@ public class PublishHandler extends ActionHandler {
                 currentView = viewService.getViewWithConf(updateViewId);
 
                 if (user.getId() != currentView.getCreator()) {
-                    log.error("Trying to publish map, but couldnt determine user");
+                    log.error("Trying to publish map, but couldn't determine user");
                     throw new ActionDeniedException("No permissions to update this id:" + updateViewId);
                 }
 
@@ -224,7 +229,7 @@ public class PublishHandler extends ActionHandler {
         JSONObject size;
         JSONObject gridState = null;
         JSONObject mapfullState = null;
-
+        JSONObject publishedToolbarConfig = null;
         try {
             newPlugins = pubdata.getJSONArray(KEY_PLUGINS);
             size = pubdata.getJSONObject(KEY_SIZE);
@@ -237,6 +242,8 @@ public class PublishHandler extends ActionHandler {
             if (tmpInfoboxState != null) {
                 infoboxState = tmpInfoboxState;
             }
+
+            publishedToolbarConfig = pubdata.optJSONObject(ViewModifier.BUNDLE_TOOLBAR);
         } catch (JSONException jsonex) {
             throw new RuntimeException("[PublishHandler] Unable to parse "
                     + "params for new published map!\n" + "Param string is:\n"
@@ -367,6 +374,30 @@ public class PublishHandler extends ActionHandler {
 
             viewData.put(ViewModifier.BUNDLE_MAPFULL, mapfull);
             viewData.put(ViewModifier.BUNDLE_INFOBOX, infobox);
+            // Add toolbar only if we have a config for it
+            // we aren't using state and config should come from user
+            if (publishedToolbarConfig != null && publishedToolbarConfig.names().length() > 0 && publishedToolbarBundle != null) {
+                log.warn("toolbar config found");
+                Bundle toolbarBundle = currentView.getBundleByName(ViewModifier.BUNDLE_TOOLBAR);
+                if (toolbarBundle == null) {
+                    log.warn("Toolbar not found in currentView");
+                    currentView.addBundle(publishedToolbarBundle);
+                    toolbarBundle = publishedToolbarBundle;
+                }
+                final JSONObject toolbar = new JSONObject();
+                // template has all the buttons disabled
+                final JSONObject toolbarConfig = new JSONObject(toolbarBundle.getConfig());
+                // get enabled keys from user
+                merge(publishedToolbarConfig, toolbarConfig);
+                final JSONObject toolbarState = new JSONObject();
+                toolbar.put(KEY_CONFIG, toolbarConfig);
+                toolbar.put(KEY_STATE, toolbarState);
+                viewData.put(ViewModifier.BUNDLE_TOOLBAR, toolbar);
+            } else {
+                log.warn("toolbar config not found");
+                // We have to remove the bundle...
+                currentView.removeBundle("toolbar");
+            }
 
             if(gridState != null && publishedGridBundle != null) {
                 Bundle gridBundle = currentView.getBundleByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
@@ -383,22 +414,23 @@ public class PublishHandler extends ActionHandler {
                 viewData.put(ViewModifier.BUNDLE_PUBLISHEDGRID, publishedGrid);
             }
         } catch (JSONException e) {
-            throw new RuntimeException("Could not store bundle JSONs");
+            throw new RuntimeException("Could not store bundle JSONs", e);
         }
 
         // Pass through the template stuff do not going to modify
         // TODO: why do we construct viewData when this overrides it for other than mapfull/infobox?
         for (Bundle s : currentView.getBundles()) {
-            String bname = s.getBundleinstance();
+            String bundleName = s.getBundleinstance();
             JSONObject bJson = new JSONObject();
-            if (bname.equals(ViewModifier.BUNDLE_INFOBOX) || bname.equals(ViewModifier.BUNDLE_MAPFULL))
+            if (bundleName.equals(ViewModifier.BUNDLE_INFOBOX) || bundleName.equals(ViewModifier.BUNDLE_MAPFULL) || bundleName.equals(ViewModifier.BUNDLE_TOOLBAR)) {
                 continue;
+            }
             try {
-                JSONObject sJson = new JSONObject(s.getState());
-                JSONObject cJson = new JSONObject(s.getConfig());
-                bJson.put(KEY_CONFIG, cJson);
-                bJson.put(KEY_STATE, sJson);
-                viewData.put(bname, bJson);
+                JSONObject stateJson = new JSONObject(s.getState());
+                JSONObject configJson = new JSONObject(s.getConfig());
+                bJson.put(KEY_CONFIG, configJson);
+                bJson.put(KEY_STATE, stateJson);
+                viewData.put(bundleName, bJson);
             } catch (JSONException e) {
                 throw new RuntimeException("Could pass through"
                         + " template bundles as-is");
@@ -550,7 +582,21 @@ public class PublishHandler extends ActionHandler {
         }
         return hasPermission;
     }
-    
-    
+
+    private static void merge(JSONObject from, JSONObject to) throws JSONException {
+        for (String key: JSONObject.getNames(from)) {
+            Object val = from.get(key);
+            if (!to.has(key)) {
+                to.put(key, val);
+            } else {
+                if (val instanceof JSONObject) {
+                    JSONObject valueJson = (JSONObject)val;
+                    merge(valueJson, to.getJSONObject(key));
+                } else {
+                    to.put(key, val);
+                }
+            }
+        }
+    }
 
 }

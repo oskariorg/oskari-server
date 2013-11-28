@@ -21,6 +21,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_ADMINLAYERSELECTOR = "admin-layerselector";
     public static final String BUNDLE_ADMINLAYERRIGHTS = "admin-layerrights";
     public static final String BUNDLE_PUBLISHEDGRID = "publishedgrid";
+    public static final String BUNDLE_TOOLBAR = "toolbar";
 
     public void init() {
 
