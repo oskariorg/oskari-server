@@ -8,6 +8,9 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +20,7 @@ import fi.nls.oskari.domain.map.indicator.UserIndicator;
  * To change this template use File | Settings | File Templates.
  */
 
-//@OskariActionRoute("SaveUserIndicator")
+@OskariActionRoute("SaveUserIndicator")
 public class SaveUserIndicatorHandler extends ActionHandler {
 
 
@@ -30,6 +33,7 @@ public class SaveUserIndicatorHandler extends ActionHandler {
     private static String PARAM_INDICATOR_YEAR = "year";
     private static String PARAM_INDICATOR_DATA = "data";
     private static String PARAM_INDICATOR_PUBLISHED = "published";
+    private static String PARAM_INDICATOR_DESCRIPTION = "description";
 
     public void handleAction(ActionParameters params) throws ActionException {
         if (params.getUser().isGuest()) {
@@ -46,8 +50,11 @@ public class SaveUserIndicatorHandler extends ActionHandler {
            userIndicatorService.update(ui);
         } else {
             //insert
-            userIndicatorService.insert(ui);
+            id = userIndicatorService.insert(ui);
         }
+        JSONObject jobj = new JSONObject();
+        JSONHelper.putValue(jobj, "id", id);
+        ResponseHelper.writeResponse(params,jobj);
     }
 
     private UserIndicator populateUi(ActionParameters params) {
@@ -60,7 +67,7 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
         ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));
         ui.setPublished(Boolean.parseBoolean(params.getHttpParam(PARAM_INDICATOR_PUBLISHED)));
-
+        ui.setDescription(params.getHttpHeader(PARAM_INDICATOR_DESCRIPTION));
         return ui;
     }
 }
