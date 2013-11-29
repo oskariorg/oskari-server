@@ -59,11 +59,11 @@ public class GetUserIndicatorsHandlerTest extends JSONActionRouteTest {
 
         verifyResponseContent(ResourceHelper.readJSONArrayResource("GetUserIndicatorsHandlerTest-noId.json", this));
     }
-
+       */
 
     @Test
     public void testWithParam5() throws Exception {
-        Map<String, String> parameters = new HashMap<String, String>();
+      /*  Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(SaveUserIndicatorHandler.PARAM_INDICATOR_ID, "5");
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         handler.handleAction(params);
@@ -71,9 +71,9 @@ public class GetUserIndicatorsHandlerTest extends JSONActionRouteTest {
         //  verify(userIndicatorService).find(5);
 
         // check that the user is written to the config
-        verifyResponseContent(ResourceHelper.readJSONResource("GetUserIndicatorsHandlerTest-id5.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("GetUserIndicatorsHandlerTest-id5.json", this));*/
     }
-               */
+
 
     /* *********************************************
      * Service mocks
