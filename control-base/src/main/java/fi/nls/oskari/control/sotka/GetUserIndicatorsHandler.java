@@ -44,7 +44,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         if(id ==-1) {  //hae kaikille omille indikaattoreille
             long uid = params.getUser().getId();
             List<UserIndicator> uiList = userIndicatorService.findAllOfUser(uid);
-            if ( uiList.size() > 0 )  {
+            if ( uiList != null && uiList.size() > 0 )  {
                 log.debug("GetUserIndicatorsHandler" + uiList.get(0).toString());
 
             }
@@ -52,9 +52,11 @@ public class GetUserIndicatorsHandler extends ActionHandler {
             ResponseHelper.writeResponse(params, result);
         } else {   //hae id:llä
             UserIndicator ui = userIndicatorService.find(id);
-            log.debug("GetUserIndicatorsHandler" + ui.toString());
-            final JSONObject result = makeJson(ui);
-            ResponseHelper.writeResponse(params, result);
+              log.debug("GetUserIndicatorsHandler: got "+ ui +" with id "+id);
+            if ( ui != null ) {
+                final JSONObject result = makeJson(ui);
+                ResponseHelper.writeResponse(params, result);
+            }
         }
 
     }
@@ -79,12 +81,12 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     }
 
     private JSONObject makeJson(UserIndicator ui) {
-        String description =  ui.getDescription() == null ? "" : ui.getDescription();
-        String title =  ui.getTitle() == null ? "" : ui.getTitle();
+        JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
+        JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id", ui.getId());
-        JSONHelper.putValue(obj, "title", JSONHelper.createJSONObject(title));
-        JSONHelper.putValue(obj, "description", JSONHelper.createJSONObject(description));
+        JSONHelper.putValue(obj, "title", titleJSON);
+        JSONHelper.putValue(obj, "description", descJSON);
         JSONHelper.putValue(obj, "organization",JSONHelper.createJSONObject(ui.getSource()));
         JSONHelper.putValue(obj, "public" , ui.isPublished());
         JSONHelper.putValue(obj, "layer_id", ui.getMaterial());
