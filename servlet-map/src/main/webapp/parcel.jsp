@@ -26,6 +26,12 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
+
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="/Oskari${path}/css/parcel.css"/>
+
     <style type="text/css">
         @media screen {
             body {
@@ -142,10 +148,19 @@
         type="text/css"
         href="/Oskari${path}/css/overwritten.css"/>
 
+<link
+        rel="stylesheet"
+        type="text/css"
+        href="/Oskari${path}/css/parcel.css"/>
+
+
 <style type="text/css">
 </style>
 <!-- ############# /css ################# -->
 <nav id="maptools">
+    <div id="logoarea">
+        <img src="/Oskari/resources/parcel/images/logo.png" alt="Maanmittauslaitos" width="153" height="76">
+    </div>
     <div id="loginbar">
     </div>
     <div id="menubar">
