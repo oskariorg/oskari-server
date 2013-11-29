@@ -40,9 +40,9 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         }
         int id  = -1;
         try {
-           id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+            id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
         } catch (NumberFormatException nfe) {
-            throw  new ActionException("{\"error\":\" Invalid number \"}");
+            throw  new ActionException(" Invalid number ");
         }
 
 
