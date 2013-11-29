@@ -83,6 +83,8 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     private JSONObject makeJson(UserIndicator ui) {
         JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
         JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
+        JSONObject dataJSON =  ui.getData() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getData());
+        JSONObject organizationJSON =  ui.getSource() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getSource());
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id", ui.getId());
         JSONHelper.putValue(obj, "title", titleJSON);
@@ -91,7 +93,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         JSONHelper.putValue(obj, "public" , ui.isPublished());
         JSONHelper.putValue(obj, "layer_id", ui.getMaterial());
         JSONHelper.putValue(obj, "year", ui.getYear());
-        JSONHelper.putValue(obj, "data", JSONHelper.createJSONArray(ui.getData()));
+        JSONHelper.putValue(obj, "data", dataJSON);
         return obj;
     }
 
