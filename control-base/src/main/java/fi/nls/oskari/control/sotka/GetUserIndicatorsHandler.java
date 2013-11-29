@@ -78,25 +78,25 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id",id);
         JSONHelper.putValue(obj, "title", JSONHelper.createJSONObject(title));
-        JSONObject descJSON =  desc == null ? new JSONObject() : JSONHelper.createJSONObject(desc);
+        JSONObject descJSON = desc == null ? new JSONObject() : JSONHelper.createJSONObject(desc);
         JSONHelper.putValue(obj, "description", descJSON);
         JSONHelper.putValue(obj, "public" , pub);
-        JSONHelper.putValue(obj, "layer_id", layer_id);
+        JSONHelper.putValue(obj, "layerId", layer_id);
         return  obj;
     }
 
     private JSONObject makeJson(UserIndicator ui) {
         JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
         JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
-        JSONObject dataJSON =  ui.getData() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getData());
+        JSONArray dataJSON =  ui.getData() == null ? new JSONArray() : JSONHelper.createJSONArray(ui.getData());
         JSONObject organizationJSON =  ui.getSource() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getSource());
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id", ui.getId());
         JSONHelper.putValue(obj, "title", titleJSON);
         JSONHelper.putValue(obj, "description", descJSON);
-        JSONHelper.putValue(obj, "organization",JSONHelper.createJSONObject(ui.getSource()));
+        JSONHelper.putValue(obj, "organization", organizationJSON);
         JSONHelper.putValue(obj, "public" , ui.isPublished());
-        JSONHelper.putValue(obj, "layer_id", ui.getMaterial());
+        JSONHelper.putValue(obj, "layerId", ui.getMaterial());
         JSONHelper.putValue(obj, "year", ui.getYear());
         JSONHelper.putValue(obj, "data", dataJSON);
         return obj;

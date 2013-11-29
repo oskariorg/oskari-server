@@ -111,7 +111,7 @@
             year,
             data,
             published)
-        values (?, ?, ?, ?, ?, ?, ?)
+        values (?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
 
 

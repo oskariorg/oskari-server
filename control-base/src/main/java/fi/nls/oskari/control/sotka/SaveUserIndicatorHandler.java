@@ -69,10 +69,10 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         ui.setTitle(params.getHttpParam(PARAM_INDICATOR_TITLE));
         ui.setSource(params.getHttpParam(PARAM_INDICATOR_SOURCE));
         ui.setMaterial(Long.parseLong(params.getHttpParam(PARAM_INDICATOR_MATERIAL)));
+        ui.setDescription(params.getHttpHeader(PARAM_INDICATOR_DESCRIPTION));
         ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
         ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));
         ui.setPublished(Boolean.parseBoolean(params.getHttpParam(PARAM_INDICATOR_PUBLISHED)));
-        ui.setDescription(params.getHttpHeader(PARAM_INDICATOR_DESCRIPTION));
         return ui;
     }
 }
