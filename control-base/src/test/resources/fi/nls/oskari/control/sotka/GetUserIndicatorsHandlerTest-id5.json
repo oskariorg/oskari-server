@@ -10,7 +10,10 @@
     "sv": Beskrivning,
     "en": Description
   },
-  "organization": Indikaattorin lähde,
+  "organization": {
+    title: {
+    "fi": Indicator source }
+    } ,
   "public": true,
   "layer_id": 515,
   "year": 2013,

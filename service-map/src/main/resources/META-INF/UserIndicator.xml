@@ -19,6 +19,7 @@
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
+        <result property="description" column="description"/>
     </resultMap>
 
 
@@ -31,6 +32,7 @@
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
+        <parameter property="description"/>
     </parameterMap>
 
     <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
@@ -42,6 +44,7 @@
         <parameter property="data" />
         <parameter property="published" />
         <parameter property="id" />
+        <parameter property="description"/>
     </parameterMap>
 
     <select id="maxId" resultClass="int">
@@ -55,6 +58,7 @@
           title,
           source,
           layer_id,
+          description,
           year,
           data,
           published
@@ -72,6 +76,7 @@
             title,
             source,
             layer_id,
+            description,
             year,
             data,
             published
@@ -86,6 +91,7 @@
             title,
             source,
             layer_id,
+            description,
             year,
             data,
             published
@@ -101,6 +107,7 @@
             title,
             source,
             layer_id,
+            description,
             year,
             data,
             published)
@@ -114,6 +121,7 @@
             title = ?,
             source = ?,
             layer_id = ?,
+            description = ?,
             year = ?,
             data = ?,
             published = ?

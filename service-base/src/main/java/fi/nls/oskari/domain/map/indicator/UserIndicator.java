@@ -11,13 +11,13 @@ public class UserIndicator {
 
     long id;
     long userId;
-    String title;
-    String source;
+    String title = "";
+    String source = "";
     long material;
     int year;
-    String data;
+    String data ="";
     boolean published;
-    String description;
+    String description ="";
 
 
     public String getDescription() {
@@ -27,8 +27,6 @@ public class UserIndicator {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
 
     public long getId() {
         return id;

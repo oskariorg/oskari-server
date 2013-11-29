@@ -92,7 +92,7 @@ public class GetUserIndicatorsHandlerTest extends JSONActionRouteTest {
         ui.setDescription("{ \"fi\": Kuvaus, \"sv\": Beskrivning, \"en\": Description }");
         ui.setUserId(getLoggedInUser().getId());
         ui.setMaterial(515);
-        ui.setSource("Indikaattorin lähde");
+        ui.setSource(" {title: { \"fi\": Indicator source }}");
         doReturn(ui).when(userIndicatorService).find(5);
         List<UserIndicator> uiList = new ArrayList<UserIndicator>();
         uiList.add(ui);
