@@ -38,8 +38,13 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         if (params.getUser().isGuest()) {
             throw new ActionDeniedException("Session expired");
         }
+        int id  = -1;
+        try {
+           id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+        } catch (NumberFormatException nfe) {
+            throw  new ActionException("{\"error\":\" Invalid number \"}");
+        }
 
-        int id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
 
         if(id ==-1) {  //hae kaikille omille indikaattoreille
             long uid = params.getUser().getId();

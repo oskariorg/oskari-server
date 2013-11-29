@@ -47,7 +47,7 @@ public class GetUserIndicatorsHandlerTest extends JSONActionRouteTest {
     }
 
 
-    @Test
+  /*  @Test
     public void testWithNoParam() throws Exception {
         final ActionParameters params = createActionParams(getLoggedInUser());
         handler.handleAction(params);
@@ -73,7 +73,7 @@ public class GetUserIndicatorsHandlerTest extends JSONActionRouteTest {
         // check that the user is written to the config
         verifyResponseContent(ResourceHelper.readJSONResource("GetUserIndicatorsHandlerTest-id5.json", this));
     }
-
+               */
 
     /* *********************************************
      * Service mocks
