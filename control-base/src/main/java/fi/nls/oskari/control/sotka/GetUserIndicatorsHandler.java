@@ -40,9 +40,9 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         }
         int id  = -1;
         try {
-           id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+            id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
         } catch (NumberFormatException nfe) {
-            throw  new ActionException("{\"error\":\" Invalid number \"}");
+            throw  new ActionException(" Invalid number ");
         }
 
 
@@ -88,7 +88,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     private JSONObject makeJson(UserIndicator ui) {
         JSONObject descJSON =  ui.getDescription() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getDescription());
         JSONObject titleJSON =  ui.getTitle() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getTitle());
-        JSONObject dataJSON =  ui.getData() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getData());
+        JSONArray dataJSON =  ui.getData() == null ? new JSONArray() : JSONHelper.createJSONArray(ui.getData());
         JSONObject organizationJSON =  ui.getSource() == null ? new JSONObject() : JSONHelper.createJSONObject(ui.getSource());
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id", ui.getId());
