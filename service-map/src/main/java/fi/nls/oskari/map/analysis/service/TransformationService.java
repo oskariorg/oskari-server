@@ -36,7 +36,7 @@ public class TransformationService {
     private static final String WFSTTEMPLATEEND = "</wfs:Transaction>\n";
 
     private static final String WFSTINSERTSTART = "   <wfs:Insert>\n"
-            + "       <feature:analysis_data xmlns:feature=\"http://nls.paikkatietoikkuna.fi/analysis\">\n";
+            + "       <feature:analysis_data xmlns:feature=\"http://www.oskari.org\">\n";
 
     private static final String WFSTINSERTEND = "       </feature:analysis_data>\n"
             + "   </wfs:Insert>\n";

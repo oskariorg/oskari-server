@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 import fi.nls.oskari.log.Logger;
@@ -18,12 +19,11 @@ public abstract class WFSHighlightParamHandler extends ParamHandler {
     protected static final String PARM__WFS_FEATURE_ID = "wfsFeature";
     protected static final String PARM__NATIONAL_CADASTRAL_REFERENCE_HIGHLIGHT = "nationalCadastralReferenceHighlight";
     protected static final String PARM__WFS_HIGHLIGHT_LAYER = "wfsHighlightLayer";
-    protected static final String NATIONAL_CADASTRAL_REFERENCE_LAYER_ID = "142";
+    protected static final String NATIONAL_CADASTRAL_REFERENCE_LAYER_ID = PropertyUtil.get("parcel.cadastral.reference.layer.id"); //"142";
 
     private static Bundle postprocessorBundle = null;
 
     static {
-
         postprocessorBundle = bundleService.getBundleTemplateByName(BUNDLE_POSTPROCESSOR);
         if(postprocessorBundle == null) {
             log.warn("Couldn't get Postprocessor bundle template from DB!");
