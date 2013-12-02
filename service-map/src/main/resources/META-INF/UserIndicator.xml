@@ -65,7 +65,7 @@
       FROM
           oskari_user_indicator
       WHERE
-          user_id = #id#
+          id = #id#
     </select>
 
 
@@ -111,7 +111,7 @@
             year,
             data,
             published)
-        values (?, ?, ?, ?, ?, ?, ?)
+        values (?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
 
 

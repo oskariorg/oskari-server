@@ -14,10 +14,10 @@ public class UserIndicator {
     String title = "";
     String source = "";
     long material;
+    String description = "";
     int year;
-    String data ="";
+    String data = "";
     boolean published;
-    String description ="";
 
 
     public String getDescription() {

@@ -50,7 +50,11 @@ public class KeywordServiceIbatisImpl extends BaseIbatisService<Keyword> impleme
         final Keyword param = new Keyword();
         param.setValue(name.toLowerCase());
         param.setLang(language);
-        final Keyword keyword = queryForObject(getNameSpace() + ".find-exact-by-name-and-lang", param);
+        final List<Keyword> keywords = queryForList(getNameSpace() + ".find-exact-by-name-and-lang", param);
+        Keyword keyword = null;
+        if(keywords.size() > 0) {
+            keyword = keywords.get(0);
+        }
         log.debug("Found keyword:", keyword);
         return keyword;
     }
