@@ -29,10 +29,10 @@
         <parameter property="title" />
         <parameter property="source" />
         <parameter property="material" />
+        <parameter property="description"/>
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
-        <parameter property="description"/>
     </parameterMap>
 
     <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
@@ -40,11 +40,11 @@
         <parameter property="title" />
         <parameter property="source" />
         <parameter property="material" />
+        <parameter property="description"/>
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
         <parameter property="id" />
-        <parameter property="description"/>
     </parameterMap>
 
     <select id="maxId" resultClass="int">
