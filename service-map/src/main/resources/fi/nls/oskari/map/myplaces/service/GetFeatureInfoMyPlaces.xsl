@@ -5,7 +5,7 @@
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
      xmlns:oskari="http://www.oskari.org"
      xsi:schemaLocation="http://www.oskari.org
-     http://haisulike02.nls.fi:8080/geoserver/oskari/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=oskari%3Amy_places_categories
+     http://www.paikkatietoikkuna.fi/dataset/analysis/service/ows?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=oskari%3Amy_places_categories
      http://www.opengis.net/wfs 
      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd">
  <xsl:output method="text" omit-xml-declaration="yes" />
