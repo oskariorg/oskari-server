@@ -1,0 +1,10 @@
+*/target
+*/.settings
+*/.classpath
+*/.project
+*.iml
+.classpath
+.idea
+.project
+/data/
+/servlet-map/src/main/webapp/WEB-INF/jetty-env.xml

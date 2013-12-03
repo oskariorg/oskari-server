@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+  <settings enhancementEnabled="true" useStatementNamespaces="true"/>
+
+  <typeHandler javaType="org.json.JSONObject" jdbcType="VARCHAR" callback="fi.nls.oskari.domain.utils.JSONTypeHandler"/>
+  
+  <!-- Use liferay datasource -->
+  <transactionManager type="JDBC" commitRequired="true">
+    <dataSource type="JNDI">
+      <property name="DataSource" value="java:/comp/env/jdbc/OskariPool" />
+    </dataSource>
+  </transactionManager>
+  
+  <sqlMap resource="META-INF/LayerClass.xml" />
+  <sqlMap resource="META-INF/MapLayer.xml" />
+  <sqlMap resource="META-INF/InspireTheme.xml" />
+  <sqlMap resource="META-INF/MapConfiguration.xml" />
+  <sqlMap resource="META-INF/MapConfigurationLayer.xml" />
+  <sqlMap resource="META-INF/Permissions.xml" />
+  <sqlMap resource="META-INF/WFSService.xml" />
+  <sqlMap resource="META-INF/PublishedMapUsage.xml" />
+  <sqlMap resource="META-INF/TermsOfUse.xml" />
+  <sqlMap resource="META-INF/CapabilitiesCache.xml" />
+  <sqlMap resource="META-INF/View.xml" />
+  <sqlMap resource="META-INF/Bundle.xml" />
+  <sqlMap resource="META-INF/BackendStatus.xml" />
+  <sqlMap resource="META-INF/PublishedMap.xml" />
+  <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
+</sqlMapConfig>

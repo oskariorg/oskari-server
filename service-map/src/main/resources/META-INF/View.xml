@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="View">
+
+    <typeAlias 
+        alias="View" 
+        type="fi.nls.oskari.domain.map.view.View" />
+    <typeAlias
+        alias="Bundle" 
+        type="fi.nls.oskari.domain.map.view.Bundle" />
+    <typeAlias 
+        alias="Bundle"
+        type="fi.nls.oskari.domain.map.view.Bundle" />
+
+
+<!-- View -->
+
+    <resultMap id="view-with-conf" class="View">
+      <result property="id" column="id" />
+      <result property="oldId" column="old_id" />
+      <result property="uuid" column="uuid" />
+      <result property="name" column="name" />
+      <result property="description" column="description" />
+      <result property="type" column="type" />
+      <result property="application" column="application" />
+      <result property="page" column="page" />
+      <result property="developmentPath" column="application_dev_prefix" />
+      <result property="pubDomain" column="pubdomain" />
+      <result property="lang" column="lang" />
+      <result property="creator" column="creator" />
+      <result property="isPublic" column="is_public" />
+      <result property="width" column="width" />
+      <result property="height" column="height" />
+      <result property="supplementId" column="supplement_id" />
+      <result property="bundles" column="id"
+              select="View.states-with-conf-by-view-id" />
+    </resultMap>
+
+
+    <resultMap id="bundle" class="Bundle">
+        <result property="bundleId" column="bundle_id" />
+        <result property="seqNo" column="seqno" />
+        <result property="viewId" column="view_id" />
+        <result property="state" column="state" />
+        <result property="config" column="config" />
+        <result property="startup" column="startup" />
+        <result property="name" column="name" />
+        <result property="bundleinstance" column="bundleinstance" />
+    </resultMap>
+
+    <select id="view-with-conf-by-view-name"
+            parameterClass="java.lang.String" 
+            resultMap="view-with-conf">
+      SELECT   id, name, description, uuid, type
+        FROM   portti_view
+       WHERE   name = #name#
+    </select>
+
+    <select id="view-with-conf-by-view-id"
+            parameterClass="java.lang.Long"
+            resultMap="view-with-conf">
+      SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
+               v.application, v.page, v.application_dev_prefix, s.creator,
+	       s.is_public, s.pubdomain, s.lang,
+	       s.width, s.height, s.old_id
+        FROM   portti_view v, portti_view_supplement s
+       WHERE   v.supplement_id = s.id
+         AND   v.id = #id#
+    </select>
+
+    <select id="view-with-conf-by-old-id"
+            parameterClass="java.lang.Long"
+            resultMap="view-with-conf">
+      SELECT   v.id, v.name, v.description,  v.type, v.uuid, v.supplement_id,
+            v.application, v.page, v.application_dev_prefix, s.creator,
+	       s.is_public, s.pubdomain, s.lang,
+	       s.width, s.height, s.old_id
+        FROM   portti_view v, portti_view_supplement s
+       WHERE   v.supplement_id = s.id
+         AND   s.old_id = #old_id#
+    </select>
+
+    <select id="views-with-conf-by-user-id"
+            resultMap="view-with-conf">
+      SELECT   v.id, v.uuid, v.type, v.name, v.description, v.supplement_id,
+            v.application, v.page, v.application_dev_prefix, s.creator,
+	       s.is_public, s.pubdomain, s.lang,
+	       s.width, s.height, s.old_id
+        FROM   portti_view v, portti_view_supplement s
+       WHERE   v.supplement_id = s.id
+         AND   s.creator = #user_id#
+    ORDER BY   v.name ASC
+    </select>
+            
+    <select id="get-default-view-id"
+	    resultClass="java.lang.Long"
+	    parameterClass="java.lang.String">
+      SELECT   MAX(id) 
+        FROM   portti_view 
+       WHERE   is_default = TRUE
+         AND   type = #type#
+    </select>
+	    
+        
+    <statement id="add-supplement"
+               resultClass="java.lang.Long"
+               parameterClass="View">
+      INSERT INTO portti_view_supplement (
+		pubdomain,
+		lang,
+        creator,
+        is_public,
+		old_id 
+	  ) VALUES (
+		#pubDomain#,
+		#lang#,
+        #creator#,
+        #isPublic#,
+		#oldId# )
+      RETURNING id
+    </statement> 
+    
+     <statement id="update-supplement"
+               resultClass="java.lang.Long"
+               parameterClass="View">
+      UPDATE portti_view_supplement SET
+	      pubdomain   = #pubDomain#,
+	      lang        = #lang#,
+	      creator     = #creator#,
+	      is_public   = #isPublic#
+      WHERE id = #supplementId#
+    </statement> 
+    
+    
+ 
+    <statement id="add-view"
+               resultClass="java.lang.Long"
+               parameterClass="View">
+      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application )
+           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
+        RETURNING id
+    </statement>
+
+    <statement id="update-access"
+               parameterClass="View">
+      UPDATE portti_view_supplement
+         SET is_public = #isPublic#
+       WHERE id = #supplementId#
+    </statement>
+
+    <statement id="update-view"
+               parameterClass="View">
+      UPDATE portti_view
+         SET name = #name#, description = #description#, application = #application#, page = #page#, application_dev_prefix = #developmentPath#
+       WHERE id = #id#
+    </statement>
+
+    <statement id="delete-view"
+               parameterClass="java.lang.Long">
+      DELETE FROM portti_view WHERE id = #id#
+    </statement>
+    
+    <statement id="delete-view-supplement"
+               parameterClass="java.lang.Long">
+      <!-- NOTE! id is not view id but portti_view.supplement_id (in most cases its the same) -->
+      DELETE FROM portti_view_supplement WHERE id = #id#
+    </statement>
+
+    <statement id="delete-view-by-user"
+               parameterClass="java.lang.Long">
+      DELETE FROM portti_view v, portti_view_supplement s
+            WHERE s.creator = #userId#
+              AND v.supplement_id = s.id
+    </statement>
+               
+
+    <select id="states-with-conf-by-view-id"
+            parameterClass="java.lang.Long"
+            resultMap="bundle">
+      SELECT   s.state, s.view_id, s.seqno, s.config, s.startup, b.name, s.bundle_id, s.bundleinstance
+        FROM   portti_view_bundle_seq s, portti_bundle b
+       WHERE   s.bundle_id = b.id AND view_id = #id# order by s.seqno
+    </select>
+
+
+<!-- -->
+    <select id="bundle-by-view-id"
+            parameterClass="java.lang.Long"
+            resultMap="bundle">
+      SELECT   view_id, bundle_id, seqno, state, config, startup, bundleinstance
+        FROM   portti_view_bundle_seq
+       WHERE   view_id = #view_id#
+    </select>
+
+    <statement id="add-bundle"
+            parameterClass="Bundle">
+      INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, startup, bundleinstance)
+           VALUES ( #viewId#, #bundleId#, #seqNo#, #state#, #config#, #startup#, #bundleinstance#)
+        RETURNING view_id
+    </statement>
+
+    <statement id="delete-bundle-by-view"
+               parameterClass="java.lang.Long">
+      DELETE FROM portti_view_bundle_seq WHERE view_id = #id#
+    </statement>
+
+
+    <statement id="delete-bundle-by-user"
+               parameterClass="java.lang.Long">
+      DELETE FROM portti_view_bundle_seq
+            WHERE view_id IN ( 
+                SELECT v.id FROM portti_view v, portti_view_supplement s
+                 WHERE s.creator = #userId#
+                   AND v.supplement_id = s.id
+              )
+    </statement>
+    
+    
+    <update id="update" 
+        parameterClass="View">
+        UPDATE portti_view SET
+           name = #name#,
+           "description" = #description#,
+           type = #type#,
+           supplement_id = #supplementId#,
+           application = #application#,
+           page = #page#,
+           application_dev_prefix = #developmentPath#
+        WHERE id = #id#
+    </update>
+    
+	<update id="update-bundle"
+            parameterClass="Bundle">
+      UPDDATE portti_view_bundle_seq SET 
+	      bundle_id = #bundleId#,
+	      seqno = #seqNo#
+      WHERE view_id = #viewId#
+    </update>
+
+</sqlMap>

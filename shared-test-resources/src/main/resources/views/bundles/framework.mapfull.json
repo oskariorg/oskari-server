@@ -1,0 +1,107 @@
+{
+    "startup" : {
+        "title" : "Map",
+        "fi" : "mapfull",
+        "sv" : "mapfull",
+        "en" : "mapfull",
+        "bundlename" : "mapfull",
+        "bundleinstancename" : "mapfull",
+        "metadata" : {
+            "Import-Bundle" : {
+                "core-base" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "core-map" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "sandbox-base" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "sandbox-map" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "event-base" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "event-map" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "event-map-layer" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "request-base" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "request-map" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "request-map-layer" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "service-base" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "service-map" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "domain" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapmodule-plugin" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapwfs" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapwmts" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapstats" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapanalysis" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "oskariui" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                },
+                "mapfull" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    },
+    "config" : {
+        "conf" : {
+            "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+            "imageLocation": "/Oskari/resources",
+            "plugins" : [
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
+                { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
+                { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
+                { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+                { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
+                { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+                { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" }
+            ],
+            "layers": [
+                { "id": "base_35" }
+            ]
+        },
+        "state" : {
+            "east": "517620",
+            "north": "6874042",
+            "selectedLayers": [{"id": "base_35"}],
+            "zoom": 1
+        }
+    }
+}

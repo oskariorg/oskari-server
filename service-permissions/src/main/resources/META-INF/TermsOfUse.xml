@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TermsOfUseUser">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="TermsOfUseUser" type="fi.mml.portti.domain.permissions.TermsOfUseUser" />
+     <typeAlias alias="TermsOfUseLicense" type="fi.mml.portti.domain.permissions.TermsOfUseLicense" />
+
+    <resultMap id="termsOfUseUserResult" class="TermsOfUseUser">
+        <result property="id" column="id" />
+        <result property="userid" column="userid" />
+        <result property="termsOfUseLicenseId" column="terms_of_use_licenseid" />
+        <result property="update_time" column="update_time" />
+    </resultMap>
+    
+    <resultMap id="termsOfUseLicenseResult" class="TermsOfUseLicense">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="licenseUrl" column="license_url" />
+    </resultMap>
+    
+    
+    <select id="maxId" resultClass="int">
+        select max(id) from portti_terms_of_use_user
+    </select>
+    
+    <select id="find" parameterClass="int" resultMap="termsOfUseUserResult">
+        SELECT id, userid, terms_of_use_licenseid, update_time
+  FROM portti_terms_of_use_user where userid = #id#
+    </select>
+    
+     <statement id="insert" parameterClass="TermsOfUseUser" resultClass="int">
+        insert into portti_terms_of_use_user (userid, terms_of_use_licenseid, update_time)
+        values (#userid#, #termsOfUseLicenseId#, #update_time#)    
+    </statement>
+    
+    <select id="findLicense" parameterClass="int" resultMap="termsOfUseLicenseResult">
+        SELECT id, userid, terms_of_use_licenseid, update_time
+  FROM portti_terms_of_use_user where id = #id#
+    </select>
+    
+    
+</sqlMap>

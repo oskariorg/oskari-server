@@ -1,0 +1,23 @@
+{
+    "startup" : {
+		"title": "Info Box",
+		"bundleinstancename": "infobox",
+		"fi": "infobox",
+		"sv": "?",
+		"en": "?",
+		"bundlename": "infobox",
+		"metadata": {
+			"Import-Bundle": {
+				"infobox": {
+					"bundlePath": "/Oskari/packages/framework/bundle/"
+				}
+			},
+			"Require-Bundle-Instance": []
+		},
+        "instanceProps": {}
+    },
+    "config" : {
+        "conf" : { },
+        "state" : { }
+    }
+}

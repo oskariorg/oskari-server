@@ -1,0 +1,26 @@
+{    "users": [
+        {
+            "id": 2,
+            "firstName": "Antti",
+            "lastName": "Aalto",
+            "uuid": "asdf-asdf-asdf-asdf-asdf",
+            "user": "admin",
+            "pass": "oskari",
+            "roles": [
+                2,
+                3
+            ]
+        },
+        {
+            "id": 3,
+            "firstName": "Oskari",
+            "lastName": "Olematon",
+            "uuid": "fdsa-fdsa-fdsa-fdsa-fdsa",
+            "user": "user",
+            "pass": "user",
+            "roles": [
+                2
+            ]
+        }
+    ]
+}

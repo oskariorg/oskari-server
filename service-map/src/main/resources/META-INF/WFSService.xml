@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="WFSService">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="WFSService" type="fi.nls.oskari.domain.map.wfs.WFSService" />
+    <typeAlias alias="OwsOperation" type="fi.nls.oskari.domain.map.wfs.OwsOperation" />
+    <typeAlias alias="FeatureType" type="fi.nls.oskari.domain.map.wfs.FeatureType" />
+    <typeAlias alias="FeatureParameter" type="fi.nls.oskari.domain.map.wfs.FeatureParameter" />
+
+
+    <resultMap id="wfsServiceResult" class="WFSService">
+        <result property="id" column="id" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <result property="url" column="url" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="gmlVersion" column="gml_version" />
+        <result property="useProxy" column="use_proxy" />
+        <result property="geonetworkFileIdentifier" column="geonetwork_file_id" />
+        <result property="gml2typeSeparator" column="gml2type_separator" />
+    </resultMap>
+
+    <resultMap id="featureTypeResult" class="FeatureType">
+        <result property="id" column="id" />
+        <result property="wfsService.id" column="wfs_service_id" />
+        <result property="qname.prefix" column="name_prefix" />
+        <result property="qname.localPart" column="name_local_part" />
+        <result property="qname.namespaceURI" column="namespace_uri" />
+        <result property="locale" column="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <result property="schemaLocation" column="schema_location" />
+        <result property="bboxParameterName" column="bbox_parameter" />
+        <result property="licenseJson" column="license_json" />
+    </resultMap>
+
+    <resultMap id="featureParameterResult" class="FeatureParameter">
+        <result property="id" column="id" />
+        <result property="featureType.id" column="feature_type_id" />
+        <result property="qname.prefix" column="name_prefix" />
+        <result property="qname.localPart" column="name_local_part" />
+        <result property="qname.namespaceURI" column="namespace_uri" />
+        <result property="featureParameterType" column="feature_parameter_type" />
+        <result property="xmlType" column="xml_type" />
+        <result property="converterType" column="converter_type" />
+        <result property="bboxQueryParameter" column="bbox_query_parameter" />
+    </resultMap>
+
+    <resultMap id="owsOperationResult" class="OwsOperation">
+        <result property="id" column="id" />
+        <result property="wfsService.id" column="wfs_service_id" />
+        <result property="name" column="name" />
+        <result property="url" column="url" />
+    </resultMap>
+
+
+    <parameterMap id="WFSServiceInsertParameter" class="WFSService">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="url" />
+        <parameter property="username" />
+        <parameter property="password" />
+        <parameter property="gmlVersion" />
+        <parameter property="useProxy" />
+        <parameter property="geonetworkFileIdentifier" />
+    </parameterMap>
+
+    <parameterMap id="WFSServiceUpdateParameter" class="WFSService">
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="url" />
+        <parameter property="username" />
+        <parameter property="password" />
+        <parameter property="gmlVersion" />
+        <parameter property="useProxy" />
+        <parameter property="geonetworkFileIdentifier" />
+        <parameter property="id" />
+    </parameterMap>
+
+    <parameterMap id="FeatureTypeParameter" class="FeatureType">
+        <parameter property="wfsService.id" />
+        <parameter property="qname.namespaceURI" />
+        <parameter property="qname.localPart" />
+        <parameter property="qname.prefix" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="schemaLocation" />
+        <parameter property="bboxParameterName" />
+    </parameterMap>
+
+    <parameterMap id="FeatureParameterParameter" class="FeatureParameter">
+        <parameter property="featureType.id" />
+        <parameter property="qname.namespaceURI" />
+        <parameter property="qname.localPart" />
+        <parameter property="qname.prefix" />
+        <parameter property="featureParameterType" />
+        <parameter property="xmlType" />
+        <parameter property="converterType" />
+        <parameter property="bboxQueryParameter" />
+    </parameterMap>
+
+    <parameterMap id="FeatureParameterWithParentParameter" class="FeatureParameter">
+        <parameter property="featureType.id" />
+        <parameter property="qname.namespaceURI" />
+        <parameter property="qname.localPart" />
+        <parameter property="qname.prefix" />
+        <parameter property="featureParameterType" />
+        <parameter property="xmlType" />
+        <parameter property="converterType" />
+        <parameter property="bboxQueryParameter" />
+        <parameter property="parentId" />
+    </parameterMap>
+
+    <select id="maxId" resultClass="int">
+        select max(id) from portti_wfs_service
+    </select>
+
+    <select id="maxIdFeatureType" resultClass="int">
+        select max(id) from portti_feature_type
+    </select>
+
+    <select id="find" resultMap="wfsServiceResult" parameterClass="int">
+        SELECT id, locale,
+        url, username, password, gml_version, use_proxy, geonetwork_file_id,
+        gml2type_separator
+        FROM portti_wfs_service where id=#id#
+    </select>
+
+    <select id="findAll" resultMap="wfsServiceResult">
+        SELECT id, locale,
+        url, username, password, gml_version, use_proxy, geonetwork_file_id,
+        gml2type_separator
+        FROM portti_wfs_service order by locale
+    </select>
+
+    <select id="findFeatureTypesOfWFSService" resultMap="featureTypeResult">
+        select id, wfs_service_id, namespace_uri, name_local_part, name_prefix, locale, schema_location, bbox_parameter, license_json
+        from portti_feature_type
+        where wfs_service_id=#id#
+        order by locale
+    </select>
+
+    <select id="findFeatureParametersOfWFSService" resultMap="featureParameterResult">
+        select p.id, p.feature_type_id, p.namespace_uri, p.name_local_part,
+        p.name_prefix, p.feature_parameter_type,
+        p.xml_type, p.converter_type, p.bbox_query_parameter
+        from portti_feature_type t, portti_feature_parameter p
+        where t.id=p.feature_type_id
+        and t.wfs_service_id=#id#
+        order by p.namespace_uri, p.name_prefix, name_local_part
+    </select>
+
+    <select id="findOwsOperationsOfWFSService" resultMap="owsOperationResult">
+        select id, wfs_service_id, name, url
+        from portti_ows_operation
+        where wfs_service_id=#id#
+        order by name
+    </select>
+
+
+    <statement id="insert" parameterMap="WFSServiceInsertParameter" resultClass="int">
+        insert into portti_wfs_service (
+        locale,
+        url,
+        username,
+        password,
+        gml_version,
+        use_proxy,
+        geonetwork_file_id
+        )
+        values (
+        ?, ?, ?, ?, ?, ?, ?)
+    </statement>
+
+    <statement id="update" parameterMap="WFSServiceUpdateParameter">
+        update portti_wfs_service
+        set
+        locale=?,
+        url=?,
+        username=?,
+        password=?,
+        gml_version=?,
+        use_proxy=?,
+        geonetwork_file_id=?
+        where id=?
+    </statement>
+
+    <statement id="insertFeatureTypes" parameterMap="FeatureTypeParameter">
+        insert into portti_feature_type
+        (
+        wfs_service_id,
+        namespace_uri,
+        name_local_part,
+        name_prefix,
+        locale,
+        schema_location,
+        bbox_parameter
+        )
+        values
+        (?, ?, ?, ?, ?, ?, ?)
+    </statement>
+
+    <statement id="insertFeatureParametersWithParentId" parameterMap="FeatureParameterWithParentParameter">
+        insert into portti_feature_parameter
+        (
+        feature_type_id,
+        namespace_uri,
+        name_local_part,
+        name_prefix,
+        feature_parameter_type,
+        xml_type,
+        converter_type,
+        bbox_query_parameter,
+        parent_id
+        )
+        values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    </statement>
+
+    <statement id="insertFeatureParametersNoParentId" parameterMap="FeatureParameterParameter">
+        insert into portti_feature_parameter
+        (
+        feature_type_id,
+        namespace_uri,
+        name_local_part,
+        name_prefix,
+        feature_parameter_type,
+        xml_type,
+        converter_type,
+        bbox_query_parameter
+        )
+        values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+    </statement>
+
+    <statement id="insertOwsOperations" parameterClass="OwsOperation">
+        insert into portti_ows_operation (wfs_service_id, name, url)
+        values (#wfsService.id#, #name#, #url#)
+    </statement>
+
+    <statement id="delete" parameterClass="int">
+        delete from portti_wfs_service where id=#id#
+    </statement>
+
+    <statement id="deleteFeatureParameters" parameterClass="int">
+        delete from portti_feature_parameter where feature_type_id in
+        (select id from portti_feature_type where wfs_service_id=#id#)
+    </statement>
+
+    <statement id="deleteFeatureTypes" parameterClass="int">
+        delete from portti_feature_type where wfs_service_id=#id#
+    </statement>
+
+    <statement id="deleteOwsOperations" parameterClass="int">
+        delete from portti_ows_operation where wfs_service_id=#id#
+    </statement>
+
+</sqlMap>

@@ -1,0 +1,42 @@
+{
+    "views" : [{
+        "id":123,
+        "pubDomain":"paikkis.fi",
+        "description":"test view",
+        "name":"test",
+        "state":{
+            "mapfull": {
+                "state": {
+                    "selectedLayers": [{"id":"base_35"}],
+                    "zoom":1,
+                    "east":"517620",
+                    "north":"6874042"
+                },
+                "config": {
+                    "globalMapAjaxUrl":"[REPLACED BY HANDLER]",
+                    "plugins" : [
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"},
+                        {"id":"Oskari.mapframework.mapmodule.WmsLayerPlugin"},
+                        {"id":"Oskari.mapframework.mapmodule.MarkersPlugin"},
+                        {"id":"Oskari.mapframework.mapmodule.ControlsPlugin"},
+                        {"id":"Oskari.mapframework.mapmodule.GetInfoPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin"},
+                        {"id":"Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"},
+                        {"id":"Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"},
+                        {"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"}
+                    ],
+                    "layers" : [{"id":"base_35"}],
+                    "imageLocation":"/Oskari/resources"
+                }
+            }
+        },
+        "isPublic":true,
+        "lang":"fi"
+    }]
+}
+

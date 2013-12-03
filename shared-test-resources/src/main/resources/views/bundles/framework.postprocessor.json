@@ -1,0 +1,23 @@
+{
+    "startup" : {
+        "title": "Post processor",
+        "bundleinstancename": "postprocessor",
+        "fi": "postprocessor",
+        "sv": "postprocessor",
+        "en": "postprocessor",
+        "bundlename": "postprocessor",
+        "metadata": {
+            "Import-Bundle": {
+                "postprocessor": {
+                    "bundlePath": "/Oskari/packages/framework/bundle/"
+                }
+            },
+            "Require-Bundle-Instance": [ ]
+        },
+        "instanceProps": {}
+    },
+    "config" : {
+        "conf" : { },
+        "state" : { }
+    }
+}

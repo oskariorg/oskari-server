@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PublishedMap">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+	<typeAlias alias="TermsOfUse" type="fi.nls.oskari.map.publish.domain.TermsOfUse" />
+
+	
+	<resultMap id="termsOfUse" class="TermsOfUse">
+        <result property="userid" column="userid" />
+        <result property="agreed" column="agreed" />
+        <result property="time" column="time" />
+    </resultMap>
+    
+	<select id="findAgreedTermsOfUse" parameterClass="long" resultClass="TermsOfUse">
+        select user, agreed, time from portti_terms_of_use_for_publishing WHERE userid = #userid#
+    </select>
+    
+	<statement id="insertTermsOfUse" parameterClass="TermsOfUse">
+        insert into portti_terms_of_use_for_publishing (
+          userid, agreed, time)
+        values (#userid#, #agreed#, #time#)
+    </statement>    
+
+    <!-- table has no id so fake it since baseibatis service requires maxId to be implemented -->
+    <select id="maxId" resultClass="int">
+        select -1 as id
+    </select>
+</sqlMap>

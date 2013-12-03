@@ -1,0 +1,16 @@
+<layer>
+  <name>my_places</name>
+  <id>LayerInfoImpl-197ef75:1331046d030:-7f5b</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-5040a49e:12704d4341f:-7f68</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl-197ef75:1331046d030:-7f5c</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>
