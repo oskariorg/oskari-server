@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +45,8 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     private static final String KEY_TYPE = "type";
     private static final String KEY_PROPERTYTYPES = "propertyTypes";
     public static final String ANALYSIS_PREFIX = "analysis_";
+    public static final String MYPLACES_PREFIX = "myplaces_";
+    private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
 
     private static final List<String> NUMERIC_FIELD_TYPES = Arrays.asList("double",
             "byte",
@@ -61,6 +64,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
             "unsignedShort",
             "unsignedByte"
     );
+    final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
 
     // is needed ?? private String[] permittedRoles = new String[0];
 
@@ -81,7 +85,15 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
         String password = "";
 
         if (!layer_id.isEmpty()) {
-            final int id = ConversionHelper.getInt(layer_id, 0);
+            int id = 0;
+            // WFS layer, myplaces or analysis layer
+            if (layer_id.indexOf(MYPLACES_PREFIX) > -1) {
+                id = ConversionHelper.getInt(myplacesBaseLayerId, 0);
+            } else {
+                // Wfs layer id
+                id = ConversionHelper.getInt(layer_id, 0);
+            }
+
             if (id > 0) {
                 // Get WFS url in wfs layer configuration
                 WFSLayerConfiguration lc = layerConfigurationService
@@ -112,7 +124,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
                 // IF NEEDED for exact wfs feature type
                 //final JSONObject fea_properties = populateProperties(layer_id,
                 //        rawfea_properties);
-            } else {
+            } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
                 // Set analysis layer field types
                 fea_properties = getAnalysisFeaturePropertyTypes(layer_id);
 

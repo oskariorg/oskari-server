@@ -49,7 +49,8 @@ public class GeoServerProxyService {
     private final static String OGC_FEATURE_ID = "ogc:FeatureId";
     private final static String FID = "fid";
     private final static String OGC_LITERAL = "ogc:Literal";
-    private final static String OWS_UUID = "ows:uuid";
+    private final static String MYPLACE_PREFIX = PropertyUtil.get("myplaces.xmlns.prefix")+":";
+    private final static String OWS_UUID = MYPLACE_PREFIX+"uuid";
     
     private static final String MY_PLACE_FEATURE_FILTER_XML = "GetFeatureInfoMyPlaces.xml";
     private static final String MY_PLACE_FEATURE_FILTER_XSL = "GetFeatureInfoMyPlaces.xsl";
@@ -57,7 +58,7 @@ public class GeoServerProxyService {
     private static final String XML_VERSION_TAG= "<?xml version=\"1.0\"?>\r\n";
 
     private static final String GEOSERVER_URL_PARAMS = "service=WFS&version=1.0.0&request=GetFeature&maxFeatures=50"+
-                        "&outputFormat=text/xml;%20subtype=gml/3.1.1&typeName=ows:";
+                        "&outputFormat=text/xml;%20subtype=gml/3.1.1&typeName="+MYPLACE_PREFIX;
     private static final String URLPARAM_FEATURE = "&FEATUREID=";
 	private static final int DISTANCE_FACTOR = 5;
 	private static final int MAX_ZOOM_LEVEL = 12;

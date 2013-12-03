@@ -46,7 +46,10 @@ public class WFSLayerConfiguration {
     private static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
     private final static String GET_FEATURE_INFO = "getFeatureInfo";
     private final static String TILE_REQUEST = "tileRequest";
+    private final static String TILE_BUFFER = "tileBuffer";
     private final static String WMS_LAYER_ID = "WMSLayerId";
+
+   // for json, if needed private final static String WPS_PARAMS = "wps_params";
 
     private final static String MIN_SCALE = "minScale";
     private final static String MAX_SCALE = "maxScale";
@@ -91,10 +94,13 @@ public class WFSLayerConfiguration {
     private boolean getHighlightImage; // if highlight image is drawn and send
 	private boolean getFeatureInfo; // if feature json is send
     private boolean tileRequest;
+    private String tileBuffer;
 	private String WMSLayerId;
 
 	private double minScale;
 	private double maxScale;
+
+    private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
 
 	// Template Model
 	private String templateName;
@@ -325,7 +331,15 @@ public class WFSLayerConfiguration {
         this.tileRequest = tileRequest;
     }
 
-	public String getWMSLayerId() {
+    public String getTileBuffer() {
+        return tileBuffer;
+    }
+
+    public void setTileBuffer(String tileBuffer) {
+        this.tileBuffer = tileBuffer;
+    }
+
+    public String getWMSLayerId() {
 		return WMSLayerId;
 	}
 
@@ -369,8 +383,24 @@ public class WFSLayerConfiguration {
 		this.maxScale = maxScale;
 	}
 
+    /**
+     * Get wps params for WFS layer eg {input_type:gs_vector}
+     * (default is {})
+     * @return
+     */
+    public String getWps_params() {
+        return wps_params;
+    }
 
-	/**
+    /**
+     * Set wps_params (basic field value in portti_wfs_layer)
+     * @param wps_params
+     */
+    public void setWps_params(String wps_params) {
+        this.wps_params = wps_params;
+    }
+
+    /**
 	 * Gets template name
 	 *
 	 * @return template name
@@ -456,6 +486,7 @@ public class WFSLayerConfiguration {
 		SLDStyles = sLDStyles;
 	}
 
+
 	public void save() {
 		JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
 	}
@@ -494,6 +525,7 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, GET_HIGHLIGHT_IMAGE, this.isGetHighlightImage());
 		JSONHelper.putValue(root, GET_FEATURE_INFO, this.isGetFeatureInfo());
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
+        JSONHelper.putValue(root, TILE_BUFFER, JSONHelper.createJSONObject(this.getTileBuffer()));
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());

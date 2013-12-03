@@ -97,7 +97,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertTrue("Should get expected resultMapClick", filter.toString().equals(resultMapClick));
+        assertEquals("Should get expected resultMapClick", resultMapClick, filter.toString());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertTrue("Should get expected resultGeoJson", filter.toString().equals(resultGeoJson));
+        assertEquals("Should get expected resultGeoJson", resultGeoJson, filter.toString());
 
         // multiple geometries
         session.setFilter(geojsonComplexFilter);
@@ -122,8 +122,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        System.out.println(filter.toString());
-        assertTrue("Should get expected resultGeoJson", filter.toString().equals(resultGeoJsonComplex));
+        assertEquals("Should get expected resultGeoJson", resultGeoJsonComplex, filter.toString());
     }
 
     @Test
@@ -140,6 +139,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
+        System.out.println(filter.toString());
         assertTrue("Should get expected resultHighlightFeatures", filter.toString().equals(resultHighlightFeatures));
     }
 

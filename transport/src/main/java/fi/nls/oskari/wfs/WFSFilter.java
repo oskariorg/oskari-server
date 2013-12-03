@@ -121,7 +121,6 @@ public class WFSFilter {
         }
         this.layer = layer;
         this.transform = transform;
-        this.defaultBuffer = getDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
 
         if(createFilter) {
             Filter filter = null;
@@ -131,10 +130,12 @@ public class WFSFilter {
                 filter = initFeatureIdFilter(featureIds);
             } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
                 log.debug("Filter: map click");
+                setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 Coordinate coordinate = session.getMapClick();
                 filter = initCoordinateFilter(coordinate);
             } else if(type == WFSMapLayerJob.Type.GEOJSON) {
                 log.debug("Filter: GeoJSON");
+                setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 GeoJSONFilter geoJSONFilter = session.getFilter();
                 filter = initGeoJSONFilter(geoJSONFilter);
             } else if(type == WFSMapLayerJob.Type.NORMAL) {
@@ -193,15 +194,21 @@ public class WFSFilter {
     }
 
     /**
+     * Gets the default buffer.
+     *
+     */
+    public double getDefaultBuffer() {
+        return this.defaultBuffer;
+    }
+
+    /**
      * Sets the default buffer.
      *
      * @param mapScale
-     *
-     * return default buffer
      */
-    public double getDefaultBuffer(double mapScale) {
+    public void setDefaultBuffer(double mapScale) {
         log.debug("Default buffer size", mapScale*CONVERSION_FACTOR);
-        return mapScale * CONVERSION_FACTOR;
+        this.defaultBuffer = mapScale * CONVERSION_FACTOR;
     }
 
     /**
@@ -236,6 +243,7 @@ public class WFSFilter {
      */
     public Filter initCoordinateFilter(Coordinate coordinate) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
+            System.out.println("coordinate filter fail");
             log.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
             return null;
         }
@@ -259,6 +267,7 @@ public class WFSFilter {
         Filter filter = ff.intersects(ff.property(layer
                 .getGMLGeometryProperty()), ff.literal(polygon));
 
+        System.out.println("coordinate filter success");
         return filter;
     }
 

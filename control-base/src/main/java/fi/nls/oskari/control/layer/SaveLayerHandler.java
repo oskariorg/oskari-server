@@ -71,8 +71,12 @@ public class SaveLayerHandler extends ActionHandler {
                     mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
                     
                     // update cache
-                    updateCache(ml);
-                    
+                    try {
+                        updateCache(ml);
+                    } catch (ActionException ae) {
+                        // Cache update failed, no biggie
+                        mapJson.put("warn", "metadataReadFailure");
+                    }
                     ResponseHelper.writeResponse(params, mapJson.toString());
                 }
             }
@@ -99,9 +103,17 @@ public class SaveLayerHandler extends ActionHandler {
                 org.json.JSONObject mapJson = ml.toJSON();
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
 
-                // update cache
-                insertCache(ml);
+                // update keywords
+                GetLayerKeywords glk = new GetLayerKeywords();
+                glk.updateLayerKeywords(id, ml.getDataUrl());
 
+                // update cache
+                try {
+                    insertCache(ml);
+                } catch (ActionException ae) {
+                    // Cache update failed, no biggie
+                    mapJson.put("warn", "metadataReadFailure");
+                }
                 ResponseHelper.writeResponse(params, mapJson.toString());
             }
 
@@ -185,7 +197,7 @@ public class SaveLayerHandler extends ActionHandler {
         if (request.getParameter("style") != null
                 && !"".equals(request.getParameter("style"))) {
             style = request.getParameter("style");
-            style = IOHelper.decode64(style);
+            //style = IOHelper.decode64(style);
         }
         ml.setStyle(style);
         ml.setMinScale(new Double(request.getParameter("minScale")));
@@ -224,7 +236,7 @@ public class SaveLayerHandler extends ActionHandler {
         if (request.getParameter("xslt") != null
                 && !"".equals(request.getParameter("xslt"))) {
             xslt = request.getParameter("xslt");
-            xslt = IOHelper.decode64(xslt);
+            //xslt = IOHelper.decode64(xslt);
         }
         ml.setXslt(xslt);
         ml.setGfiType(request.getParameter("gfiType"));
@@ -232,7 +244,7 @@ public class SaveLayerHandler extends ActionHandler {
         if (request.getParameter("selection_style") != null
                 && !"".equals(request.getParameter("selection_style"))) {
             sel_style = request.getParameter("selection_style");
-            sel_style = IOHelper.decode64(sel_style);
+            //sel_style = IOHelper.decode64(sel_style);
         }
         ml.setSelection_style(sel_style);
         ml.setVersion(request.getParameter("version"));

@@ -28,6 +28,7 @@ Following settins uncomment the following settings and set them point to your ge
 Build with
 	* mvn -f servlet-map-pom.xml clean install -Doskari.dropdb=true -Doskari.setup=postgres-myplaces
 	* After build, open  http://localhost:2373/?viewId=4 in your browser my_places and categories tables should be added to your database.
+	* To get myplaces timestamps working correctly you need to add triggers to myplaces table. SQLs for these are listed in oskari-server/content-resources/src/main/resouces/sql/PostgreSQL/trigger-myplaces.sql. You need to run these manually since at the moment the sql-parser can't handle them correctly.
 
 5) Configure geoserver: 
 * Open geoserver admin tool (eg. localhost:8080/geoserver) Default admin = admin,  pw = geoserver.
@@ -66,5 +67,10 @@ Build with
 A Logged in user should be able to use myplaces
 
 7) You can set feature namespace and ajax url according to your environment.
-Example configuration can be found in content-resources/json/views/postgres-myplaces-view.json.
+Example configuration can be found in 
+content-resources/src/main/resources/json/views/postgres-myplaces-view.json
+
 wmsUrl should be normal ajax url (default is /?) + action_route=MyPlacesTile&myCat=
+
+You may also need to change service-map/src/main/resources/fi/nls/oskari/map/myplaces/service/GetFeatureInfoMyPlaces.xsl to point to your geoserver location.
+

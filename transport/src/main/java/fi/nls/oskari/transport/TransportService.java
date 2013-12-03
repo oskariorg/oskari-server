@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSImage;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
@@ -21,13 +23,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.GeoJSONFilter;
-import fi.nls.oskari.pojo.Grid;
-import fi.nls.oskari.pojo.Layer;
-import fi.nls.oskari.pojo.Location;
-import fi.nls.oskari.pojo.Tile;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.work.Job;
 import fi.nls.oskari.work.JobQueue;
@@ -92,17 +87,36 @@ public class TransportService extends AbstractService {
 	public static final String PARAM_FEATURE_IDS = "featureIds";
 	public static final String PARAM_KEEP_PREVIOUS = "keepPrevious";
 
+    // custom style params
+    public static final String PARAM_FILL_COLOR = "fill_color";
+    public static final String PARAM_FILL_PATTERN = "fill_pattern";
+    public static final String PARAM_BORDER_COLOR = "border_color";
+    public static final String PARAM_BORDER_LINEJOIN = "border_linejoin";
+    public static final String PARAM_BORDER_DASHARRAY = "border_dasharray";
+    public static final String PARAM_BORDER_WIDTH = "border_width";
+
+    public static final String PARAM_STROKE_LINECAP = "stroke_linecap";
+    public static final String PARAM_STROKE_COLOR = "stroke_color";
+    public static final String PARAM_STROKE_LINEJOIN = "stroke_linejoin";
+    public static final String PARAM_STROKE_DASHARRAY = "stroke_dasharray";
+    public static final String PARAM_STROKE_WIDTH = "stroke_width";
+
+    public static final String PARAM_DOT_COLOR = "dot_color";
+    public static final String PARAM_DOT_SHAPE = "dot_shape";
+    public static final String PARAM_DOT_SIZE = "dot_size";
+
 	public static final String CHANNEL_INIT = "/service/wfs/init";
 	public static final String CHANNEL_ADD_MAP_LAYER = "/service/wfs/addMapLayer";
 	public static final String CHANNEL_REMOVE_MAP_LAYER = "/service/wfs/removeMapLayer";
 	public static final String CHANNEL_SET_LOCATION = "/service/wfs/setLocation";
 	public static final String CHANNEL_SET_MAP_SIZE = "/service/wfs/setMapSize";
 	public static final String CHANNEL_SET_MAP_LAYER_STYLE = "/service/wfs/setMapLayerStyle";
+    public static final String CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE = "/service/wfs/setMapLayerCustomStyle";
 	public static final String CHANNEL_SET_MAP_CLICK = "/service/wfs/setMapClick";
 	public static final String CHANNEL_SET_FILTER = "/service/wfs/setFilter";
 	public static final String CHANNEL_SET_MAP_LAYER_VISIBILITY = "/service/wfs/setMapLayerVisibility";
 	public static final String CHANNEL_HIGHLIGHT_FEATURES = "/service/wfs/highlightFeatures";
-	
+
 	public static final String CHANNEL_DISCONNECT = "/meta/disconnect";
 
 	public static final String CHANNEL_ERROR = "/error";
@@ -166,6 +180,7 @@ public class TransportService extends AbstractService {
         addService(CHANNEL_SET_LOCATION, "processRequest");
         addService(CHANNEL_SET_MAP_SIZE, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_STYLE, "processRequest");
+        addService(CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE, "processRequest");
         addService(CHANNEL_SET_MAP_CLICK, "processRequest");
         addService(CHANNEL_SET_FILTER, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_VISIBILITY, "processRequest");
@@ -179,7 +194,6 @@ public class TransportService extends AbstractService {
      */
     @Override
     protected void finalize() throws Throwable {
-
     	// clear Sessions
     	JedisManager.delAll(SessionStore.KEY);
     	super.finalize();
@@ -215,8 +229,7 @@ public class TransportService extends AbstractService {
         try {
             store = SessionStore.setJSON(json);
         } catch (IOException e) {
-            log.error("JSON parsing failed for SessionStore \n" + json + "\n",
-                    e);
+            log.error(e, "JSON parsing failed for SessionStore \n" + json);
         }
         if (store == null) {
             return new SessionStore(client);
@@ -253,6 +266,9 @@ public class TransportService extends AbstractService {
             }
         }
         JedisManager.del(SessionStore.KEY + client.getId());
+        JedisManager.delAll(WFSCustomStyleStore.KEY + client.getId());
+
+        // TODO: remove styles from map
         
     	log.debug("Session & permission deleted: " + client);
     }
@@ -299,6 +315,8 @@ public class TransportService extends AbstractService {
             setMapSize(store, params);
         } else if (channel.equals(CHANNEL_SET_MAP_LAYER_STYLE)) {
             setMapLayerStyle(store, params);
+        } else if (channel.equals(CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE)) {
+            setMapLayerCustomStyle(store, params);
         } else if (channel.equals(CHANNEL_SET_MAP_CLICK)) {
             setMapClick(store, params);
         } else if (channel.equals(CHANNEL_SET_FILTER)) {
@@ -488,7 +506,7 @@ public class TransportService extends AbstractService {
     	if(store.containsLayer(layerId)) {
             Layer tmpLayer = store.getLayers().get(layerId);
 
-            if(!tmpLayer.getStyleName().equals(layerStyle)) {
+            if(!tmpLayer.getStyleName().equals(layerStyle) || layerStyle.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
                 tmpLayer.setStyleName(layerStyle);
                 this.save(store);
                 if(tmpLayer.isVisible()) {
@@ -499,6 +517,61 @@ public class TransportService extends AbstractService {
                 }
             }
     	}
+    }
+
+    /**
+     * Sets layer style into session and starts job for the layer
+     *
+     * @param store
+     * @param style
+     */
+    private void setMapLayerCustomStyle(SessionStore store, Map<String, Object> style) {
+        if(!style.containsKey(PARAM_LAYER_ID) ||
+                !style.containsKey(PARAM_FILL_COLOR) ||
+                !style.containsKey(PARAM_FILL_PATTERN) ||
+                !style.containsKey(PARAM_BORDER_COLOR) ||
+                !style.containsKey(PARAM_BORDER_LINEJOIN) ||
+                !style.containsKey(PARAM_BORDER_DASHARRAY) ||
+                !style.containsKey(PARAM_BORDER_WIDTH) ||
+
+                !style.containsKey(PARAM_STROKE_LINECAP) ||
+                !style.containsKey(PARAM_STROKE_COLOR) ||
+                !style.containsKey(PARAM_STROKE_LINEJOIN) ||
+                !style.containsKey(PARAM_STROKE_DASHARRAY) ||
+                !style.containsKey(PARAM_STROKE_WIDTH) ||
+
+                !style.containsKey(PARAM_DOT_COLOR) ||
+                !style.containsKey(PARAM_DOT_SHAPE) ||
+                !style.containsKey(PARAM_DOT_SIZE)) {
+            log.warn("Failed to set map layer custom style");
+            return;
+        }
+
+        String layerId = style.get(PARAM_LAYER_ID).toString();
+
+        WFSCustomStyleStore customStyle = new WFSCustomStyleStore();
+
+        customStyle.setLayerId(layerId);
+        customStyle.setClient(store.getClient());
+
+        customStyle.setFillColor(style.get(PARAM_FILL_COLOR).toString());
+        customStyle.setFillPattern(((Long)style.get(PARAM_FILL_PATTERN)).intValue());
+        customStyle.setBorderColor(style.get(PARAM_BORDER_COLOR).toString());
+        customStyle.setBorderLinejoin(style.get(PARAM_BORDER_LINEJOIN).toString());
+        customStyle.setBorderDasharray(style.get(PARAM_BORDER_DASHARRAY).toString());
+        customStyle.setBorderWidth(((Long)style.get(PARAM_BORDER_WIDTH)).intValue());
+
+        customStyle.setStrokeLinecap(style.get(PARAM_STROKE_LINECAP).toString());
+        customStyle.setStrokeColor(style.get(PARAM_STROKE_COLOR).toString());
+        customStyle.setStrokeLinejoin(style.get(PARAM_STROKE_LINEJOIN).toString());
+        customStyle.setStrokeDasharray(style.get(PARAM_STROKE_DASHARRAY).toString());
+        customStyle.setStrokeWidth(((Long)style.get(PARAM_STROKE_WIDTH)).intValue());
+
+        customStyle.setDotColor(style.get(PARAM_DOT_COLOR).toString());
+        customStyle.setDotShape(((Long)style.get(PARAM_DOT_SHAPE)).intValue());
+        customStyle.setDotSize(((Long)style.get(PARAM_DOT_SIZE)).intValue());
+
+        customStyle.save();
     }
 
     /**
@@ -585,7 +658,6 @@ public class TransportService extends AbstractService {
         if (!layer.containsKey(PARAM_LAYER_ID)
                 || !layer.containsKey(PARAM_LAYER_VISIBLE)) {
             log.warn("Layer style not defined");
-
     		return;
     	}
 
@@ -621,7 +693,6 @@ public class TransportService extends AbstractService {
                 || !layer.containsKey(PARAM_FEATURE_IDS)
                 || !layer.containsKey(PARAM_KEEP_PREVIOUS)) {
             log.warn("Layer features not defined");
-
     		return;
     	}
 
@@ -669,8 +740,9 @@ public class TransportService extends AbstractService {
     }
 
     private List<List<Double>> parseBounds(Object[] params) {
-        if(params == null)
+        if(params == null) {
             return null;
+        }
 
         List<List<Double>> bounds = new ArrayList<List<Double>>();
         List<Double> tile = null;

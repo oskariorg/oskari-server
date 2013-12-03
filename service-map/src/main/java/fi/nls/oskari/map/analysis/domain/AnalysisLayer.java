@@ -14,11 +14,13 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 
 public class AnalysisLayer {
     private final String type = "analysislayer";
+    private final String ANALYSIS_GEOMETRY_FIELD = "geometry";
     private int id = 0;
     private String name = "";
     private String subtitle = "";
     private String inputType = "";
     private String inputAnalysisId = null;
+    private String inputCategoryId = null;
     
     private String orgName = "";
     private String inspire = "";
@@ -39,6 +41,8 @@ public class AnalysisLayer {
     private long wpsLayerId = 0;
     private AnalysisMethodParams analysisMethodParams;
     private String filter;
+    private List<Long> mergeAnalysisIds;
+    private List<String> mergeAnalysisLayers;
 
     public String getType() {
         return type;
@@ -222,6 +226,22 @@ public class AnalysisLayer {
         this.result = result;
     }
 
+    public List<Long> getMergeAnalysisIds() {
+        return mergeAnalysisIds;
+    }
+
+    public void setMergeAnalysisIds(List<Long> mergeAnalysisIds) {
+        this.mergeAnalysisIds = mergeAnalysisIds;
+    }
+
+    public List<String> getMergeAnalysisLayers() {
+        return mergeAnalysisLayers;
+    }
+
+    public void setMergeAnalysisLayers(List<String> mergeAnalysisLayers) {
+        this.mergeAnalysisLayers = mergeAnalysisLayers;
+    }
+
     public JSONObject getJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", this.getId());
@@ -249,6 +269,13 @@ public class AnalysisLayer {
         json.put("wpsName", this.getWpsName());
         json.put("wpsLayerId", this.getWpsLayerId());
         json.put("result", this.getResult());
+        JSONArray mlayers = new JSONArray();
+        if (this.getMergeAnalysisLayers() != null) {
+            for (String lay : this.getMergeAnalysisLayers()) {
+                mlayers.put(lay);
+            }
+        }
+        json.put("mergeLayers", mlayers);
 
         return json;
     }
@@ -292,6 +319,10 @@ public class AnalysisLayer {
                 }
 
             }
+            // Add geometry for filter and for highlight
+            this.locales.add(ANALYSIS_GEOMETRY_FIELD);
+            this.locales.add("x");
+            this.locales.add("y");
 
         }
 
@@ -302,7 +333,7 @@ public class AnalysisLayer {
         if (analysis != null) {
             this.fields.clear();
             // Fixed 1st is ID
-            this.fields.add("ID");
+            this.fields.add("__fid");
             for (int j = 1; j < 11; j++) {
                 String colx = analysis.getColx(j);
                 if (colx != null && !colx.isEmpty()) {
@@ -312,8 +343,18 @@ public class AnalysisLayer {
                 }
 
             }
+            this.fields.add(ANALYSIS_GEOMETRY_FIELD);
+            this.fields.add("__centerX");
+            this.fields.add("__centerY");
 
         }
     }
 
+    public void setInputCategoryId(String inputCategoryId) {
+        this.inputCategoryId = inputCategoryId;
+    }
+
+    public String getInputCategoryId() {
+        return inputCategoryId;
+    }
 }

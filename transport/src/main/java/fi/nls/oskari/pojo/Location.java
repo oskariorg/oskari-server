@@ -339,7 +339,7 @@ public class Location {
             this.getEnvelope();
         }
 
-        return this.getTransform(this.crs, target, lenient);
+        return getTransform(this.crs, target, lenient);
     }
 
     /**
@@ -351,7 +351,7 @@ public class Location {
      * @return transform
      */
     @JsonIgnore
-    public MathTransform getTransform(CoordinateReferenceSystem source, CoordinateReferenceSystem target, boolean lenient) {
+    public static MathTransform getTransform(CoordinateReferenceSystem source, CoordinateReferenceSystem target, boolean lenient) {
         try {
             return CRS.findMathTransform(source, target, lenient);
         } catch (Exception e) {
@@ -389,9 +389,8 @@ public class Location {
         );
     }
 
-
     /**
-     * Sets a enlarged envelope
+     * Sets an enlarged envelope
      *
      * Adds one tile sized buffer to every direction of the envelope.
      *
@@ -411,7 +410,31 @@ public class Location {
         double width = bbox.get(2) - bbox.get(0);
         double height = bbox.get(3) - bbox.get(1);
 
-        this.enlargedEnvelope = new ReferencedEnvelope(
+        this.enlargedEnvelope = createEnlargedEnvelope(width, height);
+    }
+
+
+    /**
+     * Creates an enlarged envelope
+     *
+     * Adds one tile sized buffer to every direction of the envelope.
+     *
+     * @param width
+     * @param height
+     * @return envelope
+     */
+    @JsonIgnore
+    public ReferencedEnvelope createEnlargedEnvelope(double width, double height) {
+        if(width < 0 || height < 0) {
+            log.error("Failed to create enlarged envelope because params were invalid");
+            return null;
+        }
+
+        if(this.crs == null) {
+            this.getEnvelope();
+        }
+
+        return new ReferencedEnvelope(
                 this.getLeft() - width, // x1
                 this.getRight() + width, // x2
                 this.getBottom() - height, // y1
@@ -420,7 +443,7 @@ public class Location {
     }
 
     /**
-     * Gets a enlarged envelope
+     * Gets an enlarged envelope
      *
      * Used in safe requests of WFS data (removing possibility of missing features on boundaries)
      *

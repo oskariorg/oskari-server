@@ -27,7 +27,7 @@ public class VisualizationService {
     private static final Logger log = LogFactory.getLogger(VisualizationService.class);
 
     private final static String DEFAULT_LINE_COLOR = "#000000"; 
-    private final static String DEFAULT_LINE_WIDTH = "1";
+    private final static String DEFAULT_LINE_WIDTH = "0";
     
     private final static String DEFAULT_RULE_NAME = "Kunta";
     private final static String DEFAULT_RULE_TITLE = "Eriväri";
@@ -52,9 +52,9 @@ public class VisualizationService {
         final OMAttribute layer = OM_FACTORY.createOMAttribute("layer", null, visualization.getLayername());
         root.addAttribute(layer);
         final OMAttribute linecolor = OM_FACTORY.createOMAttribute("line-color", null, DEFAULT_LINE_COLOR);
-        root.addAttribute(linecolor);
+        // root.addAttribute(linecolor);
         final OMAttribute linewidth = OM_FACTORY.createOMAttribute("line-width", null, DEFAULT_LINE_WIDTH);
-        root.addAttribute(linewidth);
+        // root.addAttribute(linewidth);
         
         final String[] classes = visualization.getClassGroups(); 
         final String[] colors = visualization.getGroupColors();
@@ -68,6 +68,8 @@ public class VisualizationService {
             final OMElement rule = OM_FACTORY.createOMElement("Range", null);
             final OMAttribute color = OM_FACTORY.createOMAttribute("color", null, colors[i]);
             rule.addAttribute(color);
+            rule.addAttribute(linecolor);
+            rule.addAttribute(linewidth);
 
             final OMAttribute ruleName = OM_FACTORY.createOMAttribute("name", null, DEFAULT_RULE_NAME);
             rule.addAttribute(ruleName);

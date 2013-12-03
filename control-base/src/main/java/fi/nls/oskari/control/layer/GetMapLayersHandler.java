@@ -110,8 +110,8 @@ public class GetMapLayersHandler extends ActionHandler {
                 mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
                 mapProperties.put("legendImage", ml.getLegendImage());
                 mapProperties.put("version", ml.getVersion());
-                mapProperties.put("selection_style", IOHelper.encode64(ml.getSelection_style()));
-                mapProperties.put("style", IOHelper.encode64(ml.getStyle()));
+                mapProperties.put("selection_style", ml.getSelection_style());
+                mapProperties.put("style", ml.getStyle());
                 mapProperties.put("dataUrl", ml.getDataUrl());
 
                 mapProperties.put("epsg", ml.getEpsg());
@@ -125,7 +125,7 @@ public class GetMapLayersHandler extends ActionHandler {
                 mapProperties.put("resource_url_scheme", ml.getResource_url_scheme());
                 mapProperties.put("resource_daily_max_per_ip", ml.getResource_daily_max_per_ip());
                 mapProperties.put("descriptionLink", ml.getDescriptionLink());
-                mapProperties.put("xslt", IOHelper.encode64(ml.getXslt()));
+                mapProperties.put("xslt", ml.getXslt());
                 mapProperties.put("wmsUrl", ml.getWmsUrl());
                 mapProperties.put("orderNumber", ml.getOrdernumber());
                 mapProperties.put("resource_url_client_pattern", ml.getResource_url_client_pattern());

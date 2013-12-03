@@ -51,7 +51,7 @@ public class VisualizationServiceTest {
         final OMElement xml = service.getXML(getDummyVisualization(), "fi");
         final String sld = service.transform(xml, service.getDefaultXSLT());
         assertNotNull("SLD shouldn't be null", sld);
-        assertTrue("SLD should have rules", sld.indexOf("<Rule>") > 0);
+        assertTrue("SLD should have rules", sld.indexOf("<NamedLayer>") > 0);
     }
 
     private StatsVisualization getDummyVisualization() {

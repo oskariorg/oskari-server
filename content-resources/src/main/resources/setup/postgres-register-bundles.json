@@ -1,7 +1,4 @@
 {
-    "create" : [
-        "00-create-tables.sql"
-    ],
     "bundles" : {
         "framework" : [
             "001-openlayers-default-theme.sql",
@@ -37,14 +34,5 @@
         "integration" : [
             "001-admin-layerselector.sql"
         ]
-    },
-    "views" : [
-        "default-view.json",
-        "postgres-view.json",
-        "publisher-template-view.json",
-        "postgres-myplaces-view.json"
-    ],
-    "sql" : [
-        "exampleLayersAndRoles.sql"
-    ]
+    }
 }

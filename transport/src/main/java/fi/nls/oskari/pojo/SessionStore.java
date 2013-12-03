@@ -375,7 +375,7 @@ public class SessionStore {
 	 *         otherwise.
 	 */
 	public boolean save() {
-        JedisManager.setex(KEY + client, 86400,  getAsJSON());
+        JedisManager.setex(KEY + client, 86400, getAsJSON());
     	return this.isValid();
 	}
 	

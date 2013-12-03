@@ -1,3 +1,4 @@
+
 DROP VIEW IF EXISTS my_places_categories;
 DROP TABLE IF EXISTS my_places;
 DROP TABLE IF EXISTS categories;
