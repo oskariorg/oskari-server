@@ -145,10 +145,13 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapmodule-plugin" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs" : {
+            "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapwmts" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "mapmyplaces" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapstats" : {
@@ -159,6 +162,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "ui-components": {
+                "bundlePath": "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance" : []
@@ -179,7 +185,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
          "config" : { 
-            "ignoredLayerTypes" : ["WFS"], 
+            "ignoredLayerTypes" : ["WFS","MYPLACES"], 
             "infoBox": false 
          }
        },
@@ -200,6 +206,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
