@@ -59,10 +59,10 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapmyplaces" : {
+            "mapanalysis" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapanalysis" : {
+             "mapmyplaces" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "oskariui" : {

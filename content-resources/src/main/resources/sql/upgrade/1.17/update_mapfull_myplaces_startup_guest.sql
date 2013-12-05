@@ -56,9 +56,6 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapwmts" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapmyplaces" : {
-                "bundlePath" : "/Oskari/packages/framework/bundle/"
-            },
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
@@ -76,4 +73,4 @@ UPDATE portti_view_bundle_seq set startup = '{
     },
     "instanceProps" : {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
-    AND view_id=4438;
+    AND view_id=[VIEW_ID];
