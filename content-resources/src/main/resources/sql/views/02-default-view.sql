@@ -999,7 +999,7 @@ INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, st
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
-    "title": "Statistics grid",
+    "title": "Analyse",
     "bundleinstancename": "analyse",
     "fi": "analyse",
     "sv": "analyse",
