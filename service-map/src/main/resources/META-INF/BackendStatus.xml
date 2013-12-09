@@ -35,7 +35,7 @@
         select id, ts, maplayer_id, status, statusmessage, infourl, statusjson from portti_backendalert 
     </select>
     
-    <select id="findAllKnown" resultMap="BackendStatus" cacheModel="theme-cache">
+    <select id="findAllKnown" resultMap="BackendStatus" cacheModel="status-cache">
         select
             id,      
 		    ts,         
