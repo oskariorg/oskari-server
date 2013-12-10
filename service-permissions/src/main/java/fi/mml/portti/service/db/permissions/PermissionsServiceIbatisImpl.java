@@ -341,12 +341,17 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         return false;
     }
     
-    public List<Map<String,Object>> getListOfMaplayerIdsForViewPermissionByUser(User user) {
+    public List<Map<String,Object>> getListOfMaplayerIdsForViewPermissionByUser(User user, boolean isViewPublished) {
 
         Map<String, Object> hm = new HashMap<String, Object>();
         hm.put("idList", getExternalIdList(user));
-        
-        List<Map<String,Object>> results = queryForList(getNameSpace() + ".findMaplayerIdsForViewPermissionsByExternalIds", hm);
+
+        List<Map<String,Object>> results = null;
+        if(isViewPublished) {
+            results = queryForList(getNameSpace() + ".findMaplayerIdsForViewPublishedPermissionsByExternalIds", hm);
+        } else {
+            results = queryForList(getNameSpace() + ".findMaplayerIdsForViewPermissionsByExternalIds", hm);
+        }
         return results;
     }
 

@@ -92,7 +92,7 @@ public interface PermissionsService extends BaseService<Permissions> {
     public boolean permissionGrantedForRolesOrUser(long[] roleIdList, long userId, List<Permissions> permissions, String permissionsType);
     public boolean permissionGrantedForRolesOrUser(User user, List<Permissions> permissions, String permissionsType);
     
-    public List<Map<String,Object>> getListOfMaplayerIdsForViewPermissionByUser(User user);
+    public List<Map<String,Object>> getListOfMaplayerIdsForViewPermissionByUser(User user, boolean isViewPublished);
 //    public List<Long> getListOfMaplayerIdsForViewPermissionByUser(User user);
     
     public boolean hasViewPermissionForLayerByLayerId(User user, long layerId);
