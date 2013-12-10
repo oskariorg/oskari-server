@@ -132,7 +132,7 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapmodule-plugin" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs" : {
+            "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapwmts" : {

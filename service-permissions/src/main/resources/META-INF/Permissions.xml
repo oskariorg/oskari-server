@@ -358,6 +358,26 @@
 		    
 		    
     </select>
+
+    <!-- fixed -->
+    <select id="findMaplayerIdsForViewPublishedPermissionsByExternalIds" resultClass="HashMap" parameterMap="externalIds">
+        SELECT
+        map.id
+        FROM
+        oskari_resource osr,
+        oskari_permission op,
+        portti_maplayer map
+        WHERE
+        (op.permission = 'VIEW_LAYER' OR op.permission = 'VIEW_PUBLISHED') AND
+        osr.id = op.oskari_resource_id AND
+        osr.resource_type = 'maplayer' AND
+        osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+        op.external_Id IN
+        <iterate open="(" close=")" conjunction="," property="idList" >
+            #idList[]#
+        </iterate>
+    </select>
+
     <!-- fixed -->
     <select id="hasViewPermissionForLayerByLayerId" resultClass="long" parameterMap="externalIdsAndLayerId">
         SELECT 
