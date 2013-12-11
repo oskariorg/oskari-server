@@ -22,7 +22,7 @@
 
     <cacheModel type="LRU" id="status-cache" readOnly="true" serialize="false">
         <flushInterval seconds="60"/>
-        <property name="CacheSize" value="1000"/>
+        <property name="CacheSize" value="500"/>
     </cacheModel>
 
 
