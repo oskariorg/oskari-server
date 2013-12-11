@@ -64,9 +64,6 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "statsgrid" : {
-                "bundlePath" : "/Oskari/packages/statistics/bundle/"
-            },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
             }
