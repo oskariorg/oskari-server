@@ -12,6 +12,7 @@ import org.json.JSONObject;
  * Parcel application
  * Set cancel url for parcel bundle config
  */
+
 @OskariViewModifier("parcel.cancelUrl")
 public class ParcelCancelUrlParamHandler extends ParamHandler {
 
