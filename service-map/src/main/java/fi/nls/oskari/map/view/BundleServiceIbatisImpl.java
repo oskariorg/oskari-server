@@ -19,7 +19,12 @@ public class BundleServiceIbatisImpl extends BaseIbatisService<Bundle> implement
     public Bundle getBundleTemplateByName(final String name) {
         log.debug("Finding bundle template by name:", name);
         Bundle bundle = queryForObject(getNameSpace() + ".find-by-name", name);
-        log.debug("Found bundle template:", bundle);
+        if(bundle == null) {
+            log.debug("Requested bundle not registered in db:", name);
+        }
+        else {
+            log.debug("Found bundle template:", bundle);
+        }
         return bundle;
     }
 

@@ -21,7 +21,7 @@ VALUES (
 15000000,1,
 '','',1,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,
 'wmtslayer',
-'{ fi:{name:"kiinteistojaotust",subtitle:"(WMTS)"},sv:{name:"Ortofoton",subtitle:"(WMTS)"},en:{name:"Orthophotos",subtitle:"(WMTS)"}}',
+'{ fi:{name:"Kiinteistöjaotus",subtitle:"(WMTS)"},sv:{name:"Fastighetsindelning",subtitle:"(WMTS)"},en:{name:"Cadastral units",subtitle:"(WMTS)"}}',
 'ETRS-TM35FIN',
 '{
                 "operationsMetadata": {
