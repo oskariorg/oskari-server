@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Parcel application
  * Set preparcel (part parcel) code for parcel bundle state
  */
-@OskariViewModifier("preparcel.initRef")
+@OskariViewModifier("parcel.pid")
 public class PreParcelRefParamHandler extends ParamHandler {
 
     private Logger log = LogFactory.getLogger(PreParcelRefParamHandler.class);

@@ -1,5 +1,9 @@
 package fi.nls.oskari.control.data;
 
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,6 +44,7 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String PARM_FORMAT = "format";
     private static final String PARM_GEOJSON = "geojson";
     private static final String PARM_TILES = "tiles";
+    private static final String PARM_SAVE = "saveFile";
 
     private static final String KEY_EAST = "east";
     private static final String KEY_NORTH = "north";
@@ -81,10 +86,12 @@ public class GetPreviewHandler extends ActionHandler {
     private static final List<String> ACCEPTED_FORMATS = new ArrayList<String>();
     private static String printBaseURL;
     private static String printBaseGeojsURL;
+    private static String printSaveFilePath;
 
     public void init() {
         printBaseURL = PropertyUtil.get("service.print.maplink.json.url");
         printBaseGeojsURL = PropertyUtil.get("service.print.maplink.geojson.url");
+        printSaveFilePath = PropertyUtil.get("service.print.saveFilePath");
 
         ACCEPTED_FORMATS.add("application/pdf");
         ACCEPTED_FORMATS.add("image/png");
@@ -100,6 +107,7 @@ public class GetPreviewHandler extends ActionHandler {
         final String pformat = params.getHttpParam(PARM_FORMAT,
                 "application/pdf");
         final JSONObject jsonprint = getPrintJSON(params);
+        String file_save = params.getHttpParam(PARM_SAVE, "");
         boolean geojsCase = false;
         if (!params.getHttpParam(PARM_GEOJSON, "").isEmpty())
             geojsCase = true;
@@ -126,6 +134,9 @@ public class GetPreviewHandler extends ActionHandler {
             IOHelper.writeToConnection(con, jsonprint.toString());
 
             final byte[] presponse = IOHelper.readBytes(con.getInputStream());
+            // Save plot for future use
+            if (!file_save.isEmpty()) savePdfPng(presponse, file_save, pformat);
+
             final String contentType = con.getHeaderField(HEADER_CONTENT_TYPE);
             response.addHeader(HEADER_CONTENT_TYPE, contentType);
 
@@ -146,8 +157,8 @@ public class GetPreviewHandler extends ActionHandler {
             if (geojsCase)
                 // Test service for print + geojs print
                 return IOHelper.getConnection(getPrintGeojsUrl(pformat));
-            // Normal print without geojs data
             else
+                // Normal print without geojs data
                 return IOHelper.getConnection(getPrintUrl(pformat));
 
         } catch (Exception e) {
@@ -456,6 +467,24 @@ public class GetPreviewHandler extends ActionHandler {
  
         } catch (Exception e) {
             throw new ActionException("Failed to read print info geojson", e);
+        }
+    }
+
+    private void savePdfPng(byte[] presponse, String filename, String pformat)
+            throws ActionException {
+
+        try {
+            String[] formats = pformat.split("/");
+            String saveFilePath = printSaveFilePath + filename + "."+ formats[formats.length - 1];
+
+            // opens an output stream to save into file
+            FileOutputStream outputStream = new FileOutputStream(saveFilePath);
+            outputStream.write(presponse);
+            outputStream.close();
+
+        } catch (Exception e) {
+            throw new ActionException("Failed to save pdf/png file", e);
+
         }
     }
 
