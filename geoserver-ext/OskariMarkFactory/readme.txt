@@ -6,7 +6,7 @@ Run "mvn install" and copy the resulting jar file to the server's WEB-INF/lib/ d
 
 Introduction
 
-This custom GeoServer extension generates dynamic point symbols from True Type Font files. TTF files can be created and edited by most font editors, e.g. FontForge. When finished, the TTF file needs to be copied to GeoServer style directory, e.g. /var/opt/geoserver/data/styles/.
+This custom GeoServer extension generates dynamic point symbols from True Type Font files. TTF files can be created and edited by most font editors, e.g. FontForge. When finished, the TTF file needs to be copied to GeoServer style directory, e.g. /var/opt/geoserver/data/styles/. Also the front end preview renderer needs identical data in the file Oskari/bundles/framework/bundle/divmanazer/component/visualization-form/PointForm.js. Conversion from ttf to js format is achieved by cufon at http://cufon.shoqolate.com/generate/.
 
 The correct shape, color, size and optional boundary color of the point symbol can be defined in the SLD file as follows:
 
