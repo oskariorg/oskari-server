@@ -59,8 +59,15 @@
 		<result property="name" column="s_name"/>
 		<result property="SLDStyle" column="sld_style"/>
     </resultMap>
-	
-    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration">
+
+    <cacheModel type="LRU" id="wfs-layer-cache" readOnly="true" serialize="false">
+        <flushInterval minutes="15"/>
+        <property name="CacheSize" value="100"/>
+    </cacheModel>
+
+
+    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration"
+            cacheModel="wfs-layer-cache">
     	SELECT
 			l.maplayer_id,
 			map.locale,

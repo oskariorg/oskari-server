@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.17
+
+### service-map
+
+Added ibatis caching for Inspire-themes, views, wfs-layers and backendstatus operations.
+
 ## 1.16
 
 ### content-resources

@@ -10,17 +10,17 @@ import org.json.JSONObject;
 
 /**
  * Parcel application
- * Writes the preloaded url for parcel bundle config
+ * Set cancel url for parcel bundle config
  */
-@OskariViewModifier("parcel.initRef")
-public class ParcelRefParamHandler extends ParamHandler {
+@OskariViewModifier("parcel.cancelUrl")
+public class ParcelCancelUrlParamHandler extends ParamHandler {
 
-    private Logger log = LogFactory.getLogger(ParcelRefParamHandler.class);
+    private Logger log = LogFactory.getLogger(ParcelCancelUrlParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
-        log.debug("ParcelRefParamHandler.handleParam");
-        final JSONObject bundleState = getBundleState(params.getConfig(), "parcel");
-        JSONHelper.putValue(bundleState, "initRef", params.getParamValue());
+        log.debug("ParcelCancelUrlParamHandler.handleParam");
+        final JSONObject bundleState = getBundleConfig(params.getConfig(), "parcel");
+        JSONHelper.putValue(bundleState, "cancelUrl", params.getParamValue());
         return true;
     }
 }
