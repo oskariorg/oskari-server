@@ -43,6 +43,7 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_ID = "id";
     public static final String KEY_DOMAIN = "domain";
     public static final String KEY_NAME = "name";
+    public static final String KEY_LAYOUT = "layout";
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_PLUGINS = "plugins";
     public static final String KEY_SIZE = "size";
@@ -224,6 +225,9 @@ public class PublishHandler extends ActionHandler {
         }
         final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
+        final String layout = JSONHelper.getStringFromJSON(pubdata, KEY_LAYOUT, "lefthanded");
+
+        JSONHelper.putValue(mapfullConfig, KEY_LAYOUT, layout);
 
         JSONArray newPlugins;
         JSONObject size;

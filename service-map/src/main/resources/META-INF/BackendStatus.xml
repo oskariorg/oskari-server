@@ -19,8 +19,13 @@
          <result property="infourl" column="infourl"/>
         <result property="statusjson" column="statusjson"/>
     </resultMap>
-    
-   
+
+    <cacheModel type="LRU" id="status-cache" readOnly="true" serialize="false">
+        <flushInterval seconds="60"/>
+        <property name="CacheSize" value="500"/>
+    </cacheModel>
+
+
     <select id="maxId" resultClass="int">
         select max(id) from _backendalert
     </select>
@@ -30,7 +35,7 @@
         select id, ts, maplayer_id, status, statusmessage, infourl, statusjson from portti_backendalert 
     </select>
     
-    <select id="findAllKnown" resultMap="BackendStatus">
+    <select id="findAllKnown" resultMap="BackendStatus" cacheModel="status-cache">
         select
             id,      
 		    ts,         

@@ -10,17 +10,17 @@ import org.json.JSONObject;
 
 /**
  * Parcel application
- * Writes the preloaded url for parcel bundle config
+ * Set picture id for parcel bundle config
  */
-@OskariViewModifier("parcel.initRef")
-public class ParcelRefParamHandler extends ParamHandler {
+@OskariViewModifier("parcel.pid")
+public class ParcelPidParamHandler extends ParamHandler {
 
-    private Logger log = LogFactory.getLogger(ParcelRefParamHandler.class);
+    private Logger log = LogFactory.getLogger(ParcelPidParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
-        log.debug("ParcelRefParamHandler.handleParam");
-        final JSONObject bundleState = getBundleState(params.getConfig(), "parcel");
-        JSONHelper.putValue(bundleState, "initRef", params.getParamValue());
+        log.debug("ParcelPidParamHandler.handleParam");
+        final JSONObject bundleState = getBundleConfig(params.getConfig(), "parcel");
+        JSONHelper.putValue(bundleState, "pid", params.getParamValue());
         return true;
     }
 }
