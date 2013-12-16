@@ -16,10 +16,17 @@ module.exports = function(client) {
     // 2. Create layer groups (organisations)
     function copyLayerGroups(client) {
         var query = "INSERT INTO oskari_layergroup (id, locale) SELECT id, locale FROM portti_layerclass WHERE parent IS NULL";
-        runSQL(client, query, copyNormalLayers, 'could not copy layer groups');
+        runSQL(client, query, fixGroupIdSequence, 'could not copy layer groups');
     }
 
-    // 3. Copy independent/normal layers (that are not sublayers)
+    // 3. update serial column sequence value since we inserted ids manually!!
+    function fixGroupIdSequence(client) {
+        var fixSequenceSQL = "SELECT setval(pg_get_serial_sequence('oskari_layergroup', 'id'), (SELECT MAX(id) FROM oskari_layergroup));";
+
+        runSQL(client, fixSequenceSQL, copyNormalLayers, 'could not fix sequence for oskari_layergroup.id');
+    }
+
+    // 4. Copy independent/normal layers (that are not sublayers)
     function copyNormalLayers(client) {
         var selectSQL = "SELECT id, -1 AS parentId, layer_type, false AS base_map, layerclassid AS groupId, wmsname, wmsurl, " +
             "locale, opacity, '' AS style, minscale, maxscale, legend_image, dataurl, " +
@@ -37,7 +44,7 @@ module.exports = function(client) {
 
     }
 
-    // 4. copy layers that are sublayers
+    // 5. copy layers that are sublayers
     function copySubLayers(client) {
 
         // NOTE! sublayers will have groupId=1 and parentId as layerclassid
@@ -56,7 +63,7 @@ module.exports = function(client) {
         runSQL(client, insertSQL + selectSQL, fixIdSequence, 'could not copy sublayers');
     }
 
-    // 5. update serial column sequence value since we inserted ids manually!!
+    // 6. update serial column sequence value since we inserted ids manually!!
     function fixIdSequence(client) {
         var fixSequenceSQL = "SELECT setval(pg_get_serial_sequence('oskari_maplayer', 'id'), (SELECT MAX(id) FROM oskari_maplayer));";
 
@@ -64,7 +71,7 @@ module.exports = function(client) {
     }
 
 
-    // 6. establish new rows to oskari_maplayers from portti_layerclass base/group layers
+    // 7. establish new rows to oskari_maplayers from portti_layerclass base/group layers
     function createNewBaseLayers(client) {
 
         var selectSQL = "SELECT -1 AS parentId, id AS externalId, 'collection' AS type, NOT group_map AS base_map, parent AS groupId, '' AS name, '' AS url, " +
@@ -80,7 +87,7 @@ module.exports = function(client) {
         runSQL(client, insertSQL + selectSQL, linkSublayers, 'could not establish new collection layers');
     }
 
-    // 7. link sublayers to new baselayers
+    // 8. link sublayers to new baselayers
     function linkSublayers(client) {
         var linkSQL = "UPDATE oskari_maplayer SET parentId = m.id FROM oskari_maplayer m " +
             "WHERE oskari_maplayer.parentId != -1 AND oskari_maplayer.parentId = m.externalId::integer"
@@ -88,22 +95,34 @@ module.exports = function(client) {
         runSQL(client, linkSQL, updateExternalIds, 'could not link sublayers');
     }
 
-    // 8. update externalId with base_ prefix
+    // 9. update externalId with base_ prefix
     function updateExternalIds(client) {
         var prefixSQL = "UPDATE oskari_maplayer SET externalId = 'base_' || externalId " +
             "WHERE externalId IS NOT NULL";
 
-        runSQL(client, prefixSQL, linkInspireThemes, 'could not prefix external ids');
+        runSQL(client, prefixSQL, linkInspireThemesForNormalLayers, 'could not prefix external ids');
     }
 
-    // 9. link themes from old
-    function linkInspireThemes(client) {
+    // 10. link themes from old db table for layers that exist there (non baselayers)
+    // TODO: check collection layers inspire themes!
+    function linkInspireThemesForNormalLayers(client) {
         var query = "INSERT INTO oskari_maplayer_themes (maplayerid, themeid) SELECT id, inspire_theme_id FROM portti_maplayer";
 
-        runSQL(client, query, updateStylesForWMS, 'could not link inspire themes');
+        runSQL(client, query, linkInspireThemesForCollectionLayers, 'could not link inspire themes');
     }
 
-    // 10. update default styles for wms layers
+    // 11. Add inspire theme links to base/grouplayers
+    function linkInspireThemesForCollectionLayers(client) {
+
+        var selectSQL = "SELECT DISTINCT m1.id AS baseId, t.themeid FROM oskari_maplayer m1, oskari_maplayer m2, " +
+        "oskari_maplayer_themes t WHERE m1.id = m2.parentId AND t.maplayerid = m2.id;"
+
+        var linkSql = "INSERT INTO oskari_maplayer_themes (maplayerid, themeid) ";
+
+        runSQL(client, linkSql + selectSQL, updateStylesForWMS, 'could not link inspire themes');
+    }
+
+    // 12. update default styles for wms layers
     // TODO: check if wmts needs this!!
     function updateStylesForWMS(client) {
         var updateSQL = "UPDATE oskari_maplayer SET style = substr(m.style, 1, 100) FROM portti_maplayer m " +
@@ -112,7 +131,7 @@ module.exports = function(client) {
         runSQL(client, updateSQL, allDone, 'could not update default styles for layers');
     }
 
-    // 11. all done
+    // 13. all done
     function allDone(client) {
         console.log("Upgrade complete, you can now remove portti_maplayer and portti_layerclass tables from database");
         client.end();
