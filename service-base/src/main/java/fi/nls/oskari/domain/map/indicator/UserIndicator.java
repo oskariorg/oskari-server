@@ -18,6 +18,7 @@ public class UserIndicator {
     int year;
     String data = "";
     boolean published;
+    String category = "";
 
 
     public String getDescription() {
@@ -90,5 +91,13 @@ public class UserIndicator {
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
