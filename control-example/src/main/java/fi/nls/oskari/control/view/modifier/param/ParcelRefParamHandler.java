@@ -19,7 +19,7 @@ public class ParcelRefParamHandler extends ParamHandler {
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         log.debug("ParcelRefParamHandler.handleParam");
-        final JSONObject bundleState = getBundleState(params.getConfig(), "parcel");
+        final JSONObject bundleState = getBundleConfig(params.getConfig(), "parcel");
         JSONHelper.putValue(bundleState, "initRef", params.getParamValue());
         return true;
     }

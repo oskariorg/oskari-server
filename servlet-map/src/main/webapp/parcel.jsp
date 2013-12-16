@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Standalone servlet - ${viewName} view</title>
+    <title>${viewName}</title>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js">
     </script>
@@ -68,46 +68,6 @@
                 height: 100%;
                 margin-left: 153px;
             }
-
-            #login {
-                margin-left: 5px;
-            }
-
-            #login input[type="text"], #login input[type="password"] {
-                width: 90%;
-                margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
-                background-repeat: no-repeat;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login input[type="submit"] {
-                width: 90%;
-                margin-bottom: 5px;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login p.error {
-                font-weight: bold;
-                color : red;
-                margin-bottom: 10px;
-            }
-
-            #login a {
-                color: #FFF;
-                padding: 5px;
-            }
-
         }
     </style>
     <!-- ############# /css ################# -->
@@ -168,26 +128,6 @@
     <div id="divider">
     </div>
     <div id="toolbar">
-    </div>
-    <div id="login">
-        <c:choose>
-            <c:when test="${!empty loginState}">
-                <p class="error">Invalid password or username!!</p>
-            </c:when>
-        </c:choose>
-        <c:choose>
-            <c:when test="${!empty user}">
-                <a href="/ajax/?action=logout">Logout</a>
-            </c:when>
-            <c:otherwise>
-                <form action='${ajaxUrl}action=login&viewId=${viewId}' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="username" type="text" placeholder="Username" autofocus
-                           required>
-                    <input size="16" id="password" name="password" type="password" placeholder="Password" required>
-                    <input type="submit" id="submit" value="Log in">
-                </form>
-            </c:otherwise>
-        </c:choose>
     </div>
 </nav>
 <div id="contentMap" class="oskariui container-fluid">
