@@ -136,7 +136,7 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapmodule-plugin" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs" : {
+            "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapstats" : {
@@ -150,9 +150,6 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
-            },
-            "statsgrid" : {
-                "bundlePath" : "/Oskari/packages/statistics/bundle/"
             },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -173,7 +170,18 @@ UPDATE portti_view_bundle_seq set config = '{
     "plugins" : [
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin", 
+         "config" : { 
+           "contextPath" : "/transport-0.0.1", 
+           "hostname" : "localhost", 
+           "port" : "8888",
+           "lazy" : true,
+           "disconnectTime" : 30000,
+           "backoffIncrement": 1000,
+           "maxBackoff": 60000,
+           "maxNetworkDelay": 10000
+         }
+       },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }

@@ -10,17 +10,17 @@ import org.json.JSONObject;
 
 /**
  * Parcel application
- * Set preparcel (part parcel) code for parcel bundle state
+ * Set success url for parcel bundle config
  */
-@OskariViewModifier("preparcel.initRef")
-public class PreParcelRefParamHandler extends ParamHandler {
+@OskariViewModifier("parcel.successUrl")
+public class ParcelSuccessUrlParamHandler extends ParamHandler {
 
-    private Logger log = LogFactory.getLogger(PreParcelRefParamHandler.class);
+    private Logger log = LogFactory.getLogger(ParcelSuccessUrlParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
-        log.debug("PreParcelRefParamHandler.handleParam");
-        final JSONObject bundleState = getBundleState(params.getConfig(), "parcel");
-        JSONHelper.putValue(bundleState, "initPreParcelRef", params.getParamValue());
+        log.debug("ParcelSuccessUrlParamHandler.handleParam");
+        final JSONObject bundleState = getBundleConfig(params.getConfig(), "parcel");
+        JSONHelper.putValue(bundleState, "successUrl", params.getParamValue());
         return true;
     }
 }
