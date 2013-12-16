@@ -20,3 +20,13 @@ Views are created after bundles are registered. Any bundle refered to in a view 
 Views are configured as json under /src/main/resources/json/views/[view.json]
 
 Sql should be generic sql statements that add map layers/permissions and other content.
+
+# Add a new view
+
+Add a postgres sample view with the following command. It parses the json file and adds the view to the db.
+
+    mvn clean install exec:java -Doskari.addview=postgres-sample-view.json
+
+# Database setting
+
+The database properties can be modified in src/main/resources/db.properties.
