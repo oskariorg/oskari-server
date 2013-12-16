@@ -6,6 +6,10 @@
 
 Added ibatis caching for Inspire-themes, views, wfs-layers and backendstatus operations.
 
+### servlet
+
+Added oskariui style classes to index.jsp to fix layout.
+
 ## 1.16
 
 ### content-resources
