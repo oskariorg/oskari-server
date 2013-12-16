@@ -226,8 +226,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 UPDATE portti_view_bundle_seq set config = '{
         "viewtools": {
-            "print" : false,
-            "link" : false
+            "print" : false
         },
         "basictools": {
             "measureline" : false,
