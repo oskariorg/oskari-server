@@ -16,10 +16,11 @@
         <result property="title" column="title" />
         <result property="source" column="source" />
         <result property="material" column="layer_id" />
+        <result property="description" column="description"/>
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
-        <result property="description" column="description"/>
+        <result property="category" column="category" />
     </resultMap>
 
 
@@ -33,6 +34,7 @@
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
+        <parameter property="category" />
     </parameterMap>
 
     <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
@@ -44,6 +46,7 @@
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
+        <parameter property="category" />
         <parameter property="id" />
     </parameterMap>
 
@@ -61,7 +64,8 @@
           description,
           year,
           data,
-          published
+          published,
+          category
       FROM
           oskari_user_indicator
       WHERE
@@ -79,7 +83,8 @@
             description,
             year,
             data,
-            published
+            published,
+            category
       FROM
             oskari_user_indicator
     </select>
@@ -94,7 +99,8 @@
             description,
             year,
             data,
-            published
+            published,
+            category
         FROM
             oskari_user_indicator
         WHERE
@@ -110,8 +116,9 @@
             description,
             year,
             data,
-            published)
-        values (?, ?, ?, ?, ?, ?, ?, ?)
+            published,
+            category)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
 
 
@@ -124,7 +131,8 @@
             description = ?,
             year = ?,
             data = ?,
-            published = ?
+            published = ?,
+            category = ?,
         where id = ?
     </update>
 

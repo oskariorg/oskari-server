@@ -37,6 +37,7 @@ public class SaveUserIndicatorHandler extends ActionHandler {
     private static String PARAM_INDICATOR_DATA = "data";
     private static String PARAM_INDICATOR_PUBLISHED = "published";
     private static String PARAM_INDICATOR_DESCRIPTION = "description";
+    private static String PARAM_INDICATOR_CATEGORY = "category";
 
     private static final fi.nls.oskari.log.Logger log = LogFactory.getLogger(SaveUserIndicatorHandler.class);
 
@@ -73,6 +74,7 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
         ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));
         ui.setPublished(Boolean.parseBoolean(params.getHttpParam(PARAM_INDICATOR_PUBLISHED)));
+        ui.setCategory(params.getHttpParam(PARAM_INDICATOR_CATEGORY));
         return ui;
     }
 }
