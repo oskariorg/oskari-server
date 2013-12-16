@@ -1,8 +1,5 @@
-
 INSERT INTO portti_bundle (name, startup) 
-       VALUES ('publishedmyplaces2','{}');
-
-UPDATE portti_bundle set startup = '{
+       VALUES ('publishedmyplaces2','{
     "title" : "Publishedmyplaces2",
     "fi" : "publishedmyplaces2",
     "sv" : "publishedmyplaces2",
@@ -18,4 +15,4 @@ UPDATE portti_bundle set startup = '{
         "Require-Bundle-Instance" : []
     },
     "instanceProps" : {}
-}' WHERE name = 'publishedmyplaces2';
+}');
