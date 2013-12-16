@@ -77,7 +77,7 @@ public class SearchKeywordsHandler extends ActionHandler {
             throw new ActionParamsException("Lang was null!");
         }
 
-        List<Map<String,Object>> permittedLayers =  permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser());
+        List<Map<String,Object>> permittedLayers =  permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), false);
         List<Long> idList = new ArrayList<Long>();
         for (Map<String,Object> entry : permittedLayers) {
             idList.add(Long.parseLong(String.valueOf(entry.get("id"))));

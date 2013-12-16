@@ -52,7 +52,7 @@ public class GetLayerIds extends ActionHandler {
 	        }
 	    }
         
-        List<Map<String,Object>> listOfLayers = permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser());
+        List<Map<String,Object>> listOfLayers = permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), true);
         ObjectMapper mapper = new ObjectMapper();
         
         try {
