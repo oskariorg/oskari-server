@@ -108,7 +108,6 @@ public class DBHandler {
             final DataSource ds = (DataSource) ctx.lookup("java:/comp/env/" + datasource);
             return ds.getConnection();
         } catch (Exception e) {
-            log.info("Couldn't find connection pool with name", datasource);
         }
 
         final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
@@ -126,9 +125,9 @@ public class DBHandler {
                 return conn;
             }
         } catch (Exception e) {
-            log.warn(e, "Couldn't get connection with url", url);
         }
-        throw new SQLException("Couldn't get db connection! Aborting...");
+        throw new SQLException("Couldn't get db connection! Tried with datasource: "
+                +datasource + " and url: " + url + ". Aborting...");
     }
 
     public static void createContentIfNotCreated() {
