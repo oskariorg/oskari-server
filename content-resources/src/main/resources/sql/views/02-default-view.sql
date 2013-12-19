@@ -533,10 +533,10 @@ UPDATE portti_view_bundle_seq set config = '{
         "sv": "https://www.paikkatietoikkuna.fi/web/sv/profil"
     },
     "publishedMapUrl": {
-        "en": "/web/en/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
-        "fi": "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId=",
-        "sv": "/web/sv/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=0&p_p_state=exclusive&published=true&viewId="
-    }  
+        "en": "/published/en/",
+        "fi": "/published/fi/",
+        "sv": "/published/sv/"
+    }
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'personaldata') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
