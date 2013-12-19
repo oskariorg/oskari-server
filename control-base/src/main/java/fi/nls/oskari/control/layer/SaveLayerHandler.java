@@ -258,7 +258,7 @@ public class SaveLayerHandler extends ActionHandler {
 
         Permissions permissions = new Permissions();
 
-        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_WMS_LAYER);
+        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
         permissions.getUniqueResourceName().setNamespace(ml.getWmsUrl());
         permissions.getUniqueResourceName().setName(ml.getWmsName());
 

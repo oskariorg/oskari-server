@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="OskariLayer">
+
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_maplayer
+    </select>
+
+    <cacheModel type="LRU" id="sublayer-cache" readOnly="true" serialize="false">
+        <flushInterval hours="1"/>
+        <property name="CacheSize" value="200"/>
+    </cacheModel>
+
+    <select id="findById"
+            parameterClass="int"
+            resultClass="java.util.HashMap">
+
+        SELECT
+        l.id,
+        l.parentId,
+        l.externalId,
+        l.type,
+        l.base_map,
+        l.groupId,
+
+        l.name,
+        l.url,
+        l.locale,
+
+        l.opacity,
+        l.style,
+        l.minscale,
+        l.maxscale,
+
+        l.legend_image,
+        l.metadataId,
+
+        l.tile_matrix_set_id,
+        l.tile_matrix_set_data,
+        l.params,
+        l.options,
+
+        l.gfi_xslt,
+        l.gfi_type,
+        m.geom,
+
+        l.created,
+        l.updated
+
+        FROM
+        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
+        ON  m.maplayerid = l.id
+        WHERE
+        l.id = #id#
+
+    </select>
+
+    <select id="findByParentId"
+            parameterClass="int"
+            resultClass="java.util.HashMap"
+            cacheModel="sublayer-cache">
+
+        SELECT
+        l.id,
+        l.parentId,
+        l.externalId,
+        l.type,
+        l.base_map,
+        l.groupId,
+
+        l.name,
+        l.url,
+        l.locale,
+
+        l.opacity,
+        l.style,
+        l.minscale,
+        l.maxscale,
+
+        l.legend_image,
+        l.metadataId,
+
+        l.tile_matrix_set_id,
+        l.tile_matrix_set_data,
+        l.params,
+        l.options,
+
+        l.gfi_xslt,
+        l.gfi_type,
+        m.geom,
+
+        l.created,
+        l.updated
+
+        FROM
+        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
+        ON  m.maplayerid = l.id
+        WHERE
+        l.parentId = #id#
+
+    </select>
+
+    <select id="findByExternalId"
+            parameterClass="String"
+            resultClass="java.util.HashMap">
+
+
+        SELECT
+        l.id,
+        l.parentId,
+        l.externalId,
+        l.type,
+        l.base_map,
+        l.groupId,
+
+        l.name,
+        l.url,
+        l.locale,
+
+        l.opacity,
+        l.style,
+        l.minscale,
+        l.maxscale,
+
+        l.legend_image,
+        l.metadataId,
+
+        l.tile_matrix_set_id,
+        l.tile_matrix_set_data,
+        l.params,
+        l.options,
+
+        l.gfi_xslt,
+        l.gfi_type,
+        m.geom,
+
+        l.created,
+        l.updated
+
+        FROM
+        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
+        ON  m.maplayerid = l.id
+        WHERE
+        l.externalId = #id#
+        AND l.parentId = -1
+
+    </select>
+    
+    
+<select id="findAll"
+        resultClass="java.util.HashMap">
+
+    SELECT
+    l.id,
+    l.parentId,
+    l.externalId,
+    l.type,
+    l.base_map,
+    l.groupId,
+
+    l.name,
+    l.url,
+    l.locale,
+
+    l.opacity,
+    l.style,
+    l.minscale,
+    l.maxscale,
+
+    l.legend_image,
+    l.metadataId,
+
+    l.tile_matrix_set_id,
+    l.tile_matrix_set_data,
+    l.params,
+    l.options,
+
+    l.gfi_xslt,
+    l.gfi_type,
+    m.geom,
+
+    l.created,
+    l.updated
+
+    FROM
+    oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
+    ON  m.maplayerid = l.id
+    WHERE l.parentId = -1
+    </select>
+
+    <statement id="delete" parameterClass="int">
+        <![CDATA[delete from oskari_maplayer where parentId=#id# AND parentId <> -1; ]]>
+        delete from oskari_maplayer where id=#id#;
+    </statement>
+
+</sqlMap>

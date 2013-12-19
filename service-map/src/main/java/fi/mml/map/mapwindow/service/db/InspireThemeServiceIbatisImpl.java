@@ -3,6 +3,8 @@ package fi.mml.map.mapwindow.service.db;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
+import java.util.List;
+
 /**
  * InspireTheme implementation for Ibatis
  * 
@@ -14,4 +16,8 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
 	protected String getNameSpace() {
 		return "InspireTheme";
 	}
+
+    public List<InspireTheme> findByMaplayerId(final int layerId) {
+        return queryForList(getNameSpace() + ".findByMaplayer", layerId);
+    }
 }

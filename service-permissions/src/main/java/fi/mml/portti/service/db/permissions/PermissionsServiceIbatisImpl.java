@@ -193,7 +193,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
     public Set<String> getPublishPermissions() {
 
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
+		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
 		List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findPublishPermissions", parameterMap);
 		
 		Set<String> permissions = new HashSet<String>();
@@ -209,7 +209,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
     public Set<String> getEditPermissions() {
 
         Map<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
+        parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
         List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findEditPermissions", parameterMap);
 
         Set<String> permissions = new HashSet<String>();

@@ -26,16 +26,18 @@ public class JSONHelper {
     public static final JSONObject createJSONObject(final String content) {
         try {
             return new JSONObject(content);
-        } catch (JSONException e) {
-            throw new IllegalArgumentException("Couldn't create JSONObject for " + content );
+        } catch (Exception e) {
+            log.warn("Error generating JSONObject from", content);
         }
+        return null;
     }
 
     public static final JSONObject getJSONObject(final JSONObject content, String key) {
         try {
             return content.getJSONObject(key);
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Couldn't get JSONObject from " + content + " with key = " + key);
+            log.warn("Couldn't get JSONObject from ", content, " with key =", key);
+            return null;
         }
     }
     public static final JSONArray getJSONArray(final JSONObject content, String key) {

@@ -53,14 +53,14 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         Collections.sort(layers);
         List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
 
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_PUBLISH);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_PUBLISH);
         List<String> resourcesview = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_LAYER);
         List<String> resourcesviewPublished = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
 
         List<String> resourcesdownload = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_DOWNLOAD);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_DOWNLOAD);
 
         JSONObject root = new JSONObject();
 
