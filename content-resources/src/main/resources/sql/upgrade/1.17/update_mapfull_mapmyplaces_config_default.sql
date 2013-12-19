@@ -16,7 +16,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin", 
          "config" : { 
            "contextPath" : "/transport-0.0.1", 
-           "hostname" : "dev.paikkatietoikkuna.fi", 
+           "hostname" : "demo.paikkatietoikkuna.fi", 
            "port" : "80",
            "lazy" : true,
            "disconnectTime" : 30000,
