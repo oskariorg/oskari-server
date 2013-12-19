@@ -306,6 +306,10 @@ UPDATE portti_view_bundle_seq set config = '{
     "viewtools": {
         "print": false
     },
+    "basictools": {
+        "measureline" : false,
+        "measurearea" : false
+    },
     "mapUrlPrefix": {
         "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
         "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",

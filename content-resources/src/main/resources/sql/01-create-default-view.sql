@@ -226,8 +226,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 UPDATE portti_view_bundle_seq set config = '{
         "viewtools": {
-            "print" : false,
-            "link" : false
+            "print" : false
         }
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar')
              AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
