@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.servlet;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.cache.JedisSubscriber;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
@@ -17,6 +18,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.wfs.SchemaSubscriber;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -61,6 +63,7 @@ public class MapFullServlet extends HttpServlet {
     private boolean isDevelopmentMode = false;
     private String version = null;
     private final Set<String> paramHandlers = new HashSet<String>();
+    private SchemaSubscriber sub;
 
     private static final long serialVersionUID = 1L;
 
@@ -86,6 +89,10 @@ public class MapFullServlet extends HttpServlet {
                 .get(KEY_REDIS_POOL_SIZE), 30), PropertyUtil
                 .get(KEY_REDIS_HOSTNAME), ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_PORT), 6379));
+
+        // subscribe to schema channel
+        sub = new SchemaSubscriber();
+        JedisManager.subscribe(sub, SchemaSubscriber.SCHEMA_CHANNEL);
 
         // Action route initialization
         ActionControl.addDefaultControls();
@@ -312,6 +319,7 @@ public class MapFullServlet extends HttpServlet {
     @Override
     public void destroy() {
         ActionControl.teardown();
+        sub.unsubscribe();
         super.destroy();
     }
 

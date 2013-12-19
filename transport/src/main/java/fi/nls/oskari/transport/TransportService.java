@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.cache.JedisSubscriber;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.scheduler.Triggerer;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
@@ -140,6 +142,9 @@ public class TransportService extends AbstractService {
 	// JobQueue singleton
 	private JobQueue jobs;
 
+    // triggers
+    Triggerer triggerer;
+
 	/**
 	 * Constructs TransportService with BayeuxServer instance
 	 * 
@@ -173,6 +178,10 @@ public class TransportService extends AbstractService {
 
         CachingSchemaLocator.init(); // init schemas
 
+        // scheduler and job initializing
+        triggerer = new Triggerer();
+        triggerer.initSchemaCacheValidator();
+
         addService(CHANNEL_DISCONNECT, "disconnect");
         addService(CHANNEL_INIT, "processRequest");
         addService(CHANNEL_ADD_MAP_LAYER, "processRequest");
@@ -196,6 +205,7 @@ public class TransportService extends AbstractService {
     protected void finalize() throws Throwable {
     	// clear Sessions
     	JedisManager.delAll(SessionStore.KEY);
+        triggerer.destroy();
     	super.finalize();
         log.debug("DESTROYED");
     }

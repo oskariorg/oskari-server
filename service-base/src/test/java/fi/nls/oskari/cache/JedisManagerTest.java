@@ -9,14 +9,10 @@ import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-/**
- * @author SMAKINEN
- * Ignored since we need to have Redis running for this test to succeed
- */
 @Ignore
 public class JedisManagerTest {
-    private static Jedis jedis;
     private static String key;
     private static String value;
     private static String hKey;
@@ -25,7 +21,6 @@ public class JedisManagerTest {
     public static void setUp() {
         JedisManager.connect(10, "localhost", 6379);
 
-        //jedis = JedisManager.getInstance().getJedis();
         key = "lol";
         value = "lollol";
         hKey = "hlol";
@@ -56,4 +51,12 @@ public class JedisManagerTest {
         assertTrue("Should get 'lollol'", test.equals(value));
     }
 
+    @Test
+    public void testPubSub() {
+        final JedisSubscriber sub = new JedisSubscriber();
+        JedisManager.subscribe(sub, "test");
+
+        Long res = JedisManager.publish("test", "test message");
+        assertTrue(res == 1);
+    }
 }
