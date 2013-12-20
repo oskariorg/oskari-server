@@ -66,7 +66,13 @@ public class LayerJSONFormatter {
                                      final boolean isSecure) {
         JSONObject layerJson = new JSONObject();
 
-        JSONHelper.putValue(layerJson, "id", layer.getId());
+        final String externalId = layer.getExternalId();
+        if(externalId != null && !externalId.isEmpty()) {
+            JSONHelper.putValue(layerJson, "id", externalId);
+        }
+        else {
+            JSONHelper.putValue(layerJson, "id", layer.getId());
+        }
 
         //log.debug("Type", layer.getType());
         if(layer.isCollection()) {

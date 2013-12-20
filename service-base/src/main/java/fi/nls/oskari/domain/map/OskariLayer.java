@@ -24,6 +24,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private String name;
     private String url;
+
     // simplied url is just for caching so we don't need to create it but once
     private final static String secureBaseUrl = PropertyUtil.get("maplayer.wmsurl.secure");
     private String simplifiedUrl;
@@ -116,6 +117,12 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             simplifiedUrl = splitted[0].substring(protocolIndex + protocolSeparator.length()).trim();
         }
         return simplifiedUrl;
+    }
+
+    public void addSublayer(final OskariLayer layer) {
+        if(layer != null) {
+            sublayers.add(layer);
+        }
     }
 
     public void addSublayers(List<OskariLayer> layers) {

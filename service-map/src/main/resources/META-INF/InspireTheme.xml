@@ -31,14 +31,6 @@
         <property name="CacheSize" value="200"/>
     </cacheModel>
 
-    <cacheModel type="LRU" id="theme-by-layer-cache" readOnly="true" serialize="false">
-        <flushInterval hours="24"/>
-        <flushOnExecute  statement="InspireTheme.insert"/>
-        <flushOnExecute  statement="InspireTheme.update"/>
-        <flushOnExecute  statement="InspireTheme.delete"/>
-        <property name="CacheSize" value="1000"/>
-    </cacheModel>
-
     <select id="maxId" resultClass="int">
         select max(id) from portti_inspiretheme
     </select>
@@ -51,11 +43,14 @@
         select id, locale from portti_inspiretheme order by id
     </select>
 
-    <select id="findByMaplayer" parameterClass="int" resultMap="InspireThemeResult" cacheModel="theme-by-layer-cache">
+    <select id="findByMaplayer" parameterClass="int" resultMap="InspireThemeResult">
         select t.id, t.locale from portti_inspiretheme t, oskari_maplayer_themes l
             where t.id = l.themeid AND l.maplayerid = #id#
     </select>
 
+    <select id="findByMaplayerMappings" resultClass="java.util.HashMap">
+        select themeid, maplayerid from oskari_maplayer_themes
+    </select>
     
     <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
         insert into portti_inspiretheme (locale)

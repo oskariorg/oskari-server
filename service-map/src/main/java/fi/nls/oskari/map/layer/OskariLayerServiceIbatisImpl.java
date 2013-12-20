@@ -141,28 +141,44 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 
-        if(result.isCollection()) {
-            final List<OskariLayer> sublayers = findByParentId(result.getId());
-            result.addSublayers(sublayers);
+        // populate groups/themes for top level layers
+        if(result.getParentId() == -1) {
+            // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
+            // without it getting themes makes the query 10 x slower
+
+            // populate inspirethemes
+            final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
+            result.addInspireThemes(themes);
+
+            // populate layer group
+            // first run (all layers) with this lasts ~1800ms, second run ~300ms (cached)
+            final LayerGroup group = layerGroupService.find(result.getGroupId());
+            result.addGroup(group);
         }
-
-        // populate inspirethemes
-        final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
-        result.addInspireThemes(themes);
-
-        // populate layer group
-        final LayerGroup group = layerGroupService.find(result.getGroupId());
-        result.addGroup(group);
 
         return result;
     }
 
     private List<OskariLayer> mapDataList(final List<Map<String,Object>> list) {
         final List<OskariLayer> layers = new ArrayList<OskariLayer>();
+        final Map<Integer, OskariLayer> collections = new HashMap<Integer, OskariLayer>(20);
         for(Map<String, Object> map : list) {
             final OskariLayer layer = mapData(map);
             if(layer != null) {
-                layers.add(layer);
+                // collect parents so we can map sublayers more easily
+                if(layer.isCollection()) {
+                    collections.put(layer.getId(), layer);
+                }
+                // NOTE! SQLs need to return parents before sublayers so we can do this (ORDER BY parentId ASC)
+                if(layer.getParentId() != -1) {
+                    final OskariLayer parent = collections.get(layer.getParentId());
+                    if(parent != null) {
+                        parent.addSublayer(layer);
+                    }
+                }
+                else {
+                    layers.add(layer);
+                }
             }
         }
         return layers;
@@ -177,7 +193,13 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         try {
             client = getSqlMapClient();
             final Map<String, Object> result = (Map<String, Object>) client.queryForObject(getNameSpace() + ".findByExternalId", idStr);
-            return mapData(result);
+            final OskariLayer layer = mapData(result);
+
+            if(layer.isCollection()) {
+                final List<OskariLayer> sublayers = findByParentId(layer.getId());
+                layer.addSublayers(sublayers);
+            }
+            return layer;
         } catch (Exception e) {
             log.warn(e, "Couldn't find layer with id:", idStr);
         }
@@ -200,11 +222,16 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     public OskariLayer find(int id) {
         try {
             client = getSqlMapClient();
-            final Map<String, Object> result = (Map<String, Object>) client.queryForObject(getNameSpace() + ".findById", id);
-            return mapData(result);
+            // get as list since we might have a collection layer (get sublayers with same query)
+            final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findById", id));
+            if(layers != null && !layers.isEmpty()) {
+                // should we check for multiples? only should have one since sublayers are mapped in mapDataList()
+                return layers.get(0);
+            }
         } catch (Exception e) {
-            log.warn(e, "Couldn't find layer with id:", id);
+            log.warn(e, "Exception when getting layer with id:", id);
         }
+        log.warn("Couldn't find layer with id:", id);
         return null;
     }
 
@@ -219,7 +246,13 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     }
 
     public List<OskariLayer> findAll() {
-        return mapDataList(queryForList(getNameSpace() + ".findAll"));
+        long start = System.currentTimeMillis();
+        final List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll");
+        log.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
+        start = System.currentTimeMillis();
+        final List<OskariLayer> layers = mapDataList(result);
+        log.debug("Parsing all layers:", System.currentTimeMillis() - start, "ms");
+        return layers;
     }
 
     public void update(OskariLayer layer) {
