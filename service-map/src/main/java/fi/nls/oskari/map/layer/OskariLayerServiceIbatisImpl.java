@@ -5,6 +5,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.LayerGroup;
@@ -36,6 +37,20 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     private static Map<String, Class<OskariLayer>> typeMapping = new HashMap<String, Class<OskariLayer>>();
     static {
         typeMapping.put(Layer.TYPE_WMS, OskariLayer.class);
+    }
+
+
+    public boolean hasPermissionToUpdate(final User user, final int layerId) {
+
+        // TODO: check against permissions
+        if (!user.isAdmin()) {
+            return false;
+        }
+        if (layerId <= -1) {
+            return false;
+        }
+        // TODO: maybe check if we have a layer with given id in DB
+        return true;
     }
     /**
      * Returns SQLmap
@@ -89,7 +104,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
             }
         }
         else {
-            log.info("Unregistered layertype:", type, "- Using default model.");
+            //log.info("Unregistered layertype:", type, "- Using default model.");
         }
         return new OskariLayer();
     }

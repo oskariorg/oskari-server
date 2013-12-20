@@ -1,15 +1,14 @@
 package fi.nls.oskari.analysis;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.domain.ogc.util.WFSFilterBuilder;
-import fi.nls.oskari.domain.map.wfs.WFSLayer;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
-import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.analysis.service.TransformationService;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -33,7 +32,7 @@ public class AnalysisParser {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
 
-    private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
+    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
@@ -104,7 +103,6 @@ public class AnalysisParser {
                                              String baseUrl) throws ServiceException {
         AnalysisLayer analysisLayer = new AnalysisLayer();
 
-        WFSLayer wfsLayer;
         JSONObject json = JSONHelper.createJSONObject(layerJSON);
         WFSLayerConfiguration lc = null;
 
@@ -152,7 +150,7 @@ public class AnalysisParser {
         // Get wfs layer configuration
         lc = layerConfigurationService.findConfiguration(id);
 
-        wfsLayer = mapLayerService.findWFSLayer(id);
+        final OskariLayer wfsLayer = mapLayerService.find(id);
         log.debug("got wfs layer", wfsLayer);
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());

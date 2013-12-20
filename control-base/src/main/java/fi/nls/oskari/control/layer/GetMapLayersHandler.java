@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -9,12 +7,10 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -32,9 +28,6 @@ public class GetMapLayersHandler extends ActionHandler {
     private static Logger log = LogFactory.getLogger(GetMapLayersHandler.class);
 
     final static String LANGUAGE_ATTRIBUTE = "lang";
-
-    private final MapLayerService mapLayerService = ServiceFactory
-            .getMapLayerService();
     private static final String PARM_LAYER_ID = "layer_id";
 
     @Override
@@ -53,6 +46,7 @@ public class GetMapLayersHandler extends ActionHandler {
         log.debug("Got layers");
         //getListOfAllMapLayers(params.getUser(), lang, showEmpty);
 
+        // FIXME: add needed layer handling for admin bundle
         /*
         // This makes no sense O.o
         JSONObject adminlayers = new JSONObject();
@@ -72,7 +66,7 @@ public class GetMapLayersHandler extends ActionHandler {
         }
         */
     }
-
+/*
     private JSONObject makeMapLayersAdminJson(final String layer_id)
             throws ActionException {
 
@@ -154,6 +148,7 @@ public class GetMapLayersHandler extends ActionHandler {
         }
 
     }
+    */
 
     private JSONObject makeMergeLayerClassJson(JSONObject layers,
             JSONObject adminlayers) throws ActionException {

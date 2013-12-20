@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.layer;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.service.db.BaseService;
 
@@ -11,4 +12,5 @@ import fi.nls.oskari.service.db.BaseService;
  * To change this template use File | Settings | File Templates.
  */
 public interface LayerGroupService extends BaseService<LayerGroup> {
+    public boolean hasPermissionToUpdate(final User user, final int layerId);
 }

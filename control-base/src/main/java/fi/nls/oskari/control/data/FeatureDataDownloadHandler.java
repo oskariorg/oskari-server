@@ -12,12 +12,13 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.SelectedFeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayer;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -28,14 +29,17 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-@OskariActionRoute("GetFeatureDataXML")
-public class FeatureDataDownloadHandler extends ActionHandler {
-
+// This is not used for now and needs migrating to the new wfs and maplayer structures
+// @OskariActionRoute("GetFeatureDataXML")
+public class FeatureDataDownloadHandler
+        //extends ActionHandler
+        {
+/*
     static MapLayerService wfsLayerDbService = new MapLayerServiceIbatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static TermsOfUseUserService termsOfUseUserService = new TermsOfUseUserServiceIbatisImpl();
-    private static MapLayerService mapLayerService = ServiceFactory
-            .getMapLayerService();
+
+    private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
     public static final String KEY_LAYERID = "layerId";
     public static final String KEY_DL_PERM = "downloadPermission";
@@ -149,11 +153,13 @@ public class FeatureDataDownloadHandler extends ActionHandler {
 
     public static boolean isPermission(final List<String> downloadPermissions,
             String layerId) {
-        final Layer ml = mapLayerService.find(Integer.parseInt(layerId));
-        String wmsName = ml.getWmsName();
-        for (String id : downloadPermissions)
-            if (id.equals(PREFIX_WFS + wmsName))
+        final OskariLayer ml = mapLayerService.find(Integer.parseInt(layerId));
+        final String wmsName = ml.getName();
+        for (String id : downloadPermissions) {
+            if (id.equals(PREFIX_WFS + wmsName)) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -215,4 +221,5 @@ public class FeatureDataDownloadHandler extends ActionHandler {
         }
         return true;
     }
+    */
 }

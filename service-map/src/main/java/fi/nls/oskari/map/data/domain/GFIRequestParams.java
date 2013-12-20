@@ -1,13 +1,13 @@
 package fi.nls.oskari.map.data.domain;
 
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class GFIRequestParams {
 
-    private Layer layer;
+    private OskariLayer layer;
 
     private double lat;
     private double lon;
@@ -24,11 +24,11 @@ public class GFIRequestParams {
             + "&FEATURE_COUNT=10" + "&FORMAT=image/png" + "&SERVICE=WMS"
             + "&SRS=EPSG:3067";
 
-    public Layer getLayer() {
+    public OskariLayer getLayer() {
         return layer;
     }
 
-    public void setLayer(Layer layer) {
+    public void setLayer(OskariLayer layer) {
         this.layer = layer;
     }
 
@@ -117,10 +117,10 @@ public class GFIRequestParams {
             infoFormat = "text/html";
         }
 
-        String wmsName = layer.getWmsName();
+        String wmsName = layer.getName();
 
         try { // try encode
-            wmsName =  URLEncoder.encode(layer.getWmsName(), "UTF-8");
+            wmsName =  URLEncoder.encode(layer.getName(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // encode unsupported then ignore it and use without encode
         }
@@ -134,7 +134,7 @@ public class GFIRequestParams {
     }
 
     private String getBaseQueryURL() {
-        String queryUrl = layer.getWmsUrl();
+        String queryUrl = layer.getUrl();
         if (queryUrl.indexOf(',') != -1) {
             String[] urls = queryUrl.split(",");
             queryUrl = urls[0];

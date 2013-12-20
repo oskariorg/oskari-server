@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.layer;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
@@ -25,6 +26,19 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         findAll();
     }
 
+    public boolean hasPermissionToUpdate(final User user, final int layerId) {
+
+        // TODO: check against permissions
+        if (!user.isAdmin()) {
+            return false;
+        }
+        if (layerId <= -1) {
+            return false;
+        }
+        // TODO: maybe check if we have a layer with given id in DB
+        return true;
+    }
+
     @Override
     protected String getNameSpace() {
         return "LayerGroup";
@@ -48,5 +62,10 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
             ID_CACHE.put(group.getId(), group);
         }
         return groups;
+    }
+
+    public void delete(int id) {
+        ID_CACHE.remove(id);
+        super.delete(id);
     }
 }
