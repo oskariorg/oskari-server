@@ -200,8 +200,21 @@ public class SaveLayerHandler extends ActionHandler {
             //style = IOHelper.decode64(style);
         }
         ml.setStyle(style);
-        ml.setMinScale(new Double(request.getParameter("minScale")));
-        ml.setMaxScale(new Double(request.getParameter("maxScale")));
+
+        String minScale = request.getParameter("minScale");
+        String maxScale = request.getParameter("maxScale");
+        if(minScale != null && !"".equals(minScale)) {
+            ml.setMinScale(new Double(minScale));
+        } else {
+            ml.setMinScale(new Double(16000000));
+        }
+        if(maxScale != null && !"".equals(maxScale)) {
+            ml.setMaxScale(new Double(maxScale));
+        } else {
+            ml.setMaxScale(new Double(1));
+        }
+//        ml.setMinScale(new Double(request.getParameter("minScale")));
+//        ml.setMaxScale(new Double(request.getParameter("maxScale")));
 
         ml.setDescriptionLink(request.getParameter("descriptionLink"));
         ml.setLegendImage(request.getParameter("legendImage"));
