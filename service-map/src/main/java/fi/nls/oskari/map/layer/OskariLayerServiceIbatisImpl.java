@@ -185,13 +185,13 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
                     collections.put(layer.getId(), layer);
                 }
                 // NOTE! SQLs need to return parents before sublayers so we can do this (ORDER BY parentId ASC)
-                if(layer.getParentId() != -1) {
-                    final OskariLayer parent = collections.get(layer.getParentId());
-                    if(parent != null) {
-                        parent.addSublayer(layer);
-                    }
+                final OskariLayer parent = collections.get(layer.getParentId());
+                if(parent != null) {
+                    // add layer as sublayer for parent IF there is a parent
+                    parent.addSublayer(layer);
                 }
                 else {
+                    // otherwise these are actual layers OR we are mapping sublayers individually (f.ex. finding by external id)
                     layers.add(layer);
                 }
             }
@@ -209,9 +209,9 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
             client = getSqlMapClient();
             final Map<String, Object> result = (Map<String, Object>) client.queryForObject(getNameSpace() + ".findByExternalId", idStr);
             final OskariLayer layer = mapData(result);
-
             if(layer.isCollection()) {
                 final List<OskariLayer> sublayers = findByParentId(layer.getId());
+                log.debug("FindByParent returned", sublayers.size(), "sublayers for parent id:", layer.getId());
                 layer.addSublayers(sublayers);
             }
             return layer;

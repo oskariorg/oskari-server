@@ -10,11 +10,6 @@
         select max(id) from oskari_maplayer
     </select>
 
-    <cacheModel type="LRU" id="sublayer-cache" readOnly="true" serialize="false">
-        <flushInterval hours="1"/>
-        <property name="CacheSize" value="200"/>
-    </cacheModel>
-
     <select id="findById"
             parameterClass="int"
             resultClass="java.util.HashMap">
@@ -62,8 +57,7 @@
 
     <select id="findByParentId"
             parameterClass="int"
-            resultClass="java.util.HashMap"
-            cacheModel="sublayer-cache">
+            resultClass="java.util.HashMap">
 
         SELECT
         l.id,

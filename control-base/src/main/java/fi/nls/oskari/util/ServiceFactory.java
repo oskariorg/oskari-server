@@ -3,57 +3,37 @@ package fi.nls.oskari.util;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.LayerClassService;
-import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapConfigurationLayersService;
-import fi.mml.map.mapwindow.service.db.MapConfigurationLayersServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapConfigurationService;
-import fi.mml.map.mapwindow.service.db.MapConfigurationServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
+import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 
 public class ServiceFactory {
 	
-	private static LayerClassService layerClassService;
-	private static MapLayerService mapLayerService;
-	private static MapConfigurationService mapConfigurationService;
-	private static MapConfigurationLayersService mapConfigurationLayersService;
+	private static LayerGroupService layerGroupService;
+	private static OskariLayerService mapLayerService;
 	private static InspireThemeService inspireThemeService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
  
-	public static LayerClassService getLayerClassService() {
-		if (layerClassService == null) {
-			layerClassService = new LayerClassServiceIbatisImpl();
+	public static LayerGroupService getLayerGroupService() {
+		if (layerGroupService == null) {
+            layerGroupService = new LayerGroupServiceIbatisImpl();
 		}
-		return layerClassService;
+		return layerGroupService;
 	}
 	
-	public static MapLayerService getMapLayerService() {
+	public static OskariLayerService getMapLayerService() {
 		if (mapLayerService == null) {
-			mapLayerService = new MapLayerServiceIbatisImpl();
+			mapLayerService = new OskariLayerServiceIbatisImpl();
 		}
 		return mapLayerService;
 	}
-	
-	public static MapConfigurationService getMapConfigurationService() {
-		if (mapConfigurationService == null) {
-			mapConfigurationService = new MapConfigurationServiceIbatisImpl();
-		}
-		return mapConfigurationService;
-	}
-	
-	public static MapConfigurationLayersService getMapConfigurationLayersService() {
-		if (mapConfigurationLayersService == null) {
-			mapConfigurationLayersService = new MapConfigurationLayersServiceIbatisImpl();
-		}
-		return mapConfigurationLayersService;
-	}
-	
+
 	public static InspireThemeService getInspireThemeService() {
 		if (inspireThemeService == null) {
 			inspireThemeService = new InspireThemeServiceIbatisImpl();
@@ -73,6 +53,4 @@ public class ServiceFactory {
         }
         return searchService;
     }
-    
-	
 }

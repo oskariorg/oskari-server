@@ -5,9 +5,13 @@ import fi.nls.oskari.domain.map.stats.StatsLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.stats.VisualizationService;
+import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +23,7 @@ import org.json.JSONObject;
 public class LayerJSONFormatterStats extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterStats.class);
+    private final VisualizationService service = new VisualizationServiceIbatisImpl();
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,
@@ -26,19 +31,17 @@ public class LayerJSONFormatterStats extends LayerJSONFormatter {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
 
-        // TODO: fix visualization for statslayers
-/*
-        StatsLayer statsLayer = (StatsLayer) layer;
+        // get visualizations for statslayers
+        final List<StatsVisualization> list = service.findForLayerId(layer.getId());
         final JSONArray visualizationList = new JSONArray();
-        for(StatsVisualization vis : statsLayer.getVisualizations()) {
+        for(StatsVisualization vis : list) {
             final JSONObject visualization = new JSONObject();
             JSONHelper.putValue(visualization, "id", vis.getId());
             JSONHelper.putValue(visualization, "name", vis.getName(lang));
             JSONHelper.putValue(visualization, "filterproperty", vis.getFilterproperty());
             visualizationList.put(visualization);
         }
-        layerJson.put("visualizations", visualizationList);
-        */
+        JSONHelper.putValue(layerJson, "visualizations", visualizationList);
 
         return layerJson;
     }

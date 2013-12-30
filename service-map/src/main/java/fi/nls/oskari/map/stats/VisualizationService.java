@@ -2,6 +2,7 @@ package fi.nls.oskari.map.stats;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -12,6 +13,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.service.db.BaseService;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -22,7 +25,7 @@ import org.apache.axiom.om.impl.jaxp.OMSource;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.Logger;
 
-public class VisualizationService {
+public abstract class VisualizationService extends BaseIbatisService<StatsVisualization> {
     
     private static final Logger log = LogFactory.getLogger(VisualizationService.class);
 
@@ -37,6 +40,46 @@ public class VisualizationService {
 
     final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
+
+    public abstract List<StatsVisualization> findForLayerId(final int layerId);
+
+    public StatsVisualization getVisualization(
+            final int statsLayerId,
+            final int visId,
+            final String classes,
+            final String layerName,
+            final String filterProperty,
+            final String vis
+    ) {
+        if (statsLayerId == -1) {
+            return null;
+        }
+
+        if (visId != -1) {
+            // got id -> find from DB
+            return find(visId);
+        }
+
+        // else we are expecting parameters to construct a visualization
+        final StatsVisualization visualization = new StatsVisualization();
+        visualization.setClasses(classes);
+        visualization.setLayername(layerName);
+        visualization.setFilterproperty(filterProperty);
+        // vis=<visualization>:<colors>
+        final String[] colors = vis.split(":");
+        if (colors.length > 1) {
+            visualization.setVisualization(colors[0]);
+            visualization.setColors(colors[1]);
+        }
+        // validate that we got all needed params
+        if (visualization.isValid()) {
+            return visualization;
+        }
+
+        log.warn("Tried to create StatsVisualization but param values were not valid:",
+                visualization);
+        return null;
+    }
     /**
      * Creates an XML presentation of the visualization parameters so we can run an XSLT transform to get an SLD
      * @param visualization params

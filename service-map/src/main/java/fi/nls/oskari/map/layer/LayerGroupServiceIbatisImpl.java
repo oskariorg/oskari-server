@@ -23,7 +23,12 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
 
     public LayerGroupServiceIbatisImpl() {
         // populate cache on startup
-        findAll();
+        try {
+            findAll();
+        }
+        catch (Exception ignored) {
+            // just for caching, exception catched so tests would be easier to implement
+        }
     }
 
     public boolean hasPermissionToUpdate(final User user, final int layerId) {

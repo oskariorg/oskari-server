@@ -33,6 +33,7 @@ import java.util.*;
  * Worker class for rendering json objects from domain objects
  * 
  */
+@Deprecated
 public class MapLayerWorker {
 
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
