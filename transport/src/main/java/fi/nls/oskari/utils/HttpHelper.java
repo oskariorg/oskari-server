@@ -94,7 +94,7 @@ public class HttpHelper {
 		try {
 			
 			HttpRequest.keepAlive(false);
-			if(username != "" && username != null) {
+			if(!username.equals("") && !username.equals("null") && username != null) {
 				request = HttpRequest.get(url)
 						.basic(username, password)
 						.accept(contentType)
@@ -139,7 +139,7 @@ public class HttpHelper {
 		try {
 			
 			HttpRequest.keepAlive(false);
-			if(username != "" && username != null) {
+			if(!username.equals("") && !username.equals("null") && username != null) {
 				request = HttpRequest.post(url)
 						.basic(username, password)
 						.contentType(contentType)

@@ -44,6 +44,10 @@
         
 		<result property="minScale" column="minscale"/>
 		<result property="maxScale" column="maxscale"/>
+
+        <result property="customParser" column="custom_parser"/>
+        <result property="testLocation" column="test_location"/>
+        <result property="testZoom" column="test_zoom"/>
 		
 		<result property="templateName" column="t_name"/>
 		<result property="templateDescription" column="description"/>
@@ -98,6 +102,9 @@
             l.tile_buffer,
 			l.wms_layer_id,
 			l.wps_params,
+            l.custom_parser,
+            l.test_location,
+            l.test_zoom,
 			
 			map.minscale,
 			map.maxscale,
@@ -129,4 +136,21 @@
 		WHERE l.maplayer_id = #id#
     </select>
 
+    <update id="updateSchemaInfo"
+            parameterClass="Map">
+        update portti_wfs_layer set
+        feature_type = #schema:VarChar#,
+        schema_changed = NOW(),
+        schema_last = NOW(),
+        schema_status  = #status:VarChar#
+        where maplayer_id = #id#
+    </update>
+
+    <update id="updateFailSchemaInfo"
+            parameterClass="Map">
+        update portti_wfs_layer set
+        schema_last = NOW(),
+        schema_status  = #status:VarChar#
+        where maplayer_id = #id#
+    </update>
 </sqlMap>

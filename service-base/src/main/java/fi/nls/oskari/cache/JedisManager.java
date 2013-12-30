@@ -181,6 +181,31 @@ public class JedisManager {
     }
 
     /**
+     * Thread-safe KEYS
+     *
+     * @param pattern
+     * @return keys
+     */
+    public static Set<String> keys(String pattern) {
+        Jedis jedis = instance.getJedis();
+        if(jedis == null) return null;
+
+        try {
+            return jedis.keys(pattern + "*");
+        } catch(JedisConnectionException e) {
+            log.error("Failed to run KEYS", pattern + " returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+            return null;
+        } catch (Exception e) {
+            log.error("Running KEYS", pattern + " failed miserably");
+            return null;
+        } finally {
+            instance.returnJedis(jedis);
+        }
+    }
+
+    /**
      * Thread-safe String HKEYS for Redis
      * 
      * @param key
@@ -309,5 +334,61 @@ public class JedisManager {
         } finally {
             instance.returnJedis(jedis);
         }
+    }
+
+    /**
+     * Thread-safe PUBLISH
+     *
+     * @param channel
+     * @param message
+     * @return long
+     */
+    public static Long publish(final String channel, final String message) {
+        final Jedis jedis = instance.getJedis();
+        if(jedis == null) return null;
+
+        try {
+            return jedis.publish(channel, message);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to publish on:", channel, "returning broken connection...");
+            pool.returnBrokenResource(jedis);
+            log.error("Broken connection closed");
+            return null;
+        } catch (Exception e) {
+            log.error("Publishing on:", channel, "failed miserably");
+            return null;
+        } finally {
+            instance.returnJedis(jedis);
+        }
+    }
+
+    /**
+     * Thread-safe SUBSCRIBE
+     *
+     * @param subscriber
+     * @param channel
+     */
+    public static void subscribe(final JedisSubscriber subscriber, final String channel) {
+        final Jedis jedis = instance.getJedis();
+        if(jedis == null) return;
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    log.warn("Subscribing on", channel);
+                    jedis.subscribe(subscriber, channel);
+                } catch(JedisConnectionException e) {
+                    log.error("Failed to subscribe on:", channel, "returning broken connection...");
+                    pool.returnBrokenResource(jedis);
+                    log.error("Broken connection closed");
+                } catch (Exception e) {
+                    log.error("Subscribing on:", channel, "failed miserably");
+                } finally {
+                    log.warn("Unsubscribing on:", channel);
+                    subscriber.unsubscribe();
+                    instance.returnJedis(jedis);
+                }
+            }
+        }).start();
     }
 }
