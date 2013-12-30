@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.service.db.LayerClassService;
 import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.MapLayerService;
 import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
+import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -18,6 +19,7 @@ import fi.nls.oskari.domain.map.wms.MapLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.*;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -102,6 +104,10 @@ public class SaveLayerHandler extends ActionHandler {
 
                 org.json.JSONObject mapJson = ml.toJSON();
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
+                // add user roles, assume that user is admin...
+                JSONObject perms = new JSONObject();
+                perms.put("edit", "true");
+                perms.put("publish", MapLayerWorker.PUBLICATION_PERMISSION_OK);
 
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();

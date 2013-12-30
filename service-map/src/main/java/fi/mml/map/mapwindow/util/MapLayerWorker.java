@@ -557,8 +557,8 @@ public class MapLayerWorker {
         }
     }
 
-    private static final String NO_PUBLICATION_PERMISSION = "no_publication_permission";
-    private static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
+    public static final String NO_PUBLICATION_PERMISSION = "no_publication_permission";
+    public static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
 
     /**
      * Add permission information to JSON
