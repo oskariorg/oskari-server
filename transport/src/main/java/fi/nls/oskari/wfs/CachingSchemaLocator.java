@@ -59,6 +59,14 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
 			cache.put(field, xsd);
 		}
 	}
+
+    /**
+     * Flush cache map and redis
+     */
+    public static void flushAll() {
+        cache.clear();
+        JedisManager.del(cacheHashKey);
+    }
 	
 	/**
 	 * Loads schema from given location and caches it

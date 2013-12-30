@@ -52,6 +52,12 @@ public class JedisManagerTest {
     }
 
     @Test
+    public void testKeys() {
+        Set<String> keys = JedisManager.keys("lo*");
+        assertTrue("Should contain key 'lol'", keys.contains(key));
+    }
+
+    @Test
     public void testPubSub() {
         final JedisSubscriber sub = new JedisSubscriber();
         JedisManager.subscribe(sub, "test");

@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.cache.JedisSubscriber;
+import fi.nls.oskari.cache.LayerUpdateSubscriber;
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.scheduler.Triggerer;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
@@ -142,8 +141,7 @@ public class TransportService extends AbstractService {
 	// JobQueue singleton
 	private JobQueue jobs;
 
-    // triggers
-    Triggerer triggerer;
+    private LayerUpdateSubscriber sub;
 
 	/**
 	 * Constructs TransportService with BayeuxServer instance
@@ -176,11 +174,11 @@ public class TransportService extends AbstractService {
                 PropertyUtil.get("redisHostname"), ConversionHelper.getInt(
                         PropertyUtil.get("redisPort"), 6379));
 
-        CachingSchemaLocator.init(); // init schemas
+        // subscribe to schema channel
+        sub = new LayerUpdateSubscriber();
+        JedisManager.subscribe(sub, LayerUpdateSubscriber.CHANNEL);
 
-        // scheduler and job initializing
-        triggerer = new Triggerer();
-        triggerer.initSchemaCacheValidator();
+        CachingSchemaLocator.init(); // init schemas
 
         addService(CHANNEL_DISCONNECT, "disconnect");
         addService(CHANNEL_INIT, "processRequest");
@@ -205,7 +203,6 @@ public class TransportService extends AbstractService {
     protected void finalize() throws Throwable {
     	// clear Sessions
     	JedisManager.delAll(SessionStore.KEY);
-        triggerer.destroy();
     	super.finalize();
         log.debug("DESTROYED");
     }

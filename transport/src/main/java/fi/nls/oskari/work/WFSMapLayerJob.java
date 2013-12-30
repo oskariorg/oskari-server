@@ -267,7 +267,7 @@ public class WFSMapLayerJob extends Job {
     public static FeatureCollection<SimpleFeatureType, SimpleFeature> response(WFSLayerStore layer, BufferedReader response) {
         FeatureCollection<SimpleFeatureType, SimpleFeature> features;
 
-        if(layer.getFeatureType().size() > 0) { // custom type => custom parsing
+        if(layer.isCustomParser()) {
             WFSParser parser = new WFSParser(response, layer);
             features = parser.parse();
         } else {
