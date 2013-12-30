@@ -106,6 +106,7 @@ public class SaveLayerHandler extends ActionHandler {
                 mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
                 // add user roles, assume that user is admin...
                 JSONObject perms = new JSONObject();
+                mapJson.put("permissions", perms);
                 perms.put("edit", "true");
                 perms.put("publish", MapLayerWorker.PUBLICATION_PERMISSION_OK);
 
