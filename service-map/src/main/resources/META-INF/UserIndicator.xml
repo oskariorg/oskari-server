@@ -9,7 +9,6 @@
     <!-- Use type aliases to avoid typing the full classname every time. -->
     <typeAlias alias="UserIndicator" type="fi.nls.oskari.domain.map.indicator.UserIndicator" />
 
-
     <resultMap id="UserIndicatorResult" class="UserIndicator">
         <result property="id" column="id" />
         <result property="userId" column="user_id" />
@@ -23,7 +22,10 @@
         <result property="category" column="category" />
     </resultMap>
 
-
+    <parameterMap id="UserIndicatorParameter" class="UserIndicator">
+        <parameter property="id" />
+        <parameter property="userId" />
+    </parameterMap>
 
     <parameterMap id="UserIndicatorInsertParameter" class="UserIndicator">
         <parameter property="userId" />
@@ -73,7 +75,7 @@
     </select>
 
 
-<select id="findAll" resultMap="UserIndicatorResult">
+    <select id="findAll" resultMap="UserIndicatorResult">
       SELECT
             id,
             user_id,

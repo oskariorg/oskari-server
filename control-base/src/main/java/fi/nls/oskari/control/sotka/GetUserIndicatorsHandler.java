@@ -58,7 +58,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         } else {   //hae id:llä
             UserIndicator ui = userIndicatorService.find(id);
               log.debug("GetUserIndicatorsHandler: got "+ ui +" with id "+id);
-            if ( ui != null ) {
+            if ( ui != null && (params.getUser().getId() == ui.getUserId()) ) {
                 final JSONObject result = makeJson(ui);
                 ResponseHelper.writeResponse(params, result);
             }
