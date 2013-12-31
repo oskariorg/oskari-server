@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.TermsOfUseUser;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -15,6 +13,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.SelectedFeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayer;
+import fi.nls.oskari.map.data.service.WFSCompatibilityHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
@@ -30,12 +29,9 @@ import java.util.List;
 import java.util.Locale;
 
 // This is not used for now and needs migrating to the new wfs and maplayer structures
-// @OskariActionRoute("GetFeatureDataXML")
-public class FeatureDataDownloadHandler
-        //extends ActionHandler
-        {
-/*
-    static MapLayerService wfsLayerDbService = new MapLayerServiceIbatisImpl();
+@OskariActionRoute("GetFeatureDataXML")
+public class FeatureDataDownloadHandler extends ActionHandler {
+
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static TermsOfUseUserService termsOfUseUserService = new TermsOfUseUserServiceIbatisImpl();
 
@@ -190,7 +186,7 @@ public class FeatureDataDownloadHandler
         final int wfsLayerId = Integer.parseInt(params.getRequest()
                 .getParameter(KEY_LAYERID));
 
-        final WFSLayer wfsLayer = wfsLayerDbService.findWFSLayer(wfsLayerId);
+        final WFSLayer wfsLayer = WFSCompatibilityHelper.getLayer(wfsLayerId);
 
         final List<SelectedFeatureType> featureTypes = wfsLayer
                 .getSelectedFeatureTypes();
@@ -221,5 +217,4 @@ public class FeatureDataDownloadHandler
         }
         return true;
     }
-    */
 }

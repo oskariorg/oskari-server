@@ -61,8 +61,8 @@ public class OskariLayerWorker {
     /**
      * Gets all the map layers the user is permitted to view
      *
-     * @param user User
-     * @param lang Language
+     * @param layers      list of layers to render
+     * @param user        User
      * @param lang        Language
      * @param isPublished Determines the permission type used for the layers (view/published view)
      * @param isSecure    true to modify urls for easier proxy forwarding/false to keep as is
@@ -122,7 +122,8 @@ public class OskariLayerWorker {
      *
      * @param user               Current user
      * @param layerPermissionKey Layer permission key
-     * @param permissionsList    List of user permissions
+     * @param permissionsList    List of user publish permissions
+     * @param editAccessList     List of user edit permissions
      */
     private static JSONObject getPermissions(final User user, final String layerPermissionKey,
                                              final Set<String> permissionsList, final Set<String> editAccessList) {
