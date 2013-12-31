@@ -26,9 +26,8 @@ public class SchemaSubscriber extends JedisSubscriber {
     @Override
     public void onMessage(String channel, String message) {
         if(channel.equals(CHANNEL)) {
-            log.warn("3. SAVING SCHEMA INFORMATION");
+            log.debug("3. SAVING SCHEMA INFORMATION");
             JSONObject root = JSONHelper.createJSONObject(message);
-            log.warn("message json", root.toString());
 
             String tmpId = JSONHelper.getStringFromJSON(root, "id", null);
             if(tmpId == null) {
