@@ -36,7 +36,7 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
     @Override
     public void onMessage(String channel, String message) {
         if(channel.equals(CHANNEL) && message.equals(MSG_UPDATED)) {
-            log.warn("2. PARSING LAYER SCHEMAS WITH LAYER CONF @REDIS");
+            log.debug("2. PARSING LAYER SCHEMAS WITH LAYER CONF @REDIS");
 
             // flush schema static hashmap and redis schemas - new stuff is saved when making the requests
             CachingSchemaLocator.flushAll();
