@@ -66,15 +66,23 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                     layer.setCustomParser(""); // don't use custom parser
                 }
 
+                JSONObject root = new JSONObject();
+                JSONHelper.putValue(root, "id", layer.getLayerId());
+
+                // check that valid location information
+                if(layer.getTestLocation().size() != 4) {
+                    log.warn("Location bounds configuration failed", layer.getLayerId());
+                    JSONHelper.putValue(root, "status", "fail - location problem");
+                    JedisManager.publish(SCHEMA_CHANNEL, root.toString());
+                    continue;
+                }
+
                 // set testing location
                 Location location = new Location();
                 location.setSrs(layer.getSRSName());
                 location.setBbox(layer.getTestLocation());
                 location.setZoom(layer.getTestZoom());
                 store.setLocation(location);
-
-                JSONObject root = new JSONObject();
-                JSONHelper.putValue(root, "id", layer.getLayerId());
 
                 BufferedReader res = WFSMapLayerJob.request(processType, layer, store, layer.getTestLocation(), null);
                 if(res == null) {

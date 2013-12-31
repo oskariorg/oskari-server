@@ -42,8 +42,7 @@ public class Triggerer {
         Trigger trigger = TriggerBuilder
                 .newTrigger()
                 .withIdentity("schemaCacheValidator", "wfs")
-                        //.withSchedule(CronScheduleBuilder.cronSchedule("00 00 * * * ?")) // every night
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 */1 * * * ?")) // every hour
+                .withSchedule(CronScheduleBuilder.cronSchedule("00 00 * * * ?")) // every night
                 .build();
 
         // give to the cache
