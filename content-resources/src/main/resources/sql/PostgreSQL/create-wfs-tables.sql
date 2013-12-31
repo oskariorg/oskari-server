@@ -38,7 +38,7 @@ CREATE TABLE portti_wfs_layer
   schema_last timestamp with time zone,
   schema_status character varying(512),
   custom_parser boolean NOT NULL DEFAULT false,
-  test_location character varying(512),
+  test_location character varying(512) default '[]',
   test_zoom integer NOT NULL DEFAULT 9,
   CONSTRAINT portti_wfs_layer_pkey PRIMARY KEY (id)
 )
