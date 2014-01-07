@@ -126,7 +126,7 @@ Assumes pre-installed:
     oskari.ajax.url.prefix=/oskari-map/?
 
     # Supported locales, comma separated and default first
-    oskari.locales=fi_FI
+    oskari.locales=fi_FI,sv_SE,en_US
 
 -------------------------------------------
 
@@ -139,8 +139,10 @@ Assumes pre-installed:
     url=jdbc:postgresql://localhost:5432/oskaridb
     user=postgres
     pass=[your pw]
+3) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
+    e.g. mv jetty-env.xml jetty-env-ignore.xml
 
-3) Simple one-step setup
+4) Simple one-step setup
 
 Create the initial db with default view (this isn't perfect but gets you started) 
 

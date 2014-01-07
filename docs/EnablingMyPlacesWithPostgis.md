@@ -6,13 +6,15 @@ Assumes pre-installed:
 * Maven 3+ (tested with 3.0.5)
 * PostgresSQL 9.1+ (tested with 9.3) with a oskaridb created for Oskari
 * Jetty (http://dist.codehaus.org/jetty/jetty-hightide-8.1.14/)
-* See BasicOsakariServletPostgresInstall.md
+* See BasicInstall-OskariServletPostgres.md
 
 
 1) Create postgis extension for the database. 
 
-(eg. in pgAdmin select oskaridb and in SQL window: *CREATE EXTENSION postgis;* ) ->
+(eg. in pgAdmin select oskaridb and in SQL window: *CREATE EXTENSION postgis;* ) 
+- install postgis, if doesn't work (windows 7) (http://download.osgeo.org/postgis/windows/pg93/)
 [detail docs](http://postgis.net/docs/postgis_installation.html#create_new_db_extensions)
+
 
 Now you are able to create tables with geometry fields.
 
@@ -30,10 +32,10 @@ Build
 *   If GS is already available, look guidelines in point 9) 
 
 
-4) Replace Geoserver data directory and start GeoServer (GS)
+4) Replace Geoserver data directory, add OskariMarkFactory extension and start GeoServer (GS)
 
 * Replace {geoserver}\data_dir with oskari\oskari-server\content-resources\config\geoserver\data
-* Add GS symbolizer extension OskariMarkFactory-1.0.jar to {geoserver}\webapps\WEB-INF\lib and dot-markers.ttf to {geoserver}\data_dir\styles (**see \oskari-server\geoserver-ext\OskariMarkFactory\readme.txt**)
+* Add GS symbolizer extension OskariMarkFactory-1.0.jar to {geoserver}\webapps\WEB-INF\lib and geoserver-ext\OskariMarkFactory\src\main\resources\dot-markers.ttf to {geoserver}\data_dir\styles (**see \oskari-server\geoserver-ext\OskariMarkFactory\readme.txt**)
 * Start GeoServer {geoserver}\bin\startup
 * Check data configuration with GS admin  (**http://localhost:8082/geoserver/web** --> layer preview layers my_places and my_places_categories ! these are empty in the initial  state)
 * If there are problems in layer preview, check workspace and store-setups with GS Admin (see point 9) ).
@@ -49,10 +51,11 @@ Uncomment or add the following settings and set them point to your geoserver url
 	oskari.proxy.myplacestile.pass=geoserver
 
 	myplaces.ows.url=http://localhost:8082/geoserver/oskari/ows?
-	myplaces.wms.url=http://localhost:8082/geoserver/wms?buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=
+	myplaces.wms.url=http://localhost:8082/geoserver/oskari/wms?buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=
 	myplaces.user=admin
 	myplaces.password=geoserver
 	# Base WFS layer id for myplaces (portti_maplayer and portti_wfs_layer tables)
+	# Find correct id layer later on when my_places wfs layer is inserted
     myplaces.baselayer.id=0
     # My places namespace
     myplaces.xmlns=http://www.oskari.org
@@ -62,7 +65,7 @@ Uncomment or add the following settings and set them point to your geoserver url
 
 6) Test Oskari
 
-*  Start **http://localhost:8080/oskari-map?viewId=4** in your browser
+*  Start **eg. http://localhost:8888/oskari-map?viewId=4** in your browser
 * A Logged-in-user should be able to use myplaces (add own points, lines and polygons)
 
 7) If there are troubles to add myplaces, You should check correct  feature namespace (default NS should be *http://www.oskari.org* with prefix *oskari*) and ajax url according to your environment.
