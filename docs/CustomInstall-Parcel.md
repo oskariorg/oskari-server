@@ -5,14 +5,14 @@ This document helps to set up the environment. It does NOT instruct how to tune 
 Assumes pre-installed:
     * JDK 1.6+ (tested with 1.6.18)
     * Maven 3+ (tested with 3.0.5)
-    * PostgresSQL 8.4+ (tested with 9.3) with a db created for Oskari
+    * PostgresSQL 8.4+ (tested with 9.3) with a oskaridb created for Oskari
 
 # Setting up Jetty Hightide 8.1.14
 
 1) Download http://dist.codehaus.org/jetty/jetty-hightide-8.1.14/
 2) unpack to selected location (referred as {jetty.home})
 3) Configure database connection pool by adding the following snippet in {jetty.home}/etc/jetty.xml:
-
+'''sh
     <New id="OskariPool" class="org.eclipse.jetty.plus.jndi.Resource">
        <Arg></Arg>
        <Arg>jdbc/OskariPool</Arg>
@@ -26,6 +26,7 @@ Assumes pre-installed:
           </New>
        </Arg>
     </New>
+'''
 
 4) Edit the previous snippet to include actual database properties specific for your environment
 
