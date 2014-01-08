@@ -111,7 +111,7 @@
   			ss.sld_style as selection_sld_style
   			
 		FROM portti_wfs_layer l
-		JOIN portti_maplayer map ON map.id = l.maplayer_id
+		JOIN oskari_maplayer map ON map.id = l.maplayer_id
 		LEFT OUTER JOIN portti_wfs_layer_style ss ON ss.id = l.selection_sld_style_id
 		LEFT OUTER JOIN portti_wfs_template_model m ON m.id = l.wfs_template_model_id
 		WHERE l.maplayer_id = #id#

@@ -11,6 +11,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.ServiceFactory;
 
 /**
  * Admin WMS organization layer delete
@@ -20,14 +21,14 @@ import fi.nls.oskari.util.ConversionHelper;
 @OskariActionRoute("DeleteOrganization")
 public class DeleteOrganizationHandler extends ActionHandler {
 
-    private LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
+    private LayerGroupService groupService = ServiceFactory.getLayerGroupService();
     private static final Logger log = LogFactory.getLogger(DeleteOrganizationHandler.class);
-    private static final String PARM_LAYERCLASS_ID = "layercl_id";
+    private static final String PARAM_GROUP_ID = "id";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final int groupId = ConversionHelper.getInt(params.getRequiredParam(PARM_LAYERCLASS_ID), -1);
+        final int groupId = ConversionHelper.getInt(params.getRequiredParam(PARAM_GROUP_ID), -1);
         
         if(!groupService.hasPermissionToUpdate(params.getUser(), groupId)) {
             throw new ActionDeniedException("Unauthorized user tried to remove layer group and its map layers - group id=" + groupId);

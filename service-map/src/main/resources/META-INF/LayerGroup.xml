@@ -39,7 +39,7 @@
         select id, locale from oskari_layergroup where id = #id#
     </select>
 
-    <select id="findAll" resultMap="LayerGroupResult" cacheModel="group-cache">
+    <select id="findAll" resultMap="LayerGroupResult">
         select id, locale from oskari_layergroup order by id
     </select>
     

@@ -31,13 +31,10 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			UniqueResourceName uniqueResourceName, String externalId, String externalIdType, String permissionsType) {
 		
 		// check if row already exists in the "oskari_resource" table
-
 		Map<String, String> parameterResource = new HashMap<String, String>();
 
         parameterResource.put("resourceType", uniqueResourceName.getType());
         parameterResource.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
-
-        int resourceId = -1;
 
         Integer resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
 
@@ -46,7 +43,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
            resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
 		}
 
-        resourceId = resourceIdInteger.intValue();
+        int resourceId = resourceIdInteger.intValue();
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("oskariResourceId", new Integer(resourceId));

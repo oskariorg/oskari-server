@@ -73,4 +73,9 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         ID_CACHE.remove(id);
         super.delete(id);
     }
+
+    public void update(final LayerGroup o) {
+        ID_CACHE.remove(id);
+        super.update(o);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }
