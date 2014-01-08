@@ -1,5 +1,8 @@
 <wfs>
-  <id>wfs</id>
+  <id>WFSInfoImpl--1d830f42:13ef542c41f:5ee6</id>
+  <workspace>
+    <id>WorkspaceInfoImpl-5040a49e:12704d4341f:-7f75</id>
+  </workspace>
   <enabled>true</enabled>
   <name>WFS</name>
   <title>GeoServer Web Feature Service</title>
@@ -28,6 +31,9 @@
   <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
   <schemaBaseURL>http://schemas.opengis.net</schemaBaseURL>
   <verbose>false</verbose>
+  <metadata>
+    <entry key="SHAPE-ZIP_DEFAULT_PRJ_IS_ESRI">false</entry>
+  </metadata>
   <gml>
     <entry>
       <version>V_20</version>

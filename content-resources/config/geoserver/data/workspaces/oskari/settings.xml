@@ -1,0 +1,20 @@
+<settings>
+  <id>SettingsInfoImpl-2c924b9a:14352a06b27:-8000</id>
+  <workspace>
+    <id>WorkspaceInfoImpl-5040a49e:12704d4341f:-7f75</id>
+    <name>oskari</name>
+  </workspace>
+  <contact>
+    <id>contact</id>
+    <addressType>Work</addressType>
+    <contactOrganization>N/A</contactOrganization>
+    <contactPerson>N/A</contactPerson>
+    <contactPosition>Contact Address</contactPosition>
+  </contact>
+  <charset>UTF-8</charset>
+  <numDecimals>8</numDecimals>
+  <onlineResource>http://geoserver.org</onlineResource>
+  <verbose>false</verbose>
+  <verboseExceptions>false</verboseExceptions>
+  <localWorkspaceIncludesPrefix>false</localWorkspaceIncludesPrefix>
+</settings>
