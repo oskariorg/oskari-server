@@ -268,6 +268,7 @@ public class WFSMapLayerJob extends Job {
         FeatureCollection<SimpleFeatureType, SimpleFeature> features;
 
         if(layer.isCustomParser()) {
+            log.debug("Custom parser layer id: ", layer.getLayerId());
             WFSParser parser = new WFSParser(response, layer);
             features = parser.parse();
         } else {
@@ -517,6 +518,7 @@ public class WFSMapLayerJob extends Job {
         BufferedReader response = request(type, layer, session, bounds, transformService);
 
         Map<String, Object> output = new HashMap<String, Object>();
+        try {
 
         // request failed
 		if(response == null) {
@@ -576,6 +578,11 @@ public class WFSMapLayerJob extends Job {
         }
 
         log.debug("Features count", this.features.size());
+        }
+        catch (Exception ee)
+        {
+            log.debug("exception: ", ee);
+        }
 
         return true;
     }

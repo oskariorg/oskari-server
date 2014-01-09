@@ -559,7 +559,12 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, TILE_BUFFER, JSONHelper.createJSONObject(this.getTileBuffer()));
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
         JSONHelper.putValue(root, CUSTOM_PARSER, this.isCustomParser());
-        JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
+        if( this.getTestLocation() != null ) {
+            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
+        } else {
+            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray("[]"));
+        }
+        // JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
         JSONHelper.putValue(root, TEST_ZOOM, this.getTestZoom());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
