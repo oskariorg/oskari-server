@@ -126,3 +126,14 @@ You may also need to change service-map/src/main/resources/fi/nls/oskari/map/myp
           *.*.r                     *
 	      oskari.categories.w       *
 	      oskari.my_places.w        *
+	      GeoServer Admin
+
+* Set oskari:my_places_categories Layer / tile Caching setup
+
+    Tile cache configuration
+
+        (x)Create a cached layer for this layer
+         - use default values
+         - set
+           Gutter size in pixels
+           100
