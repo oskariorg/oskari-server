@@ -39,7 +39,7 @@
         select id, locale from portti_inspiretheme where id = #id#
     </select>
 
-    <select id="findAll" resultMap="InspireThemeResult" cacheModel="theme-cache">
+    <select id="findAll" resultMap="InspireThemeResult">
         select id, locale from portti_inspiretheme order by id
     </select>
 
@@ -63,8 +63,17 @@
         where id = ?
     </update>
     
-    <delete id="delete" parameterClass="int">
+    <delete id="delete" parameterClass="long">
         delete from portti_inspiretheme where id = #id#
     </delete>
+
+    <delete id="removeThemeLinks" parameterClass="long">
+        DELETE FROM oskari_maplayer_themes WHERE maplayerid = #id#;
+    </delete>
+
+    <statement id="linThemeToLayer" parameterClass="java.util.HashMap">
+        insert into oskari_maplayer_themes (maplayerid, themeid) values (#layerId#, #themeId#)
+    </statement>
+
     
 </sqlMap>

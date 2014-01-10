@@ -1,6 +1,8 @@
 package fi.nls.oskari.util;
 
 
+import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
+import fi.mml.map.mapwindow.service.db.CapabilitiesCacheServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -19,6 +21,7 @@ public class ServiceFactory {
 	private static InspireThemeService inspireThemeService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
+    private static CapabilitiesCacheService capabilitiesCacheService;
  
 	public static LayerGroupService getLayerGroupService() {
 		if (layerGroupService == null) {
@@ -52,5 +55,12 @@ public class ServiceFactory {
             searchService = new SearchServiceImpl();
         }
         return searchService;
+    }
+
+    public static CapabilitiesCacheService getCapabilitiesCacheService() {
+        if (capabilitiesCacheService == null) {
+            capabilitiesCacheService = new CapabilitiesCacheServiceIbatisImpl();
+        }
+        return capabilitiesCacheService;
     }
 }

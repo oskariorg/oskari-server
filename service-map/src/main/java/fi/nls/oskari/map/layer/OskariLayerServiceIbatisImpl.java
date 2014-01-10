@@ -16,6 +16,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 
 import java.io.Reader;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -270,12 +271,38 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return layers;
     }
 
-    public void update(OskariLayer layer) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void update(final OskariLayer layer) {
+        try {
+            getSqlMapClient().update(getNameSpace() + ".update", layer);
+            // link to inspire theme(s)
+            inspireThemeService.updateLayerThemes(layer.getId(), layer.getInspireThemes());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update", e);
+        }
     }
 
-    public int insert(OskariLayer layer) {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    public synchronized int insert(final OskariLayer layer) {
+        SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            client.insert(getNameSpace() + ".insert", layer);
+            Integer id = (Integer) client.queryForObject(getNameSpace()
+                    + ".maxId");
+            layer.setId(id);
+            client.commitTransaction();
+            // link to inspire theme(s)
+            inspireThemeService.updateLayerThemes(id, layer.getInspireThemes());
+            return id;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to insert", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
     }
 
     public void delete(int id) {

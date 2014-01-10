@@ -10,6 +10,70 @@
         select max(id) from oskari_maplayer
     </select>
 
+    <typeAlias alias="OskariLayer" type="fi.nls.oskari.domain.map.OskariLayer" />
+
+    <parameterMap id="LayerInsertParameter" class="OskariLayer">
+        <parameter property="parentId" />
+        <parameter property="type" />
+        <parameter property="baseMap" />
+        <parameter property="groupId" />
+
+        <parameter property="name" />
+        <parameter property="url" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+
+        <parameter property="opacity" />
+        <parameter property="style" />
+        <parameter property="minScale" />
+        <parameter property="maxScale" />
+
+        <parameter property="legendImage" />
+        <parameter property="metadataId" />
+
+        <parameter property="tileMatrixSetId" />
+        <parameter property="tileMatrixSetData" />
+        <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+
+        <parameter property="gfiXslt" />
+        <parameter property="gfiType" />
+
+        <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
+        <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
+
+        <!-- parameter property="id" jdbcType="INTEGER" javaType="java.lang.Integer" mode="OUT" / -->
+    </parameterMap>
+
+    <parameterMap id="LayerUpdateParameter" class="OskariLayer"> <!--  extends="OskariLayer.LayerInsertParameter" -->
+        <parameter property="parentId" />
+        <parameter property="baseMap" />
+        <parameter property="groupId" />
+
+        <parameter property="name" />
+        <parameter property="url" />
+        <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+
+        <parameter property="opacity" />
+        <parameter property="style" />
+        <parameter property="minScale" />
+        <parameter property="maxScale" />
+
+        <parameter property="legendImage" />
+        <parameter property="metadataId" />
+
+        <parameter property="tileMatrixSetId" />
+        <parameter property="tileMatrixSetData" />
+        <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+
+        <parameter property="gfiXslt" />
+        <parameter property="gfiType" />
+
+        <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
+
+        <parameter property="id" />
+    </parameterMap>
+
     <select id="findById"
             parameterClass="int"
             resultClass="java.util.HashMap">
@@ -194,4 +258,67 @@
         ]]>
     </statement>
 
+    <statement id="insert" parameterMap="LayerInsertParameter" >
+        <!--  resultClass="java.lang.Integer" -->
+        insert into oskari_maplayer (
+            parentId,
+            type,
+            base_map,
+            groupId,
+
+            name,
+            url,
+            locale,
+
+            opacity,
+            style,
+            minscale,
+            maxscale,
+
+            legend_image,
+            metadataId,
+
+            tile_matrix_set_id,
+            tile_matrix_set_data,
+            params,
+            options,
+
+            gfi_xslt,
+            gfi_type,
+
+            created,
+            updated)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    </statement>
+
+    <statement id="update" parameterMap="LayerUpdateParameter">
+        UPDATE oskari_maplayer
+        SET
+        parentId = ?,
+        base_map = ?,
+        groupId = ?,
+
+        name = ?,
+        url = ?,
+        locale = ?,
+
+        opacity = ?,
+        style = ?,
+        minscale = ?,
+        maxscale = ?,
+
+        legend_image = ?,
+        metadataId = ?,
+
+        tile_matrix_set_id = ?,
+        tile_matrix_set_data = ?,
+        params = ?,
+        options = ?,
+
+        gfi_xslt = ?,
+        gfi_type=?,
+
+        updated=?
+        WHERE id = ?
+    </statement>
 </sqlMap>

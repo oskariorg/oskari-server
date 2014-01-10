@@ -50,6 +50,9 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
     }
 
     public LayerGroup find(int id) {
+        if(id == -1) {
+            return null;
+        }
         LayerGroup group = ID_CACHE.get(id);
         if(group != null) {
             return group;
@@ -74,8 +77,8 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         super.delete(id);
     }
 
-    public void update(final LayerGroup o) {
-        ID_CACHE.remove(id);
-        super.update(o);    //To change body of overridden methods use File | Settings | File Templates.
+    public void update(final LayerGroup group) {
+        ID_CACHE.put(group.getId(), group);
+        super.update(group);
     }
 }

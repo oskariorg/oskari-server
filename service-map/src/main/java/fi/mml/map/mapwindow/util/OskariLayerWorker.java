@@ -15,7 +15,9 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,8 +25,11 @@ import java.util.Set;
  */
 public class OskariLayerWorker {
 
+    public static final String KEY_LAYERS = "layers";
+
     private static final String NO_PUBLICATION_PERMISSION = "no_publication_permission";
     private static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
+
 
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -86,7 +91,6 @@ public class OskariLayerWorker {
 
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
-        // count average/layertype
         for (OskariLayer layer : layers) {
             final String permissionKey = layer.getUrl() + "+" + layer.getName();
             if (!resources.contains(permissionKey)) {
@@ -100,6 +104,11 @@ public class OskariLayerWorker {
                     //log.debug("Generating permissions JSON");
                     JSONObject permissions = getPermissions(user, permissionKey, permissionsList, editAccessList);
                     JSONHelper.putValue(layerJson, "permissions", permissions);
+                    if(permissions.optBoolean("edit")) {
+                        // has edit rights, alter JSON/add info for admin bundle
+                        modifyCommonFieldsForEditing(layerJson, layer);
+                    }
+
                     //log.debug("Adding layer to list");
                     layersList.put(layerJson);
                 }
@@ -112,10 +121,58 @@ public class OskariLayerWorker {
         log.debug("Returning", layersList.length(), "/", layers.size(),"layers");
 
         final JSONObject result = new JSONObject();
-        JSONHelper.putValue(result, "layers", layersList);
+        JSONHelper.putValue(result, KEY_LAYERS, layersList);
         return result;
     }
 
+    /**
+     * Convenience method to get JSON for single layer.
+     * TODO: maybe tune the implementation a bit
+     * @param layer
+     * @param user
+     * @param lang
+     * @return
+     */
+    public static JSONObject getMapLayerJSON(final OskariLayer layer, final User user,
+                                                final String lang) {
+
+        final List<OskariLayer> list = new ArrayList<OskariLayer>(1);
+        list.add(layer);
+        final JSONObject obj = OskariLayerWorker.getListOfMapLayers(list, user, lang, false, false);
+        JSONArray layers = JSONHelper.getJSONArray(obj, KEY_LAYERS);
+        try {
+            return layers.getJSONObject(0);
+        } catch (Exception e) {
+            log.warn(e, "Error creating layer JSON:", obj);
+        }
+        return null;
+    }
+
+    private static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
+
+        // name
+        final JSONObject names = new JSONObject();
+        for (Map.Entry<String, String> localization : layer.getNames().entrySet()) {
+            JSONHelper.putValue(names, localization.getKey(), localization.getValue());
+        }
+        JSONHelper.putValue(layerJson, "name", names);
+
+        // subtitle/description
+        final JSONObject subtitles = new JSONObject();
+        for (Map.Entry<String, String> localization : layer.getTitles().entrySet()) {
+            JSONHelper.putValue(subtitles, localization.getKey(), localization.getValue());
+        }
+        JSONHelper.putValue(layerJson, "subtitle", subtitles);
+
+        final JSONObject adminData = JSONHelper.createJSONObject("xslt", layer.getGfiXslt());
+        JSONHelper.putValue(layerJson, "admin", adminData);
+
+        // for mapping under categories
+        JSONHelper.putValue(adminData, "organizationId", layer.getGroupId());
+        if(layer.getInspireTheme() != null) {
+            JSONHelper.putValue(adminData, "inspireId", layer.getInspireTheme().getId());
+        }
+    }
 
     /**
      * Create permission information for JSON

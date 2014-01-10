@@ -60,6 +60,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                 log.warn(e, "Populating layer styles failed!");
             }
             JSONHelper.putValue(layerJson, "isQueryable", wms.isQueryable());
+            JSONHelper.putValue(layerJson, "version", wms.getVersion());
         }
 
         JSONHelper.putValue(layerJson, "styles", styles);

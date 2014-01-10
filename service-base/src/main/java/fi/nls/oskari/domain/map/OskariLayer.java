@@ -14,8 +14,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private static final String TYPE_COLLECTION = "collection";
 
 
-    private int id;
-    private int parentId;
+    private int id = -1;
+    private int parentId = -1;
     private String externalId;
 	private String type;
 
@@ -30,10 +30,10 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String simplifiedUrl;
 
     // defaults
-	private Integer opacity;
+	private Integer opacity = 100;
     private String style;
-	private Double minScale;
-	private Double maxScale;
+	private Double minScale = -1d;
+	private Double maxScale = -1d;
 
     private String legendImage;
     private String metadataId;
@@ -51,9 +51,10 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Date created = null;
     private Date updated = null;
 
-    private List<InspireTheme> inspireThemes = new ArrayList<InspireTheme>();
-    private List<LayerGroup> groups = new ArrayList<LayerGroup>();
+    private Set<InspireTheme> inspireThemes = new HashSet<InspireTheme>();
+    private Set<LayerGroup> groups = new HashSet<LayerGroup>();
     private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
+
 
     public boolean isCollection() {
         return TYPE_COLLECTION.equals(type);
@@ -64,11 +65,27 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         if(inspireThemes == null || inspireThemes.isEmpty()) {
             return null;
         }
-		return inspireThemes.get(0);
+        if(inspireThemes.size() > 1) {
+            // TODO: remove this when we support more than one theme
+            log.warn("More than one inspire theme, this shouldn't happen!! layerId:", getId(), "- Themes:" , inspireThemes);
+        }
+		return inspireThemes.iterator().next();
 	}
+    public Set<InspireTheme> getInspireThemes() {
+        return inspireThemes;
+    }
     public void addInspireThemes(final List<InspireTheme> themes) {
         if(themes != null && !themes.isEmpty()) {
-            inspireThemes.addAll(themes);
+            addInspireTheme(themes.iterator().next());
+            // TODO: use addAll when we support more than one theme
+            //inspireThemes.addAll(themes);
+        }
+    }
+    public void addInspireTheme(final InspireTheme theme) {
+        if(theme != null) {
+            // TODO: remove the clearing when we support more than one theme
+            inspireThemes.clear();
+            inspireThemes.add(theme);
         }
     }
 
@@ -77,12 +94,13 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         if(groups == null || groups.isEmpty()) {
             return null;
         }
-        return groups.get(0);
+        return groups.iterator().next();
     }
 
     public void addGroup(final LayerGroup group) {
         if(group != null) {
             groups.add(group);
+            setGroupId(group.getId());
         }
     }
 
