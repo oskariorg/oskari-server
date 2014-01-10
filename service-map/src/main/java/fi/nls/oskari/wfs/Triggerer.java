@@ -2,32 +2,33 @@ package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+// import org.quartz.*;
+// import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Handles Quartz jobs and triggers and inits them with cache
+ * TODO: should be replaced to other package - this boms currently liferay quartz management
  */
 public class Triggerer {
     private final static Logger log = LogFactory.getLogger(Triggerer.class);
 
-    private Scheduler scheduler;
+ //   private Scheduler scheduler;
 
     public Triggerer() {
-        try {
+  /*      try {
             scheduler = new StdSchedulerFactory().getScheduler();
             scheduler.start();
         } catch(Exception e) {
             log.error(e, "Scheduler couldn't be created");
-        }
+        } */
     }
 
     public void destroy() {
-        try {
+    /*    try {
             scheduler.shutdown(true);
         } catch(Exception e) {
             log.error(e, "Scheduler shutdown failed");
-        }
+        } */
     }
 
     /**
@@ -35,7 +36,7 @@ public class Triggerer {
      */
     public void initWFSLayerConfigurationUpdater() {
         // create job
-        JobDetail job = JobBuilder.newJob(WFSLayerConfigurationUpdater.class)
+  /*      JobDetail job = JobBuilder.newJob(WFSLayerConfigurationUpdater.class)
                 .withIdentity("schemaCacheValidator", "wfs").build();
 
         // create trigger
@@ -50,6 +51,6 @@ public class Triggerer {
             scheduler.scheduleJob(job, trigger);
         } catch(Exception e) {
             log.error(e, "Could not start the job with trigger, cache failed");
-        }
+        } */
     }
 }
