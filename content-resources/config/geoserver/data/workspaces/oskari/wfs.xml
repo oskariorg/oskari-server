@@ -31,18 +31,21 @@
   <onlineResource>http://geoserver.sourceforge.net/html/index.php</onlineResource>
   <schemaBaseURL>http://schemas.opengis.net</schemaBaseURL>
   <verbose>false</verbose>
+  <metadata>
+    <entry key="SHAPE-ZIP_DEFAULT_PRJ_IS_ESRI">false</entry>
+  </metadata>
   <gml>
-    <entry>
-      <version>V_11</version>
-      <gml>
-        <srsNameStyle>URN</srsNameStyle>
-        <overrideGMLAttributes>false</overrideGMLAttributes>
-      </gml>
-    </entry>
     <entry>
       <version>V_20</version>
       <gml>
         <srsNameStyle>URN2</srsNameStyle>
+        <overrideGMLAttributes>false</overrideGMLAttributes>
+      </gml>
+    </entry>
+    <entry>
+      <version>V_11</version>
+      <gml>
+        <srsNameStyle>URN</srsNameStyle>
         <overrideGMLAttributes>false</overrideGMLAttributes>
       </gml>
     </entry>
@@ -59,4 +62,5 @@
   <featureBounding>false</featureBounding>
   <canonicalSchemaLocation>false</canonicalSchemaLocation>
   <encodeFeatureMember>false</encodeFeatureMember>
+  <hitsIgnoreMaxFeatures>false</hitsIgnoreMaxFeatures>
 </wfs>

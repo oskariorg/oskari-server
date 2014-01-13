@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.cache.LayerUpdateSubscriber;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -140,6 +141,8 @@ public class TransportService extends AbstractService {
 	// JobQueue singleton
 	private JobQueue jobs;
 
+    private LayerUpdateSubscriber sub;
+
 	/**
 	 * Constructs TransportService with BayeuxServer instance
 	 * 
@@ -170,6 +173,10 @@ public class TransportService extends AbstractService {
         JedisManager.connect(workerCount + 2,
                 PropertyUtil.get("redisHostname"), ConversionHelper.getInt(
                         PropertyUtil.get("redisPort"), 6379));
+
+        // subscribe to schema channel
+        sub = new LayerUpdateSubscriber();
+        JedisManager.subscribe(sub, LayerUpdateSubscriber.CHANNEL);
 
         CachingSchemaLocator.init(); // init schemas
 

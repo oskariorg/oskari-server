@@ -8,16 +8,23 @@
   <title>categories</title>
   <srs>EPSG:3067</srs>
   <nativeBoundingBox>
-    <minx>237252.516</minx>
-    <maxx>3431044.5</maxx>
-    <miny>6606091.5</miny>
-    <maxy>7674909.0</maxy>
+    <minx>50.0</minx>
+    <maxx>889551.46875</maxx>
+    <miny>6437157.5</miny>
+    <maxy>7900000.0</maxy>
   </nativeBoundingBox>
   <latLonBoundingBox>
-    <minx>0.0</minx>
-    <maxx>180.0</maxx>
-    <miny>0.0</miny>
-    <maxy>180.0</maxy>
+    <minx>13.348501453194103</minx>
+    <maxx>37.712046286234575</maxx>
+    <miny>57.79576776389021</miny>
+    <maxy>71.19638890867307</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
   </latLonBoundingBox>
   <projectionPolicy>FORCE_DECLARED</projectionPolicy>
   <enabled>true</enabled>

@@ -48,11 +48,14 @@ public class WFSLayerConfiguration {
     private final static String TILE_REQUEST = "tileRequest";
     private final static String TILE_BUFFER = "tileBuffer";
     private final static String WMS_LAYER_ID = "WMSLayerId";
-
-   // for json, if needed private final static String WPS_PARAMS = "wps_params";
+    // for json, if needed private final static String WPS_PARAMS = "wps_params";
+    private final static String CUSTOM_PARSER = "customParser";
+    private final static String TEST_LOCATION = "testLocation";
+    private final static String TEST_ZOOM = "testZoom";
 
     private final static String MIN_SCALE = "minScale";
     private final static String MAX_SCALE = "maxScale";
+
 
     private final static String TEMPLATE_NAME = "templateName";
     private final static String TEMPLATE_DESCRIPTION = "templateDescription";
@@ -96,11 +99,13 @@ public class WFSLayerConfiguration {
     private boolean tileRequest;
     private String tileBuffer;
 	private String WMSLayerId;
+    private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
+    private boolean customParser;
+    private String testLocation;
+    private int testZoom;
 
 	private double minScale;
 	private double maxScale;
-
-    private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
 
 	// Template Model
 	private String templateName;
@@ -347,7 +352,50 @@ public class WFSLayerConfiguration {
 		WMSLayerId = wMSLayerId;
 	}
 
-	/**
+    /**
+     * Get wps params for WFS layer eg {input_type:gs_vector}
+     * (default is {})
+     * @return
+     */
+    public String getWps_params() {
+        return wps_params;
+    }
+
+    /**
+     * Set wps_params (basic field value in portti_wfs_layer)
+     * @param wps_params
+     */
+    public void setWps_params(String wps_params) {
+        this.wps_params = wps_params;
+    }
+
+    public String isCustomParser() {
+        if(customParser)
+            return "true";
+        return "false";
+    }
+
+    public void setCustomParser(boolean customParser) {
+        this.customParser = customParser;
+    }
+
+    public String getTestLocation() {
+        return testLocation;
+    }
+
+    public void setTestLocation(String testLocation) {
+        this.testLocation = testLocation;
+    }
+
+    public int getTestZoom() {
+        return testZoom;
+    }
+
+    public void setTestZoom(int testZoom) {
+        this.testZoom = testZoom;
+    }
+
+    /**
 	 * Gets min scale
 	 *
 	 * @return min scale
@@ -382,23 +430,6 @@ public class WFSLayerConfiguration {
 	public void setMaxScale(double maxScale) {
 		this.maxScale = maxScale;
 	}
-
-    /**
-     * Get wps params for WFS layer eg {input_type:gs_vector}
-     * (default is {})
-     * @return
-     */
-    public String getWps_params() {
-        return wps_params;
-    }
-
-    /**
-     * Set wps_params (basic field value in portti_wfs_layer)
-     * @param wps_params
-     */
-    public void setWps_params(String wps_params) {
-        this.wps_params = wps_params;
-    }
 
     /**
 	 * Gets template name
@@ -527,6 +558,14 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
         JSONHelper.putValue(root, TILE_BUFFER, JSONHelper.createJSONObject(this.getTileBuffer()));
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
+        JSONHelper.putValue(root, CUSTOM_PARSER, this.isCustomParser());
+        if( this.getTestLocation() != null ) {
+            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
+        } else {
+            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray("[]"));
+        }
+        // JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
+        JSONHelper.putValue(root, TEST_ZOOM, this.getTestZoom());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());

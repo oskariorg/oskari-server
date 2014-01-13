@@ -58,7 +58,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         } else {   //hae id:llä
             UserIndicator ui = userIndicatorService.find(id);
               log.debug("GetUserIndicatorsHandler: got "+ ui +" with id "+id);
-            if ( ui != null ) {
+            if ( ui != null && (params.getUser().getId() == ui.getUserId()) ) {
                 final JSONObject result = makeJson(ui);
                 ResponseHelper.writeResponse(params, result);
             }
@@ -69,17 +69,20 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     private JSONArray makeJson(List<UserIndicator> uiList) {
         JSONArray arr = new JSONArray();
         for (UserIndicator ui : uiList ) {
-             arr.put(makeJson(ui.getId(), ui.getTitle(),  ui.getDescription(), ui.isPublished(), ui.getMaterial(), ui.getCategory()));
+             arr.put(makeJson(ui.getId(), ui.getTitle(),  ui.getDescription(), ui.getSource(), ui.getYear(), ui.isPublished(), ui.getMaterial(), ui.getCategory()));
         }
         return arr;
     }
 
-    private JSONObject makeJson(long id, String title, String desc, Boolean pub, long layer_id, String category) {
+    private JSONObject makeJson(long id, String title, String desc, String source, int year, Boolean pub, long layer_id, String category) {
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id",id);
         JSONHelper.putValue(obj, "title", JSONHelper.createJSONObject(title));
         JSONObject descJSON = desc == null ? new JSONObject() : JSONHelper.createJSONObject(desc);
         JSONHelper.putValue(obj, "description", descJSON);
+        JSONObject orgJSON = source == null ? new JSONObject() : JSONHelper.createJSONObject(source);
+        JSONHelper.putValue(obj, "organization", orgJSON);
+        JSONHelper.putValue(obj, "year", year);
         JSONHelper.putValue(obj, "public" , pub);
         JSONHelper.putValue(obj, "layerId", layer_id);
         JSONHelper.putValue(obj, "category", category);

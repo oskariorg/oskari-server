@@ -17,6 +17,8 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.wfs.SchemaSubscriber;
+import fi.nls.oskari.wfs.Triggerer;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -61,6 +63,8 @@ public class MapFullServlet extends HttpServlet {
     private boolean isDevelopmentMode = false;
     private String version = null;
     private final Set<String> paramHandlers = new HashSet<String>();
+    private SchemaSubscriber sub;
+    Triggerer triggerer;
 
     private static final long serialVersionUID = 1L;
 
@@ -86,6 +90,14 @@ public class MapFullServlet extends HttpServlet {
                 .get(KEY_REDIS_POOL_SIZE), 30), PropertyUtil
                 .get(KEY_REDIS_HOSTNAME), ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_PORT), 6379));
+
+        // subscribe to schema channel
+        sub = new SchemaSubscriber();
+        JedisManager.subscribe(sub, SchemaSubscriber.CHANNEL);
+
+        // cache and job initializing
+        triggerer = new Triggerer();
+        triggerer.initWFSLayerConfigurationUpdater();
 
         // Action route initialization
         ActionControl.addDefaultControls();
@@ -312,6 +324,8 @@ public class MapFullServlet extends HttpServlet {
     @Override
     public void destroy() {
         ActionControl.teardown();
+        sub.unsubscribe();
+        triggerer.destroy();
         super.destroy();
     }
 

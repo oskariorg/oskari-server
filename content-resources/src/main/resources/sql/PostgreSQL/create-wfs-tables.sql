@@ -34,6 +34,12 @@ CREATE TABLE portti_wfs_layer
   feature_element character varying(512),
   feature_namespace_uri character varying(512),
   geometry_namespace_uri character varying(512),
+  schema_changed timestamp with time zone,
+  schema_last timestamp with time zone,
+  schema_status character varying(512),
+  custom_parser boolean NOT NULL DEFAULT false,
+  test_location character varying(512) default '[]',
+  test_zoom integer NOT NULL DEFAULT 9,
   CONSTRAINT portti_wfs_layer_pkey PRIMARY KEY (id)
 )
 WITH (

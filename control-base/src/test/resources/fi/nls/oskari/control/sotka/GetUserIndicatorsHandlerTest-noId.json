@@ -10,8 +10,13 @@
        "sv": Beskrivning,
        "en": Description
      },
-    "public": true,
-    "layerId": 515,
-    "category": "KUNTA"
+   "organization": {
+       title: {
+       "fi": Indicator source }
+       } ,
+   "year": 2013,
+   "public": true,
+   "layerId": 515,
+   "category": "KUNTA"
 }
 ]

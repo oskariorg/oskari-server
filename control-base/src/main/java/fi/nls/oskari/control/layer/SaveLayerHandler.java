@@ -214,6 +214,7 @@ public class SaveLayerHandler extends ActionHandler {
             // the rest is not relevant for collection layers
             return;
         }
+
         ml.setName(params.getRequiredParam("wmsName"));
         ml.setUrl(params.getRequiredParam("wmsUrl"));
 
