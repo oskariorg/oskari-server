@@ -1,13 +1,14 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -19,13 +20,12 @@ import fi.nls.oskari.map.data.service.GetGeoPointDataService;
 import fi.nls.oskari.map.data.service.WFSFeatureService;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("GetFeatureInfoWMS")
 public class GetGeoPointDataHandler extends ActionHandler {
 
-	private final MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
+	private final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 	private final GetGeoPointDataService geoPointService = new GetGeoPointDataService();
     private final GeoServerProxyService myplacesService = new GeoServerProxyService();
     private final WFSFeatureService wfsFeatureService = new WFSFeatureService();
@@ -84,7 +84,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
                 continue;
 			}
 
-			final Layer layer = mapLayerService.find(layerId);
+			final OskariLayer layer = mapLayerService.find(layerId);
 			final String layerType = layer.getType();
 
 			if (Layer.TYPE_WMS.equals(layerType)) {

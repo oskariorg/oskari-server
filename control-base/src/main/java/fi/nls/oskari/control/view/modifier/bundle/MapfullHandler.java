@@ -3,7 +3,7 @@ package fi.nls.oskari.control.view.modifier.bundle;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.mml.map.mapwindow.util.MapLayerWorker;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
@@ -178,10 +178,8 @@ public class MapfullHandler extends BundleHandler {
             }
         }
 
-        
-        final JSONObject struct = MapLayerWorker.getSelectedLayersStructure(
-                layerIdList, user, lang, clientIP,
-                ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
+        final JSONObject struct = OskariLayerWorker.getListOfMapLayersById(
+                layerIdList,user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
             log.warn("getSelectedLayersStructure did not return layers when expanding:",

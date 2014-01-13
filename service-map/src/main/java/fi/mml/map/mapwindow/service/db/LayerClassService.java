@@ -12,6 +12,7 @@ import fi.nls.oskari.service.db.BaseService;
  * 
  *
  */
+@Deprecated
 public interface LayerClassService extends BaseService<LayerClass> {
 
 	/**

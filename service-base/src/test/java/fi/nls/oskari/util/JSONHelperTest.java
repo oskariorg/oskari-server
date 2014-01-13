@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author SMAKINEN
@@ -25,12 +26,11 @@ public class JSONHelperTest {
         assertEquals("JSONObject should be empty", obj.length(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testCreateJSONObjectFromEmptyString() {
 
         JSONObject obj = JSONHelper.createJSONObject("");
         assertTrue("JSONObject was not created", obj == null);
-        throw new IllegalStateException("Should not get this far");
 
         // TODO: more error cases
     }
@@ -50,11 +50,10 @@ public class JSONHelperTest {
         assertEquals("JSONObject should be empty", obj.length(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testGetJSONObjectWithNoObject() throws Exception {
         JSONObject obj = JSONHelper.createJSONObject("key", "value");
-        assertEquals("JSONObject 'key' should return 'value'", JSONHelper.getJSONObject(obj, "key"), "value");
-        throw new IllegalStateException("Should not get this far");
+        assertEquals("JSONObject 'key' should return <null> as it's not an object", JSONHelper.getJSONObject(obj, "key"), null);
     }
 
     @Test

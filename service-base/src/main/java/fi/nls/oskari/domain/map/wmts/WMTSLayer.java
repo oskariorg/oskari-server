@@ -4,7 +4,7 @@ import fi.nls.oskari.domain.map.Layer;
 
 public class WMTSLayer extends Layer {
 	public WMTSLayer() {
-		super.setType(Layer.WMTS_LAYER);
+		super.setType(Layer.TYPE_WMTS);
 	}
 
 }

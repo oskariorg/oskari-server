@@ -1,19 +1,16 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.util.MapLayerWorker;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -31,9 +28,6 @@ public class GetMapLayersHandler extends ActionHandler {
     private static Logger log = LogFactory.getLogger(GetMapLayersHandler.class);
 
     final static String LANGUAGE_ATTRIBUTE = "lang";
-
-    private final MapLayerService mapLayerService = ServiceFactory
-            .getMapLayerService();
     private static final String PARM_LAYER_ID = "layer_id";
 
     @Override
@@ -44,22 +38,35 @@ public class GetMapLayersHandler extends ActionHandler {
                 .getLocale().getLanguage());
 
         boolean showEmpty = permissionsService.hasAddLayerPermission(params.getUser());
-        final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
-                params.getUser(), lang, showEmpty);
+        /*final JSONObject layers = MapLayerWorker.getListOfAllMapLayers(
+                params.getUser(), lang, showEmpty); */
 
+        log.debug("Getting layers");
+        final JSONObject layers = OskariLayerWorker.getListOfAllMapLayers(params.getUser(), lang);
+        log.debug("Got layers");
+        //getListOfAllMapLayers(params.getUser(), lang, showEmpty);
+
+        // FIXME: add needed layer handling for admin bundle
+        /*
+        // This makes no sense O.o
         JSONObject adminlayers = new JSONObject();
-
         if (params.getUser().isAdmin()) {
             adminlayers = makeMapLayersAdminJson(layer_id);
+            log.debug("Got admin layers");
         }
+*/
+        log.debug("Writing Response");
+        ResponseHelper.writeResponse(params, layers);
+        /*
         if (layer_id.isEmpty()) {
             ResponseHelper.writeResponse(params, makeMergeLayerClassJson(
                     layers, adminlayers));
         } else {
             ResponseHelper.writeResponse(params, adminlayers);
         }
+        */
     }
-
+/*
     private JSONObject makeMapLayersAdminJson(final String layer_id)
             throws ActionException {
 
@@ -141,6 +148,7 @@ public class GetMapLayersHandler extends ActionHandler {
         }
 
     }
+    */
 
     private JSONObject makeMergeLayerClassJson(JSONObject layers,
             JSONObject adminlayers) throws ActionException {

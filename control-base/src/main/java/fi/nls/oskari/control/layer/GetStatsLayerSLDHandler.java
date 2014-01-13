@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.stats.VisualizationService;
+import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.apache.axiom.om.OMElement;
@@ -19,8 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GetStatsLayerSLDHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsLayerSLDHandler.class);
-    private final StatsVisualizationHelper helper = new StatsVisualizationHelper();
-    final private VisualizationService service = new VisualizationService();
+    final private VisualizationService service = new VisualizationServiceIbatisImpl();
 
     // we need this
     final public static String PARAM_VISUALIZATION_ID = "visId";
@@ -83,7 +83,7 @@ public class GetStatsLayerSLDHandler extends ActionHandler {
                 params.getHttpParam(PARAM_LAYER_ID), -1);
         final int visId = ConversionHelper.getInt(
                 params.getHttpParam(PARAM_VISUALIZATION_ID), -1);
-        final StatsVisualization vis = helper.getVisualization(
+        final StatsVisualization vis = service.getVisualization(
                 statsLayerId,
                 visId,
                 params.getHttpParam(PARAM_VISUALIZATION_CLASSES),
