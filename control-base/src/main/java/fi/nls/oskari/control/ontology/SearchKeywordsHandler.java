@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.ontology;
 
-import fi.mml.map.mapwindow.service.db.LayerClassService;
-import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -11,10 +9,10 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.domain.map.Layer;
-import fi.nls.oskari.domain.map.wms.LayerClass;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
@@ -234,32 +232,19 @@ public class SearchKeywordsHandler extends ActionHandler {
     /* ********************************************************************************************
      * TODO: The following methods shouldn't be here, but on some timer class populating the keywords
      */
-    private static LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
+    private static OskariLayerService layerService = ServiceFactory.getMapLayerService();
     private static final WFSCapabilitiesParser wfsCapabilitiesparser = new WFSCapabilitiesParser();
     private GetLayerKeywords getLayerKeywords = new GetLayerKeywords();
     private final String[] EMPTY_RESULT = new String[0];
 
     private void populateKeywords() {
-        final List<LayerClass> allLayerClass = layerClassService.findOrganizationalStructure();
-        for (LayerClass parentLayerClass : allLayerClass) {
-            log.debug("parentLayerClass", parentLayerClass.getName(PropertyUtil.getDefaultLanguage()),
-                    "- children", parentLayerClass.getChildren().size(), "- layers", parentLayerClass.getMapLayers().size());
-            List<LayerClass> childLayerClass = parentLayerClass.getChildren();
-            for (Layer layer : parentLayerClass.getMapLayers()) {
-                log.debug("  layer", layer.getName(PropertyUtil.getDefaultLanguage()));
-                populateKeywordsForLayer(layer);
-            }
-            for (LayerClass layerClass : childLayerClass) {
-                log.debug("  layerClass", layerClass.getName(PropertyUtil.getDefaultLanguage()), "- children", childLayerClass.size(), "- layers", parentLayerClass.getMapLayers().size());
-                for (Layer layer : layerClass.getMapLayers()) {
-                    log.debug("    layer", layer.getName(PropertyUtil.getDefaultLanguage()));
-                    populateKeywordsForLayer(layer);
-                }
-            }
+        List<OskariLayer> layers = layerService.findAll();
+        for(OskariLayer layer : layers) {
+            populateKeywordsForLayer(layer);
         }
     }
 
-    public void populateKeywordsForLayer(final Layer layer) /*throws ServiceException*/ {
+    public void populateKeywordsForLayer(final OskariLayer layer) /*throws ServiceException*/ {
 
         final String[] keys = getKeywordsForLayer(layer);
         for(String key : keys) {
@@ -272,22 +257,22 @@ public class SearchKeywordsHandler extends ActionHandler {
         log.debug("Added", keys.length, "keywords for layer", layer.getId());
     }
 
-    private String[] getKeywordsForLayer(final Layer layer) {
+    private String[] getKeywordsForLayer(final OskariLayer layer) {
         Set<String> layerKeywords = new HashSet<String>();
         try {
-            if(Layer.TYPE_WMS.equals(layer.getType())) {
-                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getWmsName());
+            if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
+                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getName());
                 if (wms == null || wms.getKeywords() == null) {
                     log.warn("Error parsing keywords for layer", layer);
                     return EMPTY_RESULT;
                 }
                 layerKeywords.addAll(Arrays.asList(wms.getKeywords()));
             }
-            else if(Layer.TYPE_WFS.equals(layer.getType())) {
+            else if(OskariLayer.TYPE_WFS.equals(layer.getType())) {
                 layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));
             }
-            if (layer.getDataUrl() != null) {
-                getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getDataUrl());
+            if (layer.getMetadataId() != null) {
+                getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getMetadataId());
             }
             return layerKeywords.toArray(new String[layerKeywords.size()]);
         } catch (Exception e) {

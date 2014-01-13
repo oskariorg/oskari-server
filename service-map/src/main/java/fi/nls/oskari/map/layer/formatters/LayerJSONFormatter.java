@@ -1,6 +1,5 @@
 package fi.nls.oskari.map.layer.formatters;
 
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -24,10 +23,10 @@ public class LayerJSONFormatter {
     // map different layer types for JSON formatting
     private static Map<String, LayerJSONFormatter> typeMapping = new HashMap<String, LayerJSONFormatter>();
     static {
-        typeMapping.put(Layer.TYPE_WMS, new LayerJSONFormatterWMS());
-        typeMapping.put(Layer.TYPE_WFS, new LayerJSONFormatterWFS());
-        typeMapping.put(Layer.TYPE_WMTS, new LayerJSONFormatterWMTS());
-        typeMapping.put(Layer.TYPE_STATS, new LayerJSONFormatterStats());
+        typeMapping.put(OskariLayer.TYPE_WMS, new LayerJSONFormatterWMS());
+        typeMapping.put(OskariLayer.TYPE_WFS, new LayerJSONFormatterWFS());
+        typeMapping.put(OskariLayer.TYPE_WMTS, new LayerJSONFormatterWMTS());
+        typeMapping.put(OskariLayer.TYPE_STATS, new LayerJSONFormatterStats());
     }
 
     private static LayerJSONFormatter getFormatter(final String type) {

@@ -4,7 +4,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -87,7 +86,7 @@ public class GetWfsFeatureDataHandler extends ActionHandler {
             final OskariLayer layer = mapLayerService.find(layerId);
             final String layerType = layer.getType();
 
-            if (Layer.TYPE_WFS.equals(layerType)) {
+            if (OskariLayer.TYPE_WFS.equals(layerType)) {
                 JSONArray features = null;
                 try {
                     // Geojson geometry is used for selecting features

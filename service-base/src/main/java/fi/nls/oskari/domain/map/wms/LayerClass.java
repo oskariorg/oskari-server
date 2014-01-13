@@ -7,6 +7,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Deprecated: use LayerGroup instead!
+ */
+@Deprecated
 public class LayerClass extends JSONLocalizedName implements Comparable<LayerClass> {
 
 	private int id;

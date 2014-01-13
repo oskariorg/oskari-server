@@ -1,6 +1,6 @@
 package fi.nls.oskari.wfs;
 
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -25,8 +25,8 @@ public class WFSCapabilitiesParser {
     private final String[] EMPTY_RESULT = new String[0];
     private final String locale = PropertyUtil.getDefaultLanguage();
 
-    public String[] getKeywordsForLayer(Layer layer) throws ServiceException {
-        if(!Layer.TYPE_WFS.equals(layer.getType())) {
+    public String[] getKeywordsForLayer(OskariLayer layer) throws ServiceException {
+        if(!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             return EMPTY_RESULT;
         }
         WFSLayerConfiguration conf = wfsService.findConfiguration(layer.getId());

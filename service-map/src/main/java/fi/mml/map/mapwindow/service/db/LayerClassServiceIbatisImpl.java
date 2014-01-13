@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * LayerClass implementation for Ibatis
  * 
- *
+ * DEPRECATED: Use LayerGroupService instead!
  */
 @Deprecated
 public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> implements LayerClassService {

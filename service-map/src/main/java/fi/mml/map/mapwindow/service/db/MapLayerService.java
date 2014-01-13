@@ -13,6 +13,7 @@ import fi.nls.oskari.service.db.BaseService;
  * Interface for Layerclass service
  * 
  *
+ * DEPRECATED: Use OskariLayerService instead!
  */
 @Deprecated
 public interface MapLayerService extends BaseService<Layer> {

@@ -1,6 +1,6 @@
 package fi.nls.oskari.domain.map.wms;
 
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -11,19 +11,18 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author SMAKINEN
  */
-@Deprecated
-public class MapLayerTest {
+public class OskariLayerTest {
 
     @Test
     public void testSimplifiedWmsURL() {
-        Layer layer = new MapLayer();
-        assertEquals("Simplified wms url should be empty if wms url is not set", "", layer.getSimplifiedWmsUrl());
+        OskariLayer layer = new OskariLayer();
+        assertEquals("Simplified wms url should be empty if wms url is not set", "", layer.getSimplifiedUrl());
 
-        layer.setWmsUrl(null);
-        assertEquals("Simplified wms url should be empty if wms url is null", "", layer.getSimplifiedWmsUrl());
+        layer.setUrl(null);
+        assertEquals("Simplified wms url should be empty if wms url is null", "", layer.getSimplifiedUrl());
 
-        layer.setWmsUrl("");
-        assertEquals("Simplified wms url should be empty if wms url is empty", "", layer.getSimplifiedWmsUrl());
+        layer.setUrl("");
+        assertEquals("Simplified wms url should be empty if wms url is empty", "", layer.getSimplifiedUrl());
 
         // key is wms url, value is simplified version
         final Map<String, String> tests = new HashMap<String, String>();
@@ -47,8 +46,8 @@ public class MapLayerTest {
         tests.put(" paikkatietoikkuna.fi ", "paikkatietoikkuna.fi");
 
         for(String wmsurl : tests.keySet()) {
-            layer.setWmsUrl(wmsurl);
-            assertEquals("Simplified wms url should be '" + tests.get(wmsurl) + "' if wms url is '" + wmsurl + "'", tests.get(wmsurl), layer.getSimplifiedWmsUrl());
+            layer.setUrl(wmsurl);
+            assertEquals("Simplified wms url should be '" + tests.get(wmsurl) + "' if wms url is '" + wmsurl + "'", tests.get(wmsurl), layer.getSimplifiedUrl());
         }
     }
 }

@@ -5,7 +5,6 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -106,7 +105,7 @@ public class GetWmsServicesHandler extends ActionHandler {
         try {
 
             for (OskariLayer ml : allMapLayers) {
-                if(!Layer.TYPE_WMS.equals(ml.getType())) {
+                if(!OskariLayer.TYPE_WMS.equals(ml.getType())) {
                     continue;
                 }
                 JSONObject mapProperties = new JSONObject();

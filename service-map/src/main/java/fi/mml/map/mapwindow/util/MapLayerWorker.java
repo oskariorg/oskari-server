@@ -31,7 +31,7 @@ import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
- * 
+ * DEPRECATED: Use OskariLayerWorker instead!
  */
 @Deprecated
 public class MapLayerWorker {
