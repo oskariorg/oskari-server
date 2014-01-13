@@ -22,6 +22,7 @@ CREATE TABLE portti_wfs_layer
   feature_type character varying(4000),
   selected_feature_params character varying(4000) default '{}',
   feature_params_locales text,
+  properties character varying(4000),
   geometry_type character varying(8),
   selection_sld_style_id integer,
   get_map_tiles boolean NOT NULL DEFAULT true,
