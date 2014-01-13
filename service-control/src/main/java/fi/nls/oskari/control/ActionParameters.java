@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 
 /**
@@ -126,7 +127,15 @@ public class ActionParameters {
     public String getHttpParam(final String key, final String defaultValue) {
         return RequestHelper.getString(getRequest().getParameter(key), defaultValue);
     }
-
+    /**
+     * Returns a parameter as integer or default value if not present/can't be parsed
+     * @param key parameter name for an integer parameter
+     * @param defaultValue value to be returned if parameter is not present in the request or can't be parsed
+     * @return cleaned up value for the parameter or given defaultValue if not found
+     */
+    public int getHttpParam(final String key, final int defaultValue) {
+        return ConversionHelper.getInt(getHttpParam(key), defaultValue);
+    }
     /**
      * Returns value of a header field matching given key
      * @param key header name

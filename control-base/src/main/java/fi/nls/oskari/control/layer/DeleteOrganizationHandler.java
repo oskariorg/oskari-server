@@ -1,21 +1,17 @@
 package fi.nls.oskari.control.layer;
 
-import java.util.List;
-import fi.mml.map.mapwindow.service.db.LayerClassService;
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.domain.map.Layer;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.ServiceFactory;
 
 /**
  * Admin WMS organization layer delete
@@ -25,32 +21,24 @@ import fi.nls.oskari.util.ConversionHelper;
 @OskariActionRoute("DeleteOrganization")
 public class DeleteOrganizationHandler extends ActionHandler {
 
-    private LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
-    private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
+    private LayerGroupService groupService = ServiceFactory.getLayerGroupService();
     private static final Logger log = LogFactory.getLogger(DeleteOrganizationHandler.class);
-    private static final String PARM_LAYERCLASS_ID = "layercl_id";
+    private static final String PARAM_GROUP_ID = "id";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final String layercl_id = params.getHttpParam(PARM_LAYERCLASS_ID, "");
-        final int layclid = ConversionHelper.getInt(layercl_id, 0);
+        final int groupId = ConversionHelper.getInt(params.getRequiredParam(PARAM_GROUP_ID), -1);
         
-        if(!mapLayerService.hasPermissionToUpdate(params.getUser(), layclid)) {
-            throw new ActionDeniedException("Unauthorized user tried to remove class layer and its map layers - layer id=" + layercl_id);
+        if(!groupService.hasPermissionToUpdate(params.getUser(), groupId)) {
+            throw new ActionDeniedException("Unauthorized user tried to remove layer group and its map layers - group id=" + groupId);
         }
        
         try {
-            List<Layer> mls = mapLayerService.findWithLayerClass(layclid);
-            
-            for (Layer ml : mls) {
-                mapLayerService.delete(ml.getId());
-            }
-
-            layerClassService.delete(layclid);
-
+            // cascade in db will handle that layers are deleted
+            groupService.delete(groupId);
         } catch (Exception e) {
-            throw new ActionException("Couldn't delete class layer and its map layers - id:" + layercl_id,
+            throw new ActionException("Couldn't delete layer group and its map layers - id:" + groupId,
                     e);
         }
     }

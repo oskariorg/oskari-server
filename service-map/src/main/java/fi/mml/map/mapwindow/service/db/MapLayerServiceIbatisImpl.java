@@ -32,6 +32,7 @@ import javax.xml.namespace.QName;
  * LayerClass implementation for Ibatis
  *
  */
+@Deprecated
 public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         implements MapLayerService {
 

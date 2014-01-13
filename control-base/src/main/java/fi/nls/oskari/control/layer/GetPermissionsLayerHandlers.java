@@ -1,9 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.LayerClassService;
-import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
@@ -11,7 +7,9 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
@@ -27,8 +25,7 @@ import java.util.List;
 @OskariActionRoute("GetPermissionsLayerHandlers")
 public class GetPermissionsLayerHandlers extends ActionHandler {
 
-    private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
-    private static LayerClassService mapClassService = new LayerClassServiceIbatisImpl();
+    private static OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static String JSON_ID = "id";
     private static String JSON_NAME = "name";
@@ -49,47 +46,48 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         String externalId = params.getHttpParam("externalId", "");
         String externalType = params.getHttpParam("externalType", "");
 
-        List<Layer> layers = mapLayerService.findAll();
+        List<OskariLayer> layers = mapLayerService.findAll();
         Collections.sort(layers);
         List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
 
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_PUBLISH);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_PUBLISH);
         List<String> resourcesview = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_LAYER);
         List<String> resourcesviewPublished = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
 
         List<String> resourcesdownload = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_DOWNLOAD);
+                Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType,Permissions.PERMISSION_TYPE_DOWNLOAD);
 
         JSONObject root = new JSONObject();
 
-        for (Layer layer : layers) {
+        for (OskariLayer layer : layers) {
 
             try {
                 JSONObject realJson = new JSONObject();
                 realJson.put(JSON_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
-                realJson.put(JSON_NAMES_SPACE, layer.getWmsUrl());
-                realJson.put(JSON_RESOURCE_NAME, layer.getWmsName());
+                realJson.put(JSON_NAMES_SPACE, layer.getUrl());
+                realJson.put(JSON_RESOURCE_NAME, layer.getName());
+                final String permissionKey = layer.getUrl() + "+" + layer.getName();
 
-                if (resources.contains(layer.getWmsUrl() + "+" + layer.getWmsName())) {
+                if (resources.contains(permissionKey)) {
                     realJson.put(JSON_IS_SELECTED, true);
                 } else {
                     realJson.put(JSON_IS_SELECTED, false);
                 }
 
-                if (resourcesview != null && resourcesview.contains(layer.getWmsUrl() + "+" + layer.getWmsName())) {
+                if (resourcesview != null && resourcesview.contains(permissionKey)) {
                     realJson.put(JSON_IS_VIEW_SELECTED, true);
                 } else {
                     realJson.put(JSON_IS_VIEW_SELECTED, false);
                 }
-                if (resourcesviewPublished != null && resourcesviewPublished.contains(layer.getWmsUrl() + "+" + layer.getWmsName())) {
+                if (resourcesviewPublished != null && resourcesviewPublished.contains(permissionKey)) {
                     realJson.put(JSON_IS_VIEW_PUBLISHED_SELECTED, true);
                 } else {
                     realJson.put(JSON_IS_VIEW_PUBLISHED_SELECTED, false);
                 }
 
-                if (resourcesdownload != null && resourcesdownload.contains(layer.getWmsUrl() + "+" + layer.getWmsName())) {
+                if (resourcesdownload != null && resourcesdownload.contains(permissionKey)) {
                     realJson.put(JSON_IS_DOWNLOAD_SELECTED, true);
                 } else {
                     realJson.put(JSON_IS_DOWNLOAD_SELECTED, false);

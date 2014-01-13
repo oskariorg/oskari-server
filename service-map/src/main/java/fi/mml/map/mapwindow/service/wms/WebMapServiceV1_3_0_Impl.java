@@ -47,7 +47,10 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 	
 	/** Logger */
 	private Logger log = LogFactory.getLogger(WebMapServiceV1_3_0_Impl.class);
-	
+
+    public String getVersion() {
+        return "1.3.0";
+    }
 	/**
 	 * Creates a new object
 	 * 

@@ -14,6 +14,7 @@ import java.util.List;
  * 
  *
  */
+@Deprecated
 public class LayerClassServiceIbatisImpl extends BaseIbatisService<LayerClass> implements LayerClassService {
 
 	private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();

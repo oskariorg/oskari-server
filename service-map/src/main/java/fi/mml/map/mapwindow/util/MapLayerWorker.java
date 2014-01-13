@@ -33,6 +33,7 @@ import java.util.*;
  * Worker class for rendering json objects from domain objects
  * 
  */
+@Deprecated
 public class MapLayerWorker {
 
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
@@ -62,7 +63,7 @@ public class MapLayerWorker {
 
         List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_MAP_LAYER, user,
                         Permissions.PERMISSION_TYPE_VIEW_LAYER);
 
         List<String> groupResources = permissionsService
@@ -107,7 +108,7 @@ public class MapLayerWorker {
         final String permissionType = getPermissionType(isPublished);
         final List<String> resources = permissionsService
                 .getResourcesWithGrantedPermissions(
-                        Permissions.RESOURCE_TYPE_WMS_LAYER, user,
+                        Permissions.RESOURCE_TYPE_MAP_LAYER, user,
                         permissionType);
 
         final List<String> groupResources = permissionsService
@@ -385,7 +386,7 @@ public class MapLayerWorker {
 
             if (Layer.TYPE_WMS.equals(layer.getType())) {
                 populateWmsJSON(layerJson, layer);
-            } else if (Layer.WMTS_LAYER.equals(layer.getType())) {
+            } else if (Layer.TYPE_WMTS.equals(layer.getType())) {
                 populateWmtsJSON(layerJson, layer);
             } else if (Layer.TYPE_WFS.equals(layer.getType())) {
                 populateWfsJSON(layerJson, layer);
@@ -503,7 +504,7 @@ public class MapLayerWorker {
             if ( styleList.size() > 0) {
                JSONArray arr = new JSONArray();
                for (WFSSLDStyle style : styleList) {
-                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());;
+                 JSONObject obj =  createStylesJSON(style.getName(), style.getName(), style.getName());
                  if(obj.length() > 0) {
                      arr.put(obj);
                  }

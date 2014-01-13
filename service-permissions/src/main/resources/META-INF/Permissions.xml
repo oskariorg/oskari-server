@@ -232,10 +232,10 @@
       FROM
             oskari_resource u,
             oskari_permission p,
-            portti_maplayer l 
+            oskari_maplayer l
       WHERE
             u.id = p.oskari_resource_id AND
-            u.resource_mapping = l.wmsurl || '+' || l.wmsname
+            u.resource_mapping = l.url || '+' || l.name
             <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
@@ -345,12 +345,12 @@
 		FROM
             oskari_resource osr,
             oskari_permission op,
-            portti_maplayer map
+            oskari_maplayer map
 		WHERE
             op.permission = 'VIEW_LAYER' AND
             osr.id = op.oskari_resource_id AND
             osr.resource_type = 'maplayer' AND
-            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+            osr.resource_mapping = map.url || '+' || map.name AND
             op.external_Id IN
 		    <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
@@ -366,12 +366,12 @@
         FROM
         oskari_resource osr,
         oskari_permission op,
-        portti_maplayer map
+        oskari_maplayer map
         WHERE
         (op.permission = 'VIEW_LAYER' OR op.permission = 'VIEW_PUBLISHED') AND
         osr.id = op.oskari_resource_id AND
         osr.resource_type = 'maplayer' AND
-        osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+        osr.resource_mapping = map.url || '+' || map.name AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#
@@ -385,12 +385,12 @@
         FROM 
             oskari_resource osr,
             oskari_permission op,
-            portti_maplayer map
+            oskari_maplayer map
         WHERE
             op.permission = 'VIEW_LAYER' AND
             osr.id = op.oskari_resource_id AND
             osr.resource_type = 'maplayer' AND
-            osr.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+            osr.resource_mapping = map.url || '+' || map.name AND
             op.external_Id IN
             <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
@@ -406,12 +406,12 @@
         FROM
         oskari_resource ore,
         oskari_permission op,
-        portti_maplayer map
+        oskari_maplayer map
         WHERE
         op.permission = 'EDIT_LAYER' AND
         ore.id = op.oskari_resource_id AND
         ore.resource_type = 'maplayer' AND
-        ore.resource_mapping = map.wmsurl || '+' || map.wmsname AND
+        ore.resource_mapping = map.url || '+' || map.name AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#

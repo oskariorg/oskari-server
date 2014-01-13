@@ -9,6 +9,8 @@ import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.stats.VisualizationService;
+import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -23,8 +25,8 @@ public class GetStatsTileHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsTileHandler.class);
     final private static String PARAM_LAYER_ID = "LAYERID";
-    private final StatsVisualizationHelper helper = new StatsVisualizationHelper(); 
 
+    private final VisualizationService service = new VisualizationServiceIbatisImpl();
 
     final private static String PARAM_VISUALIZATION_ID = "VIS_ID";
     final private static String PARAM_VISUALIZATION_NAME = "VIS_NAME"; // name=ows:Kunnat2013
@@ -136,7 +138,7 @@ public class GetStatsTileHandler extends ActionHandler {
                 params.getHttpParam(PARAM_LAYER_ID), -1);
         final int visId = ConversionHelper.getInt(
                 params.getHttpParam(PARAM_VISUALIZATION_ID), -1);
-        return helper.getVisualization(
+        return service.getVisualization(
                 statsLayerId, 
                 visId,
                 params.getHttpParam(PARAM_VISUALIZATION_CLASSES),

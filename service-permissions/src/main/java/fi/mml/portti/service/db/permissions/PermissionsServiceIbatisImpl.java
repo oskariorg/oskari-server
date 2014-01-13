@@ -31,13 +31,10 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			UniqueResourceName uniqueResourceName, String externalId, String externalIdType, String permissionsType) {
 		
 		// check if row already exists in the "oskari_resource" table
-
 		Map<String, String> parameterResource = new HashMap<String, String>();
 
         parameterResource.put("resourceType", uniqueResourceName.getType());
         parameterResource.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
-
-        int resourceId = -1;
 
         Integer resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
 
@@ -46,7 +43,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
            resourceIdInteger = queryForObject(getNameSpace() + ".findResource", parameterResource);
 		}
 
-        resourceId = resourceIdInteger.intValue();
+        int resourceId = resourceIdInteger.intValue();
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("oskariResourceId", new Integer(resourceId));
@@ -193,7 +190,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
     public Set<String> getPublishPermissions() {
 
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
+		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
 		List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findPublishPermissions", parameterMap);
 		
 		Set<String> permissions = new HashSet<String>();
@@ -209,7 +206,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
     public Set<String> getEditPermissions() {
 
         Map<String, String> parameterMap = new HashMap<String, String>();
-        parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_WMS_LAYER);
+        parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
         List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findEditPermissions", parameterMap);
 
         Set<String> permissions = new HashSet<String>();

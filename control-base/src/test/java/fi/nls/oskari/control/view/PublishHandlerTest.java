@@ -2,11 +2,9 @@ package fi.nls.oskari.control.view;
 
 import fi.mml.map.mapwindow.service.db.MyPlacesService;
 import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
-import fi.mml.map.mapwindow.util.MapLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.BundleService;
@@ -21,9 +19,6 @@ import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.*;
 
