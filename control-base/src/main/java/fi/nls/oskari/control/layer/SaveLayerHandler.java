@@ -51,7 +51,7 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // update cache - do this before creating json!
-        final boolean cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+        final boolean cacheUpdated = updateCache(ml, params.getHttpParam("version"));
 
         // construct response as layer json
         final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());
@@ -102,6 +102,12 @@ public class SaveLayerHandler extends ActionHandler {
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
 
+                if(ml.isCollection()) {
+                    // update the name with the id for permission mapping
+                    ml.setName(ml.getId() + "_group");
+                    mapLayerService.update(ml);
+                }
+
                 final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
 
                 addPermissionsForRoles(ml, params.getUser(), externalIds);
@@ -118,9 +124,17 @@ public class SaveLayerHandler extends ActionHandler {
         }
     }
 
-    private boolean updateCache(OskariLayer ml, final String version) {
+    private boolean updateCache(OskariLayer ml, final String version) throws ActionException {
         if(ml == null) {
             return false;
+        }
+        if(ml.isCollection()) {
+            // just be happy for collection layers, nothing to do
+            return true;
+        }
+        if(version == null) {
+            // check this here since it's not always required (for collection layers)
+            throw new ActionParamsException("Version is required!");
         }
         // retrieve capabilities
         final String wmsUrl = getWmsUrl(ml.getUrl());
@@ -167,6 +181,13 @@ public class SaveLayerHandler extends ActionHandler {
     private void handleRequestToMapLayer(final ActionParameters params, OskariLayer ml) throws ActionParamsException {
 
         HttpServletRequest request = params.getRequest();
+
+        if(ml.getId() == -1) {
+            // setup type and parent for new layers only
+            ml.setType(params.getHttpParam("layerType"));
+            ml.setParentId(params.getHttpParam("parentId", -1));
+        }
+
         // organization id
         final LayerGroup group = layerGroupService.find(params.getHttpParam("groupId", -1));
         ml.addGroup(group);
@@ -182,28 +203,28 @@ public class SaveLayerHandler extends ActionHandler {
             }
         }
 
+        InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
+        ml.addInspireTheme(theme);
+
+        ml.setBaseMap(ConversionHelper.getBoolean(params.getHttpParam("isBase"), false));
+
+        if(ml.isCollection()) {
+            // ulr is needed for permission mapping, name is updated after we get the layer id
+            ml.setUrl(ml.getType());
+            // the rest is not relevant for collection layers
+            return;
+        }
         ml.setName(params.getRequiredParam("wmsName"));
         ml.setUrl(params.getRequiredParam("wmsUrl"));
 
         ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
         ml.setStyle(params.getHttpParam("style", ml.getStyle()));
-
         ml.setMinScale(ConversionHelper.getDouble(params.getHttpParam("minScale"), ml.getMinScale()));
         ml.setMaxScale(ConversionHelper.getDouble(params.getHttpParam("maxScale"), ml.getMaxScale()));
 
         ml.setLegendImage(params.getHttpParam("legendImage", ml.getLegendImage()));
-
-        InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
-        ml.addInspireTheme(theme);
-
         ml.setMetadataId(params.getHttpParam("metadataId", ml.getMetadataId()));
-
-        if(ml.getId() == -1) {
-            // for new layers
-            ml.setType(params.getHttpParam("layerType"));
-        }
         ml.setTileMatrixSetId(params.getHttpParam("tileMatrixSetId"));
-
         ml.setTileMatrixSetData(params.getHttpParam("tileMatrixSetData"));
 
         final String xslt = request.getParameter("xslt");
@@ -220,10 +241,10 @@ public class SaveLayerHandler extends ActionHandler {
         permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
         permissions.getUniqueResourceName().setNamespace(ml.getUrl());
         permissions.getUniqueResourceName().setName(ml.getName());
-
         // insert permissions
         for (String externalId : externalIds) {
-            if (user.hasRoleWithId(ConversionHelper.getLong(externalId, -1))) {
+            final long extId = ConversionHelper.getLong(externalId, -1);
+            if (extId != -1 && user.hasRoleWithId(extId)) {
                 permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
                 permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_EDIT_LAYER);
             }

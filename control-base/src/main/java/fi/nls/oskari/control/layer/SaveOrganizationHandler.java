@@ -3,10 +3,7 @@ package fi.nls.oskari.control.layer;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.wms.LayerClass;
@@ -44,6 +41,9 @@ public class SaveOrganizationHandler extends ActionHandler {
             final LayerGroup group = new LayerGroup();
             group.setId(groupId);
             handleLocalizations(group, NAME_PREFIX, request);
+            if(group.getLocale() == null) {
+                throw new ActionParamsException("Missing names for group!");
+            }
 
             // ************** UPDATE ************************
             if (groupId != -1) {
@@ -67,7 +67,7 @@ public class SaveOrganizationHandler extends ActionHandler {
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer class", e);
+            throw new ActionException("Couldn't update/insert map layer group", e);
         }
     }
 
