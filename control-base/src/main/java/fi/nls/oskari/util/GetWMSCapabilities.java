@@ -29,7 +29,7 @@ public class GetWMSCapabilities {
             return response;
         }
         catch (IOException ex) {
-            throw new ActionException("Couldnt read server response from url.", ex);
+            throw new ActionException("Couldn't read server response from url.", ex);
         }
     }
     // Check if not UTF-8

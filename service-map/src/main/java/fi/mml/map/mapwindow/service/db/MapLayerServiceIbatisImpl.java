@@ -31,7 +31,9 @@ import javax.xml.namespace.QName;
 /**
  * LayerClass implementation for Ibatis
  *
+ * DEPRECATED: Use OskariLayerService instead!
  */
+@Deprecated
 public class MapLayerServiceIbatisImpl extends BaseIbatisService<Layer>
         implements MapLayerService {
 

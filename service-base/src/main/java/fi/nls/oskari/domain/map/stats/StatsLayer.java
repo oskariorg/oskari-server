@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.nls.oskari.domain.map.Layer;
 
+@Deprecated
 public class StatsLayer extends Layer {
 	private List<StatsVisualization> visualizations = new ArrayList<StatsVisualization>();
 

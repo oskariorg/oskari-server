@@ -69,9 +69,9 @@
         },
         { "id" : "myplaces2",
             "config" : { 
-                "featureNS" : "http://oskari.org/myplaces",
+                "featureNS" : "http://www.oskari.org",
                 "queryUrl" : "[REPLACED BY HANDLER]",
-                 "wmsUrl" : "/?action_route=MyPlacesTile&myCat="
+                 "wmsUrl" : "/oskari-map/?action_route=MyPlacesTile&myCat="
              }
         },
     ]

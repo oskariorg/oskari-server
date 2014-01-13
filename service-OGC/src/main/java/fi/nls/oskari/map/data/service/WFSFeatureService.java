@@ -25,9 +25,6 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Geometry;
 
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.service.ogc.executor.GetFeaturesWorker;
 import fi.mml.portti.service.ogc.executor.WFSResponseCapsule;
 import fi.mml.portti.service.ogc.executor.WfsExecutorService;
@@ -51,8 +48,6 @@ public class WFSFeatureService {
     private Logger log = LogFactory.getLogger(WFSFeatureService.class);
     // GetGeoPointDataService
 
-    private final MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
-
     public JSONArray getWFSFeatures(final int zoom, JSONObject geojs,
             final int layerId) {
         final double lat = 0.0;
@@ -62,7 +57,7 @@ public class WFSFeatureService {
 
     public JSONArray getWFSFeatures(final double lat, final double lon,
             final int zoom, JSONObject geojs, final int layerId) {
-        final WFSLayer wfsLayer = mapLayerService.findWFSLayer(layerId);
+        final WFSLayer wfsLayer = WFSCompatibilityHelper.getLayer(layerId);
         final List<Future<WFSResponseCapsule>> futures = new ArrayList<Future<WFSResponseCapsule>>();
         final Map<String, FeatureType> futureFeatureTypes = new HashMap<String, FeatureType>();
 

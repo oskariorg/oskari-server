@@ -1,7 +1,7 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
+import fi.mml.map.mapwindow.service.db.CapabilitiesCacheServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.RemoteServiceDownException;
 import fi.nls.oskari.domain.map.CapabilitiesCache;
 import fi.nls.oskari.log.LogFactory;
@@ -18,7 +18,7 @@ public class WebMapServiceFactory {
 
 	/** Logger */
 	private static Logger log = LogFactory.getLogger(WebMapServiceFactory.class);
-	private static MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
+    private static final CapabilitiesCacheService capabilitiesCacheService = new CapabilitiesCacheServiceIbatisImpl();
     static long wmsCachedtime = 0;
     static long wmsExpirationTime = 12*60*60*1000;
     static Map<String, WebMapService> wmsCache = new HashMap<String, WebMapService>();
@@ -46,7 +46,7 @@ public class WebMapServiceFactory {
 		if (wmsCache.containsKey("wmsCache_"+layerId)) {
 			wms = wmsCache.get("wmsCache_"+layerId);
 		} else {
-            CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(layerId);
+            CapabilitiesCache cc = capabilitiesCacheService.find(layerId);
             if (cc != null && "1.3.0".equals(cc.getVersion().trim())) {
                 wms = new WebMapServiceV1_3_0_Impl("from DataBase", cc.getData().trim(), layerName);
             } else if (cc != null && "1.1.1".equals(cc.getVersion().trim())) {

@@ -11,6 +11,7 @@ import java.util.*;
 /**
  * This class represents WMS layer.
  */
+@Deprecated
 public class MapLayer extends Layer {
 	
 	public MapLayer() {

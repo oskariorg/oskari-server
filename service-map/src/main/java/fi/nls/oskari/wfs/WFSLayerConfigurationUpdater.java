@@ -23,5 +23,5 @@ public class WFSLayerConfigurationUpdater { //implements Job {
         // this can be done last because we have some conf @ redis already
         JedisManager.publish(LAYER_CHANNEL, "updated");
     } */
- 
+
 }

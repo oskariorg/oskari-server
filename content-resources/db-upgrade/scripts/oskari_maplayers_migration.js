@@ -9,7 +9,8 @@ module.exports = function(client) {
     }
 
     // 1. clear any previous migrations, db constraints will cascade on theme links and maplayers
-    var query = "DELETE FROM oskari_layergroup;";
+      //
+    var query = "DELETE FROM oskari_layergroup; DELETE FROM oskari_resource WHERE resource_mapping LIKE '%_migrated+collection';";
     runSQL(client, query, copyLayerGroups, 'could not clear previous migration!');
   });
 
@@ -74,7 +75,8 @@ module.exports = function(client) {
     // 7. establish new rows to oskari_maplayers from portti_layerclass base/group layers
     function createNewBaseLayers(client) {
 
-        var selectSQL = "SELECT -1 AS parentId, id AS externalId, 'collection' AS type, NOT group_map AS base_map, parent AS groupId, '' AS name, '' AS url, " +
+        var selectSQL = "SELECT -1 AS parentId, id AS externalId, 'collection' AS type, NOT group_map AS base_map, parent AS groupId, " +
+            "id || '_migrated' AS name, 'collection' AS url, " +
             "locale, 100 AS opacity, '' AS style, -1 AS minscale, -1 AS maxscale, legend_image, dataurl AS metadataId, " +
             "'' AS tile_matrix_set_id, '' AS tile_matrix_set_data, '' AS gfi_type, '' AS gfi_xslt " +
             "FROM portti_layerclass WHERE parent IS NOT NULL";
@@ -92,7 +94,59 @@ module.exports = function(client) {
         var linkSQL = "UPDATE oskari_maplayer SET parentId = m.id FROM oskari_maplayer m " +
             "WHERE oskari_maplayer.parentId != -1 AND oskari_maplayer.parentId = m.externalId::integer"
 
-        runSQL(client, linkSQL, updateExternalIds, 'could not link sublayers');
+        //runSQL(client, linkSQL, updateExternalIds, 'could not link sublayers');
+        runSQL(client, linkSQL, copyBaseLayerPermissions, 'could not link sublayers');
+    }
+
+    // 8.5 setup base/group layer permissions
+    function copyBaseLayerPermissions(client) {
+
+        var selectGroupsSQL = "SELECT id, name, url, externalId FROM oskari_maplayer WHERE type='collection'";
+
+        client.query(selectGroupsSQL, function(err, groupLayers) {
+            if(err) {
+                return console.error("Couldn't find collection layers", err);
+            }
+            console.log('got collection layers', groupLayers.rows.length);
+            var count = 0;
+            var resources = [];
+            function permissionsCopied(err) {
+                /*
+                if(err) {
+                    // if previous layer had no permissions -> an error will occur,
+                    // so skipping any errors since this _should_ work :)
+                    console.log("Permissions with resource ids:", resources);
+                    return console.error("Couldn't insert permissions for resource", err);
+                }*/
+                count++;
+                // after all sqls executed -> go to next step
+                if(count == groupLayers.rows.length) {
+                    console.log("Inserted new resources/permissions with resource ids:", resources);
+                    updateExternalIds(client);
+                }
+            }
+            _.forEach(groupLayers.rows, function(layer) {
+                //console.log('Handling layer:', layer);
+                // insert as new resources
+                var insertResource = "INSERT INTO oskari_resource (resource_type, resource_mapping) " +
+                    "VALUES ('maplayer', '" + layer.url + "+" + layer.name + "') " +
+                    "RETURNING ID;";
+
+                client.query(insertResource, function(err, insertResult) {
+                    if(err) {
+                        count++;
+                        return console.error("Couldn't insert grouplayer as resource", layer, err);
+                    }
+                    var resourceId = insertResult.rows[0].id;
+                    resources.push(resourceId);
+                    // copy permissions from matching layerclass
+                    var copyPermissionsSQL = "INSERT INTO oskari_permission (oskari_resource_id, external_type, permission, external_id) " +
+                        "SELECT " + resourceId + ", p.external_type, p.permission, p.external_id FROM oskari_resource r, oskari_permission p " +
+                        "WHERE r.id = p.oskari_resource_id AND r.resource_type='layerclass' AND r.resource_mapping = 'BASE+" + layer.externalid + "'";
+                    runSQL(client, copyPermissionsSQL, permissionsCopied, 'Could not copy permissions for layer: ' + JSON.stringify(layer));
+                });
+            });
+        });
     }
 
     // 9. update externalId with base_ prefix

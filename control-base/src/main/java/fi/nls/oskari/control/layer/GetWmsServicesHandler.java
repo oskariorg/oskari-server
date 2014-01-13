@@ -1,15 +1,15 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.Layer;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +24,7 @@ import java.util.List;
 @OskariActionRoute("GetWmsServices")
 public class GetWmsServicesHandler extends ActionHandler {
 
-    private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
+    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
 
     private static final String KEY_WMSURL = "wmsUrl";
@@ -98,42 +98,45 @@ public class GetWmsServicesHandler extends ActionHandler {
 
     private JSONObject makeMapLayersJson() {
 
-        final List<Layer> allMapLayers = mapLayerService.findAllWMS();
+        final List<OskariLayer> allMapLayers = mapLayerService.findAll();
 
         final JSONObject mapJSON = new JSONObject();
 
         try {
 
-            for (Layer ml : allMapLayers) {
+            for (OskariLayer ml : allMapLayers) {
+                if(!OskariLayer.TYPE_WMS.equals(ml.getType())) {
+                    continue;
+                }
                 JSONObject mapProperties = new JSONObject();
 
                 List<String> languages = ml.getLanguages();
-
+// TODO: maybe use fi.nls.oskari.map.layer.formatters.LayerJSONFormatter?
                 for (String lang : languages) {
                     mapProperties.put("name" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getName(lang));
                     mapProperties.put("title" + Character.toUpperCase(lang.charAt(0)) + lang.substring(1), ml.getTitle(lang));
                 }
 
-                mapProperties.put("wmsName", ml.getWmsName());
-                mapProperties.put("wmsUrl", ml.getWmsUrl());
+                mapProperties.put("wmsName", ml.getName());
+                mapProperties.put("wmsUrl", ml.getUrl());
                 mapProperties.put("opacity", ml.getOpacity());
                 mapProperties.put("style", ml.getStyle());
                 mapProperties.put("minScale", ml.getMinScale());
                 mapProperties.put("maxScale", ml.getMaxScale());
 
-                mapProperties.put("descriptionLink", ml.getDescriptionLink());
+//                mapProperties.put("descriptionLink", ml.getDescriptionLink());
                 mapProperties.put("legendImage", ml.getLegendImage());
 
-                mapProperties.put("inspireTheme", ml.getInspireThemeId());
-                mapProperties.put("dataUrl", ml.getDataUrl());
-                mapProperties.put("metadataUrl", ml.getMetadataUrl());
-                mapProperties.put("orderNumber", ml.getOrdernumber());
+                mapProperties.put("inspireTheme", ml.getInspireTheme().getId());
+                mapProperties.put("dataUrl", ml.getMetadataId());
+//                mapProperties.put("metadataUrl", ml.getMetadataUrl());
+//                mapProperties.put("orderNumber", ml.getOrdernumber());
 
                 mapProperties.put("layerType", ml.getType());
                 mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
                 mapProperties.put("tileMatrixSetData", ml
                         .getTileMatrixSetData());
-
+/*
                 mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
                 mapProperties.put("wms_parameter_layers", ml
                         .getWms_parameter_layers());
@@ -145,13 +148,14 @@ public class GetWmsServicesHandler extends ActionHandler {
                         .getResource_url_client_pattern());
                 mapProperties.put("resource_daily_max_per_ip", ml
                         .getResource_daily_max_per_ip());
-
-                mapProperties.put("xslt", ml.getXslt());
+*/
+                mapProperties.put("xslt", ml.getGfiXslt());
                 mapProperties.put("gfiType", ml.getGfiType());
+                /*
                 mapProperties.put("selection_style", ml.getSelection_style());
                 mapProperties.put("version", ml.getVersion());
                 mapProperties.put("epsg", ml.getEpsg());
-
+*/
                 mapJSON.accumulate(String.valueOf(ml.getId()), mapProperties);
 
             }

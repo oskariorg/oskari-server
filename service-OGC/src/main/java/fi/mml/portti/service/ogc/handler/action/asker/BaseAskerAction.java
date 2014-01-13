@@ -10,6 +10,14 @@ import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import fi.nls.oskari.domain.map.wfs.FeatureType;
+import fi.nls.oskari.domain.map.wfs.SelectedFeatureType;
+import fi.nls.oskari.domain.map.wfs.WFSService;
+import fi.nls.oskari.map.data.service.WFSCompatibilityHelper;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
@@ -23,8 +31,6 @@ import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.xml.sax.SAXException;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.mml.portti.domain.ogc.util.Epsg3067CoordinateReferenceSystem;
 import fi.mml.portti.domain.ogc.util.OskariBBOX;
 import fi.mml.portti.service.ogc.handler.FlowModel;
@@ -51,11 +57,11 @@ public class BaseAskerAction {
 	public static final int DEFAULT_WIDTH = 746;
 
 	public static final int DEFAULT_HEIGHT = 569;
+
+    private WFSLayerConfigurationService wfsConfigService = new WFSLayerConfigurationServiceIbatisImpl();
 	
-	MapLayerService wfsLayerDbService = new MapLayerServiceIbatisImpl();
-	
-	protected MapLayerService getWfsLayerDbService() {
-		return wfsLayerDbService;
+	protected WFSLayerConfigurationService getWfsLayerDbService() {
+		return wfsConfigService;
 	}
 	
 	
@@ -125,9 +131,8 @@ public class BaseAskerAction {
 	
 	/**
 	 * Renders an image from given mapContext
-	 * 
-	 * @param width
-	 * @param height
+	 *
+	 * @param flowModel
 	 * @param mapContext
 	 * @param bounds
 	 * @return
@@ -167,8 +172,7 @@ public class BaseAskerAction {
 
 	/**
 	 * Builds a map context 
-	 * 
-	 * @param bbox
+	 *
 	 * @return
 	 */
 	protected MapContext buildMapContext() {
@@ -211,7 +215,7 @@ public class BaseAskerAction {
   	protected WFSLayer findWFSLayer(FlowModel flowModel) {
   		/* TODO change to real implementation */
   		String id = String.valueOf(flowModel.get(FlowModel.FLOW_PM_WFS_LAYER_ID));  		
-  		WFSLayer wfsLayer = getWfsLayerDbService().findWFSLayer(Integer.parseInt(id));
+  		WFSLayer wfsLayer = WFSCompatibilityHelper.getLayer(Integer.parseInt(id));
   		
   		if (wfsLayer == null) {
 			throw new RuntimeException("Cannot find WFS layer with id '" + id + "'");

@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.data.service.WFSCompatibilityHelper;
 import fi.nls.oskari.util.ConversionHelper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -22,12 +23,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
-import fi.mml.portti.service.ogc.executor.GetFeaturesWorker;
-import fi.mml.portti.service.ogc.executor.WFSResponseCapsule;
-import fi.mml.portti.service.ogc.executor.WfsExecutorService;
-
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.domain.map.wfs.SelectedFeatureType;
 import fi.nls.oskari.domain.map.wfs.WFSLayer;
@@ -39,7 +34,6 @@ import fi.nls.oskari.domain.map.wfs.WFSLayer;
  */
 public class FindFeatureBboxById {
 
-    private static final MapLayerService wfsLayerDbService = new MapLayerServiceIbatisImpl();
     private final static Logger log = LogFactory.getLogger(FindFeatureBboxById.class);
 	/**
 	 * Find bounding box of wfs_features by wfs feature ids
@@ -56,7 +50,7 @@ public class FindFeatureBboxById {
             log.debug("Couldn't get wfs layer id. List:", list);
             return bbox;
         }
-		final WFSLayer wfsLayer = wfsLayerDbService.findWFSLayer(layerId);
+		final WFSLayer wfsLayer = WFSCompatibilityHelper.getLayer(layerId);
         final String[] featureIdsWithQnames = new String[list.size()];
         for(int i = 0; i < featureIdsWithQnames.length; ++i) {
             featureIdsWithQnames[i] = list.get(i).getResourceId();

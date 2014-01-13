@@ -11,9 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @OskariActionRoute("SaveLayerPermission")
 public class SaveLayerPermissionHandler extends ActionHandler {
 
@@ -70,7 +67,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
 
            permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
            permissions.setExternalId(layerPermission.getString("roleId"));
-           permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_WMS_LAYER);
+           permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
            permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
            permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
 

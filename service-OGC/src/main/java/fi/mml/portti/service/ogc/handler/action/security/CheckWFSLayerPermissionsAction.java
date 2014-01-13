@@ -21,12 +21,12 @@ public class CheckWFSLayerPermissionsAction extends BaseAskerAction implements O
 		WFSLayer wfsLayer = findWFSLayer(flowModel);
 		
 		List<String> resources = permissionsService.getResourcesWithGrantedPermissions(
-				Permissions.RESOURCE_TYPE_WMS_LAYER,
+				Permissions.RESOURCE_TYPE_MAP_LAYER,
 				flowModel.getUser(), 
 				Permissions.PERMISSION_TYPE_VIEW_LAYER);
 		
 		List<String> publishedView = permissionsService.getResourcesWithGrantedPermissions(
-                Permissions.RESOURCE_TYPE_WMS_LAYER,
+                Permissions.RESOURCE_TYPE_MAP_LAYER,
                 flowModel.getUser(), 
                 Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
 		

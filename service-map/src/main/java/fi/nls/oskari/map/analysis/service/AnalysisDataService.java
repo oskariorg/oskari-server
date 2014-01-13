@@ -1,7 +1,6 @@
 package fi.nls.oskari.map.analysis.service;
 
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.log.LogFactory;
@@ -13,26 +12,11 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,7 +68,7 @@ public class AnalysisDataService {
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
     public Analysis storeAnalysisData(final String featureset,
-            AnalysisLayer analysislayer, String json, User user) {
+                                      AnalysisLayer analysislayer, String json, User user) {
 
         final String wfsURL = PropertyUtil.get("geoserver.wfs.url");
         final String wpsUser = PropertyUtil.get("geoserver.wms.user");
@@ -175,8 +159,9 @@ public class AnalysisDataService {
 
     /**
      * Merge analyses to one new analyse
+     *
      * @param analysislayer data for new analyse
-     * @param json params of executed analyse
+     * @param json          params of executed analyse
      * @param user
      * @return Analysis (stored analysis)
      */
@@ -200,7 +185,7 @@ public class AnalysisDataService {
         // Get analysis Ids for to merge
         List<Long> ids = analysislayer.getMergeAnalysisIds();
         // at least two layers must be  for merge
-        if(ids.size() < 2) return null;
+        if (ids.size() < 2) return null;
 
         try {
             // Insert analysis row - use old for seed
@@ -228,11 +213,11 @@ public class AnalysisDataService {
 
         return analysis;
     }
+
     /**
      * Get analysis columns to Map
-     * 
-     * @param analysis_id
-     *            Key to one analysis
+     *
+     * @param analysis_id Key to one analysis
      * @return analysis columns
      */
     public Map<String, String> getAnalysisColumns(final String analysis_id) {
@@ -257,12 +242,11 @@ public class AnalysisDataService {
         }
         return null;
     }
-    
+
     /**
      * Get analysis columns to Json string
-     * 
-     * @param analysis_id
-     *            Key to one analysis
+     *
+     * @param analysis_id Key to one analysis
      * @return analysis columns
      */
     public String getAnalysisNativeColumns(final String analysis_id) {
@@ -273,29 +257,29 @@ public class AnalysisDataService {
                     .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
             if (analysis != null) {
                 // fixed extra becauseof WFS
-               // columnNames.add("__fid");
+                // columnNames.add("__fid");
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
                         if (colx.indexOf("=") != -1) {
                             columnNames.add(colx.split("=")[0]);
-                           
+
                         }
                     }
 
                 }
                 // Add geometry for filter and for highlight
                 columnNames.add(ANALYSIS_GEOMETRY_FIELD);
-                return "{default:"+columnNames.toString()+"}";
+                return "{default:" + columnNames.toString() + "}";
             }
         }
         return null;
     }
+
     /**
      * Get analysis column types to Map
      *
-     * @param analysis_id
-     *            Key to one analysis
+     * @param analysis_id Key to one analysis
      * @return analysis columns and types
      */
     public JSONObject getAnalysisNativeColumnTypes(final String analysis_id) {
@@ -329,14 +313,12 @@ public class AnalysisDataService {
     }
 
     /**
-     * @param fieldsin
-     *            raw field names mapping
-     * @param analysis_id
-     *            analysis_id of input analysis
+     * @param fieldsin    raw field names mapping
+     * @param analysis_id analysis_id of input analysis
      * @return List of field names mapping
      */
     public List<String> SwapAnalysisInAnalysisFields(List<String> fieldsin,
-            String analysis_id) {
+                                                     String analysis_id) {
 
         Map<String, String> colnames = this.getAnalysisColumns(analysis_id);
 
@@ -359,10 +341,9 @@ public class AnalysisDataService {
     /**
      * Switch field name to analysis field name
      * (nop, if field name already analysis field name)
-     * @param field_in
-     *            original field name
-     * @param analysis_id
-     *            analysis_id of input analysis
+     *
+     * @param field_in    original field name
+     * @param analysis_id analysis_id of input analysis
      * @return field name in analysis (eg.t1)
      */
     public String SwitchField2AnalysisField(String field_in, String analysis_id) {
@@ -379,13 +360,13 @@ public class AnalysisDataService {
 
         return field_in;
     }
+
     /**
      * Switch field name to original field name
      * (nop, if field name already analysis field name)
-     * @param field_in
-     *            analysis field name (eg. t1)
-     * @param analysis_id
-     *            analysis_id of input analysis
+     *
+     * @param field_in    analysis field name (eg. t1)
+     * @param analysis_id analysis_id of input analysis
      * @return field name in original wfs layer (eg. rakennustunnus)
      */
     public String SwitchField2OriginalField(String field_in, String analysis_id) {
@@ -402,11 +383,10 @@ public class AnalysisDataService {
 
         return field_in;
     }
+
     /**
-     * @param uid
-     *            User uuid
-     * @param lang
-     *            language
+     * @param uid  User uuid
+     * @param lang language
      * @return Analysis layers of one user retreaved by uuid
      * @throws ServiceException
      */
@@ -432,15 +412,15 @@ public class AnalysisDataService {
 
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
+
     /**
-     * @param al
-     *            analyse object
+     * @param al analyse object
      * @return analysis layer data for front mapservice
      * @throws JSONException
      */
     public JSONObject getlayerJSON(Analysis al)
 
-    throws JSONException {
+            throws JSONException {
         JSONObject json = new JSONObject();
         // Add correct analyse layer_id to json
         try {
@@ -522,6 +502,7 @@ public class AnalysisDataService {
 
     /**
      * Get native field names
+     *
      * @param analysis
      * @return
      */
