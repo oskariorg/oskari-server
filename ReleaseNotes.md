@@ -10,6 +10,12 @@ Added ibatis caching for Inspire-themes, views, wfs-layers and backendstatus ope
 
 Added oskariui style classes to index.jsp to fix layout.
 
+### Massive maplayer refactoring
+
+Maplayer DB structure and JSON formatting has been simplified so all layers are now located in oskari_maplayer database table and all JSON formatting should be done with
+fi.mml.map.mapwindow.util.OskariLayerWorker instead of former MapLayerWorker. All layers should now be referenced with OskariLayer instead of (Map-)Layer classes and
+they should be loaded using OskariLayerService instead of MapLayerService. Additional upgrade is required - [instructions can be found here](docs/upgrade/1.17.md).
+
 ## 1.16
 
 ### content-resources
