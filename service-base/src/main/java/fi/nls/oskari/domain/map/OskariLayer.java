@@ -12,7 +12,11 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private static Logger log = LogFactory.getLogger(OskariLayer.class);
 
     private static final String TYPE_COLLECTION = "collection";
-
+    public static final String TYPE_WMS = "wmslayer";
+    public static final String TYPE_WFS = "wfslayer";
+    public static final String TYPE_WMTS = "wmtslayer";
+    public static final String TYPE_STATS = "statslayer";
+    public static final String TYPE_ANALYSIS = "analysislayer";
 
     private int id = -1;
     private int parentId = -1;
@@ -283,6 +287,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setUrl(String url) {
         this.url = url;
+        // reset cached simplified url
+        this.simplifiedUrl = null;
     }
 
     public String getMetadataId() {

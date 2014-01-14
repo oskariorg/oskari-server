@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.nls.oskari.domain.map.Layer;
 
+@Deprecated
 public class WFSLayer extends Layer {
 	private List<WFSService> selectedWfsServices;
 	private List<SelectedFeatureType> selectedFeatureTypes;

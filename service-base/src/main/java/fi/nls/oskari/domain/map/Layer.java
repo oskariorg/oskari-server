@@ -6,6 +6,10 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Date;
 
+/**
+ * Deprecated, use OskariLayer instead!
+ */
+@Deprecated
 public abstract class Layer extends JSONLocalizedNameAndTitle implements Comparable<Layer> {
 
     private Logger log = LogFactory.getLogger(Layer.class);

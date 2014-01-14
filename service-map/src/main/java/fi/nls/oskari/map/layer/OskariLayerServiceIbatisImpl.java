@@ -6,7 +6,6 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.domain.map.Layer;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -36,7 +35,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     // map different layer types
     private static Map<String, Class<OskariLayer>> typeMapping = new HashMap<String, Class<OskariLayer>>();
     static {
-        typeMapping.put(Layer.TYPE_WMS, OskariLayer.class);
+        typeMapping.put(OskariLayer.TYPE_WMS, OskariLayer.class);
     }
 
     /**
