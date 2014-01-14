@@ -38,3 +38,46 @@ With default settings you now have:
 
 6) Open your browser with http://localhost:2373/?viewId=4 or http://localhost:2373/oskari-map?viewId=4  to see a new view loaded from the database.
     You should now see a new map layer of type WFS listed on the maplayers flyout. Add it to map, zoom close to Helsinki for example and you should see points appearing to the map from the wfs service
+
+7) sample conf for transport
+
+    #serviceURL=http://localhost:2373
+
+    #serviceURLSessionParam=jsessionid
+    #serviceURLLiferayPath=?action_route=
+
+    #workerCount=10
+    #redisHostname=localhost
+    #redisPort=6379
+
+    # Supported locales, comma separated and default first
+    #oskari.locales=fi_FI,sv_SE,en_EN
+
+    # base WFS layer id s
+    #analysis.baselayer.id=387
+    #myplaces.baselayer.id=14
+
+    #wfs.extension.analysis=fi.nls.oskari.wfs.extension.AnalysisFilter
+    #wfs.extension.myplaces=fi.nls.oskari.wfs.extension.MyPlacesFilter
+
+    serviceURL=http://localhost:8888
+
+    serviceURLParam=/oskari-map
+    serviceURLSessionParam=jsessionid
+    serviceURLLiferayPath=?action_route=
+
+    workerCount=10
+    redisHostname=localhost
+    redisPort=6379
+
+    # Supported locales, comma separated and default first
+    oskari.locales=fi_FI,sv_SE,en_EN
+
+    # base WFS layer id s
+    analysis.baselayer.id=387
+    myplaces.baselayer.id=14
+
+    wfs.extension.analysis=fi.nls.oskari.wfs.extension.AnalysisFilter
+    wfs.extension.myplaces=fi.nls.oskari.wfs.extension.MyPlacesFilter
+
+
