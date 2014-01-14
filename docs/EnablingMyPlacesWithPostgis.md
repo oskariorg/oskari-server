@@ -20,13 +20,13 @@ Now you are able to create tables with geometry fields.
 
 2) Rebuild oskaridb:
 
-Build 
+Build db structure and data (basic tables, my places and wfs)
 
 * cd  oskari-server/content-resources
-* mvn clean install exec:java -Doskari.dropdb=true -Doskari.setup=postgres-myplaces
+* mvn clean install exec:java -Doskari.dropdb=true -Doskari.setup=postgres-myplaces-wfs2
 	* To get myplaces timestamps working correctly you need to add triggers to myplaces table. SQLs for these are listed in *oskari-server/content-resources/src/main/resouces/sql/PostgreSQL/trigger-myplaces.sql*. You need to run these manually in pgAdmin SQL-window  since at the moment the sql-parser can't handle them correctly.
 
-3) Install GeoServer http://geoserver.org/ (tested with 2.4.0)
+3) Install GeoServer http://geoserver.org/ (tested with 2.4.3)
 
 * Use unique port for GS  e.g. 8082 (not equal to Oskari Jetty run)
 *   If GS is already available, look guidelines in point 9) 
@@ -55,20 +55,24 @@ Uncomment or add the following settings and set them point to your geoserver url
 	myplaces.user=admin
 	myplaces.password=geoserver
 	# Base WFS layer id for myplaces (portti_maplayer and portti_wfs_layer tables)
-	# Find correct id layer later on when my_places wfs layer is inserted
-    myplaces.baselayer.id=0
+	# Find correct id layer later on when my_places wfs base layer is inserted
+    myplaces.baselayer.id=14
     # My places namespace
     myplaces.xmlns=http://www.oskari.org
     # My places namespace prefix
     myplaces.xmlns.prefix=oskari
 
+6) Install WFS transport service, if not yet installed
 
-6) Test Oskari
+* Look at **SettingUpTransportWFS.md**
+
+
+7) Test Oskari
 
 *  Start **eg. http://localhost:8888/oskari-map?viewId=4** in your browser
 * A Logged-in-user should be able to use myplaces (add own points, lines and polygons)
 
-7) If there are troubles to add myplaces, You should check correct  feature namespace (default NS should be *http://www.oskari.org* with prefix *oskari*) and ajax url according to your environment.
+8) If there are troubles to add myplaces, You should check correct  feature namespace (default NS should be *http://www.oskari.org* with prefix *oskari*) and ajax url according to your environment.
 
 Example configuration can be found in 
 **content-resources/src/main/resources/json/views/postgres-myplaces-view.json**
