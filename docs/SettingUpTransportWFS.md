@@ -27,7 +27,7 @@ OR
 
 5.1 Go to `oskari-server/transport`
 5.2 You may need to change config.properties under /transport (serviceURL=http://localhost:? , analysis.baselayer.id=?, myplaces.baselayer.id=?)
-5.2 Compile the transport service with `mvn clean install`
+5.2 Compile the transport service with `mvn clean install` or `mvn clean install -DskipTests`
 5.3 Start the jetty service with `mvn jetty:run`. or use other jetty installation (cd {jettyhome}/bin -> java -jar start.jar )
 
 With default settings you now have:
