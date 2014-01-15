@@ -21,7 +21,9 @@ public class User {
 
 
     public void addRole(final Role role) {
-        roles.add(role);
+        if(role != null) {
+            roles.add(role);
+        }
     }
     public void addRole(final long id, final String name) {
         Role role = new Role();

@@ -62,9 +62,9 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         JSONObject root = new JSONObject();
 
         for (OskariLayer layer : layers) {
-
             try {
                 JSONObject realJson = new JSONObject();
+                realJson.put(JSON_ID, layer.getId());
                 realJson.put(JSON_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 realJson.put(JSON_NAMES_SPACE, layer.getUrl());
                 realJson.put(JSON_RESOURCE_NAME, layer.getName());
