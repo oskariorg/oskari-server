@@ -153,9 +153,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
       ],
-      "layers": [
-        { "id": 1 }
-      ]
+      "layers": []
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull')
          AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
