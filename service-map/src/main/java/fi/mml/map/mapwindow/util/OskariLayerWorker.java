@@ -143,7 +143,7 @@ public class OskariLayerWorker {
         try {
             return layers.getJSONObject(0);
         } catch (Exception e) {
-            log.warn(e, "Error creating layer JSON:", obj);
+            log.warn("Error creating layer JSON:", obj);
         }
         return null;
     }
