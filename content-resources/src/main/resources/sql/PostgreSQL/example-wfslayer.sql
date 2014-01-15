@@ -22,7 +22,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
     feature_type, selected_feature_params, feature_params_locales, geometry_type, selection_sld_style_id, get_map_tiles, 
     get_feature_info, tile_request, wms_layer_id, srs_name, feature_element, feature_namespace_uri, geometry_namespace_uri, get_highlight_image, 
     wps_params, tile_buffer, schema_status, custom_parser, test_location, test_zoom) 
-    VALUES ( (select id from portti_maplayer where wmsname = 'palvelupisteiden_kyselypalvelu'),
+    VALUES ( (select id from oskari_maplayer where name = 'palvelupisteiden_kyselypalvelu'),
       'palvelupisteiden_kyselypalvelu',
        'http://kartta.suomi.fi/geoserver/wfs', '', '', 'the_geom', '3.1.1', false, '1.1.0', 1000, 'pkartta', NULL, '', 
        '{}', '{}', '{}', '2d', NULL, true, true, false, NULL, 'EPSG:3067', 'toimipaikat', 'www.pkartta.fi', '', true, '{}', '{}', 
