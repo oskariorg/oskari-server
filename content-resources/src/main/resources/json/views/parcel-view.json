@@ -33,7 +33,7 @@
                 "east": "517620",
                 "north": "6874042",
                 "selectedLayers": [
-                    {"id":"base_2","opacity":100}
+                    {"id":1}
                 ],
                 "zoom": 11
             }
