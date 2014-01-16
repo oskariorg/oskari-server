@@ -57,6 +57,12 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         final List<Map<String,Object>> mappings = queryForListMap(getNameSpace() + ".findByMaplayerMappings");
         LINK_CACHE.clear();
         for(Map<String,Object> result : mappings) {
+            if(result.get("themeid") == null) {
+                // this will make the keys case insensitive (needed for hsqldb compatibility...)
+                final Map<String, Object> caseInsensitiveData = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+                caseInsensitiveData.putAll(result);
+                result = caseInsensitiveData;
+            }
             final int themeid = (Integer) result.get("themeid");
             final int maplayerid = (Integer) result.get("maplayerid");
             List<Integer> themeLayers = getLinkCache(maplayerid);

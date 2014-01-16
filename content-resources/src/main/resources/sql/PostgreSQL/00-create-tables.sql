@@ -3,9 +3,13 @@
 -- EACH COMMENT _NEED_ TO END WITH A SEMICOLON OR OTHERWISE THE NEXT ACTUAL SQL IS NOT RUN!;
 -- ----------------------------------------------------------------------------------------;
 
-DROP TABLE IF EXISTS portti_inspiretheme;
-DROP TABLE IF EXISTS portti_layerclass;
 DROP TABLE IF EXISTS portti_maplayer;
+DROP TABLE IF EXISTS portti_layerclass;
+DROP TABLE IF EXISTS oskari_maplayer;
+DROP TABLE IF EXISTS oskari_layergroup;
+DROP TABLE IF EXISTS oskari_maplayer_themes;
+DROP TABLE IF EXISTS portti_inspiretheme;
+
 DROP TABLE IF EXISTS oskari_permission;
 DROP TABLE IF EXISTS oskari_resource;
 DROP TABLE IF EXISTS portti_maplayer_metadata;
@@ -39,56 +43,75 @@ CREATE TABLE portti_inspiretheme (
   CONSTRAINT portti_inspiretheme_pkey PRIMARY KEY (id)
 );
 
-
-CREATE TABLE portti_layerclass (
+CREATE TABLE oskari_layergroup
+(
   id serial NOT NULL,
-  maplayers_selectable boolean DEFAULT false,
-  parent integer DEFAULT null,
-  legend_image character varying(2000) DEFAULT '',
-  dataurl character varying(2000) DEFAULT '',
-  group_map boolean DEFAULT false,
-  locale character varying(20000),
-  CONSTRAINT portti_layerclass_pkey PRIMARY KEY (id)
-
+  locale text DEFAULT '{}'::text,
+  CONSTRAINT oskari_layergroup_pkey PRIMARY KEY (id)
+)
+WITH (
+OIDS=FALSE
 );
 
-
-CREATE TABLE portti_maplayer (
+CREATE TABLE oskari_maplayer
+(
   id serial NOT NULL,
-  layerclassid integer,
-  wmsname character varying(2000) default '',
-  wmsurl character varying(2000) default '',
-  opacity integer default 100,
-  style character varying(20000) default '',
-  minscale double precision default 0,
-  maxscale double precision default 0,
-  description_link character varying(2000) default '',
-  legend_image character varying(2000) default '',
-  inspire_theme_id integer default 0,
-  dataurl character varying(2000) default '',
-  metadataurl character varying(2000) default '',
-  order_number integer default 0,
-  layer_type character varying(100) NOT NULL,
-  tile_matrix_set_id character varying(1024) default '',
-  tile_matrix_set_data character varying(20000) default '',
-  created timestamp DEFAULT CURRENT_TIMESTAMP,
-  updated timestamp DEFAULT CURRENT_TIMESTAMP,
-  wms_dcp_http character varying(2000) default '',
-  wms_parameter_layers character varying(2000) default '',
-  resource_url_scheme character varying(100) default '',
-  resource_url_scheme_pattern character varying(2000) default '',
-  resource_url_client_pattern character varying(2000) default '',
-  resource_daily_max_per_ip integer default -1,
-  xslt character varying(20000) default '',
-  gfi_type character varying(2000) default '',
-  selection_style character varying(20000) default '',
-  "version" character varying(10) default '',
-  epsg integer DEFAULT 3067,
-  locale character varying(20000),
-  CONSTRAINT portti_maplayer_pkey PRIMARY KEY (id)
-
+  parentId integer DEFAULT -1 NOT NULL,
+  externalId character varying(50),
+  type character varying(50) NOT NULL,
+  base_map boolean DEFAULT false NOT NULL,
+  groupId integer,
+  name character varying(2000),
+  url character varying(2000),
+  locale text,
+  opacity integer DEFAULT 100,
+  style character varying(100),
+  minscale double precision DEFAULT -1,
+  maxscale double precision DEFAULT -1,
+  legend_image character varying(2000),
+  metadataId character varying(200),
+  tile_matrix_set_id character varying(200),
+  tile_matrix_set_data text,
+  params text DEFAULT '{}'::text,
+  options text DEFAULT '{}'::text,
+  gfi_type character varying(200),
+  gfi_xslt text,
+  created timestamp with time zone,
+  updated timestamp with time zone,
+  CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
+  CONSTRAINT oskari_maplayer_groupId_fkey FOREIGN KEY (groupId)
+  REFERENCES oskari_layergroup (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE
+)
+WITH (
+OIDS=FALSE
 );
 
+CREATE INDEX oskari_maplayer_q1
+ON oskari_maplayer
+USING btree
+(parentId);
+
+
+CREATE INDEX oskari_maplayer_q2
+ON oskari_maplayer
+USING btree
+(groupId);
+
+CREATE TABLE oskari_maplayer_themes
+(
+  maplayerid integer NOT NULL,
+  themeid integer NOT NULL,
+  CONSTRAINT oskari_maplayer_id_fkey FOREIGN KEY (maplayerid)
+  REFERENCES oskari_maplayer (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT portti_inspiretheme_id_fkey FOREIGN KEY (themeid)
+  REFERENCES portti_inspiretheme (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE
+)
+WITH (
+OIDS=FALSE
+);
 
 CREATE TABLE portti_maplayer_metadata
 (

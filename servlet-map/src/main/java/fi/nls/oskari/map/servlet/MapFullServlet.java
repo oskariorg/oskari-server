@@ -56,9 +56,6 @@ public class MapFullServlet extends HttpServlet {
     private final static String KEY_AJAX_URL = "ajaxUrl";
     private final static String KEY_CONTROL_PARAMS = "controlParams";
 
-    // role id is used to map permissions to user, this should match the id in permissions db for guests
-    private final static int GUEST_ROLE = 10110;
-
     private final ViewService viewService = new ViewServiceIbatisImpl();
     private boolean isDevelopmentMode = false;
     private String version = null;
@@ -288,8 +285,13 @@ public class MapFullServlet extends HttpServlet {
         final HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            user = new GuestUser();
-            user.addRole(GUEST_ROLE, "Guest");
+            try {
+                UserService service = UserService.getInstance();
+                user = service.getGuestUser();
+            }
+            catch (Exception ex) {
+                user = new GuestUser();
+            }
         }
         params.setUser(user);
         return params;

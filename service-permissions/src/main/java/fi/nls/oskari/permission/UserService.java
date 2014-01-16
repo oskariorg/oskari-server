@@ -1,5 +1,6 @@
 package fi.nls.oskari.permission;
 
+import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
@@ -29,6 +30,15 @@ public abstract class UserService {
         } catch (Exception e) {
             throw new ServiceException("Error initializing UserService for classname: "+ className, e);
         }   
+    }
+
+    /**
+     * Returns a Guest user. This method should be overridden by implementations to add a Guest role to the user.
+     * Permission mappings can't be done correctly for guests if they have no roles.
+     * @return
+     */
+    public User getGuestUser() {
+        return new GuestUser();
     }
 
     /**
