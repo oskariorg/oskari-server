@@ -2,13 +2,19 @@
 
 ## 1.17
 
+### service-permission
+
+Added getGuestUser() method for UserService. Implementations should override it and return a Guest user with a Guest role so permission mappings can be done correctly.
+
 ### service-map
 
 Added ibatis caching for Inspire-themes, views, wfs-layers and backendstatus operations.
 
-### servlet
+### servlet-map
 
-Added oskariui style classes to index.jsp to fix layout.
+Added oskariui style classes to index.jsp to fix layout. 
+
+Removed Guest user role hardcoding and now uses UserService.getGuestUser() to create a guest user.
 
 ### Massive maplayer refactoring
 

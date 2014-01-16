@@ -95,10 +95,15 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return new OskariLayer();
     }
 
-
-    private OskariLayer mapData(final Map<String, Object> data) {
+    private OskariLayer mapData(Map<String, Object> data) {
         if(data == null) {
             return null;
+        }
+        if(data.get("id") == null) {
+            // this will make the keys case insensitive (needed for hsqldb compatibility...)
+            final Map<String, Object> caseInsensitiveData = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+            caseInsensitiveData.putAll(data);
+            data = caseInsensitiveData;
         }
 
         final OskariLayer result = createLayerInstance((String) data.get("type"));
@@ -112,7 +117,6 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         result.setType((String) data.get("type"));
         result.setExternalId((String) data.get("externalid"));
         result.setBaseMap((Boolean) data.get("base_map"));
-        result.setGroupId((Integer) data.get("groupid"));
         result.setName((String) data.get("name"));
         result.setUrl((String) data.get("url"));
         result.setLocale(JSONHelper.createJSONObject((String) data.get("locale")));
@@ -144,6 +148,9 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
 
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
+            // sublayers don't have groupId
+            result.setGroupId((Integer) data.get("groupid"));
+
             // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
             // without it getting themes makes the query 10 x slower
 

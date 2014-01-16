@@ -153,9 +153,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
       ],
-      "layers": [
-        { "id": "base_2" }
-      ]
+      "layers": []
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull')
          AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
@@ -163,7 +161,7 @@ UPDATE portti_view_bundle_seq set config = '{
 UPDATE portti_view_bundle_seq set state = '{
   "east": "517620",
   "north": "6874042",
-  "selectedLayers": [{"id": "base_2"}],
+  "selectedLayers": [{"id": 1}],
   "zoom": 1
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull')
          AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');

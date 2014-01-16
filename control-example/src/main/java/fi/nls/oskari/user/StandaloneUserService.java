@@ -1,5 +1,6 @@
 package fi.nls.oskari.user;
 
+import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.permission.UserService;
@@ -29,13 +30,21 @@ public class StandaloneUserService extends UserService {
     private final static String FILE_JSON_USER = "/users/user.json";
     private final static String FILE_JSON_ROLE = "/users/role.json";
 
+    // role id is used to map permissions to user, this should match the id in permissions db for guests
+    private static Role GUEST_ROLE = null;
+
     private Map<Long, String> roles = new HashMap<Long, String>();
+
+    public User getGuestUser() {
+        final User user = super.getGuestUser();
+        user.addRole(GUEST_ROLE);
+        return user;
+    }
 
     @Override
     public User login(String username, String password) throws ServiceException {
 
         User user = this.getUser(username, password);
-
         return user;
     }
 
@@ -51,8 +60,15 @@ public class StandaloneUserService extends UserService {
 
                 for (int i = 0; i < roles.length(); i++) {
                     JSONObject jsrole = roles.getJSONObject(i);
-                    this.roles.put(jsrole.optLong(JSKEY_ID, 0), jsrole
-                            .optString(JSKEY_NAME));
+                    long id = jsrole.optLong(JSKEY_ID, 0);
+                    String name = jsrole.optString(JSKEY_NAME);
+                    this.roles.put(id, name);
+                    if(jsrole.optBoolean("isGuest")) {
+                        Role role = new Role();
+                        role.setId(id);
+                        role.setName(name);
+                        GUEST_ROLE = role;
+                    }
                 }
             }
 

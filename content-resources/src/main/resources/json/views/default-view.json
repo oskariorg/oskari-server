@@ -29,13 +29,13 @@
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
                 ],
                 "layers": [
-                    { "id": "base_2" }
+                    { "id": 1 }
                 ]
             },
             "state" : {
                 "east": "517620",
                 "north": "6874042",
-                "selectedLayers": [{"id": "base_2"}],
+                "selectedLayers": [{"id": 1}],
                 "zoom": 1
             }
         },

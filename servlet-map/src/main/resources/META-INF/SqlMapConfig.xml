@@ -16,9 +16,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
       <property name="DataSource" value="java:/comp/env/jdbc/OskariPool" />
     </dataSource>
   </transactionManager>
-  
-  <sqlMap resource="META-INF/LayerClass.xml" />
-  <sqlMap resource="META-INF/MapLayer.xml" />
+
   <sqlMap resource="META-INF/InspireTheme.xml" />
   <sqlMap resource="META-INF/MapConfiguration.xml" />
   <sqlMap resource="META-INF/MapConfigurationLayer.xml" />
@@ -32,4 +30,10 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <sqlMap resource="META-INF/BackendStatus.xml" />
   <sqlMap resource="META-INF/PublishedMap.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
+  <sqlMap resource="META-INF/Keyword.xml" />
+  <sqlMap resource="META-INF/UserIndicator.xml" />
+  <sqlMap resource="META-INF/OskariLayer.xml" />
+  <sqlMap resource="META-INF/LayerGroup.xml" />
+  <sqlMap resource="META-INF/Visualization.xml" />
+
 </sqlMapConfig>
