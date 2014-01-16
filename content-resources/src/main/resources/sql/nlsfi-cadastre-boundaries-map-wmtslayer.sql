@@ -5,11 +5,12 @@
 INSERT INTO oskari_maplayer(type, name, groupId,
                             metadataId, url,
                             locale,
-                            tile_matrix_set_id)
+                            tile_matrix_set_id,
+                            minScale, maxScale)
   VALUES('wmtslayer', 'kiinteistojaotus', (SELECT MAX(id) FROM oskari_layergroup),
          'c22da116-5095-4878-bb04-dd7db3a1a341', 'http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts',
-         '{ fi:{name:"Kiinteistöjaotus",subtitle:"(WMTS)"},sv:{name:"Fastighetsindelning",subtitle:"(WMTS)"},en:{name:"Cadastral units",subtitle:"(WMTS)"}}',
-         'ETRS-TM35FIN');
+         '{ fi:{name:"Kiinteistöjaotus",subtitle:"(WMTS)"},sv:{name:"Fastighetsindelning",subtitle:"(WMTS)"},en:{name:"Cadastral boundaries",subtitle:"(WMTS)"}}',
+         'ETRS-TM35FIN', 15999, 1);
 
 -- update tile_matrix for wmts layer;
 UPDATE oskari_maplayer SET tile_matrix_set_data='{
@@ -86,81 +87,19 @@ UPDATE oskari_maplayer SET tile_matrix_set_data='{
                   }
               ],
               "layers": [],
-              "title": "Taustakartta",
-              "identifier": "taustakartta",
-              "resourceUrl": {
-                  "tile": {
-                      "format": "image/png",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
-                      "resourceType": "tile"
-                  }
-              },
-              "resourceUrls": [
-                  {
-                      "format": "image/png",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
-                      "resourceType": "tile"
-                  }
-              ]
-          }, {
-              "styles": [
-                  {
-                      "isDefault": true,
-                      "identifier": "default"
-                  }
-              ],
-              "formats": ["image/jpeg"],
-              "dimensions": [],
-              "tileMatrixSetLinks": [
-                  {
-                      "tileMatrixSet": "ETRS-TM35FIN"
-                  }
-              ],
-              "layers": [],
               "title": "kiinteistojaotus",
               "identifier": "kiinteistojaotus",
               "resourceUrl": {
                   "tile": {
-                      "format": "image/jpeg",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/kiinteistojaotus/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg",
-                      "resourceType": "tile"
-                  }
-              },
-              "resourceUrls": [
-                  {
-                      "format": "image/jpeg",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/kiinteistojaotus/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg",
-                      "resourceType": "tile"
-                  }
-              ]
-          }, {
-              "styles": [
-                  {
-                      "isDefault": true,
-                      "identifier": "default"
-                  }
-              ],
-              "formats": ["image/png"],
-              "dimensions": [],
-              "tileMatrixSetLinks": [
-                  {
-                      "tileMatrixSet": "ETRS-TM35FIN"
-                  }
-              ],
-              "layers": [],
-              "title": "Maastokartta",
-              "identifier": "maastokartta",
-              "resourceUrl": {
-                  "tile": {
                       "format": "image/png",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/maastokartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/kiinteistojaotus/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
                       "resourceType": "tile"
                   }
               },
               "resourceUrls": [
                   {
                       "format": "image/png",
-                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/maastokartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                      "template": "http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts/1.0.0/kiinteistojaotus/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
                       "resourceType": "tile"
                   }
               ]
@@ -370,7 +309,7 @@ UPDATE oskari_maplayer SET tile_matrix_set_data='{
 INSERT INTO oskari_maplayer_themes(maplayerid,
                                    themeid)
   VALUES((SELECT MAX(id) FROM oskari_maplayer),
-         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Geographical names%'));
+         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Cadastral parcels%'));
 
 -- setup permissions for guest user;
 INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts+kiinteistojaotus');
