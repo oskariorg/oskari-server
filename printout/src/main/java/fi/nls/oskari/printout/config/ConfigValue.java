@@ -1,0 +1,79 @@
+package fi.nls.oskari.printout.config;
+
+import java.util.Properties;
+
+public enum ConfigValue {
+
+	/* */
+	LAYER_URLTEMPLATE_MYPLACES("layer.urltemplate.myplaces"),
+
+	/* */
+	LAYER_URLTEMPLATE_MYPLACES_LAYERS("layer.urltemplate.myplaces.layers"),
+
+	/* */
+	LAYER_URLTEMPLATE_WFSLAYER_LEGACY("layer.urltemplate.wfslayer.legacy"),
+	
+	/* */
+	LAYER_URLTEMPLATE_WFSLAYER("layer.urltemplate.wfslayer"),
+
+	/* */
+	LAYER_URLTEMPLATE_STATSLAYER("layer.urltemplate.statslayer"),
+
+	/* */
+	LAYER_CACHE_EXCLUDE("layer.cache.exclude"),
+
+	/* */
+	LAYERDEFINITION_CREDENTIALS_MYPLACES("layer.credentials.myplaces"),
+
+	/* */
+	LAYER_TIMEOUT_SECONDS("layer.timeout.seconds"),
+
+	/* */
+	LAYER_TEMPLATE("layer.template"),
+
+	/* */
+	MAPPRODUCER_MAXEXTENT("mapproducer.maxextent"),
+
+	/* */
+	LAYER_TILES_URL_WHITELIST("layer.tiles.url.whitelist"),
+
+	/* */
+	EPSGCODE("epsgCode"),
+
+	/* */
+	GRIDSUBSETNAME("gridSubsetName"),
+
+	/* */
+	GRIDRESOURCE("gridResource"),
+
+	/* */
+	GEOJSON_DEBUG("geojson.debug"),
+
+	/* */
+	SCALE_RESOLVER("scale.resolver"),
+	
+	/* */
+	LAYERSURL("layersURL"),
+	
+	REDIS_BLOB_CACHE("redis.blobcache")
+
+	;
+
+	public static final String CONFIG_SYSTEM_PROPERTY = "fi.nls.oskari.imaging.config";
+	public static final String DEFAULT_PROPERTIES = "default.properties";
+
+	private String key;
+
+	private ConfigValue(String key) {
+		this.key = key;
+	}
+
+	public String getConfigProperty(Properties props, String defaultValue) {
+		return props.getProperty(key, defaultValue);
+	}
+
+	public String getConfigProperty(Properties props) {
+		return props.getProperty(key);
+	}
+
+}

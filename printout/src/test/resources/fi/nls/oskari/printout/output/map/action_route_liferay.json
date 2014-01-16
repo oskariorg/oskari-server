@@ -1,0 +1,577 @@
+{
+    "layers": [
+        {
+			"styles": {},
+			"type": "base",
+			"orgName": "Taustakartat",
+			"baseLayerId": 35,
+			"formats": {},
+			"isQueryable": false,
+			"id": "base_35",
+			"minScale": 1.5E7,
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+			"name": "Taustakartat",
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"subLayer": [
+				{
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_5k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 184,
+					"minScale": 5000,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"updated": "Fri Aug 31 10:21:16 EEST 2012",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 21,
+					"name": "Taustakartta 1:5000",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 1
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_10k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 185,
+					"minScale": 25001,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"updated": "Fri Aug 31 10:24:04 EEST 2012",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 22,
+					"name": "Taustakartta 1:10k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 5001
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_20k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 186,
+					"minScale": 40001,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"updated": "Fri Aug 31 10:24:17 EEST 2012",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 23,
+					"name": "Taustakartta 1:20k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 25001
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_40k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 187,
+					"minScale": 2,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 24,
+					"name": "Taustakartta 1:40k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 1
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_80k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 188,
+					"minScale": 56702,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 25,
+					"name": "Taustakartta 1:80k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 40000
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_160k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 189,
+					"minScale": 141742,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 26,
+					"name": "Taustakartta 1:160k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 56702
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_320k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 190,
+					"minScale": 283474,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 27,
+					"name": "Taustakartta 1:320k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 141742
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_800k",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 191,
+					"minScale": 566939,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 28,
+					"name": "Taustakartta 1:800k",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 283474
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_2m",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 192,
+					"minScale": 1417333,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 29,
+					"name": "Taustakartta 1:2milj",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 566939
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_4m",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 193,
+					"minScale": 2834657,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 30,
+					"name": "Taustakartta 1:4milj",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 1417333
+				}, {
+					"dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+					"wmsName": "taustakartta_8m",
+					"styles": {},
+					"geom": "POLYGON ((-327719.5575693818 2250048.996811038, 979121.6313409178 2250048.996811038, 979121.6313409178 7795671.301062765, -327719.5575693818 7795671.301062765, -327719.5575693818 2250048.996811038))",
+					"descriptionLink": "",
+					"baseLayerId": 35,
+					"orgName": "Taustakartat",
+					"type": "wmslayer",
+					"legendImage": "",
+					"formats": {},
+					"isQueryable": false,
+					"id": 194,
+					"minScale": 1.5E7,
+					"dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+					"style": "",
+					"wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms",
+					"orderNumber": 31,
+					"name": "Taustakartta 1:8milj",
+					"permissions": {
+						"publish": "no_publication_permission"
+					},
+					"opacity": 100,
+					"inspire": "Opaskartat",
+					"maxScale": 2834657
+				}
+			],
+			"inspire": "Taustakartat",
+			"maxScale": 1
+		}, {
+            "dataUrl_uuid": "",
+            "wmsName": "Kalliopera_1M_WFS",
+            "styles": {},
+            "descriptionLink": "",
+            "baseLayerId": 0,
+            "orgName": "",
+            "type": "wfslayer",
+            "legendImage": "",
+            "formats": {},
+            "isQueryable": false,
+            "id": 134,
+            "minScale": 250000,
+            "dataUrl": "",
+            "style": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n<StyledLayerDescriptor version=\"1.0.0\" xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd\">\r\n\t<NamedLayer>\r\n\t\t<Name>Kallioper├ñtiedot<\/Name>\r\n\t\t<UserStyle>\r\n\t\t\t<Title>GTK Kallioper├ñtiedot<\/Title>\r\n\t\t\t<Abstract/>\r\n\t\t\t<FeatureTypeStyle>\r\n\t\t\t\t<Rule>\r\n\t\t\t\t\t<Title>Line<\/Title>\r\n\t\t\t\t\t<PolygonSymbolizer>\r\n\t\t\t\t\t\t<Fill>\r\n\t\t\t\t\t\t\t<CssParameter name=\"fill\">#C0C0C0<\/CssParameter>\r\n\t\t\t\t\t\t\t<CssParameter name=\"fill-opacity\">0.5<\/CssParameter>\r\n\t\t\t\t\t\t<\/Fill>\r\n\t\t\t\t\t\t<Stroke>\r\n\t\t\t\t\t\t\t<CssParameter name=\"stroke\">#000000<\/CssParameter>\r\n\t\t\t\t\t\t\t<CssParameter name=\"stroke-width\">2<\/CssParameter>\r\n\t\t\t\t\t\t<\/Stroke>\r\n\t\t\t\t\t<\/PolygonSymbolizer>\r\n\t\t\t\t<\/Rule>\r\n\t\t\t<\/FeatureTypeStyle>\r\n\t\t<\/UserStyle>\r\n\t<\/NamedLayer>\r\n<\/StyledLayerDescriptor>",
+            "updated": "Tue Jan 31 17:21:36 EET 2012",
+            "wmsUrl": "wfs",
+            "orderNumber": 13,
+            "name": "Suomen kallioper├ñ 1:1 000 000 (WFS)",
+            "permissions": {
+                "publish": "no_publication_permission"
+            },
+            "opacity": 50,
+            "inspire": "Geologia",
+            "maxScale": 1
+        },{
+			"dataUrl_uuid": "7d0b6514-d7f4-41b2-81c4-1f9f13aa8180",
+			"wmsName": "nimiston_kyselypalvelu",
+			"styles": {},
+			"descriptionLink": "",
+			"baseLayerId": 15,
+			"orgName": "Maanmittauslaitos",
+			"type": "wfslayer",
+			"legendImage": "",
+			"formats": {},
+			"isQueryable": true,
+			"id": 131,
+			"minScale": 28347,
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=7d0b6514-d7f4-41b2-81c4-1f9f13aa8180",
+			"style": "",
+			"wmsUrl": "wfs",
+			"orderNumber": 1,
+			"name": "Nimistön kyselypalvelu",
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"opacity": 100,
+			"inspire": "Paikannimet",
+			"maxScale": 1
+		},       
+		{
+			"dataUrl_uuid": "6e058894-2f7b-410d-9c7f-04eafed07ee4",
+			"wmsName": "katselupalvelu:Ajoradan leveys",
+			"styles": {
+				"title": "Ajoradan leveys",
+				"legend": "http://kartta.liikennevirasto.fi/maaliikenne/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=Ajoradan+leveys",
+				"name": "ajoradan_leveys"
+			},
+			"descriptionLink": "",
+			"baseLayerId": 10,
+			"orgName": "Liikennevirasto",
+			"type": "wmslayer",
+			"legendImage": "http://kartta.liikennevirasto.fi/maaliikenne/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=katselupalvelu:Ajoradan%20leveys",
+			"formats": {
+				"value": "text/html"
+			},
+			"isQueryable": true,
+			"id": 250,
+			"minScale": 1.5E7,
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=6e058894-2f7b-410d-9c7f-04eafed07ee4",
+			"style": "",
+			"updated": "Tue Jul 03 09:29:52 EEST 2012",
+			"created": "Tue Jul 03 09:29:52 EEST 2012",
+			"wmsUrl": "http://kartta.liikennevirasto.fi/maaliikenne/wms",
+			"orderNumber": 356,
+			"name": "Ajoradan leveys",
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"opacity": 100,
+			"inspire": "Liikenneverkot",
+			"maxScale": 1
+		},
+		{
+			"wmsName": "katselupalvelu:bussipysakit",
+			"geom": "POLYGON ((51857.07752019336 6590697.596588667, 759905.4330615391 6590697.596588667, 759905.4330615391 7795699.644448195, 51857.07752019336 7795699.644448195, 51857.07752019336 6590697.596588667))",
+			"type": "wmslayer",
+			"baseLayerId": 10,
+			"legendImage": "http://kartta.liikennevirasto.fi/maaliikenne/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=bussipysakit",
+			"formats": {
+				"value": "text/html"
+			},
+			"id": 251,
+			"style": "",
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=8f0fff4b-a84a-46a0-af44-3f288c06a50a",
+			"created": "Tue Jul 03 13:13:39 EEST 2012",
+			"updated": "Thu Nov 15 15:41:45 EET 2012",
+			"name": "Bussipysäkit",
+			"opacity": 100,
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"maxScale": 1,
+			"inspire": "Liikenneverkot",
+			"dataUrl_uuid": "8f0fff4b-a84a-46a0-af44-3f288c06a50a",
+			"styles": {
+				"title": "Katos",
+				"legend": "http://kartta.liikennevirasto.fi/maaliikenne/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=bussipysakit",
+				"name": "bussipysakit"
+			},
+			"descriptionLink": "",
+			"orgName": "Liikennevirasto",
+			"isQueryable": true,
+			"minScale": 1.5E7,
+			"wmsUrl": "http://kartta.liikennevirasto.fi/maaliikenne/wms",
+			"orderNumber": 357,
+			"subtitle": ""
+		},
+		{
+			"dataUrl_uuid": "1d1c8600-76bf-4e1f-bd09-b5c154ca30dc",
+			"wmsName": "cells",
+			"styles": [
+				{
+					"title": "Standard",
+					"legend": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=cells&STYLE=style-id-200&FORMAT=image/png&WIDTH=200&HEIGHT=402",
+					"name": "style-id-200"
+				}, {
+					"title": "Standard - Transparent Land",
+					"legend": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=cells&STYLE=style-id-201&FORMAT=image/png&WIDTH=200&HEIGHT=402",
+					"name": "style-id-201"
+				}, {
+					"title": "Full",
+					"legend": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=cells&STYLE=style-id-202&FORMAT=image/png&WIDTH=200&HEIGHT=402",
+					"name": "style-id-202"
+				}, {
+					"title": "Full - Transparent Land",
+					"legend": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=cells&STYLE=style-id-203&FORMAT=image/png&WIDTH=200&HEIGHT=402",
+					"name": "style-id-203"
+				}
+			],
+			"geom": "POLYGON ((51857.07752019336 6590697.596588667, 759905.4330615391 6590697.596588667, 759905.4330615391 7795699.644448195, 51857.07752019336 7795699.644448195, 51857.07752019336 6590697.596588667))",
+			"descriptionLink": "",
+			"baseLayerId": 10,
+			"orgName": "Liikennevirasto",
+			"type": "wmslayer",
+			"legendImage": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=cells&STYLE=style-id-201&FORMAT=image/png&WIDTH=200&HEIGHT=402",
+			"formats": {
+				"value": "text/html"
+			},
+			"isQueryable": true,
+			"id": 27,
+			"minScale": 2000000,
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=1d1c8600-76bf-4e1f-bd09-b5c154ca30dc",
+			"style": "style-id-201",
+			"updated": "Tue Feb 21 15:53:57 EET 2012",
+			"wmsUrl": "http://kartta.liikennevirasto.fi/meriliikenne/dgds/wms_ip/merikartta",
+			"orderNumber": 400,
+			"name": "Elektroniset merikartat (ENC)",
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"opacity": 75,
+			"inspire": "Liikenneverkot",
+			"maxScale": 1
+		},
+		{
+			"dataUrl_uuid": "00f1cc89-7161-417c-8426-35d7506520de",
+			"wmsName": "tampere_ora:AK_ASEMAKAAVAINDEKSI_VIEW",
+			"descriptionLink": "",
+			"styles": {
+				"title": "Asemakaavaindeksin tyyli",
+				"legend": "http://tampere.navici.com:80/tampere_wfs_geoserver/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=AK_ASEMAKAAVAINDEKSI_VIEW",
+				"name": "tre_asemakaavaindeksi"
+			},
+			"geom": "POLYGON ((315565.4016352762 6813786.639008963, 348303.2258387561 6813786.639008963, 348303.2258387561 6860823.709225847, 315565.4016352762 6860823.709225847, 315565.4016352762 6813786.639008963))",
+			"baseLayerId": 23,
+			"orgName": "Tampereen kaupunki",
+			"type": "wmslayer",
+			"legendImage": "http://tampere.navici.com:80/tampere_wfs_geoserver/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=AK_KAAVATILANNE&style=polygon",
+			"formats": {
+				"value": "text/html"
+			},
+			"isQueryable": true,
+			"id": 127,
+			"minScale": 80000,
+			"dataUrl": "/catalogue/ui/metadata.html?uuid=00f1cc89-7161-417c-8426-35d7506520de",
+			"style": "",
+			"updated": "Mon Dec 17 11:15:58 EET 2012",
+			"wmsUrl": "http://wms.w.paikkatietoikkuna.fi/wms/tampere_wfs_geoserver/ows",
+			"orderNumber": 680,
+			"name": "Tampereen asemakaavaindeksi",
+			"permissions": {
+				"publish": "no_publication_permission"
+			},
+			"opacity": 50,
+			"subtitle": "",
+			"inspire": "Aluesuunnittelu ja rajoitukset",
+			"maxScale": 1
+		},
+		{
+            "dataUrl_uuid": "00f1cc89-7161-417c-8426-35d7506520de",
+            "wmsName": "tampere_ora:AK_ASEMAKAAVAINDEKSI_VIEW",
+            "descriptionLink": "",
+            "styles": {
+                "title": "Asemakaavaindeksin tyyli",
+                "legend": "http://tampere.navici.com:80/tampere_wfs_geoserver/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=AK_ASEMAKAAVAINDEKSI_VIEW",
+                "name": "tre_asemakaavaindeksi"
+            },
+            "geom": "POLYGON ((315565.4016352762 6813786.639008963, 348303.2258387561 6813786.639008963, 348303.2258387561 6860823.709225847, 315565.4016352762 6860823.709225847, 315565.4016352762 6813786.639008963))",
+            "baseLayerId": 23,
+            "orgName": "Tampereen kaupunki",
+            "type": "myplaces",
+            "legendImage": "http://tampere.navici.com:80/tampere_wfs_geoserver/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=AK_KAAVATILANNE&style=polygon",
+            "formats": {
+                "value": "text/html"
+            },
+            "isQueryable": true,
+            "id": 242,
+            "minScale": 80000,
+            "dataUrl": "/catalogue/ui/metadata.html?uuid=00f1cc89-7161-417c-8426-35d7506520de",
+            "style": "",
+            "updated": "Mon Dec 17 11:15:58 EET 2012",
+            "wmsUrl": "http://jkorhonen.nls.fi:8080/geoserver/wms?buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=(uuid='e88fa3a1-5881-46d5-9929-20024f27a6d7'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=437",
+            "orderNumber": 680,
+            "name": "Tampereen asemakaavaindeksi",
+            "permissions": {
+                "publish": "no_publication_permission"
+            },
+            "opacity": 50,
+            "subtitle": "",
+            "inspire": "Aluesuunnittelu ja rajoitukset",
+            "maxScale": 1
+        }
+		
+		
+    ],
+    "maplink": {
+        "action_route": "GetPreview",
+        "coord": "530163_6754057",
+        "mapLayers": "base_35 100 ,myplaces_437 50",
+        "p_p_lifecycle": "2",
+        "p_p_id": "Portti2Map_WAR_portti2mapportlet",
+        "p_l_id": "272605",
+        "zoomLevel": "8",
+        "pageSize" : "A3_Landscape",
+        "pageLogo" : "true",
+        "pageScale" : "true",
+        "pageTitle" : "JEP",
+        "pageLegend" : "true"
+    },
+    "state": {
+       
+        "selectedLayers": [
+            {
+                "id": "base_35",
+                "opacity": "40"
+            },  {
+            	"id" : "131",
+            	"opacity": "50"
+            }, {
+            	"id" : "251",
+            	"opacity": "50"
+           	}, {
+            	"id" : "127",
+            	"opacity": "50"
+           	}, {
+                "id" : "242",
+                "opacity": "50"
+            }
+            
+            
+        ],
+        
+        "zoom": 8,
+        "east": 530163,
+        "north": 6754057
+    }
+}
