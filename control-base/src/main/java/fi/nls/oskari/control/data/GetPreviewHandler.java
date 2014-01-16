@@ -53,6 +53,7 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_MAPLINK = "maplink";
     private static final String KEY_STATE = "state";
+    private static final String KEY_LAYER_ID = "id";
     // Tiles json param keys
     private static final String KEY_TILES = "tiles";
     private static final String KEY_BBOX = "bbox";
@@ -262,16 +263,16 @@ public class GetPreviewHandler extends ActionHandler {
                 }
             }
 
-            // Add tiles, if statslayer
-            if (fullLayersConfigJson.toString().contains(VALUE_STATSLAYER)) {
+            // Add tiles, (statslayer, wfs)
+      //      if (fullLayersConfigJson.toString().contains(VALUE_STATSLAYER)) {
                 // Tiles in params ?
                 if (!params.getHttpParam(PARM_TILES, "").isEmpty()) {
 
                     JSONArray tiles = getTilesJSON(params);
-                    addStatTiles(fullLayersConfigJson, tiles);
+                    addTiles2Layers(fullLayersConfigJson, tiles);
 
                 }
-            }
+        //    }
 
             jsonprint.put(KEY_LAYERS, fullLayersConfigJson);
 
@@ -296,7 +297,7 @@ public class GetPreviewHandler extends ActionHandler {
             // Get print area bbox
             final String response = ProxyService.proxy("print", params);
             JSONObject printbbox = JSONHelper.createJSONObject(response);
-            // Fix bbox to print size area
+            // Fix bbox to print size area only for statslayer
             fixBbox(printbbox, tilesjs);
 
         } catch (Exception e) {
@@ -422,45 +423,54 @@ public class GetPreviewHandler extends ActionHandler {
                         KEY_PROPERTIES).getInt(KEY_TARGETWIDTH);
 
                 // replace bbox and widt / height in Oskari tiles (statslayer)
+                //Loop tiles - there are tiles for statslayers and wfs layers
+                for (int ii = 0; ii < tilesjs.length(); ii++) {
+                    JSONObject tile = tilesjs.getJSONObject(ii);
+                    if (tile.toString().contains(KEY_IS_STATS)) {
+                        Iterator<?> keys = tile.keys();
+                        // There is only one key
+                        if (keys.hasNext()) {
+                            String key = (String) keys.next();
+                            // Stats layer in one tile
+                            JSONObject tile0 = tile.getJSONArray(key).getJSONObject(0);
+                            List boxpoints = new ArrayList();
+                            boxpoints.add(minxy.getInt(0));
+                            boxpoints.add(minxy.getInt(1));
+                            boxpoints.add(maxxy.getInt(0));
+                            boxpoints.add(maxxy.getInt(1));
 
-                JSONObject tile0 = tilesjs.getJSONObject(0);
-                if (tile0.toString().contains(KEY_IS_STATS)) {
-                    List boxpoints = new ArrayList();
-                    boxpoints.add(minxy.getInt(0));
-                    boxpoints.add(minxy.getInt(1));
-                    boxpoints.add(maxxy.getInt(0));
-                    boxpoints.add(maxxy.getInt(1));
+                            tile0.remove(KEY_BBOX);
+                            tile0.put(KEY_BBOX, boxpoints);
 
-                    tile0.remove(KEY_BBOX);
-                    tile0.put(KEY_BBOX, boxpoints);
+                            // replace &BBOX, WIDTH and HEIGHT
+                            // &BBOX=-508380,5983042,1543620,7765042&WIDTH=1539&HEIGHT=1336
+                            String myurl = tile0.getString(KEY_URL);
+                            String[] tem1 = myurl.split("&");
+                            for (int i = 0; i < tem1.length; i++) {
+                                if (tem1[i].contains("BBOX")) {
+                                    tem1[i] = "BBOX=" + boxpoints.get(0).toString()
+                                            + "," + boxpoints.get(1).toString() + ","
+                                            + boxpoints.get(2).toString() + ","
+                                            + boxpoints.get(3).toString();
+                                } else if (tem1[i].contains("WIDTH")) {
+                                    tem1[i] = "WIDTH=" + Integer.toString(targetWidth);
+                                } else if (tem1[i].contains("HEIGHT")) {
+                                    tem1[i] = "HEIGHT="
+                                            + Integer.toString(targetHeight);
+                                }
+                            }
+                            // new url
+                            myurl = "";
+                            for (int i = 0; i < tem1.length; i++) {
+                                myurl = myurl + tem1[i] + "&";
+                            }
+                            myurl = myurl.substring(0, myurl.length() - 1);
 
-                    // replace &BBOX, WIDTH and HEIGHT
-                    // &BBOX=-508380,5983042,1543620,7765042&WIDTH=1539&HEIGHT=1336
-                    String myurl = tile0.getString(KEY_URL);
-                    String[] tem1 = myurl.split("&");
-                    for (int i = 0; i < tem1.length; i++) {
-                        if (tem1[i].contains("BBOX")) {
-                            tem1[i] = "BBOX=" + boxpoints.get(0).toString()
-                                    + "," + boxpoints.get(1).toString() + ","
-                                    + boxpoints.get(2).toString() + ","
-                                    + boxpoints.get(3).toString();
-                        } else if (tem1[i].contains("WIDTH")) {
-                            tem1[i] = "WIDTH=" + Integer.toString(targetWidth);
-                        } else if (tem1[i].contains("HEIGHT")) {
-                            tem1[i] = "HEIGHT="
-                                    + Integer.toString(targetHeight);
+                            tile0.remove(KEY_URL);
+                            tile0.put(KEY_URL, myurl);
+
                         }
                     }
-                    // new url
-                    myurl="";
-                    for (int i = 0; i < tem1.length; i++) {
-                        myurl = myurl + tem1[i] + "&";
-                    }
-                    myurl = myurl.substring(0, myurl.length() - 1);
-
-                    tile0.remove(KEY_URL);
-                    tile0.put(KEY_URL, myurl);
-
                 }
 
             }
@@ -488,7 +498,7 @@ public class GetPreviewHandler extends ActionHandler {
         }
     }
 
-    private void addStatTiles(JSONArray layers, JSONArray tilesjs)
+    private void addTiles2Layers(JSONArray layers, JSONArray tilesjs)
             throws ActionException {
 
         try {
@@ -496,13 +506,35 @@ public class GetPreviewHandler extends ActionHandler {
             // Loop Layers
             for (int i = 0; i < layers.length(); i++) {
                 JSONObject layer = layers.getJSONObject(i);
-                if (layer.toString().contains(VALUE_STATSLAYER)) {
-                    layer.put(KEY_TILES, tilesjs);
-                }
+                addTile2Layer(layer, tilesjs);
             }
 
         } catch (Exception e) {
             throw new ActionException("Failed to put tiles into layer json", e);
         }
     }
+
+    private void addTile2Layer(JSONObject layer, JSONArray tilesjs)
+            throws ActionException {
+
+        try {
+            //Loop tiles - there are tiles for statslayers and wfs layers
+            for (int ii = 0; ii < tilesjs.length(); ii++) {
+                JSONObject tileroot = tilesjs.getJSONObject(ii);
+                Iterator<?> keys = tileroot.keys();
+                // There is only one key
+                if (keys.hasNext()) {
+                    String layer_id = (String) keys.next();
+                    if (layer.optString(KEY_LAYER_ID).equals(layer_id))
+                        layer.put(KEY_TILES, tileroot.getJSONArray(layer_id));
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            throw new ActionException("Failed to put tiles into layer json", e);
+        }
+    }
+
 }
