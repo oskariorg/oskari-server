@@ -1,9 +1,21 @@
--- Add a layer under 'National Land Survey' layer class;
-INSERT INTO portti_maplayer (layerclassid, wmsname, wmsurl, opacity,
-       style, minscale, maxscale, description_link, legend_image, inspire_theme_id,
-       dataurl, metadataurl, order_number, layer_type, locale)
-VALUES (3,'maastokartta_50k','http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',40,'',54000,26000,'','http://xml.nls.fi/Rasteriaineistot/Merkkienselitykset/2010/01/peruskartta_mk25000.png',3,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,'wmslayer',
-'{ fi:{name:"Maastokartta 1:50k",subtitle:""},sv:{name:"Terrängkarta 1:50k",subtitle:""},en:{name:"Topographic map 1:50k",subtitle:""}}');
+-- Add the layer;
+INSERT INTO oskari_maplayer(type, name, groupId,
+                            opacity, minscale, maxscale, metadataId,
+                            url,
+                            legend_image,
+                            locale)
+  VALUES('wmslayer', 'maastokartta_50k', (SELECT MAX(id) FROM oskari_layergroup),
+         40, 54000,26000,'c22da116-5095-4878-bb04-dd7db3a1a341',
+         'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',
+         'http://xml.nls.fi/Rasteriaineistot/Merkkienselitykset/2010/01/peruskartta_mk25000.png',
+         '{ fi:{name:"Maastokartta 1:50k",subtitle:""},sv:{name:"Terrängkarta 1:50k",subtitle:""},en:{name:"Topographic map 1:50k",subtitle:""}}');
+
+-- link to inspire theme;
+INSERT INTO oskari_maplayer_themes(maplayerid,
+                                   themeid)
+  VALUES((SELECT MAX(id) FROM oskari_maplayer),
+         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Addresses%'));
+
 
 INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms+maastokartta_50k');
 

@@ -62,9 +62,13 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "isQueryable", wms.isQueryable());
             JSONHelper.putValue(layerJson, "version", wms.getVersion());
         }
-
         JSONHelper.putValue(layerJson, "styles", styles);
-        JSONHelper.putValue(layerJson, "formats", getFormatsJSON(wms));
+        JSONObject formats = getFormatsJSON(wms);
+        if(layer.getGfiType() != null && !layer.getGfiType().isEmpty()) {
+            // setup default if saved
+            JSONHelper.putValue(formats, "value", layer.getGfiType());
+        }
+        JSONHelper.putValue(layerJson, "formats", formats);
 
         return layerJson;
     }
@@ -91,6 +95,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      */
     private static JSONObject getFormatsJSON(WebMapService wms) {
         final JSONObject formatJSON = new JSONObject();
+        final JSONArray available = new JSONArray();
+        JSONHelper.putValue(formatJSON, "available", available);
         if(wms == null) {
             return formatJSON;
         }
@@ -104,21 +110,20 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         // 'text/xml'
         // 'text/html'
         // 'text/plain'
-
-        boolean foundSupported = false;
         try {
+            String value = null;
             for (String supported : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
                 if (formats.contains(supported)) {
-                    formatJSON.put("value", supported);
-//                    foundSupported = true;
-                    break;
+                    if(value == null) {
+                        // get the first one as default
+                        value = supported;
+                    }
+                    // gather list of supported formats
+                    available.put(supported);
                 }
             }
-/*
-            if (!foundSupported) {
-                formatJSON.put("value", "");
-            }
-*/
+            // default format
+            JSONHelper.putValue(formatJSON, "value", value);
             return formatJSON;
 
         } catch (Exception e) {
