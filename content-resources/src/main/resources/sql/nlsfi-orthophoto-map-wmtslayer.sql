@@ -6,7 +6,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             metadataId, url,
                             locale,
                             tile_matrix_set_id)
-  VALUES('wmtslayer', 'ortokuva', (SELECT MAX(id) FROM oskari_layergroup),
+  VALUES('wmtslayer', 'ortokuva', (select id from oskari_layergroup where locale like '%Maanmittauslaitos%' union select max(id) from oskari_layergroup limit 1),
          'c22da116-5095-4878-bb04-dd7db3a1a341', 'http://karttamoottori.maanmittauslaitos.fi/maasto/wmts',
          '{ fi:{name:"Ortokuvat",subtitle:"(WMTS)"},sv:{name:"Ortofoton",subtitle:"(WMTS)"},en:{name:"Orthophotos",subtitle:"(WMTS)"}}',
          'ETRS-TM35FIN');
