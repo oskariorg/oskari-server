@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gwcConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://geowebcache.org/schema/1.4.0"
+	xsi:schemaLocation="http://geowebcache.org/schema/1.4.0
+http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
+	<version>1.4.0</version>
+	<backendTimeout>120</backendTimeout>
+
+	<serviceInformation>
+		<title>My GeoWebCache</title>
+		<description>GeoWebCache is an advanced tile cache for WMS servers.It
+			supports a large variety of protocols and formats, including WMS-C,
+			WMTS, KML, Google Maps and Virtual Earth.</description>
+		<keywords>
+			<string>WFS</string>
+			<string>WMS</string>
+			<string>WMTS</string>
+			<string>GEOWEBCACHE</string>
+		</keywords>
+		<serviceProvider>
+			<providerName>John Smith inc.</providerName>
+			<providerSite>http://www.example.com/</providerSite>
+			<serviceContact>
+				<individualName>John Smith</individualName>
+				<positionName>Geospatial Expert</positionName>
+				<addressType>Work</addressType>
+				<addressStreet>1 Bumpy St.</addressStreet>
+				<addressCity>Hobart</addressCity>
+				<addressAdministrativeArea>TAS</addressAdministrativeArea>
+				<addressPostalCode>7005</addressPostalCode>
+				<addressCountry>Australia</addressCountry>
+				<phoneNumber>+61 3 0000 0000</phoneNumber>
+				<faxNumber>+61 3 0000 0001</faxNumber>
+				<addressEmail>john.smith@example.com</addressEmail>
+			</serviceContact>
+		</serviceProvider>
+		<fees>NONE</fees>
+		<accessConstraints>NONE</accessConstraints>
+	</serviceInformation>
+
+
+	<gridSets>
+		<!-- Grid Set legacy MML -->
+		<gridSet>
+			<name>EPSG_3067_MML</name>
+			<srs>
+				<number>3067</number>
+			</srs>
+			<extent>
+				<coords>
+					<double>0</double>
+					<double>0</double>
+					<double>10000000</double>
+					<double>10000000</double>
+				</coords>
+			</extent>
+			<resolutions>
+				<double>2000</double><!-- 0 -->
+				<double>1000</double><!-- 1 -->
+				<double>500</double><!-- 2 -->
+				<double>200</double><!-- 3 -->
+				<double>100</double><!-- 4 -->
+				<double>50</double><!-- 5 -->
+				<double>20</double><!-- 6 -->
+				<double>10</double><!-- 7 -->
+				<double>4</double><!-- 8 -->
+				<double>2</double><!-- 9 -->
+				<double>1</double><!-- 10 -->
+				<double>0.5</double><!-- 11 -->
+				<double>0.25</double><!-- 12 -->
+			</resolutions>
+			<metersPerUnit>1.0</metersPerUnit>
+			<pixelSize>0.00028</pixelSize>
+			<tileHeight>256</tileHeight>
+			<tileWidth>256</tileWidth>
+		</gridSet>
+
+		<!-- gridSet JHS180 -->
+		<gridSet>
+			<name>EPSG_3067_JHS180</name>
+			<description>http://www.jhs-suositukset.fi/web/guest/jhs/recommendations/180</description>
+			<srs>
+				<number>3067</number>
+			</srs>
+			<extent>
+				<coords>
+					<double>-548576.0</double>
+					<double>6291456.0</double>
+					<double>1548576.0</double>
+					<double>8388608.0</double>
+				</coords>
+			</extent>
+			<alignTopLeft>false</alignTopLeft>
+			<resolutions>
+				<double>8192.0</double>
+				<double>4096.0</double>
+				<double>2048.0</double>
+				<double>1024.0</double>
+				<double>512.0</double>
+				<double>256.0</double>
+				<double>128.0</double>
+				<double>64.0</double>
+				<double>32.0</double>
+				<double>16.0</double>
+				<double>8.0</double>
+				<double>4.0</double>
+				<double>2.0</double>
+				<double>1.0</double>
+				<double>0.5</double>
+				<double>0.25</double>
+			</resolutions>
+			<metersPerUnit>1.0</metersPerUnit>
+			<pixelSize>2.8E-4</pixelSize>
+			<scaleNames>
+				<string>JHS180:0</string>
+				<string>JHS180:1</string>
+				<string>JHS180:2</string>
+				<string>JHS180:3</string>
+				<string>JHS180:4</string>
+				<string>JHS180:5</string>
+				<string>JHS180:6</string>
+				<string>JHS180:7</string>
+				<string>JHS180:8</string>
+				<string>JHS180:9</string>
+				<string>JHS180:10</string>
+				<string>JHS180:11</string>
+				<string>JHS180:12</string>
+				<string>JHS180:13</string>
+				<string>JHS180:14</string>
+				<string>JHS180:15</string>
+			</scaleNames>
+			<tileHeight>256</tileHeight>
+			<tileWidth>256</tileWidth>
+			<yCoordinateFirst>false</yCoordinateFirst>
+		</gridSet>
+
+
+		<!-- gridSet JHS180 as in karttamoottori.maanmittauslaitos.fi -->
+		<!-- resolution 0.25 missing -->
+		<gridSet>
+			<name>ETRS-TM35FIN</name>
+			<description>http://www.jhs-suositukset.fi/web/guest/jhs/recommendations/180</description>
+			<srs>
+				<number>3067</number>
+			</srs>
+			<extent>
+				<coords>
+					<double>-548576.0</double>
+					<double>6291456.0</double>
+					<double>1548576.0</double>
+					<double>8388608.0</double>
+				</coords>
+			</extent>
+			<alignTopLeft>false</alignTopLeft>
+			<resolutions>
+				<double>8192.0</double>
+				<double>4096.0</double>
+				<double>2048.0</double>
+				<double>1024.0</double>
+				<double>512.0</double>
+				<double>256.0</double>
+				<double>128.0</double>
+				<double>64.0</double>
+				<double>32.0</double>
+				<double>16.0</double>
+				<double>8.0</double>
+				<double>4.0</double>
+				<double>2.0</double>
+				<double>1.0</double>
+				<double>0.5</double>				
+			</resolutions>
+			<metersPerUnit>1.0</metersPerUnit>
+			<pixelSize>2.8E-4</pixelSize>
+			<scaleNames>
+				<string>JHS180:0</string>
+				<string>JHS180:1</string>
+				<string>JHS180:2</string>
+				<string>JHS180:3</string>
+				<string>JHS180:4</string>
+				<string>JHS180:5</string>
+				<string>JHS180:6</string>
+				<string>JHS180:7</string>
+				<string>JHS180:8</string>
+				<string>JHS180:9</string>
+				<string>JHS180:10</string>
+				<string>JHS180:11</string>
+				<string>JHS180:12</string>
+				<string>JHS180:13</string>
+				<string>JHS180:14</string>				
+			</scaleNames>
+			<tileHeight>256</tileHeight>
+			<tileWidth>256</tileWidth>
+			<yCoordinateFirst>false</yCoordinateFirst>
+		</gridSet>
+
+
+
+
+	</gridSets>
+
+	<layers>
+
+
+
+
+		<!-- taustakartta_10k taustakartta_20k taustakartta_40k taustakartta_80k 
+			taustakartta_160k taustakartta_320k taustakartta_800k taustakartta_2m taustakartta_4m 
+			taustakartta_8m -->
+
+		<wmsLayer>
+			<name>EPSG_3067_MML_LAYER_TEMPLATE</name>
+			<mimeFormats>
+				<string>image/png</string>
+			</mimeFormats>
+
+			<gridSubsets>
+				<gridSubset>
+					<gridSetName>EPSG_3067_MML</gridSetName>
+					<extent>
+						<coords>
+							<double>0</double>
+							<double>6500000</double>
+							<double>750000</double>
+							<double>8000000</double>
+						</coords>
+					</extent>
+				</gridSubset>
+			</gridSubsets>
+			<useETags>true</useETags>
+			<wmsUrl>
+				<string>http://127.0.0.1:80/geoserver/service/wms</string>
+			</wmsUrl>
+			<wmsLayers>LAYER_TEMPLATE</wmsLayers>
+		</wmsLayer>
+
+		<wmsLayer>
+			<name>EPSG_3067_JHS180_LAYER_TEMPLATE</name>
+			<mimeFormats>
+				<string>image/png</string>
+			</mimeFormats>
+
+			<gridSubsets>
+				<gridSubset>
+					<gridSetName>EPSG_3067_JHS180</gridSetName>
+					<extent>
+						<coords>
+							<double>-548576.0</double>
+							<double>6291456.0</double>
+							<double>1548576.0</double>
+							<double>8388608.0</double>
+						</coords>
+					</extent>
+				</gridSubset>
+			</gridSubsets>
+			<useETags>true</useETags>
+			<wmsUrl>
+				<string>http://127.0.0.1:80/geoserver/service/wms</string>
+			</wmsUrl>
+			<wmsLayers>LAYER_TEMPLATE</wmsLayers>
+		</wmsLayer>
+
+		<wmsLayer>
+			<name>ETRS-TM35FIN_LAYER_TEMPLATE</name>
+			<mimeFormats>
+				<string>image/png</string>
+			</mimeFormats>
+
+			<gridSubsets>
+				<gridSubset>
+					<gridSetName>ETRS-TM35FIN</gridSetName>
+					<extent>
+						<coords>
+							<double>-548576.0</double>
+							<double>6291456.0</double>
+							<double>1548576.0</double>
+							<double>8388608.0</double>
+						</coords>
+					</extent>
+				</gridSubset>
+			</gridSubsets>
+			<useETags>true</useETags>
+			<wmsUrl>
+				<string>http://127.0.0.1:80/geoserver/service/wms</string>
+			</wmsUrl>
+			<wmsLayers>LAYER_TEMPLATE</wmsLayers>
+		</wmsLayer>
+	</layers>
+</gwcConfiguration>
