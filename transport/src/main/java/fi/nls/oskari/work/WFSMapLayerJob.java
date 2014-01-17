@@ -107,7 +107,7 @@ public class WFSMapLayerJob extends Job {
 	private static final String LAYER_CONFIGURATION_API = "GetWFSLayerConfiguration&id=";
 
     // COOKIE
-    private static final String ROUTE_COOKIE_NAME = "ROUTEID=";
+    public static final String ROUTE_COOKIE_NAME = "ROUTEID=";
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
