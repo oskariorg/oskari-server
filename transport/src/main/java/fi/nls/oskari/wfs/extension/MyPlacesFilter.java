@@ -13,4 +13,15 @@ public class MyPlacesFilter extends AdditionalIdFilter {
     public MyPlacesFilter() {
         super(MY_PLACES_PREFIX, MY_PLACES_ID_FIELD);
     }
+
+    /**
+     * Defines a radius factor of point sizes for filtering
+     *
+     * @return factor
+     */
+    @Override
+    public double getSizeFactor() {
+        return 5.0;
+    }
+
 }

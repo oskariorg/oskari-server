@@ -13,4 +13,15 @@ public class AnalysisFilter extends AdditionalIdFilter {
     public AnalysisFilter() {
         super(ANALYSIS_PREFIX, ANALYSIS_ID_FIELD);
     }
+
+    /**
+     * Defines a radius factor of point sizes for filtering
+     *
+     * @return factor
+     */
+    @Override
+    public double getSizeFactor() {
+        return 5.0;
+    }
+
 }

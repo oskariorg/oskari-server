@@ -248,7 +248,7 @@ public class WFSFilter {
             return null;
         }
 
-        gsf.setSize(this.defaultBuffer);
+        gsf.setSize(getSizeFactor()*this.defaultBuffer);
         gsf.setCentre(coordinate);
         gsf.setNumPoints(CIRCLE_POINTS_COUNT);
 
@@ -349,6 +349,15 @@ public class WFSFilter {
         }
 
         return filter;
+    }
+
+    /**
+     * Defines a radius factor of point sizes for filtering
+     *
+     * @return factor
+     */
+    public double getSizeFactor() {
+        return 1.0;
     }
 
     /**
