@@ -18,7 +18,15 @@ module.exports = function(client) {
     query.on("row", function(row) {
       rowCount++;
 
-      var config = JSON.parse(row.config);
+      var config = {};
+      try {
+          config = JSON.parse(row.config);
+      }
+      catch(e) {
+          console.error("Unable to parse config for view " + row.view_id + ". Error:'", e, "'. Please update manually! Config:\r\n",row.config);
+          updateCount++;
+          return;
+      }
 
       // Set the map options for WMTS
       var mapOptions = {
