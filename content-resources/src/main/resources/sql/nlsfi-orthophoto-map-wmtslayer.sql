@@ -12,7 +12,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
          'ETRS-TM35FIN');
 
 -- update tile_matrix for wmts layer;
-UPDATE oskari_maplayer SET tile_matrix_set_data='{
+UPDATE oskari_maplayer SET minScale = 50000, maxScale = 1, tile_matrix_set_data='{
   "operationsMetadata": {
       "GetCapabilities": {
           "dcp": {
