@@ -10,7 +10,7 @@
         <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
         <init-param>
             <param-name>version</param-name>
-            <param-value>${app.version}</param-value>
+            <param-value>${oskari.client.version}</param-value>
         </init-param>
     </servlet>
 

@@ -65,7 +65,6 @@
 		<filter-profile>template</filter-profile>
 		<filter-path>filter</filter-path>
 		<app.server>jetty</app.server>
-		<app.version>${project.version}</app.version>
 	</properties>
 
 	<build>
@@ -139,6 +138,7 @@
 			</activation>
 			<properties>
 					<app.server>tomcat</app.server>
+					<filter-profile>tomcat-template</filter-profile>
 			</properties>
 			<build>
 				<plugins>
