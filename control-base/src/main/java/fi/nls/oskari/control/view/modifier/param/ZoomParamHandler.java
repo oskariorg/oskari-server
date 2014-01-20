@@ -40,7 +40,7 @@ public class ZoomParamHandler extends ParamHandler {
             int zoom = ConversionHelper.getInt(PropertyUtil.getOptional(params.getParamValue()), 0);
 
             final String legacyLinkFixParam = params.getActionParams().getHttpParam(PARAM_ZOOM_LEVELS);
-            if(legacyLinkFixParam != null) {
+            if(legacyLinkFixParam == null) {
                 // old maplinks don't have zoomLevels parameter
                 // adjust zoomlevel since the number of zoom levels have changed
                 zoom = zoom + zoomAdjust;

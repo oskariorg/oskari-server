@@ -22,7 +22,7 @@ Maplayer DB structure and JSON formatting has been simplified so all layers are 
 fi.mml.map.mapwindow.util.OskariLayerWorker instead of former MapLayerWorker. All layers should now be referenced with OskariLayer instead of (Map-)Layer classes and
 they should be loaded using OskariLayerService instead of MapLayerService. Additional upgrade is required - [instructions can be found here](docs/upgrade/1.17.md).
 
-### ParamHandler/ViewModifier
+### ParamHandler/ViewModifier/ModifierParams
 
 ParamHandlers now have access to the ActionParams instance for the request. This means they can determine how to handle a parameter depending on other parameters.
 
