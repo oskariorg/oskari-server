@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/oskari-map" antiJARLocking="true" useNaming="true"
+	unpackWAR="true" disableURLRewriting="true" useHttpOnly="true">
+	<Resource username="postgres" password="obi1kenobi" url="jdbc:postgresql://localhost:5432/oskaridb"
+		name="jdbc/OskariPool" driverClassName="org.postgresql.Driver"
+		initialSize="2" removeAbandoned="true" maxActive="20" maxIdle="10"
+		maxWait="500" type="javax.sql.DataSource"
+		auth="Container" />
+</Context>

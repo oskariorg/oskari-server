@@ -2,14 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>	
+  <parent>
+		<groupId>fi.nls.oskari</groupId>
+		<artifactId>oskari-parent</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath>./oskari-parent.xml</relativePath>
+	</parent>
+
+  
   <groupId>fi.nls.paikkatietoikkuna</groupId>
   <artifactId>map-portlet</artifactId>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Oskari map servlet</name>
 
+ 
   <modules>
     <module>shared-test-resources</module>
 
