@@ -63,7 +63,7 @@
 		<!-- This is the default properties if no profile is selected on the command 
 			line -->
 		<filter-profile>template</filter-profile>
-		<filter-path>filter</filter-path>
+		<filter-path>${basedir}/filter</filter-path>
 		<app.server>jetty</app.server>
 	</properties>
 
@@ -73,7 +73,7 @@
 		<filters>
 			<!-- The base filtering path and file should always be hardcoded, it's 
 				not dependent on any profile change -->
-			<filter>filter/filter-base.properties</filter>
+			<filter>${basedir}/filter/filter-base.properties</filter>
 			<filter>${filter-path}/${filter-profile}.properties</filter>
 		</filters>
 
@@ -102,7 +102,9 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<filters>
-						<filter>filter/filter-base.properties</filter>
+						<!-- The base filtering path and file should always be hardcoded, it's 
+							not dependent on any profile change -->
+						<filter>${basedir}/filter/filter-base.properties</filter>
 						<filter>${filter-path}/${filter-profile}.properties</filter>
 					</filters>
 					<archive>
