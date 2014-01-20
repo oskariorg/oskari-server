@@ -58,19 +58,88 @@
 		</dependency>
 	</dependencies>
 
+	<!-- ==== Build Settings ==== -->
+	<properties>
+		<!-- This is the default properties if no profile is selected on the command 
+			line -->
+		<filter-profile>template</filter-profile>
+		<filter-path>filter</filter-path>
+		<app.server>jetty</app.server>
+		<app.version>${project.version}</app.version>
+	</properties>
 
 	<build>
 		<finalName>oskari-map</finalName>
+
+		<filters>
+			<!-- The base filtering path and file should always be hardcoded, it's 
+				not dependent on any profile change -->
+			<filter>filter/filter-base.properties</filter>
+			<filter>${filter-path}/${filter-profile}.properties</filter>
+		</filters>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<!-- No XML filtering activated <include>**/*.xml</include>  -->
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<!-- No XML filtering activated <exclude>**/*.xml</exclude>  -->
+					<exclude>**/*.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<filters>
+						<filter>filter/filter-base.properties</filter>
+						<filter>${filter-path}/${filter-profile}.properties</filter>
+					</filters>
+					<archive>
+						<!-- 
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						 -->
+					</archive>
+					<webResources>
+						<resource>
+							<directory>src/main/resources/WEB-INF/${app.server}</directory>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+							<includes>
+								<include>*.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+					
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>eclipse-tomcat</id>
+			<id>tomcat-profile</id>
 			<activation>
-				<property>
-					<name>m2e.version</name>
-				</property>
+				<activeByDefault>false</activeByDefault>
 			</activation>
+			<properties>
+					<app.server>tomcat</app.server>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -78,18 +147,19 @@
 						<artifactId>maven-war-plugin</artifactId>
 						<configuration>
 							<containerConfigXML>src/main/resources/META-INF/context.xml</containerConfigXML>
-							<archive>
-								<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-								<manifest>
-									<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-									<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-								</manifest>
-							</archive>
 							<webResources>
 								<resource>
 									<directory>src/main/resources/META-INF</directory>
-									<filtering>false</filtering>
+									<filtering>true</filtering>
 									<targetPath>META-INF</targetPath>
+								</resource>
+								<resource>
+									<directory>src/main/resources/WEB-INF/${app.server}</directory>
+									<filtering>true</filtering>
+									<targetPath>WEB-INF</targetPath>
+									<includes>
+										<include>*.xml</include>
+									</includes>
 								</resource>
 							</webResources>
 						</configuration>
@@ -100,7 +170,7 @@
 		<profile>
 			<id>jetty-profile</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
@@ -145,7 +215,7 @@
 								<id>jetty-run</id>
 								<phase>install</phase>
 								<goals>
-									<goal>run</goal>
+									<goal>run-exploded</goal>
 								</goals>
 							</execution>
 							<execution>

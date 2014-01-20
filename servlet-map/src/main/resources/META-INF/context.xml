@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/oskari-map" antiJARLocking="true" useNaming="true"
-	unpackWAR="true" disableURLRewriting="true" useHttpOnly="true">
-	<Resource username="postgres" password="obi1kenobi" url="jdbc:postgresql://localhost:5432/oskaridb"
-		name="jdbc/OskariPool" driverClassName="org.postgresql.Driver"
-		initialSize="2" removeAbandoned="true" maxActive="20" maxIdle="10"
-		maxWait="500" type="javax.sql.DataSource"
-		auth="Container" />
+<Context path="/${project.build.finalName}" antiJARLocking="${app.tomcat.context.antiJarLocking}"
+	useNaming="${app.tomcat.context.useNaming}" unpackWAR="${app.tomcat.context.unpackWAR}"
+	disableURLRewriting="${app.tomcat.context.disableURLRewriting}"
+	useHttpOnly="${app.tomcat.context.useHTTPOnly}">
+
+	<Resource username="${db.username}" password="${db.password}"
+		url="${db.url}" name="${db.jndi.name}" driverClassName="${db.jndi.driverClassName}"
+		initialSize="${db.jndi.initialsize}" removeAbandoned="true"
+		maxActive="${db.jndi.maxactive}" maxIdle="${db.jndi.maxidle}" maxWait="${db.jndi.maxwait}"
+		type="${db.jndi.type}" auth="${db.jndi.auth}" />
+
 </Context>
