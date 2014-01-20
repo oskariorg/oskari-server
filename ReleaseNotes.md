@@ -22,6 +22,15 @@ Maplayer DB structure and JSON formatting has been simplified so all layers are 
 fi.mml.map.mapwindow.util.OskariLayerWorker instead of former MapLayerWorker. All layers should now be referenced with OskariLayer instead of (Map-)Layer classes and
 they should be loaded using OskariLayerService instead of MapLayerService. Additional upgrade is required - [instructions can be found here](docs/upgrade/1.17.md).
 
+### ParamHandler/ViewModifier
+
+ParamHandlers now have access to the ActionParams instance for the request. This means they can determine how to handle a parameter depending on other parameters.
+
+### ZoomParamHandler
+
+Now checks for zoomLevels-parameter also. If it isn't present, adjusts zoom level value by the amount specified in property 'actionhandler.GetAppSetup.ZoomParamHandler.zoomAdjust' (defaults to 0). This can be used to fix issues with
+old links when amount of zoomLevels change.
+
 ## 1.16
 
 ### content-resources

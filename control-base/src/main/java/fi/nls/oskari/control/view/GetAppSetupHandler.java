@@ -224,10 +224,9 @@ public class GetAppSetupHandler extends ActionHandler {
         final ModifierParams modifierParams = new ModifierParams();
         modifierParams.setBaseAjaxUrl(getBaseAjaxUrl(params));
         modifierParams.setConfig(configuration);
-        modifierParams.setLocale(params.getLocale());
+        modifierParams.setActionParams(params);
+
         modifierParams.setReferer(referer);
-        modifierParams.setClientIP(params.getClientIp());
-        modifierParams.setUser(params.getUser());
         modifierParams.setViewType(view.getType());
         modifierParams.setViewId(view.getId());
         modifierParams.setStartupSequence(startupSequence);
