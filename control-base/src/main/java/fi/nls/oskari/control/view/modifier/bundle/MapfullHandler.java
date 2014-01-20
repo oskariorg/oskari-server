@@ -233,7 +233,7 @@ public class MapfullHandler extends BundleHandler {
             final boolean modifyURLs) {
         try {
             final JSONObject myPlaceLayer = new JSONObject();
-            myPlaceLayer.put("wmsName", "ows:my_places_categories");
+            myPlaceLayer.put("wmsName", PropertyUtil.get("myplaces.xmlns.prefix","ows")+":my_places_categories");
             //myPlaceLayer.put("descriptionLink", "");
             myPlaceLayer.put("type", "wmslayer");
             myPlaceLayer.put("formats",
