@@ -1,3 +1,8 @@
+/**
+ * This wasn't needed after all. Still keeping this as template for mapfull state update
+ * @private
+ */
+
 var _ = require("lodash-node");
 
 module.exports = function(client) {
@@ -31,7 +36,8 @@ module.exports = function(client) {
 
       // The new WMTS layers have more scales than the WMS layers.
       // Add 3 to the zoom level so that it's about the same as before.
-      state.zoom = (state.zoom || 0) + 3;
+      // FIXME: wasn't needed after all
+      //state.zoom = (state.zoom || 0) + 3;
 
       var updatedState = JSON.stringify(state);
 

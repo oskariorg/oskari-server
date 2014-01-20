@@ -26,11 +26,6 @@ they should be loaded using OskariLayerService instead of MapLayerService. Addit
 
 ParamHandlers now have access to the ActionParams instance for the request. This means they can determine how to handle a parameter depending on other parameters.
 
-### ZoomParamHandler
-
-Now checks for zoomLevels-parameter also. If it isn't present, adjusts zoom level value by the amount specified in property 'actionhandler.GetAppSetup.ZoomParamHandler.zoomAdjust' (defaults to 0). This can be used to fix issues with
-old links when amount of zoomLevels change.
-
 ## 1.16
 
 ### content-resources
