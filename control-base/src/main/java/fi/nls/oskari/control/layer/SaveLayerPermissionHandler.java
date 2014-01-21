@@ -15,13 +15,6 @@ import org.json.JSONObject;
 public class SaveLayerPermissionHandler extends ActionHandler {
 
     private static String PARAMETER_PERMISSION_DATA = "resource";
-    private static int EXTERNAL_ID_TYPE = 0;
-    private static int EXTERNAL_ID = 1;
-    private static int EXTERNAL_RESOURCE_NAME_TYPE = 2;
-    private static int EXTERNAL_RESOURCE_NAME_NAMESPACE = 3;
-    private static int EXTERNAL_RESOURCE_NAME_NAME = 4;
-    private static int PERMISSION_TYPE = 5;
-    private static String PARAMETER_SAVE = "save";
 
     private final static Logger log = LogFactory.getLogger(SaveLayerPermissionHandler.class);
     private final static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
@@ -30,74 +23,64 @@ public class SaveLayerPermissionHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         log.debug("PERMISSION HANDLER LAYER");
 
-        Permissions permissions = new Permissions();
-
-        if (! params.getUser().isAdmin()){
+        if (!params.getUser().isAdmin()) {
             throw new ActionDeniedException("Denied, user not admin");
         }
 
-        JSONArray resources = null;
-        final String resourceData = params.getHttpParam(PARAMETER_PERMISSION_DATA);
+        final Permissions permissions = new Permissions();
+        permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
+        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
+
+        final JSONArray resources = parseJSONArray(params.getHttpParam(PARAMETER_PERMISSION_DATA));
+        final String whoMakesThisModification = params.getUser().getEmail();
+
         try {
-            resources = new JSONArray(resourceData);
-            log.debug(" jSon " + resources);
+            for (int i = 0; i < resources.length(); i++) {
 
-        } catch (JSONException e) {
-            throw new ActionParamsException("Unable to parse param JSON:\n" + resourceData);
-        }
+                final JSONObject layerPermission = resources.getJSONObject(i);
 
-        String whoMakesThisModification = params.getUser().getEmail();
+                boolean isViewSelected = layerPermission.getBoolean("isViewSelected");
+                log.debug(layerPermission.getString("name") + " " + isViewSelected);
 
-      try{
-         for (int i = 0; i < resources.length();i++) {
+                log.debug(layerPermission.getString("name"));
+                log.debug("resource : ", layerPermission.getString("resourceName"), " namespace ",
+                        layerPermission.getString("namespace"), " roleId ", layerPermission.getString("roleId"),
+                        " isSelected", layerPermission.getBoolean("isSelected"), " isViewSelected",
+                        layerPermission.getBoolean("isViewSelected"), " isDownloadSelected ",
+                        layerPermission.getBoolean("isDownloadSelected"), "isViewPublishedSelected ",
+                        layerPermission.getString("isViewPublishedSelected"));
 
-            JSONObject layerPermission = resources.getJSONObject(i);
+                permissions.setExternalId(layerPermission.getString("roleId"));
+                permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
+                permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
 
-            boolean isViewSelected = layerPermission.getBoolean("isViewSelected");
-            log.debug(layerPermission.getString("name") + " " +isViewSelected);
+                if (layerPermission.getBoolean("isViewSelected")) {
+                    addPermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                } else {
+                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
+                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                }
 
-            log.debug(layerPermission.getString("name") );
-            log.debug("resource : " + layerPermission.getString("resourceName")+ " namespace "
-                    +   layerPermission.getString("namespace") + " roleId "+   layerPermission.getString("roleId")
-                    +" isSelected" + layerPermission.getBoolean("isSelected")+ " isViewSelected"
-                    + layerPermission.getBoolean("isViewSelected")+ " isDownloadSelected "
-                    + layerPermission.getBoolean("isDownloadSelected") + "isViewPublishedSelected "
-                    + layerPermission.getString("isViewPublishedSelected"));
+                if (layerPermission.getBoolean("isSelected")) {
+                    addPermissions(permissions, Permissions.PERMISSION_TYPE_PUBLISH);
+                } else {
+                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
+                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_PUBLISH);
+                }
 
+                if (layerPermission.getBoolean("isDownloadSelected")) {
+                    addPermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
+                } else {
+                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
+                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
+                }
 
-           permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
-           permissions.setExternalId(layerPermission.getString("roleId"));
-           permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-           permissions.getUniqueResourceName().setNamespace(layerPermission.getString("namespace"));
-           permissions.getUniqueResourceName().setName(layerPermission.getString("resourceName"));
-
-           if (layerPermission.getBoolean("isViewSelected")) {
-               addPermissions(permissions,Permissions.PERMISSION_TYPE_VIEW_LAYER);
-           } else {
-               log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-               deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-           }
-
-           if (layerPermission.getBoolean("isSelected")) {
-               addPermissions(permissions,Permissions.PERMISSION_TYPE_PUBLISH);
-           } else {
-               log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-               deletePermissions(permissions, Permissions.PERMISSION_TYPE_PUBLISH);
-           }
-
-           if (layerPermission.getBoolean("isDownloadSelected")) {
-               addPermissions(permissions,Permissions.PERMISSION_TYPE_DOWNLOAD);
-           }  else {
-               log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-               deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
-           }
-
-           if (layerPermission.getBoolean("isViewPublishedSelected")) {
-               addPermissions(permissions,Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
-           } else {
-               log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-               deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
-           }
+                if (layerPermission.getBoolean("isViewPublishedSelected")) {
+                    addPermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                } else {
+                    log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
+                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
+                }
 
 
                 //permissionsService.insertPermissions(permissions.getUniqueResourceName(),
@@ -109,12 +92,21 @@ public class SaveLayerPermissionHandler extends ActionHandler {
                 // permissions.getExternalIdType(), Permissions.PERMISSION_TYPE_VIEW_LAYER);
             }*/
 
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+    }
 
-      }catch (JSONException e) {
-          e.printStackTrace();
-      }
-
+    private JSONArray parseJSONArray(final String jsonArray) throws ActionParamsException {
+        try {
+            final JSONArray resources = new JSONArray(jsonArray);
+            log.debug(" permissions JSON ", resources);
+            return resources;
+        } catch (Exception e) {
+            throw new ActionParamsException("Unable to parse param JSON:\n" + jsonArray);
+        }
     }
 
     private void addPermissions(final Permissions permissions, final String permissionType) {
