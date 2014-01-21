@@ -1,6 +1,6 @@
 # Modifying the demo data
 
-The HSQLDB is created on first call of the portlet. It creates a data folder under oskari-server with the populated tables if it doesn't exist
+The HSQLDB is created on first call of the servlet. It creates a data folder under oskari-server with the populated tables if it doesn't exist
 (or the directory the server is started from).
 
 NOTE! Any modifications to the initial data SQL statements dont have any effect if the data dir is not
@@ -16,46 +16,15 @@ The safe SQL file to edit for these is `/oskari-server/servlet-map/src/main/reso
 
 # Adding a maplayer
 
-Add the following sql at the end of the file to register a new WMS layer in to Oskari-server
+Examples for adding a layer of type:
 
-    -- Add a layer under 'National Land Survey' layer class;
-    INSERT INTO portti_maplayer (layerclassid, wmsname, wmsurl, opacity,
-           style, minscale, maxscale, description_link, legend_image, inspire_theme_id,
-           dataurl, metadataurl, order_number, layer_type, locale)
-    VALUES (3,'maastokartta_50k','http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms',40,'',54000,26000,'','',3,'c22da116-5095-4878-bb04-dd7db3a1a341','',30,'wmslayer',
-    '{ fi:{name:"Maastokartta 1:50k",subtitle:""},sv:{name:"Terrängkarta 1:50k",subtitle:""},en:{name:"Topographic map 1:50k",subtitle:""}}');
+- WMS in `/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`.
+- WMTS in `/oskari-server/servlet-map/src/main/resources/sql/nlsfi-background-map-wmtslayer.sql`.
+- WFS in `/oskari-server/servlet-map/src/main/resources/sql/PostgreSQL/example-wfslayer.sql`.
 
-After registering the layer it isn't visible to the users yet (even admin)
+Layers have reference to a layer group (oskari_layergroup db-table) which currently means the data producer, but it might become a more generic grouping table in the future. They also can have a link to a list of inspire themes (themes listed in portti_inspiretheme, links to maplayers via oskari_maplayer_themes).
 
-## Adding layer rights for the layer
-
-Add the following sql at the end of the file to make the new layer visible to users by role
-
-Add layer as resource so we can map permissions for it (resource_mapping=wmsurl+wmsname):
-
-    INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://a.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://b.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://c.karttatiili.fi/dataset/maastokarttarasteri/service/wms,http://d.karttatiili.fi/dataset/maastokarttarasteri/service/wms+maastokartta_50k');
-
-    -- give view_layer permission for the resource to ROLE 3 (admin);
-    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '3');
-
-After this you can log in as admin on the browser and see the added layer. Guest or regular user shouldn't see it listed in the layerselector.
-
-Add permission for logged in user
-
-    -- give view_layer permission for the resource to ROLE 2 (logged in user);
-    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
-
-After this you can log in as a regular user and see the added layer. Guest shouldn't see it listed in the layerselector.
-
-Add permission for guest user
-
-    -- give view_layer permission for the resource to ROLE 10110 (guest);
-    INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-    ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '10110');
-
-After this the layer should be listed in layerselector for guests.
+For users to see a registered maplayer the layer needs to have permissions. Permissions are documented in [OskariPermissions.md](OskariPermissions.md).
 
 # Users management
 
@@ -63,7 +32,7 @@ After this the layer should be listed in layerselector for guests.
 
 * edit user.json and roles.json files in resource path `oskari-server/control-example/src/main/resources/users/`
 
-* role ids must match the ones referenced in portti_permission and portti_recource_user tables (see next subsection)
+* role ids must match the ones referenced in oskari_permission (see next subsection)
 
 Sample `user.json`
 

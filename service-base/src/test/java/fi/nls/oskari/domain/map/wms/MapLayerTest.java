@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author SMAKINEN
  */
+@Deprecated
 public class MapLayerTest {
 
     @Test

@@ -28,15 +28,12 @@
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
                 ],
-                "layers": [
-                    { "id": "base_2" }
-                ],
-
+                "layers": []
             },
             "state" : {
                 "east": "517620",
                 "north": "6874042",
-                "selectedLayers": [{"id": "base_2"}],
+                "selectedLayers": [{"id": 1}],
                 "zoom": 1
             }
         },
@@ -69,10 +66,10 @@
         },
         { "id" : "myplaces2",
             "config" : { 
-                "featureNS" : "http://oskari.org/myplaces",
+                "featureNS" : "http://www.oskari.org",
                 "queryUrl" : "[REPLACED BY HANDLER]",
-                 "wmsUrl" : "/?action_route=MyPlacesTile&myCat="
+                 "wmsUrl" : "/oskari-map/?action_route=MyPlacesTile&myCat="
              }
-        },
+        }
     ]
 }

@@ -26,12 +26,12 @@ public class View implements Serializable {
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 
-    public String getDescription() { 
+    public String getDescription() {
     	if(this.description == null) return "";
-    	return this.description; 
+    	return this.description;
     }
     public void setDescription(String description) { this.description = description; }
-        
+
     /* Supplement bits, these should prolly have be in a member object */
     private long supplementId = -1;
     private String application = "full-map"; // app name
@@ -50,13 +50,13 @@ public class View implements Serializable {
 
     public String getApplication() { return this.application; }
     public void setApplication(String as) { this.application = as; }
-    
+
     public String getPage() { return this.page; }
     public void setPage(String ba) { this.page = ba; }
-    
+
     public long getCreator() { return this.creator; }
     public void setCreator(long creator) { this.creator = creator; }
-    
+
     public boolean isPublic() { return this.isPublic; }
     public boolean getIsPublic() { return this.isPublic; }
     public void setIsPublic(boolean isPublic) { this.isPublic = isPublic; }
@@ -147,5 +147,14 @@ public class View implements Serializable {
             }
         }
         this.bundles.add(bundle);
+    }
+
+    public void removeBundle(final String bundleName) {
+        this.bundles.remove(getBundleByName(bundleName));
+        int seqNo = 0;
+        for (Bundle bundle : this.bundles) {
+            bundle.setSeqNo(seqNo);
+            seqNo++;
+        }
     }
 }

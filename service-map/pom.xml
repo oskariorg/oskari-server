@@ -13,11 +13,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -39,6 +39,11 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.10.0</version>
         </dependency>
+        <!-- dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.1.5</version>
+        </dependency -->
 
         <dependency>
             <groupId>fi.mml</groupId>

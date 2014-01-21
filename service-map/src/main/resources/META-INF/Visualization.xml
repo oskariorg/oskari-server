@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="StatsVisualization">
+
+    <typeAlias alias="StatsVisualization" type="fi.nls.oskari.domain.map.stats.StatsVisualization" />
+
+    <resultMap id="StatsLayerVisualizationResult" class="StatsVisualization">
+        <result property="id" column="id" />
+        <result property="statsLayerId" column="maplayer_id" />
+        <result property="nameJSON" column="name" />
+        <result property="visualization" column="visualization" />
+        <result property="classes" column="classes" />
+        <result property="colors" column="colors" />
+        <result property="layername" column="layername" />
+        <result property="filterproperty" column="filterproperty" />
+        <result property="geometryproperty" column="geometryproperty" />
+        <result property="externalid" column="externalid" />
+    </resultMap>
+
+    <select id="findForLayerId" parameterClass="int" resultMap="StatsLayerVisualizationResult">
+        SELECT id, maplayer_id, "name", visualization, classes, colors, layername, filterproperty, geometryproperty, externalid
+        FROM portti_stats_layer where maplayer_id=#id#
+    </select>
+
+    <select id="find" parameterClass="int" resultMap="StatsLayerVisualizationResult">
+        SELECT id, maplayer_id, "name", visualization, classes, colors, layername, filterproperty, geometryproperty, externalid
+        FROM portti_stats_layer where id=#id#
+    </select>
+
+</sqlMap>

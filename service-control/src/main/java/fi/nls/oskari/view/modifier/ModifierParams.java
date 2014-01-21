@@ -2,6 +2,7 @@ package fi.nls.oskari.view.modifier;
 
 import java.util.Locale;
 
+import fi.nls.oskari.control.ActionParameters;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,16 +15,14 @@ import fi.nls.oskari.domain.User;
  */
 public class ModifierParams {
 
+    private ActionParameters actionParams;
     private String referer;
     private String baseAjaxUrl;
     private String ajaxRouteParamName;
     private String paramValue;
     private JSONObject config;
     private JSONArray startupSequence;
-    private Locale locale;
-    private String clientIP;
     private String viewType;
-    private User user;
     private long viewId;
     private boolean locationModified = false;
     private boolean oldPublishedMap = false;
@@ -89,20 +88,14 @@ public class ModifierParams {
         this.config = config;
     }
     public Locale getLocale() {
-        return locale;
-    }
-    public void setLocale(Locale locale) {
-        this.locale = locale;
+        return actionParams.getLocale();
     }
     /**
      * IP of the client from the request
      * @return
      */
     public String getClientIP() {
-        return clientIP;
-    }
-    public void setClientIP(String clientIP) {
-        this.clientIP = clientIP;
+        return actionParams.getClientIp();
     }
     /**
      * Type of the view we are modifying
@@ -120,10 +113,8 @@ public class ModifierParams {
      * @return
      */
     public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
+
+        return actionParams.getUser();
     }
 
     /**
@@ -175,5 +166,13 @@ public class ModifierParams {
     }
     public void setAjaxRouteParamName(String ajaxRouteParamName) {
         this.ajaxRouteParamName = ajaxRouteParamName;
+    }
+
+    public ActionParameters getActionParams() {
+        return actionParams;
+    }
+
+    public void setActionParams(ActionParameters actionParams) {
+        this.actionParams = actionParams;
     }
 }

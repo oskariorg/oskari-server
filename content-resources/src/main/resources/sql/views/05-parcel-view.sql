@@ -22,8 +22,8 @@ SELECT b.name, s.config, s.state, s.startup
 -- and supplement should contain some sane values
 --------------------------------------------
 
-INSERT INTO portti_view_supplement (is_public, lang, creator)
-    VALUES (true, 'fi', 10110);
+INSERT INTO portti_view_supplement (is_public, lang, creator, app_startup)
+    VALUES (true, 'fi', 10110, 'parcel');
 
 --------------------------------------------
 -- View

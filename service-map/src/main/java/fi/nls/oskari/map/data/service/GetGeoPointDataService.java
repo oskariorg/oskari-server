@@ -65,7 +65,7 @@ public class GetGeoPointDataService {
             try {
                 response.put(GetGeoPointDataService.TYPE, params.getLayer().getType());
                 response.put(GetGeoPointDataService.LAYER_ID, params.getLayer().getId());
-                final String xslt = params.getLayer().getXslt();
+                final String xslt = params.getLayer().getGfiXslt();
                 if (xslt == null || xslt.isEmpty()) {
                     response.put(GetGeoPointDataService.PRESENTATION_TYPE, GetGeoPointDataService.PRESENTATION_TYPE_TEXT);
                     response.put(GetGeoPointDataService.CONTENT, gfiResponse);

@@ -136,7 +136,7 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapmodule-plugin" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs" : {
+            "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapstats" : {
@@ -150,9 +150,6 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
-            },
-            "statsgrid" : {
-                "bundlePath" : "/Oskari/packages/statistics/bundle/"
             },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -173,7 +170,18 @@ UPDATE portti_view_bundle_seq set config = '{
     "plugins" : [
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin", 
+         "config" : { 
+           "contextPath" : "/transport-0.0.1", 
+           "hostname" : "localhost", 
+           "port" : "8888",
+           "lazy" : true,
+           "disconnectTime" : 30000,
+           "backoffIncrement": 1000,
+           "maxBackoff": 60000,
+           "maxNetworkDelay": 10000
+         }
+       },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
@@ -261,3 +269,61 @@ UPDATE portti_view_bundle_seq set config = '{
         "adaptable": true
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'infobox') 
     AND view_id=(SELECT id FROM portti_view WHERE type='PUBLISH');
+
+--------------------------------------------
+-- 5. PublishedStatehandler
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
+    VALUES ((SELECT id FROM portti_view WHERE type='PUBLISH'), 
+    (SELECT id FROM portti_bundle WHERE name = 'publishedstatehandler'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='PUBLISH')), 
+    '{}','{}', '{}');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "PublishedStatehandler",
+        "fi" : "publishedstatehandler",
+        "sv" : "publishedstatehandler",
+        "en" : "publishedstatehandler",
+        "bundlename" : "publishedstatehandler",
+        "bundleinstancename" : "publishedstatehandler",
+        "metadata" : {
+            "Import-Bundle" : {
+                "publishedstatehandler" : {
+                    "bundlePath" : "/Oskari/packages/framework/bundle/"
+                 }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'publishedstatehandler') 
+    AND  view_id=(SELECT id FROM portti_view WHERE type='PUBLISH');
+
+--------------------------------------------
+-- 6. Publishedmyplaces2
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
+    VALUES ((SELECT id FROM portti_view WHERE type='PUBLISH'), 
+    (SELECT id FROM portti_bundle WHERE name = 'publishedmyplaces2'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='PUBLISH')), 
+    '{}','{}', '{
+            "title" : "Publishedmyplaces2",
+            "fi" : "publishedmyplaces2",
+            "sv" : "publishedmyplaces2",
+            "en" : "publishedmyplaces2",
+            "bundlename" : "publishedmyplaces2",
+            "bundleinstancename" : "publishedmyplaces2",
+            "metadata" : {
+                "Import-Bundle" : {
+                    "publishedmyplaces2" : {
+                        "bundlePath" : "/Oskari/packages/framework/bundle/"
+                    }
+                },
+                "Require-Bundle-Instance" : []
+            },
+            "instanceProps" : {}
+        }');

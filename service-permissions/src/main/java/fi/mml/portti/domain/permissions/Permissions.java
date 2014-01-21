@@ -7,7 +7,7 @@ public class Permissions implements Comparable<Permissions> {
 	public final static String EXTERNAL_TYPE_USER = "USER";
 	public final static String EXTERNAL_TYPE_ROLE = "ROLE";
 	
-	public final static String RESOURCE_TYPE_WMS_LAYER = "maplayer";
+	public final static String RESOURCE_TYPE_MAP_LAYER = "maplayer";
 	public final static String RESOURCE_TYPE_LAYER_GROUP = "layerclass";
 	public final static String RESOURCE_TYPE_DOWNLOADABLE_MATERIAL = "DOWNLOADABLE_MATERIAL";
 	public final static String RESOURCE_TYPE_APPLICATION = "RESOURCE_TYPE_APPLICATION";

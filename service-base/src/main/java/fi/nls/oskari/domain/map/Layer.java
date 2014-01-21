@@ -6,12 +6,16 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Date;
 
+/**
+ * Deprecated, use OskariLayer instead!
+ */
+@Deprecated
 public abstract class Layer extends JSONLocalizedNameAndTitle implements Comparable<Layer> {
 
     private Logger log = LogFactory.getLogger(Layer.class);
 	public static final String TYPE_WMS = "wmslayer";
 	public static final String TYPE_WFS = "wfslayer";	
-	public static final String WMTS_LAYER = "wmtslayer";
+	public static final String TYPE_WMTS = "wmtslayer";
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
 

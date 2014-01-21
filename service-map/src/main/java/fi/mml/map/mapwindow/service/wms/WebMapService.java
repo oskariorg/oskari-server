@@ -47,5 +47,11 @@ public interface WebMapService {
      * @return String array
      */
     public String[] getKeywords();
+
+    /**
+     * Return WMS version as string
+     * @return String
+     */
+    public String getVersion();
 	
 }

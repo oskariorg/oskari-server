@@ -54,7 +54,7 @@ update portti_bundle set startup='{
             "mapmodule-plugin" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs" : {
+            "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapwmts" : {
@@ -64,6 +64,9 @@ update portti_bundle set startup='{
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapanalysis" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+             "mapmyplaces" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "oskariui" : {

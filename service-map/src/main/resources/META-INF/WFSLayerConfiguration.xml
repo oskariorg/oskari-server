@@ -44,6 +44,10 @@
         
 		<result property="minScale" column="minscale"/>
 		<result property="maxScale" column="maxscale"/>
+
+        <result property="customParser" column="custom_parser"/>
+        <result property="testLocation" column="test_location"/>
+        <result property="testZoom" column="test_zoom"/>
 		
 		<result property="templateName" column="t_name"/>
 		<result property="templateDescription" column="description"/>
@@ -59,8 +63,15 @@
 		<result property="name" column="s_name"/>
 		<result property="SLDStyle" column="sld_style"/>
     </resultMap>
-	
-    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration">
+
+    <cacheModel type="LRU" id="wfs-layer-cache" readOnly="true" serialize="false">
+        <flushInterval minutes="15"/>
+        <property name="CacheSize" value="100"/>
+    </cacheModel>
+
+
+    <select id="findLayer" parameterClass="int" resultMap="WFSLayerConfiguration"
+            cacheModel="wfs-layer-cache">
     	SELECT
 			l.maplayer_id,
 			map.locale,
@@ -91,6 +102,9 @@
             l.tile_buffer,
 			l.wms_layer_id,
 			l.wps_params,
+            l.custom_parser,
+            l.test_location,
+            l.test_zoom,
 			
 			map.minscale,
 			map.maxscale,
@@ -104,7 +118,7 @@
   			ss.sld_style as selection_sld_style
   			
 		FROM portti_wfs_layer l
-		JOIN portti_maplayer map ON map.id = l.maplayer_id
+		JOIN oskari_maplayer map ON map.id = l.maplayer_id
 		LEFT OUTER JOIN portti_wfs_layer_style ss ON ss.id = l.selection_sld_style_id
 		LEFT OUTER JOIN portti_wfs_template_model m ON m.id = l.wfs_template_model_id
 		WHERE l.maplayer_id = #id#
@@ -122,4 +136,21 @@
 		WHERE l.maplayer_id = #id#
     </select>
 
+    <update id="updateSchemaInfo"
+            parameterClass="Map">
+        update portti_wfs_layer set
+        feature_type = #schema:VarChar#,
+        schema_changed = NOW(),
+        schema_last = NOW(),
+        schema_status  = #status:VarChar#
+        where maplayer_id = #id#
+    </update>
+
+    <update id="updateFailSchemaInfo"
+            parameterClass="Map">
+        update portti_wfs_layer set
+        schema_last = NOW(),
+        schema_status  = #status:VarChar#
+        where maplayer_id = #id#
+    </update>
 </sqlMap>

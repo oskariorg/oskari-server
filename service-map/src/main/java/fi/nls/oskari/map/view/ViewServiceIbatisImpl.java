@@ -1,25 +1,23 @@
 package fi.nls.oskari.map.view;
 
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.ibatis.sqlmap.client.SqlMapSession;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.view.Bundle;
+import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.ibatis.sqlmap.client.SqlMapSession;
-
-import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.db.BaseIbatisService;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
@@ -225,7 +223,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                 bundleJson = viewJson.getJSONObject(bundleName);
             } catch (JSONException je) {
                 //je.printStackTrace();
-                log.error("bundle "+ bundleName +"  not found from JSON");
+                log.error("bundle " + bundleName + " not found from JSON");
             }
 
             if (bundleJson != null && !bundleJson.isNull("config")) {

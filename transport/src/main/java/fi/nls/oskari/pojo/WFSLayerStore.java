@@ -65,6 +65,9 @@ public class WFSLayerStore {
     private static final String TILE_REQUEST = "tileRequest";
     private final static String TILE_BUFFER = "tileBuffer";
     private static final String WMS_LAYER_ID = "WMSLayerId";
+    private static final String CUSTOM_PARSER = "customParser";
+    private final static String TEST_LOCATION = "testLocation";
+    private final static String TEST_ZOOM = "testZoom";
 
     private static final String MIN_SCALE = "minScale";
     private static final String MAX_SCALE = "maxScale";
@@ -114,6 +117,10 @@ public class WFSLayerStore {
     private boolean tileRequest; // if tile requests are made (map request default)
     private Map<String, Double> tileBuffer;
     private String WMSLayerId;
+    private boolean customParser;
+    private List<Double> testLocation;
+    private int testZoom;
+
 
     private double minScale;
     private double maxScale;
@@ -662,6 +669,64 @@ public class WFSLayerStore {
     }
 
     /**
+     * Checks if should be parsed with custom parser
+     *
+     * @return <code>true</code> if should;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isCustomParser() {
+        return customParser;
+    }
+
+    /**
+     * Sets if custom parsed
+     *
+     * @param customParser
+     */
+    public void setCustomParser(String customParser) {
+        if (customParser.equals("true"))
+            this.customParser = true;
+        else
+            this.customParser = false;
+    }
+
+    /**
+     * Gets test location
+     *
+     * @return test location
+     */
+    public ArrayList<Double> getTestLocation() {
+        return (ArrayList<Double>) testLocation;
+    }
+
+    /**
+     * Sets test location
+     *
+     * @param testLocation
+     */
+    public void setTestLocation(List<Double> testLocation) {
+        this.testLocation = testLocation;
+    }
+
+    /**
+     * Gets test zoom
+     *
+     * @return test zoom
+     */
+    public int getTestZoom() {
+        return testZoom;
+    }
+
+    /**
+     * Sets test zoom
+     *
+     * @param testZoom
+     */
+    public void setTestZoom(int testZoom) {
+        this.testZoom = testZoom;
+    }
+
+    /**
      * Gets min scale
      * 
      * @return min scale
@@ -869,6 +934,13 @@ public class WFSLayerStore {
     }
 
     /**
+     * Saves object to redis
+     */
+    public void save() {
+        JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
+    }
+
+    /**
      * Transforms JSON String to object
      * 
      * @param json
@@ -969,13 +1041,6 @@ public class WFSLayerStore {
                 }
 				store.setFeatureType(featureTypes);
 			} else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
-
-                // TODO: remove after production is stable (deprecated)
-                if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
-                    while (parser.nextToken() != JsonToken.END_ARRAY) {
-                    }
-                }
-
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String localeName = parser.getCurrentName();
@@ -1016,7 +1081,7 @@ public class WFSLayerStore {
 				store.setGetFeatureInfo(parser.getText());
 			} else if (TILE_REQUEST.equals(fieldName)) {
 				store.setTileRequest(parser.getText());
-			}  else if (TILE_BUFFER.equals(fieldName)) {
+			} else if (TILE_BUFFER.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String styleName = parser.getCurrentName();
@@ -1027,9 +1092,21 @@ public class WFSLayerStore {
                 store.setTileBuffer(tileBuffers);
             } else if (WMS_LAYER_ID.equals(fieldName)) {
 				store.setWMSLayerId(parser.getText());
-			} 
-			
-			else if (MIN_SCALE.equals(fieldName)) {
+			} else if (CUSTOM_PARSER.equals(fieldName)) {
+                store.setCustomParser(parser.getText());
+            } else if (TEST_LOCATION.equals(fieldName)) {
+                List<Double> bbox = new ArrayList<Double>();
+                if (parser.getCurrentToken() == JsonToken.START_ARRAY) {
+                    while (parser.nextToken() != JsonToken.END_ARRAY) {
+                        bbox.add(parser.getValueAsDouble());
+                    }
+                }
+                store.setTestLocation(bbox);
+            } else if (TEST_ZOOM.equals(fieldName)) {
+                store.setTestZoom(parser.getIntValue());
+            }
+
+            else if (MIN_SCALE.equals(fieldName)) {
 				store.setMinScale(parser.getValueAsDouble());
 			} else if (MAX_SCALE.equals(fieldName)) {
 				store.setMaxScale(parser.getValueAsDouble());

@@ -5,6 +5,7 @@ import java.util.List;
 import fi.nls.oskari.domain.map.wms.MapConfigurationLayer;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
+@Deprecated
 public class MapConfigurationLayersServiceIbatisImpl extends BaseIbatisService<MapConfigurationLayer> implements MapConfigurationLayersService{
 
 	@Override

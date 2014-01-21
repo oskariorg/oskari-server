@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.layer;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +8,8 @@ import java.util.Map;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.log.LogFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
@@ -30,10 +29,27 @@ public class GetLayerIds extends ActionHandler {
     
     private static final String LAYER_IDS = "layerIds";
     private static final String ID = "id";
-    
+
+    private static final List<Integer> extra_layers = new ArrayList<Integer>();
     
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
-    
+
+    @Override
+    public void init() {
+        super.init();
+        final String[] properties = {
+                GetWFSLayerConfigurationHandler.ANALYSIS_BASELAYER_ID,
+                GetWFSLayerConfigurationHandler.MYPLACES_BASELAYER_ID
+        };
+        for(String prop: properties) {
+            final String property = PropertyUtil.getOptional(prop);
+            int id = ConversionHelper.getInt(property, -1);
+            if(id != -1) {
+                extra_layers.add(id);
+            }
+        }
+    }
+
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         
@@ -52,7 +68,7 @@ public class GetLayerIds extends ActionHandler {
 	        }
 	    }
         
-        List<Map<String,Object>> listOfLayers = permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser());
+        List<Map<String,Object>> listOfLayers = permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), true);
         ObjectMapper mapper = new ObjectMapper();
         
         try {
@@ -60,6 +76,8 @@ public class GetLayerIds extends ActionHandler {
             for (Map<String,Object> entry : listOfLayers) {
                 idList.add(Integer.parseInt(String.valueOf(entry.get(ID))));
             }
+            idList.addAll(extra_layers);
+
             Map<String,List<Integer>> layerIds = new HashMap<String,List<Integer>>();
             layerIds.put(LAYER_IDS, idList);
             result = mapper.writeValueAsString(layerIds);
@@ -69,15 +87,9 @@ public class GetLayerIds extends ActionHandler {
 	        WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(result);
 	        permissions.save(jsessionid);
             
-        } catch (JsonGenerationException e) {
+        } catch (Exception e) {
             log.error(e);
-            result = "{\"error\":\"" +e.toString() +"\"}";
-        } catch (JsonMappingException e) {
-            log.error(e);
-            result = "{\"error\":\"" +e.toString() +"\"}";
-        } catch (IOException e) {
-            log.error(e);
-            result = "{\"error\":\"" +e.toString() +"\"}";
+            result = JSONHelper.createJSONObject("error", e.toString()).toString();
         }
        
         ResponseHelper.writeResponse(params, result);

@@ -43,8 +43,6 @@ public class DBHandler {
             in = DBHandler.class.getResourceAsStream("/db.properties");
             prop.load(in);
             PropertyUtil.addProperties(prop);
-            // replace logger after properties are populated
-            log = LogFactory.getLogger(DBHandler.class);
         } catch (Exception e) {
             System.out.println("Error when populating properties!");
             e.printStackTrace();
@@ -53,6 +51,25 @@ public class DBHandler {
                 in.close();
             } catch (Exception ignored) { }
         }
+        final String environment = System.getProperty("oskari.env");
+        if(environment != null && !environment.isEmpty()) {
+            try {
+                final Properties prop = new Properties();
+                in = DBHandler.class.getResourceAsStream("/db-" + environment + ".properties");
+                prop.load(in);
+                PropertyUtil.addProperties(prop, true);
+            } catch (Exception ignored) {
+                System.out.println("Error when populating env-properties for '" + environment + "'!!");
+            } finally {
+                try {
+                    in.close();
+                } catch (Exception ignored) { }
+            }
+        }
+
+        // replace logger after properties are populated
+        log = LogFactory.getLogger(DBHandler.class);
+
         final String addView = System.getProperty("oskari.addview");
         if(addView != null) {
             insertView(getConnection(), addView);
@@ -91,7 +108,6 @@ public class DBHandler {
             final DataSource ds = (DataSource) ctx.lookup("java:/comp/env/" + datasource);
             return ds.getConnection();
         } catch (Exception e) {
-            log.info("Couldn't find connection pool with name", datasource);
         }
 
         final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
@@ -109,9 +125,9 @@ public class DBHandler {
                 return conn;
             }
         } catch (Exception e) {
-            log.warn(e, "Couldn't get connection with url", url);
         }
-        throw new SQLException("Couldn't get db connection! Aborting...");
+        throw new SQLException("Couldn't get db connection! Tried with datasource: "
+                +datasource + " and url: " + url + ". Aborting...");
     }
 
     public static void createContentIfNotCreated() {
@@ -243,6 +259,9 @@ public class DBHandler {
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
                 final Bundle bundle = bundleService.getBundleTemplateByName(bJSON.getString("id"));
+                if(bundle == null) {
+                    throw new Exception("Bundle not registered - id:" + bJSON.getString("id"));
+                }
                 if (bJSON.has("instance")) {
                     bundle.setBundleinstance(bJSON.getString("instance"));
                 }

@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -18,8 +16,6 @@ import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,12 +26,9 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     private static final Logger log = LogFactory
             .getLogger(CreateAnalysisLayerHandler.class);
-    private WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
-
-    private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER = "filter";

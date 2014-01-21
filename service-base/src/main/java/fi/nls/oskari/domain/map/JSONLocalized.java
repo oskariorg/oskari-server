@@ -3,7 +3,6 @@ package fi.nls.oskari.domain.map;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -29,12 +28,8 @@ public abstract class JSONLocalized {
         try {
             JSONObject loc = JSONHelper.getJSONObject(locale, language);
             return JSONHelper.getStringFromJSON(loc, key , "");
-        } catch(Exception ex) {
-            // if we log 'this' to get the actual object, we might go into infinite loop
-            // (since this.toString() might use getLocalizedValue() method)
-            // just log class
-            log.info("Couldn't get", key, "from", locale, "for language", language, "in", this.getClass());
-        }
+        } catch(Exception ignored) { }
+        log.info("Couldn't get", key, "from", locale, "for language", language, "in", this.getClass());
         return "";
     }
 

@@ -1,0 +1,718 @@
+{
+  "layers": [ 
+    {
+      "baseLayerId": 35,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+      "formats": {},
+      "id": "base_35",
+      "inspire": "Taustakartat",
+      "isQueryable": false,
+      "maxScale": 1,
+      "minScale": 1.5E7,
+      "name": "Taustakartat",
+      "orgName": "Taustakartat",
+      "permissions": {"publish": "no_publication_permission"},
+      "styles": {},
+      "subLayer": [
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 184,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1,
+          "minScale": 5000,
+          "name": "Taustakartta 1:5000",
+          "opacity": 100,
+          "orderNumber": 21,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:21:16 EEST 2012",
+          "wmsName": "taustakartta_5k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 185,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 5001,
+          "minScale": 25001,
+          "name": "Taustakartta 1:10k",
+          "opacity": 100,
+          "orderNumber": 22,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:24:04 EEST 2012",
+          "wmsName": "taustakartta_10k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 186,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 25001,
+          "minScale": 40001,
+          "name": "Taustakartta 1:20k",
+          "opacity": 100,
+          "orderNumber": 23,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:24:17 EEST 2012",
+          "wmsName": "taustakartta_20k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 187,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1,
+          "minScale": 2,
+          "name": "Taustakartta 1:40k",
+          "opacity": 100,
+          "orderNumber": 24,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_40k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 188,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 40000,
+          "minScale": 56702,
+          "name": "Taustakartta 1:80k",
+          "opacity": 100,
+          "orderNumber": 25,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_80k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 189,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 56702,
+          "minScale": 141742,
+          "name": "Taustakartta 1:160k",
+          "opacity": 100,
+          "orderNumber": 26,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_160k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 190,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 141742,
+          "minScale": 283474,
+          "name": "Taustakartta 1:320k",
+          "opacity": 100,
+          "orderNumber": 27,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_320k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 191,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 283474,
+          "minScale": 566939,
+          "name": "Taustakartta 1:800k",
+          "opacity": 100,
+          "orderNumber": 28,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_800k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 192,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 566939,
+          "minScale": 1417333,
+          "name": "Taustakartta 1:2milj",
+          "opacity": 100,
+          "orderNumber": 29,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_2m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 193,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1417333,
+          "minScale": 2834657,
+          "name": "Taustakartta 1:4milj",
+          "opacity": 100,
+          "orderNumber": 30,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_4m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2
+256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 194,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 2834657,
+          "minScale": 1.5E7,
+          "name": "Taustakartta 1:8milj",
+          "opacity": 100,
+          "orderNumber": 31,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_8m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.kartta
+tiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        }
+      ],
+      "type": "base"
+    },
+    {
+      "baseLayerId": 12,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "dataUrl_uuid": "472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "descriptionLink": "",
+      "formats": {},
+      "geom": "POLYGON ((51857.07713547576 6617351.7548736315, 199877.68017894187 7795699.643159997, 674163.7062640898 7782724.689402027, 759905.4332841737 6599
+589.557011408, 51857.07713547576 6617351.7548736315))",
+      "id": 99,
+      "inspire": "Kiinteistöt",
+      "isQueryable": false,
+      "legendImage": "",
+      "maxScale": 1,
+      "minScale": 3999,
+      "name": "Kiinteistötunnukset",
+      "opacity": 100,
+      "orderNumber": 801,
+      "orgName": "Yhteistyöaineistot",
+      "permissions": {"publish": "no_publication_permission"},
+      "style": "",
+      "styles": {},
+      "subtitle": "",
+      "type": "wmslayer",
+      "wmsName": "ktj_kiinteistotunnukset",
+      "wmsUrl": "http://a.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://b.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://c.kartta
+tiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms"
+    },
+    {
+      "baseLayerId": 12,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "dataUrl_uuid": "472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "descriptionLink": "",
+      "formats": {},
+      "geom": "POLYGON ((51857.07713547576 6617351.7548736315, 199877.68017894187 7795699.643159997, 674163.7062640898 7782724.689402027, 759905.4332841737 6599
+589.557011408, 51857.07713547576 6617351.7548736315))",
+      "id": 90,
+      "inspire": "Kiinteistöt",
+      "isQueryable": false,
+      "legendImage": "",
+      "maxScale": 1,
+      "minScale": 15999,
+      "name": "Kiinteistöjaotus (päivitetään kerran kuussa)",
+      "opacity": 100,
+      "orderNumber": 800,
+      "orgName": "Yhteistyöaineistot",
+      "permissions": {"publish": "no_publication_permission"},
+      "style": "",
+      "styles": {},
+      "subtitle": "",
+      "type": "wmslayer",
+      "wmsName": "ktj_kiinteistorajat",
+      "wmsUrl": "http://a.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://b.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://c.kartta
+tiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms"
+    },
+    {
+      "data": {
+        "features": [{
+          "geometry": {
+            "coordinates": [[
+              [
+                383353,
+                6673975
+              ],
+              [
+                383301,
+                6673899
+              ],
+              [
+                383294,
+                6673894
+              ],
+              [
+                383331,
+                6673879
+              ],
+              [
+                383374,
+                6673888
+              ],
+              [
+                383430,
+                6673868
+              ],
+              [
+                383433,
+                6673886
+              ],
+              [
+                383411,
+                6673973
+              ],
+              [
+                383353,
+                6673975
+              ]
+            ]],
+            "type": "Polygon"
+          },
+          "properties": {
+            "area": "0.94",
+            "kuvaus": "",
+            "nimi": "ABCDEFG abcdefg"
+          },
+          "type": "Feature"
+        }],
+        "type": "FeatureCollection"
+      },
+      "id": "NewParcel",
+      "name": "NewParcel",
+      "styles": [{
+        "name": "OpenLayers.Style_375",
+        "styleMap": {"default": {
+          "fillColor": "#FF0000",
+          "fillOpacity": 0.2,
+          "fontColor": "#000000",
+          "fontFamily": "Courier New, monospace",
+          "fontSize": "22px",
+          "fontWeight": "bold",
+          "label": "${nimi}\n${area} ha",
+          "labelAlign": "bm",
+          "strokeColor": "#00FF00",
+          "strokeOpacity": 1,
+          "strokeWidth": 0
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    },
+        {
+          "data": {
+            "features": [   
+        ],
+        "type": "FeatureCollection"
+      },
+      "id": "NewBoundary",
+      "name": "NewBoundary",
+      "styles": [{
+        "name": "OpenLayers.Style_382",
+        "styleMap": {"default": {
+          "fillColor": "${color}",
+          "fillOpacity": 0.92,
+          "label": "${description}",
+          "labelXOffset": 0,
+          "labelYOffset": 0,
+          "strokeColor": "${color}",
+          "strokeOpacity": 1,
+          "strokeWidth": 2,
+          "geometry" : {
+            "name" : "geometry",
+            "translateX" : "${offsetX}", 
+            "translateY" : "${offsetY}"
+          }
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    },
+    {
+      "data": {
+        "features": [
+          {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673975
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "deltax": 25,
+              "deltay": 0,
+              "length": "59.46",
+              "start" : 8.6,
+              "end" : 12,
+              "count" : 23,
+              "color" : "#006d2c",
+              "offsetX" : 0,
+              "offsetY" : -50 ,
+              "size" : 20 
+            
+            },
+            "type": "Feature"
+          },
+           {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673975
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "deltax": 25,
+              "deltay": 0,
+              "length": "59.46",
+              "start" : 6.4,
+              "end" : 8.6,
+              "count" : 90,
+              "color" : "#31a354",
+              "offsetX" : 0,
+              "offsetY" : -30 ,
+              "size" : 25
+            
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673975
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "deltax": 25,
+              "deltay": 0,
+              "length": "59.46",
+              "start" : 4.5,
+              "end" : 6.4,
+              "count" : 111,              
+              "color" : "#74c476",
+              "offsetX" : 0,
+              "offsetY" : -10 ,
+              "size" : 30 
+            
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673975
+              ],
+              "type": "Point"
+            },
+             "properties": {
+              "deltax": 25,
+              "deltay": 0,
+              "length": "59.46",
+              "start" : 2.4,
+              "end" : 4.5,
+              "count" : 77,              
+              "color" : "#bae4b3",
+              "offsetX" : 0,
+              "offsetY" : 10 ,
+              "size" : 25
+            
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673975
+              ],
+              "type": "Point"
+            },
+             "properties": {
+              "deltax": 25,
+              "deltay": 0,
+              "length": "59.46",
+              "start" : -1,
+              "end" : 2.4,
+              "count" : 19,             
+              "color" : "#edf8e9",
+              "offsetX" : 0,
+              "offsetY" : 30,
+              "size" : 20 
+            
+            },
+            "type": "Feature"
+          }
+            
+        ],
+        "type": "FeatureCollection"
+      },
+      "id": "NewPoints",
+      "name": "NewPoints",
+      "styles": [{
+        "name": "OpenLayers.Style_389",
+        "styleMap": {"default": {
+          "fontColor": "#000000",
+          "fontFamily": "Arial",
+          "fontSize": "12px",
+          "fontWeight": "bold",          
+          "fillColor": "${color}",
+          "fillOpacity": 0.8,
+          "label": "${start} - ${end} (${count})",
+          "labelXOffset": "${deltax}",
+          "labelYOffset": "${deltay}",
+          "strokeColor": "#000000",
+          "strokeOpacity": 1,
+          "strokeWidth": 1,
+          "graphicName": "square",
+          "graphicSize" : "${size}",
+          "geometry" : {
+            "name" : "geometry",
+            "translateX" : "${offsetX}", 
+            "translateY" : "${offsetY}"
+          }
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    },
+    {
+      "formats": {},
+      "id": 999,
+      "inspire": "N/A",
+      "isQueryable": false,
+      "legendImage": "",
+      "maxScale": 1,
+      "minScale": 1000000,
+      "name": "Tiles",
+      "orgName": "Yhteistyöaineistot",
+      "permissions": {"publish": "no_publication_permission"},
+      "style": "",
+      "styles": {},
+      "subtitle": "",
+      "type": "wmslayer",
+      "wmsName": "ktj_kiinteistorajat",
+      "wmsUrl": "http://a.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://b.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://c.kartta
+tiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms",
+      "tiles" : [
+            { 
+                "bbox" : [ 385024, 6674432, 385536, 6674944 ],
+                "url" : "http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms?LAYERS=ktj_kiinteistorajat&TRANSPARENT=TRUE&ID=90&STYLES=&FORMAT=image%2Fpng&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=EPSG%3A3067&BBOX=385024,6674432,385536,6674944&WIDTH=256&HEIGHT=256"
+            },
+            {
+                "bbox" : [ 385150, 6674300, 385160, 6674310 ],
+                "url" : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+            },
+            {
+                "bbox" : [ 385150, 6674300, 385160, 6674310 ],
+                "url" : "data:image/png;base64,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"
+            }
+       ]
+    }
+  ],
+  "maplink": {
+    "action_route": "GetPreview",
+    "coord": "385153_6674305",
+    "forceCache": "true",
+    "format": "application/pdf",
+    "mapLayers": "999 100",
+    "noSavedState": "true",
+    "p_l_id": "272605",
+    "p_p_id": "Portti2Map_WAR_portti2mapportlet",
+    "p_p_lifecycle": "2",
+    "pageDate": "true",
+    "pageLogo": "true",
+    "pageScale": "true",
+    "pageSize": "A4",
+    "pageTitle": "",
+    "showMarker": "false",
+    "zoomLevel": "11"
+  },
+  "state": {
+    "east": 385153,
+    "north": 6674305,
+    "selectedLayers": [  
+        {
+        "id": "base_35",
+        "opacity": "20"
+      },
+      {
+        "id": "99",
+        "opacity": "20"
+      },
+      {
+        "id": "90",
+        "opacity": "20"
+      },
+      {
+        "id": "NewParcel",
+        "opacity": "20",
+        "style": "OpenLayers.Style_375"
+      },
+      {
+        "id": "NewBoundary",
+        "opacity": "100",
+        "style": "OpenLayers.Style_382"
+      },
+      {
+        "id": "NewPoints",
+        "opacity": "50",
+        "style": "OpenLayers.Style_389"
+      },  
+      {
+        "id": "999",
+        "opacity": "100"
+      }
+    ],
+    "zoom": 9
+  }
+}

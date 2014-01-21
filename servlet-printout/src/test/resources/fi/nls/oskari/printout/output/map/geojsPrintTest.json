@@ -1,0 +1,888 @@
+{
+  "layers": [
+    {
+      "baseLayerId": 35,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+      "formats": {},
+      "id": "base_35",
+      "inspire": "Taustakartat",
+      "isQueryable": false,
+      "maxScale": 1,
+      "minScale": 1.5E7,
+      "name": "Taustakartat",
+      "orgName": "Taustakartat",
+      "permissions": {"publish": "no_publication_permission"},
+      "styles": {},
+      "subLayer": [
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 184,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1,
+          "minScale": 5000,
+          "name": "Taustakartta 1:5000",
+          "opacity": 100,
+          "orderNumber": 21,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:21:16 EEST 2012",
+          "wmsName": "taustakartta_5k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 185,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 5001,
+          "minScale": 25001,
+          "name": "Taustakartta 1:10k",
+          "opacity": 100,
+          "orderNumber": 22,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:24:04 EEST 2012",
+          "wmsName": "taustakartta_10k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 186,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 25001,
+          "minScale": 40001,
+          "name": "Taustakartta 1:20k",
+          "opacity": 100,
+          "orderNumber": 23,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "updated": "Fri Aug 31 10:24:17 EEST 2012",
+          "wmsName": "taustakartta_20k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 187,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1,
+          "minScale": 2,
+          "name": "Taustakartta 1:40k",
+          "opacity": 100,
+          "orderNumber": 24,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_40k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 188,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 40000,
+          "minScale": 56702,
+          "name": "Taustakartta 1:80k",
+          "opacity": 100,
+          "orderNumber": 25,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_80k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 189,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 56702,
+          "minScale": 141742,
+          "name": "Taustakartta 1:160k",
+          "opacity": 100,
+          "orderNumber": 26,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_160k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 190,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 141742,
+          "minScale": 283474,
+          "name": "Taustakartta 1:320k",
+          "opacity": 100,
+          "orderNumber": 27,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_320k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 191,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 283474,
+          "minScale": 566939,
+          "name": "Taustakartta 1:800k",
+          "opacity": 100,
+          "orderNumber": 28,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_800k",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 192,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 566939,
+          "minScale": 1417333,
+          "name": "Taustakartta 1:2milj",
+          "opacity": 100,
+          "orderNumber": 29,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_2m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 193,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 1417333,
+          "minScale": 2834657,
+          "name": "Taustakartta 1:4milj",
+          "opacity": 100,
+          "orderNumber": 30,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_4m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        },
+        {
+          "baseLayerId": 35,
+          "dataUrl": "/catalogue/ui/metadata.html?uuid=c22da116-5095-4878-bb04-dd7db3a1a341",
+          "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+          "descriptionLink": "",
+          "formats": {},
+          "geom": "POLYGON ((-327719.5576350207 2269951.782944744, 200092.5343070085 7795671.299774553, 674163.1411776261 7782724.387222701, 979121.6313786274 2256671.3642475777, -327719.5576350207 2269951.782944744))",
+          "id": 194,
+          "inspire": "Opaskartat",
+          "isQueryable": false,
+          "legendImage": "",
+          "maxScale": 2834657,
+          "minScale": 1.5E7,
+          "name": "Taustakartta 1:8milj",
+          "opacity": 100,
+          "orderNumber": 31,
+          "orgName": "Taustakartat",
+          "permissions": {"publish": "no_publication_permission"},
+          "style": "",
+          "styles": {},
+          "subtitle": "",
+          "type": "wmslayer",
+          "wmsName": "taustakartta_8m",
+          "wmsUrl": "http://a.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://b.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://c.karttatiili.fi/dataset/taustakarttasarja/service/wms,http://d.karttatiili.fi/dataset/taustakarttasarja/service/wms"
+        }
+      ],
+      "type": "base"
+    },
+    {
+      "baseLayerId": 12,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "dataUrl_uuid": "472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "descriptionLink": "",
+      "formats": {},
+      "geom": "POLYGON ((51857.07713547576 6617351.7548736315, 199877.68017894187 7795699.643159997, 674163.7062640898 7782724.689402027, 759905.4332841737 6599589.557011408, 51857.07713547576 6617351.7548736315))",
+      "id": 99,
+      "inspire": "Kiinteistöt",
+      "isQueryable": false,
+      "legendImage": "",
+      "maxScale": 1,
+      "minScale": 3999,
+      "name": "Kiinteistötunnukset",
+      "opacity": 100,
+      "orderNumber": 801,
+      "orgName": "Yhteistyöaineistot",
+      "permissions": {"publish": "no_publication_permission"},
+      "style": "",
+      "styles": {},
+      "subtitle": "",
+      "type": "wmslayer",
+      "wmsName": "ktj_kiinteistotunnukset",
+      "wmsUrl": "http://a.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://b.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://c.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms"
+    },
+    {
+      "baseLayerId": 12,
+      "dataUrl": "/catalogue/ui/metadata.html?uuid=472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "dataUrl_uuid": "472b3e52-5ba8-4967-8785-4fa13955b42e",
+      "descriptionLink": "",
+      "formats": {},
+      "geom": "POLYGON ((51857.07713547576 6617351.7548736315, 199877.68017894187 7795699.643159997, 674163.7062640898 7782724.689402027, 759905.4332841737 6599589.557011408, 51857.07713547576 6617351.7548736315))",
+      "id": 90,
+      "inspire": "Kiinteistöt",
+      "isQueryable": false,
+      "legendImage": "",
+      "maxScale": 1,
+      "minScale": 15999,
+      "name": "Kiinteistöjaotus (päivitetään kerran kuussa)",
+      "opacity": 100,
+      "orderNumber": 800,
+      "orgName": "Yhteistyöaineistot",
+      "permissions": {"publish": "no_publication_permission"},
+      "style": "",
+      "styles": {},
+      "subtitle": "",
+      "type": "wmslayer",
+      "wmsName": "ktj_kiinteistorajat",
+      "wmsUrl": "http://a.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://b.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://c.karttatiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset/kiinteistorekisteri/service/wms"
+    },
+    {
+      "data": {
+        "features": [{
+          "geometry": {
+            "coordinates": [[
+              [
+                383344,
+                6673962
+              ],
+              [
+                383301,
+                6673899
+              ],
+              [
+                383249,
+                6673864
+              ],
+              [
+                383252,
+                6673849
+              ],
+              [
+                383260,
+                6673839
+              ],
+              [
+                383271,
+                6673835
+              ],
+              [
+                383275,
+                6673830
+              ],
+              [
+                383298,
+                6673847
+              ],
+              [
+                383310,
+                6673863
+              ],
+              [
+                383319,
+                6673868
+              ],
+              [
+                383363,
+                6673852
+              ],
+              [
+                383384,
+                6673856
+              ],
+              [
+                383411,
+                6673892
+              ],
+              [
+                383411,
+                6673905
+              ],
+              [
+                383393,
+                6673961
+              ],
+              [
+                383353,
+                6673961
+              ],
+              [
+                383344,
+                6673962
+              ]
+            ]],
+            "type": "Polygon"
+          },
+          "properties": {
+            "area": "1.12",
+            "kuvaus": "",
+            "nimi": "M72"
+          },
+          "type": "Feature"
+        }],
+        "type": "FeatureCollection"
+      },
+      "id": "NewParcel",
+      "name": "NewParcel",
+      "styles": [{
+        "name": "OpenLayers.Style_383",
+        "styleMap": {"default": {
+          "fillColor": "#ff0000",
+          "fillOpacity": 0.2,
+          "fontColor": "#000000",
+          "fontFamily": "Courier New, monospace",
+          "fontSize": "22px",
+          "fontWeight": "bold",
+          "label": "${nimi}\n${area} ha",
+          "labelAlign": "bm",
+          "strokeColor": "#00FF00",
+          "strokeOpacity": 1,
+          "strokeWidth": 0
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    },
+    {
+      "data": {
+        "features": [
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383344,
+                  6673962
+                ],
+                [
+                  383353,
+                  6673961
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": 9,
+              "deltay": -1,
+              "length": "9.06"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383353,
+                  6673961
+                ],
+                [
+                  383393,
+                  6673961
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": 40,
+              "deltay": 0,
+              "length": "40.00"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383393,
+                  6673961
+                ],
+                [
+                  383411,
+                  6673905
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": 48,
+              "deltay": -56,
+              "length": "58.82"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383411,
+                  6673905
+                ],
+                [
+                  383411,
+                  6673892
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": 0,
+              "deltay": -13,
+              "length": "13.00"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383411,
+                  6673892
+                ],
+                [
+                  383384,
+                  6673856
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -27,
+              "deltay": -36,
+              "length": "45.00"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383384,
+                  6673856
+                ],
+                [
+                  383363,
+                  6673852
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -21,
+              "deltay": -4,
+              "length": "21.38"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383363,
+                  6673852
+                ],
+                [
+                  383319,
+                  6673868
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -44,
+              "deltay": 16,
+              "length": "46.82"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383319,
+                  6673868
+                ],
+                [
+                  383310,
+                  6673863
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -9,
+              "deltay": -5,
+              "length": "10.30"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383310,
+                  6673863
+                ],
+                [
+                  383298,
+                  6673847
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -12,
+              "deltay": -16,
+              "length": "20.00"
+            },
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                [
+                  383298,
+                  6673847
+                ],
+                [
+                  383275,
+                  6673830
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "deltax": -23,
+              "deltay": -17,
+              "length": "28.60"
+            },
+            "type": "Feature"
+          }
+        ],
+        "type": "FeatureCollection"
+      },
+      "id": "NewBoundary",
+      "name": "NewBoundary",
+      "styles": [{
+        "name": "OpenLayers.Style_390",
+        "styleMap": {"default": {
+          "label": "- ${length} -",
+          "labelAlign": "cm",
+          "labelXOffset": "${deltax}",
+          "labelYOffset": "${deltay}",
+          "strokeColor": "#ff0000",
+          "strokeDashstyle": "dash",
+          "strokeOpacity": 1,
+          "strokeWidth": 2
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    },
+    {
+      "data": {
+        "features": [
+          {
+            "geometry": {
+              "coordinates": [
+                383344,
+                6673962
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 1},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383353,
+                6673961
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 2},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383393,
+                6673961
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 3},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383411,
+                6673905
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 4},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383411,
+                6673892
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 5},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383384,
+                6673856
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 6},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383363,
+                6673852
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 7},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383319,
+                6673868
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 8},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383310,
+                6673863
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 9},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383298,
+                6673847
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 10},
+            "type": "Feature"
+          },
+          {
+            "geometry": {
+              "coordinates": [
+                383275,
+                6673830
+              ],
+              "type": "Point"
+            },
+            "properties": {"pnro": 11},
+            "type": "Feature"
+          }
+        ],
+        "type": "FeatureCollection"
+      },
+      "id": "NewPoints",
+      "name": "NewPoints",
+      "styles": [{
+        "name": "OpenLayers.Style_397",
+        "styleMap": {"default": {
+          "fillColor": "#ff0000",
+          "fillOpacity": 0.5,
+          "graphicName": "triangle",
+          "label": "${pnro}",
+          "labelXOffset": 50,
+          "labelYOffset": 10,
+          "pointRadius": 6,
+          "strokeColor": "#ff0000",
+          "strokeOpacity": 1,
+          "strokeWidth": 1
+        }},
+        "title": "Standard"
+      }],
+      "type": "geojson"
+    }
+  ],
+  "maplink": {
+    "action_route": "GetPreview",
+    "coord": "383342_6673843",
+    "forceCache": "true",
+    "format": "application/pdf",
+    "mapLayers": "base_35 100 ,99 100 ,90 50",
+    "noSavedState": "true",
+    "p_l_id": "272605",
+    "p_p_id": "Portti2Map_WAR_portti2mapportlet",
+    "p_p_lifecycle": "2",
+    "pageDate": "true",
+    "pageLogo": "true",
+    "pageScale": "true",
+    "pageSize": "A4",
+    "pageTitle": "",
+    "showMarker": "false",
+    "zoomLevel": "11"
+  },
+  "state": {
+    "east": 383342,
+    "north": 6673843,
+    "selectedLayers": [
+      {
+        "id": "base_35",
+        "opacity": "30"
+      },
+      {
+        "id": "99",
+        "opacity": "100"
+      },
+      {
+        "id": "90",
+        "opacity": "50"
+      },
+      {
+        "id": "NewParcel",
+        "opacity": "20",
+        "style": "OpenLayers.Style_383"
+      },
+      {
+        "id": "NewBoundary",
+        "opacity": "100",
+        "style": "OpenLayers.Style_390"
+      },
+      {
+        "id": "NewPoints",
+        "opacity": "50",
+        "style": "OpenLayers.Style_397"
+      }
+    ],
+    "zoom": 11
+  }
+}

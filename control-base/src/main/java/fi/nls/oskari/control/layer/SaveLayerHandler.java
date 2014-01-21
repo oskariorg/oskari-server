@@ -1,23 +1,23 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.LayerClassService;
-import fi.mml.map.mapwindow.service.db.LayerClassServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.MapLayerService;
-import fi.mml.map.mapwindow.service.db.MapLayerServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
+import fi.mml.map.mapwindow.service.db.InspireThemeService;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.CapabilitiesCache;
-import fi.nls.oskari.domain.map.wms.MapLayer;
+import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.LayerGroup;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.util.*;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -25,246 +25,228 @@ import java.util.Enumeration;
 
 /**
  * Admin insert/update of WMS map layer
- * 
  */
 @OskariActionRoute("SaveLayer")
 public class SaveLayerHandler extends ActionHandler {
 
-    private MapLayerService mapLayerService = new MapLayerServiceIbatisImpl();
-    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
-    private LayerClassService layerClassService = new LayerClassServiceIbatisImpl();
-    
+    private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
+    private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
+    private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
+    private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
+    private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
+
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARM_LAYER_ID = "layer_id";
 
-    private static final String LAYER_NAME_PREFIX = "name";
-    private static final String LAYER_TITLE_PREFIX = "title";
+    private static final String LAYER_NAME_PREFIX = "name_";
+    private static final String LAYER_TITLE_PREFIX = "title_";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        HttpServletRequest request = params.getRequest();
+        final int layerId = saveLayer(params);
+        final OskariLayer ml = mapLayerService.find(layerId);
+        if(ml == null) {
+            throw new ActionException("Couldn't get the saved layer from DB - id:" + layerId);
+        }
+
+        // update cache - do this before creating json!
+        final boolean cacheUpdated = updateCache(ml, params.getHttpParam("version"));
+
+        // construct response as layer json
+        final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());
+        if (layerJSON == null) {
+            // handle error getting JSON failed
+            throw new ActionException("Error constructing JSON for layer");
+        }
+        if(!cacheUpdated) {
+            // Cache update failed, no biggie
+            JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
+        }
+        ResponseHelper.writeResponse(params, layerJSON);
+    }
+
+    private int saveLayer(final ActionParameters params) throws ActionException {
+
+        // layer_id can be string -> external id!
+        final String layer_id = params.getHttpParam(PARM_LAYER_ID);
 
         try {
-
-            final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
-            final int mapLayerId = ConversionHelper.getInt(layer_id, 0);
-            
-
-
             // ************** UPDATE ************************
-            if (!layer_id.isEmpty()) {
+            if (layer_id != null) {
 
-                if(!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), mapLayerId)) {
+                final OskariLayer ml = mapLayerService.find(layer_id);
+                if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), ml.getId())) {
                     throw new ActionDeniedException("Unauthorized user tried to update layer - id=" + layer_id);
                 }
 
-                if (mapLayerId > 0) {
-                    MapLayer ml = new MapLayer();
-                    ml.setId(mapLayerId);
-                    handleRequestToMapLayer(request, ml);
+                handleRequestToMapLayer(params, ml);
 
-                    ml.setUpdated(new Date(System.currentTimeMillis()));
-                    mapLayerService.update(ml);
-                    
-                    org.json.JSONObject mapJson = ml.toJSON();
-                    mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
-                    
-                    // update cache
-                    try {
-                        updateCache(ml);
-                    } catch (ActionException ae) {
-                        // Cache update failed, no biggie
-                        mapJson.put("warn", "metadataReadFailure");
-                    }
-                    ResponseHelper.writeResponse(params, mapJson.toString());
-                }
+                ml.setUpdated(new Date(System.currentTimeMillis()));
+                mapLayerService.update(ml);
+
+                return ml.getId();
             }
 
             // ************** INSERT ************************
             else {
 
-                if(!permissionsService.hasAddLayerPermission(params.getUser())) {
+                if (!permissionsService.hasAddLayerPermission(params.getUser())) {
                     throw new ActionDeniedException("Unauthorized user tried to add layer - id=" + layer_id);
                 }
 
-                MapLayer ml = new MapLayer();
-                Date currentDate = new Date(System.currentTimeMillis());
+                final OskariLayer ml = new OskariLayer();
+                final Date currentDate = new Date(System.currentTimeMillis());
                 ml.setCreated(currentDate);
                 ml.setUpdated(currentDate);
-                handleRequestToMapLayer(request, ml);
+                handleRequestToMapLayer(params, ml);
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
+
+                if(ml.isCollection()) {
+                    // update the name with the id for permission mapping
+                    ml.setName(ml.getId() + "_group");
+                    mapLayerService.update(ml);
+                }
 
                 final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
 
                 addPermissionsForRoles(ml, params.getUser(), externalIds);
 
-                org.json.JSONObject mapJson = ml.toJSON();
-                mapJson.put("orgName",layerClassService.find(ml.getLayerClassId()).getName(PropertyUtil.getDefaultLanguage()));
-
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
-                glk.updateLayerKeywords(id, ml.getDataUrl());
+                glk.updateLayerKeywords(id, ml.getMetadataId());
 
-                // update cache
-                try {
-                    insertCache(ml);
-                } catch (ActionException ae) {
-                    // Cache update failed, no biggie
-                    mapJson.put("warn", "metadataReadFailure");
-                }
-                ResponseHelper.writeResponse(params, mapJson.toString());
+                return ml.getId();
             }
 
         } catch (Exception e) {
-           throw new ActionException("Couldn't update/insert map layer ", e);
+            throw new ActionException("Couldn't update/insert map layer ", e);
         }
     }
 
-    private int insertCache(MapLayer ml) throws ActionException {
+    private boolean updateCache(OskariLayer ml, final String version) throws ActionException {
+        if(ml == null) {
+            return false;
+        }
+        if(ml.isCollection()) {
+            // just be happy for collection layers, nothing to do
+            return true;
+        }
+        if(version == null) {
+            // check this here since it's not always required (for collection layers)
+            throw new ActionParamsException("Version is required!");
+        }
         // retrieve capabilities
+        final String wmsUrl = getWmsUrl(ml.getUrl());
+        CapabilitiesCache cc = null;
+        try {
+            cc = capabilitiesService.find(ml.getId());
+            boolean isNew = false;
+            if (cc == null) {
+                cc = new CapabilitiesCache();
+                cc.setLayerId(ml.getId());
+                isNew = true;
+            }
+            cc.setVersion(version);
 
-        CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
-        if (cc == null) {
-            cc = new CapabilitiesCache();
-
-            String wmsUrl = getWmsUrl(ml.getWmsUrl());
             final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
-            cc.setLayerId(ml.getId());
             cc.setData(capabilitiesXML);
-            cc.setVersion(ml.getVersion());
-            // update cache by inserting to db
-            return   mapLayerService.insertCapabilities(cc);
-        } else {
-            updateCache(ml);
+
+            // update cache by updating db
+            if (isNew) {
+                capabilitiesService.insert(cc);
+            } else {
+                capabilitiesService.update(cc);
+            }
+        } catch (Exception ex) {
+            log.info(ex, "Error updating capabilities: ", cc, "from URL:", wmsUrl);
+            return false;
         }
-        return ml.getId();
+        return true;
     }
 
-    private void updateCache(MapLayer ml) throws ActionException {
-        // retrieve capabilities
-        CapabilitiesCache cc = mapLayerService.getCapabilitiesCache(ml.getId());
-
-        String wmsUrl = getWmsUrl(ml.getWmsUrl());
-
-        final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
-        cc.setData(capabilitiesXML);
-        
-        // update cache by updating db
-        mapLayerService.updateCapabilities(cc);
-    }
-
-    private String getWmsUrl(String savedWmsUrl) {
-
-        String wmsUrl = savedWmsUrl;
-
+    private String getWmsUrl(String wmsUrl) {
+        if(wmsUrl == null) {
+            return null;
+        }
         //check if comma separated urls
         if (wmsUrl.indexOf(",http:") > 0) {
-            wmsUrl = savedWmsUrl.substring(0,savedWmsUrl.indexOf(",http:"));
+            wmsUrl = wmsUrl.substring(0, wmsUrl.indexOf(",http:"));
         }
 
         return wmsUrl;
 
     }
-    
-    private void handleRequestToMapLayer(HttpServletRequest request, MapLayer ml) {
 
-        // FIXME: parameters are not filtered through getHttpParam, any reason for this?
-        ml.setLayerClassId(new Integer(request.getParameter("lcId")));
+    private void handleRequestToMapLayer(final ActionParameters params, OskariLayer ml) throws ActionParamsException {
 
-        Enumeration<String> paramNames = request.getParameterNames();
+        HttpServletRequest request = params.getRequest();
+
+        if(ml.getId() == -1) {
+            // setup type and parent for new layers only
+            ml.setType(params.getHttpParam("layerType"));
+            ml.setParentId(params.getHttpParam("parentId", -1));
+        }
+
+        // organization id
+        final LayerGroup group = layerGroupService.find(params.getHttpParam("groupId", -1));
+        ml.addGroup(group);
+
+        // get names and descriptions
+        final Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             String nextName = paramNames.nextElement();
             if (nextName.indexOf(LAYER_NAME_PREFIX) == 0) {
-                ml.setName(nextName.substring(LAYER_NAME_PREFIX.length()).toLowerCase(), request.getParameter(nextName));
+                ml.setName(nextName.substring(LAYER_NAME_PREFIX.length()).toLowerCase(), params.getHttpParam(nextName));
             } else if (nextName.indexOf(LAYER_TITLE_PREFIX) == 0) {
-                ml.setTitle(nextName.substring(LAYER_TITLE_PREFIX.length()).toLowerCase(), request.getParameter(nextName));
+                ml.setTitle(nextName.substring(LAYER_TITLE_PREFIX.length()).toLowerCase(), params.getHttpParam(nextName));
             }
         }
 
-        ml.setWmsName(request.getParameter("wmsName"));
-        ml.setWmsUrl(request.getParameter("wmsUrl"));
+        InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
+        ml.addInspireTheme(theme);
 
-        String opacity = "0";
-        if (request.getParameter("opacity") != null
-                && !"".equals(request.getParameter("opacity"))) {
-            opacity = request.getParameter("opacity");
+        ml.setBaseMap(ConversionHelper.getBoolean(params.getHttpParam("isBase"), false));
+
+        if(ml.isCollection()) {
+            // ulr is needed for permission mapping, name is updated after we get the layer id
+            ml.setUrl(ml.getType());
+            // the rest is not relevant for collection layers
+            return;
         }
 
-        ml.setOpacity(new Integer(opacity));
-        String style = "";
-        if (request.getParameter("style") != null
-                && !"".equals(request.getParameter("style"))) {
-            style = request.getParameter("style");
-            //style = IOHelper.decode64(style);
+        ml.setName(params.getRequiredParam("wmsName"));
+        ml.setUrl(params.getRequiredParam("wmsUrl"));
+
+        ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
+        ml.setStyle(params.getHttpParam("style", ml.getStyle()));
+        ml.setMinScale(ConversionHelper.getDouble(params.getHttpParam("minScale"), ml.getMinScale()));
+        ml.setMaxScale(ConversionHelper.getDouble(params.getHttpParam("maxScale"), ml.getMaxScale()));
+
+        ml.setLegendImage(params.getHttpParam("legendImage", ml.getLegendImage()));
+        ml.setMetadataId(params.getHttpParam("metadataId", ml.getMetadataId()));
+        ml.setTileMatrixSetId(params.getHttpParam("tileMatrixSetId"));
+        ml.setTileMatrixSetData(params.getHttpParam("tileMatrixSetData"));
+
+        final String xslt = request.getParameter("xslt");
+        if(xslt != null) {
+            // TODO: some validation of XSLT data
+            ml.setGfiXslt(xslt);
         }
-        ml.setStyle(style);
-        ml.setMinScale(new Double(request.getParameter("minScale")));
-        ml.setMaxScale(new Double(request.getParameter("maxScale")));
-
-        ml.setDescriptionLink(request.getParameter("descriptionLink"));
-        ml.setLegendImage(request.getParameter("legendImage"));
-
-        String inspireThemeId = request.getParameter("inspireTheme");
-        Integer inspireThemeInteger = Integer.valueOf(inspireThemeId);
-        ml.setInspireThemeId(inspireThemeInteger);
-
-        ml.setDataUrl(request.getParameter("dataUrl"));
-        ml.setMetadataUrl(request.getParameter("metadataUrl"));
-        ml.setOrdernumber(new Integer(request.getParameter("orderNumber")));
-
-        ml.setType(request.getParameter("layerType"));
-        ml.setTileMatrixSetId(request.getParameter("tileMatrixSetId"));
-
-        ml.setTileMatrixSetData(request.getParameter("tileMatrixSetData"));
-
-        ml.setWms_dcp_http(request.getParameter("wms_dcp_http"));
-        ml.setWms_parameter_layers(request
-                        .getParameter("wms_parameter_layers"));
-        ml.setResource_url_scheme(request.getParameter("resource_url_scheme"));
-        ml.setResource_url_scheme_pattern(request
-                .getParameter("resource_url_scheme_pattern"));
-        ml.setResource_url_scheme_pattern(request
-                .getParameter("resource_url_client_pattern"));
-
-        if (request.getParameter("resource_daily_max_per_ip") != null) {
-            ml.setResource_daily_max_per_ip(ConversionHelper.getInt(request
-                    .getParameter("resource_daily_max_per_ip"), 0));
-        }
-        String xslt = "";
-        if (request.getParameter("xslt") != null
-                && !"".equals(request.getParameter("xslt"))) {
-            xslt = request.getParameter("xslt");
-            //xslt = IOHelper.decode64(xslt);
-        }
-        ml.setXslt(xslt);
-        ml.setGfiType(request.getParameter("gfiType"));
-        String sel_style = "";
-        if (request.getParameter("selection_style") != null
-                && !"".equals(request.getParameter("selection_style"))) {
-            sel_style = request.getParameter("selection_style");
-            //sel_style = IOHelper.decode64(sel_style);
-        }
-        ml.setSelection_style(sel_style);
-        ml.setVersion(request.getParameter("version"));
-        if (request.getParameter("epsg") != null) {
-            ml.setEpsg(ConversionHelper.getInt(request.getParameter("epsg"),3067));
-        }
+        ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
     }
-    
-    private void addPermissionsForRoles(MapLayer ml, User user, final String[] externalIds) {
 
+    private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {
 
-        Permissions permissions = new Permissions();
-
-        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_WMS_LAYER);
-        permissions.getUniqueResourceName().setNamespace(ml.getWmsUrl());
-        permissions.getUniqueResourceName().setName(ml.getWmsName());
-
+        final Permissions permissions = new Permissions();
+        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
+        permissions.getUniqueResourceName().setNamespace(ml.getUrl());
+        permissions.getUniqueResourceName().setName(ml.getName());
         // insert permissions
         for (String externalId : externalIds) {
-           if(user.hasRoleWithId(ConversionHelper.getLong(externalId, -1))) {
+            final long extId = ConversionHelper.getLong(externalId, -1);
+            if (extId != -1 && user.hasRoleWithId(extId)) {
                 permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
                 permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_EDIT_LAYER);
             }

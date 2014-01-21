@@ -147,6 +147,7 @@
         WHERE
         LOWER(k.keyword) = #value# AND
         (k.lang = #lang# OR k.lang IS NULL)
+        ORDER BY k.lang
     </select>
 
     <select id="find-by-layerId"

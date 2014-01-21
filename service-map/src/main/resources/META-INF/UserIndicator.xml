@@ -9,28 +9,34 @@
     <!-- Use type aliases to avoid typing the full classname every time. -->
     <typeAlias alias="UserIndicator" type="fi.nls.oskari.domain.map.indicator.UserIndicator" />
 
-
     <resultMap id="UserIndicatorResult" class="UserIndicator">
         <result property="id" column="id" />
         <result property="userId" column="user_id" />
         <result property="title" column="title" />
         <result property="source" column="source" />
         <result property="material" column="layer_id" />
+        <result property="description" column="description"/>
         <result property="year" column="year" />
         <result property="data" column="data" />
         <result property="published" column="published" />
+        <result property="category" column="category" />
     </resultMap>
 
-
+    <parameterMap id="UserIndicatorParameter" class="UserIndicator">
+        <parameter property="id" />
+        <parameter property="userId" />
+    </parameterMap>
 
     <parameterMap id="UserIndicatorInsertParameter" class="UserIndicator">
         <parameter property="userId" />
         <parameter property="title" />
         <parameter property="source" />
         <parameter property="material" />
+        <parameter property="description"/>
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
+        <parameter property="category" />
     </parameterMap>
 
     <parameterMap id="UserIndicatorUpdateParameter" class="UserIndicator">
@@ -38,12 +44,17 @@
         <parameter property="title" />
         <parameter property="source" />
         <parameter property="material" />
+        <parameter property="description"/>
         <parameter property="year" />
         <parameter property="data" />
         <parameter property="published" />
+        <parameter property="category" />
         <parameter property="id" />
     </parameterMap>
 
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_user_indicator
+    </select>
 
     <select id="find" parameterClass="int" resultMap="UserIndicatorResult">
       SELECT
@@ -52,26 +63,30 @@
           title,
           source,
           layer_id,
+          description,
           year,
           data,
-          published
+          published,
+          category
       FROM
           oskari_user_indicator
       WHERE
-          user_id = #id#
+          id = #id#
     </select>
 
 
-<select id="findAll" resultMap="UserIndicatorResult">
+    <select id="findAll" resultMap="UserIndicatorResult">
       SELECT
             id,
             user_id,
             title,
             source,
             layer_id,
+            description,
             year,
             data,
-            published
+            published,
+            category
       FROM
             oskari_user_indicator
     </select>
@@ -83,9 +98,11 @@
             title,
             source,
             layer_id,
+            description,
             year,
             data,
-            published
+            published,
+            category
         FROM
             oskari_user_indicator
         WHERE
@@ -98,22 +115,26 @@
             title,
             source,
             layer_id,
+            description,
             year,
             data,
-            published)
-        values (?, ?, ?, ?, ?, ?, ?)
+            published,
+            category)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
 
 
-    <update id="update" parameterMap="LayerUpdateParameter">
+    <update id="update" parameterMap="UserIndicatorUpdateParameter">
         update oskari_user_indicator set
             user_id = ?,
             title = ?,
             source = ?,
             layer_id = ?,
+            description = ?,
             year = ?,
             data = ?,
-            published = ?
+            published = ?,
+            category = ?,
         where id = ?
     </update>
 

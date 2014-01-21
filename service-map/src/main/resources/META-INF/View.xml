@@ -59,10 +59,18 @@
         FROM   portti_view
        WHERE   name = #name#
     </select>
+    <!-- PublishHandler uses these as a template. As there's no deep copy and these are not immutable, the cache would be broken
+    <cacheModel type="LRU" id="view-cache" readOnly="true" serialize="false">
+        <flushInterval minutes="5"/>
+        <flushOnExecute  statement="View.update-supplement"/>
+        <flushOnExecute  statement="View.delete-view"/>
+        <property name="CacheSize" value="300"/>
+    </cacheModel>-->
 
     <select id="view-with-conf-by-view-id"
             parameterClass="java.lang.Long"
             resultMap="view-with-conf">
+            <!--cacheModel="view-cache">-->
       SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
                v.application, v.page, v.application_dev_prefix, s.creator,
 	       s.is_public, s.pubdomain, s.lang,
@@ -235,7 +243,7 @@
     
 	<update id="update-bundle"
             parameterClass="Bundle">
-      UPDDATE portti_view_bundle_seq SET 
+      UPDATE portti_view_bundle_seq SET
 	      bundle_id = #bundleId#,
 	      seqno = #seqNo#
       WHERE view_id = #viewId#

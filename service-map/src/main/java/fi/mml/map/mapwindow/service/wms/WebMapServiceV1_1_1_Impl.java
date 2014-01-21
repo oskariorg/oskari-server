@@ -51,7 +51,10 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 		getCapabilitiesUrl = url;
 		parseXML(data, layerName);
 	}
-	
+
+    public String getVersion() {
+        return "1.1.1";
+    }
 	/**
 	 * Parses xml and finds layers
 	 * 
