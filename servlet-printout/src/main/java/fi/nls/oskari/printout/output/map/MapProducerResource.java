@@ -68,17 +68,26 @@ public abstract class MapProducerResource {
 
 	private String gridResource;
 
+	private Integer zoomOffset = 0;
+
 	public MapProducerResource(Properties props) throws IOException,
 			GeoWebCacheException, NoSuchAuthorityCodeException,
 			FactoryException {
 		this.props = props;
 		layerJsonParser = new MapLayerJSONParser(props);
 
+		buildZoomOffset();
+
 		buildGridSets();
 		buildCrs();
 		buildSchema();
 
 		log.info("MapResource instantiated");
+	}
+
+	private void buildZoomOffset() {
+		zoomOffset = ConfigValue.MAPLINK_ZOOM_OFFSET
+				.getConfigProperty(props, 0);
 	}
 
 	private void buildCrs() throws IOException, NoSuchAuthorityCodeException,
@@ -253,6 +262,10 @@ public abstract class MapProducerResource {
 
 	public void setSchema(SimpleFeatureType schema) {
 		this.schema = schema;
+	}
+
+	public Integer getZoomOffset() {
+		return zoomOffset;
 	}
 
 }
