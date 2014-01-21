@@ -64,7 +64,7 @@ Uncomment or add the following settings and set them point to your geoserver url
 
 6) Install WFS transport service, if not yet installed
 
-* Look at **SettingUpTransportWFS.md**
+* Look at [SettingUpTransportWFS.md](SettingUpTransportWFS.md)
 
 
 7) Test Oskari
