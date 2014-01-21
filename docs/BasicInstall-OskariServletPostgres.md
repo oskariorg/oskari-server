@@ -86,29 +86,14 @@ Assumes pre-installed:
     This adds maven dependencies not found in common repositories to your local maven repository
 
 
-
-3) Uncomment postgress dependency in servlet-map/pom.xml:
-    <dependency>
-        <groupId>postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>8.4-702.jdbc4</version>
-    </dependency>
-
-4) Comment out the hsqldb dependency in servlet-map/pom.xml:
-    <dependency>
-        <groupId>hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>1.8.0.7</version>
-    </dependency>
-
-5) Compile and package the servlet by running 
+3) Compile and package the servlet by running 
 
     cd oskari-server
     mvn clean package -f servlet-map-pom.xml
 
-6) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
+4) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
 
-7) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+5) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
 
    Copy oskari-server/servlet-map/src/main/resources/oskari.properties to {jetty.home}/resources/oskari-ext.properties
 
