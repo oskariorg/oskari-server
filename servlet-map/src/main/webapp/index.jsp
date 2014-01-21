@@ -126,7 +126,7 @@
         </c:choose>
     </div>
 </nav>
-<div id="contentMap">
+<div id="contentMap" class="oskariui container-fluid">
     <div id="menutoolbar" class="container-fluid"></div>
     <div class="row-fluid" style="height: 100%; background-color:white;">
         <div class="oskariui-left"></div>
