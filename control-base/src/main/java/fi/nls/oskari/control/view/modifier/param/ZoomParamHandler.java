@@ -25,7 +25,7 @@ public class ZoomParamHandler extends ParamHandler {
 
         try {
             final JSONObject state = getBundleState(params.getConfig(), BUNDLE_MAPFULL);
-            int zoom = ConversionHelper.getInt(PropertyUtil.getOptional(params.getParamValue()), 0);
+            int zoom = ConversionHelper.getInt(params.getParamValue(), 0);
             state.put(KEY_ZOOM, zoom);
             return true;
         } catch (JSONException je) {
