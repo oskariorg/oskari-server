@@ -155,7 +155,20 @@ public class LayerDefinition {
 	}
 
 	public String getStyle() {
-		return style;
+		
+		if( style == null ) {
+			return null;
+		}
+		if( getStyles() == null || getStyles().size() == 0 ) {
+			return null;
+		}
+		
+		Style mappedStyle = getStyles().get(style);
+		if( mappedStyle == null) {
+			return null;
+		}
+				
+		return mappedStyle.getName();
 	}
 
 	public HashMap<String, Style> getStyles() {
