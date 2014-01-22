@@ -186,20 +186,24 @@ public class AsyncDirectTileLayer extends DirectTileLayer {
 						BufferedImage imageBuf = ImageIO.read(response
 								.getEntity().getContent());
 
-						drawImageFeature(g2d, mapContent, f, imageBuf);
+						if (imageBuf != null) {
+							drawImageFeature(g2d, mapContent, f, imageBuf);
 
-						if (isCacheable) {
-							ByteArrayOutputStream bos = new ByteArrayOutputStream();
-							ImageIO.write(imageBuf, "png", bos);
-							JedisCache.getBlobCache().putToCache(
-									urlStr.getBytes(), bos.toByteArray());
+							if (isCacheable) {
+								ByteArrayOutputStream bos = new ByteArrayOutputStream();
+								ImageIO.write(imageBuf, "png", bos);
+								JedisCache.getBlobCache().putToCache(
+										urlStr.getBytes(), bos.toByteArray());
+							}
+
+							imageBuf.flush();
+						} else {
+							log.warn("Unable to read with ImageIO " + url.toExternalForm());
 						}
 
-						imageBuf.flush();
-
 					} else {
-						log.info(" CODE #"
-								+ (inSuccessStatusRange ? "YEP" : "NOP"));
+						log.warn("Failure "+response.getStatusLine()
+								.getStatusCode()+"/"+url.toExternalForm());
 					}
 				} catch (IllegalStateException e) {
 

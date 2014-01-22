@@ -44,9 +44,12 @@ public class MapLayerJSONParser {
 
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
+		
+		
+		Integer zoomOffset = ConfigValue.MAPLINK_ZOOM_OFFSET.getConfigProperty(props, 0);
 
 		this.mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId), zoomOffset);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -87,31 +87,20 @@ Assumes pre-installed:
 
 
 
-3) Uncomment postgress dependency in servlet-map/pom.xml:
-    <dependency>
-        <groupId>postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>8.4-702.jdbc4</version>
-    </dependency>
-
-4) Comment out the hsqldb dependency in servlet-map/pom.xml:
-    <dependency>
-        <groupId>hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>1.8.0.7</version>
-    </dependency>
-
-5) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
+3) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
     e.g. mv jetty-env.xml jetty-env-ignore.xml
 
-6) Compile and package the servlet by running 
+
+4) Compile and package the servlet by running 
 
     cd oskari-server
     mvn clean package -f servlet-map-pom.xml
 
-7) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
 
-8) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+5) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
+
+6) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+
 
    Copy oskari-server/servlet-map/src/main/resources/oskari.properties to {jetty.home}/resources/oskari-ext.properties
 

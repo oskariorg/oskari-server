@@ -117,6 +117,8 @@ public class MapProducer {
 
 	protected boolean useCache;
 
+	protected Integer zoomOffset;
+
 	public MapProducer(MapProducerResource resource, String gsn, String epsg,
 			String xClientInfo, Properties props) throws IOException,
 			GeoWebCacheException, NoSuchAuthorityCodeException,
@@ -129,6 +131,7 @@ public class MapProducer {
 		this.gsf = resource.getGsf();
 		this.schema = resource.getSchema();
 		this.props = props;
+		this.zoomOffset = resource.getZoomOffset();
 
 		if (ConfigValue.LAYER_TIMEOUT_SECONDS.getConfigProperty(props) != null) {
 			timeoutInSeconds = Long.valueOf(
@@ -480,7 +483,7 @@ public class MapProducer {
 
 			url = layerUrl + "/" + wmtsRestPart;
 
-			System.out.println(url);
+			/* System.out.println(url); */
 
 			/* KVP to be implemented */
 			/*
@@ -727,6 +730,10 @@ public class MapProducer {
 
 	public void setTemplateLayer(String templateLayer) {
 		this.templateLayer = templateLayer;
+	}
+
+	public Integer getZoomOffset() {
+		return zoomOffset;
 	}
 
 }

@@ -68,17 +68,18 @@ public class SaveLayerHandler extends ActionHandler {
 
     private int saveLayer(final ActionParameters params) throws ActionException {
 
-        final int layer_id = params.getHttpParam(PARM_LAYER_ID, -1);
+        // layer_id can be string -> external id!
+        final String layer_id = params.getHttpParam(PARM_LAYER_ID);
 
         try {
             // ************** UPDATE ************************
-            if (layer_id != -1) {
+            if (layer_id != null) {
 
-                if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), layer_id)) {
+                final OskariLayer ml = mapLayerService.find(layer_id);
+                if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), ml.getId())) {
                     throw new ActionDeniedException("Unauthorized user tried to update layer - id=" + layer_id);
                 }
 
-                final OskariLayer ml = mapLayerService.find(layer_id);
                 handleRequestToMapLayer(params, ml);
 
                 ml.setUpdated(new Date(System.currentTimeMillis()));

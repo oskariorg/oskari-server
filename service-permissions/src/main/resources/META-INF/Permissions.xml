@@ -293,9 +293,9 @@
     <!-- uusi -->
 
 
-    <statement id="findOskariResourceId"  parameterMap="layerPermissionResourceParams" resultClass="long">
+    <statement id="findOskariPermissionId"  parameterMap="layerPermissionResourceParams" resultClass="long">
         SELECT
-            r.id
+            p.id
         FROM
             oskari_resource r,
             oskari_permission p
@@ -322,9 +322,9 @@
 
                  -->
 
-    <statement id="deletePermission" parameterClass="long" resultClass="long">
-        delete from oskari_permission where oskari_resource_id = ?
-    </statement>
+    <delete id="deletePermission" parameterClass="long">
+        delete from oskari_permission where id = #id#
+    </delete>
 
         <!--
     <statement id="deleteResourceUsers" parameterMap="resourceUserParam">

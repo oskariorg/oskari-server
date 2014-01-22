@@ -27,9 +27,11 @@ import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolut
 public class MapLinkParser {
 	private static Log log = LogFactory.getLog(MapLinkParser.class);
 	private ScaleResolution sr;
+	private Integer zoomOffset = 0;
 
-	public MapLinkParser(ScaleResolution sr) {
+	public MapLinkParser(ScaleResolution sr, Integer zoomOffset) {
 		this.sr = sr;
+		this.zoomOffset = zoomOffset;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +68,8 @@ public class MapLinkParser {
 		if (stateInfo != null) {
 
 			Integer zoomLevel = ((Number) stateInfo.get("zoom")).intValue();
+			zoomLevel += zoomOffset;
+
 			mapLink.setZoom(zoomLevel);
 			mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
 
@@ -129,6 +133,7 @@ public class MapLinkParser {
 		Integer zoomLevel = values.get("ZOOMLEVEL") instanceof Integer ? (Integer) values
 				.get("ZOOMLEVEL") : Integer.valueOf(
 				(String) values.get("ZOOMLEVEL"), 10);
+		zoomLevel += zoomOffset;
 		mapLink.setZoom(zoomLevel);
 		mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
 

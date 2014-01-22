@@ -229,16 +229,19 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         parameterDelete.put("externalId", externalId);
         parameterDelete.put("externalType", externalIdType);
         parameterDelete.put("permission",permissionsType);
+        log.debug("Finding resource permission with:", parameterDelete);
 
-        Object oskariResourceObject =  queryForObject(getNameSpace() + ".findOskariResourceId", parameterDelete);
+        Object oskariPermissionIdObject =  queryForObject(getNameSpace() + ".findOskariPermissionId", parameterDelete);
 
-        if (oskariResourceObject != null) {
-            long oskariResourceId = ((Long)oskariResourceObject).longValue();
+        if (oskariPermissionIdObject != null) {
+            long oskariPermissionId = ((Long)oskariPermissionIdObject).longValue();
+            log.info("Deleting permission with id:", oskariPermissionId);
 
-            delete(getNameSpace() + ".deletePermission",oskariResourceId);
+            delete(getNameSpace() + ".deletePermission",oskariPermissionId);
+            // flush permissions for WFS transport
+            WFSLayerPermissionsStore.destroyAll();
         }
 
-		WFSLayerPermissionsStore.destroyAll();
 	}
 
     public Map<Long, List<Permissions>> getPermissionsForLayers(List<Long> layeridList, String permissionsType) {

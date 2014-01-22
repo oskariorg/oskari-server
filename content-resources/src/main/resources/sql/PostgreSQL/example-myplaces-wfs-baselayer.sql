@@ -21,18 +21,4 @@ INSERT INTO portti_wfs_layer (maplayer_id, layer_name, url, username, password, 
 
 
 
--- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+oskari:my_places');
-
--- give view_layer permission for the resource to ROLE 10110 (guest);
-INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+oskari:my_places'), 'ROLE', 'VIEW_LAYER', 10110);
-
--- give view_layer permission for the resource to ROLE 2 (user);
-INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+oskari:my_places'), 'ROLE', 'VIEW_LAYER', 2);
-
--- give view_layer permission for the resource to ROLE 3 (admin);
-INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+oskari:my_places'), 'ROLE', 'VIEW_LAYER', 3);
-
+-- myplaces layer is for internal use only so we don't want to add any permissions for it;

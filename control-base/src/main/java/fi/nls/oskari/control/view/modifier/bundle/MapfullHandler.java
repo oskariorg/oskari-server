@@ -233,13 +233,19 @@ public class MapfullHandler extends BundleHandler {
             final boolean modifyURLs) {
         try {
             final JSONObject myPlaceLayer = new JSONObject();
-            myPlaceLayer.put("wmsName", "ows:my_places_categories");
+            myPlaceLayer.put("wmsName", PropertyUtil.get("myplaces.xmlns.prefix","ows")+":my_places_categories");
             //myPlaceLayer.put("descriptionLink", "");
             myPlaceLayer.put("type", "wmslayer");
             myPlaceLayer.put("formats",
                     new JSONObject().put("value", "text/html"));
             myPlaceLayer.put("isQueryable", true);
-            myPlaceLayer.put("opacity", "90");
+            myPlaceLayer.put("opacity", "50");
+
+            JSONObject options = new JSONObject();
+            JSONHelper.putValue(options, "singleTile", true);
+            //options.put("transitionEffect", JSONObject.NULL);
+            JSONHelper.putValue(myPlaceLayer, "options", options);
+
             myPlaceLayer.put("metaType", "published");
             // if useDirectURL -> geoserver URL
             // TODO: check "modifyURLs" and prefix wmsurl if true
