@@ -56,6 +56,7 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_GRIDSTATE = "gridState";
     private Bundle publishedGridBundle = null;
     private Bundle publishedToolbarBundle = null;
+    private Bundle publishedMyplaces2Bundle = null;
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_BASELAYER = "base_";
@@ -121,11 +122,15 @@ public class PublishHandler extends ActionHandler {
 
         publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
         publishedToolbarBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_TOOLBAR);
+        publishedMyplaces2Bundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
         if(publishedGridBundle == null) {
             log.warn("Couldn't get publishedGrid bundle template from DB!");
         }
         if (publishedToolbarBundle == null) {
             log.warn("Couldn't get toolbar bundle template from DB!");
+        }
+        if (publishedMyplaces2Bundle == null) {
+            log.warn("Couldn't get publishedmyplaces2 bundle template from DB!");
         }
     }
 
@@ -158,26 +163,26 @@ public class PublishHandler extends ActionHandler {
             throw new ActionParamsException("Could not get template View");
         }
 
-        Bundle mapFullBundle = currentView.getBundleByName("mapfull");
-        if (mapFullBundle == null) {
+        Bundle mapFullTemplateBundle = currentView.getBundleByName("mapfull");
+        if (mapFullTemplateBundle == null) {
             throw new ActionParamsException("Could not get current state for mapfull");
         }
-        JSONObject mapfullConfig = null;
+        JSONObject mapfullTemplateConfig = null;
         try {
-            mapfullConfig = new JSONObject(mapFullBundle.getConfig());
+            mapfullTemplateConfig = new JSONObject(mapFullTemplateBundle.getConfig());
         } catch (JSONException e) {
-            log.error("Could not create JSONs of defaults:", mapFullBundle);
+            log.error("Could not create JSONs of defaults:", mapFullTemplateBundle);
             throw new ActionParamsException("Corrupted bundle data");
         }
 
-        Bundle infoboxBundle = currentView.getBundleByName("infobox");
-        JSONObject infoboxState = null;
-        JSONObject infoboxConfig = null;
+        Bundle infoboxTemplateBundle = currentView.getBundleByName("infobox");
+        JSONObject infoboxTemplateState = null;
+        JSONObject infoboxTemplateConfig = null;
         try {
-            infoboxState = new JSONObject(infoboxBundle.getState());
-            infoboxConfig = new JSONObject(infoboxBundle.getConfig());
+            infoboxTemplateState = new JSONObject(infoboxTemplateBundle.getState());
+            infoboxTemplateConfig = new JSONObject(infoboxTemplateBundle.getConfig());
         } catch (JSONException e) {
-            log.error("Couldn't create JSONs of defaults:", infoboxBundle);
+            log.error("Couldn't create JSONs of defaults:", infoboxTemplateBundle);
             throw new ActionParamsException("Corrupted bundle data");
         }
 
@@ -188,7 +193,7 @@ public class PublishHandler extends ActionHandler {
             userJson.put(KEY_LASTNAME, user.getLastname());
             userJson.put(KEY_NICKNAME, user.getScreenname());
             userJson.put(KEY_LOGINNAME, user.getEmail());
-            mapfullConfig.put(KEY_USER, userJson);
+            mapfullTemplateConfig.put(KEY_USER, userJson);
         } catch (JSONException jsonex) {
             log.error(jsonex, "Could not create user object:", user);
             throw new ActionParamsException("User data problem");
@@ -196,17 +201,18 @@ public class PublishHandler extends ActionHandler {
 
         // Parse stuff sent by JS
         final String pdStr = params.getHttpParam(KEY_PUBDATA);
-        JSONObject pubdata = null;
+        JSONObject publishedData = null;
         try {
-            pubdata = new JSONObject(pdStr);
+            publishedData = new JSONObject(pdStr);
         } catch (JSONException e) {
             log.error(e, "Unable to parse publisher data:", pdStr );
             throw new ActionParamsException("Unable to parse publisher data.");
         }
 
         try {
-            if (!pubdata.isNull("id")) {
-                long updateViewId = pubdata.getLong("id");
+            if (!publishedData.isNull("id")) {
+                // UPDATE instead of INSERT, get old data
+                long updateViewId = publishedData.getLong("id");
                 currentView = viewService.getViewWithConf(updateViewId);
 
                 if (user.getId() != currentView.getCreator()) {
@@ -216,38 +222,40 @@ public class PublishHandler extends ActionHandler {
 
             }
         } catch (JSONException e1) {
-            log.error("Some exception when try get publish id from pubdata json");
+            log.error("Some exception when try get publish id from publishedData json");
         }
 
-        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, null);
+        final String domain = JSONHelper.getStringFromJSON(publishedData, KEY_DOMAIN, null);
         if(domain == null) {
             throw new ActionParamsException("Domain missing");
         }
-        final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
-        final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
-        final String layout = JSONHelper.getStringFromJSON(pubdata, KEY_LAYOUT, "lefthanded");
+        final String name = JSONHelper.getStringFromJSON(publishedData, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
+        final String language = JSONHelper.getStringFromJSON(publishedData, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
+        final String layout = JSONHelper.getStringFromJSON(publishedData, KEY_LAYOUT, "lefthanded");
 
-        JSONHelper.putValue(mapfullConfig, KEY_LAYOUT, layout);
+        JSONHelper.putValue(mapfullTemplateConfig, KEY_LAYOUT, layout);
 
         JSONArray newPlugins;
         JSONObject size;
         JSONObject gridState = null;
         JSONObject mapfullState = null;
         JSONObject publishedToolbarConfig = null;
+        JSONObject publishedMyplaces2Config = null;
         try {
-            newPlugins = pubdata.getJSONArray(KEY_PLUGINS);
-            size = pubdata.getJSONObject(KEY_SIZE);
-            if (pubdata.has(KEY_GRIDSTATE)) {
-                gridState = pubdata.getJSONObject(KEY_GRIDSTATE);
+            newPlugins = publishedData.getJSONArray(KEY_PLUGINS);
+            size = publishedData.getJSONObject(KEY_SIZE);
+            if (publishedData.has(KEY_GRIDSTATE)) {
+                gridState = publishedData.getJSONObject(KEY_GRIDSTATE);
             }
 
-            mapfullState = pubdata.getJSONObject(KEY_MAPSTATE);
-            final JSONObject tmpInfoboxState = pubdata.optJSONObject(ViewModifier.BUNDLE_INFOBOX);
+            mapfullState = publishedData.getJSONObject(KEY_MAPSTATE);
+            final JSONObject tmpInfoboxState = publishedData.optJSONObject(ViewModifier.BUNDLE_INFOBOX);
             if (tmpInfoboxState != null) {
-                infoboxState = tmpInfoboxState;
+                infoboxTemplateState = tmpInfoboxState;
             }
 
-            publishedToolbarConfig = pubdata.optJSONObject(ViewModifier.BUNDLE_TOOLBAR);
+            publishedToolbarConfig = publishedData.optJSONObject(ViewModifier.BUNDLE_TOOLBAR);
+            publishedMyplaces2Config = publishedData.optJSONObject(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
         } catch (JSONException jsonex) {
             throw new RuntimeException("[PublishHandler] Unable to parse "
                     + "params for new published map!\n" + "Param string is:\n"
@@ -271,7 +279,7 @@ public class PublishHandler extends ActionHandler {
         }
 
         // Override layer selections
-        final boolean layersUpdated = JSONHelper.putValue(mapfullConfig, KEY_LAYERS, selectedLayers);
+        final boolean layersUpdated = JSONHelper.putValue(mapfullTemplateConfig, KEY_LAYERS, selectedLayers);
         final boolean selectedLayersUpdated = JSONHelper.putValue(mapfullState, KEY_SELLAYERS, selectedLayers);
         if (!(layersUpdated && selectedLayersUpdated)) {
             // failed to put layers correctly
@@ -280,7 +288,7 @@ public class PublishHandler extends ActionHandler {
 
         // Set size
         try {
-            mapfullConfig.put(KEY_SIZE, size);
+            mapfullTemplateConfig.put(KEY_SIZE, size);
         } catch (JSONException e) {
             throw new RuntimeException("Could not set size");
         }
@@ -288,7 +296,7 @@ public class PublishHandler extends ActionHandler {
         // Append plugins
         JSONArray plugins = null;
         try {
-            plugins = mapfullConfig.getJSONArray(KEY_PLUGINS);
+            plugins = mapfullTemplateConfig.getJSONArray(KEY_PLUGINS);
         } catch (JSONException e) {
             throw new RuntimeException("Could not get default plugins");
         }
@@ -360,7 +368,7 @@ public class PublishHandler extends ActionHandler {
         }
 
         try {
-            mapfullConfig.put(KEY_PLUGINS, plugins);
+            mapfullTemplateConfig.put(KEY_PLUGINS, plugins);
         } catch (JSONException e) {
             throw new RuntimeException("Could not append plugin array");
         }
@@ -369,15 +377,35 @@ public class PublishHandler extends ActionHandler {
         JSONObject viewData = new JSONObject();
         try {
             final JSONObject mapfull = new JSONObject();
-            mapfull.put(KEY_CONFIG, mapfullConfig);
+            mapfull.put(KEY_CONFIG, mapfullTemplateConfig);
             mapfull.put(KEY_STATE, mapfullState);
 
             final JSONObject infobox = new JSONObject();
-            infobox.put(KEY_CONFIG, infoboxConfig);
-            infobox.put(KEY_STATE, infoboxState);
+            infobox.put(KEY_CONFIG, infoboxTemplateConfig);
+            infobox.put(KEY_STATE, infoboxTemplateState);
 
             viewData.put(ViewModifier.BUNDLE_MAPFULL, mapfull);
             viewData.put(ViewModifier.BUNDLE_INFOBOX, infobox);
+            // Add publishedmyplaces2 only if we have a config for it
+            if (publishedMyplaces2Config != null && publishedMyplaces2Config.names().length() > 0 && publishedMyplaces2Bundle != null) {
+                log.warn("publishedmyplaces2 config found");
+                Bundle pmp2Bundle = currentView.getBundleByName(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+                if (pmp2Bundle == null) {
+                    log.warn("Publishedmyplaces2 not found in currentView");
+                    currentView.addBundle(publishedMyplaces2Bundle);
+                    pmp2Bundle = publishedMyplaces2Bundle;
+                }
+                final JSONObject publishedmyplaces2 = new JSONObject();
+                final JSONObject pmp2Config = new JSONObject(pmp2Bundle.getConfig());
+                merge(publishedMyplaces2Config, pmp2Config);
+                final JSONObject pmp2State = new JSONObject();
+                publishedmyplaces2.put(KEY_CONFIG, pmp2Config);
+                publishedmyplaces2.put(KEY_STATE, pmp2State);
+                viewData.put(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, publishedmyplaces2);
+            } else {
+                // We have to remove the bundle...
+                currentView.removeBundle(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            }
             // Add toolbar only if we have a config for it
             // we aren't using state and config should come from user
             if (publishedToolbarConfig != null && publishedToolbarConfig.names().length() > 0 && publishedToolbarBundle != null) {
@@ -400,7 +428,7 @@ public class PublishHandler extends ActionHandler {
             } else {
                 log.warn("toolbar config not found");
                 // We have to remove the bundle...
-                currentView.removeBundle("toolbar");
+                currentView.removeBundle(ViewModifier.BUNDLE_TOOLBAR);
             }
 
             if(gridState != null && publishedGridBundle != null) {
@@ -426,7 +454,7 @@ public class PublishHandler extends ActionHandler {
         for (Bundle s : currentView.getBundles()) {
             String bundleName = s.getBundleinstance();
             JSONObject bJson = new JSONObject();
-            if (bundleName.equals(ViewModifier.BUNDLE_INFOBOX) || bundleName.equals(ViewModifier.BUNDLE_MAPFULL) || bundleName.equals(ViewModifier.BUNDLE_TOOLBAR)) {
+            if (bundleName.equals(ViewModifier.BUNDLE_INFOBOX) || bundleName.equals(ViewModifier.BUNDLE_MAPFULL) || bundleName.equals(ViewModifier.BUNDLE_TOOLBAR) || bundleName.equals(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2)) {
                 continue;
             }
             try {
@@ -445,7 +473,7 @@ public class PublishHandler extends ActionHandler {
 
         View newView = null;
 
-        if (!pubdata.isNull("id")) {
+        if (!publishedData.isNull("id")) {
             newView = updateView(currentView, viewData);
         } else {
             newView = addView(currentView, viewData);
