@@ -142,7 +142,7 @@ Now you are able to create tables with geometry fields.
 
     oskari.proxy.property.url=https://ws.nls.fi/ktjkii/wfs/wfs
     oskari.proxy.property.header.Host=ws.nls.fi
-    oskari.proxy.property.header.Authorization=Basic cG9ydGFhbGk6UGFpa2thMjAxMQ==
+    oskari.proxy.property.header.Authorization=
     oskari.proxy.property.header.Content-Type=text/xml
 
     # Supported locales, comma separated and default first
