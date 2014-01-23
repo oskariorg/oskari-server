@@ -1,146 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>fi.nls.paikkatietoikkuna</groupId>
-    <artifactId>map-servlet</artifactId>
-    <packaging>war</packaging>
-    <name>Oskari map Servlet</name>
-    <version>1.0-SNAPSHOT</version>
-    <build>
-        <finalName>oskari-map</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <!-- Try running:
-                http://localhost:2373/ajax?action_route=GetAppSetup
-                http://localhost:2373/ajax?action_route=GetSearchResult&searchKey=Tampere
-                -->
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.12</version>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopKey>STOP</stopKey>
-                    <stopPort>9999</stopPort>
-                    <!-- jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml -->
-                    <webAppConfig>
-                        <contextPath>/</contextPath>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fi.nls.oskari</groupId>
+		<artifactId>oskari-parent</artifactId>
+        <version>1.18-SNAPSHOT</version>
+        <relativePath>../oskari-parent.xml</relativePath>
+	</parent>
+	<groupId>fi.nls.oskari</groupId>
+	<artifactId>map-servlet</artifactId>
+	<packaging>war</packaging>
 
-                        <baseResource implementation="org.mortbay.resource.ResourceCollection">
-                            <resourcesAsCSV>${basedir}/src/main/webapp,${basedir}/../..</resourcesAsCSV>
-                        </baseResource>
-                        <!-- TODO: service targets are scanned but not included in classpath so changes arent reflected. It can be done like this: -->
-                        <!-- extraClasspath>target/classes;../service-base/target/classes</extraClasspath -->
-                    </webAppConfig>
-                    <scanTargets>
-                        <scanTarget>service-base/target/classes</scanTarget>
-                        <scanTarget>service-permissions/target/classes</scanTarget>
-                        <scanTarget>service-map/target/classes</scanTarget>
-                        <scanTarget>service-search/target/classes</scanTarget>
-                        <scanTarget>service-OGC/target/classes</scanTarget>
-                        <scanTarget>service-control/target/classes</scanTarget>
-                    </scanTargets>
-                    <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>2373</port>
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
-                    </connectors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jetty-run</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-jetty</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>commons-dbcp</groupId>
-                        <artifactId>commons-dbcp</artifactId>
-                        <version>1.4</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>hsqldb</groupId>
-                        <artifactId>hsqldb</artifactId>
-                        <version>1.8.0.7</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>8.4-702.jdbc4</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencies>
+	<name>Oskari map Servlet</name>
 
+	<dependencies>
 
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+		<!-- Managed deps -->
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-map</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>content-resources</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+		<dependency>
+			<groupId>fi.nls.oskari</groupId>
+			<artifactId>content-resources</artifactId>
+		</dependency>
 
-        <!-- artifactId "oskari-control-base" is implied by adding extended actions -->
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-wfs</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-example</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-myplaces</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<!-- artifactId "oskari-control-base" is implied by adding extended actions -->
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control-wfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control-example</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control-myplaces</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+	</dependencies>
+
+	<!-- ==== Build Settings ==== -->
+	<properties>
+		<!-- This is the default properties if no profile is selected on the command 
+			line -->
+		<filter-profile>template</filter-profile>
+		<filter-path>${basedir}/filter</filter-path>
+		<app.server>jetty</app.server>
+	</properties>
+
+	<build>
+		<finalName>oskari-map</finalName>
+
+		<filters>
+			<!-- The base filtering path and file should always be hardcoded, it's 
+				not dependent on any profile change -->
+			<filter>${basedir}/filter/filter-base.properties</filter>
+			<filter>${filter-path}/${filter-profile}.properties</filter>
+		</filters>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<!-- No XML filtering activated <include>**/*.xml</include>  -->
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<!-- No XML filtering activated <exclude>**/*.xml</exclude>  -->
+					<exclude>**/*.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<filters>
+						<!-- The base filtering path and file should always be hardcoded, it's 
+							not dependent on any profile change -->
+						<filter>${basedir}/filter/filter-base.properties</filter>
+						<filter>${filter-path}/${filter-profile}.properties</filter>
+					</filters>
+					<archive>
+						<!-- 
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						 -->
+					</archive>
+					<webResources>
+						<resource>
+							<directory>src/main/resources/WEB-INF/${app.server}</directory>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+							<includes>
+								<include>*.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+					
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>tomcat-profile</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+					<app.server>tomcat</app.server>
+					<filter-profile>tomcat-template</filter-profile>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<containerConfigXML>src/main/resources/META-INF/context.xml</containerConfigXML>
+							<webResources>
+								<resource>
+									<directory>src/main/resources/META-INF</directory>
+									<filtering>true</filtering>
+									<targetPath>META-INF</targetPath>
+								</resource>
+								<resource>
+									<directory>src/main/resources/WEB-INF/${app.server}</directory>
+									<filtering>true</filtering>
+									<targetPath>WEB-INF</targetPath>
+									<includes>
+										<include>*.xml</include>
+									</includes>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>jetty-profile</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- Try running: http://localhost:2373/ajax?action_route=GetAppSetup 
+							http://localhost:2373/ajax?action_route=GetSearchResult&searchKey=Tampere -->
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>maven-jetty-plugin</artifactId>
+						<version>6.1.12</version>
+						<configuration>
+							<scanIntervalSeconds>10</scanIntervalSeconds>
+							<stopKey>STOP</stopKey>
+							<stopPort>9999</stopPort>
+							<!-- jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml -->
+							<webAppConfig>
+								<contextPath>/</contextPath>
+
+								<baseResource implementation="org.mortbay.resource.ResourceCollection">
+									<resourcesAsCSV>${basedir}/src/main/webapp,${basedir}/../..</resourcesAsCSV>
+								</baseResource>
+								<!-- TODO: service targets are scanned but not included in classpath 
+									so changes arent reflected. It can be done like this: -->
+								<!-- extraClasspath>target/classes;../service-base/target/classes</extraClasspath -->
+							</webAppConfig>
+							<scanTargets>
+								<scanTarget>service-base/target/classes</scanTarget>
+								<scanTarget>service-permissions/target/classes</scanTarget>
+								<scanTarget>service-map/target/classes</scanTarget>
+								<scanTarget>service-search/target/classes</scanTarget>
+								<scanTarget>service-OGC/target/classes</scanTarget>
+								<scanTarget>service-control/target/classes</scanTarget>
+							</scanTargets>
+							<connectors>
+								<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+									<port>2373</port>
+									<maxIdleTime>60000</maxIdleTime>
+								</connector>
+							</connectors>
+						</configuration>
+						<executions>
+							<execution>
+								<id>jetty-run</id>
+								<phase>install</phase>
+								<goals>
+									<goal>run-exploded</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop-jetty</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>commons-dbcp</groupId>
+								<artifactId>commons-dbcp</artifactId>
+								<version>1.4</version>
+							</dependency>
+							<dependency>
+								<groupId>hsqldb</groupId>
+								<artifactId>hsqldb</artifactId>
+								<version>1.8.0.7</version>
+							</dependency>
+							<dependency>
+								<groupId>postgresql</groupId>
+								<artifactId>postgresql</artifactId>
+								<version>8.4-702.jdbc4</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>
+	</profiles>
 </project>
