@@ -61,6 +61,8 @@ public class WFSImage {
     public static final String HIGHLIGHT_SLD = "sld_highlight.xml";
     public static final String OSKARI_CUSTOM_SLD = "sld_oskari_custom.xml";
 
+    public static final String GEOM_TYPE_PLACEHOLDER = "wfsGeometryType";
+
     private Style style;
 
     private Location location; // location of the tile (modified if not map)
@@ -444,7 +446,8 @@ public class WFSImage {
             if(layer.getSelectionSLDStyle() != null) {
                 style = createSLDStyle(layer.getSelectionSLDStyle());
             } else { // default highlight
-                style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
+               // style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
+                style = createDefaultHiliSLDStyle(layer.getGMLGeometryProperty());
             }
         } else {
             if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
@@ -506,6 +509,23 @@ public class WFSImage {
             return createSLDStyle(xml);
         } catch(Exception e) {
             log.error(e, "Failed to get Own SLD Style");
+            log.error(resource);
+        }
+        return null;
+    }
+    /**
+     * Creates default highlight sld style by replacing geomtype
+     *
+     * @return sld
+     */
+    public Style createDefaultHiliSLDStyle(String geom_type) {
+        InputStream resource = WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD);
+        try {
+            String xml = IOHelper.readString(resource, "ISO-8859-1");
+            xml = xml.replaceAll(GEOM_TYPE_PLACEHOLDER, geom_type);
+            return createSLDStyle(xml);
+        } catch(Exception e) {
+            log.error(e, "Failed to get Default highlight SLD Style - geom type ", geom_type);
             log.error(resource);
         }
         return null;
