@@ -18,7 +18,6 @@
     <module>service-map</module>
 
     <module>service-search</module>
-    <module>service-OGC</module>
     <module>service-control</module>
 
     <module>control-base</module>

@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fi.nls.oskari.search.channel.KTJkiiSearchChannel;
-import fi.mml.portti.service.ogc.executor.FindFeatureBboxById;
+//import fi.mml.portti.service.ogc.executor.FindFeatureBboxById;
 import fi.mml.portti.service.search.Query;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
@@ -30,7 +30,7 @@ public class NationalCadastralWFSHighlightParamHandler extends WFSHighlightParam
 
     private static final Logger log = LogFactory.getLogger(NationalCadastralWFSHighlightParamHandler.class);
     private static SearchService searchService = new SearchServiceImpl();
-    private final FindFeatureBboxById mybboxfinder = new FindFeatureBboxById();
+//    private final FindFeatureBboxById mybboxfinder = new FindFeatureBboxById();
 
     @Override
     public boolean handleParam(ModifierParams params)
@@ -83,16 +83,17 @@ public class NationalCadastralWFSHighlightParamHandler extends WFSHighlightParam
 
         final JSONArray bbox = new JSONArray();
         // Find bbox of selected wfs features
-        final double[] mimaxy = mybboxfinder.getFeatureBbox(list, wfslayerId);
+        // Method processParcelFeatureResponseFromStream of class KTJkiiWFSSearchChannelImpl should include the geometry
+//        final double[] mimaxy = mybboxfinder.getFeatureBbox(list, wfslayerId);
 
         final ArrayList<Point> points = new ArrayList<Point>();
         // Min-max based on polygons
-        if (mimaxy[0] > 0) {
+/*        if (mimaxy[0] > 0) {
             Point pointlo = new Point(mimaxy[1], mimaxy[0]);
             points.add(pointlo);
             Point pointhi = new Point(mimaxy[3], mimaxy[2]);
             points.add(pointhi);
-        } else {
+        } else {*/
             for (SearchResultItem item : list) {
 
                 Point point = new Point(ConversionHelper.getDouble(item.getLat(),
@@ -100,7 +101,7 @@ public class NationalCadastralWFSHighlightParamHandler extends WFSHighlightParam
                 points.add(point);
 
             }
-        }
+//        }
 
         if (points.size() > 1) {
 

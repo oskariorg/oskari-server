@@ -48,7 +48,6 @@
                         <scanTarget>service-permissions/target/classes</scanTarget>
                         <scanTarget>service-map/target/classes</scanTarget>
                         <scanTarget>service-search/target/classes</scanTarget>
-                        <scanTarget>service-OGC/target/classes</scanTarget>
                         <scanTarget>service-control/target/classes</scanTarget>
                     </scanTargets>
                     <connectors>

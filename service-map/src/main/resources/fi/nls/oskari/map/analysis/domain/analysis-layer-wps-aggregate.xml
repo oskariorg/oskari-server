@@ -6,7 +6,7 @@
       <ows:Identifier>features</ows:Identifier>
       <wps:Reference mimeType="application/json" xlink:href="{href}" method="POST">
            <wps:Body><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature handle="GeoTools 2.7-RC2 WFS DataStore" maxFeatures="{maxFeatures}" outputFormat="application/json" resultType="results" service="WFS"
+           <wfs:GetFeature handle="GeoTools 10.2 WFS DataStore" maxFeatures="{maxFeatures}" outputFormat="application/json" resultType="results" service="WFS"
 
 version="{version}" srsName="{srsName}" {xmlns} xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" 
  xmlns:ows="http://www.opengis.net/ows" xmlns:wfs="http://www.opengis.net/wfs"><wfs:Query  srsName="{srsName}" typeName="{typeName}">
