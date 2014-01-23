@@ -150,21 +150,6 @@ Now you are able to create tables with geometry fields.
 
 ---------------------------------------------
 
-# Setting up static frontend code to be server by Jetty 
-
-1) Go to jettys static content webapp
-
-    cd {jetty.home}\webapps\root
-
-2) Get the frontend code from github:
-
-    git clone https://github.com/nls-oskari/oskari.git
-
-3) Rename the created oskari folder to Oskari
-
-    mv oskari Oskari
-
----------------------------------------------
 
 # Generate/populate database
 
@@ -226,6 +211,25 @@ This needs to be configured to an url responding to parcel loading
 
 The layer ids also need to be configured according to the system/configuration (oskari_maplayer table)
 
+
+-------------------------------------------
+
+# Startup application
+
+1) Startup Jetty  (cmd.exe in Windows)
+
+    cd {jetty.home}
+    java -jar start.jar
+   
+   (or start with proxy setup, if any  eg. java -jar start.jar -Dhttp.proxyHost=wwwp.xxx.xx -Dhttp.proxyPort=800 -Dhttp.nonProxyHosts="*.yyy.xx|*.foo.fi" --exec)
+
+2) Start application
+   *http://localhost:8888/oskari-map* in your browser
+
+   You can login with username "user" and password "user" as a normal user or "admin"/"oskari" as an admin user (no real difference yet)
+
+-------------------------------------------
+
 # Add parcel editing support
 
 1) Install GeoServer http://geoserver.org/ (tested with 2.4.3)
@@ -254,7 +258,7 @@ The layer ids also need to be configured according to the system/configuration (
 3) Add to GeoServer startup.bat -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties 
 
 Sample startup.bat 
-call "C:\Program Files (x86)\Java\jdk1.6.0_18\bin\java.exe" -DGEOSERVER_DATA_DIR="C:\Omat\GeoServer_2_4_0\data_dir" -Xmx512m -XX:MaxPermSize=128m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -Djetty.port=8084 -Dhttp.proxyHost=wwwp.nls.fi -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties -Dhttp.proxyPort=800 -Dhttp.nonProxyHosts="*.nls.fi|*.paikkatietoikkuna.fi|127.0.0.1|*.*.nls.fi"  -Djetty.logs="C:\Omat\GeoServer_2_4_0\logs" -jar "C:\Omat\GeoServer_2_4_0\start.jar"
+call "C:\Program Files (x86)\Java\jdk1.6.0_18\bin\java.exe" -DGEOSERVER_DATA_DIR="C:\Omat\GeoServer_2_4_0\data_dir" -Xmx512m -XX:MaxPermSize=128m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -Djetty.port=8084 -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties-Dhttp.proxyHost=wwwp.xxx.xx -Dhttp.proxyPort=800 -Dhttp.nonProxyHosts="*.yyy.xx|*.foo.fi"  -Djetty.logs="C:\Omat\GeoServer_2_4_0\logs" -jar "C:\Omat\GeoServer_2_4_0\start.jar"
 
 
 4) Restart GeoServer
