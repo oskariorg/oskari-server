@@ -3,19 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>	
-  <parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
-        <version>1.18-SNAPSHOT</version>
-		<relativePath>./oskari-parent.xml</relativePath>
-	</parent>
-
   
   <groupId>fi.nls.oskari</groupId>
-  <artifactId>map-servlet-compilation</artifactId>
+  <artifactId>map-servlet-aggregator</artifactId>
   <packaging>pom</packaging>
 
-  <name>Oskari map servlet</name>
+  <name>Oskari map Aggregator</name>
 
  
   <modules>

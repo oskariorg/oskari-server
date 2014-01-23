@@ -7,7 +7,7 @@
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
         <version>1.18-SNAPSHOT</version>
-        <relativePath>../oskari-parent.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
 	</parent>
     <artifactId>content-resources</artifactId>
     <packaging>jar</packaging>

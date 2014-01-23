@@ -7,7 +7,6 @@
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
         <version>1.18-SNAPSHOT</version>
-        <relativePath>../oskari-parent.xml</relativePath>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-search-nls</artifactId>
