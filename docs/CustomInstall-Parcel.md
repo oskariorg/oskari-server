@@ -279,12 +279,12 @@ call "C:\Program Files (x86)\Java\jdk1.6.0_18\bin\java.exe" -DGEOSERVER_DATA_DIR
 
 ## Sample printout properties file
 
-layersURL=http://127.0.0.1:8080/oskari-map?action_route=GetMapLayers&lang=fi
+layersURL=http://127.0.0.1:8888/oskari-map?action_route=GetMapLayers&lang=fi
 layer.urlTemplate.wmslayer=%2$s%3$s
 layer.urltemplate.myplaces=http://127.0.0.1:8084/geoserver/wms?myCat=%1$s&ID=myplaces_%1$s
 layer.urltemplate.myplaces.layers=oskari:my_places_categories
 layer.credentials.myplaces=
-layer.urltemplate.wfslayer=http://127.0.0.1:8080/oskari-map?action_route=GET_PNG_MAP&flow_pm_wfsLayerId=%1$s
+layer.urltemplate.wfslayer=http://127.0.0.1:8888/oskari-map?action_route=GET_PNG_MAP&flow_pm_wfsLayerId=%1$s
 layer.urltemplate.statslayer=http://localhost/dataset/statslayer/service/actionroute
 layer.cache.exclude=90,91,250
 layer.tiles.url.whitelist=^http:\\/\\/(www|demo|static|cdn)\\.paikkatietoikkuna\\.fi\\/.+$|^http:\\/\\/(a|b|c|d)\\.karttatiili\\.fi\\/.+$|^http:\\/\\/karttatiili\\.fi\\/.+$|^data:image\\/png;base64,.+$|^data:image\\/jpeg\\;base64,.+|^/web\\/.+$
