@@ -1,6 +1,6 @@
 # Customizing the application for your environment
 
-Maven modify/filter some properties and xml files during compile/build. The default values for the placeholder values can be seen here:
+Maven modifies/filters some properties and xml files during compile/build. The default values for the placeholder values can be seen here:
 
 [oskari-server/servlet-map/filter/filter-base.properties](../servlet-map/filter/filter-base.properties)
 
