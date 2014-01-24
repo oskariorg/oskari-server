@@ -68,6 +68,8 @@
                 "registerUnitFeatureType" : "RekisteriyksikonTietoja",
                 "hideSomeToolbarButtons" : "hide",
                 "transactionUrl" : "",
+                "wfstFeatureNS" : "http://www.oskari.org",
+                "wfstUrl" :  "/oskari-map/?action_route=PreParcel",
                 "stickyLayerIds" : [99,90]
             }
         },
