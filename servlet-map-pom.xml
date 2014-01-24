@@ -7,28 +7,13 @@
   <groupId>fi.nls.oskari</groupId>
   <artifactId>map-servlet-aggregator</artifactId>
   <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
 
   <name>Oskari map Aggregator</name>
 
  
   <modules>
-    <module>shared-test-resources</module>
-
-    <module>service-base</module>
-    <module>service-permissions</module>
-    <module>service-map</module>
-
-    <module>service-search</module>
-    <module>service-OGC</module>
-    <module>service-control</module>
-
-    <module>control-base</module>
-    <module>control-example</module>
-    <module>control-wfs</module>
-    <module>control-myplaces</module>
-    <module>content-resources</module>
-    
-
+    <module>.</module>
     <module>servlet-map</module>
   </modules>
 

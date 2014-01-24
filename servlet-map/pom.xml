@@ -191,7 +191,7 @@
 								<contextPath>/</contextPath>
 
 								<baseResource implementation="org.mortbay.resource.ResourceCollection">
-									<resourcesAsCSV>${basedir}/src/main/webapp,${basedir}/../..</resourcesAsCSV>
+									<resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
 								</baseResource>
 								<!-- TODO: service targets are scanned but not included in classpath 
 									so changes arent reflected. It can be done like this: -->
