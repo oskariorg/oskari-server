@@ -98,14 +98,27 @@ Now you are able to create tables with geometry fields.
 3) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
     e.g. mv jetty-env.xml jetty-env-ignore.xml
 
-4) Compile and package the servlet by running 
+4) Fix pom files for parcel extensions   
+
+* Add to oskari/server/servlet-map-pom.xml
+
+  <module>control-example</module>
+ 
+* Add to   oskari_server/servlet-map/pom.xml
+  <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-example</artifactId>
+            <version>1.0-SNAPSHOT</version>
+  </dependency>
+
+5) Compile and package the servlet by running 
 
     cd oskari-server
     mvn clean package -f servlet-map-pom.xml
 
-5) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
+6) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
 
-6) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+7) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
 
     # set to true to get database populated with initial demo content
     oskari.init.db=false
@@ -119,7 +132,7 @@ Now you are able to create tables with geometry fields.
     oskari.ajax.url.prefix=/oskari-map/?
 
     #PreParcel query and wfst url
-    preparcel.oskari.url=localhost:8084/geoserver/oskari/wfs?
+    preparcel.oskari.url=http://localhost:8084/geoserver/oskari/wfs?
     preparcel.user=admin
     preparcel.password=geoserver
 
@@ -245,7 +258,7 @@ The layer ids also need to be configured according to the system/configuration (
 * Check data configuration with GS admin  (**http://localhost:8084/geoserver/web** --> layer preview layers my_places and my_places_categories ! these are empty in the initial  state)
 * Restart GS 
 
-3) Set GS layer configurations for preparcel and preparcel_data tables 
+3) Set GS layer configurations for preparcel and preparcel_data tables and security setup / data 
 
 * Use GS Admin (see below section **Details for GeoServer configuration**).
 
