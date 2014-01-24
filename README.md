@@ -27,10 +27,8 @@ and further examples will be added in near future.
 * Run all Maven commands listed in `oskari-server/external-libs/mvn-install.txt`
     * This adds maven dependencies not found in common repositories to your local maven repository
 
-* Rename `jetty-env.sample.xml` to `jetty-env.xml` in `oskari-server/servlet-map/src/main/webapp/WEB-INF`
-
 * Run `mvn -f servlet-map-pom.xml install` in the `oskari-server` folder
-    * This compiles all the modules and starts a jetty webserver hosting the example servlet
+    * This compiles all the modules and starts a jetty webserver hosting the example servlet with default settings
 
 * After compilation has completed and jetty has started - go to [http://localhost:2373/] with your browser
 
