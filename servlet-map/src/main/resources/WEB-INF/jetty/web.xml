@@ -5,10 +5,10 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
+    <!-- useFileMappedBuffer=false: Disables locking of static files -->
     <servlet>
         <servlet-name>default</servlet-name>
         <init-param>
-            <!-- Disables locking of static files -->
             <param-name>useFileMappedBuffer</param-name>
             <param-value>false</param-value>
         </init-param>
@@ -18,7 +18,7 @@
         <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
         <init-param>
             <param-name>version</param-name>
-            <param-value>ADD_VERSION_NUMBER_HERE</param-value>
+            <param-value>${oskari.client.version}</param-value>
         </init-param>
     </servlet>
 
@@ -34,9 +34,9 @@
 
     <resource-ref>
         <description>Primary database</description>
-        <res-ref-name>jdbc/OskariPool</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
+        <res-ref-name>${db.jndi.name}</res-ref-name>
+        <res-type>${db.jndi.type}</res-type>
+        <res-auth>${db.jndi.auth}</res-auth>
     </resource-ref>
 
 </web-app>    
