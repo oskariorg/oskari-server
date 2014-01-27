@@ -79,6 +79,9 @@ public class LayerDefinition {
 
 	String credentials;
 
+	String format ;
+	Map<String, String> urlTemplatesForFormat = new HashMap<String, String>();
+
 	final ArrayList<LayerDefinition> subLayers = new ArrayList<LayerDefinition>();
 	final HashMap<String, Style> styles = new HashMap<String, Style>();
 
@@ -110,6 +113,8 @@ public class LayerDefinition {
 		def.setData(data);
 		def.setTiles(tiles);
 		def.setTileMatrixSetId(tileMatrixSetId);
+		def.setFormat(format);
+		def.setUrlTemplatesForFormat(urlTemplatesForFormat);
 
 		for (LayerDefinition subdef : getSubLayers()) {
 			LayerDefinition subCopy = new LayerDefinition();
@@ -155,19 +160,19 @@ public class LayerDefinition {
 	}
 
 	public String getStyle() {
-		
-		if( style == null ) {
+
+		if (style == null) {
 			return null;
 		}
-		if( getStyles() == null || getStyles().size() == 0 ) {
+		if (getStyles() == null || getStyles().size() == 0) {
 			return null;
 		}
-		
+
 		Style mappedStyle = getStyles().get(style);
-		if( mappedStyle == null) {
+		if (mappedStyle == null) {
 			return null;
 		}
-				
+
 		return mappedStyle.getName();
 	}
 
@@ -231,6 +236,10 @@ public class LayerDefinition {
 		this.maxScale = maxScale;
 	}
 
+	public void setFormat(String mimeType, String urlTemplate) {
+		this.format = mimeType;
+	}
+
 	public void setMinScale(Double minScale) {
 		this.minScale = minScale;
 	}
@@ -265,6 +274,27 @@ public class LayerDefinition {
 
 	public void setWmsurl(String wmsurl) {
 		this.wmsurl = wmsurl;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getUrlTemplate() {
+		return urlTemplatesForFormat.get(format);
+	}
+
+	public void setUrlTemplate(String mimeType, String urlTemplate) {
+		urlTemplatesForFormat.put(mimeType, urlTemplate);
+	}
+
+	protected void setUrlTemplatesForFormat(
+			Map<String, String> urlTemplatesForFormat) {
+		this.urlTemplatesForFormat = urlTemplatesForFormat;
 	}
 
 }

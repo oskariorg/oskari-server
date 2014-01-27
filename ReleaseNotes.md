@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.18
+
+Most maven modules under oskari-server now share the maven parent defined in oskari-server/pom.xml. Properties are injected at compile time and a custom build profile for tomcat has been added (mvn -f servlet-map-pom.xml install -P tomcat-profile). See [docs/Customizing property values](docs/CustomizingPropertyValues.md) how to customize build for your own properties.
+
 ## 1.17
 
 ### service-permission

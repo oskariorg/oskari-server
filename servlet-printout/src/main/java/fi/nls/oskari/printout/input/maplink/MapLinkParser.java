@@ -110,6 +110,10 @@ public class MapLinkParser {
 
 				layerDef.copyTo(layerSelection);
 
+				if (layerSelection.getFormat() == null) {
+					layerSelection.setFormat("image/png");
+				}
+
 				layerSelection.setOpacity(opacity);
 				layerSelection.setScale(mapLink.getScale());
 				layerSelection.setStyle(style);
@@ -170,6 +174,10 @@ public class MapLinkParser {
 			LayerDefinition layerSelection = new LayerDefinition();
 
 			layerDef.copyTo(layerSelection);
+
+			if (layerSelection.getFormat() == null) {
+				layerSelection.setFormat("image/png");
+			}
 
 			layerSelection.setOpacity(Integer.valueOf(opacity, 10));
 			layerSelection.setScale(mapLink.getScale());

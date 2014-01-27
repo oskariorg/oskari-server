@@ -368,6 +368,41 @@ public class WebServiceMapProducerResourceTest {
 	}
 	
 	@Test
+	public void testWmtsPrintZoom7jpegopacityJsonAsPNG() throws NoSuchAuthorityCodeException,
+			IOException, GeoWebCacheException, FactoryException,
+			ParseException, XMLStreamException, FactoryConfigurationError,
+			RequestFilterException, TransformException,
+			com.vividsolutions.jts.io.ParseException, InterruptedException,
+			URISyntaxException, org.json.simple.parser.ParseException {
+
+		Properties props = new Properties();
+		Reader r = new InputStreamReader(
+				MapResource.class.getResourceAsStream("jhs.properties"));
+		try {
+			props.load(r);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			r.close();
+		}
+
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+		runner.setResource(resource);
+
+		runner.run("testWmtsLayerPrintZoom7jpegopacity",
+				WebServiceMapProducerResourceTestFileType.GEOJSON,
+				WebServiceMapProducerResourceTestFileType.PNG);
+
+	}
+	
+	@Test
 	public void testWmtsPrintZoom7png8opacityJsonAsPDF() throws NoSuchAuthorityCodeException,
 			IOException, GeoWebCacheException, FactoryException,
 			ParseException, XMLStreamException, FactoryConfigurationError,
