@@ -5,13 +5,14 @@
 
 DROP TABLE IF EXISTS portti_maplayer;
 DROP TABLE IF EXISTS portti_layerclass;
-DROP TABLE IF EXISTS oskari_maplayer;
-DROP TABLE IF EXISTS oskari_layergroup;
-DROP TABLE IF EXISTS oskari_maplayer_themes;
-DROP TABLE IF EXISTS portti_inspiretheme;
-
 DROP TABLE IF EXISTS oskari_permission;
 DROP TABLE IF EXISTS oskari_resource;
+DROP TABLE IF EXISTS oskari_maplayer_themes;
+DROP TABLE IF EXISTS oskari_maplayer;
+DROP TABLE IF EXISTS oskari_layergroup;
+DROP TABLE IF EXISTS portti_inspiretheme;
+
+
 DROP TABLE IF EXISTS portti_maplayer_metadata;
 DROP TABLE IF EXISTS portti_capabilities_cache;
 

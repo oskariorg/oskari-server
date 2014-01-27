@@ -44,12 +44,13 @@ public class MapLayerJSONParser {
 
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
-		
-		
-		Integer zoomOffset = ConfigValue.MAPLINK_ZOOM_OFFSET.getConfigProperty(props, 0);
+
+		Integer zoomOffset = ConfigValue.MAPLINK_ZOOM_OFFSET.getConfigProperty(
+				props, 0);
 
 		this.mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId), zoomOffset);
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				zoomOffset);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -199,7 +200,6 @@ public class MapLayerJSONParser {
 
 	}
 
-	
 	String fixWmsUrl(String url) {
 		if (url == null) {
 			return url;
@@ -363,9 +363,19 @@ public class MapLayerJSONParser {
 					subLayerDefinition.setLayerid(sllayerid);
 					subLayerDefinition.setLayerType(sltype != null ? sltype
 							: type);
+					subLayerDefinition.setFormat(layerDefinition.getFormat());
 					adjustLayerWmsNameAndUrl(subLayerDefinition);
 					adjustStyles(subLayerDefinition, subLayerObj);
 					adjustGeom(subLayerDefinition, subLayerObj);
+					adjustData(subLayerDefinition, subLayerObj);
+					/* format selection by default or by spec for wmts */
+					if ("wmtslayer".equals(type)) {
+						adjustTileMatrixSetInfo(subLayerDefinition,
+								(Map<String, ?>) subLayerObj
+										.get("tileMatrixSetData"));
+					} else {
+						subLayerDefinition.setFormat("image/png");
+					}
 
 					layerDefinition.getSubLayers().add(subLayerDefinition);
 				}
@@ -377,11 +387,117 @@ public class MapLayerJSONParser {
 
 			adjustData(layerDefinition, layerObj);
 
+			/* format selection by default or by spec for wmts */
+			if ("wmtslayer".equals(type)) {
+				adjustTileMatrixSetInfo(layerDefinition,
+						(Map<String, ?>) layerObj.get("tileMatrixSetData"));
+			} else {
+				layerDefinition.setFormat("image/png");
+			}
+
 			layerDefs.put(layerDefinition.getLayerid(), layerDefinition);
 
 		}
 
 		return layerDefs;
+	}
+
+	Object jsonPathHelper(String... parts) {
+		return null;
+	}
+
+	private void adjustTileMatrixSetInfo(LayerDefinition layerDefinition,
+			Map<String, ?> layerObj) {
+
+		if (layerObj == null) {
+			return;
+		}
+
+		Map<String, ?> contents = (Map<String, ?>) layerObj.get("contents");
+		if (contents == null) {
+			return;
+		}
+
+		/* find REST url information for selected layer */
+		/* tileMatrixSetData may contain other layer specs as well */
+
+		Object rawLayers = contents.get("layers");
+		if (rawLayers == null) {
+			return;
+		}
+
+		Map<String, ?> wmtsLayerSpec = null;
+		if (rawLayers instanceof List) {
+			String layerName = layerDefinition.getWmsname();
+			List<Map<String, ?>> wmtsLayers = (List<Map<String, ?>>) rawLayers;
+
+			for (Map<String, ?> wmtsLayerListEl : wmtsLayers) {
+				if (!layerName.equals(wmtsLayerListEl.get("identifier"))) {
+					continue;
+				}
+
+				wmtsLayerSpec = wmtsLayerListEl;
+				break;
+			}
+
+		} else {
+			wmtsLayerSpec = (Map<String, ?>) rawLayers;
+		}
+
+		if (wmtsLayerSpec == null) {
+			return;
+		}
+
+		/* */
+		{
+			Map<String, ?> resourceUrl = (Map<String, ?>) wmtsLayerSpec
+					.get("resourceUrl");
+			if (resourceUrl == null) {
+				return;
+			}
+			Map<String, ?> resourceTileInfo = (Map<String, ?>) wmtsLayerSpec
+					.get("tile");
+			if (resourceTileInfo != null) {
+
+				String format = (String) resourceTileInfo.get("format");
+				if (format != null) {
+					layerDefinition.setFormat(format);
+					String template = (String) resourceTileInfo.get("template");
+					if (template != null) {
+						layerDefinition.setUrlTemplate(format, template);
+					}
+				}
+			}
+		}
+
+		List<Map<String, ?>> resourceUrls = (List<Map<String, ?>>) wmtsLayerSpec
+				.get("resourceUrls");
+		if (resourceUrls == null) {
+			return;
+		}
+
+		for (Map<String, ?> resourceTileInfo : resourceUrls) {
+			String format = (String) resourceTileInfo.get("format");
+			if (format != null) {
+				if (layerDefinition.getFormat() == null) {
+					layerDefinition.setFormat(format);
+				}
+				String template = (String) resourceTileInfo.get("template");
+				if (template != null) {
+					layerDefinition.setUrlTemplate(format, template);
+				}
+			}
+		}
+
+		/*
+		 * "resourceUrl": { "tile": { "format": "image/png", "template":
+		 * "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
+		 * , "resourceType": "tile" } }, "resourceUrls": [ { "format":
+		 * "image/png", "template":
+		 * "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
+		 * , "resourceType": "tile" } ]
+		 */
+
 	}
 
 	public MapLink parseMapLinkJSON(InputStream inp, GeometryFactory gf,

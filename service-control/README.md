@@ -10,7 +10,6 @@ Oskari backend maps ajax services to specific handler classes based on a http pa
 	<dependency>
 	    <groupId>fi.nls.oskari.service</groupId>
 	    <artifactId>oskari-control-base</artifactId>
-	    <version>1.0-SNAPSHOT</version>
 	</dependency>
 
 5) Done - deploy the app and call your action with the `oskari ajaxUrl + action_route=myRoute`

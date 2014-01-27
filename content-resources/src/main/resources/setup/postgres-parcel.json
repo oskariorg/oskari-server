@@ -1,6 +1,7 @@
 {
     "create" : [
-        "00-create-tables.sql"
+        "00-create-tables.sql",
+        "create-preparcel-tables.sql"
     ],
     "bundles" : {
         "framework" : [
