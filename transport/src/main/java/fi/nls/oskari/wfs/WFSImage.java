@@ -96,7 +96,7 @@ public class WFSImage {
         } else {
             tileBufferKey = styleName;
         }
-        if(layer.getTileBuffer().containsKey(tileBufferKey)) {
+        if(layer.getTileBuffer() != null && layer.getTileBuffer().containsKey(tileBufferKey)) {
             bufferSize = layer.getTileBuffer().get(tileBufferKey);
         }
         log.debug(tileBufferKey, "=", bufferSize);
