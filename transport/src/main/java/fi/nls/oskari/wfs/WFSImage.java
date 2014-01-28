@@ -438,29 +438,30 @@ public class WFSImage {
      * @return style
      */
     private Style getSLDStyle(WFSLayerStore layer, String styleName) {
-        Style style;
+        Style style = null;
         log.debug("Trying to get style with name:", styleName);
         if(layer.getStyles().containsKey(styleName)) {
             style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
         }
-        else if(styleName.equals(STYLE_HIGHLIGHT)) {
-            if(layer.getSelectionSLDStyle() != null) {
-                style = createSLDStyle(layer.getSelectionSLDStyle());
-            } else { // default highlight
-               // style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
+        else if(STYLE_HIGHLIGHT.equals(styleName)) {
+            style = createSLDStyle(layer.getSelectionSLDStyle());
+        } else if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
+            style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
+        }
+
+        // if styles couldn't be parsed, use defaults
+        if(style == null) {
+            log.info("Layer style not customized or parsing failed. Using defaults.");
+            if(STYLE_HIGHLIGHT.equals(styleName)) {
                 style = createDefaultHiliSLDStyle(layer.getGMLGeometryProperty());
             }
-        } else {
-            if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
-                style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
-            }
-            else { // default
+            else {
                 style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
             }
         }
-
         if(style == null) {
-            log.error("Failed to get SLD style (default failed)");
+            // something is seriously wrong, even default styles can't be parsed
+            log.error("Failed to get SLD style (even default failed)!!");
         }
 
         return style;
