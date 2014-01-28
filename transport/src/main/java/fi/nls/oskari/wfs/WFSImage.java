@@ -453,7 +453,7 @@ public class WFSImage {
         if(style == null) {
             log.info("Layer style not customized or parsing failed. Using defaults.");
             if(STYLE_HIGHLIGHT.equals(styleName)) {
-                style = createDefaultHiliSLDStyle(layer.getGMLGeometryProperty());
+                style = createDefaultHighlightSLDStyle(layer.getGMLGeometryProperty());
             }
             else {
                 style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
@@ -527,7 +527,8 @@ public class WFSImage {
      *
      * @return sld
      */
-    public Style createDefaultHiliSLDStyle(String geom_type) {
+    public Style createDefaultHighlightSLDStyle(String geom_type) {
+        log.debug("Creating default highlight SLD for:", geom_type);
         InputStream resource = WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD);
         try {
             String xml = IOHelper.readString(resource, "ISO-8859-1");
