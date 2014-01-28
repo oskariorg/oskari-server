@@ -453,7 +453,9 @@ public class WFSImage {
         if(style == null) {
             log.info("Layer style not customized or parsing failed. Using defaults.");
             if(STYLE_HIGHLIGHT.equals(styleName)) {
-                style = createDefaultHighlightSLDStyle(layer.getGMLGeometryProperty());
+                //style = createDefaultHighlightSLDStyle(layer.getGMLGeometryProperty());
+                // TODO: check if we really always want to use without namespace
+                style = createDefaultHighlightSLDStyle(layer.getGMLGeometryPropertyNoNamespace());
             }
             else {
                 style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
