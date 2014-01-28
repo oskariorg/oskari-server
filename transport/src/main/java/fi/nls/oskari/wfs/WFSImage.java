@@ -439,6 +439,7 @@ public class WFSImage {
      */
     private Style getSLDStyle(WFSLayerStore layer, String styleName) {
         Style style;
+        log.debug("Trying to get style with name:", styleName);
         if(layer.getStyles().containsKey(styleName)) {
             style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
         }
@@ -472,7 +473,15 @@ public class WFSImage {
 	 * @return sld
 	 */
 	private Style createSLDStyle(String xml) {
-		return createSLDStyle(new ByteArrayInputStream(xml.getBytes()));
+        if(xml == null) {
+            log.info("Trying to create style from <null> String!");
+            return null;
+        }
+        final Style style = createSLDStyle(new ByteArrayInputStream(xml.getBytes()));
+        if(style == null) {
+            log.warn("Couldn't create style from XML:", xml);
+        }
+		return style;
 	}	
 	
 	/**
@@ -489,7 +498,6 @@ public class WFSImage {
 			sld = (StyledLayerDescriptor) parser.parse(xml);
 		} catch (Exception e) {
 			log.error(e, "Failed to create SLD Style");
-			log.error(xml);
 			return null;
 		}
 		return SLD.styles(sld)[0]; 
