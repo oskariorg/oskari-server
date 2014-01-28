@@ -2,7 +2,13 @@
 
 ## 1.18
 
+### General
+
 Most maven modules under oskari-server now share the maven parent defined in oskari-server/pom.xml. Properties are injected at compile time and a custom build profile for tomcat has been added (mvn -f servlet-map-pom.xml install -P tomcat-profile). See [docs/Customizing property values](docs/CustomizingPropertyValues.md) how to customize build for your own properties.
+
+### Transport
+
+Added override properties handling. Tries to search for file 'transport-ext.properties' in classpath and if found, overrides default values loaded from config.properties if 
 
 ## 1.17
 
