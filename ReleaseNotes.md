@@ -6,6 +6,14 @@
 
 Most maven modules under oskari-server now share the maven parent defined in oskari-server/pom.xml. Properties are injected at compile time and a custom build profile for tomcat has been added (mvn -f servlet-map-pom.xml install -P tomcat-profile). See [docs/Customizing property values](docs/CustomizingPropertyValues.md) how to customize build for your own properties.
 
+Updated GeoTools version 10.2. The version is now the same all over Oskari modules (previously 2.7.5 and 9.1).
+
+### Service-OGC and control-wfs
+
+Have been deprecated. The required parts have been moved to service-map and the currently recommended backend component for WFS-functionality is the transport-servlet.
+
+The deprecated modules can still be found inside oskari-server/deprecated folder.
+
 ### Transport
 
 Added override properties handling. Tries to search for file 'transport-ext.properties' in classpath and if found, overrides default values loaded from config.properties if 
