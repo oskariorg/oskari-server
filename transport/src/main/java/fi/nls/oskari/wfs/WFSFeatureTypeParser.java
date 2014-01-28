@@ -164,35 +164,41 @@ public class WFSFeatureTypeParser {
 	 * @return feature type
 	 * @throws SchemaException
 	 */
-	public SimpleFeatureType createType(String namespace, String name, String typeSpec) throws SchemaException {
-		// modified copy of geotools' DataUtilities createType
-		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-		builder.setName(name);
-		builder.setNamespaceURI(namespace);
+    public SimpleFeatureType createType(String namespace, String name, String typeSpec) throws SchemaException {
+        // modified copy of geotools' DataUtilities createType
+        SimpleFeatureType featype = null;
+        try {
+            SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+            builder.setName(name);
+            builder.setNamespaceURI(namespace);
 
-		String[] types = typeSpec.split(",");
+            String[] types = typeSpec.split(",");
 
-		AttributeDescriptor attributeType;
-		builder.setCRS(null); // not interested in warnings from this simple method
-		
-		for (int i = 0; i < types.length; i++) {
-			boolean defaultGeometry = types[i].startsWith("*");
-			if (types[i].startsWith("*")) {
-				types[i] = types[i].substring(1);
-			}
+            AttributeDescriptor attributeType;
+            builder.setCRS(null); // not interested in warnings from this simple method
 
-			attributeType = createAttribute(types[i]);
-			builder.add(attributeType);
+            for (int i = 0; i < types.length; i++) {
+                boolean defaultGeometry = types[i].startsWith("*");
+                if (types[i].startsWith("*")) {
+                    types[i] = types[i].substring(1);
+                }
 
-			if (defaultGeometry) {
-				builder.setDefaultGeometry(attributeType.getLocalName());
-			}
-		}
+                attributeType = createAttribute(types[i]);
+                builder.add(attributeType);
 
-		return builder.buildFeatureType();
-	}
-	
-	/**
+                if (defaultGeometry) {
+                    builder.setDefaultGeometry(attributeType.getLocalName());
+                }
+            }
+
+            featype = builder.buildFeatureType();
+        } catch (Exception ee) {
+            log.error(ee, "Parsing failed for Simple feature type: ", name);
+        }
+        return featype;
+    }
+
+    /**
 	 * Creates attribute descriptor from the type specification
 	 * 
 	 * @param typeSpec
