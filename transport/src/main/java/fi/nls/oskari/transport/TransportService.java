@@ -1,6 +1,7 @@
 package fi.nls.oskari.transport;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -42,20 +43,15 @@ public class TransportService extends AbstractService {
         // http://docs.geotools.org/latest/userguide/library/referencing/order.html
         System.setProperty("org.geotools.referencing.forceXY", "true");
 
-        Properties properties = new Properties();
-        try {
-            properties.load(TransportService.class.getResourceAsStream("config.properties"));
-            PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            System.err.println("Configuration could not be loaded");
-            e.printStackTrace();
-        }
+        // populate properties before initializing logger since logger
+        // implementation is configured in properties
+        addProperties("config.properties", false);
+        addProperties("/transport-ext.properties", true);
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
 
     public static ObjectMapper mapper = new ObjectMapper();
 
-	
 	// params
 	public static final String PARAM_ID = "id"; // skipped param - coming from cometd
     public static final String PARAM_UUID = "uuid"; //
@@ -786,5 +782,26 @@ public class TransportService extends AbstractService {
         }
 
         return bounds;
+    }
+
+    private static void addProperties(final String propertiesFile, final boolean overwrite) {
+        InputStream in = null;
+        try {
+            Properties prop = new Properties();
+            in = TransportService.class.getResourceAsStream(propertiesFile);
+            prop.load(in);
+            PropertyUtil.addProperties(prop, overwrite);
+        } catch (Exception e) {
+            if(!overwrite) {
+                // base properties
+                System.err.println("Configuration could not be loaded");
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

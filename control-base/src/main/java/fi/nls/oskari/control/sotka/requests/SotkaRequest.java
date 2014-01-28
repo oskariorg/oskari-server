@@ -124,7 +124,7 @@ public class SotkaRequest {
     public void setVersion(final String version) throws ActionException {
         final String lowerCaseVersion = version.toLowerCase();
         if (!ACCEPTED_VERSIONS.contains(lowerCaseVersion)) {
-            throw new ActionException("Unknown Sotkanet version requested "
+            throw new ActionException("Unknown SOTKAnet version requested "
                     + version);
         }
         this.version = lowerCaseVersion;
@@ -133,7 +133,7 @@ public class SotkaRequest {
     public void setGender(final String gender) throws ActionException {
         final String lowerCaseGender = gender.toLowerCase();
         if (!ACCEPTED_GENDERS.contains(lowerCaseGender)) {
-            throw new ActionException("Unknown Sotkanet gender requested "
+            throw new ActionException("Unknown SOTKAnet gender requested "
                     + gender);
         }
         this.gender = lowerCaseGender;
@@ -171,7 +171,7 @@ public class SotkaRequest {
             }
             return data;
         } catch (Exception e) {
-            throw new ActionException("Couldn't proxy request Sotkanet server", e);
+            throw new ActionException("Couldn't proxy request SOTKAnet server", e);
         } finally {
             try {
                 con.disconnect();

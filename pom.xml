@@ -44,7 +44,7 @@
 		
 		<xerces.version>2.10.0</xerces.version>
 		<xmlbeans.version>2.5.0</xmlbeans.version>
-		<geotools.version>2.7.5</geotools.version>
+		<geotools.version>10.2</geotools.version>
 		<flexjson.version>2.0</flexjson.version>
 		<deegree.version>2</deegree.version>
 		<!-- Test deps versions -->
@@ -285,6 +285,11 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
+			<dependency>
+			    <groupId>org.geotools</groupId>
+			    <artifactId>gt-referencing</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.deegree</groupId>
@@ -426,16 +431,12 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
-        <module>service-OGC</module>
         <module>service-control</module>
 
         <module>control-base</module>
         <module>control-example</module>
-        <module>control-wfs</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
-
-
     </modules>
 
 </project>

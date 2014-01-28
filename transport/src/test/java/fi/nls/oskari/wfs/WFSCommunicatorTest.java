@@ -1,6 +1,7 @@
 package fi.nls.oskari.wfs;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Properties;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
@@ -43,7 +45,7 @@ public class WFSCommunicatorTest {
         Properties properties = new Properties();
         try {
             properties.load(TransportService.class.getResourceAsStream("config.properties"));
-            PropertyUtil.addProperties(properties);
+            PropertyUtil.addProperties(properties, true);
         } catch (Exception e) {
             System.err.println("Configuration could not be loaded");
             e.printStackTrace();
@@ -72,6 +74,9 @@ public class WFSCommunicatorTest {
 	
 	@Test
 	public void testBounds() {
+        // check that we have http connectivity (correct proxy settings etc)
+        assumeTrue(TestHelper.canDoHttp());
+
 		String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
 		assertTrue("Should get defined result with bounds", payload.equals(boundsResult));
 		

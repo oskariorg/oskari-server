@@ -16,7 +16,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.map.data.service.GetGeoPointDataService;
-import fi.nls.oskari.map.data.service.WFSFeatureService;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -27,8 +26,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 	private final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 	private final GetGeoPointDataService geoPointService = new GetGeoPointDataService();
     private final GeoServerProxyService myplacesService = new GeoServerProxyService();
-    private final WFSFeatureService wfsFeatureService = new WFSFeatureService();
-	
+
 	private Logger log = LogFactory.getLogger(GetGeoPointDataHandler.class);
 		
     private static final String PARAM_LAT = "lat";
@@ -104,22 +102,6 @@ public class GetGeoPointDataHandler extends ActionHandler {
                     data.put(response);
                 }
 				continue;
-			} else if (OskariLayer.TYPE_WFS.equals(layerType)) {
-			    JSONArray features = null;
-				try {
-				    // Geojs and zoom is enough to select features
-				    // If geojs is empty, lat, lon and zoom is in use
-				    // default tolerance (buffer radius) is based on zoom
-                    features = wfsFeatureService.getWFSFeatures(lat, lon, zoom, geojs, layerId);
-                    
-	                final JSONObject layerJson = new JSONObject();
-	                layerJson.put(GetGeoPointDataService.TYPE, layerType);
-	                layerJson.put(GetGeoPointDataService.LAYER_ID, layerId);
-					layerJson.put("features", features);
-		            data.put(layerJson);
-				} catch (JSONException je) {
-	                log.warn("Could not add features", features, "- for layerId", layerId);
-				}
 			}
 		}
 

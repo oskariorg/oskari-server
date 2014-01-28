@@ -20,8 +20,21 @@
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                        "config" : {
+                            "ignoredLayerTypes" : ["WFS"],
+                            "infoBox": false
+                        }
+                    },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                            "lazy" : true,
+                            "disconnectTime" : 30000,
+                            "backoffIncrement": 1000,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000
+                        }
+                    },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
@@ -54,7 +67,7 @@
         { "id" : "layerselection2" },
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
-        { "id" : "featuredata" },
+        { "id" : "featuredata2" },
         { "id" : "personaldata" ,
             "config" : {
                 "publishedMapUrl": {
