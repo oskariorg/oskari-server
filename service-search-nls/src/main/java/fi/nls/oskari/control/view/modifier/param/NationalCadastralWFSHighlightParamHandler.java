@@ -128,7 +128,7 @@ public class NationalCadastralWFSHighlightParamHandler extends WFSHighlightParam
 
         } else {
             JSONObject point = new JSONObject();
-            if (points.size() > 1) {
+            if (!points.isEmpty()) {
                 JSONHelper.putValue(point, "lon", points.get(0).getLon());
                 JSONHelper.putValue(point, "lat", points.get(0).getLat());
                 bbox.put(point);
