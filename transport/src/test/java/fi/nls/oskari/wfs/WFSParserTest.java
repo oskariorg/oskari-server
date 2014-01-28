@@ -1,6 +1,7 @@
 package fi.nls.oskari.wfs;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
@@ -54,6 +56,10 @@ public class WFSParserTest {
 
 	@Test
 	public void testParser() {
+
+        // check that we have http connectivity (correct proxy settings etc)
+        assumeTrue(TestHelper.canDoHttp());
+
         Map<String, String> inputFeatureTypes = new HashMap<String, String>();
         // * in the config marks the default geometry
         // should contain whole schema or at least the selectedFeatureParams (+ GEOMETRY)

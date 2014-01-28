@@ -96,7 +96,7 @@ public class WFSImage {
         } else {
             tileBufferKey = styleName;
         }
-        if(layer.getTileBuffer().containsKey(tileBufferKey)) {
+        if(layer.getTileBuffer() != null && layer.getTileBuffer().containsKey(tileBufferKey)) {
             bufferSize = layer.getTileBuffer().get(tileBufferKey);
         }
         log.debug(tileBufferKey, "=", bufferSize);
@@ -438,28 +438,30 @@ public class WFSImage {
      * @return style
      */
     private Style getSLDStyle(WFSLayerStore layer, String styleName) {
-        Style style;
+        Style style = null;
+        log.debug("Trying to get style with name:", styleName);
         if(layer.getStyles().containsKey(styleName)) {
             style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
         }
-        else if(styleName.equals(STYLE_HIGHLIGHT)) {
-            if(layer.getSelectionSLDStyle() != null) {
-                style = createSLDStyle(layer.getSelectionSLDStyle());
-            } else { // default highlight
-               // style = createSLDStyle(WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD)); // getClass() (non-static)
-                style = createDefaultHiliSLDStyle(layer.getGMLGeometryProperty());
+        else if(STYLE_HIGHLIGHT.equals(styleName)) {
+            style = createSLDStyle(layer.getSelectionSLDStyle());
+        } else if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
+            style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
+        }
+
+        // if styles couldn't be parsed, use defaults
+        if(style == null) {
+            log.info("Layer style not customized or parsing failed. Using defaults.");
+            if(STYLE_HIGHLIGHT.equals(styleName)) {
+                style = createDefaultHighlightSLDStyle(layer.getGMLGeometryProperty());
             }
-        } else {
-            if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
-                style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
-            }
-            else { // default
+            else {
                 style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
             }
         }
-
         if(style == null) {
-            log.error("Failed to get SLD style (default failed)");
+            // something is seriously wrong, even default styles can't be parsed
+            log.error("Failed to get SLD style (even default failed)!!");
         }
 
         return style;
@@ -472,7 +474,15 @@ public class WFSImage {
 	 * @return sld
 	 */
 	private Style createSLDStyle(String xml) {
-		return createSLDStyle(new ByteArrayInputStream(xml.getBytes()));
+        if(xml == null) {
+            log.info("Trying to create style from <null> String!");
+            return null;
+        }
+        final Style style = createSLDStyle(new ByteArrayInputStream(xml.getBytes()));
+        if(style == null) {
+            log.warn("Couldn't create style from XML:", xml);
+        }
+		return style;
 	}	
 	
 	/**
@@ -489,7 +499,6 @@ public class WFSImage {
 			sld = (StyledLayerDescriptor) parser.parse(xml);
 		} catch (Exception e) {
 			log.error(e, "Failed to create SLD Style");
-			log.error(xml);
 			return null;
 		}
 		return SLD.styles(sld)[0]; 
@@ -518,7 +527,8 @@ public class WFSImage {
      *
      * @return sld
      */
-    public Style createDefaultHiliSLDStyle(String geom_type) {
+    public Style createDefaultHighlightSLDStyle(String geom_type) {
+        log.debug("Creating default highlight SLD for:", geom_type);
         InputStream resource = WFSImage.class.getResourceAsStream(HIGHLIGHT_SLD);
         try {
             String xml = IOHelper.readString(resource, "ISO-8859-1");

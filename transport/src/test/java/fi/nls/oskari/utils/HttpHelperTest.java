@@ -5,9 +5,16 @@ import static org.junit.Assert.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 public class HttpHelperTest {
+
+    @BeforeClass
+    public static void beforeTest() {
+        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
+    }
 
 	@Test
 	public void testGetRequest() {

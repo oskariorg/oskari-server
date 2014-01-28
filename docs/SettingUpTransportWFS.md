@@ -26,7 +26,7 @@ OR
 5) 
 
 5.1 Go to `oskari-server/transport`
-5.2 You may need to change config.properties under /transport (serviceURL=http://localhost:? , analysis.baselayer.id=?, myplaces.baselayer.id=?)
+5.2 You may need to change config.properties under /transport (serviceURL=http://localhost:? , analysis.baselayer.id=?, myplaces.baselayer.id=?) OR add a 'transport-ext.properties' file with the properties you need on your own environment to override the defaults.
 5.2 Compile the transport service with `mvn clean install` or `mvn clean install -DskipTests`
 5.3 Start the jetty service with `mvn jetty:run`. or use other jetty installation (cd {jettyhome}/bin -> java -jar start.jar )
 
@@ -39,7 +39,7 @@ With default settings you now have:
 6) Open your browser with http://localhost:2373/?viewId=4 or http://localhost:2373/oskari-map?viewId=4  to see a new view loaded from the database.
     You should now see a new map layer of type WFS listed on the maplayers flyout. Add it to map, zoom close to Helsinki for example and you should see points appearing to the map from the wfs service
 
-7) sample conf for transport
+7) sample conf for transport (setup as transport-ext.properties in server classpath to override defaults)
 
     #serviceURL=http://localhost:2373
 
