@@ -188,7 +188,7 @@
 								<resource>
 									<directory>src/jetty-maven/resources/</directory>
 									<filtering>true</filtering>
-									<targetPath>WEB-INF</targetPath>
+									<targetPath>../jetty-maven</targetPath>
 									<includes>
 										<include>*.xml</include>
 									</includes>
@@ -220,7 +220,7 @@
 								<contextPath>/</contextPath>
 
 								<baseResource implementation="org.mortbay.resource.ResourceCollection">
-									<resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
+									<resourcesAsCSV>${basedir}/target/jetty-maven,${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
 								</baseResource>
 								<!-- TODO: service targets are scanned but not included in classpath 
 									so changes arent reflected. It can be done like this: -->

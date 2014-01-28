@@ -426,16 +426,12 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
-        <module>service-OGC</module>
         <module>service-control</module>
 
         <module>control-base</module>
         <module>control-example</module>
-        <module>control-wfs</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
-
-
     </modules>
 
 </project>
