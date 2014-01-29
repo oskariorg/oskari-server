@@ -22,7 +22,7 @@ module.exports = function(client) {
           style = style.replace("<Abstract></Abstract>","");
       }
       catch(e) {
-          console.error("Unable to parse config for view " + row.id + ". Error:'", e, "'. Please update manually! Config:\r\n",row.sld_style);
+          console.error("Unable to parse sld for wfs-layer style " + row.id + ". Error:'", e, "'. Please update manually! SLD:\r\n",row.sld_style);
           updateCount++;
           return;
       }
