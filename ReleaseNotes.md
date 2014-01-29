@@ -4,9 +4,15 @@
 
 ### General
 
-Most maven modules under oskari-server now share the maven parent defined in oskari-server/pom.xml. Properties are injected at compile time and a custom build profile for tomcat has been added (mvn -f servlet-map-pom.xml install -P tomcat-profile). See [docs/Customizing property values](docs/CustomizingPropertyValues.md) how to customize build for your own properties.
+Most maven modules under oskari-server now share the maven parent defined in oskari-server/pom.xml. Properties are injected at
+compile time and a custom build profile for tomcat has been added (mvn -f servlet-map-pom.xml install -P tomcat-profile).
+See [docs/Customizing property values](docs/CustomizingPropertyValues.md) how to customize build for your own properties.
 
 Updated GeoTools version 10.2. The version is now the same all over Oskari modules (previously 2.7.5 and 9.1).
+
+Updated GeoTools can't parse empty Abstract-tags for WFSLayer SLDs. Script to update any existing SLDs in
+database (portti_wfs_layer_style table) can be run with the command SCRIPT=remove-empty-abstract-from-SLD node app.js in content-resources/db-upgrade
+(check the config.js first for database settings).
 
 ### Service-OGC and control-wfs
 
