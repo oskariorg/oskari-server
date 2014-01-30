@@ -265,6 +265,23 @@ public class WFSLayerStore {
         return GMLGeometryProperty;
     }
 
+
+    @JsonIgnore
+    public String getGMLGeometryPropertyNoNamespace() {
+        final String geom = getGMLGeometryProperty();
+        if(geom == null) {
+            return null;
+        }
+
+        String[] split = geom.split(":");
+        if(split.length < 2) {
+            return geom;
+        }
+        else {
+            return split[1];
+        }
+    }
+
     /**
      * Sets GML geometry property
      * 
