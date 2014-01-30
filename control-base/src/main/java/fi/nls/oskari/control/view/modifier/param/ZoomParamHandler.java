@@ -3,7 +3,6 @@ package fi.nls.oskari.control.view.modifier.param;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +25,9 @@ public class ZoomParamHandler extends ParamHandler {
         try {
             final JSONObject state = getBundleState(params.getConfig(), BUNDLE_MAPFULL);
             int zoom = ConversionHelper.getInt(params.getParamValue(), 0);
+            if(params.getActionParams().getHttpParam("ver") == null) {
+                if(zoom == 8) zoom = 7;
+            }
             state.put(KEY_ZOOM, zoom);
             return true;
         } catch (JSONException je) {

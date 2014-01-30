@@ -24,6 +24,11 @@ The deprecated modules can still be found inside oskari-server/deprecated folder
 
 Added override properties handling. Tries to search for file 'transport-ext.properties' in classpath and if found, overrides default values loaded from config.properties if 
 
+### GetAppSetup/ParamHandlers
+
+It's now possible to add preprocessors for ParamHandlers used in GetAppSetup. Check [service-control/README.md](service-control/README.md) for more
+info about preprocessing parameters.
+
 ## 1.17
 
 ### service-permission
