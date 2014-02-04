@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+//import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -37,13 +38,18 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
 
         final String key = params.getHttpParam(PARM_KEY, "");
         final String wmsurl = params.getHttpParam(PARM_WMSURL, "");
-
+        //  try {
         if (wmsurl.isEmpty()) {
             throw new ActionParamsException("Parameter 'wmsurl' missing");
         }
         if (!params.getUser().hasAnyRoleIn(permittedRoles)) {
             throw new ActionDeniedException("Unauthorized user tried to get wmsservices");
         }
+        // New method for parsing WMSCetGapabilites to Oskari layers structure
+
+        // final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(wmsurl);
+        // TODO: fix code, when we start to use above new method
+
         final String response = GetWMSCapabilities.getResponse(wmsurl);
         final JSONObject capabilities = GetWMSCapabilities.parseCapabilities(response);
         if (key != null && !key.isEmpty()) {
@@ -52,6 +58,9 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         } else {
             ResponseHelper.writeResponse(params, capabilities);
         }
+      /*  } catch (Exception ee) {
+            throw new ActionException("WMS Capabilities parsing failed: ", ee);
+        } */
     }
     
     private JSONObject findsubJson(String mykey, JSONObject js) {

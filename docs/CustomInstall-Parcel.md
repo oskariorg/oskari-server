@@ -266,9 +266,27 @@ The layer ids also need to be configured according to the system/configuration (
 
 1) Build  oskari_server/servlet-printout ( mvn clean install) and copy oskari-printout-backend-1.0.x-SNAPSHOT.war from target path to {jetty.home}/webapps path 
 
-2) Copy default.properties somewhere under {jetty.home}/resources/oskari-printout-backend.properties and modify/check url values 
+2) Install redis, if not yet in use (yum install redis)
+   * option: create conf file for redis 
+             /etc/redis.cfg
+             # Redis configuration file example
+             # ...
+ 
+             dir /data/redis/
+ 
+            # ...
+            maxmemory 1gb
+ 
+            vm-swap-file /data/redis/redis.swap
 
-3) Add to GeoServer startup.bat -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties 
+3) Install fonts 
+    sudo yum install liberation-mono
+    sudo yum install liberation-serif
+    sudo yum install liberation-sans
+
+4) Copy default.properties somewhere under {jetty.home}/resources/oskari-printout-backend.properties and modify/check url values 
+
+5) Add to GeoServer startup.bat -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties 
 
 Sample startup.bat 
 call "C:\Program Files (x86)\Java\jdk1.6.0_18\bin\java.exe" -DGEOSERVER_DATA_DIR="C:\Omat\GeoServer_2_4_0\data_dir" -Xmx512m -XX:MaxPermSize=128m -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -Djetty.port=8084 -Dfi.nls.oskari.imaging.config={jetty.home}/resources/oskari-printout-backend.properties-Dhttp.proxyHost=wwwp.xxx.xx -Dhttp.proxyPort=800 -Dhttp.nonProxyHosts="*.yyy.xx|*.foo.fi"  -Djetty.logs="C:\Omat\GeoServer_2_4_0\logs" -jar "C:\Omat\GeoServer_2_4_0\start.jar"
