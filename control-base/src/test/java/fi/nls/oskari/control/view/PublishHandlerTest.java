@@ -62,29 +62,24 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         // add all bundles needed in test
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull", "framework.infobox", "framework.publishedgrid");
         dummyView.setType(ViewTypes.USER);
+        dummyView.setCreator(getLoggedInUser().getId());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
     }
     
     @Test
-    public void testEmptyViews() throws Exception {
-
-        // mock returned views
-        doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
+    public void testPublishFromTemplateSimpleInput() throws Exception {
 
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
-        
-        parameters.put(PublishHandler.KEY_PUBDATA, "{'domain':'test','name':'test','language':'fi','plugins':[{'id':'Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar','config':{'location':{'top':'10px','left':'10px'}}},{'id':'Oskari.mapframework.mapmodule.ControlsPlugin'},{'id':'Oskari.mapframework.mapmodule.GetInfoPlugin'}],'size':{'width':700,'height':525},'mapstate':{'north':6874042,'east':517620,'zoom':1,'srs':'EPSG:3067','selectedLayers':[{'id':'base_35','opacity':100}]}}");
+        parameters.put(PublishHandler.KEY_PUBDATA, ResourceHelper.readStringResource("PublishHandlerTest-input-simple.json", this));
 
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
         // test that response was written once
         verifyResponseWritten(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("PublishHandlerTest-background-map.json", this));
+        verifyResponseContent(ResourceHelper.readJSONResource("PublishHandlerTest-output-simple.json", this));
     }
 	
 }
