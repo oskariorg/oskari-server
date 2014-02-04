@@ -1,12 +1,10 @@
 package fi.nls.oskari.control.view.modifier.param;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
@@ -18,6 +16,7 @@ public class ParamControl {
     
     private final static Logger log = LogFactory.getLogger(ParamControl.class);
 	private static final HashMap<String, ParamHandler> actions = new HashMap<String, ParamHandler>();
+    private static final HashMap<String, List<ParamHandler>> preprocessors = new HashMap<String, List<ParamHandler>>();
 
     /**
      * Registers a ParamHandler with the given key after instantiating a class with the given className.
@@ -35,12 +34,27 @@ public class ParamControl {
     }
     /**
      * Registers a given ParamHandler with the given key.
+     * Whenever a handler is added, checks a property with the key "view.modifier.param." + action + ".prepocessors"
+     * for a comma-separated list of classnames to use as preprocessors.
      * @param action
      * @param handler
      */
     public static void addHandler(final String action, final ParamHandler handler) {
         actions.put(action, handler);
         log.debug("Paramhandler added", action,"=", handler.getClass().getCanonicalName());
+        final String[] preprocHandlers = PropertyUtil.getCommaSeparatedList("view.modifier.param." + action + ".prepocessors");
+        final List<ParamHandler> list = new ArrayList<ParamHandler>(preprocHandlers.length);
+        for(String prehandler: preprocHandlers) {
+            try {
+                final Class clazz = Class.forName(prehandler);
+                final ParamHandler preprocessor = (ParamHandler) clazz.newInstance();
+                log.debug("Preprocessor added for", action,"=", clazz.getCanonicalName());
+                list.add(preprocessor);
+            } catch (Exception e) {
+                log.warn(e, "Error instantiating preprocessor for param:", action, " preprocessor:", prehandler);
+            }
+        }
+        preprocessors.put(action, list);
     }
 
     /**
@@ -68,7 +82,9 @@ public class ParamControl {
      */
     public static void addDefaultControls() {
         final Map<String, ParamHandler> handlers = ViewModifierManager.getModifiersOfType(ParamHandler.class);
-        actions.putAll(handlers);
+        for(String key : handlers.keySet()) {
+            addHandler(key, handlers.get(key));
+        }
     }
 
     /**
@@ -83,6 +99,12 @@ public class ParamControl {
 		    addDefaultControls();
 		}
         if (actions.containsKey(paramKey)) {
+            // loop through preprocessors first, they might change the param value f.ex.
+            // addHandler should always add a preprocessor list for any action it adds
+            // so this should be safe
+            for(ParamHandler preprocessor : preprocessors.get(paramKey)) {
+                preprocessor.handleParam(params);
+            }
             return actions.get(paramKey).handleParam(params);
         }
         return false;
