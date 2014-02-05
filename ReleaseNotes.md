@@ -14,6 +14,18 @@ Updated GeoTools can't parse empty Abstract-tags for WFSLayer SLDs. Script to up
 database (portti_wfs_layer_style table) can be run with the command SCRIPT=remove-empty-abstract-from-SLD node app.js in content-resources/db-upgrade
 (check the config.js first for database settings).
 
+Removed some hardcodings: 
+* fi.nls.oskari.control.view.modifier.bundle.MapfullHandler
+
+Previously hardcoded myplaces layer wmsurl: "/karttatiili/myplaces?myCat=" 
+can now be configured with property 'myplaces.client.wmsurl'
+
+
+* fi.nls.oskari.control.view.GetAppSetupHandler
+
+Previously hardcoded prefix for secure urls (prefix to make easier proxy forwards) "/paikkatietoikkuna"
+can now be configured with property 'actionhandler.GetAppSetup.secureAjaxUrlPrefix'
+
 ### Service-OGC and control-wfs
 
 Have been deprecated. The required parts have been moved to service-map and the currently recommended backend component for WFS-functionality is the transport-servlet.
@@ -28,6 +40,11 @@ Added override properties handling. Tries to search for file 'transport-ext.prop
 
 It's now possible to add preprocessors for ParamHandlers used in GetAppSetup. Check [service-control/README.md](service-control/README.md) for more
 info about preprocessing parameters.
+
+## PublishHandler
+
+Has been some what refactored for clearer implementation. Views and Bundles can now be copied with clone() method.
+Still gathers the view to be saved as JSON instead of modifying the view object, this will propably be streamlined as well in the future.
 
 ## 1.17
 
