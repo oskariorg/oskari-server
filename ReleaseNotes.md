@@ -43,7 +43,7 @@ info about preprocessing parameters.
 
 ## PublishHandler
 
-Has been some what refactored for clearer implementation. Views and Bundles can now be copied with clone() method.
+Refactored a bit for clearer implementation. Views and Bundles can now be copied with clone() method.
 Still gathers the view to be saved as JSON instead of modifying the view object, this will propably be streamlined as well in the future.
 
 ## 1.17
