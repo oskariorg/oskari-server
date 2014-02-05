@@ -6,11 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
+import java.util.*;
 
 
 public class JSONHelper {
@@ -276,5 +272,37 @@ public class JSONHelper {
             }
         }
         return true;
+    }
+
+    /**
+     * Overrides values in base data and returns a new object as the merged result.
+     * @param baseData
+     * @param overrides
+     * @return merged result
+     */
+    public static JSONObject merge(final JSONObject baseData, final JSONObject overrides) {
+        if(baseData == null) {
+            return merge(new JSONObject(), overrides);
+        }
+        // copy existing values so we don't leak mutable references
+        final JSONObject result = createJSONObject(baseData.toString());
+        // TODO: maybe do the same for overrides?
+
+        if(overrides == null || overrides.length() == 0) {
+            // JSONObject.getNames() on empty object returns null so early exit here
+            return result;
+        }
+        try {
+            for (String key: JSONObject.getNames(overrides)) {
+                Object val = overrides.opt(key);
+                if (val instanceof JSONObject) {
+                    val = merge(result.optJSONObject(key), (JSONObject)val);
+                }
+                result.put(key, val);
+            }
+        } catch (Exception ex) {
+            log.warn(ex, "Error merging objects from:", overrides, "- to:", baseData);
+        }
+        return result;
     }
 }

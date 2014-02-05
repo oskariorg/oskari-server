@@ -57,6 +57,17 @@ public class MapfullHandler extends BundleHandler {
 
     private static final MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
 
+    private static String MYPLACES_WMS_NAME = "";
+    private static String MYPLACES_CLIENT_WMS_URL = "";
+    private static String MYPLACES_ACTUAL_WMS_URL = "";
+
+    public void init() {
+        MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix","ows")+":my_places_categories";
+        MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
+        MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("myplaces.client.wmsurl");
+    }
+
+
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
 
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig());
@@ -233,7 +244,7 @@ public class MapfullHandler extends BundleHandler {
             final boolean modifyURLs) {
         try {
             final JSONObject myPlaceLayer = new JSONObject();
-            myPlaceLayer.put("wmsName", PropertyUtil.get("myplaces.xmlns.prefix","ows")+":my_places_categories");
+            myPlaceLayer.put("wmsName", MYPLACES_WMS_NAME);
             //myPlaceLayer.put("descriptionLink", "");
             myPlaceLayer.put("type", "wmslayer");
             myPlaceLayer.put("formats",
@@ -250,12 +261,11 @@ public class MapfullHandler extends BundleHandler {
             // if useDirectURL -> geoserver URL
             // TODO: check "modifyURLs" and prefix wmsurl if true
             if(useDirectURL) {
-                myPlaceLayer.put("wmsUrl", PropertyUtil.get("myplaces.wms.url") +
+                myPlaceLayer.put("wmsUrl", MYPLACES_ACTUAL_WMS_URL +
                 		"(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());
             }
             else {
-                myPlaceLayer.put("wmsUrl", "/karttatiili/myplaces?myCat="
-                        + mpLayer.getId() + "&");
+                myPlaceLayer.put("wmsUrl", MYPLACES_CLIENT_WMS_URL + mpLayer.getId() + "&");
             }
             myPlaceLayer.put("name", mpLayer.getCategory_name());
             myPlaceLayer.put("subtitle", mpLayer.getPublisher_name());

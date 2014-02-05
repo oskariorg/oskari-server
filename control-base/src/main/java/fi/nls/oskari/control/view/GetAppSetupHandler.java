@@ -51,6 +51,8 @@ public class GetAppSetupHandler extends ActionHandler {
 
     private static final long DEFAULT_USERID = 10110;
     private static String UNRESTRICTED_USAGE_ROLE = "";
+    private static String SECURE_AJAX_PREFIX = "";
+
     private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
 
     // for adding extra bundle(s) for users with specific roles
@@ -121,7 +123,7 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-
+        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
@@ -368,7 +370,7 @@ public class GetAppSetupHandler extends ActionHandler {
     private String getBaseAjaxUrl(final ActionParameters params) {
         final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
         if (isSecure(params)) {
-            return "/paikkatietoikkuna" + baseAjaxUrl;
+            return SECURE_AJAX_PREFIX + baseAjaxUrl;
         }
         return baseAjaxUrl;
     }

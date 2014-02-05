@@ -94,4 +94,16 @@ public class Bundle implements Comparable, Serializable {
     public void setBundleinstance(String bundleinstance) {
         this.bundleinstance = bundleinstance;
     }
+
+    public Bundle clone() {
+        Bundle b = new Bundle();
+        b.setBundleId(getBundleId()); // db id
+        b.setName(getName()); // bundleid as known by client
+        b.setBundleinstance(getBundleinstance());
+        b.setStartup(getStartup());
+        b.setConfig(getConfig());
+        b.setState(getState());
+        b.setSeqNo(getSeqNo());
+        return b;
+    }
 }
