@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.17.2
+
+### GetFeatureInfoHandler
+
+Styles will now longer be sent with value "null", but an empty string
+
+### Transport
+
+MapClick will now send an empty list as response when done so client knows that any data gotten for WMSlayers can be shown
+
+## 1.17.1
+
+### ZoomParamHandler
+
+Now uses parameter correctly again (not trying to get a property with param value).
+
 ## 1.17
 
 ### service-permission

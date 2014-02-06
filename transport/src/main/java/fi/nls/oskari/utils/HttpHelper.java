@@ -8,6 +8,7 @@ import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 
 /**
  * Implements HTTP request and response methods
@@ -15,6 +16,14 @@ import fi.nls.oskari.log.Logger;
 public class HttpHelper {
 
     private static final Logger log = LogFactory.getLogger(HttpHelper.class);
+
+    private static int CONNECTION_TIMEOUT_MS = 3000;
+    private static int READ_TIMEOUT_MS = 60000;
+
+    static {
+        CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
+        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
+    }
     
     /**
      * Basic HTTP GET method
@@ -92,20 +101,22 @@ public class HttpHelper {
     public static HttpRequest getRequest(String url, String contentType, String username, String password) {
 		HttpRequest request;
 		try {
-			
+
 			HttpRequest.keepAlive(false);
 			if(username != null && !username.equals("") && !username.equals("null")) {
 				request = HttpRequest.get(url)
 						.basic(username, password)
 						.accept(contentType)
-						.connectTimeout(30)
+						.connectTimeout(CONNECTION_TIMEOUT_MS)
+                        .readTimeout(READ_TIMEOUT_MS)
 						.acceptGzipEncoding().uncompress(true)
 						.trustAllCerts()
 						.trustAllHosts();
 			} else {
 				request = HttpRequest.get(url)
 						.contentType(contentType)
-						.connectTimeout(30)
+						.connectTimeout(CONNECTION_TIMEOUT_MS)
+                        .readTimeout(READ_TIMEOUT_MS)
 						.acceptGzipEncoding().uncompress(true)
 						.trustAllCerts()
 						.trustAllHosts();
@@ -143,7 +154,8 @@ public class HttpHelper {
 				request = HttpRequest.post(url)
 						.basic(username, password)
 						.contentType(contentType)
-						.connectTimeout(30)
+                        .connectTimeout(CONNECTION_TIMEOUT_MS)
+                        .readTimeout(READ_TIMEOUT_MS)
 						.acceptGzipEncoding().uncompress(true)
 						.trustAllCerts()
 						.trustAllHosts()
@@ -151,7 +163,8 @@ public class HttpHelper {
 			} else {
 				request = HttpRequest.post(url)
 						.contentType(contentType)
-						.connectTimeout(30)
+                        .connectTimeout(CONNECTION_TIMEOUT_MS)
+                        .readTimeout(READ_TIMEOUT_MS)
 						.acceptGzipEncoding().uncompress(true)
 						.trustAllCerts()
 						.trustAllHosts()

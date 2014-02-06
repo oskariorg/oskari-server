@@ -88,8 +88,8 @@ public class GetGeoPointDataHandler extends ActionHandler {
 
 			if (OskariLayer.TYPE_WMS.equals(layerType)) {
 			    final GFIRequestParams gfiParams = new GFIRequestParams();
-			    gfiParams.setBbox(params.getHttpParam(PARAM_BBOX));
-			    gfiParams.setCurrentStyle(params.getHttpParam(PARAM_STYLES));
+			    gfiParams.setBbox(params.getRequiredParam(PARAM_BBOX));
+			    gfiParams.setCurrentStyle(params.getHttpParam(PARAM_STYLES, ""));
 			    gfiParams.setHeight(params.getHttpParam(PARAM_HEIGHT));
 			    gfiParams.setLat(lat);
 			    gfiParams.setLayer(layer);
