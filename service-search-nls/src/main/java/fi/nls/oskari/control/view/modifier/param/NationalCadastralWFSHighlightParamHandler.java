@@ -82,6 +82,32 @@ public class NationalCadastralWFSHighlightParamHandler extends WFSHighlightParam
             String wfslayerId)  {
 
         final JSONArray bbox = new JSONArray();
+
+        // bbox is returned by GetFeature
+        // Axis order is reverse because of historical reasons
+        // lon should be  west-east and lat south-north
+        if (list.size() > 0)
+        {
+            SearchResultItem item = list.get(0);
+            if (item.getWestBoundLongitude() != null)
+            {
+                JSONObject bottomLeft = new JSONObject();
+                JSONHelper.putValue(bottomLeft, "lat",item.getWestBoundLongitude() );
+                JSONHelper.putValue(bottomLeft, "lon", item.getSouthBoundLatitude());
+
+                JSONObject topRight = new JSONObject();
+                JSONHelper.putValue(topRight, "lat", item.getEastBoundLongitude());
+                JSONHelper.putValue(topRight, "lon", item.getNorthBoundLatitude());
+
+                bbox.put(bottomLeft);
+                bbox.put(topRight);
+
+                return bbox;
+            }
+
+        }
+
+        //TODO: do we need below code any more
         // Find bbox of selected wfs features
         // Method processParcelFeatureResponseFromStream of class KTJkiiWFSSearchChannelImpl should include the geometry
 //        final double[] mimaxy = mybboxfinder.getFeatureBbox(list, wfslayerId);
