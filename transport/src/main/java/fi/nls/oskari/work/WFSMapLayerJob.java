@@ -35,6 +35,7 @@ import java.util.Map;
 public class WFSMapLayerJob extends Job {
 	
 	private static final Logger log = LogFactory.getLogger(WFSMapLayerJob.class);
+    private static final List<List<Object>> EMPTY_LIST = new ArrayList();
 
     public static enum Type {
         NORMAL ("normal"),
@@ -464,12 +465,16 @@ public class WFSMapLayerJob extends Job {
             }
         } else if(this.type == Type.MAP_CLICK) {
             if(!this.requestHandler(null)) {
+                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
                 return;
             }
             this.featuresHandler();
             if(!goNext()) return;
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
+            }
+            else {
+                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
             }
         } else if(this.type == Type.GEOJSON) {
             if(!this.requestHandler(null)) {
