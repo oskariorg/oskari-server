@@ -46,6 +46,24 @@ info about preprocessing parameters.
 Refactored a bit for clearer implementation. Views and Bundles can now be copied with clone() method.
 Still gathers the view to be saved as JSON instead of modifying the view object, this will propably be streamlined as well in the future.
 
+## 1.17.2
+
+### GetFeatureInfoHandler
+
+Styles will now longer be sent with value "null", but an empty string
+
+### Transport
+
+MapClick will now send an empty list as response when done so client knows that any data gotten for WMSlayers can be shown.
+
+Default highlight style for lines now doesn't use "fill" and areas have 50% opacity.
+
+## 1.17.1
+
+### ZoomParamHandler
+
+Now uses parameter correctly again (not trying to get a property with param value).
+
 ## 1.17
 
 ### service-permission

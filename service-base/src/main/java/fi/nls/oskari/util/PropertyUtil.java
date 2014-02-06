@@ -98,6 +98,12 @@ public class PropertyUtil {
     public static String get(final String propertyName, final String defaultValue) {
         return get(new Locale(getDefaultLanguage()), propertyName, defaultValue);
     }
+
+    public static int getOptional(final String propertyName, final int defaultValue) {
+        final String prop = getOptional(propertyName);
+        return ConversionHelper.getInt(prop, defaultValue);
+    }
+
     public static String get(final Locale locale, final String propertyName) {
         return get(locale, propertyName, "--" + propertyName + "--");
     }
