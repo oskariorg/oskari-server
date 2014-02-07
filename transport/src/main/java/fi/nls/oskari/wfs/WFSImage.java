@@ -132,29 +132,29 @@ public class WFSImage {
         }
     }
 
-  	/**
-  	 * Gets bufferedImage from cache (persistant)
-  	 * 
+    /**
+     * Gets bufferedImage from cache (persistant)
+     *
      * @param layerId
      * @param srs
      * @param bbox
      * @param zoom
      * @return buffered image from cache
-  	 */
+     */
     public static BufferedImage getCache(String layerId, String styleName, String srs, Double[] bbox, long zoom) {
-    	return getCache(layerId, styleName, srs, bbox, zoom, true);
-	}
-    
-  	/**
-  	 * Gets bufferedImage from cache
-  	 * 
+        return getCache(layerId, styleName, srs, bbox, zoom, true);
+    }
+
+    /**
+     * Gets bufferedImage from cache
+     *
      * @param layerId
      * @param srs
      * @param bbox
      * @param zoom
      * @param persistent
      * @return buffered image from cache
-  	 */
+     */
     public static BufferedImage getCache(String layerId,
                                          String styleName,
                                          String srs,
@@ -174,29 +174,29 @@ public class WFSImage {
             return null;
         }
 
-    	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
-    	String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
-    	if(!persistent) {
-    		sKey = sKey + "_temp";
-    	}
+        String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
+        String sKey = KEY + layerId + "_" + styleName + "_"  + srs + "_" + sBbox + "_" + zoom;
+        if(!persistent) {
+            sKey = sKey + "_temp";
+        }
 
-    	byte[] key = sKey.getBytes();
-    	byte[] bytes = JedisManager.get(key);
-    	if(bytes != null)
-    		return bytesToImage(bytes);
-    	return null;
-	}
-    
-  	/**
-  	 * Sets bufferedImage to cache
-  	 * 
+        byte[] key = sKey.getBytes();
+        byte[] bytes = JedisManager.get(key);
+        if(bytes != null)
+            return bytesToImage(bytes);
+        return null;
+    }
+
+    /**
+     * Sets bufferedImage to cache
+     *
      * @param layerId
      * @param srs
      * @param bbox
      * @param zoom
      * @param persistent
      * @return buffered image from cache
-  	 */
+     */
     public static void setCache(BufferedImage bufferedImage,
                                 String layerId,
                                 String styleName,
@@ -217,21 +217,21 @@ public class WFSImage {
             persistent = false;
         }
 
-    	byte[] byteImage = imageToBytes(bufferedImage);
-    	String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
-    	String sKey = KEY + layerId + "_" + styleName + "_" + srs + "_" + sBbox + "_" + zoom;
-    	if(!persistent) {
-    		sKey = sKey + "_temp";
-    	}
+        byte[] byteImage = imageToBytes(bufferedImage);
+        String sBbox = bbox[0] + "-" + bbox[1] + "-" + bbox[2]+ "-" + bbox[3];
+        String sKey = KEY + layerId + "_" + styleName + "_" + srs + "_" + sBbox + "_" + zoom;
+        if(!persistent) {
+            sKey = sKey + "_temp";
+        }
 
-    	byte[] key = sKey.getBytes();
+        byte[] key = sKey.getBytes();
 
-		JedisManager.setex(key, 86400, byteImage);
-	}
-    
+        JedisManager.setex(key, 86400, byteImage);
+    }
+
     /**
-	 * Transforms bufferedImage to byte[]
-     * 
+     * Transforms bufferedImage to byte[]
+     *
      * @param bufferedImage
      * @return image
      */
@@ -241,46 +241,46 @@ public class WFSImage {
             return null;
         }
 
-		ByteArrayOutputStream byteaOutput = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(bufferedImage, "png", byteaOutput);
-			byteaOutput.flush();
-			byteaOutput.close();
-		} catch (Exception e) {
+        ByteArrayOutputStream byteaOutput = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(bufferedImage, "png", byteaOutput);
+            byteaOutput.flush();
+            byteaOutput.close();
+        } catch (Exception e) {
             log.error(e, "Image could not be written into stream");
-		}
-		return byteaOutput.toByteArray();
+        }
+        return byteaOutput.toByteArray();
     }
-    
+
     /**
      * Transforms byte[] to BufferedImage
-     * 
+     *
      * @param byteImage
      * @return image
      */
     public static BufferedImage bytesToImage(byte[] byteImage) {
-    	BufferedImage bufferedImage = null;
-		ByteArrayInputStream byteaInput = null;
-		if(byteImage != null) {
-			byteaInput = new ByteArrayInputStream(byteImage);
-			try {
-		        bufferedImage = ImageIO.read(byteaInput);
-		        byteaInput.close();
-			} catch (Exception e) {
-	            log.error(e, "Image could not be read into stream");
-			}				
-		}
-		return bufferedImage;
+        BufferedImage bufferedImage = null;
+        ByteArrayInputStream byteaInput = null;
+        if(byteImage != null) {
+            byteaInput = new ByteArrayInputStream(byteImage);
+            try {
+                bufferedImage = ImageIO.read(byteaInput);
+                byteaInput.close();
+            } catch (Exception e) {
+                log.error(e, "Image could not be read into stream");
+            }
+        }
+        return bufferedImage;
     }
-  
+
     /**
      * Converts byte[] to Base64 formatted String
-     * 
+     *
      * @param byteImage
      * @return base64
      */
     public static String bytesToBase64(byte[] byteImage) {
-    	return new String(Base64.encodeBase64(byteImage));
+        return new String(Base64.encodeBase64(byteImage));
     }
 
 
@@ -352,14 +352,14 @@ public class WFSImage {
 
     /**
      * Creates a image of the WFS layer's data
-     * 
+     *
      * @return image
      */
-	private BufferedImage draw() {
-		MapContent content = new MapContent();
-		MapViewport viewport = new MapViewport();
+    private BufferedImage draw() {
+        MapContent content = new MapContent();
+        MapViewport viewport = new MapViewport();
 
-		CoordinateReferenceSystem crs = location.getCrs();
+        CoordinateReferenceSystem crs = location.getCrs();
         ReferencedEnvelope bounds = location.getEnvelope();
 
         Rectangle screenArea;
@@ -373,8 +373,8 @@ public class WFSImage {
         }
 
         viewport.setCoordinateReferenceSystem(crs);
-		viewport.setScreenArea(screenArea);
-		viewport.setBounds(bounds);
+        viewport.setScreenArea(screenArea);
+        viewport.setBounds(bounds);
         viewport.setMatchingAspectRatio(true);
 
         if(features.size() > 0) {
@@ -384,16 +384,16 @@ public class WFSImage {
 
         content.setViewport(viewport);
 
-		return saveImage(content);
-	}
+        return saveImage(content);
+    }
 
-	/**
-	 * Draws map content data into image
-	 *
-	 * @param content
-	 * @return image
-	 */
-	private BufferedImage saveImage(MapContent content) {
+    /**
+     * Draws map content data into image
+     *
+     * @param content
+     * @return image
+     */
+    private BufferedImage saveImage(MapContent content) {
         BufferedImage image;
         if(isTile && bufferSize != 0.0d) {
             image = new BufferedImage(bufferedImageWidth,
@@ -403,14 +403,14 @@ public class WFSImage {
             image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_4BYTE_ABGR);
         }
 
-	    GTRenderer renderer = new StreamingRenderer();
-	    renderer.setMapContent(content);
+        GTRenderer renderer = new StreamingRenderer();
+        renderer.setMapContent(content);
 
-		Graphics2D g = (Graphics2D) image.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        Graphics2D g = (Graphics2D) image.getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		if(isTile && bufferSize != 0.0d) {
+        if(isTile && bufferSize != 0.0d) {
             renderer.paint(g, new Rectangle(bufferedImageWidth,
                     bufferedImageHeight),
                     content.getViewport().getBounds());
@@ -426,9 +426,9 @@ public class WFSImage {
             renderer.paint(g, new Rectangle(imageWidth, imageHeight), content.getViewport().getBounds());
         }
 
-		content.dispose();
-	    return image;
-	}
+        content.dispose();
+        return image;
+    }
 
     /**
      * Creates SLD style
@@ -486,25 +486,25 @@ public class WFSImage {
         }
 		return style;
 	}	
-	
-	/**
-	 * Parses SLD style from an InputStream (XML)
-	 * 
-	 * @param xml
-	 * @return sld
-	 */
-	private Style createSLDStyle(InputStream xml) {
-		Configuration config = new SLDConfiguration();
-		Parser parser = new Parser(config);
-		StyledLayerDescriptor sld = null;
-		try {
-			sld = (StyledLayerDescriptor) parser.parse(xml);
-		} catch (Exception e) {
-			log.error(e, "Failed to create SLD Style");
-			return null;
-		}
-		return SLD.styles(sld)[0]; 
-	}
+
+    /**
+     * Parses SLD style from an InputStream (XML)
+     *
+     * @param xml
+     * @return sld
+     */
+    private Style createSLDStyle(InputStream xml) {
+        Configuration config = new SLDConfiguration();
+        Parser parser = new Parser(config);
+        StyledLayerDescriptor sld = null;
+        try {
+            sld = (StyledLayerDescriptor) parser.parse(xml);
+        } catch (Exception e) {
+            log.error(e, "Failed to create SLD Style");
+            return null;
+        }
+        return SLD.styles(sld)[0];
+    }
 
     /**
      * Creates own sld style by replacing

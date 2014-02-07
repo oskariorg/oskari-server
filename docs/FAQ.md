@@ -11,3 +11,7 @@
 
 ## Q: How can I build Oskari with a new version tag?
    A: Run `mvn -N versions:set -DnewVersion={NEW-VERSION}` on oskari-server root. It updated the version for oskari-server/pom.xml and all the maven modules defined in its <modules> tag.
+
+## Q: Transport doesn't draw all geometries in tiles?
+   A: Check that the layers maxfeatures number is high enough in database. If the transport returns a tile, but some geometries
+   are missing, usually its because there are more features than the maxfeatures count permits.

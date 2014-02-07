@@ -100,6 +100,9 @@ public class GFIRequestParams {
         if (currentStyle == null || "null".equals(currentStyle)) {
             currentStyle = layer.getStyle();
         }
+        if(currentStyle == null) {
+            currentStyle = "";
+        }
         return currentStyle;
     }
 

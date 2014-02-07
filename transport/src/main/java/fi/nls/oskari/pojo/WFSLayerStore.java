@@ -134,121 +134,121 @@ public class WFSLayerStore {
     private String selectionSLDStyle;
 
     private Map<String, WFSSLDStyle> styles = new HashMap<String, WFSSLDStyle>(); // name,
-                                                                                  // xml
+    // xml
 
     // not in JSON
     private CoordinateReferenceSystem crs;
 
-	/**
-	 * Constructs object without parameters
-	 */
-	public WFSLayerStore() {
-		this.layerName = "";
-	}
+    /**
+     * Constructs object without parameters
+     */
+    public WFSLayerStore() {
+        this.layerName = "";
+    }
 
-	/**
-	 * Gets layer id
-	 * 
-	 * @return layer id
-	 */
-	public String getLayerId() {
-		return layerId;
-	}
+    /**
+     * Gets layer id
+     *
+     * @return layer id
+     */
+    public String getLayerId() {
+        return layerId;
+    }
 
-	/**
-	 * Sets layer id
-	 * 
-	 * @param layerId
-	 */
-	public void setLayerId(String layerId) {
-		this.layerId = layerId;
-	}
+    /**
+     * Sets layer id
+     *
+     * @param layerId
+     */
+    public void setLayerId(String layerId) {
+        this.layerId = layerId;
+    }
 
-	/**
-	 * Gets name locales
-	 * 
-	 * @return name locales
-	 */
-	public Map<String, Map<String, String>> getNameLocales() {
-		return nameLocales;
-	}
+    /**
+     * Gets name locales
+     *
+     * @return name locales
+     */
+    public Map<String, Map<String, String>> getNameLocales() {
+        return nameLocales;
+    }
 
-	/**
-	 * Sets name locales
-	 * 
-	 * @param nameLocales
-	 */
-	public void setNameLocales(Map<String, Map<String, String>> nameLocales) {
-		this.nameLocales = nameLocales;
-	}
+    /**
+     * Sets name locales
+     *
+     * @param nameLocales
+     */
+    public void setNameLocales(Map<String, Map<String, String>> nameLocales) {
+        this.nameLocales = nameLocales;
+    }
 
-	/**
-	 * Gets URL
-	 * 
-	 * @return URL
-	 */
-	@JsonProperty("URL")
-	public String getURL() {
-		return URL;
-	}
+    /**
+     * Gets URL
+     *
+     * @return URL
+     */
+    @JsonProperty("URL")
+    public String getURL() {
+        return URL;
+    }
 
-	/**
-	 * Sets URL
-	 * 
-	 * @param URL
-	 */
-	public void setURL(String URL) {
-		this.URL = URL;
-	}
+    /**
+     * Sets URL
+     *
+     * @param URL
+     */
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
 
-	/**
-	 * Gets username
-	 * 
-	 * @return username
-	 */
-	public String getUsername() {
-		return username;
-	}
+    /**
+     * Gets username
+     *
+     * @return username
+     */
+    public String getUsername() {
+        return username;
+    }
 
-	/**
-	 * Sets username
-	 * 
-	 * @param username
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    /**
+     * Sets username
+     *
+     * @param username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	/**
-	 * Gets password
-	 * 
-	 * @return password
-	 */
-	public String getPassword() {
-		return password;
-	}
+    /**
+     * Gets password
+     *
+     * @return password
+     */
+    public String getPassword() {
+        return password;
+    }
 
-	/**
-	 * Sets password
-	 * 
-	 * @param password
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    /**
+     * Sets password
+     *
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	/**
-	 * Gets layer name
-	 * 
-	 * @return layer name
-	 */
+    /**
+     * Gets layer name
+     *
+     * @return layer name
+     */
     public String getLayerName() {
         return layerName;
     }
 
     /**
      * Sets layer name
-     * 
+     *
      * @param layerName
      */
     public void setLayerName(String layerName) {
@@ -257,7 +257,7 @@ public class WFSLayerStore {
 
     /**
      * Gets GML geometry property
-     * 
+     *
      * @return GML geometry property
      */
     @JsonProperty("GMLGeometryProperty")
@@ -284,7 +284,7 @@ public class WFSLayerStore {
 
     /**
      * Sets GML geometry property
-     * 
+     *
      * @param GMLGeometryProperty
      */
     public void setGMLGeometryProperty(String GMLGeometryProperty) {
@@ -293,7 +293,7 @@ public class WFSLayerStore {
 
     /**
      * Gets SRS name
-     * 
+     *
      * @return SRS name
      */
     @JsonProperty("SRSName")
@@ -303,7 +303,7 @@ public class WFSLayerStore {
 
     /**
      * Sets SRS name
-     * 
+     *
      * @param SRSName
      */
     public void setSRSName(String SRSName) {
@@ -312,7 +312,7 @@ public class WFSLayerStore {
 
     /**
      * Gets GML version
-     * 
+     *
      * @return GML version
      */
     @JsonProperty("GMLVersion")
@@ -322,7 +322,7 @@ public class WFSLayerStore {
 
     /**
      * Sets GML version
-     * 
+     *
      * @param GMLVersion
      */
     public void setGMLVersion(String GMLVersion) {
@@ -331,7 +331,7 @@ public class WFSLayerStore {
 
     /**
      * Checks if using GML2 separator
-     * 
+     *
      * @return <code>true</code> if using GML2 separator; <code>false</code>
      *         otherwise.
      */
@@ -342,7 +342,7 @@ public class WFSLayerStore {
 
     /**
      * Sets if using GML2 separator
-     * 
+     *
      * @param GML2Separator
      */
     public void setGML2Separator(String GML2Separator) {
@@ -354,7 +354,7 @@ public class WFSLayerStore {
 
     /**
      * Gets WFS version
-     * 
+     *
      * @return WFS version
      */
     @JsonProperty("WFSVersion")
@@ -364,7 +364,7 @@ public class WFSLayerStore {
 
     /**
      * Sets WFS version
-     * 
+     *
      * @param WFSVersion
      */
     public void setWFSVersion(String WFSVersion) {
@@ -373,7 +373,7 @@ public class WFSLayerStore {
 
     /**
      * Gets max features
-     * 
+     *
      * @return max features
      */
     public int getMaxFeatures() {
@@ -382,7 +382,7 @@ public class WFSLayerStore {
 
     /**
      * Sets max features
-     * 
+     *
      * @param maxFeatures
      */
     public void setMaxFeatures(int maxFeatures) {
@@ -391,7 +391,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature namespace
-     * 
+     *
      * @return feature namespace
      */
     public String getFeatureNamespace() {
@@ -400,7 +400,7 @@ public class WFSLayerStore {
 
     /**
      * Sets feature namespace
-     * 
+     *
      * @param featureNamespace
      */
     public void setFeatureNamespace(String featureNamespace) {
@@ -409,7 +409,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature namespace URI
-     * 
+     *
      * @return feature namespace URI
      */
     @JsonProperty("featureNamespaceURI")
@@ -419,7 +419,7 @@ public class WFSLayerStore {
 
     /**
      * Sets feature namespace URI
-     * 
+     *
      * @param featureNamespaceURI
      */
     public void setFeatureNamespaceURI(String featureNamespaceURI) {
@@ -447,7 +447,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature element
-     * 
+     *
      * @return feature element
      */
     public String getFeatureElement() {
@@ -456,7 +456,7 @@ public class WFSLayerStore {
 
     /**
      * Sets feature element
-     * 
+     *
      * @param featureElement
      */
     public void setFeatureElement(String featureElement) {
@@ -465,7 +465,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature type
-     * 
+     *
      * @return feature type
      */
     public Map<String, String> getFeatureType() {
@@ -474,7 +474,7 @@ public class WFSLayerStore {
 
     /**
      * Sets feature type
-     * 
+     *
      * @param featureType
      */
     public void setFeatureType(Map<String, String> featureType) {
@@ -483,7 +483,7 @@ public class WFSLayerStore {
 
     /**
      * Gets selected feature params
-     * 
+     *
      * @return selected feature params
      */
     public Map<String, List<String>> getSelectedFeatureParams() {
@@ -506,7 +506,7 @@ public class WFSLayerStore {
 
     /**
      * Sets selected feature params
-     * 
+     *
      * @param selectedFeatureParams
      */
     public void setSelectedFeatureParams(Map<String, List<String>> selectedFeatureParams) {
@@ -515,7 +515,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature params locales
-     * 
+     *
      * @return feature params locales
      */
     public Map<String, List<String>> getFeatureParamsLocales() {
@@ -524,7 +524,7 @@ public class WFSLayerStore {
 
     /**
      * Gets feature params locales of a key (language)
-     * 
+     *
      * @return feature params locales
      */
     @JsonIgnore
@@ -534,7 +534,7 @@ public class WFSLayerStore {
 
     /**
      * Sets feature params locales
-     * 
+     *
      * @param featureParamsLocales
      */
     public void setFeatureParamsLocales(
@@ -544,7 +544,7 @@ public class WFSLayerStore {
 
     /**
      * Gets geometry type
-     * 
+     *
      * @return geometry type
      */
     public String getGeometryType() {
@@ -553,7 +553,7 @@ public class WFSLayerStore {
 
     /**
      * Sets geometry type
-     * 
+     *
      * @param geometryType
      */
     public void setGeometryType(String geometryType) {
@@ -562,7 +562,7 @@ public class WFSLayerStore {
 
     /**
      * Checks if should get map tiles
-     * 
+     *
      * @return <code>true</code> if should get map tiles; <code>false</code>
      *         otherwise.
      */
@@ -572,7 +572,7 @@ public class WFSLayerStore {
 
     /**
      * Sets if getting map tiles
-     * 
+     *
      * @param getMapTiles
      */
     public void setGetMapTiles(String getMapTiles) {
@@ -606,7 +606,7 @@ public class WFSLayerStore {
 
     /**
      * Checks if should get feature info
-     * 
+     *
      * @return <code>true</code> if should get feature info; <code>false</code>
      *         otherwise.
      */
@@ -616,7 +616,7 @@ public class WFSLayerStore {
 
     /**
      * Sets if getting feature info
-     * 
+     *
      * @param getFeatureInfo
      */
     public void setGetFeatureInfo(String getFeatureInfo) {
@@ -628,7 +628,7 @@ public class WFSLayerStore {
 
     /**
      * Checks if should make tile requests
-     * 
+     *
      * @return <code>true</code> if should make tile requests;
      *         <code>false</code> otherwise.
      */
@@ -638,7 +638,7 @@ public class WFSLayerStore {
 
     /**
      * Sets if tile request
-     * 
+     *
      * @param tileRequest
      */
     public void setTileRequest(String tileRequest) {
@@ -668,7 +668,7 @@ public class WFSLayerStore {
 
     /**
      * Gets WMS layer id
-     * 
+     *
      * @return WMS layer id
      */
     @JsonProperty("WMSLayerId")
@@ -678,7 +678,7 @@ public class WFSLayerStore {
 
     /**
      * Sets WMS layer id
-     * 
+     *
      * @param WMSLayerId
      */
     public void setWMSLayerId(String WMSLayerId) {
@@ -745,7 +745,7 @@ public class WFSLayerStore {
 
     /**
      * Gets min scale
-     * 
+     *
      * @return min scale
      */
     public double getMinScale() {
@@ -754,7 +754,7 @@ public class WFSLayerStore {
 
     /**
      * Sets min scale
-     * 
+     *
      * @param minScale
      */
     public void setMinScale(double minScale) {
@@ -763,7 +763,7 @@ public class WFSLayerStore {
 
     /**
      * Gets max scale
-     * 
+     *
      * @return max scale
      */
     public double getMaxScale() {
@@ -772,7 +772,7 @@ public class WFSLayerStore {
 
     /**
      * Sets max scale
-     * 
+     *
      * @param maxScale
      */
     public void setMaxScale(double maxScale) {
@@ -781,7 +781,7 @@ public class WFSLayerStore {
 
     /**
      * Gets template name
-     * 
+     *
      * @return template name
      */
     public String getTemplateName() {
@@ -790,7 +790,7 @@ public class WFSLayerStore {
 
     /**
      * Sets template name
-     * 
+     *
      * @param templateName
      */
     public void setTemplateName(String templateName) {
@@ -799,7 +799,7 @@ public class WFSLayerStore {
 
     /**
      * Gets template description
-     * 
+     *
      * @return template description
      */
     public String getTemplateDescription() {
@@ -808,7 +808,7 @@ public class WFSLayerStore {
 
     /**
      * Sets template description
-     * 
+     *
      * @param templateDescription
      */
     public void setTemplateDescription(String templateDescription) {
@@ -817,7 +817,7 @@ public class WFSLayerStore {
 
     /**
      * Gets template type
-     * 
+     *
      * @return template type
      */
     public String getTemplateType() {
@@ -826,7 +826,7 @@ public class WFSLayerStore {
 
     /**
      * Sets template type
-     * 
+     *
      * @param templateType
      */
     public void setTemplateType(String templateType) {
@@ -838,7 +838,7 @@ public class WFSLayerStore {
 
     /**
      * Gets request template
-     * 
+     *
      * @return request template
      */
     public String getRequestTemplate() {
@@ -847,7 +847,7 @@ public class WFSLayerStore {
 
     /**
      * Sets request template
-     * 
+     *
      * @param requestTemplate
      */
     public void setRequestTemplate(String requestTemplate) {
@@ -856,7 +856,7 @@ public class WFSLayerStore {
 
     /**
      * Gets response template
-     * 
+     *
      * @return response template
      */
     public String getResponseTemplate() {
@@ -865,7 +865,7 @@ public class WFSLayerStore {
 
     /**
      * Sets response template
-     * 
+     *
      * @param responseTemplate
      */
     public void setResponseTemplate(String responseTemplate) {
@@ -874,7 +874,7 @@ public class WFSLayerStore {
 
     /**
      * Gets selection SLD style
-     * 
+     *
      * @return selection SLD style
      */
     public String getSelectionSLDStyle() {
@@ -883,7 +883,7 @@ public class WFSLayerStore {
 
     /**
      * Sets selection SLD style
-     * 
+     *
      * @param selectionSLDStyle
      */
     public void setSelectionSLDStyle(String selectionSLDStyle) {
@@ -892,7 +892,7 @@ public class WFSLayerStore {
 
     /**
      * Gets styles
-     * 
+     *
      * @return styles
      */
     public Map<String, WFSSLDStyle> getStyles() {
@@ -901,7 +901,7 @@ public class WFSLayerStore {
 
     /**
      * Sets styles
-     * 
+     *
      * @param styles
      */
     public void setStyles(Map<String, WFSSLDStyle> styles) {
@@ -916,7 +916,7 @@ public class WFSLayerStore {
 
     /**
      * Gets CRS
-     * 
+     *
      * @return crs
      */
     @JsonIgnore
@@ -933,7 +933,7 @@ public class WFSLayerStore {
 
     /**
      * Transforms object to JSON String
-     * 
+     *
      * @return JSON String
      */
     @JsonIgnore
@@ -959,7 +959,7 @@ public class WFSLayerStore {
 
     /**
      * Transforms JSON String to object
-     * 
+     *
      * @param json
      * @return object
      */
@@ -1037,18 +1037,18 @@ public class WFSLayerStore {
             } else if (GML2_SEPARATOR.equals(fieldName)) {
                 store.setGML2Separator(parser.getText());
             } else if (WFS_VERSION.equals(fieldName)) {
-				store.setWFSVersion(parser.getText());
-			} else if (MAX_FEATURES.equals(fieldName)) {
-				store.setMaxFeatures(parser.getIntValue());
-			} else if (FEATURE_NAMESPACE.equals(fieldName)) {
-				store.setFeatureNamespace(parser.getText());
-			} else if (FEATURE_NAMESPACE_URI.equals(fieldName)) {
-				store.setFeatureNamespaceURI(parser.getText());
-			} else if (GEOMETRY_NAMESPACE_URI.equals(fieldName)) {
+                store.setWFSVersion(parser.getText());
+            } else if (MAX_FEATURES.equals(fieldName)) {
+                store.setMaxFeatures(parser.getIntValue());
+            } else if (FEATURE_NAMESPACE.equals(fieldName)) {
+                store.setFeatureNamespace(parser.getText());
+            } else if (FEATURE_NAMESPACE_URI.equals(fieldName)) {
+                store.setFeatureNamespaceURI(parser.getText());
+            } else if (GEOMETRY_NAMESPACE_URI.equals(fieldName)) {
                 store.setGeometryNamespaceURI(parser.getText());
             } else if (FEATURE_ELEMENT.equals(fieldName)) {
-				store.setFeatureElement(parser.getText());
-			} else if (FEATURE_TYPE.equals(fieldName)) {
+                store.setFeatureElement(parser.getText());
+            } else if (FEATURE_TYPE.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String typeName = parser.getCurrentName();
@@ -1056,8 +1056,8 @@ public class WFSLayerStore {
                         featureTypes.put(typeName, parser.getText());
                     }
                 }
-				store.setFeatureType(featureTypes);
-			} else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
+                store.setFeatureType(featureTypes);
+            } else if (SELECTED_FEATURE_PARAMS.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String localeName = parser.getCurrentName();
@@ -1072,7 +1072,7 @@ public class WFSLayerStore {
                     }
                 }
                 store.setSelectedFeatureParams(selectedFeatureParams);
-			} else if (FEATURE_PARAMS_LOCALES.equals(fieldName)) {
+            } else if (FEATURE_PARAMS_LOCALES.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String localeName = parser.getCurrentName();
@@ -1087,18 +1087,18 @@ public class WFSLayerStore {
                         featureParamsLocales.put(localeName, paramsLocale);
                     }
                 }
-				store.setFeatureParamsLocales(featureParamsLocales);
-			} else if (GEOMETRY_TYPE.equals(fieldName)) {
-				store.setGeometryType(parser.getText());
-			} else if (GET_MAP_TILES.equals(fieldName)) {
-				store.setGetMapTiles(parser.getText());
-			} else if (GET_HIGHLIGHT_IMAGE.equals(fieldName)) {
+                store.setFeatureParamsLocales(featureParamsLocales);
+            } else if (GEOMETRY_TYPE.equals(fieldName)) {
+                store.setGeometryType(parser.getText());
+            } else if (GET_MAP_TILES.equals(fieldName)) {
+                store.setGetMapTiles(parser.getText());
+            } else if (GET_HIGHLIGHT_IMAGE.equals(fieldName)) {
                 store.setGetHighlightImage(parser.getText());
             } else if (GET_FEATURE_INFO.equals(fieldName)) {
-				store.setGetFeatureInfo(parser.getText());
-			} else if (TILE_REQUEST.equals(fieldName)) {
-				store.setTileRequest(parser.getText());
-			} else if (TILE_BUFFER.equals(fieldName)) {
+                store.setGetFeatureInfo(parser.getText());
+            } else if (TILE_REQUEST.equals(fieldName)) {
+                store.setTileRequest(parser.getText());
+            } else if (TILE_BUFFER.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         String styleName = parser.getCurrentName();
@@ -1108,8 +1108,8 @@ public class WFSLayerStore {
                 }
                 store.setTileBuffer(tileBuffers);
             } else if (WMS_LAYER_ID.equals(fieldName)) {
-				store.setWMSLayerId(parser.getText());
-			} else if (CUSTOM_PARSER.equals(fieldName)) {
+                store.setWMSLayerId(parser.getText());
+            } else if (CUSTOM_PARSER.equals(fieldName)) {
                 store.setCustomParser(parser.getText());
             } else if (TEST_LOCATION.equals(fieldName)) {
                 List<Double> bbox = new ArrayList<Double>();
@@ -1124,24 +1124,24 @@ public class WFSLayerStore {
             }
 
             else if (MIN_SCALE.equals(fieldName)) {
-				store.setMinScale(parser.getValueAsDouble());
-			} else if (MAX_SCALE.equals(fieldName)) {
-				store.setMaxScale(parser.getValueAsDouble());
-			}
+                store.setMinScale(parser.getValueAsDouble());
+            } else if (MAX_SCALE.equals(fieldName)) {
+                store.setMaxScale(parser.getValueAsDouble());
+            }
 
-			else if (TEMPLATE_NAME.equals(fieldName)) {
-				store.setTemplateName(parser.getText());
-			} else if (TEMPLATE_DESCRIPTION.equals(fieldName)) {
-				store.setTemplateDescription(parser.getText());
-			} else if (TEMPLATE_TYPE.equals(fieldName)) {
-				store.setTemplateType(parser.getText());
-			} else if (REQUEST_TEMPLATE.equals(fieldName)) {
-				store.setRequestTemplate(parser.getText());
-			} else if (RESPONSE_TEMPLATE.equals(fieldName)) {
-				store.setResponseTemplate(parser.getText());
-			} else if (SELECTION_SLD_STYLE.equals(fieldName)) {
-				store.setSelectionSLDStyle(parser.getText());
-			} else if (STYLES.equals(fieldName)) {
+            else if (TEMPLATE_NAME.equals(fieldName)) {
+                store.setTemplateName(parser.getText());
+            } else if (TEMPLATE_DESCRIPTION.equals(fieldName)) {
+                store.setTemplateDescription(parser.getText());
+            } else if (TEMPLATE_TYPE.equals(fieldName)) {
+                store.setTemplateType(parser.getText());
+            } else if (REQUEST_TEMPLATE.equals(fieldName)) {
+                store.setRequestTemplate(parser.getText());
+            } else if (RESPONSE_TEMPLATE.equals(fieldName)) {
+                store.setResponseTemplate(parser.getText());
+            } else if (SELECTION_SLD_STYLE.equals(fieldName)) {
+                store.setSelectionSLDStyle(parser.getText());
+            } else if (STYLES.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         SLDStyle = new WFSSLDStyle();
@@ -1165,27 +1165,27 @@ public class WFSLayerStore {
                         SLDStyles.put(SLDStyle.getName(), SLDStyle);
                     }
                 }
-				store.setStyles(SLDStyles);
-			} else {
-				throw new IllegalStateException("Unrecognized field '"
-						+ fieldName + "'!");
-			}
-		}
-		parser.close();
+                store.setStyles(SLDStyles);
+            } else {
+                throw new IllegalStateException("Unrecognized field '"
+                        + fieldName + "'!");
+            }
+        }
+        parser.close();
 
 
 
-		return store;
-	}
+        return store;
+    }
 
-	/**
-	 * Gets saved layer from redis
-	 * 
-	 * @param layerId
-	 * @return layer as JSON String
-	 */
-	@JsonIgnore
-	public static String getCache(String layerId) {
-		return JedisManager.get(KEY + layerId);
-	}
+    /**
+     * Gets saved layer from redis
+     *
+     * @param layerId
+     * @return layer as JSON String
+     */
+    @JsonIgnore
+    public static String getCache(String layerId) {
+        return JedisManager.get(KEY + layerId);
+    }
 }

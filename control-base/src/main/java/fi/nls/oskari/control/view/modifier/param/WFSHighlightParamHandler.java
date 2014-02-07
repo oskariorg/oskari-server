@@ -18,8 +18,9 @@ public abstract class WFSHighlightParamHandler extends ParamHandler {
 
     protected static final String PARM__WFS_FEATURE_ID = "wfsFeature";
     protected static final String PARM__NATIONAL_CADASTRAL_REFERENCE_HIGHLIGHT = "nationalCadastralReferenceHighlight";
-    protected static final String PARM__WFS_HIGHLIGHT_LAYER = "wfsHighlightLayer";
     protected static final String NATIONAL_CADASTRAL_REFERENCE_LAYER_ID = PropertyUtil.get("parcel.cadastral.reference.layer.id"); //"142";
+
+    protected static final String STATE_LAYERID_KEY = "highlightFeatureLayerId";
 
     private static Bundle postprocessorBundle = null;
 

@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
 import fi.mml.map.mapwindow.service.db.CapabilitiesCacheServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.RemoteServiceDownException;
 import fi.nls.oskari.domain.map.CapabilitiesCache;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -38,11 +39,10 @@ public class WebMapServiceFactory {
 	public static WebMapService buildWebMapService(int layerId, String layerName) throws WebMapServiceParseException {
 
 		if (wmsCachedtime + wmsExpirationTime < System.currentTimeMillis()) {
-			wmsCache = new HashMap<String, WebMapService>();
-			wmsCachedtime = System.currentTimeMillis();
+            flushCache();
 		}
 		WebMapService wms = null;
-        // TODO: cache!! this is called whenever a layer JSON is created!!
+        // caching since this is called whenever a layer JSON is created!!
 		if (wmsCache.containsKey("wmsCache_"+layerId)) {
 			wms = wmsCache.get("wmsCache_"+layerId);
 		} else {
@@ -58,7 +58,15 @@ public class WebMapServiceFactory {
 		
 		return wms;
 	}
-	
+
+    public static void flushCache(final int layerId) {
+        wmsCache.remove("wmsCache_"+layerId);
+    }
+
+    public static void flushCache() {
+        wmsCache = new HashMap<String, WebMapService>();
+        wmsCachedtime = System.currentTimeMillis();
+    }
 	
 	
 	/**
