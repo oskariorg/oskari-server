@@ -116,7 +116,8 @@ public class GetGeoPointDataService {
 
             return transformedResponse;
         } catch (Exception e) {
-            log.error(e, "Error transforming GFI response: ", response, "- with XSLT:", xslt);
+            log.error(e, "Error transforming GFI response: ", response, "- with XSLT:", xslt,
+                    "Error:", e.getMessage());
         } finally {
             if (respInStream != null) {
                 try {
