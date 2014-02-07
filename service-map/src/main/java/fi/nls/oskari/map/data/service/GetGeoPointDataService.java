@@ -71,12 +71,13 @@ public class GetGeoPointDataService {
                     response.put(GetGeoPointDataService.CONTENT, gfiResponse);
                 } else {
                     final String transformedResult = transformResponse(xslt, gfiResponse);
+                    log.debug("'", transformedResult, "'");
                     JSONObject respObj = new JSONObject(transformedResult);
                     response.put(GetGeoPointDataService.PRESENTATION_TYPE, GetGeoPointDataService.PRESENTATION_TYPE_JSON);
                     response.put(GetGeoPointDataService.CONTENT, respObj);
                 }
             } catch (JSONException je) {
-                log.error(je, "Couldn't construct GFI response from:", gfiResponse, "- params:", params);
+                log.error("Couldn't construct GFI response from:", gfiResponse,"- error:", je.getMessage(), "- params:", params);
                 return null;
             }
             return response;
