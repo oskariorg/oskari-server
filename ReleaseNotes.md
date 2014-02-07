@@ -20,11 +20,12 @@ Removed some hardcodings:
 Previously hardcoded myplaces layer wmsurl: "/karttatiili/myplaces?myCat=" 
 can now be configured with property 'myplaces.client.wmsurl'
 
-
 * fi.nls.oskari.control.view.GetAppSetupHandler
 
 Previously hardcoded prefix for secure urls (prefix to make easier proxy forwards) "/paikkatietoikkuna"
 can now be configured with property 'actionhandler.GetAppSetup.secureAjaxUrlPrefix'
+
+LayerJSONFormatterWMS now checks if the layer already has a legend image url configured (by admin) instead of always overwriting it based on capabilities.
 
 ### Service-OGC and control-wfs
 
@@ -56,7 +57,7 @@ Styles will now longer be sent with value "null", but an empty string
 
 MapClick will now send an empty list as response when done so client knows that any data gotten for WMSlayers can be shown.
 
-Default highlight style for lines now doesn't use "fill" and areas have 50% opacity.
+Default highlight style for lines now doesn't use "fill" and areas  50%
 
 ## 1.17.1
 

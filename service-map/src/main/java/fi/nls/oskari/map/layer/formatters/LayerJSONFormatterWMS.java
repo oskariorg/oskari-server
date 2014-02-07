@@ -46,12 +46,16 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             final Map<String, String> stylesMap = wms.getSupportedStyles();
             try {
                 final Map<String, String> legends = wms.getSupportedLegends();
+                final boolean hasLegendImage = layer.getLegendImage() != null && !layer.getLegendImage().isEmpty();
                 for (String styleName : stylesMap.keySet()) {
                     final String styleLegend = legends.get(styleName);
                     JSONObject obj = createStylesJSON(styleName, stylesMap.get(styleName), styleLegend);
                     styles.put(obj);
-
-                    if(styleName.equals(layer.getStyle()) && styleLegend != null && !"".equals(styleLegend)) {
+                    if(hasLegendImage) {
+                        continue;
+                    }
+                    // set legend image from capabilities if admin hasn't configured it
+                    if(styleName.equals(layer.getStyle()) && styleLegend != null && !styleLegend.isEmpty()) {
                         // if default style match and style has legend image - fix legendImage
                         JSONHelper.putValue(layerJson, "legendImage", styleLegend);
                     }
