@@ -48,6 +48,9 @@ public class GMLParser3 {
 	public static Parser getParserWithoutSchemaLocator() {
 		GMLConfiguration configuration = new GMLConfiguration();
 
+        // Arc and surface support
+        configuration.setExtendedArcSurfaceSupport(true);
+        
         Parser parser = new Parser(configuration);
         parser.setValidating(false);
         parser.setFailOnValidationError(false);
