@@ -29,6 +29,9 @@ public class GMLParser3 {
 		    }
 		};
 
+        // Arc and surface support
+        configuration.setExtendedArcSurfaceSupport(true);
+
 		Parser parser = new Parser(configuration);
 		parser.setValidating(false);
 		parser.setFailOnValidationError(false);
