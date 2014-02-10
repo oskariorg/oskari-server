@@ -65,17 +65,18 @@ public class GetGeoPointDataService {
             final JSONObject response = new JSONObject();
             JSONHelper.putValue(response, TYPE, params.getLayer().getType());
             JSONHelper.putValue(response, LAYER_ID, params.getLayer().getId());
+            // try transform if XSLT is provided
             final String xslt = params.getLayer().getGfiXslt();
             JSONObject respObj = null;
             if (xslt != null && !xslt.isEmpty()) {
                 final String transformedResult = transformResponse(xslt, gfiResponse);
-                log.debug("'", transformedResult, "'");
                 respObj = JSONHelper.createJSONObject(transformedResult);
                 if(respObj != null) {
                     JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
                     JSONHelper.putValue(response,CONTENT, respObj);
                 }
             }
+            // use text content if respObj isn't present (transformed JSON not created)
             if(respObj == null) {
                 JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
                 JSONHelper.putValue(response,CONTENT, gfiResponse);
@@ -104,8 +105,7 @@ public class GetGeoPointDataService {
 
             respInStream = new ByteArrayInputStream(response.getBytes("UTF-8"));
             final Document document = builder.parse(respInStream);
-            xsltInStream = new ByteArrayInputStream(xslt.getBytes("UTF-8"));
-            xsltInStream = (ByteArrayInputStream) IOHelper.debugResponse(xsltInStream);
+            xsltInStream = new ByteArrayInputStream(xslt.getBytes());
             final StreamSource stylesource = new StreamSource(xsltInStream);
             final String transformedResponse = getFormatedJSONString(document, stylesource);
             
@@ -117,7 +117,7 @@ public class GetGeoPointDataService {
 
             return transformedResponse;
         } catch (Exception e) {
-            log.error(e, "Error transforming GFI response: ", response, "- with XSLT:", xslt,
+            log.error("Error transforming GFI response: ", response, "- with XSLT:", xslt,
                     "Error:", e.getMessage());
         } finally {
             if (respInStream != null) {
