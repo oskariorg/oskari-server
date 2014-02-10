@@ -1,11 +1,11 @@
-package fi.nls.oskari.permission;
+package fi.nls.oskari.service;
 
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -71,5 +71,14 @@ public abstract class UserService {
      * @return all roles from the system
      * @throws ServiceException if anything goes wrong internally.
      */
-    public abstract Role[] getRoles(Map<String, Object> platformSpecificParams) throws ServiceException;
+    public abstract Role[] getRoles(Map<Object, Object> platformSpecificParams) throws ServiceException;
+
+    /**
+     * Returns all roles that exist in the system. Convenience method for calling getRoles(Map) with empty map
+     * @return
+     * @throws ServiceException
+     */
+    public Role[] getRoles() throws ServiceException {
+        return getRoles(Collections.emptyMap());
+    }
 }
