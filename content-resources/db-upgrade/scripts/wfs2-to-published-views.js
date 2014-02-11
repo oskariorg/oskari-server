@@ -11,9 +11,10 @@ module.exports = function(client) {
       "LEFT OUTER JOIN portti_view_bundle_seq ON portti_view_bundle_seq.view_id = portti_view.id " + 
       "WHERE " +
       "portti_view.type = 'PUBLISHED' AND " +
-      "bundleinstance = 'mapfull' ORDER BY id");
+      "bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') ORDER BY id");
 
     var rowCount = 0;
+    var oldWfsCount = 0;
     var updateCount = 0;
     var finished = false;
     query.on("row", function(row) {
@@ -22,11 +23,10 @@ module.exports = function(client) {
 
       var wfs = _.find(config.plugins, { id: "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" });
       if(wfs) {
+        oldWfsCount++;
         wfs.id = "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin";
         wfs.config = { 
-           "contextPath" : "/transport-0.0.1", 
-           "hostname" : "demo.paikkatietoikkuna.fi", 
-           "port" : "80",
+           "contextPath" : "/transport-0.0.1",
            "lazy" : true,
            "disconnectTime" : 30000,
            "backoffIncrement": 1000,
@@ -52,8 +52,11 @@ module.exports = function(client) {
         if(err) throw err;
 
         updateCount++;
-        if(updateCount === rowCount && finished)
+        if(updateCount === rowCount && finished) {
+          console.log('Updated ' + updateCount + ' of ' + rowCount + ' rows.');
+          console.log('Old wfs found in ' + oldWfsCount + ' rows');
           client.end();
+        }
       });
     });
 
