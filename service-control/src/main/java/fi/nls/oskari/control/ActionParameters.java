@@ -103,9 +103,22 @@ public class ActionParameters {
      * @throws ActionParamsException if parameter is not found or is empty
      */
     public String getRequiredParam(final String key) throws ActionParamsException {
+        return getRequiredParam(key, "Required parameter '" + key + "' missing!");
+    }
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
+     * @param msg message for exception to be thrown if parameter is not present
+     * @return cleaned up value for the parameter
+     * @throws ActionParamsException if parameter is not found or is empty
+     */
+    public String getRequiredParam(final String key, final String msg) throws ActionParamsException {
+        if(msg == null) {
+            return getRequiredParam(key);
+        }
         final String value = RequestHelper.cleanString(getRequest().getParameter(key));
         if(value == null || value.isEmpty()) {
-            throw new ActionParamsException("Required parameter '" + key + "' missing!");
+            throw new ActionParamsException(msg);
         }
         return value;
     }
