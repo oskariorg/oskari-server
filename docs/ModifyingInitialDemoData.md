@@ -12,15 +12,15 @@ Database recreation can be forced on startup by giving a system.property 'oskari
 
 NOTE! All comment lines need to end with ; character or the next SQL statement will not be run!
 
-The safe SQL file to edit for these is `/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
+The safe SQL file to edit for these is `/oskari-server/content-resources/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 # Adding a maplayer
 
 Examples for adding a layer of type:
 
-- WMS in `/oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`.
-- WMTS in `/oskari-server/servlet-map/src/main/resources/sql/nlsfi-background-map-wmtslayer.sql`.
-- WFS in `/oskari-server/servlet-map/src/main/resources/sql/PostgreSQL/example-wfslayer.sql`.
+- WMS in `/oskari-server/content-resources/src/main/resources/sql/exampleLayersAndRoles.sql`.
+- WMTS in `/oskari-server/content-resources/src/main/resources/sql/nlsfi-background-map-wmtslayer.sql`.
+- WFS in `/oskari-server/content-resources/src/main/resources/sql/PostgreSQL/example-wfslayer.sql`.
 
 Layers have reference to a layer group (oskari_layergroup db-table) which currently means the data producer, but it might become a more generic grouping table in the future. They also can have a link to a list of inspire themes (themes listed in portti_inspiretheme, links to maplayers via oskari_maplayer_themes).
 
@@ -106,7 +106,7 @@ Add a user to `user.json` and link the new role to the user
             }
 
 
-Edit script file `oskari-server/servlet-map/src/main/resources/sql/exampleLayersAndRoles.sql`
+Edit script file `oskari-server/content-resources/src/main/resources/sql/exampleLayersAndRoles.sql`
 
 Add row to oskari_permission table, e.g. (change [YOUR ROLE ID] to 5 as in role.json)
 

@@ -7,6 +7,7 @@ public class RegisterUnitParcelSearchResult {
     String registerUnitGmlID ;
     String E ;
     String N ;
+    String BBOX;
     
     public String getGmlID() {
         return gmlID;
@@ -47,7 +48,12 @@ public class RegisterUnitParcelSearchResult {
     public String getLat() {
         return N;
     }
-    
-    
-    
+
+    public String getBBOX() {
+        return BBOX;
+    }
+
+    public void setBBOX(String BBOX) {
+        this.BBOX = BBOX;
+    }
 }

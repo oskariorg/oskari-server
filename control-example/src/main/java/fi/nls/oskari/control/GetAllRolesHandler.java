@@ -4,7 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.permission.UserService;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,9 +41,7 @@ public class GetAllRolesHandler extends ActionHandler {
             throw new ActionParamsException("User service not initialized");
         }
         try {
-            // no params so go with empty map
-            final Map<String, Object> platformSpecificParams = new HashMap<String, Object>();
-            final Role[] roles = userService.getRoles(platformSpecificParams);
+            final Role[] roles = userService.getRoles();
 
             final JSONArray rolesJSON = new JSONArray();
 

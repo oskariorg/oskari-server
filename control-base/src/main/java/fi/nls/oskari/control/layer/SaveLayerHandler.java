@@ -2,6 +2,7 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -178,6 +179,8 @@ public class SaveLayerHandler extends ActionHandler {
             } else {
                 capabilitiesService.update(cc);
             }
+            // flush cache, otherwise only db is updated but code retains the old cached version
+            WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
             log.info(ex, "Error updating capabilities: ", cc, "from URL:", wmsUrl);
             return false;

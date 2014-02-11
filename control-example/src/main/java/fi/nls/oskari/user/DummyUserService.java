@@ -6,7 +6,7 @@ import fi.nls.oskari.domain.Role;
 
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.permission.UserService;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.service.ServiceException;
 
 public class DummyUserService extends UserService {
@@ -38,7 +38,7 @@ public class DummyUserService extends UserService {
     }
 
     @Override
-    public Role[] getRoles(Map<String, Object> platformSpecificParams)
+    public Role[] getRoles(Map<Object, Object> platformSpecificParams)
             throws ServiceException {
         return new Role[0];
     }

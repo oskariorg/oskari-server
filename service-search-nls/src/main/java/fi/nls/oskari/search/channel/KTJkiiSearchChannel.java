@@ -93,6 +93,17 @@ public class KTJkiiSearchChannel implements SearchableChannel {
 
                 item.setLon(rupsr.getLon());
                 item.setLat(rupsr.getLat());
+                if(rupsr.getBBOX() != null )
+                {
+                    String[] bbox =  rupsr.getBBOX().split(" ");
+                    if (bbox.length == 4)
+                    {
+                        item.setWestBoundLongitude(bbox[0]);
+                        item.setSouthBoundLatitude(bbox[1]);
+                        item.setEastBoundLongitude(bbox[2]);
+                        item.setNorthBoundLatitude(bbox[3]);
+                    }
+                }
 
                 item.setDescription("Kiinteistötunnus");
                 item.setActionURL("Kiinteistötunnus");

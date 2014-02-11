@@ -33,6 +33,7 @@ import fi.nls.oskari.log.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import fi.nls.oskari.log.Logger;
@@ -370,6 +371,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		XPathExpression exprTunnuspisteSijaintiPointPosText = xpath
 				.compile("ktjkiiwfs:tunnuspisteSijainti/gml:Point/gml:pos/text()");
 
+
 		NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
 		if (nodes == null)
@@ -378,6 +380,9 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		// System.out.println();
 		if (nodes.getLength() == 0)
 			return null;
+
+        // bbox of GetFeature response
+        String bbox = getFirstNodeValue(doc, nscontext.getNamespaceURI("gml"), "lowerCorner") + " " + getFirstNodeValue(doc, nscontext.getNamespaceURI("gml"), "upperCorner");
 
 		ArrayList<RegisterUnitParcelSearchResult> results = new ArrayList<RegisterUnitParcelSearchResult>(
 				nodes.getLength());
@@ -408,6 +413,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 				rupsr.setRegisterUnitID(requestedRegisterUnitId);
 				rupsr.setE(E);
 				rupsr.setN(N);
+                rupsr.setBBOX(bbox);
 
 				results.add(rupsr);
 			}
@@ -671,6 +677,14 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		return searchByRegisterUnitIdWithRegisterUnitFeature(registerUnitId);
 	}
 
+    public String getFirstNodeValue(Document doc, String ns, String elem) {
+        NodeList nl = doc.getElementsByTagNameNS(ns, elem);
+        if (nl != null && nl.getLength() > 0) {
+            return nl.item(0).getTextContent();
+        }
+        return null;
+    }
+
 }
 
 class KTJkiiWFSNamespaceContext implements NamespaceContext {
@@ -731,4 +745,5 @@ class KTJkiiWFSVariableResolver implements XPathVariableResolver {
 
 		return vars.get(var);
 	}
+
 }

@@ -1,9 +1,8 @@
 package fi.nls.oskari.user;
 
-import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.permission.UserService;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
@@ -134,7 +133,7 @@ public class StandaloneUserService extends UserService {
     }
 
     @Override
-    public Role[] getRoles(Map<String, Object> platformSpecificParams)
+    public Role[] getRoles(Map<Object, Object> platformSpecificParams)
             throws ServiceException {
         final List<Role> roles = new ArrayList<Role>();
         try {

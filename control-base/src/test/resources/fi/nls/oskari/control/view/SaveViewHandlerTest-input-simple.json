@@ -1,0 +1,71 @@
+{
+    "mapfull":{
+        "state":{
+            "north":6820036.05,
+            "east":329665.264,
+            "zoom":7,
+            "srs":"EPSG:3067",
+            "selectedLayers":[
+                {
+                    "id":"base_35",
+                    "opacity":100,
+                    "style":"default"
+                },
+                {
+                    "id":15,
+                    "opacity":100
+                }
+            ]
+        }
+    },
+    "toolbar":{
+        "state":{
+            "selected":{
+                "id":"select",
+                "group":"default-basictools"
+            }
+        }
+    },
+    "search":{
+        "state":{
+
+        }
+    },
+    "layerselector2":{
+        "state":{
+            "tab":"Aiheittain",
+            "filter":"",
+            "groups":[
+
+            ]
+        }
+    },
+    "statsgrid":{
+        "state":{
+            "indicators":[
+
+            ],
+            "layerId":null,
+            "numberOfClasses":2,
+            "methodId":"1"
+        }
+    },
+    "maplegend":{
+        "state":{
+
+        }
+    },
+    "metadataflyout":{
+
+    },
+    "printout":{
+        "state":{
+
+        }
+    },
+    "admin-layerrights":{
+        "state":{
+
+        }
+    }
+}

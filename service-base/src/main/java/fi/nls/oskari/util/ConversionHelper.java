@@ -63,6 +63,9 @@ public class ConversionHelper {
      * @return
      */
     public static final int getInt(final String strToParse, final int defaultValue) {
+        if(strToParse == null) {
+            return defaultValue;
+        }
         try {
             return Integer.parseInt(strToParse);
         } catch (Exception e) {

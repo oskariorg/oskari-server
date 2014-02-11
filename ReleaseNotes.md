@@ -20,11 +20,14 @@ Removed some hardcodings:
 Previously hardcoded myplaces layer wmsurl: "/karttatiili/myplaces?myCat=" 
 can now be configured with property 'myplaces.client.wmsurl'
 
-
 * fi.nls.oskari.control.view.GetAppSetupHandler
 
 Previously hardcoded prefix for secure urls (prefix to make easier proxy forwards) "/paikkatietoikkuna"
 can now be configured with property 'actionhandler.GetAppSetup.secureAjaxUrlPrefix'
+
+### Service-map/Layer JSON formatting
+
+LayerJSONFormatterWMS now checks if the layer already has a legend image url configured (by admin) instead of always overwriting it based on capabilities.
 
 ### Service-OGC and control-wfs
 
@@ -41,10 +44,41 @@ Added override properties handling. Tries to search for file 'transport-ext.prop
 It's now possible to add preprocessors for ParamHandlers used in GetAppSetup. Check [service-control/README.md](service-control/README.md) for more
 info about preprocessing parameters.
 
-## PublishHandler
+## PublishHandler/SaveViewHandler/View and bundle handling
 
-Refactored a bit for clearer implementation. Views and Bundles can now be copied with clone() method.
-Still gathers the view to be saved as JSON instead of modifying the view object, this will propably be streamlined as well in the future.
+Refactored actionhandlers a bit for cleaner implementation for saving views.
+Views and Bundles can now be copied with clone() method.
+In the process also ViewService includes methods addView(View) and updatePublishedMap(View) and the old versions with second parameters have been deprecated.
+
+## service-permission/UserService
+
+Moved to service-base so it can be used by Role-class to load information about admin role.
+
+The Platform-specific map parameter has been changed from Map<String, Object> to Map<Object, Object> and a convenience method has been added to main UserService to call getRoles without
+parameters.
+
+## service-base/Role
+
+Now has a method getAdminRole() which returns a role reference. Replaces the getAdminRoleName() which has been deprecated.
+Now uses UserService to load information about admin role, but still gets the admin role name from properties as before.
+
+## 1.17.2
+
+### GetFeatureInfoHandler
+
+Styles will now longer be sent with value "null", but an empty string
+
+### Transport
+
+MapClick will now send an empty list as response when done so client knows that any data gotten for WMSlayers can be shown.
+
+Default highlight style for lines now doesn't use "fill" and areas  50%
+
+## 1.17.1
+
+### ZoomParamHandler
+
+Now uses parameter correctly again (not trying to get a property with param value).
 
 ## 1.17
 
