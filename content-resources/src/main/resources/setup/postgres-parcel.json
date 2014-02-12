@@ -36,6 +36,10 @@
         "publisher-template-view.json"
     ],
     "sql" : [
-        "exampleLayersAndRoles.sql"
-    ]
+        "nlsfi-background-map-wmtslayer.sql",
+        "nlsfi-orthophoto-map-wmtslayer.sql",
+        "nlsfi-topographic-map-wmtslayer.sql",
+        "nlsfi-cadastre-boundaries-map-wmtslayer.sql",
+        "nlsfi-cadastre-unit-ids-map-wmtslayer.sql"
+   ]
 }
