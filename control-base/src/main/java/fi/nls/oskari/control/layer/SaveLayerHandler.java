@@ -236,6 +236,8 @@ public class SaveLayerHandler extends ActionHandler {
             // the rest is not relevant for collection layers
             return;
         }
+
+        ml.setName(params.getRequiredParam(PARAM_WMS_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_NAME));
         final String url = validateUrl(params.getRequiredParam(PARAM_WMS_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_URL));
         ml.setUrl(url);
 
