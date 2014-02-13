@@ -118,6 +118,9 @@ public class LayerJSONFormatter {
         }
         JSONHelper.putValue(layerJson, "geom", layer.getGeometry());
 
+        JSONHelper.putValue(layerJson, "params", layer.getParams());
+        JSONHelper.putValue(layerJson, "options", layer.getOptions());
+
         //log.debug("getLegendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());
