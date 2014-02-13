@@ -138,7 +138,7 @@ public class SaveLayerHandler extends ActionHandler {
 
         } catch (Exception e) {
             if (e instanceof ActionException) {
-                throw new ActionException(e.getMessage(), e);
+                throw (ActionException) e;
             } else {
                 throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
             }
