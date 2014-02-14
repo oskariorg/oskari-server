@@ -5,6 +5,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.PropertyUtil;
@@ -54,11 +55,10 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
     }
     @Test(expected = ActionParamsException.class)
     public void testHandleActionInvalidParams() throws Exception {
-
         final ActionParameters params = createActionParams();
         handler.handleAction(params);
 
-        throw new IllegalStateException("Should not get his far without wmsurl parameter");
+        fail("Should not get his far without wmsurl parameter");
     }
 
     @Test(expected = ActionDeniedException.class)
@@ -71,7 +71,7 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters);
         handler.handleAction(params);
 
-        throw new IllegalStateException("Should not get his far with guest user");
+        fail("Should not get his far with guest user");
     }
 
     @Test(expected = ActionDeniedException.class)
@@ -85,7 +85,7 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters);
         handler.handleAction(params);
 
-        throw new IllegalStateException("Should not get his far with user without configured roles");
+        fail("Should not get his far with user without configured roles");
     }
 
     @Test
@@ -110,7 +110,8 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
             // anyway we get close enough for now by checking for MalformedURLException...
             // PowerMockito.mockStatic(GetWMSCapabilities.class);
             // when(GetWMSCapabilities.getResponse(anyString())).thenReturn("Hello!");
-            assertTrue(ex.getCause() instanceof MalformedURLException);
+            assertTrue(ex.getCause() instanceof ServiceException);
+            assertTrue(ex.getCause().getCause() instanceof MalformedURLException);
         }
     }
 }

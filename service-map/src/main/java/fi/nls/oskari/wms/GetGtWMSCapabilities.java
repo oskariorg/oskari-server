@@ -28,15 +28,17 @@ import java.util.List;
 public class GetGtWMSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWMSCapabilities.class);
-    final static String GROUP_LAYER_TYPE = "grouplayer";
-    final static String WMSLAYER_TYPE = "wmslayer";
-    final static String GROUP_LAYERS = "grouplayers";
-    final static String WMSLAYERS = "wmslayers";
-    final static String NAME_TEMP = "[nametemp]";
-    final static String LOCALES_TEMPLATE = "{\"fi\": \""+NAME_TEMP+"\", \"sv\": \""+NAME_TEMP+"\",\"en\": \""+NAME_TEMP+"\" }";
+
+    private final static String KEY_GROUPS = "groups";
+    private final static String KEY_LAYERS = "layers";
+
+    private final static String GROUP_LAYER_TYPE = "grouplayer";
+    private final static String WMSLAYER_TYPE = "wmslayer";
+    private final static String NAME_TEMP = "[nametemp]";
+    private final static String LOCALES_TEMPLATE = "{\"fi\": \""+NAME_TEMP+"\", \"sv\": \""+NAME_TEMP+"\",\"en\": \""+NAME_TEMP+"\" }";
 
     /**
-     * Get all WMS layers data in JSON  ( layer tree grouplayers->groupslayers/wmslayers->grouplayers/wmslayers...
+     * Get all WMS layers data in JSON  ( layer tree groups->groups/layers->groups/layers...
      * @param rurl WMS service url
      * @return
      * @throws ServiceException
@@ -49,71 +51,54 @@ public class GetGtWMSCapabilities {
             WMSCapabilities caps = wms.getCapabilities();
 
             // caps to json
-            JSONObject response = parseCapabilities(caps, rurl);
-
-            return response;
+            return parseLayer(caps.getLayer(), rurl, getMetaDataUrl(caps.getService()));
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }
     }
 
     /**
-     * Parse WMS capabilities data
-     * @param caps capabilities class
-     * @param rurl WMS service url
-     * @return
-     * @throws ServiceException
-     */
-    public static JSONObject parseCapabilities(final WMSCapabilities caps, String rurl) throws ServiceException {
-        try {
-
-            JSONObject layers = new JSONObject();
-
-            Layer layer = null;
-
-            // Add layers to json recursive grouplayer - layer(s) - grouplayer - layer(s)
-            // root layer
-            layer = caps.getLayer();
-            String metaUrl = getMetaDataUrl(caps.getService());
-            if (layer != null) parseLayer(layers, layer, rurl, metaUrl);
-            // }
-
-            return layers;
-        } catch (Exception ex) {
-            throw new ServiceException("Couldn't parse wms capabilities.", ex);
-        }
-    }
-
-    /**
      * Parse layer (group- or wmslayer)
-     * @param layers layers in oskari structure (out)
      * @param layer geotools layer
      * @param rurl WMS service url
      * @param metaUrl WMS service metadata url
      * @throws ServiceException
      */
-    public static void parseLayer(JSONObject layers, Layer layer, String rurl, String metaUrl) throws ServiceException {
+    public static JSONObject parseLayer(Layer layer, String rurl, String metaUrl) throws ServiceException {
+        if(layer == null) {
+            return null;
+        }
         try {
-
             if (layer.getLayerChildren().size() > 0) {
                 // Add group layer
                 WMSCapabilityLayer glayer = new WMSCapabilityLayer(GROUP_LAYER_TYPE, rurl, layer.getTitle(), metaUrl);
                 JSONObject groupLayer = glayer.toJSON();
-                layers.accumulate(GROUP_LAYERS, groupLayer);
-                // Childrens ?
+                JSONArray groups = new JSONArray();
+                JSONArray layers = new JSONArray();
+                groupLayer.put(KEY_GROUPS, groups);
+                groupLayer.put(KEY_LAYERS, layers);
+                // Loop children
                 for (Iterator ii = layer.getLayerChildren().iterator(); ii.hasNext(); ) {
                     Layer sublayer = (Layer) ii.next();
-                    if (sublayer != null) parseLayer(groupLayer, sublayer, rurl, metaUrl);
+                    if (sublayer != null) {
+                        final JSONObject child = parseLayer(sublayer, rurl, metaUrl);
+                        final String type = child.optString("type");
+                        if(GROUP_LAYER_TYPE.equals(type)) {
+                            groups.put(child);
+                        }
+                        else if(WMSLAYER_TYPE.equals(type)) {
+                            layers.put(child);
+                        }
+                    }
                 }
-
+                return groupLayer;
             } else {
                 // Parse layer to JSON
-                layers.accumulate(WMSLAYERS, layerToOskariLayerJson(layer, rurl, metaUrl));
+                return layerToOskariLayerJson(layer, rurl, metaUrl);
             }
         } catch (Exception ex) {
-            log.warn("Couldn't parse wms capabilities layer", ex);
+            throw new ServiceException("Couldn't parse wms capabilities layer", ex);
         }
-
     }
 
     /**
