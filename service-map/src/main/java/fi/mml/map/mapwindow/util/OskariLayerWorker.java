@@ -148,7 +148,7 @@ public class OskariLayerWorker {
         return null;
     }
 
-    private static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
+    public static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
 
         // name
         final JSONObject names = new JSONObject();

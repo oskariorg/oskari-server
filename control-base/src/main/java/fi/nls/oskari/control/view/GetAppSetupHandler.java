@@ -275,11 +275,10 @@ public class GetAppSetupHandler extends ActionHandler {
         }
 
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
-        // TODO: check if we can assume ViewTypes.DEFAULT for this.
-
+        // TODO: check if we can assume ViewTypes.DEFAULT || ViewTypes.USER for this.
         //add bundles according to role/rights
-
-        if (view.getType().equals(ViewTypes.DEFAULT)) {
+        if (ViewTypes.DEFAULT.equals(view.getType()) ||
+            ViewTypes.USER.equals(view.getType())) {
             log.debug("Adding bundles for user", params.getUser());
 
             for(Role r : params.getUser().getRoles()) {
