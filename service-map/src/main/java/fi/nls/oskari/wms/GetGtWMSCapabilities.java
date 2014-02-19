@@ -78,6 +78,9 @@ public class GetGtWMSCapabilities {
                 JSONArray layers = new JSONArray();
                 groupNode.put(KEY_GROUPS, groups);
                 groupNode.put(KEY_LAYERS, layers);
+                // add self to layers so the group node layers are selectable as well on frontend
+                final JSONObject self = layerToOskariLayerJson(layer, rurl, caps);
+                layers.put(self);
                 // Loop children
                 for (Iterator ii = layer.getLayerChildren().iterator(); ii.hasNext(); ) {
                     Layer sublayer = (Layer) ii.next();
