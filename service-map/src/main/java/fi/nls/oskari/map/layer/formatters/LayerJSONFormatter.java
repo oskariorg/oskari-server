@@ -164,6 +164,10 @@ public class LayerJSONFormatter {
             // parse uuid from URL
             return metadataId.substring(indexOf + 5);
         }
+        if(metadataId.startsWith("http")) {
+            log.debug("Couldn't parse uuid from metadata url:", metadataId);
+            return null;
+        }
         return metadataId;
     }
 }

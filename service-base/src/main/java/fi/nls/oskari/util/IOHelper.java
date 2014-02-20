@@ -43,6 +43,12 @@ public class IOHelper {
         trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
     }
 
+    public static int getConnectionTimeoutMs() {
+        return CONNECTION_TIMEOUT_MS;
+    }
+    public static int getReadTimeoutMs() {
+        return READ_TIMEOUT_MS;
+    }
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
      * @param is

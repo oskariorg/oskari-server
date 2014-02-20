@@ -63,7 +63,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // update cache - do this before creating json!
-        final boolean cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+        boolean cacheUpdated = ml.isCollection();
+        // skip cache update for collections since they don't have the info
+        if(!ml.isCollection()) {
+            cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+        }
 
         // construct response as layer json
         final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());

@@ -93,8 +93,9 @@ public class OskariLayerWorker {
         start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
             final String permissionKey = layer.getUrl() + "+" + layer.getName();
-            if (!resources.contains(permissionKey)) {
-                // not permitted!
+            if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
+                // not permitted if resource NOT found in permissions!
+                // sublayers can pass through since their parentId != -1
                 continue;
             }
             try {
@@ -148,7 +149,7 @@ public class OskariLayerWorker {
         return null;
     }
 
-    private static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
+    public static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
 
         // name
         final JSONObject names = new JSONObject();
