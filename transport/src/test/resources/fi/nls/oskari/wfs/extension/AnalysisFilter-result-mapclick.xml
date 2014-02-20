@@ -1,0 +1,24 @@
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+    <ogc:And>
+        <ogc:Intersects>
+            <ogc:PropertyName>geometry</ogc:PropertyName>
+            <gml:Polygon srsDimension="2">
+                <gml:exterior>
+                    <gml:LinearRing srsDimension="2">
+                        <gml:posList>393908.0000081 6692163.0 393905.13526146865 6692171.816783546 393897.6352574187 6692177.265855447 393888.3647425813 6692177.265855447 393880.86473853135 6692171.816783546 393877.9999919 6692163.0 393880.86473853135 6692154.183216454 393888.3647425813 6692148.734144553 393897.6352574187 6692148.734144553 393905.13526146865 6692154.183216454 393908.0000081 6692163.0</gml:posList>
+                    </gml:LinearRing>
+                </gml:exterior>
+            </gml:Polygon>
+        </ogc:Intersects>
+        <ogc:And>
+            <ogc:PropertyIsEqualTo matchCase="false">
+                <ogc:PropertyName>analysis_id</ogc:PropertyName>
+                <ogc:Literal>710</ogc:Literal>
+            </ogc:PropertyIsEqualTo>
+            <ogc:PropertyIsEqualTo matchCase="false">
+                <ogc:PropertyName>uuid</ogc:PropertyName>
+                <ogc:Literal/>
+            </ogc:PropertyIsEqualTo>
+        </ogc:And>
+    </ogc:And>
+</ogc:Filter>
