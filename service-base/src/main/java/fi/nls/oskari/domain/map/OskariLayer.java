@@ -197,13 +197,17 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 		return minScale;
 	}
 	public void setMinScale(Double minScale) {
-		this.minScale = minScale;
+        if(minScale != null && !minScale.isNaN()) {
+		    this.minScale = minScale;
+        }
 	}
 	public Double getMaxScale() {
 		return maxScale;
 	}
 	public void setMaxScale(Double maxScale) {
-		this.maxScale = maxScale;
+        if(maxScale != null && !maxScale.isNaN()) {
+            this.maxScale = maxScale;
+        }
 	}
 
 	public String getStyle() {

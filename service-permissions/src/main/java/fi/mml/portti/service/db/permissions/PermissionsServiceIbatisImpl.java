@@ -376,7 +376,10 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         hm.put("id", layerId);
         hm.put("idList", getExternalIdList(user));
 
-        return (queryForList(getNameSpace() + ".hasEditPermissionForLayerByLayerId", hm) != null);
+
+        final List<Object> permissions = queryForList(getNameSpace() + ".hasEditPermissionForLayerByLayerId", hm);
+        log.debug("Edit permissions:", permissions);
+        return (permissions != null && !permissions.isEmpty());
     }
 
     public boolean hasAddLayerPermission(User user) {
@@ -388,7 +391,9 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         hm.put("resourceMapping", "generic-functionality");
         hm.put("idList", getExternalIdList(user));
 
-        return (queryForList(getNameSpace() + ".hasExecutePermission", hm) != null);
+        final List<Object> permissions = queryForList(getNameSpace() + ".hasExecutePermission", hm);
+        log.debug("Add permissions:", permissions);
+        return (permissions != null && !permissions.isEmpty());
 
     }
 

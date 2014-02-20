@@ -39,7 +39,23 @@ With default settings you now have:
 6) Open your browser with http://localhost:2373/?viewId=4 or http://localhost:2373/oskari-map?viewId=4  to see a new view loaded from the database.
     You should now see a new map layer of type WFS listed on the maplayers flyout. Add it to map, zoom close to Helsinki for example and you should see points appearing to the map from the wfs service
 
-7) sample conf for transport (setup as transport-ext.properties in server classpath to override defaults)
+7) If WFS layer doen't work, you might need to configure view setup for wfslayer plugin  (mapwfs2-view.json or postgres-myplaces2-view.json)
+   and reprepare database * `mvn clean install exec:java -Doskari.dropdb=true -Doskari.setup=postgres-mapwfs2`
+
+   { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                            "contextPath" : "/transport", <--- /transport-0.0.1
+                            "hostname" : "localhost",
+                            "port" : "2374",              <--- 
+                            "lazy" : true,
+                            "disconnectTime" : 30000,
+                            "backoffIncrement": 1000,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000
+                        }
+                    },
+
+8) sample conf for transport (setup as transport-ext.properties in server classpath to override defaults)
 
     #serviceURL=http://localhost:2373
 

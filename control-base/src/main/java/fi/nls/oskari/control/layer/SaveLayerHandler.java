@@ -63,7 +63,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // update cache - do this before creating json!
-        final boolean cacheUpdated = updateCache(ml, params.getHttpParam("version"));
+        boolean cacheUpdated = ml.isCollection();
+        // skip cache update for collections since they don't have the info
+        if(!ml.isCollection()) {
+            cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+        }
 
         // construct response as layer json
         final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());
@@ -138,7 +142,7 @@ public class SaveLayerHandler extends ActionHandler {
 
         } catch (Exception e) {
             if (e instanceof ActionException) {
-                throw new ActionException(e.getMessage(), e);
+                throw (ActionException) e;
             } else {
                 throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
             }
@@ -196,7 +200,6 @@ public class SaveLayerHandler extends ActionHandler {
         if (wmsUrl.indexOf(",http:") > 0) {
             wmsUrl = wmsUrl.substring(0, wmsUrl.indexOf(",http:"));
         }
-
         return wmsUrl;
 
     }
@@ -238,21 +241,9 @@ public class SaveLayerHandler extends ActionHandler {
             return;
         }
 
-        try {
-            ml.setName(params.getRequiredParam(PARAM_WMS_NAME));
-        } catch (ActionParamsException ape) {
-            throw new ActionException(ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_NAME);
-        }
-        try {
-            // check that it's a valid url...
-            String wmsUrl = params.getRequiredParam(PARAM_WMS_URL);
-            URL wmsUrlUrl = new URL(getWmsUrl(wmsUrl));
-            ml.setUrl(wmsUrl);
-        } catch (ActionParamsException ape) {
-            throw new ActionException(ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_URL);
-        } catch (MalformedURLException e) {
-            throw new ActionException(ERROR_INVALID_FIELD_VALUE + PARAM_WMS_URL);
-        }
+        ml.setName(params.getRequiredParam(PARAM_WMS_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_NAME));
+        final String url = validateUrl(params.getRequiredParam(PARAM_WMS_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_URL));
+        ml.setUrl(url);
 
         ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
         ml.setStyle(params.getHttpParam("style", ml.getStyle()));
@@ -270,6 +261,16 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setGfiXslt(xslt);
         }
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
+    }
+
+    private String validateUrl(final String url) throws ActionParamsException {
+        try {
+            // check that it's a valid url by creating an URL object...
+            new URL(getWmsUrl(url));
+        } catch (MalformedURLException e) {
+            throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_WMS_URL);
+        }
+        return url;
     }
 
     private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {
