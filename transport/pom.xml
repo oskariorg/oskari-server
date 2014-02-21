@@ -182,7 +182,13 @@
 		    <groupId>org.apache.ws.commons.axiom</groupId>
 		    <artifactId>axiom-impl</artifactId>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<type>jar</type>

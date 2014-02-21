@@ -1,0 +1,21 @@
+<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+<ogc:And>
+    <ogc:BBOX>
+        <ogc:PropertyName>geometry</ogc:PropertyName>
+        <gml:Envelope srsDimension="2" srsName="EPSG:3067">
+            <gml:lowerCorner>425724.45809412 6695489.1337378</gml:lowerCorner>
+            <gml:upperCorner>427451.45809412 6696484.1337378</gml:upperCorner>
+        </gml:Envelope>
+    </ogc:BBOX>
+    <ogc:And>
+        <ogc:PropertyIsEqualTo matchCase="false">
+            <ogc:PropertyName>analysis_id</ogc:PropertyName>
+            <ogc:Literal>710</ogc:Literal>
+        </ogc:PropertyIsEqualTo>
+        <ogc:PropertyIsEqualTo matchCase="false">
+            <ogc:PropertyName>uuid</ogc:PropertyName>
+            <ogc:Literal/>
+        </ogc:PropertyIsEqualTo>
+    </ogc:And>
+</ogc:And>
+</ogc:Filter>
