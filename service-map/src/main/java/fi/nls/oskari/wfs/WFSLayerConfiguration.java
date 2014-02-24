@@ -37,6 +37,7 @@ public class WFSLayerConfiguration {
     private final static String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
     private static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
     private final static String FEATURE_ELEMENT = "featureElement";
+    private final static String OUTPUT_FORMAT = "outputFormat";
 
     private final static String FEATURE_TYPE = "featureType";
     private final static String SELECTED_FEATURE_PARAMS = "selectedFeatureParams";
@@ -88,6 +89,7 @@ public class WFSLayerConfiguration {
 	private String featureNamespaceURI;
     private String geometryNamespaceURI;
 	private String featureElement;
+    private String outputFormat;
 
 	private String featureType;
 	private String selectedFeatureParams; // if needed?
@@ -264,7 +266,11 @@ public class WFSLayerConfiguration {
 		this.featureElement = featureElement;
 	}
 
-	public String getFeatureType() {
+    public String getOutputFormat() { return outputFormat; }
+
+    public void setOutputFormat(String outputFormat) { this.outputFormat = outputFormat; }
+
+    public String getFeatureType() {
 		return featureType;
 	}
 
@@ -547,6 +553,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, FEATURE_NAMESPACE_URI, this.getFeatureNamespaceURI());
         JSONHelper.putValue(root, GEOMETRY_NAMESPACE_URI, this.getGeometryNamespaceURI());
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
+        JSONHelper.putValue(root, OUTPUT_FORMAT, this.getOutputFormat());
 
 		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
 		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONObject(this.getSelectedFeatureParams()));

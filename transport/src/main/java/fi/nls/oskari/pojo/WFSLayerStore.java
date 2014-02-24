@@ -54,6 +54,7 @@ public class WFSLayerStore {
     private static final String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
     private static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
     private static final String FEATURE_ELEMENT = "featureElement";
+    private static final String OUTPUT_FORMAT = "outputFormat";
 
     private static final String FEATURE_TYPE = "featureType";
     private static final String SELECTED_FEATURE_PARAMS = "selectedFeatureParams";
@@ -106,6 +107,7 @@ public class WFSLayerStore {
     private String featureNamespaceURI;
     private String geometryNamespaceURI;
     private String featureElement;
+    private String outputFormat;
 
     private Map<String, String> featureType;
     private Map<String, List<String>> selectedFeatureParams; // if needed?
@@ -462,6 +464,19 @@ public class WFSLayerStore {
     public void setFeatureElement(String featureElement) {
         this.featureElement = featureElement;
     }
+
+    /**
+     * Gets output format
+     * @return output format
+     */
+    public String getOutputFormat() { return outputFormat; }
+
+    /**
+     * Sets output format
+     *
+     * @param outputFormat
+     */
+    public void setOutputFormat(String outputFormat) { this.outputFormat = outputFormat; }
 
     /**
      * Gets feature type
@@ -1048,6 +1063,8 @@ public class WFSLayerStore {
                 store.setGeometryNamespaceURI(parser.getText());
             } else if (FEATURE_ELEMENT.equals(fieldName)) {
                 store.setFeatureElement(parser.getText());
+            } else if (OUTPUT_FORMAT.equals(fieldName)) {
+                store.setOutputFormat(parser.getText());
             } else if (FEATURE_TYPE.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {

@@ -28,6 +28,7 @@
         <result property="featureNamespaceURI" column="feature_namespace_uri"/>
         <result property="geometryNamespaceURI" column="geometry_namespace_uri"/>
         <result property="featureElement" column="feature_element"/>
+        <result property="outputFormat" column="output_format"/>
         
         <result property="featureType" column="feature_type"/>
         <result property="selectedFeatureParams" column="selected_feature_params"/>
@@ -90,6 +91,7 @@
 			l.feature_namespace_uri,
             l.geometry_namespace_uri,
 			l.feature_element,
+            l.output_format,
 			
 			l.feature_type,
 			l.selected_feature_params,
