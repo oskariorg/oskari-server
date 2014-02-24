@@ -40,6 +40,7 @@ public class WFSCommunicatorTest {
 
     @BeforeClass
     public static void setUp() {
+        System.setProperty("org.geotools.referencing.forceXY", "true");
 		JedisManager.connect(10, "localhost", 6379);
 
         Properties properties = new Properties();
@@ -69,7 +70,7 @@ public class WFSCommunicatorTest {
 	@Test
 	public void testLocation() {
 		String payload = WFSCommunicator.createRequestPayload(type, layer, session, null, null);
-		assertTrue("Should get defined result", payload.equals(sessionResult));
+		assertEquals("Should get defined result", sessionResult, payload);
 	}
 	
 	@Test

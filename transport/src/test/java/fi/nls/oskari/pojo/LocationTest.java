@@ -17,6 +17,7 @@ public class LocationTest {
 	
     @BeforeClass
     public static void setUp() {
+        System.setProperty("org.geotools.referencing.forceXY", "true");
 		location = new Location("EPSG:3067");
 		bbox = new ArrayList<Double>();
 		bbox.add(420893.0);
