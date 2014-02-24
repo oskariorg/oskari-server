@@ -47,6 +47,7 @@ public class AnalysisFilterTest {
     @Before
     public void setUp() {
 
+        System.setProperty("org.geotools.referencing.forceXY", "true");
         // use relaxed comparison settings
         XMLUnit.setIgnoreComments(true);
         XMLUnit.setIgnoreWhitespace(true);
@@ -138,7 +139,7 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        System.out.println(filter.toString());
+
         Diff xmlDiffComplex = new Diff(resultGeoJsonComplex, filter.toString());
         assertTrue("Should get expected resultGeoJsonComplex " + xmlDiffComplex, xmlDiffComplex.similar());
     }
