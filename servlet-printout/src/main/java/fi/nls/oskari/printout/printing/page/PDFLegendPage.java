@@ -32,6 +32,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import fi.nls.oskari.printout.printing.PDFProducer.Options;
 import fi.nls.oskari.printout.printing.PDFProducer.Page;
+import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
 
 /**
  * this class adds map legend page. W-i-P as some map legend images span
@@ -52,11 +53,12 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 
 	}
 
-	public void createPages(PDDocument targetDoc) throws IOException,
-			TransformException {
+	public void createPages(PDDocument targetDoc, PageCounter pageCounter)
+			throws IOException, TransformException {
 		PDDocumentCatalog catalog = targetDoc.getDocumentCatalog();
 
-		PDPage targetPage = page.createNewPageTo(targetDoc);
+		PDPage targetPage = page.createNewPage(targetDoc,
+				opts.getPageTemplate() != null, pageCounter);
 
 		PDResources resources = targetPage.findResources();
 		if (resources == null) {
@@ -75,7 +77,7 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 		resources.setProperties(props);
 
 		PDPageContentStream contentStream = page.createContentStreamTo(
-				targetDoc, targetPage);
+				targetDoc, targetPage, opts.getPageTemplate() != null);
 
 		createTextLayerOverlay(targetDoc, contentStream, ocprops, props);
 
@@ -138,19 +140,22 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 
 		COSName mc0 = COSName.getPDFName("MClegend");
 		props.putMapping(mc0, layerGroup);
-		/*PDFont font = PDType1Font.HELVETICA_BOLD;*/
+		/* PDFont font = PDType1Font.HELVETICA_BOLD; */
 		contentStream.beginMarkedContentSequence(COSName.OC, mc0);
 
 		/* BEGIN overlay content */
 
 		/* title */
+		
 		if (opts.getPageTitle() != null) {
 			String pageTitle = StringEscapeUtils.unescapeHtml4(Jsoup.clean(
 					opts.getPageTitle(), Whitelist.simpleText()));
 
-			createTextAtTarget(contentStream, pageTitle, 1.0f / 2.54f * 72f,
-					page.getHeightTargetInPoints() + 50, opts.getFontSize(), 0,
+			
+			createTextAt(contentStream, pageTitle, 9.0f,
+					page.getHeight()-1f, opts.getFontSize(), 0,
 					0, 0);
+			
 		}
 
 		/* pvm */
@@ -161,12 +166,14 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 
 			String dateStr = sdf.format(dte);
 
-			createTextAtTarget(contentStream, dateStr,
-					page.getWidthTargetInPoints() - 40,
-					page.getHeightTargetInPoints() + 50, opts.getFontSize(), 0,
+			createTextAt(contentStream, dateStr,
+					page.getWidth() - 4f,
+					page.getHeight()-1f, opts.getFontSize(), 0,
 					0, 0);
 
 		}
+
+	
 
 		/* logo */
 		if (opts.isPageLogo()) {
@@ -176,15 +183,6 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 			contentStream.drawXObject(xlogo, 1.0f / 2.54f * 72f, 16, logoWidth,
 					logoHeight);
 
-		}
-
-		for (LegendImage limage : legends) {
-			PDXObjectImage ximage = limage.ximage;
-			contentStream.setNonStrokingColor(255, 255, 255);
-			contentStream.setStrokingColor(255, 255, 255);
-
-			contentStream.drawXObject(ximage, 1.0f / 2.54f * 72f, 32, limage.w,
-					limage.h);
 		}
 
 		/* END overlay content */

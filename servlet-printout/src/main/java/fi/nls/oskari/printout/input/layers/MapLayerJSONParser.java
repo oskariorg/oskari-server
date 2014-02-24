@@ -406,6 +406,7 @@ public class MapLayerJSONParser {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void adjustTileMatrixSetInfo(LayerDefinition layerDefinition,
 			Map<String, ?> layerObj) {
 

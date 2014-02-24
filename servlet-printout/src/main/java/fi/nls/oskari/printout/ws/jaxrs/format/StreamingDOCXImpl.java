@@ -35,7 +35,6 @@ import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import fi.nls.oskari.printout.input.maplink.MapLink;
 import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
 import fi.nls.oskari.printout.output.map.MapProducer;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
 
 /**
  * support for M$ format documents - this does not work atm
