@@ -464,8 +464,8 @@ public class AnalysisDataService {
             json.put(JSKEY_OPACITY, ConversionHelper.getInt(JSONHelper
                     .getStringFromJSON(analyse_js, JSKEY_OPACITY, "80"), 80));
             json.put(JSKEY_MINSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "1500000"),
-                    1500000));
+                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "15000000"),
+                    15000000));
             json.put(JSKEY_MAXSCALE, ConversionHelper.getDouble(JSONHelper
                     .getStringFromJSON(analyse_js, JSKEY_MAXSCALE, "1"), 1));
             json.put(JSKEY_FIELDS, this.getAnalyseNativeFields(al));
