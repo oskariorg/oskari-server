@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 public class LocationTest {
 	private static Location location;
@@ -37,12 +39,17 @@ public class LocationTest {
 		ReferencedEnvelope transformed = location.getTransformEnvelope("EPSG:4326", true);
         System.out.println(transformed.getMinX());
         System.out.println(transformed.getMinY());
-
-		assertTrue("should get transformed coordinates", 
-				(transformed.getMinX() >= 64.71499289327947 - 64.71499289327947*0.00001 &&
-                        transformed.getMinX() <= 64.71499289327947*1.00001 &&
-                        transformed.getMinY() >= 25.3399808304302 - 25.3399808304302*0.00001 &&
-                        transformed.getMinY() <= 25.3399808304302*1.00001));
+        assertThat("MinX greater bound", 64.71499289327947 - 64.71499289327947 * 0.00001, Matchers.lessThanOrEqualTo(transformed.getMinX()));
+        assertThat("MinX lower bound", 64.71499289327947 * 1.00001, Matchers.greaterThanOrEqualTo(transformed.getMinX()));
+        assertThat("MinY greater bound", 25.3399808304302 - 25.3399808304302 * 0.00001, Matchers.lessThanOrEqualTo(transformed.getMinY()));
+        assertThat("MinY lower bound", 25.3399808304302 * 1.00001, Matchers.greaterThanOrEqualTo(transformed.getMinY()));
+/*
+		assertTrue("should get transformed coordinates",
+                (transformed.getMinX() >= 64.71499289327947 - 64.71499289327947 * 0.00001 &&
+                        transformed.getMinX() <= 64.71499289327947 * 1.00001 &&
+                        transformed.getMinY() >= 25.3399808304302 - 25.3399808304302 * 0.00001 &&
+                        transformed.getMinY() <= 25.3399808304302 * 1.00001));
+                        */
     }
 
     @Test
