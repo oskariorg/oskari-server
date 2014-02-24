@@ -257,9 +257,13 @@ public class MapLinkParser {
 		return mapLink;
 	}
 
+	int maxWidth = 2560;
+	int maxHeight = 2560;
+	int minWidth = 128;
+	int minHeight = 128;
+	
 	public void validate(MapLink mapLink) throws IOException {
-		int maxWidth = 2560;
-		int maxHeight = 2560;
+		
 
 		Map<String, String> values = mapLink.getValues();
 
@@ -267,20 +271,32 @@ public class MapLinkParser {
 			if (Integer.valueOf(values.get("WIDTH"), 10) > maxWidth) {
 				throw new IOException("Too Large a map requested");
 			}
+			if (Integer.valueOf(values.get("WIDTH"), 10) < minWidth) {
+				throw new IOException("Too Small a map requested");
+			}
 		}
 		if (values.get("HEIGHT") != null) {
 			if (Integer.valueOf(values.get("HEIGHT"), 10) > maxHeight) {
 				throw new IOException("Too Large a map requested");
+			}
+			if (Integer.valueOf(values.get("HEIGHT"), 10) < minHeight) {
+				throw new IOException("Too Small a map requested");
 			}
 		}
 		if (values.get("SCALEDWIDTH") != null) {
 			if (Integer.valueOf(values.get("SCALEDWIDTH"), 10) > maxWidth) {
 				throw new IOException("Too Large a map requested");
 			}
+			if (Integer.valueOf(values.get("SCALEDWIDTH"), 10) < minWidth) {
+				throw new IOException("Too Small a map requested");
+			}
 		}
 		if (values.get("SCALEDHEIGHT") != null) {
 			if (Integer.valueOf(values.get("SCALEDHEIGHT"), 10) > maxHeight) {
 				throw new IOException("Too Large a map requested");
+			}
+			if (Integer.valueOf(values.get("SCALEDHEIGHT"), 10) < minHeight) {
+				throw new IOException("Too Small a map requested");
 			}
 		}
 

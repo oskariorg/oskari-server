@@ -59,6 +59,8 @@ import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPPTXImpl;
  * 
  * This class is also used in tests.
  * 
+ * TBF: parameter handling has some serious design issues
+ * 
  */
 public class WebServiceMapProducerResource extends MapProducerResource {
 
@@ -152,17 +154,18 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		if (values.get("PAGESIZE") != null) {
 			Page page = Page.valueOf(values.get("PAGESIZE"));
-
-			values.put("WIDTH",
-					Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-			values.put("HEIGHT",
-					Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-			mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-			mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+			int width = page.getMapWidthTargetInPoints(opts);
+			int height = page.getMapHeightTargetInPoints(opts);
+			values.put("WIDTH", Integer.toString(width, 10));
+			values.put("HEIGHT", Integer.toString(height, 10));
+			mapLink.setWidth(width);
+			mapLink.setHeight(height);
 		} else {
 			mapLink.setWidth(Integer.valueOf(values.get("WIDTH"), 10));
 			mapLink.setHeight(Integer.valueOf(values.get("HEIGHT"), 10));
@@ -222,16 +225,18 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		Page page = Page.valueOf(values.get("PAGESIZE"));
 
-		values.put("WIDTH",
-				Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-		values.put("HEIGHT",
-				Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-		mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-		mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+		int width = page.getMapWidthTargetInPoints(opts);
+		int height = page.getMapHeightTargetInPoints(opts);
+
+		values.put("WIDTH", Integer.toString(width, 10));
+		values.put("HEIGHT", Integer.toString(height, 10));
+		mapLink.setWidth(width);
+		mapLink.setHeight(height);
 
 		mapLayerJsonParser.getMapLinkParser().validate(mapLink);
 
@@ -288,17 +293,19 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		if (values.get("PAGESIZE") != null) {
 			Page page = Page.valueOf(values.get("PAGESIZE"));
 
-			values.put("WIDTH",
-					Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-			values.put("HEIGHT",
-					Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-			mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-			mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+			int width = page.getMapWidthTargetInPoints(opts);
+			int height = page.getMapHeightTargetInPoints(opts);
+
+			values.put("WIDTH", Integer.toString(width, 10));
+			values.put("HEIGHT", Integer.toString(height, 10));
+			mapLink.setWidth(width);
+			mapLink.setHeight(height);
 
 		}
 
@@ -380,17 +387,19 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		if (values.get("PAGESIZE") != null) {
 			Page page = Page.valueOf(values.get("PAGESIZE"));
 
-			values.put("WIDTH",
-					Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-			values.put("HEIGHT",
-					Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-			mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-			mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+			int width = page.getMapWidthTargetInPoints(opts);
+			int height = page.getMapHeightTargetInPoints(opts);
+
+			values.put("WIDTH", Integer.toString(width, 10));
+			values.put("HEIGHT", Integer.toString(height, 10));
+			mapLink.setWidth(width);
+			mapLink.setHeight(height);
 		} else {
 			mapLink.setWidth(Integer.valueOf(values.get("WIDTH"), 10));
 			mapLink.setHeight(Integer.valueOf(values.get("HEIGHT"), 10));
@@ -441,14 +450,17 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
-		mapLink.getValues().putAll(values);
 
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
+		
+		
 		values.put("WIDTH",
 				Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
 		values.put("HEIGHT",
 				Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
 
+		mapLink.getValues().putAll(values);
 		mapLinkParser.validate(mapLink);
 
 		int width = page.getMapWidthTargetInPoints(opts);
@@ -520,16 +532,21 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		Page page = Page.valueOf(values.get("PAGESIZE"));
-
+		
+		int width = page.getMapWidthTargetInPoints(opts);
+		int height= page.getMapHeightTargetInPoints(opts);
+		
+		
 		values.put("WIDTH",
-				Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
+				Integer.toString(width, 10));
 		values.put("HEIGHT",
-				Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-		mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-		mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+				Integer.toString(height, 10));
+		mapLink.setWidth(width);
+		mapLink.setHeight(height);
 
 		mapLayerJsonParser.getMapLinkParser().validate(mapLink);
 
@@ -579,13 +596,22 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
-		mapLink.getValues().putAll(values);
-		Options opts = getPageOptions(values, mapLink);
+		
+		
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
+		int width = page.getMapWidthTargetInPoints(opts);
+		int height = page.getMapHeightTargetInPoints(opts);
+		
 		values.put("WIDTH",
-				Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
+				Integer.toString(width, 10));
 		values.put("HEIGHT",
-				Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
+				Integer.toString(height, 10));
+		
+		mapLink.getValues().putAll(values);
+		mapLink.setWidth(width);
+		mapLink.setHeight(height);
 
 		mapLinkParser.validate(mapLink);
 
@@ -630,17 +656,19 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 				gridSubset.getResolutions());
 
 		Map<String, String> values = mapLink.getValues();
-		Options opts = getPageOptions(values, mapLink);
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
 
 		if (values.get("PAGESIZE") != null) {
 			Page page = Page.valueOf(values.get("PAGESIZE"));
-
+			int width = page.getMapWidthTargetInPoints(opts);
+			int height= page.getMapHeightTargetInPoints(opts);
 			values.put("WIDTH",
-					Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
+					Integer.toString(width, 10));
 			values.put("HEIGHT",
-					Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
-			mapLink.setWidth(page.getMapWidthTargetInPoints(opts));
-			mapLink.setHeight(page.getMapHeightTargetInPoints(opts));
+					Integer.toString(height, 10));
+			mapLink.setWidth(width);
+			mapLink.setHeight(height);
 
 		}
 
@@ -719,15 +747,21 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
-		mapLink.getValues().putAll(values);
-		Options opts = getPageOptions(values, mapLink);
+		
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
+		
 		if (values.get("PAGESIZE") != null) {
 			Page page = Page.valueOf(values.get("PAGESIZE"));
 
-			values.put("WIDTH",
-					Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-			values.put("HEIGHT",
-					Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
+			int width = page.getMapWidthTargetInPoints(opts);
+			int height = page.getMapHeightTargetInPoints(opts);
+
+			values.put("WIDTH", Integer.toString(width, 10));
+			values.put("HEIGHT", Integer.toString(height, 10));
+
+			mapLink.setWidth(width);
+			mapLink.setHeight(height);
 		}
 
 		/* fixes to help UI */
@@ -755,6 +789,7 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
 		}
 
+		mapLink.getValues().putAll(values);
 		mapLinkParser.validate(mapLink);
 
 		StreamingPNGImpl result = new StreamingPNGImpl(producer, mapLink);
@@ -782,14 +817,19 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
+		
+
+		Options opts = getPageOptions(values);
+		opts.setContent(mapLink.getPrintoutContent());
+
+		int width = page.getMapWidthTargetInPoints(opts);
+		int height = page.getMapHeightTargetInPoints(opts);
+
+		values.put("WIDTH", Integer.toString(width, 10));
+		values.put("HEIGHT", Integer.toString(height, 10));
 		mapLink.getValues().putAll(values);
-
-		Options opts = getPageOptions(values, mapLink);
-
-		values.put("WIDTH",
-				Integer.toString(page.getMapWidthTargetInPoints(opts), 10));
-		values.put("HEIGHT",
-				Integer.toString(page.getMapHeightTargetInPoints(opts), 10));
+		mapLink.setWidth(width);
+		mapLink.setHeight(height);
 
 		mapLinkParser.validate(mapLink);
 
@@ -807,7 +847,7 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 	 * @param mapLink
 	 * @return
 	 */
-	private Options getPageOptions(Map<String, String> values, MapLink mapLink) {
+	private Options getPageOptions(Map<String, String> values) {
 		PDFProducer.Options pageOptions = new PDFProducer.Options();
 		pageOptions.setPageTitle(values.get("PAGETITLE"));
 		pageOptions.setPageDate(values.get("PAGEDATE") != null ? values.get(
@@ -825,8 +865,7 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		if (values.get("PAGEMAPRECT") != null) {
 			pageOptions.setPageMapRectFromString(values.get("PAGEMAPRECT"));
 		}
-		
-		pageOptions.setContent(mapLink.getPrintoutContent());
+
 		
 
 		return pageOptions;

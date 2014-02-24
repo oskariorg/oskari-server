@@ -1,11 +1,17 @@
 package fi.nls.oskari.printout.ws.jaxrs.map;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -20,6 +26,8 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
 import fi.nls.oskari.printout.ws.ProxySetup;
+import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
+import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPNGImpl;
 import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 
 /* 2nd generation tests - still valid */
@@ -31,6 +39,92 @@ public class WebServiceMapProducerResourceTest {
 	public void setupProxy() throws IOException {
 
 		new ProxySetup();
+	}
+
+	/*
+	 * ?ver=1.17&zoomLevel=2&coord=
+	 * 449600_7019344&mapLayers=base_35+100+default,519+79+&statsgrid=519+indicator52012total+1+7+++-NaN+2012+total,undefined+2012+total-seq,0,false&
+	 * showMarker=false&forceCache=false&noSavedState=false&pageSize=A4&scaledWidth=200
+	 */
+
+	@Test
+	public void testMapLinkAsPNG() throws FactoryConfigurationError, Exception {
+
+		Map<String, String> values = new HashMap<String, String>();
+		values.put("VER", "1.17");
+		values.put("ZOOMLEVEL","2");
+		values.put("COORD", "449600_7019344");
+		values.put("MAPLAYERS", "base_35 100 default,519 79 ");
+		values.put("STATSGRID", "519+indicator52012total+1+7+++-NaN+2012+total,undefined+2012+total-seq,0,false");
+		values.put("SHOWMARKER", "false");
+		values.put("FORCECACHE", "false");
+		values.put("NOSAVEDSTATE", "false");
+		values.put("PAGESIZE", "A4");
+		values.put("SCALEDWIDTH", "200");
+		
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+
+		StreamingPNGImpl stream = resource
+				.getMapPNG(values, null);
+		stream.underflow();
+
+		FileOutputStream outs = new FileOutputStream(
+				"test-output/maplink-test-output.png");
+		try {
+			stream.write(outs);
+		} finally {
+			outs.close();
+		}
+
+	}
+	
+	/* %C3%A5%C3%A4%C3%B6%C3%A5%C3%A4%C3%B6ABC/// */
+	@Test
+	public void testMapLinkAsPDF() throws FactoryConfigurationError, Exception {
+
+		Map<String, String> values = new HashMap<String, String>();
+		values.put("VER", "1.17");
+		values.put("ZOOMLEVEL","2");
+		values.put("COORD", "449600_7019344");
+		values.put("MAPLAYERS", "base_35 100 default,519 79 ");
+		values.put("STATSGRID", "519+indicator52012total+1+7+++-NaN+2012+total,undefined+2012+total-seq,0,false");
+		values.put("SHOWMARKER", "false");
+		values.put("FORCECACHE", "false");
+		values.put("NOSAVEDSTATE", "false");
+		values.put("PAGESIZE", "A4");
+		values.put("SCALEDWIDTH", "200");
+		values.put("PAGETITLE", URLDecoder.decode("%C3%A5%C3%A4%C3%B6%C3%A5%C3%A4%C3%B6ABC///","UTF-8"));
+		
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+
+		StreamingPDFImpl stream = resource
+				.getMapPDF(values, null);
+		stream.underflow();
+
+		FileOutputStream outs = new FileOutputStream(
+				"test-output/maplink-test-output.pdf");
+		try {
+			stream.write(outs);
+		} finally {
+			outs.close();
+		}
+
 	}
 
 	@Test
@@ -231,7 +325,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -256,7 +351,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -281,7 +377,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -306,7 +403,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -331,7 +429,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -356,7 +455,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -371,7 +471,7 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
-	
+
 	@Test
 	public void testWmtsPrintZoom7png8opacityJsonAndTemplateAsPDF()
 			throws NoSuchAuthorityCodeException, IOException,
@@ -381,7 +481,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -396,7 +497,7 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
-	
+
 	@Test
 	public void testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContentAsPDF()
 			throws NoSuchAuthorityCodeException, IOException,
@@ -406,7 +507,8 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -416,15 +518,12 @@ public class WebServiceMapProducerResourceTest {
 		resource.setLayersDirty(false);
 		runner.setResource(resource);
 
-		runner.run("testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContent",
+		runner.run(
+				"testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContent",
 				WebServiceMapProducerResourceTestFileType.GEOJSON,
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
-	
-	
-	
-	
 
 	/* FOR TESTING ONLY */
 	/* synchronized for create on call only */
@@ -438,7 +537,8 @@ public class WebServiceMapProducerResourceTest {
 				return shared;
 			}
 
-			Properties props = getFixedTestProperties("default.properties","layers.json");
+			Properties props = getFixedTestProperties("default.properties",
+					"layers.json");
 			props.store(System.out, "");
 
 			shared = new WebServiceMapProducerResource(props);
@@ -483,11 +583,11 @@ public class WebServiceMapProducerResourceTest {
 		} finally {
 			r.close();
 		}
-		
-		
-		String layersPropValue = WebServiceMapProducerResourceTest.class.getResource(layersUrl).toString();
+
+		String layersPropValue = WebServiceMapProducerResourceTest.class
+				.getResource(layersUrl).toString();
 		props.put("layersURL", layersPropValue);
-		
+
 		return props;
 	}
 

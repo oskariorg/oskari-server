@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.printout.input.content.PrintoutContent;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.printing.PDFProducer.Options;
 
 /**
  * 
@@ -127,5 +128,7 @@ public class MapLink {
 	public void setPrintoutContent(PrintoutContent printoutContent) {
 		this.printoutContent = printoutContent;
 	}
+
+	
 
 }
