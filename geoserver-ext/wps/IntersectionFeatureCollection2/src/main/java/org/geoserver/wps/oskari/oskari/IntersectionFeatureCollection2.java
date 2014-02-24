@@ -69,7 +69,7 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 @DescribeProcess(title = "intersection2", description = "test -- Returns the intersections between two feature "
         + "collections adding the attributes from both of them")
-public class IntersectionFeatureCollection2 {
+public class IntersectionFeatureCollection2 implements GSProcess {
     private static final Logger logger = Logger
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
 
