@@ -14,9 +14,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
+import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.input.content.PrintoutContentParser;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import fi.nls.oskari.printout.input.layers.MapLayerJSON;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
 import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolution;
 
 /**
@@ -28,6 +29,7 @@ public class MapLinkParser {
 	private static Log log = LogFactory.getLog(MapLinkParser.class);
 	private ScaleResolution sr;
 	private Integer zoomOffset = 0;
+	PrintoutContentParser contentParser = new PrintoutContentParser();
 
 	public MapLinkParser(ScaleResolution sr, Integer zoomOffset) {
 		this.sr = sr;
@@ -126,6 +128,17 @@ public class MapLinkParser {
 				mapLink.getMapLinkLayers().add(layerSelection);
 
 			}
+		}
+
+		if (mapLink != null) {
+			Map<String, ?> printoutInfo = (Map<String, ?>) obj.get("printout");
+
+			if (printoutInfo != null) {
+				PrintoutContent content = contentParser.parse(printoutInfo);
+
+				mapLink.setPrintoutContent(content);
+			}
+
 		}
 
 		return mapLink;

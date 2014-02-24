@@ -42,7 +42,7 @@ public class MapLinkJSONProcessorTest {
 
 	final List<LayerDefinition> testLayerDefs = new ArrayList<LayerDefinition>();
 	private String gridSubsetName = "EPSG_3067_MML";
-	private String layerTemplate = "EPSG_3067_LAYER_TEMPLATE";
+	private String layerTemplate = "EPSG_3067_MML_LAYER_TEMPLATE";
 	WebServiceMapProducerResource shared;
 	Properties props;
 
@@ -124,8 +124,8 @@ public class MapLinkJSONProcessorTest {
 		PDFProducer.Page page = PDFProducer.Page.valueOf(mapLink.getValues()
 				.get("PAGESIZE"));
 
-		int widthTarget = page.getWidthTargetInPoints();
-		int heightTarget = page.getHeightTargetInPoints();
+		int widthTarget = page.getMapWidthTargetInPoints(null);
+		int heightTarget = page.getMapHeightTargetInPoints(null);
 
 		mapLink.getValues().put("WIDTH", Integer.toString(widthTarget, 10));
 		mapLink.getValues().put("HEIGHT", Integer.toString(heightTarget, 10));
@@ -146,27 +146,21 @@ public class MapLinkJSONProcessorTest {
 		assertTrue("base_35".equals(mapLink.getMapLinkLayers().get(0)
 				.getLayerid()));
 
-		assertTrue("myplaces_437".equals(mapLink.getMapLinkLayers().get(1)
+		assertTrue("131".equals(mapLink.getMapLinkLayers().get(1)
 				.getLayerid()));
 
-		assertTrue("131".equals(mapLink.getMapLinkLayers().get(2).getLayerid()));
+		assertTrue("251".equals(mapLink.getMapLinkLayers().get(2).getLayerid()));
 
-		assertTrue("251".equals(mapLink.getMapLinkLayers().get(3).getLayerid()));
+		assertTrue("127".equals(mapLink.getMapLinkLayers().get(3).getLayerid()));
+		
+		assertTrue("242".equals(mapLink.getMapLinkLayers().get(4).getLayerid()));
 
-		assertTrue(mapLink.getMapLinkLayers().get(3).getStyles().size() == 1);
 
-		assertTrue(mapLink.getMapLinkLayers().get(3).getStyles()
+		assertTrue(mapLink.getMapLinkLayers().get(2).getStyles()
 				.get("bussipysakit").getTitle().equals("Katos"));
-		assertTrue(mapLink.getMapLinkLayers().get(3).getStyles()
+		assertTrue(mapLink.getMapLinkLayers().get(2).getStyles()
 				.get("bussipysakit").getLegend() != null);
-		assertTrue(mapLink.getMapLinkLayers().get(0).getGeom() == null);
-		assertTrue(mapLink.getMapLinkLayers().get(1).getGeom() == null);
-		assertTrue(mapLink.getMapLinkLayers().get(2).getGeom() == null);
 		System.out.println(mapLink.getMapLinkLayers().get(3).getWmsname());
-		assertTrue(mapLink.getMapLinkLayers().get(3).getGeom() != null);
-		assertTrue(mapLink.getMapLinkLayers().get(3).getGeom() instanceof Polygon);
-		assertTrue(mapLink.getMapLinkLayers().get(4).getGeom() != null);
-		assertTrue(mapLink.getMapLinkLayers().get(4).getGeom() instanceof Polygon);
 
 	}
 

@@ -1,5 +1,6 @@
 package fi.nls.oskari.printout.printing.page;
 
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -29,21 +30,21 @@ public class PDFAbstractPage {
 	 * shall move to use transforms some day
 	 */
 	protected void createTextAt(PDPageContentStream contentStream, String text,
-			float xcm, float ycm, float fontSize, int r, int g,
+			float xcm, float ycm, float fontPtSize, int r, int g,
 			int b) throws IOException {
+		
 
-		createTextAtTarget(contentStream, text, xcm / 2.54f * 72f,
-				ycm / 2.54f * 72f, fontSize, r, g, b);
-
-	}
-
-	protected void createTextAtTarget(PDPageContentStream contentStream,
-			String text, float xcm, float ycm, float fontSize,
-			int r, int g, int b) throws IOException {
-		contentStream.beginText();
+		float f[] = { xcm, ycm };
+		page.getTransform().transform(f, 0, f, 0, 1);
+		
+		float fontSize = fontPtSize / 72f * 2.54f;
 		contentStream.setFont(font, fontSize);
-		contentStream.setNonStrokingColor(r, g, b);
-		contentStream.moveTextPositionByAmount(xcm, ycm);
+		contentStream.beginText();
+		AffineTransform rowMatrix = new AffineTransform(page.getTransform());
+		rowMatrix.translate(xcm,ycm);
+		contentStream.setTextMatrix(rowMatrix);	
+		
+		contentStream.setNonStrokingColor(r, g, b);		
 		contentStream.drawString(text);
 		contentStream.endText();
 

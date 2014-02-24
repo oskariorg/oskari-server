@@ -1,6 +1,5 @@
 package fi.nls.oskari.printout.ws.jaxrs.map;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -21,7 +20,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
 import fi.nls.oskari.printout.ws.ProxySetup;
-import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 
 /* 2nd generation tests - still valid */
@@ -44,7 +42,6 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
-
 
 	@Test
 	public void testGeojsPrintTestJsonAsPPTX()
@@ -128,7 +125,7 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
 	public void testStatjsPrintTestJsonAsPDF()
 			throws NoSuchAuthorityCodeException, IOException,
@@ -145,7 +142,6 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
-
 
 	@Test
 	public void testActionRouteJsonAsPNG() throws NoSuchAuthorityCodeException,
@@ -235,18 +231,7 @@ public class WebServiceMapProducerResourceTest {
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -261,27 +246,17 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
-	public void testWmtsPrintZoom3JsonAsPNG() throws NoSuchAuthorityCodeException,
-			IOException, GeoWebCacheException, FactoryException,
-			ParseException, XMLStreamException, FactoryConfigurationError,
+	public void testWmtsPrintZoom3JsonAsPNG()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
 			RequestFilterException, TransformException,
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -296,27 +271,17 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
-	public void testWmtsPrintZoom7JsonAsPNG() throws NoSuchAuthorityCodeException,
-			IOException, GeoWebCacheException, FactoryException,
-			ParseException, XMLStreamException, FactoryConfigurationError,
+	public void testWmtsPrintZoom7JsonAsPNG()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
 			RequestFilterException, TransformException,
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -331,27 +296,17 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
-	public void testWmtsPrintZoom7png8opacityJsonAsPNG() throws NoSuchAuthorityCodeException,
-			IOException, GeoWebCacheException, FactoryException,
-			ParseException, XMLStreamException, FactoryConfigurationError,
+	public void testWmtsPrintZoom7png8opacityJsonAsPNG()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
 			RequestFilterException, TransformException,
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -366,27 +321,17 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
-	public void testWmtsPrintZoom7jpegopacityJsonAsPNG() throws NoSuchAuthorityCodeException,
-			IOException, GeoWebCacheException, FactoryException,
-			ParseException, XMLStreamException, FactoryConfigurationError,
+	public void testWmtsPrintZoom7jpegopacityJsonAsPNG()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
 			RequestFilterException, TransformException,
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -401,27 +346,17 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PNG);
 
 	}
-	
+
 	@Test
-	public void testWmtsPrintZoom7png8opacityJsonAsPDF() throws NoSuchAuthorityCodeException,
-			IOException, GeoWebCacheException, FactoryException,
-			ParseException, XMLStreamException, FactoryConfigurationError,
+	public void testWmtsPrintZoom7png8opacityJsonAsPDF()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
 			RequestFilterException, TransformException,
 			com.vividsolutions.jts.io.ParseException, InterruptedException,
 			URISyntaxException, org.json.simple.parser.ParseException {
 
-		Properties props = new Properties();
-		Reader r = new InputStreamReader(
-				MapResource.class.getResourceAsStream("jhs.properties"));
-		try {
-			props.load(r);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.close();
-		}
-
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
 		props.store(System.out, "");
 
 		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
@@ -436,6 +371,60 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
+	
+	@Test
+	public void testWmtsPrintZoom7png8opacityJsonAndTemplateAsPDF()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
+			RequestFilterException, TransformException,
+			com.vividsolutions.jts.io.ParseException, InterruptedException,
+			URISyntaxException, org.json.simple.parser.ParseException {
+
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+		runner.setResource(resource);
+
+		runner.run("testWmtsLayerPrintZoom7png8opacityAndTemplate",
+				WebServiceMapProducerResourceTestFileType.GEOJSON,
+				WebServiceMapProducerResourceTestFileType.PDF);
+
+	}
+	
+	@Test
+	public void testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContentAsPDF()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
+			RequestFilterException, TransformException,
+			com.vividsolutions.jts.io.ParseException, InterruptedException,
+			URISyntaxException, org.json.simple.parser.ParseException {
+
+		Properties props = getFixedTestProperties("jhs.properties","layers.json");
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+		runner.setResource(resource);
+
+		runner.run("testWmtsLayerPrintZoom7png8opacityAndTemplateWithTableContent",
+				WebServiceMapProducerResourceTestFileType.GEOJSON,
+				WebServiceMapProducerResourceTestFileType.PDF);
+
+	}
+	
+	
+	
+	
 
 	/* FOR TESTING ONLY */
 	/* synchronized for create on call only */
@@ -449,23 +438,7 @@ public class WebServiceMapProducerResourceTest {
 				return shared;
 			}
 
-			String conf = System
-					.getProperty("fi.paikkatietoikkuna.imaging.config");
-
-			Properties props = new Properties();
-			Reader r = conf != null ? new FileReader(conf)
-					: new InputStreamReader(
-							MapResource.class
-									.getResourceAsStream("default.properties"));
-			try {
-				props.load(r);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				r.close();
-			}
-
+			Properties props = getFixedTestProperties("default.properties","layers.json");
 			props.store(System.out, "");
 
 			shared = new WebServiceMapProducerResource(props);
@@ -496,6 +469,26 @@ public class WebServiceMapProducerResourceTest {
 		}
 
 		return shared;
+	}
+
+	public static Properties getFixedTestProperties(String propsName,
+			String layersUrl) throws IOException {
+		Properties props = new Properties();
+		Reader r = new InputStreamReader(
+				MapResource.class.getResourceAsStream(propsName));
+		try {
+			props.load(r);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			r.close();
+		}
+		
+		
+		String layersPropValue = WebServiceMapProducerResourceTest.class.getResource(layersUrl).toString();
+		props.put("layersURL", layersPropValue);
+		
+		return props;
 	}
 
 }
