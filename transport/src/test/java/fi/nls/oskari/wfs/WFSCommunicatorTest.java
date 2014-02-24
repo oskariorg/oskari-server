@@ -17,6 +17,7 @@ import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.test.util.ResourceHelper;
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,6 +44,12 @@ public class WFSCommunicatorTest {
     @BeforeClass
     public static void setUp() {
         System.setProperty("org.geotools.referencing.forceXY", "true");
+        // use relaxed comparison settings
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+
 		JedisManager.connect(10, "localhost", 6379);
 
         Properties properties = new Properties();
