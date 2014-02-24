@@ -1,6 +1,7 @@
 package fi.nls.oskari.wfs;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
+import fi.nls.oskari.utils.TestHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.WKTReader2;
 import org.junit.BeforeClass;
@@ -100,6 +102,8 @@ public class WFSImageTest {
   
 	@Test
 	public void testTile() {
+        // check that we have redis connectivity (redis server running)
+        assumeTrue(TestHelper.redisAvailable());
 		WFSImage tileImage = new WFSImage(layer,
                 "test",
 	    		session.getLayers().get(layer.getLayerId()).getStyleName(),
@@ -140,6 +144,8 @@ public class WFSImageTest {
 
     @Test
     public void testCustomTile() {
+        // check that we have redis connectivity (redis server running)
+        assumeTrue(TestHelper.redisAvailable());
         WFSCustomStyleStore customStyle = null;
 
         try {

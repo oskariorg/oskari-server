@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.nls.oskari.work.WFSMapLayerJob;
+import fi.nls.test.util.ResourceHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,15 +36,23 @@ public class AnalysisFilterTest {
     private String geojson = "{\"data\":{\"filter\":{\"geojson\":{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[394081,6691734],[394361,6692574],[393521,6692854],[393241,6692014],[394081,6691734]]]}}],\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":3067}}}}} }";
     private String geojsonComplex = "{\"data\":{\"filter\":{\"geojson\":{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426125.95809412,6695752.6337378],[426535.95809412,6696262.6337378],[426025.95809412,6696672.6337378],[425615.95809412,6696162.6337378],[426125.95809412,6695752.6337378]]]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426843.70809412,6696053.8837378],[427215.70809412,6696609.8837378],[426659.70809412,6696981.8837378],[426287.70809412,6696425.8837378],[426843.70809412,6696053.8837378]]]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426595.70809412,6695941.8837378],[426195.70809412,6696245.8837378],[425891.70809412,6695845.8837378],[426291.70809412,6695541.8837378],[426595.70809412,6695941.8837378]]]}}],\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":3067}}}}}}";
 
-    String result = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>analysis_id</ogc:PropertyName><ogc:Literal>710</ogc:Literal></ogc:PropertyIsEqualTo><ogc:BBOX><ogc:PropertyName>geometry</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>425724.45809412 6695489.1337378</gml:lowerCorner><gml:upperCorner>427451.45809412 6696484.1337378</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
-    String resultBounds = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>analysis_id</ogc:PropertyName><ogc:Literal>710</ogc:Literal></ogc:PropertyIsEqualTo><ogc:BBOX><ogc:PropertyName>geometry</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>385800.0 6690267.0</gml:lowerCorner><gml:upperCorner>397380.0 6697397.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
-    String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>analysis_id</ogc:PropertyName><ogc:Literal>710</ogc:Literal></ogc:PropertyIsEqualTo><ogc:Intersects><ogc:PropertyName>geometry</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393896.00000162 6692163.0 393895.42705229373 6692164.763356709 393893.9270514837 6692165.853171089 393892.0729485163 6692165.853171089 393890.57294770627 6692164.763356709 393889.99999838 6692163.0 393890.57294770627 6692161.236643291 393892.0729485163 6692160.146828911 393893.9270514837 6692160.146828911 393895.42705229373 6692161.236643291 393896.00000162 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:And></ogc:Filter>";
-    String resultHighlightFeatures = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:FeatureId fid=\"toimipaikat.6398\"/></ogc:Filter>";
-    String resultGeoJson = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>analysis_id</ogc:PropertyName><ogc:Literal>710</ogc:Literal></ogc:PropertyIsEqualTo><ogc:Intersects><ogc:PropertyName>geometry</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>394081.0 6691734.0 394361.0 6692574.0 393521.0 6692854.0 393241.0 6692014.0 394081.0 6691734.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:And></ogc:Filter>";
-    String resultGeoJsonComplex = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>analysis_id</ogc:PropertyName><ogc:Literal>710</ogc:Literal></ogc:PropertyIsEqualTo><ogc:Or><ogc:Intersects><ogc:PropertyName>geometry</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426125.95809412 6695752.6337378 426535.95809412 6696262.6337378 426025.95809412 6696672.6337378 425615.95809412 6696162.6337378 426125.95809412 6695752.6337378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects><ogc:PropertyName>geometry</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426843.70809412 6696053.8837378 427215.70809412 6696609.8837378 426659.70809412 6696981.8837378 426287.70809412 6696425.8837378 426843.70809412 6696053.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects><ogc:Intersects><ogc:PropertyName>geometry</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>426595.70809412 6695941.8837378 426195.70809412 6696245.8837378 425891.70809412 6695845.8837378 426291.70809412 6695541.8837378 426595.70809412 6695941.8837378</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Or></ogc:And></ogc:Filter>";
+    String resultLocation = ResourceHelper.readStringResource("AnalysisFilter-result-testlocation.xml", this);
+    String resultBounds = ResourceHelper.readStringResource("AnalysisFilter-result-bounds.xml", this);
+    String resultMapClick = ResourceHelper.readStringResource("AnalysisFilter-result-mapclick.xml", this);
+    String resultHighlightFeatures = ResourceHelper.readStringResource("AnalysisFilter-result-highlight-features.xml", this);
+    String resultGeoJson = ResourceHelper.readStringResource("AnalysisFilter-result-geojson-simple.xml", this);
+    String resultGeoJsonComplex = ResourceHelper.readStringResource("AnalysisFilter-result-geojson-complex.xml", this);
+
 
     @Before
     public void setUp() {
+
+        // use relaxed comparison settings
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+
         try {
             session = SessionStore.setJSON(sessionJSON);
             layer = WFSLayerStore.setJSON(layerJSON);
@@ -60,7 +71,7 @@ public class AnalysisFilterTest {
     }
 
     @Test
-    public void testLocation() {
+    public void testLocation() throws Exception {
         type = WFSMapLayerJob.Type.NORMAL;
         AnalysisFilter analysisFilter = new AnalysisFilter();
         String filterStr = analysisFilter.create(type, layer, session, emptyBounds, null);
@@ -69,11 +80,12 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertTrue("Should get expected result", filter.toString().equals(result));
+        Diff xmlDiff = new Diff(resultLocation, filter.toString());
+        assertTrue("Should get expected location result " + xmlDiff, xmlDiff.similar());
     }
 
     @Test
-    public void testBounds() {
+    public void testBounds() throws Exception {
         type = WFSMapLayerJob.Type.NORMAL;
         AnalysisFilter analysisFilter = new AnalysisFilter();
         String filterStr = analysisFilter.create(type, layer, session, bounds, null);
@@ -82,11 +94,12 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertTrue("Should get expected resultBounds", filter.toString().equals(resultBounds));
+        Diff xmlDiff = new Diff(resultBounds, filter.toString());
+        assertTrue("Should get expected resultBounds " + xmlDiff, xmlDiff.similar());
     }
 
     @Test
-    public void testMapClick() {
+    public void testMapClick() throws Exception {
         type = WFSMapLayerJob.Type.MAP_CLICK;
         session.setMapClick(new Coordinate(393893.0, 6692163.0));
 
@@ -97,11 +110,12 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertEquals("Should get expected resultMapClick", resultMapClick, filter.toString());
+        Diff xmlDiff = new Diff(resultMapClick, filter.toString());
+        assertTrue("Should get expected resultMapClick " + xmlDiff, xmlDiff.similar());
     }
 
     @Test
-    public void testGeoJson() {
+    public void testGeoJson() throws Exception {
         type = WFSMapLayerJob.Type.GEOJSON;
         session.setFilter(geojsonFilter);
 
@@ -112,7 +126,9 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertEquals("Should get expected resultGeoJson", resultGeoJson, filter.toString());
+        Diff xmlDiff = new Diff(resultGeoJson, filter.toString());
+        assertTrue("Should get expected resultGeoJsonSimple " + xmlDiff, xmlDiff.similar());
+        //assertEquals("Should get expected resultGeoJson", resultGeoJson, filter.toString());
 
         // multiple geometries
         session.setFilter(geojsonComplexFilter);
@@ -122,11 +138,13 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        assertEquals("Should get expected resultGeoJson", resultGeoJsonComplex, filter.toString());
+        System.out.println(filter.toString());
+        Diff xmlDiffComplex = new Diff(resultGeoJsonComplex, filter.toString());
+        assertTrue("Should get expected resultGeoJsonComplex " + xmlDiffComplex, xmlDiffComplex.similar());
     }
 
     @Test
-    public void testHighlight() {
+    public void testHighlight() throws Exception {
         type = WFSMapLayerJob.Type.HIGHLIGHT;
         List<String> featureIds = new ArrayList<String>();
         featureIds.add("toimipaikat.6398");
@@ -139,8 +157,8 @@ public class AnalysisFilterTest {
             StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
             filter = staxOMBuilder.getDocumentElement();
         }
-        System.out.println(filter.toString());
-        assertTrue("Should get expected resultHighlightFeatures", filter.toString().equals(resultHighlightFeatures));
+        Diff xmlDiff = new Diff(resultHighlightFeatures, filter.toString());
+        assertTrue("Should get expected resultHighlightFeatures " + xmlDiff, xmlDiff.similar());
     }
 
 }
