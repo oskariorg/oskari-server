@@ -4,8 +4,10 @@
 
 -- add map layer;
 INSERT INTO oskari_maplayer(type, name, groupId,
+							minscale, maxscale, 
                             opacity,url, locale)
   VALUES('wfslayer', 'oskari:my_places', (SELECT MAX(id) FROM oskari_layergroup),
+  		 15000000, 1, 
          50, 'wfs', '{ fi:{name:"Omat paikat",subtitle:""},sv:{name:"My places",subtitle:""},en:{name:"My places",subtitle:""}}');
 
 
