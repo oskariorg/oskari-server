@@ -1,9 +1,11 @@
 package fi.nls.oskari.pojo;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 
+import fi.nls.oskari.utils.TestHelper;
 import org.junit.Test;
 
 public class SessionStoreTest {
@@ -12,6 +14,8 @@ public class SessionStoreTest {
 	
 	@Test
 	public void testJSON() throws IOException {
+        // check that we have redis connectivity (redis server running)
+        assumeTrue(TestHelper.redisAvailable());
 		SessionStore store = SessionStore.setJSON(json);
 		String jsonResult = store.getAsJSON();
 

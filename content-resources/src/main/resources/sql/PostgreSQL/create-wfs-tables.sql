@@ -33,6 +33,7 @@ CREATE TABLE portti_wfs_layer
   wps_params character varying(256) default '{}',
   srs_name character varying,
   feature_element character varying(512),
+  output_format character varying(256),
   feature_namespace_uri character varying(512),
   geometry_namespace_uri character varying(512),
   schema_changed timestamp with time zone,

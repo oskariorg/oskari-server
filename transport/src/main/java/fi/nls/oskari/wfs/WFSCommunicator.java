@@ -75,6 +75,11 @@ public class WFSCommunicator {
             root.addAttribute(geomNs);
         }
 
+        if (layer.getOutputFormat() != null) {
+            OMAttribute outputFormat = factory.createOMAttribute("outputFormat", null, layer.getOutputFormat());
+            root.addAttribute(outputFormat);
+        }
+
         root.addAttribute(layerNs);
 		root.addAttribute(schemaLocation);
 		root.addAttribute(version);
