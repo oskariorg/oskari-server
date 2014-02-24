@@ -400,7 +400,11 @@ public class MapProducer {
 
 		if (layerType.equals("wmslayer")) {
 
-			String format = layerDefinition.getFormat();
+			String format = layerDefinition.getFormat() ;
+			if( format == null  ) {
+				format = "image/png";
+			}
+					
 
 			/* might use some geotools class here to build WMS query */
 			url = layerUrl + separator + "SERVICE=WMS&VERSION=1.1.1"

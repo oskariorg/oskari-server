@@ -56,6 +56,15 @@ import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
  */
 @Path("/imaging")
 public class MapResource {
+	
+	public static final String[] MAPLINKARGS = new String[] { "zoomLevel", "coord",
+			"mapLayers", "width", "height", "scaledWidth", "scaledHeight",
+			"bbox", "pageSize", "pageTitle", "pageLogo", "pageDate",
+			"pageScale", "pageLegend", "pageCopyleft", "pageTemplate",
+			"pageMapRect"};
+	
+
+	
 	enum MapLinkArg {
 		/**
 		 * maplink argument used in scale calculations
@@ -259,12 +268,8 @@ public class MapResource {
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 		Map<String, String> values = new HashMap<String, String>();
 
-		String[] mapLinkArgs = new String[] { "zoomLevel", "coord",
-				"mapLayers", "width", "height", "scaledWidth", "scaledHeight",
-				"bbox", "pageSize", "pageTitle", "pageLogo", "pageDate",
-				"pageScale", "pageLegend", "pageCopyleft" };
-
-		for (String mapLinkArg : mapLinkArgs) {
+		
+		for (String mapLinkArg : MAPLINKARGS) {
 			String upper = new String(mapLinkArg).toUpperCase();
 			if (queryParams.get(mapLinkArg) == null) {
 				continue;
@@ -319,12 +324,9 @@ public class MapResource {
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 		Map<String, String> values = new HashMap<String, String>();
 
-		String[] mapLinkArgs = new String[] { "zoomLevel", "coord",
-				"mapLayers", "width", "height", "scaledWidth", "scaledHeight",
-				"bbox", "pageSize", "pageTitle", "pageLogo", "pageDate",
-				"pageScale", "pageLegend", "pageCopyleft" };
+		
 
-		for (String mapLinkArg : mapLinkArgs) {
+		for (String mapLinkArg : MAPLINKARGS) {
 			String upper = new String(mapLinkArg).toUpperCase();
 			if (queryParams.get(mapLinkArg) == null) {
 				continue;
@@ -484,12 +486,8 @@ public class MapResource {
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 		Map<String, String> values = new HashMap<String, String>();
 
-		String[] mapLinkArgs = new String[] { "zoomLevel", "coord",
-				"mapLayers", "width", "height", "scaledWidth", "scaledHeight",
-				"bbox", "pageSize", "pageTitle", "pageLogo", "pageDate",
-				"pageScale", "pageLegend", "pageCopyleft" };
 
-		for (String mapLinkArg : mapLinkArgs) {
+		for (String mapLinkArg : MAPLINKARGS) {
 			String upper = new String(mapLinkArg).toUpperCase();
 			if (queryParams.get(mapLinkArg) == null) {
 				continue;
@@ -655,12 +653,8 @@ public class MapResource {
 		MultivaluedMap<String, String> queryParams = ui.getQueryParameters();
 		Map<String, String> values = new HashMap<String, String>();
 
-		String[] mapLinkArgs = new String[] { "zoomLevel", "coord",
-				"mapLayers", "width", "height", "scaledWidth", "scaledHeight",
-				"bbox", "pageSize", "pageTitle", "pageLogo", "pageDate",
-				"pageScale", "pageLegend", "pageCopyleft" };
 
-		for (String mapLinkArg : mapLinkArgs) {
+		for (String mapLinkArg : MAPLINKARGS) {
 			String upper = new String(mapLinkArg).toUpperCase();
 			if (queryParams.get(mapLinkArg) == null) {
 				continue;

@@ -48,7 +48,7 @@ public class GeoJsonSimpleFeaturesTest {
 	 * https://github.com/jayway/JsonPath
 	 */
 	private String gridSubsetName = "EPSG_3067_MML";
-	private String layerTemplate = "EPSG_3067_LAYER_TEMPLATE";
+	private String layerTemplate = "EPSG_3067_MML_LAYER_TEMPLATE";
 	final List<LayerDefinition> testLayerDefs = new ArrayList<LayerDefinition>();
 
 	WebServiceMapProducerResource shared;

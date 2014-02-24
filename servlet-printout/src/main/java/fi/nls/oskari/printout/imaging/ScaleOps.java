@@ -1,6 +1,5 @@
 package fi.nls.oskari.printout.imaging;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
