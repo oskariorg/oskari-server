@@ -173,8 +173,9 @@ public class AnalysisParser {
         if (fields_in == null) {
             throw new ServiceException("Fields missing.");
         } else {
-            // Add fields of WFS service, if empty and all fields mode on
-            if(fields_in.length() == 0) fields_in = this.getWfsFields(analysisLayer);
+            // Add one field of WFS service, if empty fields mode on
+            // If no properties in filter --> return is all properties
+            if(fields_in.length() == 0) fields_in = this.getWfsInitFields(analysisLayer);
             // Remove internal fields
             try {
                 for (int i = 0; i < fields_in.length(); i++) {
@@ -888,6 +889,37 @@ public class AnalysisParser {
             {
                 for (Map.Entry<String, String> entry : map.entrySet()) {
                     fields.put( entry.getKey());
+                }
+            }
+
+
+        } catch (Exception e) {
+
+        }
+        return fields;
+    }
+    /**
+     * Get WFS service field names for case no fields
+     * Thre should be one propertety in filter - in other case all properties are retreaved by WPS
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     *
+     * @return field names
+     */
+    private JSONArray getWfsInitFields(AnalysisLayer analysisLayer) {
+        JSONArray fields = new JSONArray();
+        try {
+            Map<String,String> map = analysisLayer.getFieldtypeMap();
+            if (map != null)
+            {
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    if (!HIDDEN_FIELDS.contains(entry.getKey()))
+                    {
+                    fields.put( entry.getKey());
+                        // Return only one
+                        return fields;
+                    }
                 }
             }
 
