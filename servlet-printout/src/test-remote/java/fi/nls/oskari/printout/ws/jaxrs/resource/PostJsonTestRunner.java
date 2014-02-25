@@ -35,7 +35,7 @@ public class PostJsonTestRunner {
 		}
 
 		ClientResponse response = r.accept(output.getMimeType())
-				.type(PostJsonTestFileType.JSON.getMimeType())
+				.type(PostJsonTestFileType.JSON.getMimeType()+";charset=UTF-8")
 				.entity(w.getBuffer().toString()).post(ClientResponse.class);
 
 		InputStream in = response.getEntityInputStream();
