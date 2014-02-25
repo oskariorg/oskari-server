@@ -114,6 +114,9 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
                 errorTracker.put(url, now);
                 log.error("Failed to locate Schema '" + url + "' - Error message:", e.getMessage());
             }
+            else {
+                log.debug("Failed to locate Schema '" + url + "' - Error message:", e.getMessage());
+            }
 		}
 	    
 		if (foundSchema != null) {
