@@ -26,7 +26,7 @@ public class MaplinkGeoJsonParser {
 
 		Map<String, Object> root = null;
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inp));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inp, "UTF-8"));
 
 		JSONParser parser = new JSONParser();
 

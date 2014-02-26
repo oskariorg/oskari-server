@@ -640,7 +640,7 @@ tiili.fi/dataset/kiinteistorekisteri/service/wms,http://d.karttatiili.fi/dataset
     "pageLogo": "true",
     "pageScale": "true",
     "pageSize": "A4",
-    "pageTitle": "",
+    "pageTitle": "ÅÄÖåäö",
     "showMarker": "false",
     "zoomLevel": "11"
   },

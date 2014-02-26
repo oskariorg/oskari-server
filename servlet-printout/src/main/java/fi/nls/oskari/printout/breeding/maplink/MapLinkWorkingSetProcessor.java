@@ -24,7 +24,6 @@ import fi.nls.oskari.printout.breeding.ChangeSet;
 import fi.nls.oskari.printout.breeding.WorkingSet;
 import fi.nls.oskari.printout.breeding.WorkingSetProcessor;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
 
 public class MapLinkWorkingSetProcessor extends WorkingSetProcessor {
 

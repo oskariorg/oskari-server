@@ -8,12 +8,14 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 
+import fi.nls.oskari.printout.input.content.PrintoutContent;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.printing.PDFProducer.Options;
 
 /**
  * 
  * This class contains any information read from JSON or URL request.
- *
+ * 
  */
 public class MapLink {
 
@@ -25,6 +27,8 @@ public class MapLink {
 	int width;
 	int height;
 	final Map<String, String> values = new HashMap<String, String>();
+
+	PrintoutContent printoutContent;
 
 	public Point getCentre() {
 		return centre;
@@ -113,6 +117,16 @@ public class MapLink {
 
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
+	}
+
+
+
+	public PrintoutContent getPrintoutContent() {
+		return printoutContent;
+	}
+
+	public void setPrintoutContent(PrintoutContent printoutContent) {
+		this.printoutContent = printoutContent;
 	}
 
 	

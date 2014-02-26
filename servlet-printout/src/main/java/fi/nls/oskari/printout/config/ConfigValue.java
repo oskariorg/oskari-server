@@ -56,7 +56,7 @@ public enum ConfigValue {
 	LAYERSURL("layersURL"),
 	
 	REDIS_BLOB_CACHE("redis.blobcache"),
-	
+
 	/* temp fix to 'support' ditching useless minor scale resolution maps */ 
 	MAPLINK_ZOOM_OFFSET("maplink.zoom.offset")
 
