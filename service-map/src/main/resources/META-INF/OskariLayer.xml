@@ -301,7 +301,7 @@
             gfi_type,
 
             realtime,
-            refresh_rate
+            refresh_rate,
 
             created,
             updated)
