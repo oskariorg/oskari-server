@@ -204,6 +204,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",

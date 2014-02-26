@@ -42,6 +42,8 @@
         <result property="updated" column="updated" />
         <result property="xslt" column="xslt" />
         <result property="gfiType" column="gfi_type" />
+        <result property="realtime" column="realtime" />
+        <result property="refreshRate" column="refresh_rate" />
        
         <result property="wms_dcp_http" column="wms_dcp_http" />
         <result property="wms_parameter_layers" column="wms_parameter_layers" />
@@ -129,6 +131,8 @@
         <parameter property="resource_daily_max_per_ip" />
         <parameter property="xslt" />
         <parameter property="gfiType" />
+        <parameter property="realtime" />
+        <parameter property="refreshRate" />
         <parameter property="selection_style" />
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="epsg" />
@@ -160,6 +164,8 @@
         <parameter property="resource_daily_max_per_ip" />
         <parameter property="xslt" />
         <parameter property="gfiType" />
+        <parameter property="realtime" />
+        <parameter property="refreshRate" />
         <parameter property="selection_style" />
         <parameter property="locale" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="epsg" />
@@ -226,6 +232,8 @@
       l.resource_daily_max_per_ip, 
       l.xslt, 
       l.gfi_type,
+      l.realtime,
+      l.refresh_rate,
       m.geom,
       l.selection_style,
       l.version,
@@ -272,6 +280,8 @@
       l.resource_daily_max_per_ip, 
       l.xslt, 
       l.gfi_type,
+      l.realtime,
+      l.refresh_rate,
       m.geom,
       l.selection_style,
       l.version,
@@ -314,6 +324,8 @@
       l.resource_daily_max_per_ip, 
       l.xslt, 
       l.gfi_type,
+      l.realtime,
+      l.refresh_rate,
       m.geom,
       l.selection_style,
       l.version,
@@ -358,6 +370,8 @@
       l.resource_daily_max_per_ip,  
       l.xslt,  
       l.gfi_type,
+      l.realtime,
+      l.refresh_rate,
       m.geom,
       l.selection_style,
       l.version,
@@ -405,6 +419,8 @@
       l.resource_daily_max_per_ip,
       l.xslt,
       l.gfi_type,
+      l.realtime,
+      l.refresh_rate,
       l.selection_style,
       l.version,
       l.epsg,
@@ -467,11 +483,13 @@
             resource_daily_max_per_ip,
             xslt,
             gfi_type,
+            realtime,
+            refresh_rate,
             selection_style,
             locale,
             epsg,
             layer_type)
-        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     </statement>
     
     <statement id="insertWfsServiceOfLayer" parameterMap="wfsServicesOfLayersParam">
@@ -518,6 +536,8 @@
 			resource_daily_max_per_ip = ?,
 			xslt = ?,
 			gfi_type = ?,
+            realtime = ?,
+            refresh_rate = ?,
             selection_style = ?,
             locale = ?,
             epsg = ?

@@ -38,6 +38,9 @@
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
 
+        <parameter property="realtime" />
+        <parameter property="refreshRate" />
+
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
@@ -68,6 +71,9 @@
 
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
+
+        <parameter property="realtime" />
+        <parameter property="refreshRate" />
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
@@ -105,6 +111,8 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.realtime,
+        l.refresh_rate,
         m.geom,
 
         l.created,
@@ -150,6 +158,8 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.realtime,
+        l.refresh_rate,
         m.geom,
 
         l.created,
@@ -195,6 +205,8 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.realtime,
+        l.refresh_rate,
         m.geom,
 
         l.created,
@@ -240,6 +252,8 @@
 
     l.gfi_xslt,
     l.gfi_type,
+    l.realtime,
+    l.refresh_rate,
     m.geom,
 
     l.created,
@@ -286,9 +300,12 @@
             gfi_xslt,
             gfi_type,
 
+            realtime,
+            refresh_rate
+
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -317,6 +334,9 @@
 
         gfi_xslt = ?,
         gfi_type=?,
+
+        realtime = ?,
+        refresh_rate = ?,
 
         updated=?
         WHERE id = ?
