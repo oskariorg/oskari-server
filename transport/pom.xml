@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.18-SNAPSHOT</version>
+        <version>1.18</version>
 	</parent>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>transport</artifactId>
@@ -183,12 +183,6 @@
 		    <artifactId>axiom-impl</artifactId>
 		</dependency>
         <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<type>jar</type>
@@ -229,6 +223,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
