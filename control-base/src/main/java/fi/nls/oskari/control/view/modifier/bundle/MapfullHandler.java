@@ -2,11 +2,15 @@ package fi.nls.oskari.control.view.modifier.bundle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +31,8 @@ import fi.nls.oskari.util.PropertyUtil;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger log = LogFactory.getLogger(MapfullHandler.class);
+    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_SEL_LAYERS = "selectedLayers";
     private static final String KEY_ID = "id";
@@ -50,6 +56,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_BASELAYERS = "baseLayers";
 
     private static final String PREFIX_MYPLACES = "myplaces_";
+    private static final String PREFIX_ANALYSIS = "analysis_";
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
@@ -172,12 +179,25 @@ public class MapfullHandler extends BundleHandler {
                 if (layerId.toLowerCase().startsWith("base_")) {
                     layerIdList.add(layerId);
                 } else if (layerId.startsWith(PREFIX_MYPLACES)) {
-                    final long categoryId = 
+                    final long categoryId =
                             ConversionHelper.getLong(layerId.substring(PREFIX_MYPLACES.length()), -1);
                     if (categoryId != -1) {
                         publishedMyPlaces.add(categoryId);
                     } else {
                         log.warn("Found my places layer in selected. Error parsing id with category id: ",
+                                layerId);
+                    }
+                } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
+
+                    String resourceType = AnalysisLayer.TYPE+"+"+user.getUuid();
+                    Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
+                    String permissionKey = "analysis+"+layerId;
+
+                    boolean containsKey = permissionsList.contains(permissionKey);
+                    if (containsKey) {
+                        //todo
+                    } else {
+                        log.warn("Found analysis layer in selected. Error parsing id with layer id: ",
                                 layerId);
                     }
                 } else if (ConversionHelper.getLong(layerId, -1) != -1) {

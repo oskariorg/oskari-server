@@ -147,61 +147,67 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	}
 	
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
-		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);		
+		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);
 		//TODO: this
 		Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
-		
+
 		List<Map<String, Object>> listOfMaps = queryForList(getNameSpace() + ".findPermissionsOfResource", parameterMap);
-		
+
 		// KEY: permissionsId, VALUE: permissions
 		Map<Integer, Permissions> permissionsMap = new HashMap<Integer, Permissions>();		
-		
+
 		for (Map<String, Object> resultMap : listOfMaps) {
 			int permissionsId = (Integer) resultMap.get("id");			
 			Permissions p = permissionsMap.get(permissionsId);
 			
 			if (p == null) {
-				p = new Permissions();
-				p.setId(permissionsId);
-				p.setUniqueResourceName(new UniqueResourceName());
-				p.getUniqueResourceName().setName((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[0])); //TODO: fix this split is not good
-				p.getUniqueResourceName().setNamespace((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[1]));
-				p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
-				p.setExternalId((String) resultMap.get("externalId"));
-				p.setExternalIdType((String) resultMap.get("externalType"));
-				permissionsMap.put(p.getId(), p);
+                p = new Permissions();
+                p.setId(permissionsId);
+                p.setUniqueResourceName(new UniqueResourceName());
+                final String[] mapping = String.valueOf(resultMap.get("resourceMapping")).split("\\+");
+                p.getUniqueResourceName().setName(mapping[0]);
+                p.getUniqueResourceName().setNamespace(mapping[1]);
+                p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
+                p.setExternalId((String) resultMap.get("externalId"));
+                p.setExternalIdType((String) resultMap.get("externalIdType"));
+                permissionsMap.put(p.getId(), p);
 
                 // id, resource_mapping, resource_type, external_id,external_type
 
 			}
 			
-			p.getGrantedPermissions().add((String) resultMap.get("permissionsType"));
+			p.getGrantedPermissions().add((String) resultMap.get("permissions"));
 		}
 		
 		List<Permissions> permissionsList = new ArrayList<Permissions>(permissionsMap.values());
 		Collections.sort(permissionsList);
 		return permissionsList;
 	}
-	
-
+    /**
+	 *   Use getPublishPermissions(String resourceType) instead.
+	 */
+    @Deprecated
     public Set<String> getPublishPermissions() {
+        return getPublishPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER);
+	}
+
+    public Set<String> getPublishPermissions(String resourceType) {
 
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
+		parameterMap.put("resourceType",resourceType);
 		List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findPublishPermissions", parameterMap);
-		
+
 		Set<String> permissions = new HashSet<String>();
-		
+
 		for (Map<String, Object> resultMap : publishPermissions) {
             permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
 		}
 
 		return permissions;
 	}
-
 
     public Set<String> getEditPermissions() {
 

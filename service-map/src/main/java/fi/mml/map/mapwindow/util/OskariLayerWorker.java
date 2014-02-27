@@ -183,7 +183,7 @@ public class OskariLayerWorker {
      * @param permissionsList    List of user publish permissions
      * @param editAccessList     List of user edit permissions
      */
-    private static JSONObject getPermissions(final User user, final String layerPermissionKey,
+    public static JSONObject getPermissions(final User user, final String layerPermissionKey,
                                              final Set<String> permissionsList, final Set<String> editAccessList) {
 
         final JSONObject permission = new JSONObject();
