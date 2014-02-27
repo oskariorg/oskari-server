@@ -152,7 +152,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution, producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -246,7 +246,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution, producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -395,7 +395,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -552,7 +552,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -706,7 +706,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -864,7 +864,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1020,7 +1020,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1122,7 +1122,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1229,7 +1229,7 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution);
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);

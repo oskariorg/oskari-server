@@ -18,7 +18,15 @@
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                            "lazy" : true,
+                            "disconnectTime" : 30000,
+                            "backoffIncrement": 1000,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000
+                        }
+                    },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }

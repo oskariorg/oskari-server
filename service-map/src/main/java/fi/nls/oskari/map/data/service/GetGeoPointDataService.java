@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -62,22 +63,23 @@ public class GetGeoPointDataService {
         }
         if (gfiResponse != null && !gfiResponse.isEmpty()) {
             final JSONObject response = new JSONObject();
-            try {
-                response.put(GetGeoPointDataService.TYPE, params.getLayer().getType());
-                response.put(GetGeoPointDataService.LAYER_ID, params.getLayer().getId());
-                final String xslt = params.getLayer().getGfiXslt();
-                if (xslt == null || xslt.isEmpty()) {
-                    response.put(GetGeoPointDataService.PRESENTATION_TYPE, GetGeoPointDataService.PRESENTATION_TYPE_TEXT);
-                    response.put(GetGeoPointDataService.CONTENT, gfiResponse);
-                } else {
-                    final String transformedResult = transformResponse(xslt, gfiResponse);
-                    JSONObject respObj = new JSONObject(transformedResult);
-                    response.put(GetGeoPointDataService.PRESENTATION_TYPE, GetGeoPointDataService.PRESENTATION_TYPE_JSON);
-                    response.put(GetGeoPointDataService.CONTENT, respObj);
+            JSONHelper.putValue(response, TYPE, params.getLayer().getType());
+            JSONHelper.putValue(response, LAYER_ID, params.getLayer().getId());
+            // try transform if XSLT is provided
+            final String xslt = params.getLayer().getGfiXslt();
+            JSONObject respObj = null;
+            if (xslt != null && !xslt.isEmpty()) {
+                final String transformedResult = transformResponse(xslt, gfiResponse);
+                respObj = JSONHelper.createJSONObject(transformedResult);
+                if(respObj != null) {
+                    JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
+                    JSONHelper.putValue(response,CONTENT, respObj);
                 }
-            } catch (JSONException je) {
-                log.error(je, "Couldn't construct GFI response from:", gfiResponse, "- params:", params);
-                return null;
+            }
+            // use text content if respObj isn't present (transformed JSON not created)
+            if(respObj == null) {
+                JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
+                JSONHelper.putValue(response,CONTENT, gfiResponse);
             }
             return response;
         }
@@ -115,7 +117,8 @@ public class GetGeoPointDataService {
 
             return transformedResponse;
         } catch (Exception e) {
-            log.error(e, "Error transforming GFI response: ", response, "- with XSLT:", xslt);
+            log.error("Error transforming GFI response: ", response, "- with XSLT:", xslt,
+                    "Error:", e.getMessage());
         } finally {
             if (respInStream != null) {
                 try {

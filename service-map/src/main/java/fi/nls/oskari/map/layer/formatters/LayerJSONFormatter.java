@@ -118,6 +118,9 @@ public class LayerJSONFormatter {
         }
         JSONHelper.putValue(layerJson, "geom", layer.getGeometry());
 
+        JSONHelper.putValue(layerJson, "params", layer.getParams());
+        JSONHelper.putValue(layerJson, "options", layer.getOptions());
+
         //log.debug("getLegendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());
@@ -160,6 +163,10 @@ public class LayerJSONFormatter {
         if (indexOf > 0) {
             // parse uuid from URL
             return metadataId.substring(indexOf + 5);
+        }
+        if(metadataId.startsWith("http")) {
+            log.debug("Couldn't parse uuid from metadata url:", metadataId);
+            return null;
         }
         return metadataId;
     }

@@ -7,7 +7,7 @@ Assumes pre-installed:
 * JDK 1.6+ (tested with 1.6.18)
 * Cygwin32 or 64, if windows environment (Windows 7 tested)
 * Maven 3+ (tested with 3.0.5)
-* PostgresSQL 8.4+ (tested with 9.3) with a oskaridb created for Oskari
+* PostgresSQL 9.1+ (tested with 9.3) with a oskaridb created for Oskari
 
 # Create oskaridb data base with pgAdmin or with psql
 
@@ -86,14 +86,21 @@ Assumes pre-installed:
     This adds maven dependencies not found in common repositories to your local maven repository
 
 
-3) Compile and package the servlet by running 
+
+3) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
+    e.g. mv jetty-env.xml jetty-env-ignore.xml
+
+
+4) Compile and package the servlet by running 
 
     cd oskari-server
     mvn clean package -f servlet-map-pom.xml
 
-4) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
 
-5) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+5) Copy the war package from under oskari-server/servlet-map/target/ to {jetty.home}/webapps
+
+6) Setup override properties for Oskari. Add an oskari-ext.properties in {jetty.home}/resources/oskari-ext.properties (oskari.trustAllCerts/oskari.trustAllHosts bypasses certificate errors on ssl requests):
+
 
    Copy oskari-server/servlet-map/src/main/resources/oskari.properties to {jetty.home}/resources/oskari-ext.properties
 
@@ -124,6 +131,7 @@ Assumes pre-installed:
     url=jdbc:postgresql://localhost:5432/oskaridb
     user=postgres
     pass=[your pw]
+
 3) Ignore jetty-env.xml in /oskari-server/servlet-map path, if exists
     e.g. mv jetty-env.xml jetty-env-ignore.xml
 

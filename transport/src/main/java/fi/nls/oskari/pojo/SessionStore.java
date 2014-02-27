@@ -31,6 +31,7 @@ public class SessionStore {
 	private String client; // bayeux session (used in redis key)
 	private String session; // liferay session
     private String route; // liferay cluster route id
+    private String uuid; // Oskari user id for id
 	private String language;
 	private String browser;
 	private long browserVersion;
@@ -144,7 +145,24 @@ public class SessionStore {
 		this.language = language;
 	}
 
-	/**
+    /**
+     * Get cliet user id
+     * @return
+     */
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Set client user id
+     * @param uuid
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    /**
 	 * Gets browser
 	 * 
 	 * @return browser
@@ -423,6 +441,8 @@ public class SessionStore {
 				break;
 			} else if (TransportService.PARAM_ID.equals(fieldName)) {
 				parser.getText();
+            } else if (TransportService.PARAM_UUID.equals(fieldName)) {
+                parser.getText();
 			} else if (TransportService.PARAM_DATA.equals(fieldName)) {
 				store = parse(parser);
 			} else if (TransportService.PARAM_CHANNEL.equals(fieldName)) {
@@ -491,6 +511,8 @@ public class SessionStore {
 				store.setClient(parser.getText());
 			} else if (TransportService.PARAM_LANGUAGE.equals(fieldName)) {
 				store.setLanguage(parser.getText());
+            } else if (TransportService.PARAM_UUID.equals(fieldName)) {
+                store.setUuid(parser.getText());
 			} else if (TransportService.PARAM_BROWSER.equals(fieldName)) {
 				store.setBrowser(parser.getText());
 			} else if (TransportService.PARAM_BROWSER_VERSION.equals(fieldName)) {

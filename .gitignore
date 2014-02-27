@@ -1,6 +1,7 @@
-*/target
-*/*/target
-*/.settings
+.DS_Store
+*/target/
+target/
+.settings/
 */.classpath
 */.project
 *.iml
@@ -8,5 +9,7 @@
 .idea
 .project
 /data/
+/servlet-map/data/
 /servlet-map/src/main/webapp/WEB-INF/jetty-env.xml
 transport.log
+*pom.xml.versionsBackup

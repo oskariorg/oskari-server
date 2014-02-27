@@ -2,6 +2,7 @@ package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -20,6 +21,8 @@ import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -36,10 +39,19 @@ public class SaveLayerHandler extends ActionHandler {
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
 
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
-    private static final String PARM_LAYER_ID = "layer_id";
+    private static final String PARAM_LAYER_ID = "layer_id";
+    private static final String PARAM_WMS_NAME = "wmsName";
+    private static final String PARAM_WMS_URL = "wmsUrl";
 
     private static final String LAYER_NAME_PREFIX = "name_";
     private static final String LAYER_TITLE_PREFIX = "title_";
+
+    private static final String ERROR_UPDATE_OR_INSERT_FAILED = "update_or_insert_failed";
+    private static final String ERROR_NO_LAYER_WITH_ID = "no_layer_with_id:";
+    private static final String ERROR_OPERATION_NOT_PERMITTED = "operation_not_permitted_for_layer_id:";
+    private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing:";
+    private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value:";
+
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -51,7 +63,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         // update cache - do this before creating json!
-        final boolean cacheUpdated = updateCache(ml, params.getHttpParam("version"));
+        boolean cacheUpdated = ml.isCollection();
+        // skip cache update for collections since they don't have the info
+        if(!ml.isCollection()) {
+            cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+        }
 
         // construct response as layer json
         final JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(ml, params.getUser(), params.getLocale().getLanguage());
@@ -69,15 +85,19 @@ public class SaveLayerHandler extends ActionHandler {
     private int saveLayer(final ActionParameters params) throws ActionException {
 
         // layer_id can be string -> external id!
-        final String layer_id = params.getHttpParam(PARM_LAYER_ID);
+        final String layer_id = params.getHttpParam(PARAM_LAYER_ID);
 
         try {
             // ************** UPDATE ************************
             if (layer_id != null) {
 
                 final OskariLayer ml = mapLayerService.find(layer_id);
+                if (ml == null) {
+                    // layer wasn't found
+                    throw new ActionException(ERROR_NO_LAYER_WITH_ID + layer_id);
+                }
                 if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), ml.getId())) {
-                    throw new ActionDeniedException("Unauthorized user tried to update layer - id=" + layer_id);
+                    throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
                 handleRequestToMapLayer(params, ml);
@@ -92,7 +112,7 @@ public class SaveLayerHandler extends ActionHandler {
             else {
 
                 if (!permissionsService.hasAddLayerPermission(params.getUser())) {
-                    throw new ActionDeniedException("Unauthorized user tried to add layer - id=" + layer_id);
+                    throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
                 final OskariLayer ml = new OskariLayer();
@@ -121,7 +141,11 @@ public class SaveLayerHandler extends ActionHandler {
             }
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't update/insert map layer ", e);
+            if (e instanceof ActionException) {
+                throw (ActionException) e;
+            } else {
+                throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
+            }
         }
     }
 
@@ -159,6 +183,8 @@ public class SaveLayerHandler extends ActionHandler {
             } else {
                 capabilitiesService.update(cc);
             }
+            // flush cache, otherwise only db is updated but code retains the old cached version
+            WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
             log.info(ex, "Error updating capabilities: ", cc, "from URL:", wmsUrl);
             return false;
@@ -174,12 +200,11 @@ public class SaveLayerHandler extends ActionHandler {
         if (wmsUrl.indexOf(",http:") > 0) {
             wmsUrl = wmsUrl.substring(0, wmsUrl.indexOf(",http:"));
         }
-
         return wmsUrl;
 
     }
 
-    private void handleRequestToMapLayer(final ActionParameters params, OskariLayer ml) throws ActionParamsException {
+    private void handleRequestToMapLayer(final ActionParameters params, OskariLayer ml) throws ActionException {
 
         HttpServletRequest request = params.getRequest();
 
@@ -216,8 +241,9 @@ public class SaveLayerHandler extends ActionHandler {
             return;
         }
 
-        ml.setName(params.getRequiredParam("wmsName"));
-        ml.setUrl(params.getRequiredParam("wmsUrl"));
+        ml.setName(params.getRequiredParam(PARAM_WMS_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_NAME));
+        final String url = validateUrl(params.getRequiredParam(PARAM_WMS_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_URL));
+        ml.setUrl(url);
 
         ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
         ml.setStyle(params.getHttpParam("style", ml.getStyle()));
@@ -235,6 +261,16 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setGfiXslt(xslt);
         }
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
+    }
+
+    private String validateUrl(final String url) throws ActionParamsException {
+        try {
+            // check that it's a valid url by creating an URL object...
+            new URL(getWmsUrl(url));
+        } catch (MalformedURLException e) {
+            throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_WMS_URL);
+        }
+        return url;
     }
 
     private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {

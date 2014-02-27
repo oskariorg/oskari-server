@@ -32,45 +32,79 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
             "text/xml" };
 
+
     public JSONObject getJSON(OskariLayer layer,
-                                     final String lang,
-                                     final boolean isSecure) {
-
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
-
-        JSONHelper.putValue(layerJson, "style", layer.getStyle());
-        final JSONArray styles = new JSONArray();
+                              final String lang,
+                              final boolean isSecure) {
 
         final WebMapService wms = buildWebMapService(layer);
-        if(wms != null) {
-            final Map<String, String> stylesMap = wms.getSupportedStyles();
-            try {
-                final Map<String, String> legends = wms.getSupportedLegends();
-                for (String styleName : stylesMap.keySet()) {
-                    final String styleLegend = legends.get(styleName);
-                    JSONObject obj = createStylesJSON(styleName, stylesMap.get(styleName), styleLegend);
-                    styles.put(obj);
+        return getJSON(layer, lang, isSecure, wms);
+    }
 
-                    if(styleName.equals(layer.getStyle()) && styleLegend != null && !"".equals(styleLegend)) {
-                        // if default style match and style has legend image - fix legendImage
-                        JSONHelper.putValue(layerJson, "legendImage", styleLegend);
-                    }
-                }
-            } catch (Exception e) {
-                log.warn(e, "Populating layer styles failed!");
-            }
-            JSONHelper.putValue(layerJson, "isQueryable", wms.isQueryable());
-            JSONHelper.putValue(layerJson, "version", wms.getVersion());
-        }
-        JSONHelper.putValue(layerJson, "styles", styles);
-        JSONObject formats = getFormatsJSON(wms);
+    public JSONObject getJSON(OskariLayer layer,
+                              final String lang,
+                              final boolean isSecure,
+                              final WebMapService capabilities) {
+
+        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+        JSONHelper.putValue(layerJson, "style", layer.getStyle());
+
+        includeCapabilitiesInfo(layerJson, layer, capabilities);
+
         if(layer.getGfiType() != null && !layer.getGfiType().isEmpty()) {
             // setup default if saved
-            JSONHelper.putValue(formats, "value", layer.getGfiType());
+            JSONObject formats = layerJson.optJSONObject("formats");
+            if(formats == null) {
+                // create formats node if not found
+                formats = JSONHelper.createJSONObject("value", layer.getGfiType());
+                JSONHelper.putValue(layerJson, "formats", formats);
+            }
+            else {
+                JSONHelper.putValue(formats, "value", layer.getGfiType());
+            }
         }
-        JSONHelper.putValue(layerJson, "formats", formats);
-
         return layerJson;
+    }
+
+    /**
+     * Populate JSON with capabilities values
+     * @param layerJson
+     * @param layer
+     * @param capabilities
+     */
+    public void includeCapabilitiesInfo(final JSONObject layerJson,
+                                        final OskariLayer layer,
+                                        final WebMapService capabilities) {
+        if(capabilities == null) {
+            return;
+        }
+
+        final Map<String, String> stylesMap = capabilities.getSupportedStyles();
+        final JSONArray styles = new JSONArray();
+        try {
+            final Map<String, String> legends = capabilities.getSupportedLegends();
+            final boolean hasLegendImage = layer.getLegendImage() != null && !layer.getLegendImage().isEmpty();
+            for (String styleName : stylesMap.keySet()) {
+                final String styleLegend = legends.get(styleName);
+                JSONObject obj = createStylesJSON(styleName, stylesMap.get(styleName), styleLegend);
+                styles.put(obj);
+                if(hasLegendImage) {
+                    continue;
+                }
+                // set legend image from capabilities if admin hasn't configured it
+                if(styleName.equals(layer.getStyle()) && styleLegend != null && !styleLegend.isEmpty()) {
+                    // if default style match and style has legend image - fix legendImage
+                    JSONHelper.putValue(layerJson, "legendImage", styleLegend);
+                }
+            }
+        } catch (Exception e) {
+            log.warn(e, "Populating layer styles failed!");
+        }
+        JSONHelper.putValue(layerJson, "styles", styles);
+        JSONObject formats = getFormatsJSON(capabilities);
+        JSONHelper.putValue(layerJson, "formats", formats);
+        JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
+        JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
     }
 
     /**

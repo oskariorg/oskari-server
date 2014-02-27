@@ -340,7 +340,7 @@
 
     <!-- fixed -->
     <select id="findMaplayerIdsForViewPermissionsByExternalIds" resultClass="HashMap" parameterMap="externalIds">
-	    SELECT 
+	    SELECT DISTINCT
 		    map.id
 		FROM
             oskari_resource osr,
@@ -361,7 +361,7 @@
 
     <!-- fixed -->
     <select id="findMaplayerIdsForViewPublishedPermissionsByExternalIds" resultClass="HashMap" parameterMap="externalIds">
-        SELECT
+        SELECT DISTINCT
         map.id
         FROM
         oskari_resource osr,
@@ -380,7 +380,7 @@
 
     <!-- fixed -->
     <select id="hasViewPermissionForLayerByLayerId" resultClass="long" parameterMap="externalIdsAndLayerId">
-        SELECT 
+        SELECT DISTINCT
             map.id
         FROM 
             oskari_resource osr,
@@ -401,7 +401,7 @@
 
     <!-- fixed -->
     <select id="hasEditPermissionForLayerByLayerId" resultClass="long" parameterMap="externalIdsAndLayerId">
-        SELECT
+        SELECT DISTINCT
         map.id
         FROM
         oskari_resource ore,

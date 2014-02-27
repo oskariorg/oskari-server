@@ -31,7 +31,9 @@ import java.util.*;
 public class PublishHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(PublishHandler.class);
-    
+
+    public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
+
     public static final String KEY_PUBDATA = "pubdata";
     public static final String KEY_VIEW_DATA = "viewData";
 
@@ -54,8 +56,9 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_STATE = "state";
 
     public static final String KEY_GRIDSTATE = "gridState";
-    private Bundle publishedGridBundle = null;
-    private Bundle publishedToolbarBundle = null;
+    private static final String[] CACHED_BUNDLE_IDS = {
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2};
+    private Map<String, Bundle> bundleCache = new HashMap<String, Bundle>(CACHED_BUNDLE_IDS.length);
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_BASELAYER = "base_";
@@ -75,6 +78,8 @@ public class PublishHandler extends ActionHandler {
     private MyPlacesService myPlaceService = null;
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
+
+    private String[] drawToolsEnabledRoles = new String[0];
     
 
     public void setViewService(final ViewService service) {
@@ -119,13 +124,16 @@ public class PublishHandler extends ActionHandler {
             log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
         }
 
-        publishedGridBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
-        publishedToolbarBundle = bundleService.getBundleTemplateByName(ViewModifier.BUNDLE_TOOLBAR);
-        if(publishedGridBundle == null) {
-            log.warn("Couldn't get publishedGrid bundle template from DB!");
-        }
-        if (publishedToolbarBundle == null) {
-            log.warn("Couldn't get toolbar bundle template from DB!");
+        // setup roles authorized to enable drawing tools on published map
+        drawToolsEnabledRoles = PropertyUtil.getCommaSeparatedList(PROPERTY_DRAW_TOOLS_ENABLED);
+
+        for(String bundleid : CACHED_BUNDLE_IDS) {
+            final Bundle bundle = bundleService.getBundleTemplateByName(bundleid);
+            if(bundle == null) {
+                log.warn("Couldn't get", bundleid, "bundle template from DB!");
+                continue;
+            }
+            bundleCache.put(bundleid, bundle);
         }
     }
 
@@ -139,121 +147,41 @@ public class PublishHandler extends ActionHandler {
         return filteredClasses.toArray(new String[filteredClasses.size()]);
     }
 
+
     public void handleAction(ActionParameters params) throws ActionException {
-        if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
-            log.error("Publish template id not configured (property: view.template.publish)!");
-            throw new ActionParamsException("Trying to publish map, but template isn't configured");
-        }
 
         final User user = params.getUser();
-        long userId = user.getId();
-        if (user.isGuest() || userId == -1) {
-            throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
-        }
 
-        // Get publisher defaults
-        View currentView = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
-        if (currentView == null) {
-            log.error("Could not get template View with id:", PUBLISHED_VIEW_TEMPLATE_ID);
-            throw new ActionParamsException("Could not get template View");
-        }
+        // Parse stuff sent by JS
+        final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
+        final View currentView = getBaseView(publisherData, user);
 
-        Bundle mapFullBundle = currentView.getBundleByName("mapfull");
+        final Bundle mapFullBundle = currentView.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
         if (mapFullBundle == null) {
-            throw new ActionParamsException("Could not get current state for mapfull");
-        }
-        JSONObject mapfullConfig = null;
-        try {
-            mapfullConfig = new JSONObject(mapFullBundle.getConfig());
-        } catch (JSONException e) {
-            log.error("Could not create JSONs of defaults:", mapFullBundle);
-            throw new ActionParamsException("Corrupted bundle data");
+            throw new ActionParamsException("Could find mapfull bundle from view:" + currentView.getId());
         }
 
-        Bundle infoboxBundle = currentView.getBundleByName("infobox");
-        JSONObject infoboxState = null;
-        JSONObject infoboxConfig = null;
-        try {
-            infoboxState = new JSONObject(infoboxBundle.getState());
-            infoboxConfig = new JSONObject(infoboxBundle.getConfig());
-        } catch (JSONException e) {
-            log.error("Couldn't create JSONs of defaults:", infoboxBundle);
-            throw new ActionParamsException("Corrupted bundle data");
-        }
-
-        // Set user
+        // Setup user
         try {
             JSONObject userJson = new JSONObject();
             userJson.put(KEY_FIRSTNAME, user.getFirstname());
             userJson.put(KEY_LASTNAME, user.getLastname());
             userJson.put(KEY_NICKNAME, user.getScreenname());
             userJson.put(KEY_LOGINNAME, user.getEmail());
-            mapfullConfig.put(KEY_USER, userJson);
+            JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_USER, userJson);
+            //mapfullTemplateConfig.put(KEY_USER, userJson);
         } catch (JSONException jsonex) {
-            log.error(jsonex, "Could not create user object:", user);
+            log.error("Could not create user object:", user, "- Error:", jsonex.getMessage());
             throw new ActionParamsException("User data problem");
         }
 
-        // Parse stuff sent by JS
-        final String pdStr = params.getHttpParam(KEY_PUBDATA);
-        JSONObject pubdata = null;
-        try {
-            pubdata = new JSONObject(pdStr);
-        } catch (JSONException e) {
-            log.error(e, "Unable to parse publisher data:", pdStr );
-            throw new ActionParamsException("Unable to parse publisher data.");
-        }
-
-        try {
-            if (!pubdata.isNull("id")) {
-                long updateViewId = pubdata.getLong("id");
-                currentView = viewService.getViewWithConf(updateViewId);
-
-                if (user.getId() != currentView.getCreator()) {
-                    log.error("Trying to publish map, but couldn't determine user");
-                    throw new ActionDeniedException("No permissions to update this id:" + updateViewId);
-                }
-
-            }
-        } catch (JSONException e1) {
-            log.error("Some exception when try get publish id from pubdata json");
-        }
-
-        final String domain = JSONHelper.getStringFromJSON(pubdata, KEY_DOMAIN, null);
+        // setup basic info about view
+        final String domain = JSONHelper.getStringFromJSON(publisherData, KEY_DOMAIN, null);
         if(domain == null) {
             throw new ActionParamsException("Domain missing");
         }
-        final String name = JSONHelper.getStringFromJSON(pubdata, KEY_NAME, "Julkaistu kartta " + System.currentTimeMillis());
-        final String language = JSONHelper.getStringFromJSON(pubdata, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
-        final String layout = JSONHelper.getStringFromJSON(pubdata, KEY_LAYOUT, "lefthanded");
-
-        JSONHelper.putValue(mapfullConfig, KEY_LAYOUT, layout);
-
-        JSONArray newPlugins;
-        JSONObject size;
-        JSONObject gridState = null;
-        JSONObject mapfullState = null;
-        JSONObject publishedToolbarConfig = null;
-        try {
-            newPlugins = pubdata.getJSONArray(KEY_PLUGINS);
-            size = pubdata.getJSONObject(KEY_SIZE);
-            if (pubdata.has(KEY_GRIDSTATE)) {
-                gridState = pubdata.getJSONObject(KEY_GRIDSTATE);
-            }
-
-            mapfullState = pubdata.getJSONObject(KEY_MAPSTATE);
-            final JSONObject tmpInfoboxState = pubdata.optJSONObject(ViewModifier.BUNDLE_INFOBOX);
-            if (tmpInfoboxState != null) {
-                infoboxState = tmpInfoboxState;
-            }
-
-            publishedToolbarConfig = pubdata.optJSONObject(ViewModifier.BUNDLE_TOOLBAR);
-        } catch (JSONException jsonex) {
-            throw new RuntimeException("[PublishHandler] Unable to parse "
-                    + "params for new published map!\n" + "Param string is:\n"
-                    + params.getRequest().getParameter(KEY_PUBDATA) + "\n" + "Error was "
-                    + jsonex.getMessage());
-        }
+        final String name = JSONHelper.getStringFromJSON(publisherData, KEY_NAME, "Published map " + System.currentTimeMillis());
+        final String language = JSONHelper.getStringFromJSON(publisherData, KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 
         currentView.setPubDomain(domain);
         currentView.setName(name);
@@ -263,36 +191,88 @@ public class PublishHandler extends ActionHandler {
         // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
 
-        JSONArray selectedLayers = null;
-        try {
-            selectedLayers = getPublishableLayers(mapfullState.getJSONArray(KEY_SELLAYERS), user);
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not get selected layers");
+        // setup map state
+        setupMapState(mapFullBundle, publisherData, user);
+
+        // setup infobox
+        final JSONObject tmpInfoboxState = publisherData.optJSONObject(ViewModifier.BUNDLE_INFOBOX);
+        if (tmpInfoboxState != null) {
+            final Bundle infoboxTemplateBundle = currentView.getBundleByName(ViewModifier.BUNDLE_INFOBOX);
+            if(infoboxTemplateBundle != null) {
+                infoboxTemplateBundle.setState(tmpInfoboxState.toString());
+            }
+            else {
+                log.warn("Publisher sent state for infobox, but infobox isn't available in template view! State:", tmpInfoboxState);
+            }
         }
 
-        // Override layer selections
-        final boolean layersUpdated = JSONHelper.putValue(mapfullConfig, KEY_LAYERS, selectedLayers);
-        final boolean selectedLayersUpdated = JSONHelper.putValue(mapfullState, KEY_SELLAYERS, selectedLayers);
+        // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
+        if(user.hasAnyRoleIn(drawToolsEnabledRoles)) {
+            setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+        }
+
+        // Setup toolbar bundle if user has configured it
+        setupBundle(currentView, publisherData, ViewModifier.BUNDLE_TOOLBAR);
+
+        // Setup thematic map/published grid bundle
+        final JSONObject gridState = publisherData.optJSONObject(KEY_GRIDSTATE);
+        log.debug("Grid state:", gridState);
+        if(gridState != null) {
+            final Bundle gridBundle = addBundle(currentView, ViewModifier.BUNDLE_PUBLISHEDGRID);
+            log.debug("Grid bundle added:", gridBundle);
+            mergeBundleConfiguration(gridBundle, null, gridState);
+        }
+
+        log.debug("Save view:", currentView);
+        final View newView = saveView(currentView);
+        log.debug("Published a map:", newView);
+
+        try {
+            JSONObject newViewJson = new JSONObject(newView.toString());
+            ResponseHelper.writeResponse(params, newViewJson);
+        } catch (JSONException je) {
+            log.error(je, "Could not create JSON response.");
+            ResponseHelper.writeResponse(params, false);
+        }
+    }
+
+    private void setupMapState(final Bundle mapFullBundle, final JSONObject publisherData, final User user) throws ActionException {
+
+        // setup map state
+        final JSONArray newPlugins = publisherData.optJSONArray(KEY_PLUGINS);
+        final JSONObject publisherMapState = publisherData.optJSONObject(KEY_MAPSTATE);
+        if(newPlugins == null || publisherMapState == null) {
+            throw new ActionParamsException("Could not get plugins/state for mapfull from publisher data");
+        }
+        // complete overrride of template mapfull state with the data coming from publisher!
+        mapFullBundle.setState(publisherMapState.toString());
+
+        // setup layers based on user rights (double check for user rights)
+        final JSONArray selectedLayers = getPublishableLayers(publisherMapState.optJSONArray(KEY_SELLAYERS), user);
+
+        // Override template layer selections
+        final boolean layersUpdated = JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_LAYERS, selectedLayers);
+        final boolean selectedLayersUpdated = JSONHelper.putValue(mapFullBundle.getStateJSON(), KEY_SELLAYERS, selectedLayers);
+        //final boolean selectedLayersUpdated = JSONHelper.putValue(publisherMapState, KEY_SELLAYERS, selectedLayers);
         if (!(layersUpdated && selectedLayersUpdated)) {
             // failed to put layers correctly
-            throw new RuntimeException("Could not override layers selections");
+            throw new ActionParamsException("Could not override layers selections");
         }
+
+        // Set layout
+        final String layout = JSONHelper.getStringFromJSON(publisherData, KEY_LAYOUT, "lefthanded");
+        JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_LAYOUT, layout);
 
         // Set size
-        try {
-            mapfullConfig.put(KEY_SIZE, size);
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not set size");
+        final JSONObject size = publisherData.optJSONObject(KEY_SIZE);
+        if(!JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_SIZE, size)) {
+            throw new ActionParamsException("Could not set size for map");
         }
 
-        // Append plugins
-        JSONArray plugins = null;
-        try {
-            plugins = mapfullConfig.getJSONArray(KEY_PLUGINS);
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not get default plugins");
+        final JSONArray plugins = mapFullBundle.getConfigJSON().optJSONArray(KEY_PLUGINS);
+        if(plugins == null) {
+            throw new ActionParamsException("Could not get default plugins");
         }
-
         // see if the plugin is already in the template
         for (int i = newPlugins.length(); --i >= 0; ) {
             boolean alreadyAdded = false;
@@ -326,8 +306,9 @@ public class PublishHandler extends ActionHandler {
                     }
                 }
             } catch (JSONException e) {
-                throw new RuntimeException("Could not loop new plugins", e);
+                throw new ActionParamsException("Could not loop new plugins:" + e.getMessage());
             }
+            // Append plugins
             for (int j = plugins.length(); --j >= 0; ) {
                 JSONObject plugin = null;
                 try {
@@ -359,141 +340,118 @@ public class PublishHandler extends ActionHandler {
             }
         }
 
+        // replace current plugins
+        JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_PLUGINS, plugins);
+    }
+
+
+    private JSONObject getPublisherInput(final String input) throws ActionException {
         try {
-            mapfullConfig.put(KEY_PLUGINS, plugins);
+            return new JSONObject(input);
         } catch (JSONException e) {
-            throw new RuntimeException("Could not append plugin array");
+            log.error(e, "Unable to parse publisher data:", input );
+            throw new ActionParamsException("Unable to parse publisher data.");
+        }
+    }
+
+    private View getBaseView(final JSONObject publisherInput, final User user) throws ActionException {
+
+        if (user.isGuest()) {
+            throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
         }
 
-        // Build viewdata
-        JSONObject viewData = new JSONObject();
-        try {
-            final JSONObject mapfull = new JSONObject();
-            mapfull.put(KEY_CONFIG, mapfullConfig);
-            mapfull.put(KEY_STATE, mapfullState);
-
-            final JSONObject infobox = new JSONObject();
-            infobox.put(KEY_CONFIG, infoboxConfig);
-            infobox.put(KEY_STATE, infoboxState);
-
-            viewData.put(ViewModifier.BUNDLE_MAPFULL, mapfull);
-            viewData.put(ViewModifier.BUNDLE_INFOBOX, infobox);
-            // Add toolbar only if we have a config for it
-            // we aren't using state and config should come from user
-            if (publishedToolbarConfig != null && publishedToolbarConfig.names().length() > 0 && publishedToolbarBundle != null) {
-                log.warn("toolbar config found");
-                Bundle toolbarBundle = currentView.getBundleByName(ViewModifier.BUNDLE_TOOLBAR);
-                if (toolbarBundle == null) {
-                    log.warn("Toolbar not found in currentView");
-                    currentView.addBundle(publishedToolbarBundle);
-                    toolbarBundle = publishedToolbarBundle;
-                }
-                final JSONObject toolbar = new JSONObject();
-                // template has all the buttons disabled
-                final JSONObject toolbarConfig = new JSONObject(toolbarBundle.getConfig());
-                // get enabled keys from user
-                merge(publishedToolbarConfig, toolbarConfig);
-                final JSONObject toolbarState = new JSONObject();
-                toolbar.put(KEY_CONFIG, toolbarConfig);
-                toolbar.put(KEY_STATE, toolbarState);
-                viewData.put(ViewModifier.BUNDLE_TOOLBAR, toolbar);
-            } else {
-                log.warn("toolbar config not found");
-                // We have to remove the bundle...
-                currentView.removeBundle("toolbar");
+        // check if we are updating a view
+        long viewId = publisherInput.optLong("id", -1);
+        if(viewId != -1) {
+            log.debug("Loading view for editing:", viewId);
+            final View view = viewService.getViewWithConf(viewId);
+            if (user.getId() != view.getCreator()) {
+                throw new ActionDeniedException("No permissions to update view with id:" + viewId);
             }
-
-            if(gridState != null && publishedGridBundle != null) {
-                Bundle gridBundle = currentView.getBundleByName(ViewModifier.BUNDLE_PUBLISHEDGRID);
-                if(gridBundle == null) {
-                    // grid bundle was not present, adding it manually
-                    currentView.addBundle(publishedGridBundle);
-                    gridBundle = publishedGridBundle;
-                }
-
-                final JSONObject publishedGrid = new JSONObject();
-                publishedGrid.put(KEY_CONFIG, new JSONObject(gridBundle.getConfig()));
-                publishedGrid.put(KEY_STATE, gridState);
-                gridBundle.setState(gridState.toString());
-                viewData.put(ViewModifier.BUNDLE_PUBLISHEDGRID, publishedGrid);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException("Could not store bundle JSONs", e);
+            return view;
         }
 
-        // Pass through the template stuff do not going to modify
-        // TODO: why do we construct viewData when this overrides it for other than mapfull/infobox?
-        for (Bundle s : currentView.getBundles()) {
-            String bundleName = s.getBundleinstance();
-            JSONObject bJson = new JSONObject();
-            if (bundleName.equals(ViewModifier.BUNDLE_INFOBOX) || bundleName.equals(ViewModifier.BUNDLE_MAPFULL) || bundleName.equals(ViewModifier.BUNDLE_TOOLBAR)) {
-                continue;
-            }
-            try {
-                JSONObject stateJson = new JSONObject(s.getState());
-                JSONObject configJson = new JSONObject(s.getConfig());
-                bJson.put(KEY_CONFIG, configJson);
-                bJson.put(KEY_STATE, stateJson);
-                viewData.put(bundleName, bJson);
-            } catch (JSONException e) {
-                throw new RuntimeException("Could pass through"
-                        + " template bundles as-is");
-            }
+        // not editing, use template view
+        if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+            log.error("Publish template id not configured (property: view.template.publish)!");
+            throw new ActionParamsException("Trying to publish map, but template isn't configured");
         }
-        // TODO: why is this added to additional params - logging purposes on exception?
-        params.putAdditionalParam(KEY_VIEW_DATA, viewData.toString());
+        log.debug("Using template to create a new view");
+        // Get publisher defaults
+        View view = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
+        if (view == null) {
+            log.error("Could not get template View with id:", PUBLISHED_VIEW_TEMPLATE_ID);
+            throw new ActionParamsException("Could not get template View");
+        }
+        // reset id so template doesn't get updated!!
+        // NOT NEEDED WITH CLONÌNG view.setId(-1);
 
-        View newView = null;
+        // clone a blank view based on template
+        return view.cloneBasicInfo();
+    }
 
-        if (!pubdata.isNull("id")) {
-            newView = updateView(currentView, viewData);
+    private void setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
+
+        final JSONObject bundleData = publisherData.optJSONObject(bundleid);
+        if (bundleData != null && bundleData.names().length() > 0) {
+            log.info("config found for", bundleid);
+            final Bundle bundle = addBundle(view, bundleid);
+            mergeBundleConfiguration(bundle, bundleData, null);
         } else {
-            newView = addView(currentView, viewData);
-        }
-
-        log.debug("Published a map:", newView);
-
-        try {
-            JSONObject newViewJson = new JSONObject(newView.toString());
-            ResponseHelper.writeResponse(params, newViewJson);
-        } catch (JSONException je) {
-            log.error(je, "Could not create JSON response.");
-            ResponseHelper.writeResponse(params, false);
-
+            log.warn("config not found for", bundleid, "- removing bundle.");
+            // We have to remove the bundle...
+            // TODO: check if we really want to remove the bundle from view since it could be template view???
+            view.removeBundle(bundleid);
         }
     }
+    private Bundle addBundle(final View view, final String bundleid) {
+        Bundle bundle = view.getBundleByName(bundleid);
+        if (bundle == null) {
+            log.info("Bundle with id:", bundleid, "not found in currentView - adding");
+            if(!bundleCache.containsKey(bundleid)) {
+                log.warn("Trying to add bundle that isn't loaded:", bundleid, "- Skipping it!");
+                return null;
+            }
+            bundle = bundleCache.get(bundleid).clone();
+            view.addBundle(bundle);
+        }
+        return bundle;
+    }
 
+    /**
+     * Merges user selections to bundles default config/state.
+     * @param bundle bundle to configure
+     * @param userConfig overrides for default config
+     * @param userState overrides for default state
+     * @return root configuration object containing both config and state
+     */
+    private void mergeBundleConfiguration(final Bundle bundle, final JSONObject userConfig, final JSONObject userState) {
+        final JSONObject defaultConfig = bundle.getConfigJSON();
+        final JSONObject defaultState = bundle.getStateJSON();
+        final JSONObject mergedConfig = JSONHelper.merge(defaultConfig, userConfig);
+        final JSONObject mergedState = JSONHelper.merge(defaultState, userState);
+        bundle.setConfig(mergedConfig.toString());
+        bundle.setState(mergedState.toString());
+    }
 
-    private synchronized View updateView(final View currentView, final JSONObject viewJson) throws ActionException {
-
+    private View saveView(final View view) {
         try {
-            viewService.updatePublishedView(currentView, viewJson);
+            if (view.getId() != -1) {
+                viewService.updatePublishedView(view);
+            } else {
+                long viewId = viewService.addView(view);
+                view.setId(viewId);
+            }
         } catch (ViewException e) {
-            log.error("Error when trying update published view", e);
+            log.error("Error when trying add/update published view", e);
         }
-
-        return currentView;
+        return view;
     }
 
-    private synchronized View addView(final View currentView, final JSONObject viewJson) throws ActionException {
-
-        // Create new View
-        View newView = new View();
-
-        long newViewId = 0;
-
-        try {
-            newViewId = viewService.addView(currentView, viewJson);
-            newView.setId(newViewId);
-        } catch (ViewException e) {
-            log.error("Error when trying add published view", e);
+    private JSONArray getPublishableLayers(final JSONArray selectedLayers, final User user) throws ActionException {
+        if(selectedLayers == null || user == null) {
+            throw new ActionParamsException("Could not get selected layers");
         }
-
-        return newView;
-    }
-
-
-    private JSONArray getPublishableLayers(final JSONArray selectedLayers, final User user) {
         final JSONArray filteredList = new JSONArray();
         log.debug("Selected layers:", selectedLayers);
 
@@ -578,8 +536,7 @@ public class PublishHandler extends ActionHandler {
         list.add(id);
         Map<Long, List<Permissions>> map = permissionsService.getPermissionsForLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
         List<Permissions> permissions = map.get(id);
-        boolean hasPermission = false;
-        hasPermission = permissionsService.permissionGrantedForRolesOrUser(
+        boolean hasPermission = permissionsService.permissionGrantedForRolesOrUser(
                 user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);
         if (!hasPermission) {
             log.warn("User tried to publish layer with no publish permission. LayerID:", layerId, "- User:", user);
@@ -587,20 +544,5 @@ public class PublishHandler extends ActionHandler {
         return hasPermission;
     }
 
-    private static void merge(JSONObject from, JSONObject to) throws JSONException {
-        for (String key: JSONObject.getNames(from)) {
-            Object val = from.get(key);
-            if (!to.has(key)) {
-                to.put(key, val);
-            } else {
-                if (val instanceof JSONObject) {
-                    JSONObject valueJson = (JSONObject)val;
-                    merge(valueJson, to.getJSONObject(key));
-                } else {
-                    to.put(key, val);
-                }
-            }
-        }
-    }
 
 }

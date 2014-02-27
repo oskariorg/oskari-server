@@ -117,6 +117,8 @@ public class MapProducer {
 
 	protected boolean useCache;
 
+	protected Integer zoomOffset;
+
 	public MapProducer(MapProducerResource resource, String gsn, String epsg,
 			String xClientInfo, Properties props) throws IOException,
 			GeoWebCacheException, NoSuchAuthorityCodeException,
@@ -129,6 +131,7 @@ public class MapProducer {
 		this.gsf = resource.getGsf();
 		this.schema = resource.getSchema();
 		this.props = props;
+		this.zoomOffset = resource.getZoomOffset();
 
 		if (ConfigValue.LAYER_TIMEOUT_SECONDS.getConfigProperty(props) != null) {
 			timeoutInSeconds = Long.valueOf(
@@ -397,10 +400,13 @@ public class MapProducer {
 
 		if (layerType.equals("wmslayer")) {
 
+			String format = layerDefinition.getFormat();
+
 			/* might use some geotools class here to build WMS query */
 			url = layerUrl + separator + "SERVICE=WMS&VERSION=1.1.1"
 					+ "&REQUEST=GetMap" + "&WIDTH=" + tw + "&HEIGHT=" + th
-					+ "&FORMAT=image%2Fpng" + "&STYLES="
+					+ "&FORMAT=" + URLEncoder.encode(format, "UTF-8")
+					+ "&STYLES="
 					+ (style != null ? URLEncoder.encode(style, "UTF-8") : "")
 					+ "&LAYERS=" + layersParam + "&SRS="
 					+ URLEncoder.encode(epsgCode, "UTF-8")
@@ -408,11 +414,13 @@ public class MapProducer {
 					+ e.getMinY() + "," + e.getMaxX() + "," + e.getMaxY();
 
 		} else if (layerType.equals("wfslayer")) {
+			String format = layerDefinition.getFormat();
 
 			/* this will be loaded via http proxy from action route */
 			url = layerUrl + separator + "SERVICE=WMS&VERSION=1.1.1"
 					+ "&REQUEST=GetMap" + "&WIDTH=" + tw + "&HEIGHT=" + th
-					+ "&FORMAT=image%2Fpng" + "&STYLES="
+					+ "&FORMAT=" + URLEncoder.encode(format, "UTF-8")
+					+ "&STYLES="
 					+ (style != null ? URLEncoder.encode(style, "UTF-8") : "")
 					+ "&LAYERS=" + layersParam + "&SRS="
 					+ URLEncoder.encode(epsgCode, "UTF-8")
@@ -469,18 +477,31 @@ public class MapProducer {
 			}
 
 			String tileMatrixSet = processor.getGridSubsetName();
-			String imageTypeExtension = "png";
 
-			/* REST */
-			/* WMTS 1.0.0 support only */
-			/* This will be replaced by content from resourceUrl/tile/template */
-			String wmtsRestPart = "1.0.0" + "/" + layersParam + "/" + style
-					+ "/" + tileMatrixSet + "/" + tileMatrix + "/" + tileRow
-					+ "/" + tileCol + "." + imageTypeExtension;
+			String urlTemplate = layerDefinition.getUrlTemplate();
+			if (urlTemplate == null) {
+				String imageTypeExtension = "png";
 
-			url = layerUrl + "/" + wmtsRestPart;
+				/* REST */
+				/* WMTS 1.0.0 support only */
+				/*
+				 * This will be replaced by content from
+				 * resourceUrl/tile/template
+				 */
+				String wmtsRestPart = "1.0.0" + "/" + layersParam + "/" + style
+						+ "/" + tileMatrixSet + "/" + tileMatrix + "/"
+						+ tileRow + "/" + tileCol + "." + imageTypeExtension;
 
-			System.out.println(url);
+				url = layerUrl + "/" + wmtsRestPart;
+			} else {
+				// "template":
+				// "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+				url = urlTemplate
+						.replaceFirst("\\{TileMatrixSet\\}", tileMatrixSet)
+						.replaceFirst("\\{TileMatrix\\}", tileMatrix)
+						.replaceFirst("\\{TileRow\\}", tileRow)
+						.replaceFirst("\\{TileCol\\}", tileCol);
+			}
 
 			/* KVP to be implemented */
 			/*
@@ -727,6 +748,10 @@ public class MapProducer {
 
 	public void setTemplateLayer(String templateLayer) {
 		this.templateLayer = templateLayer;
+	}
+
+	public Integer getZoomOffset() {
+		return zoomOffset;
 	}
 
 }

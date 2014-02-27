@@ -469,13 +469,13 @@ public class WFSImage {
         return style;
     }
 
-    /**
-     * Parses SLD style from a String (XML)
-     *
-     * @param xml
-     * @return sld
-     */
-    private Style createSLDStyle(String xml) {
+	/**
+	 * Parses SLD style from a String (XML)
+	 * 
+	 * @param xml
+	 * @return sld
+	 */
+	private Style createSLDStyle(String xml) {
         if(xml == null) {
             log.info("Trying to create style from <null> String!");
             return null;
@@ -484,8 +484,8 @@ public class WFSImage {
         if(style == null) {
             log.warn("Couldn't create style from XML:", xml);
         }
-        return style;
-    }
+		return style;
+	}	
 
     /**
      * Parses SLD style from an InputStream (XML)

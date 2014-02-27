@@ -3,40 +3,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fi.nls.oskari</groupId>
+		<artifactId>oskari-parent</artifactId>
+        <version>1.18</version>
+	</parent>
+    
     <groupId>fi.nls.oskari.service</groupId>
     <artifactId>oskari-base</artifactId>
     <packaging>jar</packaging>
     <name>Base Service</name>
-    <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
     <dependencies>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
             <exclusions>
                 <!-- exclude commons-logging
                 Reason: axiom brings a more recent version (causing conflict if we have both)
@@ -50,60 +39,47 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>de.odysseus.staxon</groupId>
             <artifactId>staxon</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.lambdaj</groupId>
             <artifactId>lambdaj</artifactId>
-            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>com.github.kevinsawicki</groupId>
             <artifactId>http-request</artifactId>
-            <version>4.0</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.7.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ibatis</groupId>
             <artifactId>ibatis-sqlmap</artifactId>
-            <version>2.3.4.726</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>1.2.14</version>
         </dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>2.0.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.11</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

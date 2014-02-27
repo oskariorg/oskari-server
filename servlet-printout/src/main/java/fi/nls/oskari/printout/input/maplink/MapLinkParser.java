@@ -27,9 +27,11 @@ import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolut
 public class MapLinkParser {
 	private static Log log = LogFactory.getLog(MapLinkParser.class);
 	private ScaleResolution sr;
+	private Integer zoomOffset = 0;
 
-	public MapLinkParser(ScaleResolution sr) {
+	public MapLinkParser(ScaleResolution sr, Integer zoomOffset) {
 		this.sr = sr;
+		this.zoomOffset = zoomOffset;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +68,8 @@ public class MapLinkParser {
 		if (stateInfo != null) {
 
 			Integer zoomLevel = ((Number) stateInfo.get("zoom")).intValue();
+			zoomLevel += zoomOffset;
+
 			mapLink.setZoom(zoomLevel);
 			mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
 
@@ -106,6 +110,10 @@ public class MapLinkParser {
 
 				layerDef.copyTo(layerSelection);
 
+				if (layerSelection.getFormat() == null) {
+					layerSelection.setFormat("image/png");
+				}
+
 				layerSelection.setOpacity(opacity);
 				layerSelection.setScale(mapLink.getScale());
 				layerSelection.setStyle(style);
@@ -129,6 +137,7 @@ public class MapLinkParser {
 		Integer zoomLevel = values.get("ZOOMLEVEL") instanceof Integer ? (Integer) values
 				.get("ZOOMLEVEL") : Integer.valueOf(
 				(String) values.get("ZOOMLEVEL"), 10);
+		zoomLevel += zoomOffset;
 		mapLink.setZoom(zoomLevel);
 		mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
 
@@ -165,6 +174,10 @@ public class MapLinkParser {
 			LayerDefinition layerSelection = new LayerDefinition();
 
 			layerDef.copyTo(layerSelection);
+
+			if (layerSelection.getFormat() == null) {
+				layerSelection.setFormat("image/png");
+			}
 
 			layerSelection.setOpacity(Integer.valueOf(opacity, 10));
 			layerSelection.setScale(mapLink.getScale());

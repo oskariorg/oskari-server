@@ -10,6 +10,7 @@ import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -19,6 +20,7 @@ import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.WFSLayerStore;
 import fi.nls.oskari.utils.XMLHelper;
 
+@Ignore
 public class WFSFilterTest {
 	private SessionStore session;
 	private WFSLayerStore layer;
@@ -33,6 +35,7 @@ public class WFSFilterTest {
 	private String geojson = "{\"data\":{\"filter\":{\"geojson\":{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[394081,6691734],[394361,6692574],[393521,6692854],[393241,6692014],[394081,6691734]]]}}],\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":3067}}}}} }";
     private String geojsonComplex = "{\"data\":{\"filter\":{\"geojson\":{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426125.95809412,6695752.6337378],[426535.95809412,6696262.6337378],[426025.95809412,6696672.6337378],[425615.95809412,6696162.6337378],[426125.95809412,6695752.6337378]]]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426843.70809412,6696053.8837378],[427215.70809412,6696609.8837378],[426659.70809412,6696981.8837378],[426287.70809412,6696425.8837378],[426843.70809412,6696053.8837378]]]}},{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[426595.70809412,6695941.8837378],[426195.70809412,6696245.8837378],[425891.70809412,6695845.8837378],[426291.70809412,6695541.8837378],[426595.70809412,6695941.8837378]]]}}],\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":3067}}}}}}";
 
+    // FIXME: move to files as in other test and use ResourceHelper to load them - Use XmlDiff to compare...
     String result = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>509058.0 6858054.0</gml:lowerCorner><gml:upperCorner>513578.0 6860174.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 	String resultBounds = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:BBOX><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"EPSG:3067\"><gml:lowerCorner>385800.0 6690267.0</gml:lowerCorner><gml:upperCorner>397380.0 6697397.0</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 	String resultMapClick = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:gml=\"http://www.opengis.net/gml\"><ogc:Intersects><ogc:PropertyName>the_geom</ogc:PropertyName><gml:Polygon srsDimension=\"2\"><gml:exterior><gml:LinearRing srsDimension=\"2\"><gml:posList>393905.00000648 6692163.0 393902.708209175 6692170.053426837 393896.70820593496 6692174.412684359 393889.29179406504 6692174.412684359 393883.291790825 6692170.053426837 393880.99999352 6692163.0 393883.291790825 6692155.946573163 393889.29179406504 6692151.587315641 393896.70820593496 6692151.587315641 393902.708209175 6692155.946573163 393905.00000648 6692163.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects></ogc:Filter>";
@@ -42,6 +45,7 @@ public class WFSFilterTest {
 
     @Before
     public void setUp() {
+        System.setProperty("org.geotools.referencing.forceXY", "true");
 		try {
 			session = SessionStore.setJSON(sessionJSON);
 			layer = WFSLayerStore.setJSON(layerJSON);
@@ -78,7 +82,8 @@ public class WFSFilterTest {
 	        StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
 	        filter = staxOMBuilder.getDocumentElement();
 		}
-		assertTrue("Should get expected result", filter.toString().equals(result));
+
+		assertEquals("Should get expected result", result, filter.toString());
 	}
 
 	@Test

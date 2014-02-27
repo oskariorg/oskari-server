@@ -30,13 +30,25 @@ public class IOHelper {
     private static SSLSocketFactory TRUSTED_FACTORY;
     private static HostnameVerifier TRUSTED_VERIFIER;
 
+    private static int CONNECTION_TIMEOUT_MS = 3000;
+    private static int READ_TIMEOUT_MS = 60000;
+
     private static boolean trustAllCerts = false;
     private static boolean trustAllHosts = false;
+
     static {
+        CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
+        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
         trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
         trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
     }
 
+    public static int getConnectionTimeoutMs() {
+        return CONNECTION_TIMEOUT_MS;
+    }
+    public static int getReadTimeoutMs() {
+        return READ_TIMEOUT_MS;
+    }
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
      * @param is
@@ -140,6 +152,8 @@ public class IOHelper {
         log.debug("Opening connection to", pUrl);
         final URL url = new URL(pUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
+        conn.setReadTimeout(READ_TIMEOUT_MS);
         if(trustAllCerts) trustAllCerts(conn);
         if(trustAllHosts) trustAllHosts(conn);
         return conn;

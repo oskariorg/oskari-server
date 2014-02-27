@@ -21,7 +21,6 @@
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapwfs.plugin.wfslayer.WfsLayerPlugin" },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },

@@ -2,19 +2,16 @@
 
 1) Install PostgreSQL: http://www.postgresql.org/ (tested with version 9.3)
 
-2) create a database with name oskaridb and change the connection pool in jetty-env.xml
+2) create a database with name oskaridb and change the database connection parameters:
 
-    <New id="oskaridb" class="org.mortbay.jetty.plus.naming.Resource">
-        <Arg>jdbc/OskariPool</Arg>
-        <Arg>
-            <New class="org.apache.commons.dbcp.BasicDataSource">
-                <Set name="driverClassName">org.postgresql.Driver</Set>
-                <Set name="url">jdbc:postgresql://localhost:5432/oskaridb</Set>
-                <Set name="username">*username*</Set>
-                <Set name="password">*password*</Set>
-            </New>
-        </Arg>
-    </New>
+For quick testing you can modify the values in oskari-server/servlet-map/filter/filter-base.properties
+
+db.jndi.driverClassName=org.hsqldb.jdbcDriver
+db.url=jdbc:hsqldb:file:data/oskaridb
+db.username=
+db.password=
+
+Or you can setup your maven profile settings to override the defaults like instructed in [Customizing property values](CustomizingPropertyValues.md)
 
 3) Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Doskari.setup=postgres-default`
 

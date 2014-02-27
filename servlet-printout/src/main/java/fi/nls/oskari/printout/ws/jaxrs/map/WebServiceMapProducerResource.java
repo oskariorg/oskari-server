@@ -436,7 +436,8 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
 		MapLinkParser mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				producer.getZoomOffset());
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
@@ -571,7 +572,8 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
 		MapLinkParser mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				producer.getZoomOffset());
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
@@ -663,7 +665,8 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
 		MapLinkParser mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				producer.getZoomOffset());
 
 		mapLinkParser.validate(mapLink);
 
@@ -738,7 +741,8 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
 		MapLinkParser mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				producer.getZoomOffset());
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());
@@ -771,7 +775,8 @@ public class WebServiceMapProducerResource extends MapProducerResource {
 		String scaleResolverId = ConfigValue.SCALE_RESOLVER.getConfigProperty(
 				props, "m_ol212");
 		MapLinkParser mapLinkParser = new MapLinkParser(
-				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId));
+				MetricScaleResolutionUtils.getScaleResolver(scaleResolverId),
+				producer.getZoomOffset());
 
 		MapLink mapLink = mapLinkParser.parseValueMapLink(values, layerJson,
 				gf, gridSubset.getResolutions());

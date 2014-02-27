@@ -1,0 +1,38 @@
+{
+    "domain": "test",
+    "name": "test",
+    "language": "fi",
+    "plugins": [
+        {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+            "config": {
+                "location": {
+                    "top": "10px",
+                    "left": "10px"
+                }
+            }
+        },
+        {
+            "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+        },
+        {
+            "id": "Oskari.mapframework.mapmodule.GetInfoPlugin"
+        }
+    ],
+    "size": {
+        "width": 700,
+        "height": 525
+    },
+    "mapstate": {
+        "north": 6874042,
+        "east": 517620,
+        "zoom": 1,
+        "srs": "EPSG:3067",
+        "selectedLayers": [
+            {
+                "id": "base_35",
+                "opacity": 100
+            }
+        ]
+    }
+}

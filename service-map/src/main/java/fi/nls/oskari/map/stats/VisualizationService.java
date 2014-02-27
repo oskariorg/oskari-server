@@ -76,8 +76,7 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
             return visualization;
         }
 
-        log.warn("Tried to create StatsVisualization but param values were not valid:",
-                visualization);
+        log.debug("Tried to create StatsVisualization but param values were not valid:", visualization);
         return null;
     }
     /**

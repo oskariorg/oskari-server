@@ -22,12 +22,15 @@ public class AdditionalIdFilter extends WFSFilter {
 
     private String layerPrefix = "";
     private String layerIdField = "";
+    private String layerUidField = "";
 
-    public AdditionalIdFilter(String layerPrefix, String layerIdField) {
+
+    public AdditionalIdFilter(String layerPrefix, String layerIdField, String layerUidField) {
         super();
 
         this.layerPrefix = layerPrefix;
         this.layerIdField = layerIdField;
+        this.layerUidField = layerUidField;
     }
 
     /**
@@ -63,7 +66,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initCoordinateFilter(coordinate);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId());
+            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
             filter = ff.and(filter, idFilter);
 
         } else if(type == WFSMapLayerJob.Type.GEOJSON) {
@@ -73,7 +76,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initGeoJSONFilter(geoJSONFilter);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId());
+            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
             filter = ff.and(filter, idFilter);
 
         } else if(type == WFSMapLayerJob.Type.NORMAL) {
@@ -88,7 +91,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initEnlargedBBOXFilter(location, layer);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId());
+            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
             filter = ff.and(filter, idFilter);
 
         } else {
@@ -105,7 +108,7 @@ public class AdditionalIdFilter extends WFSFilter {
      *
      * @return id equal WFS filter
      */
-    public Filter initIdFilter(String layerId) {
+    public Filter initIdFilter(String layerId, String uid) {
         if(layerId == null || !layerId.startsWith(layerPrefix)) {
             log.error("Failed to create analysis id filter (not an analysis layer)", layerId);
             return null;
@@ -115,7 +118,8 @@ public class AdditionalIdFilter extends WFSFilter {
         String[] values = layerId.split("_");
         String id = values[values.length - 1]; // TODO: add to redis?
         Filter idFilter = ff.equal(ff.property(layerIdField), ff.literal(id), false);
+        Filter uidFilter = ff.equal(ff.property(layerUidField), ff.literal(uid), false);
+        return ff.and(idFilter, uidFilter);
 
-        return idFilter;
     }
 }

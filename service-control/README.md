@@ -10,7 +10,6 @@ Oskari backend maps ajax services to specific handler classes based on a http pa
 	<dependency>
 	    <groupId>fi.nls.oskari.service</groupId>
 	    <artifactId>oskari-control-base</artifactId>
-	    <version>1.0-SNAPSHOT</version>
 	</dependency>
 
 5) Done - deploy the app and call your action with the `oskari ajaxUrl + action_route=myRoute`
@@ -115,5 +114,33 @@ Modifies config for "myBundle" adding the property "hello" with value "world" an
 	}
 
 
+If a parameter needs to be preprocessed/sanitized before calling the actual ParamHandler you can add a
+preprocessor. Whenever a ParamHandler is registered to Oskari a property is checked if any preprocessors should be added as well:
 
-ParamHandlers are run before BundleHandlers, but no order is guaranteed between handlers of the same type. Both are hooked in to the `GetAppSetup` route and don't affect views loaded via other means.
+    view.modifier.param.{param name}.prepocessors={fully qualified classname for class implementing ParamHandler}
+
+The value of the property can have one or more preprocessors classes defined as a comma-separated list. The referenced class should be a subclass
+of ParamHandler. Preprocessors are run before the actual ParamHandler and in the order they are defined in the comma-separated list.
+Note that preprocessors are NOT annotated with @OskariViewModifier (otherwise they would be added as normal paramhandlers).
+
+**Example for preprocessor ParamHandler**
+
+If param value contains "something offensive", changes the value to "something less offensive". The actual ParamHandler will then receive the preprocessed
+value("something less offensive") for the parameter.
+
+	import fi.nls.oskari.view.modifier.ModifierException;
+	import fi.nls.oskari.view.modifier.ModifierParams;
+
+	public class HelloParamHandler extends ParamHandler {
+
+	    public boolean handleParam(final ModifierParams params) throws ModifierException {
+	        if(params.getParamValue().indexOf("something offensive") != -1) {
+	            params.setParamValue("something less offensive");
+	            return true;
+	        }
+	        return false;
+	    }
+	}
+
+The return values are not used for anything at the moment but a good practice is to return true if
+something was modified and false if the preprocessor let the parameter pass as is.

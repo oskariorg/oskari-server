@@ -94,7 +94,7 @@ public abstract class DirectTileLayer extends DirectLayer {
 			boolean isScaleRequired = (width != Integer.MIN_VALUE && height != Integer.MIN_VALUE)
 					&& !(tw == width && th == height);
 
-			if (imageBuf.getColorModel().getNumComponents() != 4
+			if (imageBuf.getColorModel() != null && imageBuf.getColorModel().getNumComponents() != 4
 					|| imageBuf.getColorModel().getPixelSize() != 32) {
 
 				int w = imageBuf.getWidth(null);

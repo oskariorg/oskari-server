@@ -36,6 +36,13 @@ public class AnalysisDataService {
     private static final String JSKEY_FIELDS = "fields";
     private static final String JSKEY_LOCALES = "locales";
 
+    private static final String JSKEY_BBOX = "bbox";
+    private static final String JSKEY_GEOM = "geom";
+    private static final String JSKEY_BOTTOM = "bottom";
+    private static final String JSKEY_TOP = "top";
+    private static final String JSKEY_LEFT = "left";
+    private static final String JSKEY_RIGHT = "right";
+
     private static final String JSKEY_ID = "id";
     private static final String JSKEY_SUBTITLE = "subtitle";
     private static final String JSKEY_ORGNAME = "orgname";
@@ -457,8 +464,8 @@ public class AnalysisDataService {
             json.put(JSKEY_OPACITY, ConversionHelper.getInt(JSONHelper
                     .getStringFromJSON(analyse_js, JSKEY_OPACITY, "80"), 80));
             json.put(JSKEY_MINSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "1500000"),
-                    1500000));
+                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "15000000"),
+                    15000000));
             json.put(JSKEY_MAXSCALE, ConversionHelper.getDouble(JSONHelper
                     .getStringFromJSON(analyse_js, JSKEY_MAXSCALE, "1"), 1));
             json.put(JSKEY_FIELDS, this.getAnalyseNativeFields(al));
@@ -467,6 +474,21 @@ public class AnalysisDataService {
             json.put(JSKEY_WPSNAME, analysisRenderingElement);
             json.put(JSKEY_WPSLAYERID, wpsid);
             json.put(JSKEY_RESULT, "");
+
+            if (analyse_js.has(JSKEY_BBOX)) {
+                JSONObject bbox = JSONHelper.getJSONObject(analyse_js, JSKEY_BBOX);
+                try {
+                    String bottom = Double.toString(bbox.getDouble(JSKEY_BOTTOM));
+                    String top = Double.toString(bbox.getDouble(JSKEY_TOP));
+                    String left = Double.toString(bbox.getDouble(JSKEY_LEFT));
+                    String right = Double.toString(bbox.getDouble(JSKEY_RIGHT));
+                    String geom = "POLYGON (("+left+" "+bottom+", "+right+" "+bottom+", "+
+                            right+" "+top+", "+left+" "+top+", "+left+" "+bottom+"))";
+                    json.put(JSKEY_GEOM, geom);
+                } catch (Exception ex) {
+                    log.debug("Unable to get analysis layer bbox", ex);
+                }
+            }
         } catch (Exception ex) {
             log.debug("Unable to get analysis layer json", ex);
         }

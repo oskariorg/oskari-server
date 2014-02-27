@@ -51,6 +51,8 @@ public class GetAppSetupHandler extends ActionHandler {
 
     private static final long DEFAULT_USERID = 10110;
     private static String UNRESTRICTED_USAGE_ROLE = "";
+    private static String SECURE_AJAX_PREFIX = "";
+
     private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
 
     // for adding extra bundle(s) for users with specific roles
@@ -121,7 +123,7 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-
+        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
     }
 
     public void handleAction(ActionParameters params) throws ActionException {
@@ -273,11 +275,10 @@ public class GetAppSetupHandler extends ActionHandler {
         }
 
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
-        // TODO: check if we can assume ViewTypes.DEFAULT for this.
-
+        // TODO: check if we can assume ViewTypes.DEFAULT || ViewTypes.USER for this.
         //add bundles according to role/rights
-
-        if (view.getType().equals(ViewTypes.DEFAULT)) {
+        if (ViewTypes.DEFAULT.equals(view.getType()) ||
+            ViewTypes.USER.equals(view.getType())) {
             log.debug("Adding bundles for user", params.getUser());
 
             for(Role r : params.getUser().getRoles()) {
@@ -368,7 +369,7 @@ public class GetAppSetupHandler extends ActionHandler {
     private String getBaseAjaxUrl(final ActionParameters params) {
         final String baseAjaxUrl = PropertyUtil.get(params.getLocale(), PROPERTY_AJAXURL);
         if (isSecure(params)) {
-            return "/paikkatietoikkuna" + baseAjaxUrl;
+            return SECURE_AJAX_PREFIX + baseAjaxUrl;
         }
         return baseAjaxUrl;
     }

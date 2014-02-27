@@ -114,14 +114,38 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         return views;
     }
 
+    public long addView(View view) throws ViewException {
+        SqlMapSession session = openSession();
+
+        try {
+            session.startTransaction();
+            Object ret = queryForObject("View.add-supplement", view);
+            long suppId = ((Long) ret).longValue();
+
+            view.setSupplementId(suppId);
+            ret =  queryForObject("View.add-view", view);
+            long id = ((Long) ret).longValue();
+
+            view.setId(id);
+            for (Bundle bundle : view.getBundles()) {
+                addBundleForView(view.getId(), bundle);
+            }
+            session.commitTransaction();
+            return id;
+        }  catch (Exception e) {
+            throw new ViewException("Error adding a view ", e);
+        } finally {
+            endSession(session);
+        }
+    }
+
+    @Deprecated
     public long addView(View view, final JSONObject viewJson) throws ViewException {
         SqlMapSession session = openSession();
         
         try {
             session.startTransaction();
-            
             Object ret = queryForObject("View.add-supplement", view);
-            
             long suppId = ((Long) ret).longValue();
             
             view.setSupplementId(suppId);
@@ -129,7 +153,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             long id = ((Long) ret).longValue();
             
             view.setId(id);
-            //insertStates(view, viewJson);
             insertBundle(view, viewJson);
             session.commitTransaction();
             return id;
@@ -186,29 +209,46 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 	public void updateView(View view) {
         update("View.update-view", view);
     }
-	
-	public void updatePublishedView(final View view, final JSONObject viewJson) throws ViewException {
-//	    SqlMapSession session = openSession();
+
+    public void updatePublishedView(final View view) throws ViewException {
+        SqlMapSession session = openSession();
         long id = view.getId();
-        
+
         try {
-//            session.startTransaction();
+            session.startTransaction();
             update("View.update-supplement",view);
             update("View.update",view);
-            //delete("View.delete-state-by-view", id);
-            //delete("View.delete-config-by-view", id);
             delete("View.delete-bundle-by-view", id);
-            
-            insertBundle(view, viewJson);
-//            session.commitTransaction();
+
+            for (Bundle bundle : view.getBundles()) {
+                addBundleForView(view.getId(), bundle);
+            }
+            session.commitTransaction();
         } catch (Exception e) {
             throw new ViewException("Error updating a view with id:" + id, e);
         } finally {
-//            endSession(session);
+            endSession(session);
+        }
+    }
+    @Deprecated
+    public void updatePublishedView(final View view, final JSONObject viewJson) throws ViewException {
+	    SqlMapSession session = openSession();
+        long id = view.getId();
+        
+        try {
+            session.startTransaction();
+            update("View.update-supplement",view);
+            update("View.update",view);
+            delete("View.delete-bundle-by-view", id);
+            
+            insertBundle(view, viewJson);
+            session.commitTransaction();
+        } catch (Exception e) {
+            throw new ViewException("Error updating a view with id:" + id, e);
+        } finally {
+            endSession(session);
         }
 	}
-	
-
 
     private void insertBundle(final View view, final JSONObject viewJson) throws SQLException {
         int seqIndex = 1;

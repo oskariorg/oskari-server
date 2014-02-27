@@ -8,7 +8,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             tile_matrix_set_id,
                             minScale, maxScale)
   VALUES('wmtslayer', 'kiinteistotunnukset', (select id from oskari_layergroup where locale like '%Maanmittauslaitos%' union select max(id) from oskari_layergroup limit 1),
-         'c22da116-5095-4878-bb04-dd7db3a1a341', 'http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts',
+         '472b3e52-5ba8-4967-8785-4fa13955b42e', 'http://karttamoottori.maanmittauslaitos.fi/kiinteisto/wmts',
          '{ fi:{name:"Kiinteistötunnukset",subtitle:"(WMTS)"},sv:{name:"Fastighetsbeteckningar",subtitle:"(WMTS)"},en:{name:"National Cadastral Refererences",subtitle:"(WMTS)"}}',
          'ETRS-TM35FIN', 3999, 1);
 

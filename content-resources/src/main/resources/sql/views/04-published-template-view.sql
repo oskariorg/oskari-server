@@ -183,11 +183,35 @@ UPDATE portti_view_bundle_seq set config = '{
          }
        },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
+       {
+        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+        "config": {
+            "mapUrlPrefix": {
+                "en": "//www.paikkatietoikkuna.fi/web/en/map-window?",
+                "fi": "//www.paikkatietoikkuna.fi/web/fi/kartta?",
+                "sv": "//www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
+            },
+            "termsUrl": {
+                "en": "//www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
+                "fi": "//www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
+                "sv": "//www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
+            }
+        }
+       },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
       ],
       "layers": [
-      ]
+      ],
+      "mapOptions" : {
+          "resolutions": [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5],
+          "maxExtent": {
+              "left": -548576.000000,
+              "bottom": 6291456.000000,
+              "right": 1548576.000000,
+              "top": 8388608.000000
+          },
+          "srsName": "EPSG:3067"
+      }
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
     AND view_id=(SELECT id FROM portti_view WHERE type='PUBLISH');
 
@@ -231,6 +255,28 @@ UPDATE portti_view_bundle_seq set startup = '{
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar') 
     AND  view_id=(SELECT id FROM portti_view WHERE type='PUBLISH');
+
+UPDATE portti_view_bundle_seq set config =
+  '{
+      "basictools": {
+          "measurearea": false,
+          "measureline": false,
+          "select": false,
+          "zoombox": false
+
+      },
+      "history": {
+          "history_back": false,
+          "history_forward": false,
+          "reset": false
+      },
+      "viewtools": {
+          "link": false,
+          "print": false
+      }
+  }'
+WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'toolbar')
+      AND  view_id=(SELECT id FROM portti_view WHERE type='PUBLISH');
 
 --------------------------------------------
 -- 4. Infobox

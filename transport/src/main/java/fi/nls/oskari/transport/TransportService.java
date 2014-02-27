@@ -1,6 +1,7 @@
 package fi.nls.oskari.transport;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import fi.nls.oskari.cache.LayerUpdateSubscriber;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
@@ -41,22 +43,18 @@ public class TransportService extends AbstractService {
         // http://docs.geotools.org/latest/userguide/library/referencing/order.html
         System.setProperty("org.geotools.referencing.forceXY", "true");
 
-        Properties properties = new Properties();
-        try {
-            properties.load(TransportService.class.getResourceAsStream("config.properties"));
-            PropertyUtil.addProperties(properties);
-        } catch (Exception e) {
-            System.err.println("Configuration could not be loaded");
-            e.printStackTrace();
-        }
+        // populate properties before initializing logger since logger
+        // implementation is configured in properties
+        addProperties("config.properties", false);
+        addProperties("/transport-ext.properties", true);
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
 
     public static ObjectMapper mapper = new ObjectMapper();
 
-	
 	// params
 	public static final String PARAM_ID = "id"; // skipped param - coming from cometd
+    public static final String PARAM_UUID = "uuid"; //
 	public static final String PARAM_CHANNEL = "channel"; // skipped param - coming from cometd
 	public static final String PARAM_DATA = "data"; // own json data under this
 	public static final String PARAM_SESSION = "session";
@@ -133,7 +131,11 @@ public class TransportService extends AbstractService {
     public static String SERVICE_URL_PATH;
     public static String SERVICE_URL_SESSION_PARAM;
     public static String SERVICE_URL_LIFERAY_PATH;
-	
+
+    // action user uid API
+    private static final String UID_API = "GetCurrentUser";
+    private static final String KEY_UID = "currentUserUid";
+
 	// server transport info
 	private BayeuxServer bayeux;
 	private ServerSession local;
@@ -348,6 +350,7 @@ public class TransportService extends AbstractService {
             log.error(e, "Session creation failed");
         }
         store.setClient(client.getId());
+        store.setUuid(getOskariUid(store));
         this.save(store);
 
         // layers
@@ -395,6 +398,16 @@ public class TransportService extends AbstractService {
         jobs.add(job);
     }
 
+    private String getOskariUid(SessionStore store) {
+        String sessionId = store.getSession();
+        String route = store.getRoute();
+        log.warn( WFSMapLayerJob.getAPIUrl(sessionId) + UID_API);
+        String cookies = null;
+        if(route != null && !route.equals("")) {
+            cookies = WFSMapLayerJob.ROUTE_COOKIE_NAME + route;
+        }
+        return HttpHelper.getHeaderValue(WFSMapLayerJob.getAPIUrl(sessionId) + UID_API, cookies, KEY_UID);
+    }
     /**
      * Removes map layer from session and jobs
      * 
@@ -769,5 +782,26 @@ public class TransportService extends AbstractService {
         }
 
         return bounds;
+    }
+
+    private static void addProperties(final String propertiesFile, final boolean overwrite) {
+        InputStream in = null;
+        try {
+            Properties prop = new Properties();
+            in = TransportService.class.getResourceAsStream(propertiesFile);
+            prop.load(in);
+            PropertyUtil.addProperties(prop, overwrite);
+        } catch (Exception e) {
+            if(!overwrite) {
+                // base properties
+                System.err.println("Configuration could not be loaded");
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

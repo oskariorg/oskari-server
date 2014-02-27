@@ -21,7 +21,7 @@ public class LayerIdWFSHighlightParamHandler extends WFSHighlightParamHandler {
         }
         try {
             final JSONObject postprocessorState = getPostProcessorState(params);
-            postprocessorState.put("highlightFeatureLayerId", params.getParamValue());
+            postprocessorState.put(STATE_LAYERID_KEY, params.getParamValue());
         }
         catch(Exception ex) {
             log.error(ex, "Couldn't set conf.highlightFeatureLayerId for postprocessor");

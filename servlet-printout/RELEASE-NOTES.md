@@ -1,11 +1,18 @@
 oskari-printout-backend - release notes
 =======================================
 
+## 1.0.6
+generic WMTS resourceUrl support 
+initial support for image format selection (missing json parsing from json (from layer parameters?) ) 
+
+## 1.0.5
+JHS180 subset temp compability fixes: 8192,4096 resolutions not used - added maplink.zoom.offset config option to support front
+
 ## 1.0.4
 Redis configuration option redis.blobcache=true/false
 
 ## 1.0.3
-PDF/a support
+1PDF/a support
 
 ## 1.0.2
 improvementes

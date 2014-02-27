@@ -24,10 +24,7 @@ import org.opengis.referencing.operation.MathTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Job for WFS Map Layer
@@ -108,7 +105,7 @@ public class WFSMapLayerJob extends Job {
 	private static final String LAYER_CONFIGURATION_API = "GetWFSLayerConfiguration&id=";
 
     // COOKIE
-    private static final String ROUTE_COOKIE_NAME = "ROUTEID=";
+    public static final String ROUTE_COOKIE_NAME = "ROUTEID=";
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
@@ -472,8 +469,7 @@ public class WFSMapLayerJob extends Job {
             if(!goNext()) return;
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
-            }
-            else {
+            } else {
                 this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
             }
         } else if(this.type == Type.GEOJSON) {

@@ -7,18 +7,18 @@
    <groupId>org.geoserver</groupId>
    <artifactId>IntersectionFeatureCollection2</artifactId>
    <packaging>jar</packaging>
-   <version>2.4-SNAPSHOT</version>
+   <version>2.4.2</version>
    <name>IntersectionFeatureCollection2</name>
    <dependencies>
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-process</artifactId>
-      <version>8-SNAPSHOT</version>
+      <version>10.2</version>
     </dependency>
     <dependency>
        <groupId>org.geoserver</groupId>
        <artifactId>main</artifactId>
-       <version>2.4-SNAPSHOT</version>
+       <version>2.4.2</version>
        <classifier>tests</classifier>
        <scope>test</scope>
      </dependency>
@@ -41,8 +41,8 @@
        <plugin>
          <artifactId>maven-compiler-plugin</artifactId>
          <configuration>
-           <source>1.5</source>
-           <target>1.5</target>
+           <source>1.6</source>
+           <target>1.6</target>
          </configuration>
       </plugin>
     </plugins>

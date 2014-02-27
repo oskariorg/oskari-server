@@ -55,7 +55,10 @@ public enum ConfigValue {
 	/* */
 	LAYERSURL("layersURL"),
 	
-	REDIS_BLOB_CACHE("redis.blobcache")
+	REDIS_BLOB_CACHE("redis.blobcache"),
+	
+	/* temp fix to 'support' ditching useless minor scale resolution maps */ 
+	MAPLINK_ZOOM_OFFSET("maplink.zoom.offset")
 
 	;
 
@@ -75,5 +78,12 @@ public enum ConfigValue {
 	public String getConfigProperty(Properties props) {
 		return props.getProperty(key);
 	}
-
+	
+	public Integer getConfigProperty(Properties props, Integer defaultValue) {
+		String val = props.getProperty(key);
+		if( val == null ) {
+			return defaultValue;
+		}
+		return Integer.parseInt(val, 10);
+	}
 }

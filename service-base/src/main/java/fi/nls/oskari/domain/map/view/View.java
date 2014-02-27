@@ -157,4 +157,27 @@ public class View implements Serializable {
             seqNo++;
         }
     }
+
+    /**
+     * Skips id, oldId and uuid but clones the rest of the info. Bundles retain ids.
+     * @return cloned object with bundles
+     */
+    public View cloneBasicInfo() {
+        View view = new View();
+        // skip id, oldId, uuid
+        view.setName(getName());
+        view.setDescription(getDescription());
+        view.setType(getType());
+        view.setDevelopmentPath(getDevelopmentPath());
+        view.setApplication(getApplication());
+        view.setIsPublic(getIsPublic());
+        view.setLang(getLang());
+        view.setPage(getPage());
+        view.setPubDomain(getPubDomain());
+        for(Bundle bundle : getBundles()) {
+            view.addBundle(bundle.clone());
+        }
+
+        return view;
+    }
 }

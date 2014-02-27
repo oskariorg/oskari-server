@@ -54,7 +54,36 @@ public class HttpHelper {
 		}
 		return response;
     }
-    
+    /**
+     * Basic HTTP GET method
+     *
+     * @param url
+     * @key header params key
+     * @return header param value
+     */
+    public static String getHeaderValue(String url, String cookies, String key) {
+        HttpRequest request;
+        String headerValue = null;
+        try {
+            request = HttpRequest.get(url)
+                    .acceptGzipEncoding().uncompress(true)
+                    .trustAllCerts()
+                    .trustAllHosts();
+            if(cookies != null) {
+                request.getConnection().setRequestProperty("Cookie", cookies);
+            }
+            if(request.ok() || request.code() == 304)
+                if(key != null) headerValue = request.header(key);
+            else {
+                handleHTTPError("GET", url, request.code());
+            }
+        } catch (HttpRequestException e) {
+            handleHTTPRequestFail(url, e);
+        } catch (Exception e) {
+            handleHTTPRequestFail(url, e);
+        }
+        return headerValue;
+    }
     /**
      * HTTP GET method with optional basic authentication and contentType definition
      * 
