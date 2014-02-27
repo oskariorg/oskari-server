@@ -371,7 +371,7 @@ public class MapResource {
 	@Path("service/thumbnail/maplinkgeojson.pdf")
 	@Consumes("application/json")
 	@Produces("application/pdf")
-	public StreamingOutput getSnapshotPDFByActionRouteGeoJson(String json)
+	public StreamingOutput getSnapshotPDFByActionRouteGeoJson(InputStream inp)
 			throws NoSuchAuthorityCodeException, IOException,
 			GeoWebCacheException, FactoryException, ParseException,
 			XMLStreamException, FactoryConfigurationError,
@@ -381,15 +381,16 @@ public class MapResource {
 		log.info("(X-)Forwarded-For " + forwardedFor + " / " + xForwardedFor);
 
 		StreamingOutput result = null;
-		WebServiceMapProducerResource getmap = acquire();
+		
 
 		/*
 		 * 1) geojson processing
 		 */
 
 		/* 2) default processing (geojson enhanced ) */
-		InputStream inp = new ByteArrayInputStream(json.getBytes());
+		//InputStream inp = new ByteArrayInputStream(json.getBytes("UTF-8"));
 		try {
+			WebServiceMapProducerResource getmap = acquire();
 			result = getmap.getGeoJsonMapPDF(inp, getXClientInfo());
 
 		} finally {
@@ -427,7 +428,7 @@ public class MapResource {
 	@Path("service/thumbnail/maplinkjson.pdf")
 	@Consumes("application/json")
 	@Produces("application/pdf")
-	public StreamingOutput getSnapshotPDFByActionRouteJson(String json)
+	public StreamingOutput getSnapshotPDFByActionRouteJson(InputStream inp)
 			throws NoSuchAuthorityCodeException, IOException,
 			GeoWebCacheException, FactoryException, ParseException,
 			XMLStreamException, FactoryConfigurationError,
@@ -436,10 +437,11 @@ public class MapResource {
 		log.info("(X-)Forwarded-For " + forwardedFor + " / " + xForwardedFor);
 
 		StreamingOutput result = null;
-		WebServiceMapProducerResource getmap = acquire();
+		
 
-		InputStream inp = new ByteArrayInputStream(json.getBytes());
+		//InputStream inp = new ByteArrayInputStream(json.getBytes("UTF-8"));
 		try {
+			WebServiceMapProducerResource getmap = acquire();
 			result = getmap.getMapPDF(inp, getXClientInfo());
 
 		} finally {
@@ -536,7 +538,7 @@ public class MapResource {
 	@Path("service/thumbnail/maplinkgeojson.png")
 	@Consumes("application/json")
 	@Produces("image/png")
-	public StreamingOutput getSnapshotPNGByActionRouteGeoJson(String json)
+	public StreamingOutput getSnapshotPNGByActionRouteGeoJson(InputStream inp)
 			throws IOException, NoSuchAuthorityCodeException, ParseException,
 			GeoWebCacheException, XMLStreamException,
 			FactoryConfigurationError, RequestFilterException,
@@ -553,10 +555,11 @@ public class MapResource {
 		/* 2) default processing (geojson enhanced ) */
 
 		StreamingOutput result = null;
-		WebServiceMapProducerResource getmap = acquire();
+		
 
-		InputStream inp = new ByteArrayInputStream(json.getBytes());
+		//InputStream inp = new ByteArrayInputStream(json.getBytes("UTF-8"));
 		try {
+			WebServiceMapProducerResource getmap = acquire();
 			result = getmap.getGeoJsonMapPNG(inp, getXClientInfo());
 
 		} finally {
@@ -593,7 +596,7 @@ public class MapResource {
 	@Path("service/thumbnail/maplinkjson.png")
 	@Consumes("application/json")
 	@Produces("image/png")
-	public StreamingOutput getSnapshotPNGByActionRouteJson(String json)
+	public StreamingOutput getSnapshotPNGByActionRouteJson(InputStream inp)
 			throws IOException, NoSuchAuthorityCodeException, ParseException,
 			GeoWebCacheException, XMLStreamException,
 			FactoryConfigurationError, RequestFilterException,
@@ -603,10 +606,11 @@ public class MapResource {
 		log.info("(X-)Forwarded-For " + forwardedFor + " / " + xForwardedFor);
 
 		StreamingOutput result = null;
-		WebServiceMapProducerResource getmap = acquire();
-
-		InputStream inp = new ByteArrayInputStream(json.getBytes());
+		//InputStream inp = new ByteArrayInputStream(json.getBytes("UTF-8"));
 		try {
+			
+			WebServiceMapProducerResource getmap = acquire();
+
 			result = getmap.getMapPNG(inp, getXClientInfo());
 
 		} finally {

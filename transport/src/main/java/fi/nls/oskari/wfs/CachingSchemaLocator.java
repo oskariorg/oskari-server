@@ -27,7 +27,10 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
 	
     private static final Logger log = LogFactory.getLogger(CachingSchemaLocator.class);
 
+    private static final long ERROR_REPORT_QUIET_PERIOD_MS = 30 * 60 * 1000;
+
 	private static Map<String, XSDSchema> cache = new ConcurrentHashMap<String, XSDSchema>();
+    private static Map<String, Long> errorTracker = new ConcurrentHashMap<String, Long>();
 	private String username;
 	private String password;
 
@@ -65,6 +68,7 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
      */
     public static void flushAll() {
         cache.clear();
+        errorTracker.clear();
         JedisManager.del(cacheHashKey);
     }
 	
@@ -103,7 +107,16 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
 				foundSchema = Schemas.parse(url);
 			}
 		} catch (Exception e) {
-	        log.error(e, "Failed to locate Schema '" + url + "'");
+            final Long lastError = errorTracker.get(url);
+            long now = System.currentTimeMillis();
+            // only log the same error once per ERROR_REPORT_QUIET_PERIOD_MS
+            if(lastError == null || (now - lastError.longValue() > ERROR_REPORT_QUIET_PERIOD_MS) ) {
+                errorTracker.put(url, now);
+                log.error("Failed to locate Schema '" + url + "' - Error message:", e.getMessage());
+            }
+            else {
+                log.debug("Failed to locate Schema '" + url + "' - Error message:", e.getMessage());
+            }
 		}
 	    
 		if (foundSchema != null) {
@@ -115,4 +128,6 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
 
 		return foundSchema;
 	}
+
+
 }

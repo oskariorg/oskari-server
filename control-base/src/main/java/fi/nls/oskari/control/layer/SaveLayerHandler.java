@@ -105,6 +105,8 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
 
+                log.debug(ml);
+
                 return ml.getId();
             }
 
@@ -261,6 +263,9 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setGfiXslt(xslt);
         }
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
+
+        ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
+        ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
     }
 
     private String validateUrl(final String url) throws ActionParamsException {

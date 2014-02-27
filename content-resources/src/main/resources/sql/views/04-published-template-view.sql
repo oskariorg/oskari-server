@@ -183,6 +183,7 @@ UPDATE portti_view_bundle_seq set config = '{
          }
        },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        {
         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
         "config": {
