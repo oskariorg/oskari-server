@@ -78,7 +78,7 @@ CREATE TABLE oskari_maplayer
   gfi_type character varying(200),
   gfi_xslt text,
   realtime boolean DEFAULT false,
-  refresh_rate integer,
+  refresh_rate integer DEFAULT 0,
   created timestamp with time zone,
   updated timestamp with time zone,
   CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
