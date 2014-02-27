@@ -33,6 +33,7 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 
+import fi.nls.oskari.printout.imaging.ColorOps;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
 
 
@@ -47,6 +48,8 @@ import fi.nls.oskari.printout.input.layers.LayerDefinition;
  */
 
 public class DirectFeatureLayer extends FeatureLayer {
+	
+	
 
 	enum Css {
 		strokeColor, strokeOpacity, strokeWidth, strokeDashstyle,
@@ -72,6 +75,8 @@ public class DirectFeatureLayer extends FeatureLayer {
 		fontColor, fontFamily, fontSize, fontWeight, onlineResource
 
 		;
+		
+		final ColorOps colorOps = new ColorOps();
 
 		final CharSequence HASHMARK = "#";
 
@@ -128,32 +133,8 @@ public class DirectFeatureLayer extends FeatureLayer {
 			if (val == null) {
 				return defaultValue;
 			}
-			String valPart = (String) val;
-			if (valPart.contains(HASHMARK)) {
-				String hexPart = valPart.substring(1);
-				Integer color = Integer.parseInt(hexPart, 16);
-
-				int red = (color & 0xFF0000) >> 16;
-				int green = (color & 0x00FF00) >> 8;
-				int blue = (color & 0x0000ff);
-				col = new Color(red, green, blue);
-
-			} else if (valPart.contains(RGBA)) {
-
-				String rgbPart = valPart.substring(valPart.indexOf('(') + 1,
-						valPart.indexOf(')'));
-				String[] rgbParts = rgbPart.split(",");
-
-				int red = Integer.valueOf(rgbParts[0].trim(), 10);
-				int green = Integer.valueOf(rgbParts[1].trim(), 10);
-				int blue = Integer.valueOf(rgbParts[2].trim(), 10);
-				Float alphaFloat = Float.valueOf(rgbParts[3].trim());
-
-				int alpha = new Float(alphaFloat * 256f / 256f).intValue();
-
-				col = new Color(red, green, blue, alpha);
-
-			}
+			
+			col = colorOps.get((String)val, defaultValue);
 
 			return col;
 		}

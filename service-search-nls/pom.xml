@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.18-SNAPSHOT</version>
+        <version>1.19-SNAPSHOT</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-search-nls</artifactId>
@@ -29,7 +29,10 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-control-base</artifactId>
 		</dependency>
-
+       <dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-hsql</artifactId>	
+		</dependency>
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jsr173</artifactId>

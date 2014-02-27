@@ -1,5 +1,6 @@
 package fi.nls.oskari.cache;
 
+import java.util.Collections;
 import java.util.Set;
 
 import fi.nls.oskari.log.LogFactory;
@@ -188,7 +189,7 @@ public class JedisManager {
      */
     public static Set<String> keys(String pattern) {
         Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
+        if(jedis == null) return Collections.emptySet();
 
         try {
             return jedis.keys(pattern + "*");
@@ -213,7 +214,7 @@ public class JedisManager {
      */
 	public static Set<String> hkeys(String key) {
 		Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
+        if(jedis == null) return Collections.emptySet();
 
         try {
 			return jedis.hkeys(key);

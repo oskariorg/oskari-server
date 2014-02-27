@@ -17,6 +17,8 @@ import java.util.Locale;
 public class GetSearchResultHandler extends ActionHandler {
 
     private static final String PARAM_SEARCH_KEY = "searchKey";
+    private static final String PARAM_EPSG_KEY = "epsg";
+
     private String[] channels = new String[0];
 
     public void init() {
@@ -29,6 +31,7 @@ public class GetSearchResultHandler extends ActionHandler {
         if (search == null) {
             throw new ActionParamsException("Search string was null");
         }
+        final String epsg = params.getHttpParam(PARAM_EPSG_KEY);
 
         final String error = SearchWorker.checkLegalSearch(search);
 
@@ -40,6 +43,7 @@ public class GetSearchResultHandler extends ActionHandler {
 
             final SearchCriteria sc = new SearchCriteria();
             sc.setSearchString(search);
+            sc.setSRS(epsg);  // eg. EPSG:3067
 
             sc.setLocale(locale.getLanguage());
 

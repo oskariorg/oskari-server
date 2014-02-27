@@ -49,12 +49,13 @@ import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
 import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolution;
 import fi.nls.oskari.printout.printing.PDFProducer;
 import fi.nls.oskari.printout.ws.ProxySetup;
+import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResourceTest;
 import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 
 /* 1st generation tests mostly obsolete */
 public class MapProducerResourceTest {
 
-	private String layerTemplate = "EPSG_3067_LAYER_TEMPLATE";
+	private String layerTemplate = "EPSG_3067_MML_LAYER_TEMPLATE";
 	private String gridSubsetName = "EPSG_3067_MML";
 	private URL layersUrl;
 	private ScaleOps scaleOps = new ScaleOps();
@@ -94,25 +95,36 @@ public class MapProducerResourceTest {
 		PropertyConfigurator.configure(properties);
 
 		/** config */
-		String conf = System.getProperty("fi.paikkatietoikkuna.imaging.config");
 
-		Properties props = new Properties();
-		Reader r = conf != null ? new FileReader(conf) : new InputStreamReader(
-				MapResource.class.getResourceAsStream("default.properties"));
-		try {
-			props.load(r);
-		} finally {
-			r.close();
-		}
-
-		layersUrl = new URL(
-				"http://localhost/dataset/layers/service/json?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=2&action_route=GetMapLayers&lang=fi");
+		Properties props = getFixedTestProperties("default.properties",
+				"layers.json");
+		props.store(System.out, "");
 
 		resource = new MapProducerResource(props) {
 
 		};
-		resource.setLayerJSONurl(layersUrl);
+		resource.setLayerJSONurl(new URL(props.getProperty("layersURL")));
 
+	}
+
+	public static Properties getFixedTestProperties(String propsName,
+			String layersUrl) throws IOException {
+		Properties props = new Properties();
+		Reader r = new InputStreamReader(
+				MapResource.class.getResourceAsStream(propsName));
+		try {
+			props.load(r);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			r.close();
+		}
+
+		String layersPropValue = WebServiceMapProducerResourceTest.class
+				.getResource(layersUrl).toString();
+		props.put("layersURL", layersPropValue);
+
+		return props;
 	}
 
 	@Before
@@ -152,7 +164,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution, producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -246,7 +259,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution, producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -346,8 +360,7 @@ public class MapProducerResourceTest {
 
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4, opts,
 				producer.getCrs());
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -395,7 +408,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -522,8 +536,7 @@ public class MapProducerResourceTest {
 		}
 
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A3);
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -552,7 +565,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -675,8 +689,7 @@ public class MapProducerResourceTest {
 			asyncProc.shutdown();
 		}
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A3_Landscape);
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -706,7 +719,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -834,8 +848,7 @@ public class MapProducerResourceTest {
 		}
 
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4);
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -864,7 +877,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -991,8 +1005,7 @@ public class MapProducerResourceTest {
 		}
 
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4_Landscape);
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -1020,7 +1033,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1095,8 +1109,7 @@ public class MapProducerResourceTest {
 		}
 
 		PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4);
-		pdf.createLayeredPDFFromImages(images, outputFile, width, height, env,
-				centre);
+		pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 		for (BufferedImage image : images) {
 			image.flush();
@@ -1122,7 +1135,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1229,7 +1243,8 @@ public class MapProducerResourceTest {
 		String queryParams = URLDecoder.decode(mapLinkArgument
 				+ additionalQueryParams, "UTF-8");
 
-		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,producer.getZoomOffset());
+		MapLinkParser mapLinkParser = new MapLinkParser(scaleResolution,
+				producer.getZoomOffset());
 
 		TileLayer tileLayer = resource.getConfig().getTileLayer(layerTemplate);
 		GridSubset gridSubset = tileLayer.getGridSubset(gridSubsetName);
@@ -1364,8 +1379,7 @@ public class MapProducerResourceTest {
 
 			PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4, opts,
 					producer.getCrs());
-			pdf.createLayeredPDFFromImages(images, outputFile, width, height,
-					env, centre);
+			pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 			image.flush();
 
@@ -1402,8 +1416,7 @@ public class MapProducerResourceTest {
 			ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 			images.add(image);
 			PDFProducer pdf = new PDFProducer(PDFProducer.Page.A4);
-			pdf.createLayeredPDFFromImages(images, outputFile, width, height,
-					env, centre);
+			pdf.createLayeredPDFFromImages(images, outputFile, env, centre);
 
 			image.flush();
 		} finally {

@@ -90,14 +90,12 @@ public class WFSParserTest {
 
         // empty result - can't handle multi surface
         Geometry geom2 = parser.parseGeometry(multiSurfaceGeomXML);
-        System.out.println(geom2);
         assertTrue("Should get valid geometry", geom2 != null);
-        assertTrue("Should be EMPTY", geom2.isEmpty());
+        assertTrue("Should NOT be EMPTY", !geom2.isEmpty());
 
         // same geom than geom2 but in flat surface (no multi surface)
         Geometry geom3 = parser.parseGeometry(surfaceGeomXML);
-        System.out.println(geom3);
         assertTrue("Should get valid geometry", geom3 != null);
-        assertTrue("Should be NOT EMPTY", !geom3.isEmpty());
+        assertTrue("Should NOT be EMPTY", !geom3.isEmpty());
 	}
 }

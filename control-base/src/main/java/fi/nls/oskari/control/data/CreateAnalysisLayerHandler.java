@@ -47,6 +47,16 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String UNION = "union";
     private static final String LAYER_UNION = "layer_union";
 
+    private static final String ERROR_ANALYSE_PARAMETER_MISSING = "Analyse_parameter_missing";
+    private static final String ERROR_UNABLE_TO_PARSE_ANALYSE = "Unable_to_parse_analysis";
+    private static final String ERROR_UNABLE_TO_GET_WPS_FEATURES = "Unable_to_get_WPS_features";
+    private static final String ERROR_WPS_EXECUTE_RETURNS_EXCEPTION = "WPS_execute_returns_Exception";
+    private static final String ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES = "WPS_execute_returns_no_features";
+    private static final String ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION = "Unable_to_process_aggregate_union";
+    private static final String ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION = "Unable_to_get_features_for_union";
+    private static final String ERROR_UNABLE_TO_STORE_ANALYSIS_DATA = "Unable_to_store_analysis_data";
+    private static final String ERROR_UNABLE_TO_GET_ANALYSISLAYER_DATA = "Unable_to_get_analysisLayer_data";
+
 
     final private static String GEOSERVER_PROXY_BASE_URL = PropertyUtil.getOptional("analysis.baseproxy.url");
 
@@ -59,11 +69,12 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
        final String analyse = params.getHttpParam(PARAM_ANALYSE);
-        // Test
-        //final String analyse = "{\"name\":\"layerUnionTest_\",\"method\":\"layer_union\",\"fields\":[],\"fieldTypes\":{\"t3\":\"string\",\"t2\":\"string\",\"t1\":\"string\",\"t4\":\"string\",\"t5\":\"string\",\"t6\":\"string\",\"t7\":\"string\",\"t8\":\"string\"},\"layerId\":\"analysis_778_799\",\"layerType\":\"analysis\",\"methodParams\":{\"layers\":[\"analysis_778_799\",\"analysis_778_800\",\"analysis_778_801\"]},\"style\":{\"dot\":{\"size\":\"4\",\"color\":\"#CC9900\"},\"line\":{\"size\":\"2\",\"color\":\"#CC9900\"},\"area\":{\"size\":\"2\",\"lineColor\":\"#CC9900\",\"fillColor\":\"#FFDC00\"}}}";
+
+        JSONObject errorResponse = new JSONObject();
 
         if (analyse == null) {
-            throw new ActionParamsException("analyse parameter missing");
+            this.MyError(ERROR_ANALYSE_PARAMETER_MISSING, params, null);
+            return;
         }
 
         // filter conf data
@@ -78,7 +89,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         try {
             analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, baseUrl, uuid);
         } catch (ServiceException e) {
-            throw new ActionException("Unable to parse analysis", e);
+            this.MyError(ERROR_UNABLE_TO_PARSE_ANALYSE, params, e);
+            return;
         }
         Analysis analysis = null;
 
@@ -92,16 +104,21 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             try {
                 featureSet = wpsService.requestFeatureSet(analysisLayer);
             } catch (ServiceException e) {
-                throw new ActionException("Unable to get WPS Feature Set", e);
+                this.MyError(ERROR_UNABLE_TO_GET_WPS_FEATURES, params, e);
+                return;
             }
             // Check, if exception result set
-            if (featureSet.indexOf("ows:Exception") > -1)
-                throw new ActionParamsException(
-                        "WPS-execute returns ows:Exception: " + featureSet);
+            if (featureSet.indexOf("ows:Exception") > -1) {
+                this.MyError(ERROR_WPS_EXECUTE_RETURNS_EXCEPTION, params, featureSet);
+                return;
+            }
 
             // Check, if any data in result set
             if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1)
-                throw new ActionParamsException("WPS-execute returns 0 features");
+            {
+                this.MyError(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES, params, null);
+                return;
+            }
             if (analysisLayer.getMethod().equals(UNION)
                     || analysisLayer.getMethod().equals(INTERSECT)) {
                 // Harmonize namespaces and element names
@@ -120,7 +137,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 try {
                     analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, baseUrl);
                 } catch (ServiceException e) {
-                    throw new ActionException("Unable to parse analysis for aggregate union", e);
+                    this.MyError(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, params, e);
+                    return;
                 }
                 try {
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
@@ -128,7 +146,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
                     featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer);
                 } catch (ServiceException e) {
-                    throw new ActionException("Unable to get WPS Feature Set for union", e);
+                    this.MyError(ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION, params, e);
+                    return;
                 }
 
             }
@@ -137,7 +156,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     featureSet, analysisLayer, analyse, params.getUser());
         }
 
-            if (analysis == null) throw new ActionException("Unable to store Analysis data");
+            if (analysis == null)
+            {
+                this.MyError(ERROR_UNABLE_TO_STORE_ANALYSIS_DATA, params, null);
+                return;
+            }
 
             analysisLayer.setWpsLayerId(analysis.getId()); // aka. analysis_id
             // Analysis field mapping
@@ -159,7 +182,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
             ResponseHelper.writeResponse(params, analysisLayerJSON);
         } catch (JSONException e) {
-            throw new ActionException("Unable to get AnalysisLayer JSON", e);
+            this.MyError(ERROR_UNABLE_TO_GET_ANALYSISLAYER_DATA, params, null);
+            return;
         }
     }
 
@@ -186,5 +210,17 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         baseurl = baseurl + baseAjaxUrl + PARAMS_PROXY;
         log.debug("Analysis baseURL:", baseurl);
         return baseurl;
+    }
+
+    /**
+     *  Break analyse and inform error to client
+     */
+    private void MyError(String mes, ActionParameters params, Object ee) {
+
+        JSONObject errorResponse = new JSONObject();
+
+        log.error(mes.replace("_", " "), ee);
+        JSONHelper.putValue(errorResponse, "error", mes);
+        ResponseHelper.writeResponse(params, errorResponse);
     }
 }

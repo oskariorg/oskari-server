@@ -77,8 +77,6 @@ public class IntersectionFeatureCollection2 implements GSProcess {
         INTERSECTION, FIRST, SECOND
     }
 
-    ;
-
     static final String ECKERT_IV_WKT = "PROJCS[\"World_Eckert_IV\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Eckert_IV\"],PARAMETER[\"Central_Meridian\",0.0],UNIT[\"Meter\",1.0]]";
 
     @DescribeResult(description = "test -- feature collection containg the intersections between the two feature "
@@ -381,18 +379,6 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             return new IntersectedFeatureIterator(delegate.features(), delegate, features,
                     delegate.getSchema(), features.getSchema(), firstAttributes, sndAttributes,
                     intersectionMode, percentagesEnabled, areasEnabled, fb);
-        }
-
-        @Override
-        public Iterator<SimpleFeature> iterator() {
-            return new WrappingIterator(features());
-        }
-
-        @Override
-        public void close(Iterator<SimpleFeature> close) {
-            if (close instanceof WrappingIterator) {
-                ((WrappingIterator) close).close();
-            }
         }
     }
 

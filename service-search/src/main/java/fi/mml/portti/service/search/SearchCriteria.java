@@ -23,6 +23,9 @@ public class SearchCriteria implements Serializable {
 	
 	/** our search string  */
 	private String searchString;
+
+    /** output location SRS  */
+    private String srs;
 	
 	/** from */
 	private Date fromDate;
@@ -80,8 +83,16 @@ public class SearchCriteria implements Serializable {
 		return "SearchCriteria [searchString=" + searchString + ", fromDate=" + fromDate 
 		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]" + metadataCatalogueSearchCriteria;
 	}
-	
-	public Date getFromDate() {
+
+    public String getSRS() {
+        return srs;
+    }
+
+    public void setSRS(String srs) {
+        this.srs = srs;
+    }
+
+    public Date getFromDate() {
 		return fromDate;
 	}
 	public void setFromDate(Date fromDate) {
@@ -109,6 +120,9 @@ public class SearchCriteria implements Serializable {
 	public String getSearchString() {
 		return searchString;
 	}
+    public String getSearchString1stUp() {
+        return searchString.substring(0, 1).toUpperCase() + searchString.substring(1);
+    }
 
 	public void setSearchString(String searchString) {
 		this.searchString = searchString;

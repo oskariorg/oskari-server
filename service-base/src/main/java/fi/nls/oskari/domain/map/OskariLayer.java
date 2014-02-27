@@ -48,6 +48,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private JSONObject params = new JSONObject();
     private JSONObject options = new JSONObject();
 
+    private boolean realtime = false;
+    private int refreshRate;
+
     private String gfiXslt;
     private String gfiType;
     private String geometry;
@@ -341,5 +344,19 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+    }
+
+    public boolean getRealtime() { return realtime; }
+
+    public void setRealtime(boolean realtime) { this.realtime = realtime; }
+
+    public int getRefreshRate() { return refreshRate; }
+
+    public void setRefreshRate(int refreshRate) {
+        if (refreshRate < 0) {
+            this.refreshRate = 0;
+        } else {
+            this.refreshRate = refreshRate;
+        }
     }
 }

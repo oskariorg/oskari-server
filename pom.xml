@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>oskari-parent</artifactId>
-	<version>1.18-SNAPSHOT</version>
+	<version>1.19-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Oskari parent POM</name>
@@ -35,6 +35,7 @@
 		<jsoup.version>1.7.2</jsoup.version>
 		<ibatis.version>2.3.4.726</ibatis.version>
 		<axiom.version>1.2.14</axiom.version>
+        <xmlunit.version>1.5</xmlunit.version>
 		<jedis.version>2.0.0</jedis.version>
 		<jackson.version>1.9.11</jackson.version>
 		
@@ -234,6 +235,12 @@
 				<artifactId>axiom-impl</artifactId>
 				<version>${axiom.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>xmlunit</groupId>
+                <artifactId>xmlunit</artifactId>
+                <version>${xmlunit.version}</version>
+                <scope>test</scope>
+            </dependency>
 			<dependency>
 				<groupId>redis.clients</groupId>
 				<artifactId>jedis</artifactId>
@@ -344,6 +351,7 @@
 				<version>${powermock.version}</version>
 				<scope>test</scope>
 			</dependency>
+
 						
 		</dependencies>
 	</dependencyManagement>
