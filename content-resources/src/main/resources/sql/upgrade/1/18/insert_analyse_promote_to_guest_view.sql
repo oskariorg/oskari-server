@@ -28,7 +28,7 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
-    AND seqno = 22
+    AND bundleinstance = 'analyse'
     AND view_id=[VIEW_ID];
 
 -- update proper config for view
@@ -64,6 +64,6 @@ UPDATE portti_view_bundle_seq set config = '{
             "fi": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
             "sv": "/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
         }
-    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
-    AND seqno = 22
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
+    AND bundleinstance = 'analyse'
     AND view_id=[VIEW_ID];
