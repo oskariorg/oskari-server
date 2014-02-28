@@ -13,8 +13,8 @@
         <result property="id" column="id" />
         <result property="resourceMapping" column="resource_mapping" />
         <result property="resourceType" column="resource_type" />
-        <result property="externalId" column="external_id" />
-        <result property="externalIdType" column="external_type" />
+        <result property="externalId" column="externalId" />
+        <result property="externalIdType" column="externalType" />
         <result property="permissions" column="permission" />
     </resultMap>
         
@@ -122,8 +122,7 @@
     </parameterMap>
 
 
-    <!-- fixed -->
-    <select id="findPublishPermissions"  resultMap="publishPermissionsList">
+    <select id="findPublishPermissions"  resultMap="publishPermissionsList" parameterClass="java.util.HashMap">
        select 
        	r.resource_mapping as resourceMapping,
        	p.external_id as externalId
@@ -132,6 +131,7 @@
  	   where r.id=p.oskari_resource_id
  	   	and p.permission = 'PUBLISH'
  	   	and p.external_type = 'ROLE'
+        and r.resource_type=#resourceType#
     </select>
 
 
@@ -184,16 +184,15 @@
     </select>
 
     <!--  fixed -->
-    <select id="findPermissionsOfResource" resultMap="permissionsResult" parameterMap="permissionsOfResourceParam">
+    <select id="findPermissionsOfResource" resultMap="permissionsResult" parameterClass="java.util.HashMap">
         select r.id as id, r.resource_mapping  as resource_mapping,
         r.resource_type as resource_type, p.external_id as externalId, p.external_type as externalType,
         p.permission as permission
         from oskari_resource r, oskari_permission p
         where r.id=p.oskari_resource_id
-        and r.resource_mapping=?
-        and (r.resource_type = 'wfs_layer'
-        or   r.resource_type=? )
-        and p.external_type=?
+        and r.resource_mapping=#resourceMapping#
+        and r.resource_type=#resourceType#
+        and p.external_type=#externalIdType#
     </select>
     <!-- check -->
     <select id="findPermissionsOfResourceUser" resultMap="permissionsResult" parameterMap="resourceUserParam">
@@ -203,8 +202,7 @@
         from oskari_resource r, oskari_permission p
         where r.id=p.oskari_resource_id
         and r.resource_mapping=?
-        nd (r.resource_type = 'wfs_layer'
-        or   r.resource_type=? )
+        and r.resource_type=?
         and p.external_id=?
         and p.external_type=?
     </select>

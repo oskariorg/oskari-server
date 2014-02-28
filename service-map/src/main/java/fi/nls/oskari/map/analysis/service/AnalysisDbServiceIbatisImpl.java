@@ -8,7 +8,9 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnalysisDbServiceIbatisImpl extends
         BaseIbatisService<Analysis> implements AnalysisDbService {
@@ -134,4 +136,25 @@ public class AnalysisDbServiceIbatisImpl extends
         }
     }
 
+    /**
+     * Updates a analysis publisher screenName
+     *
+     * @param id
+     * @param uuid
+     * @param name
+     */
+    public int updatePublisherName(final long id, final String uuid, final String name) {
+
+        final Map<String, Object> data = new HashMap<String,Object>();
+        data.put("publisher_name", name);
+        data.put("uuid", uuid);
+        data.put("id", id);
+        try {
+            return getSqlMapClient().update(
+                    getNameSpace() + ".updatePublisherName", data);
+        } catch (SQLException e) {
+            log.error(e, "Failed to update publisher name", data);
+        }
+        return 0;
+    }
 }

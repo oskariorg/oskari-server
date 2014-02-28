@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.data;
 
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -17,10 +19,12 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.*;
 
 @OskariActionRoute("CreateAnalysisLayer")
 public class CreateAnalysisLayerHandler extends ActionHandler {
@@ -30,6 +34,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
+
+    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER = "filter";
@@ -77,8 +83,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
         AnalysisLayer analysisLayer = null;
+
+        // User
+        String uuid = params.getUser().getUuid();
         try {
-            analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, baseUrl);
+            analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, baseUrl, uuid);
         } catch (ServiceException e) {
             this.MyError(ERROR_UNABLE_TO_PARSE_ANALYSE, params, e);
             return;
@@ -163,6 +172,14 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // Get analysisLayer JSON for response to front
         try {
             JSONObject analysisLayerJSON = analysisLayer.getJSON();
+
+            String resourceType = AnalysisLayer.TYPE+"+"+params.getUser().getUuid();
+            Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
+            Set<String> editAccessList = null;
+            String permissionKey = "analysis+"+analysisLayer.getId();
+            JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(),permissionKey,permissionsList,editAccessList);
+            JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
+
             ResponseHelper.writeResponse(params, analysisLayerJSON);
         } catch (JSONException e) {
             this.MyError(ERROR_UNABLE_TO_GET_ANALYSISLAYER_DATA, params, null);

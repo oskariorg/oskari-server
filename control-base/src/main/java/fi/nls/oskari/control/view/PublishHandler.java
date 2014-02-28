@@ -9,11 +9,15 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -57,10 +61,12 @@ public class PublishHandler extends ActionHandler {
 
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2};
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
+            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2};
     private Map<String, Bundle> bundleCache = new HashMap<String, Bundle>(CACHED_BUNDLE_IDS.length);
 
     private static final String PREFIX_MYPLACES = "myplaces_";
+    private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_BASELAYER = "base_";
     private static final String LOGO_PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin";
     private static final Set<String> CLASS_WHITELIST;
@@ -76,6 +82,7 @@ public class PublishHandler extends ActionHandler {
 
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
+    private AnalysisDbService analysisService = null;
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
 
@@ -88,6 +95,10 @@ public class PublishHandler extends ActionHandler {
 
     public void setMyPlacesService(final MyPlacesService service) {
     	myPlaceService = service;
+    }
+
+    public void setAnalysisService(final AnalysisDbService service) {
+    	analysisService = service;
     }
 
     public void setPermissionsService(final PermissionsService service) {
@@ -106,6 +117,10 @@ public class PublishHandler extends ActionHandler {
 
         if (myPlaceService == null) {
         	setMyPlacesService(new MyPlacesServiceIbatisImpl());
+        }
+
+        if (myPlaceService == null) {
+            setAnalysisService(new AnalysisDbServiceIbatisImpl());
         }
 
         if (permissionsService == null) {
@@ -213,6 +228,9 @@ public class PublishHandler extends ActionHandler {
 
         // Setup toolbar bundle if user has configured it
         setupBundle(currentView, publisherData, ViewModifier.BUNDLE_TOOLBAR);
+
+        // Setup feature data bundle if user has configured it
+        setupBundle(currentView, publisherData, ViewModifier.BUNDLE_FEATUREDATA2);
 
         // Setup thematic map/published grid bundle
         final JSONObject gridState = publisherData.optJSONObject(KEY_GRIDSTATE);
@@ -465,6 +483,11 @@ public class PublishHandler extends ActionHandler {
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
                         filteredList.put(layer);
                     }
+                } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
+                    // check publish right for published analysis layer
+                    if (hasRightToPublishAnalysisLayer(layer.getLong("wpsLayerId"), userUuid, user.getScreenname())) {
+                        filteredList.put(layer);
+                    }
                 } else if (layerId.startsWith(PREFIX_BASELAYER)) {
                     // check publish right for base layer
                     if (hasRightToPublishBaseLayer(layerId, user)) {
@@ -498,8 +521,31 @@ public class PublishHandler extends ActionHandler {
                 return true;
             }
         }
-        log.warn("Found my places layer in selected that isn't users own or isnt published any more! LayerId:", layerId, "User UUID:", userUuid);
+        log.warn("Found my places layer in selected that isn't users own or isn't published any more! LayerId:", layerId, "User UUID:", userUuid);
         return false;
+    }
+
+
+    private boolean hasRightToPublishAnalysisLayer(final long layerId, final String userUuid, final String publisherName) {
+
+/*
+        Analysis analysis = analysisService.getAnalysisById(layerId);
+
+        if (analysis.getUuid().equals(userUuid)) {
+            analysisService.updatePublisherName(layerId, userUuid, publisherName); // make it public
+            return true;
+        }
+*/
+
+        String resourceType = AnalysisLayer.TYPE+"+"+userUuid;
+        Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
+        String permissionKey = "analysis+"+layerId;
+
+        boolean containsKey = permissionsList.contains(permissionKey);
+        if (!containsKey) {
+            log.warn("Found analysis layer in selected that isn't users own or isn't published any more! LayerId:", layerId, "User UUID:", userUuid);
+        }
+        return containsKey;
     }
 
 

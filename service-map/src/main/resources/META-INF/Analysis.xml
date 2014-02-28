@@ -180,4 +180,11 @@
         DELETE FROM analysis_style WHERE id = #id#
     </statement>
 
+    <update id="updatePublisherName"
+        parameterClass="Map">
+        update analysis set
+            publisher_name = #publisher_name:VarChar#
+        where uuid = #uuid# and id = #id#
+    </update>
+
 </sqlMap>
