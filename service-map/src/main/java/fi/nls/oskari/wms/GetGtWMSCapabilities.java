@@ -121,8 +121,9 @@ public class GetGtWMSCapabilities {
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WMS);
         oskariLayer.setUrl(rurl);
-        oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMax());
-        oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMin());
+        // THIS IS ON PURPOSE: min -> max, max -> min
+        oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMin());
+        oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMax());
         oskariLayer.setName(capabilitiesLayer.getName());
 
         // setup UI names for all supported languages
@@ -136,7 +137,6 @@ public class GetGtWMSCapabilities {
 OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.fi/geonetwork/srv/en/main.home?uuid=a22ec97f-d418-4957-9b9d-e8b4d2ec3eac"/>
 <inspire_common:MetadataUrl xsi:type="inspire_common:resourceLocatorType"><inspire_common:URL>http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/iso19139.xml?uuid=a22ec97f-d418-4957-9b9d-e8b4d2ec3eac</inspire_common:URL>
 */
-
         oskariLayer.setMetadataId(getMetaDataUrl(caps.getService()));
         final List<MetadataURL> meta = capabilitiesLayer.getMetadataURL();
         if (meta != null) {

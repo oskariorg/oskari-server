@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.18.1
+
+### control-base/PublishHandler
+
+Now uses template view as basis for existing maps as well. Merges plugin configs sent by client with existing bundle configs. Overrides user configs with template configs on merge so client can't change terms of use URLs etc. Note! Publish template plugins shouldn't have any configurations that can be overridden by user.
+
+### service-map/GetGtWMSCapabilities
+
+Geotools ScaleDenominatorMin is now set to OskariLayer as max scale and vice versa since this is how Oskari components expect to have these values.
+
 ## 1.18
 
 ### General

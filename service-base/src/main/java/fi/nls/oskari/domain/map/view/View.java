@@ -164,7 +164,7 @@ public class View implements Serializable {
      */
     public View cloneBasicInfo() {
         View view = new View();
-        // skip id, oldId, uuid
+        // skip id, oldId, uuid, supplementId
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());

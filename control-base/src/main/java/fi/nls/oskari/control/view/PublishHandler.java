@@ -257,10 +257,9 @@ public class PublishHandler extends ActionHandler {
     private void setupMapState(final Bundle mapFullBundle, final JSONObject publisherData, final User user) throws ActionException {
 
         // setup map state
-        final JSONArray newPlugins = publisherData.optJSONArray(KEY_PLUGINS);
         final JSONObject publisherMapState = publisherData.optJSONObject(KEY_MAPSTATE);
-        if(newPlugins == null || publisherMapState == null) {
-            throw new ActionParamsException("Could not get plugins/state for mapfull from publisher data");
+        if(publisherMapState == null) {
+            throw new ActionParamsException("Could not get state for mapfull from publisher data");
         }
         // complete overrride of template mapfull state with the data coming from publisher!
         mapFullBundle.setState(publisherMapState.toString());
@@ -271,7 +270,6 @@ public class PublishHandler extends ActionHandler {
         // Override template layer selections
         final boolean layersUpdated = JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_LAYERS, selectedLayers);
         final boolean selectedLayersUpdated = JSONHelper.putValue(mapFullBundle.getStateJSON(), KEY_SELLAYERS, selectedLayers);
-        //final boolean selectedLayersUpdated = JSONHelper.putValue(publisherMapState, KEY_SELLAYERS, selectedLayers);
         if (!(layersUpdated && selectedLayersUpdated)) {
             // failed to put layers correctly
             throw new ActionParamsException("Could not override layers selections");
@@ -291,75 +289,74 @@ public class PublishHandler extends ActionHandler {
         if(plugins == null) {
             throw new ActionParamsException("Could not get default plugins");
         }
-        // see if the plugin is already in the template
-        for (int i = newPlugins.length(); --i >= 0; ) {
-            boolean alreadyAdded = false;
-            JSONObject newPlugin = null;
-            JSONObject location = null;
-            try {
-                newPlugin = newPlugins.getJSONObject(i);
-                // sanitize plugin.config.location.classes
-                location = null;
-                if (newPlugin.has("config") && newPlugin.getJSONObject("config").has("location")) {
-                    location = newPlugin.getJSONObject("config").getJSONObject("location");
-                    if (location.has("classes")) {
-                        String classes = location.getString("classes");
-                        if (classes != null && classes.length() > 0) {
-                            String[] filteredClasses = filterClasses(classes.split(" "));
-                            location.put("classes", StringUtils.join(filteredClasses, " "));
-                        }
-                    }
-                    // Make sure we don't have inline css set
-                    if (location.has("top")) {
-                        location.remove("top");
-                    }
-                    if (location.has("right")) {
-                        location.remove("right");
-                    }
-                    if (location.has("bottom")) {
-                        location.remove("bottom");
-                    }
-                    if (location.has("left")) {
-                        location.remove("left");
-                    }
-                }
-            } catch (JSONException e) {
-                throw new ActionParamsException("Could not loop new plugins:" + e.getMessage());
+        final JSONArray userConfiguredPlugins = publisherData.optJSONArray(KEY_PLUGINS);
+
+        // merge user configs for template plugins
+        for(int i = 0; i < plugins.length(); ++i) {
+            JSONObject plugin = plugins.optJSONObject(i);
+            //plugins
+            JSONObject userPlugin = removePlugin(userConfiguredPlugins, plugin.optString(KEY_ID));
+            if(userPlugin != null) {
+                // same plugin from template AND user
+                // merge config using users as base! and override it with template values
+                // this way terms of use etc cannot be overridden by user
+                JSONObject mergedConfig = JSONHelper.merge(userPlugin.optJSONObject(KEY_CONFIG), plugin.optJSONObject(KEY_CONFIG));
+                JSONHelper.putValue(plugin, KEY_CONFIG, sanitizeConfigLocation(mergedConfig));
             }
-            // Append plugins
-            for (int j = plugins.length(); --j >= 0; ) {
-                JSONObject plugin = null;
-                try {
-                    plugin = plugins.getJSONObject(j);
-                } catch (JSONException e) {
-                    throw new RuntimeException("Could not loop"
-                            + " default plugins", e);
-                }
-                try {
-                    String newPluginId = newPlugin.getString(KEY_ID);
-                    String pluginId = plugin.getString(KEY_ID);
-                    if (newPluginId.equals(pluginId)) {
-                        alreadyAdded = true;
-                        // copy plugin classes
-                        if (location != null) {
-                            if (!plugin.has("config")) {
-                                plugin.put("config", new JSONObject());
-                            }
-                            plugin.getJSONObject("config").put("location", location);
-                        }
-                    }
-                } catch (JSONException e) {
-                    throw new RuntimeException("Could not compare"
-                            + " plugin IDs", e);
-                }
-            }
-            if (!alreadyAdded) {
-                plugins.put(newPlugin);
-            }
+        }
+        // add remaining plugins user has selected on top of template plugins
+        for (int i = userConfiguredPlugins.length(); --i >= 0; ) {
+            JSONObject userPlugin = userConfiguredPlugins.optJSONObject(i);
+            JSONHelper.putValue(userPlugin, KEY_CONFIG, sanitizeConfigLocation(userPlugin.optJSONObject(KEY_CONFIG)));
+            plugins.put(userPlugin);
         }
 
         // replace current plugins
         JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_PLUGINS, plugins);
+    }
+
+    /**
+     * Removes the plugin and returns the removed value or null if not found.
+     * NOTE! Modifies input list
+     * @param plugins
+     * @param pluginId
+     * @return
+     */
+    private JSONObject removePlugin(final JSONArray plugins, final String pluginId) {
+        if(pluginId == null || plugins == null) {
+            return null;
+        }
+        for(int i = 0; i < plugins.length(); ++i) {
+            JSONObject pluginObj = plugins.optJSONObject(i);
+            if(pluginObj != null && pluginId.equals(pluginObj.optString(KEY_ID))) {
+                plugins.remove(i);
+                return pluginObj;
+            }
+        }
+        return null;
+    }
+
+    private JSONObject sanitizeConfigLocation(final JSONObject config) {
+        if(config == null) {
+            return null;
+        }
+
+        // sanitize plugin.config.location.classes
+        JSONObject location = config.optJSONObject("location");
+        if (location != null) {
+            String classes = location.optString("classes");
+            if (classes != null && classes.length() > 0) {
+                String[] filteredClasses = filterClasses(classes.split(" "));
+                JSONHelper.putValue(location, "classes", StringUtils.join(filteredClasses, " "));
+            }
+            // Make sure we don't have inline css set
+            location.remove("top");
+            location.remove("right");
+            location.remove("bottom");
+            location.remove("left");
+        }
+
+        return config;
     }
 
 
@@ -378,17 +375,6 @@ public class PublishHandler extends ActionHandler {
             throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
         }
 
-        // check if we are updating a view
-        long viewId = publisherInput.optLong("id", -1);
-        if(viewId != -1) {
-            log.debug("Loading view for editing:", viewId);
-            final View view = viewService.getViewWithConf(viewId);
-            if (user.getId() != view.getCreator()) {
-                throw new ActionDeniedException("No permissions to update view with id:" + viewId);
-            }
-            return view;
-        }
-
         // not editing, use template view
         if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
             log.error("Publish template id not configured (property: view.template.publish)!");
@@ -396,16 +382,30 @@ public class PublishHandler extends ActionHandler {
         }
         log.debug("Using template to create a new view");
         // Get publisher defaults
-        View view = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
-        if (view == null) {
+        View templateView = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
+        if (templateView == null) {
             log.error("Could not get template View with id:", PUBLISHED_VIEW_TEMPLATE_ID);
             throw new ActionParamsException("Could not get template View");
         }
-        // reset id so template doesn't get updated!!
-        // NOT NEEDED WITH CLONÌNG view.setId(-1);
 
-        // clone a blank view based on template
-        return view.cloneBasicInfo();
+        // clone a blank view based on template (so template doesn't get updated!!)
+        final View view = templateView.cloneBasicInfo();
+        final long viewId = publisherInput.optLong("id", -1);
+        if(viewId != -1) {
+            // check loaded view against user if we are updating a view
+            log.debug("Loading view for editing:", viewId);
+            final View existingView = viewService.getViewWithConf(viewId);
+            if (user.getId() != existingView.getCreator()) {
+                throw new ActionDeniedException("No permissions to update view with id:" + viewId);
+            }
+            // setup ids for updating a view
+            view.setId(existingView.getId());
+            view.setSupplementId(existingView.getSupplementId());
+            view.setUuid(existingView.getUuid());
+            view.setOldId(existingView.getOldId());
+        }
+
+        return view;
     }
 
     private void setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
