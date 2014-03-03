@@ -32,7 +32,7 @@ public class CollectGeometriesMethodParams extends AnalysisMethodParams {
         String doctemp = this.getTemplate(this.analysisMethodTemplate);
 
         doctemp = doctemp.replace(HREF, this.getHref());
-        doctemp = doctemp.replace(MAXFEATURES, "100"); // capasity problems, if bigger than 100 - replace later with  this.getMaxFeatures());
+        doctemp = doctemp.replace(MAXFEATURES, this.getMaxFeatures()); // capasity problems, if bigger than 100
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
