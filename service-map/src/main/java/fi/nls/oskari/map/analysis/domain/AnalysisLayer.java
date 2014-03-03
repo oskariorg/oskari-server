@@ -1,11 +1,11 @@
 package fi.nls.oskari.map.analysis.domain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import fi.mml.portti.domain.permissions.Permissions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 
 public class AnalysisLayer {
-    private final String type = "analysislayer";
+    public static final String TYPE = "analysislayer";
     private final String ANALYSIS_GEOMETRY_FIELD = "geometry";
     private int id = 0;
     private String name = "";
@@ -22,6 +22,7 @@ public class AnalysisLayer {
     private String inputAnalysisId = null;
     private String inputCategoryId = null;
     
+    private List<Permissions> permissions = null;
     private String orgName = "";
     private String inspire = "";
     private Integer opacity;
@@ -45,7 +46,7 @@ public class AnalysisLayer {
     private List<String> mergeAnalysisLayers;
 
     public String getType() {
-        return type;
+        return TYPE;
     }
 
     public int getId() {
@@ -87,7 +88,14 @@ public class AnalysisLayer {
     public void setInputAnalysisId(String inputAnalysisId) {
         this.inputAnalysisId = inputAnalysisId;
     }
-    
+
+    public List<Permissions> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permissions> permissions) {
+        this.permissions = permissions;
+    }
 
     public String getOrgName() {
         return orgName;

@@ -1,7 +1,12 @@
 package fi.nls.oskari.analysis;
 
+import fi.mml.portti.domain.permissions.Permissions;
+import fi.mml.portti.domain.permissions.UniqueResourceName;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.wfs.WFSFilterBuilder;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.mml.portti.domain.permissions.OskariLayerResourceName;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
@@ -31,6 +36,7 @@ public class AnalysisParser {
     private WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
+    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
@@ -97,10 +103,12 @@ public class AnalysisParser {
      * @param baseUrl
      *            Url for Geoserver WPS reference input (input
      *            FeatureCollection)
+     * @param uuid
+     *            User identification
      * @return AnalysisLayer parameters for WPS execution
      ************************************************************************/
     public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter,
-                                             String baseUrl) throws ServiceException {
+                                             String baseUrl, String uuid) throws ServiceException {
         AnalysisLayer analysisLayer = new AnalysisLayer();
 
         JSONObject json = JSONHelper.createJSONObject(layerJSON);
@@ -152,6 +160,24 @@ public class AnalysisParser {
 
         final OskariLayer wfsLayer = mapLayerService.find(id);
         log.debug("got wfs layer", wfsLayer);
+
+        if (uuid != null) {
+            UniqueResourceName resourceName = new UniqueResourceName();
+            resourceName.setType(analysisLayer.getType() + "+" + uuid);
+            resourceName.setName(Integer.toString(analysisLayer.getId()));
+            resourceName.setNamespace("analysis");
+
+            List<Permissions> permissions = permissionsService.getResourcePermissions(new OskariLayerResourceName(wfsLayer), Permissions.EXTERNAL_TYPE_ROLE);
+            for (Permissions permission : permissions) {
+                List<String> grantedPermissions = permission.getGrantedPermissions();
+                for (String grantedPermission : grantedPermissions) {
+                    if ((grantedPermission.equals(Permissions.PERMISSION_TYPE_PUBLISH))||(grantedPermission.equals(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED))) {
+                        permissionsService.insertPermissions(resourceName,permission.getExternalId(),permission.getExternalIdType(),grantedPermission);
+                    }
+                }
+            }
+        }
+
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
 
@@ -1018,7 +1044,7 @@ public class AnalysisParser {
         // Switch to UNION method
         layerJSON = layerJSON.replace("\"method\":\"aggregate\"","\"method\":\"union\"");
 
-        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, baseUrl);
+        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, baseUrl, null);
         al2.setResult(analysisLayer.getResult());
         return al2;
 
