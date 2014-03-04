@@ -70,10 +70,8 @@ public class BufferMethodParams extends AnalysisMethodParams {
             doctemp = this.getTemplate(this.analysisMethodTemplate);
         
         doctemp = doctemp.replace(HREF, this.getHref());
-        doctemp = doctemp.replace(MAXFEATURES, "100"); // capasity problems, if
-                                                       // bigger than 100 -
-                                                       // replace later with
-                                                       // this.getMaxFeatures());
+        doctemp = doctemp.replace(MAXFEATURES, this.getMaxFeatures()); // may be capasity problems, if big one
+
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
