@@ -62,7 +62,8 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
             ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
-            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2};
+            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
+            ViewModifier.BUNDLE_DIVMANAZER};
     private Map<String, Bundle> bundleCache = new HashMap<String, Bundle>(CACHED_BUNDLE_IDS.length);
 
     private static final String PREFIX_MYPLACES = "myplaces_";
@@ -413,6 +414,11 @@ public class PublishHandler extends ActionHandler {
         final JSONObject bundleData = publisherData.optJSONObject(bundleid);
         if (bundleData != null && bundleData.names().length() > 0) {
             log.info("config found for", bundleid);
+            if (bundleid == ViewModifier.BUNDLE_FEATUREDATA2) {
+                // Add divmanazer first
+                log.info("Adding bundle", ViewModifier.BUNDLE_DIVMANAZER);
+                addBundle(view, ViewModifier.BUNDLE_DIVMANAZER);
+            }
             final Bundle bundle = addBundle(view, bundleid);
             mergeBundleConfiguration(bundle, bundleData, null);
         } else {

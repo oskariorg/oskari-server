@@ -24,6 +24,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_TOOLBAR = "toolbar";
     public static final String BUNDLE_PUBLISHEDMYPLACES2 = "publishedmyplaces2";
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
+    public static final String BUNDLE_DIVMANAZER = "divmanazer";
 
     public void init() {
 
