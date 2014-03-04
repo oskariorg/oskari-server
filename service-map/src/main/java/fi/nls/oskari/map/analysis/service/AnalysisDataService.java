@@ -406,7 +406,6 @@ public class AnalysisDataService {
             final JSONArray layersJSON = new JSONArray();
             listLayer.put(JSKEY_ANALYSISLAYERS, layersJSON);
             for (Analysis al : layers) {
-
                 // Parse analyse layer json out analysis
                 JSONObject analyselayer = getlayerJSON(al);
                 listLayer.accumulate(JSKEY_ANALYSISLAYERS, analyselayer);
@@ -420,14 +419,17 @@ public class AnalysisDataService {
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
 
+    public JSONObject getlayerJSON(long id) {
+        Analysis analysis = analysisService.getAnalysisById(id);
+        return getlayerJSON(analysis);
+    }
+
     /**
      * @param al analyse object
      * @return analysis layer data for front mapservice
      * @throws JSONException
      */
-    public JSONObject getlayerJSON(Analysis al)
-
-            throws JSONException {
+    public JSONObject getlayerJSON(Analysis al) {
         JSONObject json = new JSONObject();
         // Add correct analyse layer_id to json
         try {

@@ -163,7 +163,7 @@ public class AnalysisParser {
 
         if (uuid != null) {
             UniqueResourceName resourceName = new UniqueResourceName();
-            resourceName.setType(analysisLayer.getType() + "+" + uuid);
+            resourceName.setType(AnalysisLayer.TYPE);
             resourceName.setName(Integer.toString(analysisLayer.getId()));
             resourceName.setNamespace("analysis");
 

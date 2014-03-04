@@ -24,6 +24,11 @@ public class JSONHelper {
         putValue(object, key, value);
         return object;
     }
+    public static final JSONObject createJSONObject(final String key, final boolean value) {
+        final JSONObject object = new JSONObject();
+        putValue(object, key, value);
+        return object;
+    }
 
     public static final JSONObject createJSONObject(final String content) {
         try {

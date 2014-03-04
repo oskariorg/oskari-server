@@ -11,15 +11,27 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wms.WMSCapabilities;
+import org.json.JSONObject;
 
 public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory>
         implements MyPlacesService {
 
     private final static Logger log = LogFactory.getLogger(
             MyPlacesServiceIbatisImpl.class);
+
+    private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows")+":my_places_categories";
+    private static String MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("myplaces.client.wmsurl");
+    private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
+
+    private final static LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
 
     @Override
     protected String getNameSpace() {
@@ -101,4 +113,36 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
         return queryForList(getNameSpace() + ".freeFind", data);
     }
 
+    public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,
+                                              final String lang, final boolean useDirectURL,
+                                              final String uuid, final boolean modifyURLs) {
+
+        final OskariLayer layer = new OskariLayer();
+        layer.setExternalId("myplaces_" + mpLayer.getId());
+        layer.setName(MYPLACES_WMS_NAME);
+        layer.setType(OskariLayer.TYPE_WMS);
+        layer.setName(lang, mpLayer.getCategory_name());
+        layer.setTitle(lang, mpLayer.getPublisher_name());
+        layer.setOpacity(50);
+        layer.setOptions(JSONHelper.createJSONObject("singleTile", true));
+
+        // if useDirectURL -> geoserver URL
+        if(useDirectURL) {
+            layer.setUrl(MYPLACES_ACTUAL_WMS_URL +
+                    "(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());
+        }
+        else {
+            layer.setUrl(MYPLACES_CLIENT_WMS_URL + mpLayer.getId() + "&");
+        }
+
+        final WMSCapabilities capabilities = new WMSCapabilities();
+        // gfi
+        capabilities.setQueryable(true);
+        // capabilities.setFormats([]); // possibly needed
+
+        JSONObject myPlaceLayer = JSON_FORMATTER.getJSON(layer, lang, modifyURLs, capabilities);
+        // flag with metaType for frontend
+        JSONHelper.putValue(myPlaceLayer, "metaType", "published");
+        return myPlaceLayer;
+    }
 }

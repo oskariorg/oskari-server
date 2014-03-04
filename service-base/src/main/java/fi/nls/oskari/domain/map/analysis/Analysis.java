@@ -1,7 +1,6 @@
 package fi.nls.oskari.domain.map.analysis;
 
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 

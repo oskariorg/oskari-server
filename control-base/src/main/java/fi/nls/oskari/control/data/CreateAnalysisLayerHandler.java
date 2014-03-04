@@ -173,8 +173,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         try {
             JSONObject analysisLayerJSON = analysisLayer.getJSON();
 
-            String resourceType = AnalysisLayer.TYPE+"+"+params.getUser().getUuid();
-            Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
+            Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
             Set<String> editAccessList = null;
             String permissionKey = "analysis+"+analysisLayer.getId();
             JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(),permissionKey,permissionsList,editAccessList);

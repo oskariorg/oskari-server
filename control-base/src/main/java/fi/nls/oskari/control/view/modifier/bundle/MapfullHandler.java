@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Set;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +29,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -63,17 +66,7 @@ public class MapfullHandler extends BundleHandler {
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
 
     private static final MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
-
-    private static String MYPLACES_WMS_NAME = "";
-    private static String MYPLACES_CLIENT_WMS_URL = "";
-    private static String MYPLACES_ACTUAL_WMS_URL = "";
-
-    public void init() {
-        MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix","ows")+":my_places_categories";
-        MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
-        MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("myplaces.client.wmsurl");
-    }
-
+    private static final AnalysisDataService analysisService = new AnalysisDataService();
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
 
@@ -96,23 +89,21 @@ public class MapfullHandler extends BundleHandler {
         }
 
         // setup user data
-        populateUserData(mapfullConfig, params.getUser());
+        JSONHelper.putValue(mapfullConfig, KEY_USER, getUserJSON(params.getUser()));
 
         // Any layer referenced in state.selectedLayers array NEEDS to 
         // be in conf.layers otherwise it cant be added to map on startup
         final JSONArray mfConfigLayers = JSONHelper.getEmptyIfNull(mapfullConfig.optJSONArray(KEY_LAYERS));
         final JSONArray mfStateLayers = JSONHelper.getEmptyIfNull(mapfullState.optJSONArray(KEY_SEL_LAYERS));
         copySelectedLayersToConfigLayers(mfConfigLayers, mfStateLayers);
-
-        final boolean isMyplacesPresent = isBundlePresent(params.getStartupSequence(), BUNDLE_MYPLACES2);
+        final Set<String> bundleIds = getBundleIds(params.getStartupSequence());
         final boolean useDirectURLForMyplaces = false;
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
         		params.getUser(), 
-        		params.getLocale().getLanguage(), 
-        		params.getClientIP(),  
+        		params.getLocale().getLanguage(),
         		params.getViewId(), 
         		params.getViewType(),
-                isMyplacesPresent,
+                bundleIds,
                 useDirectURLForMyplaces,
         		params.isModifyURLs());
         
@@ -137,11 +128,10 @@ public class MapfullHandler extends BundleHandler {
     }
 
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-                                               final User user, final String lang,
-                                               final String clientIP, final long viewID,
-                                               final String viewType, final boolean isMyplacesBundleLoaded,
+                                               final User user, final String lang, final long viewID,
+                                               final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces) {
-        return getFullLayerConfig(layersArray, user, lang, clientIP, viewID, viewType, isMyplacesBundleLoaded, useDirectURLForMyplaces, false);
+        return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false);
     }
 
     /**
@@ -149,24 +139,23 @@ public class MapfullHandler extends BundleHandler {
      * @param layersArray
      * @param user
      * @param lang
-     * @param clientIP
      * @param viewID
      * @param viewType
-     * @param isMyplacesBundleLoaded
+     * @param bundleIds
      * @param useDirectURLForMyplaces
      * @param modifyURLs false to keep urls as is, true to modify them for easier proxy forwards
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-    		final User user, final String lang, 
-    		final String clientIP, final long viewID, 
-    		final String viewType, final boolean isMyplacesBundleLoaded,
+    		final User user, final String lang, final long viewID,
+    		final String viewType, final Set<String> bundleIds,
             final boolean useDirectURLForMyplaces,
             final boolean modifyURLs) {
 
         // Create a list of layer ids
         final List<String> layerIdList = new ArrayList<String>();
         final List<Long> publishedMyPlaces = new ArrayList<Long>();
+        final List<Long> publishedAnalysis = new ArrayList<Long>();
 
         for (int i = 0; i < layersArray.length(); i++) {
             String layerId = null;
@@ -176,32 +165,26 @@ public class MapfullHandler extends BundleHandler {
                 if (layerId == null || layerIdList.contains(layerId)) {
                     continue;
                 }
-                if (layerId.toLowerCase().startsWith("base_")) {
-                    layerIdList.add(layerId);
-                } else if (layerId.startsWith(PREFIX_MYPLACES)) {
+                // special handling for myplaces and analysis layers
+                if (layerId.startsWith(PREFIX_MYPLACES)) {
                     final long categoryId =
                             ConversionHelper.getLong(layerId.substring(PREFIX_MYPLACES.length()), -1);
                     if (categoryId != -1) {
                         publishedMyPlaces.add(categoryId);
                     } else {
-                        log.warn("Found my places layer in selected. Error parsing id with category id: ",
-                                layerId);
+                        log.warn("Found my places layer in selected. Error parsing id with category id: ", layerId);
                     }
                 } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
-
-                    String resourceType = AnalysisLayer.TYPE+"+"+user.getUuid();
-                    Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
-                    String permissionKey = "analysis+"+layerId;
-
-                    boolean containsKey = permissionsList.contains(permissionKey);
-                    if (containsKey) {
-                        //todo
+                    // the actual analysis id is the last token (separated by '_')
+                    final String[] layerIdSplitted = layerId.split("_");
+                    final long categoryId = ConversionHelper.getLong(layerIdSplitted[layerIdSplitted.length -1], -1);
+                    if (categoryId != -1) {
+                        publishedAnalysis.add(categoryId);
                     } else {
-                        log.warn("Found analysis layer in selected. Error parsing id with layer id: ",
-                                layerId);
+                        log.warn("Found analysis layer in selected. Error parsing id with category id: ", layerId);
                     }
-                } else if (ConversionHelper.getLong(layerId, -1) != -1) {
-                    // these should all be numbers since base_ and myplaces_ are already handled
+                } else {
+                    // these should all be pointing at a layer in oskari_maplayer
                     layerIdList.add(layerId);
                 }
             } catch (JSONException je) {
@@ -219,82 +202,79 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, isMyplacesBundleLoaded, useDirectURLForMyplaces, modifyURLs);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
+        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
         return prefetch;
     }
+    private static void appendAnalysisLayers(final JSONArray layerList,
+                                             final List<Long> publishedAnalysis,
+                                             final User user,
+                                             final long viewID,
+                                             final String lang,
+                                             final Set<String> bundleIds,
+                                             final boolean useDirectURL,
+                                             final boolean modifyURLs) {
+
+        final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
+        final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+
+        for(Long id : publishedAnalysis) {
+            if(analyseBundlePresent) {
+                // should check if its users own before continue!!
+                continue;
+            }
+            final String permissionKey = "analysis+"+id;
+            boolean containsKey = permissionsList.contains(permissionKey);
+            if (!containsKey) {
+                log.info("Found analysis layer in selected that is no longer published. ViewID:",
+                        viewID, "Analysis id:", id);
+                continue;
+            }
+            final JSONObject json = analysisService.getlayerJSON(id);
+            if(json != null) {
+                layerList.put(json);
+            }
+        }
+    }
+
     
     private static void appendMyPlacesLayers(final JSONArray layerList,
             final List<Long> publishedMyPlaces,
             final User user,
             final long viewID,
-            final boolean skipOwnMyPlacesLayers,
+            final String lang,
+            final Set<String> bundleIds,
             final boolean useDirectURL,
             final boolean modifyURLs) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
+        final boolean myPlacesBundlePresent = bundleIds.contains(BUNDLE_MYPLACES2);
         // get myplaces categories from service and generate layer jsons
         final String uuid = user.getUuid();
         final List<MyPlaceCategory> myPlacesLayers = myPlaceService
                 .getMyPlaceLayersById(publishedMyPlaces);
 
         for (MyPlaceCategory mpLayer : myPlacesLayers) {
-            if (mpLayer.getPublisher_name() == null
-                    && !mpLayer.getUuid().equals(uuid)) {
+            if (!mpLayer.isPublished() && !mpLayer.isOwnedBy(uuid)) {
                 log.info("Found my places layer in selected that is no longer published. ViewID:",
                 		viewID, "Myplaces layerId:", mpLayer.getId());
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
-            if (skipOwnMyPlacesLayers && mpLayer.getUuid().equals(uuid)) {
+            if (myPlacesBundlePresent && mpLayer.isOwnedBy(uuid)) {
                 // if the layer is users own -> myplaces2 bundle handles it
                 // so if myplaces2 is present we must skip the users layers
                 continue;
             }
 
-            final JSONObject myPlaceLayer = getMyPlacesJSON(mpLayer, useDirectURL, user.getUuid(), modifyURLs);
+            final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
+                    mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
             if(myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
             }
         }
-    }
-
-    private static JSONObject getMyPlacesJSON(final MyPlaceCategory mpLayer,
-            final boolean useDirectURL, final String uuid,
-            final boolean modifyURLs) {
-        try {
-            final JSONObject myPlaceLayer = new JSONObject();
-            myPlaceLayer.put("wmsName", MYPLACES_WMS_NAME);
-            //myPlaceLayer.put("descriptionLink", "");
-            myPlaceLayer.put("type", "wmslayer");
-            myPlaceLayer.put("formats",
-                    new JSONObject().put("value", "text/html"));
-            myPlaceLayer.put("isQueryable", true);
-            myPlaceLayer.put("opacity", "50");
-
-            JSONObject options = new JSONObject();
-            JSONHelper.putValue(options, "singleTile", true);
-            //options.put("transitionEffect", JSONObject.NULL);
-            JSONHelper.putValue(myPlaceLayer, "options", options);
-
-            myPlaceLayer.put("metaType", "published");
-            // if useDirectURL -> geoserver URL
-            // TODO: check "modifyURLs" and prefix wmsurl if true
-            if(useDirectURL) {
-                myPlaceLayer.put("wmsUrl", MYPLACES_ACTUAL_WMS_URL +
-                		"(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());
-            }
-            else {
-                myPlaceLayer.put("wmsUrl", MYPLACES_CLIENT_WMS_URL + mpLayer.getId() + "&");
-            }
-            myPlaceLayer.put("name", mpLayer.getCategory_name());
-            myPlaceLayer.put("subtitle", mpLayer.getPublisher_name());
-            myPlaceLayer.put("id", "myplaces_" + mpLayer.getId());
-            return myPlaceLayer;
-        } catch (JSONException e) {
-            log.warn(e, "Error populating myplaces layer");
-        }
-        return null;
     }
 
     private static JSONArray getLayersArray(final JSONObject struct) {
@@ -344,8 +324,7 @@ public class MapfullHandler extends BundleHandler {
         }
     }
 
-    private void populateUserData(final JSONObject mapfullConfig, final User user) {
-
+    private JSONObject getUserJSON(final User user) {
         try {
             JSONObject userData = new JSONObject();
             userData.put(KEY_FIRSTNAME, user.getFirstname());
@@ -355,29 +334,24 @@ public class MapfullHandler extends BundleHandler {
             userData.put(KEY_USERUUID, user.getUuid());
             userData.put(KEY_USERID, user.getId());
 
-            populateUserRoles(userData, user);
-
-            mapfullConfig.put(KEY_USER, userData);
+            JSONArray roles = getUserRolesJSON(user);
+            userData.put(KEY_ROLES, roles);
+            return userData;
         } catch (JSONException jsonex) {
             log.warn("Unable to populate user data:", user);
         }
+        return null;
     }
 
-    private void populateUserRoles(final JSONObject userData, final User user) {
-        try {
-            JSONArray userRoles = new JSONArray();
-
-            for (Role role: user.getRoles()) {
-                JSONObject roleData = new JSONObject();
-                roleData.put(KEY_ROLE_ID, role.getId());
-                roleData.put(KEY_ROLE_NAME, role.getName());
-                userRoles.put(roleData);
-            }
-            userData.put(KEY_ROLES, userRoles);
-
-        } catch (JSONException jsonex) {
-            log.warn("Unable to populate user data:", user);
+    private JSONArray getUserRolesJSON(final User user) throws JSONException {
+        JSONArray userRoles = new JSONArray();
+        for (Role role: user.getRoles()) {
+            JSONObject roleData = new JSONObject();
+            roleData.put(KEY_ROLE_ID, role.getId());
+            roleData.put(KEY_ROLE_NAME, role.getName());
+            userRoles.put(roleData);
         }
+        return userRoles;
     }
 
     public static JSONObject getPlugin(final String pluginClassName,

@@ -5,6 +5,9 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Base class for components modifying Oskari Map Frameworks view on runtime.
  */
@@ -24,6 +27,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_TOOLBAR = "toolbar";
     public static final String BUNDLE_PUBLISHEDMYPLACES2 = "publishedmyplaces2";
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
+    public static final String BUNDLE_ANALYSE = "analyse";
 
     public void init() {
 
@@ -148,5 +152,25 @@ public abstract class ViewModifier {
             }
         }
         return false;
+    }
+
+    /**
+     * Parses startupSequence and lists all bundleids present in it
+     * @param startupSeq apps startup sequence
+     * @return Set of bundles listed in the startupsequence
+     */
+    public Set<String> getBundleIds(final JSONArray startupSeq) {
+        final Set<String> bundles = new HashSet<String>();
+        if(startupSeq == null) {
+            return bundles;
+        }
+        for (int i = 0; i < startupSeq.length(); i++) {
+            final JSONObject bundle = (JSONObject) startupSeq.opt(i);
+            final String startupBundleid = bundle.optString("bundlename");
+            if(startupBundleid != null) {
+                bundles.add(startupBundleid);
+            }
+        }
+        return bundles;
     }
 }

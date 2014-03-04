@@ -73,6 +73,10 @@ public class AnalysisDbServiceIbatisImpl extends
         return queryForObject(getNameSpace() + ".findAnalysis", id);
     }
 
+    public List<Analysis> getAnalysisById(List<Long> idList) {
+        return queryForList(getNameSpace() + ".findByIds", idList);
+    }
+
     /**
      * Get Analysis rows of one user by uuid
      *
