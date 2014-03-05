@@ -3,13 +3,16 @@ package fi.nls.oskari.control.layer;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.service.AnalysisDataService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.domain.User;
@@ -18,56 +21,44 @@ import org.json.JSONObject;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import java.util.List;
 import java.util.Set;
 
-
 /**
- * Get WMS map layers
+ * Returns users own analysis layers as JSON.
  */
 @OskariActionRoute("GetAnalysisLayers")
 public class GetAnalysisLayersHandler extends ActionHandler {
-    private static final Logger log = LogFactory
-            .getLogger(GetAnalysisLayersHandler.class);
 
-    final static String LANGUAGE_ATTRIBUTE = "lang";
-
-    private AnalysisDataService analysisDataService = new AnalysisDataService();
+    private static final Logger log = LogFactory.getLogger(GetAnalysisLayersHandler.class);
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+
+    private static final String JSKEY_ANALYSISLAYERS = "analysislayers";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        try {
+        final JSONObject response = new JSONObject();
+        final JSONArray layers = new JSONArray();
+        JSONHelper.putValue(response, JSKEY_ANALYSISLAYERS, layers);
 
-            final String lang = params.getHttpParam(LANGUAGE_ATTRIBUTE, params
-                    .getLocale().getLanguage());
-
-            User user = params.getUser();
-            JSONObject layers = new JSONObject();
-            if (!user.isGuest()) {
-                layers = analysisDataService.getListOfAllAnalysisLayers(
-                        user.getUuid(), lang);
-                JSONArray analysisLayers = layers.getJSONArray("analysislayers");
-                int nLayers = analysisLayers.length();
-                for (int i=0; i < nLayers; i++) {
-                    JSONObject analysisLayer =  analysisLayers.getJSONObject(i);
-                    Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
-                    Set<String> editAccessList = null;
-                    String permissionKey = "analysis+"+analysisLayer.getString("id");
-                    JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(), permissionKey, permissionsList, editAccessList);
-                    JSONHelper.putValue(analysisLayer, "permissions", permissions);
-                }
-
-
+        final User user = params.getUser();
+        if (!user.isGuest()) {
+            // FIXME: make a new method to permission service for a more specific search, this will blow up eventually
+            final Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
+            final Set<String> editAccessList = null;
+            final List<Analysis> list = analysisService.getAnalysisByUid(user.getUuid());
+            for(Analysis a: list) {
+                // Parse analyse layer json out analysis
+                final JSONObject analysisLayer = AnalysisHelper.getlayerJSON(a);
+                final String permissionKey = "analysis+" + a.getId();
+                JSONObject permissions = OskariLayerWorker.getPermissions(user, permissionKey, permissionsList, editAccessList);
+                JSONHelper.putValue(analysisLayer, "permissions", permissions);
+                layers.put(analysisLayer);
             }
-
-            ResponseHelper.writeResponse(params, layers);
-
-        } catch (Exception e) {
-            throw new ActionException(
-                    "Couldn't request Analysis data service - get analysis layers",
-                    e);
         }
-    }
 
+        ResponseHelper.writeResponse(params, response);
+    }
 }

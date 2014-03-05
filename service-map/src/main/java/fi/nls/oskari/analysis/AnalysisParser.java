@@ -1,12 +1,7 @@
 package fi.nls.oskari.analysis;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.domain.permissions.UniqueResourceName;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.wfs.WFSFilterBuilder;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.mml.portti.domain.permissions.OskariLayerResourceName;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
@@ -36,7 +31,6 @@ public class AnalysisParser {
     private WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private static final TransformationService transformationService = new TransformationService();
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
@@ -46,7 +40,7 @@ public class AnalysisParser {
             "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
 
 
-    private static final String LAYER_PREFIX = "analysis_";
+    private static final String ANALYSIS_LAYER_PREFIX = "analysis_";
     private static final String MYPLACES_LAYER_PREFIX = "myplaces_";
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
@@ -131,7 +125,7 @@ public class AnalysisParser {
             String sid = json.getString(JSON_KEY_LAYERID);
 
             // Input is wfs layer or analaysis layer or my places
-            if (sid.indexOf(LAYER_PREFIX) == 0 ) {
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 ) {
                 // Analysislayer is input
                 if (!this.prepareAnalysis4Analysis(analysisLayer, json))
                     throw new ServiceException(
@@ -160,23 +154,6 @@ public class AnalysisParser {
 
         final OskariLayer wfsLayer = mapLayerService.find(id);
         log.debug("got wfs layer", wfsLayer);
-
-        if (uuid != null) {
-            UniqueResourceName resourceName = new UniqueResourceName();
-            resourceName.setType(AnalysisLayer.TYPE);
-            resourceName.setName(Integer.toString(analysisLayer.getId()));
-            resourceName.setNamespace("analysis");
-
-            List<Permissions> permissions = permissionsService.getResourcePermissions(new OskariLayerResourceName(wfsLayer), Permissions.EXTERNAL_TYPE_ROLE);
-            for (Permissions permission : permissions) {
-                List<String> grantedPermissions = permission.getGrantedPermissions();
-                for (String grantedPermission : grantedPermissions) {
-                    if ((grantedPermission.equals(Permissions.PERMISSION_TYPE_PUBLISH))||(grantedPermission.equals(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED))) {
-                        permissionsService.insertPermissions(resourceName,permission.getExternalId(),permission.getExternalIdType(),grantedPermission);
-                    }
-                }
-            }
-        }
 
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
@@ -303,7 +280,7 @@ public class AnalysisParser {
             try {
                 sid = params.getString(JSON_KEY_LAYERID);
                 // Input is wfs layer or analaysis layer
-                if (sid.indexOf(LAYER_PREFIX) == 0) {
+                if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0) {
                     // Analysislayer is input
                     // eg. analyse_216_340
                     id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
@@ -330,7 +307,7 @@ public class AnalysisParser {
                     json, baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            if (sid.indexOf(LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
@@ -965,7 +942,7 @@ public class AnalysisParser {
         try {
 
             String sid = json.optString(JSON_KEY_LAYERID);
-            if (sid.indexOf(LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
                 return null;
             String sids[] = sid.split("_");
             if (sids.length > 1) {
