@@ -13,10 +13,6 @@ import org.json.JSONObject;
 /**
  * Provides utility methods for analysis
  * Moved JSON generation out of fi.nls.oskari.map.analysis.service.AnalysisDataService.
- * User: SMAKINEN
- * Date: 4.3.2014
- * Time: 17:11
- * To change this template use File | Settings | File Templates.
  */
 public class AnalysisHelper {
 
@@ -52,10 +48,6 @@ public class AnalysisHelper {
     private static final String ANALYSIS_ORGNAME = ""; // managed in front
     private static final String ANALYSIS_INSPIRE = ""; // managed in front
 
-    //private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
-    //private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
-    //private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
-
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
     private static final String ANALYSIS_RENDERING_URL = PropertyUtil.get("analysis.rendering.url");
     private static final String ANALYSIS_RENDERING_ELEMENT = PropertyUtil.get("analysis.rendering.element");
@@ -80,11 +72,20 @@ public class AnalysisHelper {
     }
 
     /**
+     * Generate a layer object for frontend.
      * @param al analyse object
      * @return analysis layer data for front mapservice
      * @throws org.json.JSONException
      */
-    public static JSONObject getlayerJSON(Analysis al) {
+    public static JSONObject getlayerJSON(final Analysis al) {
+        return getlayerJSON(al, PropertyUtil.getDefaultLanguage(), false, null, false);
+    }
+
+    public static JSONObject getlayerJSON(final Analysis al,
+                                          final String lang, final boolean useDirectURL,
+                                          final String uuid, final boolean modifyURLs) {
+        // TODO: make use of params, see MyPlacesServiceIbatisImpl.getCategoryAsWmsLayerJSON for example
+        // TODO: create layer JSON with LayerJSONFormatter
         JSONObject json = new JSONObject();
         // Add correct analyse layer_id to json
         try {

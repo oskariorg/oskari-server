@@ -11,9 +11,12 @@ import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +68,7 @@ public class MapfullHandler extends BundleHandler {
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
 
     private static final MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
-    private static final AnalysisDataService analysisService = new AnalysisDataService();
+    private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
 
@@ -217,7 +220,8 @@ public class MapfullHandler extends BundleHandler {
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
 
         for(Long id : publishedAnalysis) {
-            if(analyseBundlePresent) {
+            final Analysis analysis = analysisService.getAnalysisById(id);
+            if(analyseBundlePresent && user.getUuid().equals(analysis.getUuid())) {
                 // should check if its users own before continue!!
                 continue;
             }
@@ -228,7 +232,8 @@ public class MapfullHandler extends BundleHandler {
                         viewID, "Analysis id:", id);
                 continue;
             }
-            final JSONObject json = analysisService.getlayerJSON(id);
+            final JSONObject json = AnalysisHelper.getlayerJSON(analysis, lang,
+                    useDirectURL, user.getUuid(), modifyURLs);
             if(json != null) {
                 layerList.put(json);
             }
