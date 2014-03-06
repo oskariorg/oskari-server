@@ -173,7 +173,8 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
                 if(result.containsKey("alternativeGeographicIdentifiers_type") ) item.setLocationTypeCode(result.get("alternativeGeographicIdentifiers_type").toString());
                 if(result.containsKey("alternativeGeographicIdentifier1_type") ) item.setLocationTypeCode(result.get("alternativeGeographicIdentifier1_type").toString());
                 if(result.containsKey("locationType_title") ) item.setLocationTypeCode(result.get("locationType_title").toString());
-
+                item.setVillage("");
+                item.setDescription("");
                 if(result.containsKey("parent_title") ) item.setVillage(result.get("parent_title").toString());
                 if(result.containsKey("administrator") ) item.setDescription(result.get("administrator").toString());
 
