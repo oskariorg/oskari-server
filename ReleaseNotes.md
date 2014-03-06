@@ -1,5 +1,29 @@
 # Release Notes
 
+## 1.19
+
+### Analysis functionality
+
+CreateAnalysisLayer action route now returns a proper analysislayer json (same as GetAnalysisLayersHandler)
+
+JSON for analysislayer is now created based on Analysis object with the help of AnalysisHelper. This will propably be refactored in the future to use the LayerJSONFormatter and the misleading AnalysisLayer class will propably be removed in favor of the Analysis class.
+
+AnalysisDataService refactored a bit and to 
+
+### control-base/PublishHandler
+
+Now handles publish permissions correctly (previously checked layer id for 'base_' prefix and used deprecated portti_layerclass db table).
+
+### service-map/MyPlacesService
+
+Now has a method for creating myplaces layer as wmslayer (used in published maps)
+
+### control-base/MapfullHandler
+
+MapfullHandler now uses the MyPlacesService for creating json for myplaces layer.
+
+Now handles layers with non-numeric ids correctly (same fix as with PublishHandler and 'base_' prefix on layer name)
+
 ## 1.18.1
 
 ### control-base/PublishHandler

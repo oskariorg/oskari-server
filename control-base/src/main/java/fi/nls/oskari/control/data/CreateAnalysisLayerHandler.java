@@ -1,30 +1,39 @@
 package fi.nls.oskari.control.data;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.mml.portti.domain.permissions.OskariLayerResourceName;
+import fi.mml.portti.domain.permissions.Permissions;
+import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 @OskariActionRoute("CreateAnalysisLayer")
 public class CreateAnalysisLayerHandler extends ActionHandler {
@@ -34,6 +43,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private AnalysisWebProcessingService wpsService = new AnalysisWebProcessingService();
     private AnalysisParser analysisParser = new AnalysisParser();
+    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
@@ -63,18 +73,21 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     /**
      * Handles action_route CreateAnalysisLayer
      *
-     * @param params
-     *            Ajax request parameters
-     ************************************************************************/
+     * @param params Ajax request parameters
+     *               **********************************************************************
+     */
     public void handleAction(ActionParameters params) throws ActionException {
 
-       final String analyse = params.getHttpParam(PARAM_ANALYSE);
-
-        JSONObject errorResponse = new JSONObject();
-
+        // TODO: use params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING); instead
+        final String analyse = params.getHttpParam(PARAM_ANALYSE);
         if (analyse == null) {
             this.MyError(ERROR_ANALYSE_PARAMETER_MISSING, params, null);
             return;
+        }
+        // </TODO>
+
+        if (params.getUser().isGuest()) {
+            throw new ActionDeniedException("Session expired");
         }
 
         // filter conf data
@@ -114,8 +127,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             }
 
             // Check, if any data in result set
-            if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1)
-            {
+            if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
                 this.MyError(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES, params, null);
                 return;
             }
@@ -156,53 +168,72 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     featureSet, analysisLayer, analyse, params.getUser());
         }
 
-            if (analysis == null)
-            {
-                this.MyError(ERROR_UNABLE_TO_STORE_ANALYSIS_DATA, params, null);
-                return;
+        if (analysis == null) {
+            this.MyError(ERROR_UNABLE_TO_STORE_ANALYSIS_DATA, params, null);
+            return;
+        }
+
+        analysisLayer.setWpsLayerId(analysis.getId()); // aka. analysis_id
+        // Analysis field mapping
+        analysisLayer.setLocaleFields(analysis);
+        analysisLayer.setNativeFields(analysis);
+
+        // FIXME: For analysis and myplaces sources permissions will be copied from base layer
+        final OskariLayer wfsLayer = mapLayerService.find(analysisLayer.getId());
+        // copy permissions from source layer to new analysis
+        List<Permissions> sourcePermissions = permissionsService.getResourcePermissions(new OskariLayerResourceName(wfsLayer), Permissions.EXTERNAL_TYPE_ROLE);
+
+        UniqueResourceName analysisResourceName = new UniqueResourceName();
+        analysisResourceName.setType(AnalysisLayer.TYPE);
+        analysisResourceName.setName(Long.toString(analysis.getId()));
+        analysisResourceName.setNamespace("analysis");
+        for (Permissions permission : sourcePermissions) {
+            List<String> grantedPermissions = permission.getGrantedPermissions();
+            for (String grantedPermission : grantedPermissions) {
+                if ((grantedPermission.equals(Permissions.PERMISSION_TYPE_PUBLISH)) || (grantedPermission.equals(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED))) {
+                    permissionsService.insertPermissions(analysisResourceName, permission.getExternalId(), permission.getExternalIdType(), grantedPermission);
+                }
             }
-
-            analysisLayer.setWpsLayerId(analysis.getId()); // aka. analysis_id
-            // Analysis field mapping
-            analysisLayer.setLocaleFields(analysis);
-            analysisLayer.setNativeFields(analysis);
-
+        }
 
 
         // Get analysisLayer JSON for response to front
-        try {
-            JSONObject analysisLayerJSON = analysisLayer.getJSON();
+        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis); //analysisLayer.getJSON();
 
-            String resourceType = AnalysisLayer.TYPE+"+"+params.getUser().getUuid();
-            Set<String> permissionsList = permissionsService.getPublishPermissions(resourceType);
-            Set<String> editAccessList = null;
-            String permissionKey = "analysis+"+analysisLayer.getId();
-            JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(),permissionKey,permissionsList,editAccessList);
-            JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
-
-            ResponseHelper.writeResponse(params, analysisLayerJSON);
-        } catch (JSONException e) {
-            this.MyError(ERROR_UNABLE_TO_GET_ANALYSISLAYER_DATA, params, null);
-            return;
+        // notify client to remove layers defined in mergeLayers since they are removed from backend
+        JSONArray mlayers = new JSONArray();
+        if (analysisLayer.getMergeAnalysisLayers() != null) {
+            for (String lay : analysisLayer.getMergeAnalysisLayers()) {
+                mlayers.put(lay);
+            }
         }
+        JSONHelper.putValue(analysisLayerJSON,"mergeLayers", mlayers);
+
+        Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
+        Set<String> editAccessList = null;
+        String permissionKey = "analysis+" + analysis.getId();
+        JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(), permissionKey, permissionsList, editAccessList);
+        JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
+
+        ResponseHelper.writeResponse(params, analysisLayerJSON);
     }
 
 
     /**
      * Parses WPS Proxy url via Oskari action route
      *
-     * @param params
-     *            Action parameters
+     * @param params Action parameters
      * @return String baseurl for Geoserver WPS reference WFS data input
-     ************************************************************************/
+     *         **********************************************************************
+     */
     public String getBaseProxyUrl(ActionParameters params) {
         String baseurl = GEOSERVER_PROXY_BASE_URL;
-        if(baseurl == null) {
+        if (baseurl == null) {
             try {
                 final URL url = new URL(params.getRequest().getRequestURL().toString());
                 baseurl = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) { }
         }
 
         final String baseAjaxUrl = PropertyUtil.get(params.getLocale(),
@@ -213,7 +244,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     }
 
     /**
-     *  Break analyse and inform error to client
+     * Break analyse and inform error to client
      */
     private void MyError(String mes, ActionParameters params, Object ee) {
 

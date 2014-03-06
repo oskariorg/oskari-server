@@ -6,6 +6,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -71,6 +72,10 @@ public class AnalysisDbServiceIbatisImpl extends
      */
     public Analysis getAnalysisById(long id) {
         return queryForObject(getNameSpace() + ".findAnalysis", id);
+    }
+
+    public List<Analysis> getAnalysisById(List<Long> idList) {
+        return queryForList(getNameSpace() + ".findByIds", idList);
     }
 
     /**

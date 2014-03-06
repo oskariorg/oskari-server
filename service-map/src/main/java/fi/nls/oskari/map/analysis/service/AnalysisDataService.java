@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.analysis.service;
 
+import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
@@ -7,12 +8,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,42 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalysisDataService {
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
-    private static final String ANALYSIS_LAYERTYPE = "analysislayer";
-    private static final String JSKEY_ANALYSISLAYERS = "analysislayers";
-    private static final String JSKEY_WPSLAYERID = "wpsLayerId";
-    private static final String JSKEY_LAYERID = "layerId";
 
-    private static final String JSKEY_NAME = "name";
-    private static final String JSKEY_TYPE = "type";
-    private static final String JSKEY_OPACITY = "opacity";
-    private static final String JSKEY_MINSCALE = "minScale";
-    private static final String JSKEY_MAXSCALE = "maxScale";
-    private static final String JSKEY_FIELDS = "fields";
-    private static final String JSKEY_LOCALES = "locales";
-
-    private static final String JSKEY_BBOX = "bbox";
-    private static final String JSKEY_GEOM = "geom";
-    private static final String JSKEY_BOTTOM = "bottom";
-    private static final String JSKEY_TOP = "top";
-    private static final String JSKEY_LEFT = "left";
-    private static final String JSKEY_RIGHT = "right";
-
-    private static final String JSKEY_ID = "id";
-    private static final String JSKEY_SUBTITLE = "subtitle";
-    private static final String JSKEY_ORGNAME = "orgname";
-    private static final String JSKEY_INSPIRE = "inspire";
-    private static final String JSKEY_WPSURL = "wpsUrl";
-    private static final String JSKEY_WPSNAME = "wpsName";
-    private static final String JSKEY_RESULT = "result";
-
-    private static final String LAYER_PREFIX = "analysis_";
-    private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
-    private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
-    private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
-    private static final String ANALYSIS_ORGNAME = ""; // managed in front
-    private static final String ANALYSIS_INSPIRE = ""; // managed in front
-
-    private static final String ANALYSIS_GEOMETRY_FIELD = "geometry";
+    public static final String ANALYSIS_GEOMETRY_FIELD = "geometry";
 
     private static final String NUMERIC_FIELD_TYPE = "numeric";
     private static final String STRING_FIELD_TYPE = "string";
@@ -69,10 +34,6 @@ public class AnalysisDataService {
     private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceIbatisImpl();
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
     private static final TransformationService transformationService = new TransformationService();
-
-    final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
-    final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
-    final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
     public Analysis storeAnalysisData(final String featureset,
                                       AnalysisLayer analysislayer, String json, User user) {
@@ -391,166 +352,13 @@ public class AnalysisDataService {
         return field_in;
     }
 
-    /**
-     * @param uid  User uuid
-     * @param lang language
-     * @return Analysis layers of one user retreaved by uuid
-     * @throws ServiceException
-     */
-    public JSONObject getListOfAllAnalysisLayers(String uid, String lang)
-            throws ServiceException {
-
-        final JSONObject listLayer = new JSONObject();
-        try {
-            List<Analysis> layers = analysisService.getAnalysisByUid(uid);
-            final JSONArray layersJSON = new JSONArray();
-            listLayer.put(JSKEY_ANALYSISLAYERS, layersJSON);
-            for (Analysis al : layers) {
-
-                // Parse analyse layer json out analysis
-                JSONObject analyselayer = getlayerJSON(al);
-                listLayer.accumulate(JSKEY_ANALYSISLAYERS, analyselayer);
-            }
-        } catch (Exception ex) {
-            throw new ServiceException("Unable to get analysis layers", ex);
-        }
-        return listLayer;
-    }
-
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
 
-    /**
-     * @param al analyse object
-     * @return analysis layer data for front mapservice
-     * @throws JSONException
-     */
-    public JSONObject getlayerJSON(Analysis al)
-
-            throws JSONException {
-        JSONObject json = new JSONObject();
-        // Add correct analyse layer_id to json
-        try {
-            final JSONObject analyse_js = JSONHelper.createJSONObject(al
-                    .getAnalyse_json());
-            Long wpsid = al.getId();
-            String newid = "-1";
-            if (analyse_js.has(JSKEY_LAYERID)) {
-                if (analyse_js.getString(JSKEY_LAYERID).indexOf(LAYER_PREFIX) == 0)
-                // analyse in Analysislayer (prefix + base analysis wfs layer id
-                // +
-                // analysis_id)
-                {
-                    newid = LAYER_PREFIX + analysisBaseLayerId + "_"
-                            + String.valueOf(wpsid);
-                } else {
-                    // analyse in wfs layer (prefix + wfs layer id +
-                    // analysis_id)
-                    newid = LAYER_PREFIX + analyse_js.getString(JSKEY_LAYERID)
-                            + "_" + String.valueOf(wpsid);
-                }
-
-            }
-
-            json.put(JSKEY_ID, newid);
-            json.put(JSKEY_TYPE, ANALYSIS_LAYERTYPE);
-
-            json.put(JSKEY_NAME, JSONHelper.getStringFromJSON(analyse_js,
-                    JSKEY_NAME, "n/a"));
-            json.put(JSKEY_SUBTITLE, "");
-            json.put(JSKEY_ORGNAME, ANALYSIS_ORGNAME);
-            json.put(JSKEY_INSPIRE, ANALYSIS_INSPIRE);
-
-            json.put(JSKEY_OPACITY, ConversionHelper.getInt(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_OPACITY, "80"), 80));
-            json.put(JSKEY_MINSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "15000000"),
-                    15000000));
-            json.put(JSKEY_MAXSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MAXSCALE, "1"), 1));
-            json.put(JSKEY_FIELDS, this.getAnalyseNativeFields(al));
-            json.put(JSKEY_LOCALES, this.getAnalyseFields(al));
-            json.put(JSKEY_WPSURL, analysisRenderingUrl);
-            json.put(JSKEY_WPSNAME, analysisRenderingElement);
-            json.put(JSKEY_WPSLAYERID, wpsid);
-            json.put(JSKEY_RESULT, "");
-
-            if (analyse_js.has(JSKEY_BBOX)) {
-                JSONObject bbox = JSONHelper.getJSONObject(analyse_js, JSKEY_BBOX);
-                try {
-                    String bottom = Double.toString(bbox.getDouble(JSKEY_BOTTOM));
-                    String top = Double.toString(bbox.getDouble(JSKEY_TOP));
-                    String left = Double.toString(bbox.getDouble(JSKEY_LEFT));
-                    String right = Double.toString(bbox.getDouble(JSKEY_RIGHT));
-                    String geom = "POLYGON (("+left+" "+bottom+", "+right+" "+bottom+", "+
-                            right+" "+top+", "+left+" "+top+", "+left+" "+bottom+"))";
-                    json.put(JSKEY_GEOM, geom);
-                } catch (Exception ex) {
-                    log.debug("Unable to get analysis layer bbox", ex);
-                }
-            }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis layer json", ex);
-        }
-
-        return json;
+    public JSONObject getlayerJSON(long id) {
+        Analysis analysis = analysisService.getAnalysisById(id);
+        return AnalysisHelper.getlayerJSON(analysis);
     }
 
-    public JSONArray getAnalyseFields(Analysis analysis) {
-        JSONArray fm = new JSONArray();
-        try {
-            if (analysis != null) {
-                // Fixed 1st is ID
-                fm.put("ID");
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
-                            fm.put(colx.split("=")[1]);
-                        }
-                    }
 
-                }
-                // Add geometry for filter and for highlight
-                fm.put(ANALYSIS_GEOMETRY_FIELD);
-                fm.put("x");
-                fm.put("y");
-            }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis field layer json", ex);
-        }
-        return fm;
-    }
-
-    /**
-     * Get native field names
-     *
-     * @param analysis
-     * @return
-     */
-    public JSONArray getAnalyseNativeFields(Analysis analysis) {
-        JSONArray fm = new JSONArray();
-        try {
-            if (analysis != null) {
-                // Fixed 1st is ID
-                fm.put("__fid");
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
-                            fm.put(colx.split("=")[0]);
-                        }
-                    }
-
-                }
-                // Add geometry for filter and for highlight
-                fm.put(ANALYSIS_GEOMETRY_FIELD);
-                fm.put("__centerX");
-                fm.put("__centerY");
-            }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis field layer json", ex);
-        }
-        return fm;
-    }
 }

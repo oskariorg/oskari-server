@@ -148,8 +148,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 	
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
 		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);
-		//TODO: this
-		Map<String, String> parameterMap = new HashMap<String, String>();
+        Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
@@ -174,9 +173,6 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
                 p.setExternalId((String) resultMap.get("externalId"));
                 p.setExternalIdType((String) resultMap.get("externalIdType"));
                 permissionsMap.put(p.getId(), p);
-
-                // id, resource_mapping, resource_type, external_id,external_type
-
 			}
 			
 			p.getGrantedPermissions().add((String) resultMap.get("permissions"));
@@ -277,7 +273,15 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         }
         return result;
     }
-    // Done
+
+    /**
+     * Deprecated! Base layers are no longer separated from other layers, use getPermissionsForLayers() instead.
+     * As such this method doesn't work correctly!
+     * @param layeridList
+     * @param permissionsType
+     * @return
+     */
+    @Deprecated
     public Map<Long, List<Permissions>> getPermissionsForBaseLayers(List<Long> layeridList, String permissionsType) {
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
 
