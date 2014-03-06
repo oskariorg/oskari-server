@@ -148,7 +148,9 @@ public class DBHandler {
 
                 createContent(conn, dbName);
                 try {
-                    conn.commit();
+                    if(!conn.getAutoCommit()) {
+                        conn.commit();
+                    }
                 } catch (SQLException e) {
                     log.error(e, "Couldn't commit changes!");
                 }
@@ -305,7 +307,9 @@ public class DBHandler {
         for (String sql : sqlStrings) {
             if (sql.indexOf("--") < 0) {
                 stmt.execute(sql);
-                conn.commit();
+                if(!conn.getAutoCommit()) {
+                    conn.commit();
+                }
             }
         }
         stmt.close();
@@ -316,7 +320,9 @@ public class DBHandler {
         final Statement stmt = conn.createStatement();
         if (sql.indexOf("--") < 0) {
             stmt.execute(sql);
-            conn.commit();
+            if(!conn.getAutoCommit()) {
+                conn.commit();
+            }
         }
         stmt.close();
     }
