@@ -8,6 +8,9 @@
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
     <typeAlias alias="Permissions" type="fi.mml.portti.domain.permissions.Permissions" />
+    <typeAlias alias="Resource" type="fi.nls.oskari.permission.domain.Resource" />
+    <typeAlias alias="Permission" type="fi.nls.oskari.permission.domain.Permission" />
+
 
     <resultMap id="permissionsResult" class="HashMap">
         <result property="id" column="id" />
@@ -121,6 +124,47 @@
         <parameter property="permission" />
     </parameterMap>
 
+    <resultMap id="permission" class="Permission">
+        <result property="id" column="perm_id" />
+        <result property="type" column="permission" />
+        <result property="externalType" column="perm_ext_type" />
+        <result property="externalId" column="perm_ext_id" />
+    </resultMap>
+
+    <resultMap id="resource" class="Resource" groupBy="id">
+        <result property="id" column="res_id" />
+        <result property="mapping" column="res_mapping" />
+        <result property="type" column="res_type" />
+        <result property="permissions" resultMap="Permissions.permission" javaType="java.util.ArrayList" />
+    </resultMap>
+
+    <select id="findResourceWithMapping"  resultMap="resource" parameterClass="java.util.HashMap">
+        SELECT
+            p.id as perm_id, r.id as res_id,
+            r.resource_type as res_type, r.resource_mapping as res_mapping,
+            p.external_type as perm_ext_type, p.external_id as perm_ext_id, p.permission as permission
+        FROM
+            oskari_resource r
+        LEFT JOIN
+            oskari_permission p ON r.id=p.oskari_resource_id
+        WHERE
+            r.resource_type = #type# AND
+            r.resource_mapping = #mapping#;
+    </select>
+
+    <select id="findResourceById"  resultMap="resource" parameterClass="Long">
+        SELECT
+            p.id as perm_id, r.id as res_id,
+            r.resource_type as res_type, r.resource_mapping as res_mapping,
+            p.external_type as perm_ext_type, p.external_id as perm_ext_id, p.permission as permission
+        FROM
+            oskari_resource r
+        LEFT JOIN
+            oskari_permission p ON r.id=p.oskari_resource_id
+        WHERE
+            r.id != -1 AND
+            r.id = #id#;
+    </select>
 
     <select id="findPublishPermissions"  resultMap="publishPermissionsList" parameterClass="java.util.HashMap">
        select 
@@ -134,7 +178,6 @@
         and r.resource_type=#resourceType#
     </select>
 
-
     <select id="findEditPermissions"  resultMap="publishPermissionsList">
         select
         r.resource_mapping as resourceMapping,
@@ -145,6 +188,7 @@
         and p.permission = 'EDIT_LAYER'
         and p.external_type = 'ROLE'
     </select>
+
     
     
     <!-- fixed -->
@@ -282,6 +326,10 @@
         values (?, ?)
     </statement>
 
+    <statement id="createResource" parameterClass="HashMap" resultClass="int">
+        insert into oskari_resource (resource_mapping, resource_type)
+        values (#mapping#, #type#) RETURNING id;
+    </statement>
 
     <!-- uusi -->
     <statement id="insertPermission" parameterMap="permissionMap">
@@ -289,8 +337,6 @@
     </statement>
 
     <!-- uusi -->
-
-
     <statement id="findOskariPermissionId"  parameterMap="layerPermissionResourceParams" resultClass="long">
         SELECT
             p.id
@@ -305,36 +351,13 @@
             p.permission = ?
     </statement>
 
-
-   <!--
-    <statement id="deletePermissions" parameterMap="deletePermissionsParam">
-        delete from portti_permissions where resource_user_id in
-        (select id 
-        from portti_resource_user 
-        where resource_name=?
-        and resource_namespace=?
-        and resource_type=?
-        and externalid=?
-        and externalid_type=?) and permissions_type=?
-    </statement>
-
-                 -->
+    <delete id="deleteResourcePermissions" parameterClass="long">
+        delete from oskari_permission where oskari_resource_id = #id#
+    </delete>
 
     <delete id="deletePermission" parameterClass="long">
         delete from oskari_permission where id = #id#
     </delete>
-
-        <!--
-    <statement id="deleteResourceUsers" parameterMap="resourceUserParam">
-        delete from portti_resource_user 
-        where resource_name=?
-        and resource_namespace=?        
-        and resource_type=?
-        and externalid=?
-        and externalid_type=?
-    </statement>
-
-    -->
 
     <!-- fixed -->
     <select id="findMaplayerIdsForViewPermissionsByExternalIds" resultClass="HashMap" parameterMap="externalIds">

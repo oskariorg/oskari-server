@@ -1,9 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.OskariLayerResourceName;
 import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
@@ -21,18 +19,19 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Set;
 
 @OskariActionRoute("CreateAnalysisLayer")
@@ -181,33 +180,32 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // FIXME: For analysis and myplaces sources permissions will be copied from base layer
         final OskariLayer wfsLayer = mapLayerService.find(analysisLayer.getId());
         // copy permissions from source layer to new analysis
-        List<Permissions> sourcePermissions = permissionsService.getResourcePermissions(new OskariLayerResourceName(wfsLayer), Permissions.EXTERNAL_TYPE_ROLE);
+        Resource sourceResource = permissionsService.getResource(Permissions.RESOURCE_TYPE_MAP_LAYER, new OskariLayerResource(wfsLayer).getMapping());
 
-        UniqueResourceName analysisResourceName = new UniqueResourceName();
-        analysisResourceName.setType(AnalysisLayer.TYPE);
-        analysisResourceName.setName(Long.toString(analysis.getId()));
-        analysisResourceName.setNamespace("analysis");
-        for (Permissions permission : sourcePermissions) {
-            List<String> grantedPermissions = permission.getGrantedPermissions();
-            for (String grantedPermission : grantedPermissions) {
-                if ((grantedPermission.equals(Permissions.PERMISSION_TYPE_PUBLISH)) || (grantedPermission.equals(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED))) {
-                    permissionsService.insertPermissions(analysisResourceName, permission.getExternalId(), permission.getExternalIdType(), grantedPermission);
-                }
+        final Resource analysisResource = new Resource();
+        analysisResource.setType(AnalysisLayer.TYPE);
+        analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
+        for(Permission p : sourceResource.getPermissions()) {
+            // check if user has role matching permission?
+            if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED)) {
+                analysisResource.addPermission(p.clonePermission());
             }
         }
-
+        log.debug("Trying to save permissions for analysis", analysisResource, analysisResource.getPermissions());
+        permissionsService.saveResourcePermissions(analysisResource);
 
         // Get analysisLayer JSON for response to front
         final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis); //analysisLayer.getJSON();
 
-        // notify client to remove layers defined in mergeLayers since they are removed from backend
+        // Additional param for new layer creation when merging layers:
+        // - Notify client to remove merged layers since they are removed from backend
         JSONArray mlayers = new JSONArray();
         if (analysisLayer.getMergeAnalysisLayers() != null) {
             for (String lay : analysisLayer.getMergeAnalysisLayers()) {
                 mlayers.put(lay);
             }
         }
-        JSONHelper.putValue(analysisLayerJSON,"mergeLayers", mlayers);
+        JSONHelper.putValue(analysisLayerJSON, "mergeLayers", mlayers);
 
         Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
         Set<String> editAccessList = null;

@@ -7,6 +7,7 @@ import java.util.Set;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseService;
 
 public interface PermissionsService extends BaseService<Permissions> {
@@ -62,13 +63,20 @@ public interface PermissionsService extends BaseService<Permissions> {
 			String permissionsType);
 	
 	/**
-	 * Return USER or ROLE permissions of resource.
-	 * 
-	 * @param uniqueResourceName
-	 * @param externalIdType USER or ROLE
-	 * @return
+	 * Return resource matching type and mapping.
+	 * @param type
+     * @param mapping
+	 * @return resource with permissions
 	 */
-	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType);
+	public Resource getResource(final String type, final String mapping);
+
+    /**
+     * Return resource matching type and mapping.
+     *
+     * @param resource including permissions to be persisted
+     * @return resource id
+     */
+    public Resource saveResourcePermissions(final Resource resource);
 	
 	/**
 	 * Delete permissions.

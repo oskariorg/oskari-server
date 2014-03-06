@@ -218,6 +218,7 @@ public class MapfullHandler extends BundleHandler {
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+        log.debug(permissionsList);
 
         for(Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
@@ -226,6 +227,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
             final String permissionKey = "analysis+"+id;
+            log.debug(permissionKey);
             boolean containsKey = permissionsList.contains(permissionKey);
             if (!containsKey) {
                 log.info("Found analysis layer in selected that is no longer published. ViewID:",

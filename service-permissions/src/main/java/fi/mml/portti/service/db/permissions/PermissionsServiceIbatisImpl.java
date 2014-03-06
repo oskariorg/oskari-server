@@ -15,6 +15,8 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions> implements PermissionsService {		
@@ -416,4 +418,132 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         
         return externalIds;
     }
+
+    /**
+     * Returns resource for id or null if not found
+     * @param id
+     * @return
+     */
+    private Resource getResource(final long id) {
+        final Resource resource = queryForObject(getNameSpace() + ".findResourceById", id);
+        log.debug("Resource:", resource);
+        return resource;
+    }
+
+    public Resource getResource(final String type, final String mapping) {
+        log.debug("Getting permissions for", type, " with mapping", mapping);
+
+        final Map<String, String> parameterMap = new HashMap<String, String>();
+        parameterMap.put("type", type);
+        parameterMap.put("mapping", mapping);
+
+        Resource resource = queryForObject(getNameSpace() + ".findResourceWithMapping", parameterMap);
+
+        if(resource == null) {
+            resource = new Resource();
+            resource.setMapping(mapping);
+            resource.setType(type);
+            log.info("Resource not found, returning empty object");
+        }
+        log.debug("Resource:", resource);
+        return resource;
+    }
+
+    private Resource findResource(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+
+        // try to find with id
+        if(resource.getId() != -1) {
+            // check mapping for existing by id
+            return getResource(resource.getId());
+        }
+        // try to find with mapping
+        final Resource dbRes = getResource(resource.getType(), resource.getMapping());
+        if(dbRes.getId() != -1) {
+            return dbRes;
+        }
+        return null;
+    }
+
+    public Resource saveResourcePermissions(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+        // ensure resource is in db
+        Resource res = findResource(resource);
+        if(res == null) {
+            res = createResourceRow(resource);
+        }
+        // double check we managed to insert or find
+        if(res == null || res.getId() == -1) {
+            log.error("Something went wrong with inserting the resource, can't find it in DB", resource);
+            return null;
+        }
+
+        // set up id for resource
+        resource.setId(res.getId());
+        // remove all previous permissions
+        removeResourcePermissions(resource);
+        // persist resource.getPermissions() to DB
+        for(Permission permission : resource.getPermissions()) {
+            insertPermission(resource, permission, false);
+        }
+        // return object through db query
+        return findResource(resource);
+    }
+
+    private void removeResourcePermissions(final Resource resource) {
+        if(resource == null || resource.getId() == -1) {
+            return;
+        }
+        log.debug("Deleting permissions for resource:", resource);
+        delete(getNameSpace() + ".deleteResourcePermissions", resource.getId());
+    }
+
+    private Resource createResourceRow(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+
+        return createResourceRow(resource.getType(), resource.getMapping());
+    }
+
+    private Resource createResourceRow(final String type, final String mapping) {
+        log.debug("Creating resource row for type:", type, "mapping:", mapping);
+        Map<String, String> parameterResource = new HashMap<String, String>();
+        parameterResource.put("type", type);
+        parameterResource.put("mapping", mapping);
+
+        insert(getNameSpace() + ".createResource", parameterResource);
+        return getResource(type, mapping);
+    }
+
+    private boolean insertPermission(final Resource resource, final Permission permission) {
+        return insertPermission(resource, permission, true);
+    }
+    private boolean insertPermission(final Resource resource, final Permission permission, final boolean checkExisting) {
+        if(resource == null || permission == null || resource.getId() == -1) {
+            return false;
+        }
+
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("oskariResourceId", resource.getId());
+        paramMap.put("externalType", permission.getExternalType());
+        paramMap.put("permission", permission.getType());
+        paramMap.put("externalId", permission.getExternalId());
+
+        if(checkExisting) {
+            Integer permissionId = queryForObject(getNameSpace() + ".findPermission", paramMap);
+            if( permissionId != null) {
+                // exists
+                return true;
+            }
+        }
+
+        insert(getNameSpace() + ".insertPermission", paramMap);
+        return true;
+    }
+
 }
