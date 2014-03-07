@@ -20,10 +20,6 @@
         <result property="externalIdType" column="externalType" />
         <result property="permissions" column="permission" />
     </resultMap>
-        
-    <resultMap id="resourcesWithGrantedPermissionsResult" class="HashMap">
-        <result property="resourceMapping" column="resource_mapping" />
-    </resultMap>
 
     <!-- vanhentunut -->
     <parameterMap id="resourceUserIdAndPermissionsTypeParam" class="Map">
@@ -31,16 +27,6 @@
         <parameter property="permissionsType" />
     </parameterMap>
 
-
-    <!-- fixed -->
-    <parameterMap id="resourcesWithGrantedPermissionsParam" class="Map">
-        <parameter property="resourceType" />
-        <parameter property="externalId" />
-        <parameter property="externalType"/>
-        <parameter property="permission"/>
-    </parameterMap>
-
-    
     <parameterMap id="permissionsOfResourceParam" class="Map">
         <parameter property="resourceName" />
         <parameter property="resourceNamespace" />
@@ -214,17 +200,21 @@
         limit 1
     </select>
 
+    <select id="findResourcesWithGrantedPermissions" resultClass="String" parameterClass="java.util.HashMap">
 
-    <!-- fixed -->
-    <select id="findResourcesWithGrantedPermissions" resultMap="resourcesWithGrantedPermissionsResult" parameterMap="resourcesWithGrantedPermissionsParam">
-        select r.resource_mapping
-        from oskari_resource r, oskari_permission p
-        where r.id=p.oskari_resource_id
-        and (r.resource_type = 'wfs_layer'
-        or   r.resource_type=? )
-        and p.external_id=?
-        and p.external_type=?
-        and p.permission=?
+        select distinct
+            r.resource_mapping
+        from
+            oskari_resource r, oskari_permission p
+        where
+            r.id=p.oskari_resource_id
+            and r.resource_type=#resourceType#
+            and p.external_type=#externalType#
+            and p.permission=#permission#
+            and p.external_id IN
+        <iterate open="(" close=")" conjunction="," property="externalId" >
+            #externalId[]#
+        </iterate>
     </select>
 
     <!--  fixed -->

@@ -1,12 +1,6 @@
 package fi.mml.portti.service.db.permissions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.UniqueResourceName;
@@ -66,29 +60,65 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			String resourceType, 
 			User user,
 			String permissionsType) {
-		long userId = user.getId();
-		log.debug("Getting resources with granted'", permissionsType, "' permissions to user '", 
-				userId,"' for resource '", resourceType, "'");
-		
+
+        // user id based permissions
+        long userId = user.getId();
+        log.debug("Getting resources with granted'", permissionsType, "' permissions to user '",
+                userId,"' for resource '", resourceType, "'");
 		List<String> userPermissions = 
 			getResourcesWithGrantedPermissions(
 				resourceType, String.valueOf(userId), Permissions.EXTERNAL_TYPE_USER, permissionsType);
 		
 		log.debug("Found", userPermissions.size(), "permissions given directly to user.");
-		
-		Set<String> groupPermissions = 
-			getResourcesWithGrantedPermissionsToRolesOfUser(
-				resourceType, user ,permissionsType);
-		
+
+        // user role based permissions
+        final Set<String> roleIds = new HashSet<String>(user.getRoles().size());
+        for(Role role : user.getRoles()) {
+            roleIds.add("" + role.getId());
+        }
+        final Set<String> groupPermissions =
+                getResourcesWithGrantedPermissions(
+                        resourceType, roleIds, Permissions.EXTERNAL_TYPE_ROLE, permissionsType);
 		log.debug("Found", groupPermissions.size(), "permissions given to roles that user has.");
 		
-		/* finally collect all together and sort */
-		userPermissions.addAll(groupPermissions);
-		List<String> resourceList = new ArrayList<String>(userPermissions);
+		// finally collect all together and sort
+		List<String> resourceList = new ArrayList<String>(userPermissions.size() + groupPermissions.size());
+        resourceList.addAll(userPermissions);
+        resourceList.addAll(groupPermissions);
+        // sort permissions
 		Collections.sort(resourceList);
 		
 		return resourceList;
 	}
+    private Set<String> getResourcesWithGrantedPermissions(
+            String resourceType,
+            Set<String> externalId,
+            String externalIdType,
+            String permissionsType) {
+
+        // declare sorted set
+        final Set<String> result = new TreeSet<String>();
+        if(externalId == null || externalId.isEmpty()) {
+            log.warn("Tried to get permissions without externalIds. ResourceType", resourceType, "Permission type", permissionsType, " ExternalIdType", externalIdType);
+            return result;
+        }
+
+        log.debug("Getting resources with granted", permissionsType, "permissions for resourceType", resourceType,
+                " with externalIdType", externalIdType, "and idList of", externalId);
+
+        final Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("resourceType", resourceType);
+        // ibatis couldn't handle a set param out of the box so wrapping it in list
+        // TODO: check if there is a way to use sets with ibatis
+        parameterMap.put("externalId", new ArrayList<String>(externalId));
+        parameterMap.put("externalType", externalIdType);
+        parameterMap.put("permission", permissionsType);
+
+        final List<String> permittedResources = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
+        result.addAll(permittedResources);
+
+        return result;
+    }
 	
 	public List<String> getResourcesWithGrantedPermissions(
 			String resourceType, 
@@ -96,58 +126,17 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			String externalIdType,
 			String permissionsType) {
 
-       log.debug("Getting resources with granted " + permissionsType + " permissions to externalId='" + externalId
-				+ "', externalIdType='" + externalIdType + "' for resource '" + resourceType + "'");
+        // wrap single id to a set for convenience
+        final Set<String> idList = new HashSet<String>(1);
+        idList.add(externalId);
 
-
-        Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType", resourceType);
-		parameterMap.put("externalId", externalId);
-		parameterMap.put("externalType", externalIdType);
-		parameterMap.put("permission", permissionsType);
-		
-		List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
-		List<String> resourceList = new ArrayList<String>();
-		
-		for (Map<String, String> resultMap : listOfMaps) {
-           resourceList.add(resultMap.get("resourceMapping"));
-		}
-		
-		Collections.sort(resourceList);
-		return resourceList;
+        final Set<String> sortedPermissions = getResourcesWithGrantedPermissions(resourceType, idList, externalIdType, permissionsType);
+        // TODO: change signature to Set instead of List so we can get rid of this
+        final List<String> results = new ArrayList<String>();
+        results.addAll(sortedPermissions);
+        return results;
 	}
-	
-	/*
-	 * Get permissions granted to roles to which the user belongs.
-	 */
-	private Set<String> getResourcesWithGrantedPermissionsToRolesOfUser(
-			String resourceType, 
-			User user, 
-			String permissionsType) {
-		Set<String> resourceSet = new HashSet<String>();
-		
-		for (Role role : user.getRoles()) {		
-			Map<String, String> parameterMap = new HashMap<String, String>();
-			parameterMap.put("resourceType", resourceType);
-			parameterMap.put("externalId", String.valueOf(role.getId()));
-			parameterMap.put("externalType", Permissions.EXTERNAL_TYPE_ROLE);
-			parameterMap.put("permission", permissionsType);
 
-         	List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
-
-				for (Map<String, String> resultMap : listOfMaps) {
-                String resourceMapping =  resultMap.get("resourceMapping");
-                if ("layerclass".equals(resourceType)) {
-                    resourceSet.add(resourceMapping.substring(4)); // TODO: fix this
-                } else {
-				    resourceSet.add(resourceMapping);
-                }
-			}
-		}
-		
-		return resourceSet;
-	}
-	
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
 		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);
         Map<String, String> parameterMap = new HashMap<String, String>();
