@@ -11,8 +11,9 @@
   <name>Oskari Transport service aggregator</name>
 
   <modules>
-    <module>shared-test-resources</module>
     <module>service-base</module>
+    <module>service-control</module>
+    <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
     <module>transport</module>
   </modules>
