@@ -345,6 +345,10 @@
         delete from oskari_permission where oskari_resource_id = #id#
     </delete>
 
+    <delete id="deleteResource" parameterClass="long">
+        delete from oskari_resource where id = #id#
+    </delete>
+
     <delete id="deletePermission" parameterClass="long">
         delete from oskari_permission where id = #id#
     </delete>

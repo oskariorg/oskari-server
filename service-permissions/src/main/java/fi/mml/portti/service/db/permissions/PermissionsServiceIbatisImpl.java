@@ -438,7 +438,7 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         return resource;
     }
 
-    private Resource findResource(final Resource resource) {
+    public Resource findResource(final Resource resource) {
         if(resource == null) {
             return null;
         }
@@ -497,6 +497,11 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         }
 
         return createResourceRow(resource.getType(), resource.getMapping());
+    }
+    public void deleteResource(final Resource resource) {
+        removeResourcePermissions(resource);
+        log.debug("Deleting permissions for resource:", resource);
+        delete(getNameSpace() + ".deleteResource", resource.getId());
     }
 
     private Resource createResourceRow(final String type, final String mapping) {

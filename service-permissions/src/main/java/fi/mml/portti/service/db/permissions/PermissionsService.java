@@ -71,6 +71,17 @@ public interface PermissionsService extends BaseService<Permissions> {
 	public Resource getResource(final String type, final String mapping);
 
     /**
+     * Deletes resource and any permissions bound to it
+     * @param resource
+     */
+    public void deleteResource(final Resource resource);
+    /**
+     * Return resource matching id (if not -1) or type and mapping.
+     * @param resource
+     * @return resource with permissions
+     */
+    public Resource findResource(final Resource resource);
+    /**
      * Return resource matching type and mapping.
      *
      * @param resource including permissions to be persisted
