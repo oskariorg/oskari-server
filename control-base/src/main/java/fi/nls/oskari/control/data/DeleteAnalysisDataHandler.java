@@ -58,7 +58,7 @@ public class DeleteAnalysisDataHandler extends ActionHandler {
         if(analysis == null) {
             throw new ActionParamsException("Analysis id didn't match any analysis: " + id);
         }
-        if(!params.getUser().getUuid().equals(analysis.getUuid())) {
+        if(!analysis.isOwnedBy(params.getUser().getUuid())) {
             throw new ActionDeniedException("Analysis belongs to another user");
         }
 
