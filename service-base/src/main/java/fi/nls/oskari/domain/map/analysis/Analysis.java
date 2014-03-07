@@ -26,6 +26,13 @@ public class Analysis {
     private String select_to_data;
     private long old_id;
 
+    public boolean isOwnedBy(final String uuid) {
+        if(uuid == null || getUuid() == null) {
+            return false;
+        }
+        return getUuid().equals(uuid);
+    }
+
     public long getId() {
         return id;
     }
