@@ -66,7 +66,7 @@ public class JedisManager {
         } catch (Exception e) {
             log.error("Getting Jedis connection from the pool failed:", e.getMessage());
             if(e.getCause() != null) {
-                log.debug("Cause:", e.getCause().getMessage());
+                log.debug(e, "Cause:", e.getCause().getMessage());
             }
             return null;
         }
