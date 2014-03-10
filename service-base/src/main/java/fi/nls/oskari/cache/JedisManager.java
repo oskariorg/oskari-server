@@ -45,6 +45,7 @@ public class JedisManager {
         poolConfig.setTimeBetweenEvictionRunsMillis(30000);
         
         pool = new JedisPool(poolConfig, host, port);
+        log.debug("Created Redis connection pool with host", host, "port", port);
     }
     
     /**
@@ -63,7 +64,7 @@ public class JedisManager {
         try {
             return pool.getResource();
         } catch (Exception e) {
-            log.error("Getting Jedis connection from the pool failed");
+            log.error("Getting Jedis connection from the pool failed:", e.getMessage());
             return null;
         }
     }
@@ -95,7 +96,7 @@ public class JedisManager {
             log.error("Broken connection closed");
 			return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Getting", key, "from Redis failed:", e.getMessage());
             return null;
 		} finally {
 			instance.returnJedis(jedis);
@@ -120,7 +121,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Getting", key, "from Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
@@ -147,7 +148,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Setting", key, "failed miserably");
+            log.error("Setting", key, "to Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
@@ -174,7 +175,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Setting", key, "failed miserably");
+            log.error("Setting", key, "to Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
@@ -199,7 +200,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Running KEYS", pattern + " failed miserably");
+            log.error("Running KEYS", pattern + "on Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
@@ -224,7 +225,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Getting HKEYS", key + "on Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
@@ -250,7 +251,7 @@ public class JedisManager {
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Getting HGET", key + "on Redis failed:", e.getMessage());
             return null;
         } finally {
             instance.returnJedis(jedis);
