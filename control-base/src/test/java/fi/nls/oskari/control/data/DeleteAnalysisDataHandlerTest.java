@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.data;
 
 import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
@@ -32,7 +31,6 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     private final static DeleteAnalysisDataHandler handler = new DeleteAnalysisDataHandler();
     private static AnalysisDbService service = null;
-    private static PermissionsService permissionService = null;
 
     private final Analysis analysisInvalid = new Analysis();
     private final Analysis analysisValid = new Analysis();
@@ -65,11 +63,11 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         analysisValid.setUuid(getLoggedInUser().getUuid());
         doReturn(analysisValid).when(service).getAnalysisById(VALID_ANALYSIS_ID);
         handler.setAnalysisDataService(service);
-
+/*
         // mock permission service for deleting analyse
         permissionService = mock(PermissionsServiceIbatisImpl.class);
         handler.setPermissionsService(permissionService);
-
+*/
 
         handler.init();
     }
@@ -151,8 +149,6 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         handler.handleAction(params);
         try {
-            verify(permissionService, times(1)).getResource(AnalysisLayer.TYPE, "analysis+" + analysisValid.getId());
-            verify(permissionService, times(1)).deleteResource((Resource)anyObject());
             verify(service, times(1)).deleteAnalysis(analysisValid);
         } catch (MockitoAssertionError e) {
             // catch and throw to make a more meaningful fail message
