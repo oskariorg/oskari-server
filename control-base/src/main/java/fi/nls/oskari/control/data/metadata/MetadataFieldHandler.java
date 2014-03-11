@@ -76,9 +76,11 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
     private Set<SelectItem> getProperties(String propertyName) {
         // TODO: cache expiration
         Set<SelectItem> response = cache.get(propertyName);
-        if(response == null) {
-            response = new TreeSet<SelectItem>();
+        if(response != null) {
+            return response;
         }
+        
+        response = new TreeSet<SelectItem>();
 
         final String url = getSearchURL() + propertyName;
         final NodeList valueList = getTags(url, "csw:Value");
@@ -94,7 +96,7 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         DataInputStream dis = null;
         try {
             final HttpURLConnection con = IOHelper.getConnection(url);
-            dis = new  DataInputStream(IOHelper.debugResponse(con.getInputStream()));
+            dis = new DataInputStream(IOHelper.debugResponse(con.getInputStream()));
             final DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             final Document doc = dBuilder.parse(dis);
             doc.getDocumentElement().normalize();
