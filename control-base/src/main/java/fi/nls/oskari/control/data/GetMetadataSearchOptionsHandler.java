@@ -28,7 +28,7 @@ public class GetMetadataSearchOptionsHandler extends ActionHandler {
         COVERAGE("coverage", false),
         INSPIRE_THEME("inspireTheme", false),
         KEYWORD("keyword", false),
-        GROUP("group", false);
+        TOPIC("topic", false);
 
         private String name = null;
         private boolean multi = false;
