@@ -17,7 +17,16 @@ public class SelectItem implements Comparable<SelectItem> {
 		this.name = name;
 		this.value = value;
 	}
+    public String getName(boolean actual) {
+        if(actual) {
+            return name;
+        }
+        return getName();
+    }
 	public String getName() {
+        if(name == null || name.isEmpty()) {
+            return getValue();
+        }
 		return name;
 	}
 	public void setName(String name) {

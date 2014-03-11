@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.data.metadata;
 
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -34,14 +36,17 @@ public class MetadataFieldHandler {
     private String serverURL = PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
     private String serverPath = PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
     private String queryParams = "?" + PropertyUtil.get("metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
-    private final Map<String, Set<SelectItem>> cache = new HashMap<String, Set<SelectItem>>();
+    //private final Map<String, Set<SelectItem>> cache = new HashMap<String, Set<SelectItem>>();
+    private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 /*
 catalogue.geonetwork.search.url=http://geonetwork.nls.fi/geonetwork/srv/en/csw
 catalogue.geonetwork.server.url=http://geonetwork.nls.fi
  */
-    public MetadataFieldHandler() { }
+    public MetadataFieldHandler() {
+    }
 
     public MetadataFieldHandler(final String property) {
+        this();
         propertyName = property;
     }
 
@@ -62,7 +67,7 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         Set<SelectItem> items = getProperties();
         for(SelectItem item : items) {
             final JSONObject value = JSONHelper.createJSONObject("val", item.getValue());
-            JSONHelper.putValue(value, "locale", item.getName());
+            JSONHelper.putValue(value, "locale", item.getName(true));
             values.put(value);
         }
 
@@ -79,14 +84,14 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         if(response != null) {
             return response;
         }
-        
+
         response = new TreeSet<SelectItem>();
 
         final String url = getSearchURL() + propertyName;
         final NodeList valueList = getTags(url, "csw:Value");
         for (int i = 0; i < valueList.getLength(); i++) {
             String value = valueList.item(i).getChildNodes().item(0).getTextContent();
-            response.add(new SelectItem(value, value));
+            response.add(new SelectItem(null, value));
         }
         cache.put(propertyName, response);
         return response;
