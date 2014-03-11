@@ -19,7 +19,6 @@ public class GetMetadataSearchOptionsHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetMetadataSearchOptionsHandler.class);
 
-
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 

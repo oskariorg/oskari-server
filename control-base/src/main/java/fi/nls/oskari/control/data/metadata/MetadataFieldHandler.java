@@ -78,8 +78,7 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         return getProperties(propertyName);
     }
 
-    private Set<SelectItem> getProperties(String propertyName) {
-        // TODO: cache expiration
+    private Set<SelectItem> getProperties(final String propertyName) {
         Set<SelectItem> response = cache.get(propertyName);
         if(response != null) {
             return response;

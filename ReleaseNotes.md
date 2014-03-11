@@ -2,6 +2,10 @@
 
 ## 1.19
 
+### service-base/Caching
+
+CacheManager is now available and can be used to provide simple in-memory caches.
+
 ### servlet-map
 
 Jetty-maven-plugin is no longer started automatically on install step. To start jetty on install you can use profile jetty-profile:

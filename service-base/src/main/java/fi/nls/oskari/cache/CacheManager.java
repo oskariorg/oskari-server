@@ -5,7 +5,24 @@ import java.util.Map;
 
 /**
  * Generic cache factory for Oskari.
- * TODO: make Cache implementation parametrizable via PropertyUtil. Same as logger and UserService
+ * TODO: make Cache implementation parametrizable via PropertyUtil. Same as logger and UserService.
+ * Usage:
+ *<pre>
+ * {@code
+ *  private Cache<String> cache = CacheManager.getCache("MyCacheName");
+ *  final String response = getUrl("http://www.paikkatietoikkuna.fi");
+ *
+ *  public String getUrl(final String url) {
+ *      String response = cache.get(propertyName);
+ *      if(response != null) {
+ *          return response;
+ *      }
+ *      response = IOHelper.getURL(url);
+ *      cache.put(url, response);
+ *      return response;
+ *  }
+ * }
+ * </pre>
  */
 public class CacheManager {
 
