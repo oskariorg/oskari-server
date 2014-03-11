@@ -73,7 +73,9 @@ public class GetMetadataSearchOptionsHandler extends ActionHandler {
             count = 5;
         }
         for(int i = 0; i < count; ++i) {
-            final JSONObject value = JSONHelper.createJSONObject("val", "value " + (i + 1));
+            final String dummyValue = "value " + (i + 1);
+            final JSONObject value = JSONHelper.createJSONObject("val", dummyValue);
+            JSONHelper.putValue(value, "locale", dummyValue);
             values.put(value);
         }
         return values;
