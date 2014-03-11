@@ -6,11 +6,7 @@ import fi.nls.oskari.log.Logger;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 11.3.2014
- * Time: 15:40
- * To change this template use File | Settings | File Templates.
+ * Simple generic in memory cache
  */
 public class Cache<T> {
 
@@ -71,7 +67,7 @@ public class Cache<T> {
         flush(false);
         boolean overflowing = false;
         if(items.size() >= limit) {
-            // limit reached
+            // limit reached - remove oldest object
             log.debug("Cache", getName(),"overflowing! Limit is", limit);
             final String key = items.firstKey();
             items.remove(key);

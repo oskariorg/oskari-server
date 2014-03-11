@@ -4,16 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 11.3.2014
- * Time: 15:40
- * To change this template use File | Settings | File Templates.
+ * Generic cache factory for Oskari.
+ * TODO: make Cache implementation parametrizable via PropertyUtil. Same as logger and UserService
  */
 public class CacheManager {
 
     private static Map<String,Cache> cacheStore = new HashMap<String, Cache>();
 
+     /**
+     * Returns a cache matching name or creates one if it doesn't exist.
+     * @param name name of the cache
+     * @param <T> type mapping for cache
+     * @return
+     */
     public static <T> Cache<T> getCache(final String name) {
         final Cache existing = cacheStore.get(name);
         if(existing != null) {
@@ -28,7 +31,7 @@ public class CacheManager {
     }
 
     /**
-     * Adds cache manually to manager.
+     * Registers cache manually to manager.
      * @param name
      * @param cache
      * @return true if successful, false if params missing or a cache already exists with same name
