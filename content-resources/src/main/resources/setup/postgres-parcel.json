@@ -36,6 +36,7 @@
         "publisher-template-view.json"
     ],
     "sql" : [
+        "populateInspireThemes.sql",
         "nlsfi-background-map-wmtslayer.sql",
         "nlsfi-orthophoto-map-wmtslayer.sql",
         "nlsfi-topographic-map-wmtslayer.sql",

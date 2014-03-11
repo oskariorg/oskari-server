@@ -2,8 +2,8 @@
 
 Admin bundles require PostgreSQL to be used since some of the bundles use db specific sql.
 
-1) Uncomment these lines in `servlet-map/src/main/resources/oskari.properties` to enable admin-layerselector and
-admin-layerrights bundles to be added for users with role Admin for the default view.
+1) Dynamically added bundles are configured in `servlet-map/src/main/resources/oskari.properties`. As example bundles admin-layerselector and
+admin-layerrights are added for users with role Admin for the default view.
 
     actionhandler.GetAppSetup.dynamic.bundles = admin-layerselector, admin-layerrights
     actionhandler.GetAppSetup.dynamic.bundle.admin-layerrights.roles = Admin
@@ -20,7 +20,7 @@ have values of comma-separated lists of role names.
 
 4) log in with the admin user 
 
-You should now see these two bundles added to the view. 
+You should see the listed bundles added to the view. 
 
 Note! Dynamic bundles are only added for default view. If you want to use view 2 for default view you can add 
 a property `view.default=2` to `servlet-map/src/main/resources/oskari.properties`

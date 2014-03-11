@@ -138,10 +138,11 @@ public class DBHandler {
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
             String[] types = null;
 
-            ResultSet result = dbmeta.getTables(null, null, "portti_%", types);
+            final ResultSet result = dbmeta.getTables(null, null, "portti_%", types);
+            final ResultSet result2 = dbmeta.getTables(null, null, "PORTTI_%", types);
             final String propertyDropDB = System.getProperty("oskari.dropdb");
 
-            final boolean tablesExist = result.next();
+            final boolean tablesExist = result.next() || result2.next();
             // Portti tables available ?
             if ("true".equals(propertyDropDB) || !tablesExist) {
                 log.info("Creating db for " + dbName);
@@ -164,12 +165,21 @@ public class DBHandler {
             log.error(e, "Error creating db content!");
         }
     }
+    private static void createContent(Connection conn, final String dbname) {
+        final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "default");
+        createContent(conn, dbname, setup);
+    }
 
-    public static void createContent(Connection conn, final String dbname) {
+    private static void createContent(Connection conn, final String dbname, final String setupFile) {
 
         try {
 
-            final String propertySetupFile = "/setup/" + ConversionHelper.getString(System.getProperty("oskari.setup"), "default") + ".json";
+            String propertySetupFile = "/setup/" + setupFile;
+            if(!setupFile.toLowerCase().endsWith(".json")) {
+                // accept setup file without file extension
+                propertySetupFile = propertySetupFile+ ".json";
+            }
+
             String setupJSON = IOHelper.readString(DBHandler.class.getResourceAsStream(propertySetupFile));
             if(setupJSON == null || setupJSON.isEmpty()) {
                 throw new RuntimeException("Error reading file " + propertySetupFile);
@@ -186,6 +196,17 @@ public class DBHandler {
                     executeSqlFromFile(conn, dbname, sqlFileName);
                 }
                 log.info("/- Created tables");
+            }
+
+            if(setup.has("setup")) {
+                log.info("/- running recursive setups:");
+                final JSONArray setupFiles = setup.getJSONArray("setup");
+                for(int i = 0; i < setupFiles.length(); ++i) {
+                    final String setupFileName = setupFiles.getString(i);
+                    System.out.println("/-  " + setupFileName);
+                    createContent(conn, dbname, setupFileName);
+                }
+                log.info("/- recursive setups complete");
             }
 
             if(setup.has("bundles")) {

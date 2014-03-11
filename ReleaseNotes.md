@@ -2,6 +2,16 @@
 
 ## 1.19
 
+### servlet-map
+
+Jetty-maven-plugin is no longer started automatically on install step. To start jetty on install you can use profile jetty-profile:
+
+mvn clean install -Pjetty-profile
+
+### content-resources/DBHandler
+
+Setup-files can now refer to another setup-file. This removes much boilerplate for registering bundles and should make the files simpler.
+
 ### Analysis functionality
 
 CreateAnalysisLayer action route now returns a proper analysislayer json (same as GetAnalysisLayersHandler)

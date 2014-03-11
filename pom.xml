@@ -414,6 +414,15 @@
 	</build>
  
  	<repositories>
+	    <repository>
+	      <id>central</id>
+	      <name>Central Repository</name>
+	      <url>http://repo.maven.apache.org/maven2</url>
+	      <layout>default</layout>
+	      <snapshots>
+	        <enabled>false</enabled>
+	      </snapshots>
+	    </repository>
 		<repository>
 			<id>codehaus-snapshots</id>
 			<url>http://snapshots.repository.codehaus.org</url>
@@ -430,6 +439,22 @@
 		</repository>
 	</repositories>
 
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>http://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  
     <modules>
         <module>shared-test-resources</module>
 

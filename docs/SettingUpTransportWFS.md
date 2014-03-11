@@ -15,7 +15,7 @@
 
 ** skip this, if my places configuration is already done ( cd  oskari-server/content-resources -> mvn clean install exec:java -Doskari.dropdb=true -Doskari.setup=postgres-myplaces-wfs2) **
 
-* Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Doskari.setup=postgres-mapwfs2`
+* Start the server with `mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Doskari.setup=postgres-mapwfs2  -Pjetty-profile`
 
 OR
 

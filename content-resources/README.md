@@ -1,32 +1,65 @@
-# Populating database content
+# DB populator
 
-Database properties can be configured in src/main/resources/db.properties
+## Database setting
 
-After that the database can be populated with maven running:
+The database properties can be modified in oskari-server/content-resources/src/main/resources/db.properties.
+
+Also these database-settings can be overridden by using -Doskari.env=myenv parameter on maven call.
+This reads db.properties as base, reads an additional properties file db-myenv.properties and overrides any keys found in base properties with the env-specific properties.
+
+## Populating database content
+
+After the database connection parameters have been configured the database can be populated with maven running (in oskari-server/content-resources):
 
     mvn clean install exec:java -Doskari.dropdb=true
 
-You can configure the setup file to run with -Doskari.setup=[setup file under resources/setup] like -Doskari.setup=postgres-add-myplaces
+NOTE! 'oskari.dropdb=true' doesn't actually mean that the DB is dropped as is. The DB handler checks at the beginning if the DB has any tables it recognizes.
+If tables exist the setup-file is NOT run. The setup-file can be FORCED to run with 'oskari.dropdb=true'. Setup-files CAN drop DB tables so it's important to know what you are doing,
+hence the  safety measure.
 
-# Setup file structure
+# Setup files
 
-Setup file can have 4 segments: "create", "bundles", "views" and "sql". These are run in the listed order.
+You can configure a specific setup file to run by adding a parameter -Doskari.setup=[setup file under resources/setup].
+The setup file that is used if the parameter is NOT defined is '[default](src/main/resources/setup/default.json)'.
 
-Create is used to create tables.
+The parameter '-Doskari.setup=postgres-default' references a setup file located in oskari-server/content-resources/src/main/resources/setup/
 
-Bundles refers to bundle registration. It runs the sql files under /src/main/resources/sql/views/01-bundles/[namespace]/[bundle.sql].
+The value of the parameter is the filename without extension so the actual file referenced is 'postgres-default.json' in the above link.
+
+Setup file can have 5 segments: "create", "setup", "bundles", "views" and "sql". These are run in the listed order.
+
+## Create
+
+Used to create tables and setup the database so content can be added.
+
+## Setup
+
+Used to recurse setup files. For example creating empty db and registering bundles is pretty much in each setup file as well as
+separate setup files for creating the database step-by-step. With the setup-array a series of "minisetups" can be run from another setup which results in less boilerplate.
+
+## Bundles
+
+Bundle registration. The bundles are registered by running the sql files under oskari-server/content-resources/src/main/resources/sql/views/01-bundles/[namespace]/[bundle.sql].
+
+## Views
 
 Views are created after bundles are registered. Any bundle refered to in a view configuration need to be registered in the previous step.
-Views are configured as json under /src/main/resources/json/views/[view.json]
+Views are configured as json under oskari-server/content-resources/src/main/resources/json/views/[view.json] and are ran in the order they appear in the setup-file.
 
-Sql should be generic sql statements that add map layers/permissions and other content.
+The views are created based on the JSON files which try to minimize copy/pasting boilerplate.
+This means that when the view JSON references bundles it's enough to only tell the id for the bundle to use.
+When the view is created the bundle configuration is read from the registered bundles (database table portti_bundle).
+After that the bundle config/startup/state is overwritten with the value in the JSON file IF they are defined (if not, the values from portti_bundle will be used).
 
-# Add a new view
+## Sql
 
-Add a postgres sample view with the following command. It parses the json file and adds the view to the db.
+Array of generic sql statements to add map layers/permissions and other content.
+These are similar to the ones in create-step but now we can assume tables are created, bundles are registered and views created.
+
+# Adding a new view
+
+Views can be added without running whole setup-files. Add a postgres sample view with the following command:
 
     mvn clean install exec:java -Doskari.addview=postgres-sample-view.json
 
-# Database setting
-
-The database properties can be modified in src/main/resources/db.properties.
+The view JSON is parsed and added as view to the db as it would have been if it had been referenced in a setup-file.
