@@ -1,14 +1,11 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
-import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -74,9 +71,10 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Tests that guest users can't call the action route
+     *
      * @throws Exception
      */
-    @Test(expected=ActionDeniedException.class)
+    @Test(expected = ActionDeniedException.class)
     public void testWithGuest() throws Exception {
         handler.handleAction(createActionParams());
         checkDeleteNotCalled();
@@ -85,9 +83,10 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Tests that correct exception is thrown if no parameters is present
+     *
      * @throws Exception
      */
-    @Test(expected=ActionParamsException.class)
+    @Test(expected = ActionParamsException.class)
     public void testWithMissingParam() throws Exception {
         final ActionParameters params = createActionParams(getLoggedInUser());
         handler.handleAction(params);
@@ -97,9 +96,10 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Tests that correct exception is thrown if id parameter doesn't have valid id of type long
+     *
      * @throws Exception
      */
-    @Test(expected=ActionParamsException.class)
+    @Test(expected = ActionParamsException.class)
     public void testWithInvalidParamType() throws Exception {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", "this should be of type long");
@@ -111,9 +111,10 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Tests that correct exception is thrown if id parameter doesn't match an analysis in db
+     *
      * @throws Exception
      */
-    @Test(expected=ActionParamsException.class)
+    @Test(expected = ActionParamsException.class)
     public void testWithNonMatchingIdParam() throws Exception {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", NON_MATCHING_ID.toString());
@@ -126,9 +127,10 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
     /**
      * Tests that correct exception is thrown if analysis matching the provided id was found,
      * but the analysis uuid doesn't match current users uuid.
+     *
      * @throws Exception
      */
-    @Test(expected=ActionDeniedException.class)
+    @Test(expected = ActionDeniedException.class)
     public void testWithInvalidUser() throws Exception {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", ANOTHER_USERS_ANALYSIS_ID.toString());
@@ -140,6 +142,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Tests that service method for delete is called when valid user tries to delete his/her own analysis
+     *
      * @throws Exception
      */
     @Test
@@ -158,6 +161,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 
     /**
      * Helper method that tests that delete was not called.
+     *
      * @throws Exception
      */
     private void checkDeleteNotCalled() throws Exception {

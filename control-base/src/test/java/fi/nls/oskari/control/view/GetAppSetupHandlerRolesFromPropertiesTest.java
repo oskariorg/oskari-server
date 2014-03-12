@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -51,9 +52,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * Time: 12:50
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class})
 public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
     final private GetAppSetupHandler handler = new GetAppSetupHandler();

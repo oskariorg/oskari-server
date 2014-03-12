@@ -22,6 +22,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ConversionHelper;
 
+/**
+ * Checks which layers the user has permission to view and writes the layer ids to Redis as JSON.
+ */
 @OskariActionRoute("GetLayerIds")
 public class GetLayerIds extends ActionHandler {
 
