@@ -1091,3 +1091,34 @@ UPDATE portti_view_bundle_seq set config = '{
     AND bundleinstance = 'analyse'
     AND view_id=[VIEW_ID];
 
+--------------------------------------------
+-- 23. Metadata Catalogue
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'metadatacatalogue'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'metadatacatalogue');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "metadatacatalogue",
+        "fi" : "metadatacatalogue",
+        "sv" : "metadatacatalogue",
+        "en" : "metadatacatalogue",
+        "bundlename" : "metadatacatalogue",
+        "bundleinstancename" : "metadatacatalogue",
+        "metadata" : {
+            "Import-Bundle" : {
+                "metadatacatalogue" : {
+                    "bundlePath" : "/Oskari/packages/catalogue/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'metadatacatalogue') 
+    AND view_id=[VIEW_ID];
+

@@ -17,7 +17,6 @@
             "010-personaldata.sql",
             "012-coordinatedisplay.sql",
             "013-maplegend.sql",
-            "015-metadataflyout.sql",
             "016-featuredata.sql",
             "020-printout.sql",
             "021-postprocessor.sql",
@@ -28,6 +27,10 @@
         ],
         "integration" : [
             "001-admin-layerselector.sql"
+        ],
+        "catalogue" : [
+            "metadataflyout.sql",
+            "metadatacatalogue.sql",
         ]
     },
     "views" : [
