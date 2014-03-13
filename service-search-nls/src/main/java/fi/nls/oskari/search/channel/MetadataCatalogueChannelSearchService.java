@@ -353,7 +353,6 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return ID;
     }
 
-    // FIXME no hardcoded locales, these should come from properties
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
             throws IllegalSearchCriteriaException {
         List<String> locales = new ArrayList<String>();

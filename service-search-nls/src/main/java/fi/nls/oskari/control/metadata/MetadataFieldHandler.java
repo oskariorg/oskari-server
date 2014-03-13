@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.metadata;
 
+import fi.mml.portti.service.search.MetadataCatalogueSearchCriteria;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
@@ -76,6 +77,37 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         }
 
         return values;
+    }
+
+    public void handleParam(final String param, final String language, final MetadataCatalogueSearchCriteria criteria) {
+        if(param == null || !param.isEmpty()) {
+            // empty param -> skip
+            return;
+        }
+        final MetadataField field = getMetadataField();
+        if(field.isMulti()) {
+            // TODO: MetadataCatalogueSearchCriteria doesn't support multi value
+            // TODO: refactor plz, this is terrible anyways
+            String[] values = param.split(",");
+        }
+        if(MetadataField.ORGANIZATION.equals(field)) {
+            criteria.setResponsibility(param);
+        }
+        else if(MetadataField.KEYWORD.equals(field)) {
+            criteria.setKeyWord(param);
+        }
+        else if(MetadataField.SERVICE_TYPE.equals(field)) {
+            criteria.setServiceType(param);
+        }
+        else if(MetadataField.TOPIC.equals(field)) {
+            criteria.setTopicClass(param);
+        }
+        else if(MetadataField.TYPE.equals(field)) {
+            criteria.setType(param);
+        }
+        else if(MetadataField.SERVICE_NAME.equals(field)) {
+            criteria.setName(param);
+        }
     }
 
     private Set<SelectItem> getProperties() {
