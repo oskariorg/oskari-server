@@ -15,7 +15,6 @@
             "012-coordinatedisplay.sql",
             "013-maplegend.sql",
             "014-userguide.sql",
-            "015-metadataflyout.sql",
             "016-featuredata.sql",
             "017-myplaces2.sql",
             "018-guidedtour.sql",
@@ -33,6 +32,10 @@
         ],
         "integration" : [
             "001-admin-layerselector.sql"
+        ],
+        "catalogue" : [
+            "metadataflyout.sql",
+            "metadatacatalogue.sql",
         ]
     }
 }
