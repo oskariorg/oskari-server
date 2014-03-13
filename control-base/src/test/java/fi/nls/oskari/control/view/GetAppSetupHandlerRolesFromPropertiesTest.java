@@ -93,12 +93,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         handler.setBundleService(bundleService);
         handler.setPublishedMapRestrictionService(restrictionService);
 
-        /*
-        PowerMockito.mockStatic(ParamControl.class);
-        doNothing().when(ParamControl.class);
-        */
-
-
         try {
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundles","admin-layerselector, admin-layerrights");
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerrights.roles", "Administrator");

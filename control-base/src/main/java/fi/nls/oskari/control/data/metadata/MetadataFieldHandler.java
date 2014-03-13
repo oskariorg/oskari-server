@@ -31,12 +31,13 @@ public class MetadataFieldHandler {
 
     private static final Logger log = LogFactory.getLogger(MetadataFieldHandler.class);
 
+    private final static NodeList EMPTY_NODELIST = new EmptyNodeList();
+
     private MetadataField field = null;
     private String propertyName = null;
     private String serverURL = PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
     private String serverPath = PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
     private String queryParams = "?" + PropertyUtil.get("metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
-    //private final Map<String, Set<SelectItem>> cache = new HashMap<String, Set<SelectItem>>();
     private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 /*
 catalogue.geonetwork.search.url=http://geonetwork.nls.fi/geonetwork/srv/en/csw
@@ -48,6 +49,10 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
     public MetadataFieldHandler(final String property) {
         this();
         propertyName = property;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
     }
 
     public void setMetadataField(final MetadataField field) {
@@ -114,14 +119,6 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
             } catch (Exception ignored) {}
         }
         // default to empty NodeList
-        return new NodeList() {
-            public Node item(int index) {
-                throw new ArrayIndexOutOfBoundsException("Trying to get element at " + index + " from empty list!");
-            }
-
-            public int getLength() {
-                return 0;
-            }
-        };
+        return EMPTY_NODELIST;
     }
 }

@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.data.metadata.GetMetadataSearchOptionsHandlerTest;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
@@ -70,7 +71,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private ViewService viewService = null;
     private BundleService bundleService = null;
     private PublishedMapRestrictionService restrictionService = null;
-    private PropertyUtil properties = null;
 
     //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
     //
@@ -98,11 +98,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
         handler.setPublishedMapRestrictionService(restrictionService);
-
-        /*
-        PowerMockito.mockStatic(ParamControl.class);
-        doNothing().when(ParamControl.class);
-        */
 
         handler.init();
     }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <csw:DomainValues type="csw:Record">
+        <csw:PropertyName>topicCategory</csw:PropertyName>
+        <csw:ListOfValues>
+            <csw:Value>biota</csw:Value>
+            <csw:Value>boundaries</csw:Value>
+            <csw:Value>climatologyMeteorologyAtmosphere</csw:Value>
+            <csw:Value>economy</csw:Value>
+            <csw:Value>elevation</csw:Value>
+            <csw:Value>environment</csw:Value>
+            <csw:Value>farming</csw:Value>
+            <csw:Value>geoscientificInformation</csw:Value>
+            <csw:Value>imageryBaseMapsEarthCover</csw:Value>
+            <csw:Value>inlandWaters</csw:Value>
+            <csw:Value>location</csw:Value>
+            <csw:Value>oceans</csw:Value>
+            <csw:Value>planningCadastre</csw:Value>
+            <csw:Value>society</csw:Value>
+            <csw:Value>structure</csw:Value>
+            <csw:Value>transportation</csw:Value>
+            <csw:Value>utilitiesCommunication</csw:Value>
+        </csw:ListOfValues>
+    </csw:DomainValues>
+</csw:GetDomainResponse>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <csw:DomainValues type="csw:Record">
+        <csw:PropertyName>orgName</csw:PropertyName>
+        <csw:ListOfValues>
+            <csw:Value>Espoo</csw:Value>
+            <csw:Value>Espoon kaupunki</csw:Value>
+            <csw:Value>Espoon kaupunki, kaupunkimittausyksikkö</csw:Value>
+            <csw:Value>Etelä-Karjalan liitto</csw:Value>
+            <csw:Value>Etelä-Pohjanmaan liitto</csw:Value>
+            <csw:Value>Etelä-Savon maakuntaliitto</csw:Value>
+            <csw:Value>GTK</csw:Value>
+            <csw:Value>Geodeettinen laitos</csw:Value>
+            <csw:Value>Geologian tutkimuskeskus</csw:Value>
+            <csw:Value>HELCOM</csw:Value>
+            <csw:Value>Helsingin kaupunki</csw:Value>
+            <csw:Value>Hyvinkään kaupunki Kaavoitus</csw:Value>
+            <csw:Value>Hyvinkään kaupunki Kaupunkimittaus</csw:Value>
+            <csw:Value>Hämeen liitto</csw:Value>
+            <csw:Value>Hämeenlinnan kaupunki/Yhdyskunta- ja ympäristöpalvelut/Tietopalvelut</csw:Value>
+            <csw:Value>Hämeenlinnan kaupunki/yhdyskunta- ja ympäristöpalvelut/maankäytön suunnittelu</csw:Value>
+            <csw:Value>Hämeenlinnan kaupunki/yhdyskunta- ja ympäristöpalvelut/tietopalvelut</csw:Value>
+            <csw:Value>Iisalmen kaupunki, kartasto ja mittaus</csw:Value>
+            <csw:Value>Iisalmen kaupunki, kaupunkisuunnittelu</csw:Value>
+            <csw:Value>Iisalmen kaupunki, tonttipalvelut</csw:Value>
+            <csw:Value>Ilmatieteen laitos</csw:Value>
+            <csw:Value>Imatran kaupunki</csw:Value>
+            <csw:Value>Jalasjärven kunta, Kaavoitus- ja mittaustoimi</csw:Value>
+            <csw:Value>Joensuun kaupunki</csw:Value>
+            <csw:Value>Joensuun kaupunki/Kaupunkirakenneyksikkö</csw:Value>
+            <csw:Value>Jyväskylän kaupunki</csw:Value>
+            <csw:Value>Jyväskylän kaupunki/Kaupunkirakennepalvelut/Tonttituotanto/Paikkatietopalvelut</csw:Value>
+            <csw:Value>Jyväskylän yliopisto</csw:Value>
+            <csw:Value>Jyväskylän yliopisto, Liikunta- ja terveystieteiden tiedekunta</csw:Value>
+            <csw:Value>Järvenpään kaupunki, mittaus</csw:Value>
+            <csw:Value>Kainuun maakunta -kuntayhtymä</csw:Value>
+            <csw:Value>Kajaanin kaupunki</csw:Value>
+            <csw:Value>Kajaanin kaupunki/Maankäyttöpalvelut</csw:Value>
+            <csw:Value>Kangasalan kunta</csw:Value>
+            <csw:Value>Kangasniemen kunta</csw:Value>
+            <csw:Value>Kauhavan kaupunki</csw:Value>
+            <csw:Value>Kauniaisten kaupunki</csw:Value>
+            <csw:Value>Kauniaisten kaupunki, maankäyttöyksikkö</csw:Value>
+            <csw:Value>Kauniaisten kaupunki, yhdyskuntatoimi, maankäyttöyksikkö</csw:Value>
+            <csw:Value>Keravan Kaupunki</csw:Value>
+            <csw:Value>Keravan kaupunki, maankäyttöpalvelut</csw:Value>
+            <csw:Value>Keski-Pohjanmaan liitto</csw:Value>
+            <csw:Value>Keski-Suomen liitto</csw:Value>
+            <csw:Value>Kirkkonummi</csw:Value>
+            <csw:Value>Kokkolan kaupunki</csw:Value>
+            <csw:Value>Kokkolan kaupunki, kaavoituspalvelut</csw:Value>
+            <csw:Value>Kokkolan kaupunki, paikkatietopalvelut</csw:Value>
+            <csw:Value>Kotkan kaupunki, kaupunkisuunnittelun vastuualue</csw:Value>
+            <csw:Value>Kouvolan kaupunki</csw:Value>
+            <csw:Value>Kuopion kaupunki</csw:Value>
+            <csw:Value>Kuopion kaupunki - asemakaavoitus</csw:Value>
+            <csw:Value>Kustavin kunta</csw:Value>
+            <csw:Value>Kymenlaakson liitto</csw:Value>
+            <csw:Value>Laitilan kaupunki</csw:Value>
+            <csw:Value>Lapin liitto</csw:Value>
+            <csw:Value>Lappeenrannan kaupunki, tekninen toimi, kiinteistö- ja mittaustoimi</csw:Value>
+            <csw:Value>Liikennevirasto</csw:Value>
+            <csw:Value>Liikennevirasto / Merikartoitus</csw:Value>
+            <csw:Value>Liperin kunta, Maankäyttö ja valvonta</csw:Value>
+            <csw:Value>Lohjan kaupunki</csw:Value>
+            <csw:Value>Lohjan kaupunki, Kiinteistö- ja kartastotoimi</csw:Value>
+            <csw:Value>Loimaa</csw:Value>
+            <csw:Value>Loimaan kaupunki</csw:Value>
+            <csw:Value>Lounaispaikka</csw:Value>
+            <csw:Value>Luonnontieteellinen keskusmuseo</csw:Value>
+            <csw:Value>Maanmittauslaitos</csw:Value>
+            <csw:Value>Maaseutuvirasto</csw:Value>
+            <csw:Value>Metsäntutkimuslaitos</csw:Value>
+            <csw:Value>Mikkelin kaupunki</csw:Value>
+            <csw:Value>Mittauspalvelut</csw:Value>
+            <csw:Value>Mtt Agrifood Research Finland</csw:Value>
+            <csw:Value>Museovirasto</csw:Value>
+            <csw:Value>Muuramen kunta, tekninen osasto</csw:Value>
+            <csw:Value>Mänttä-Vilppulan kaupunki</csw:Value>
+            <csw:Value>Naantalin kaupunki</csw:Value>
+            <csw:Value>Nivalan kaupunki, Maankäyttö</csw:Value>
+            <csw:Value>Nivalan kaupunki, Mittauspalvelut</csw:Value>
+            <csw:Value>Nurmijärven kunta</csw:Value>
+            <csw:Value>Oriveden kaupunki</csw:Value>
+            <csw:Value>Oulun kaupunki</csw:Value>
+            <csw:Value>Oulun kaupunki, Tekninen keskus, Maa ja mittaus</csw:Value>
+            <csw:Value>Oulun kaupunki, Yhdyskunta- ja ympäristöpalvelut</csw:Value>
+            <csw:Value>Oulun kaupunki, tekninen keskus</csw:Value>
+            <csw:Value>Oulun kaupunki, yhdyskunta- ja ympäristöpalvelut</csw:Value>
+            <csw:Value>Oulun kaupunki, yhdyskunta- ja ympäristöpalvelut / Maa ja mittaus</csw:Value>
+            <csw:Value>Oulun seudun ympäristötoimi</csw:Value>
+            <csw:Value>Paimion kaupunki</csw:Value>
+            <csw:Value>Paraisten kaupungin mittaustoimisto</csw:Value>
+            <csw:Value>Pietarsaaren kaupunki</csw:Value>
+            <csw:Value>Pirkanmaan liitto</csw:Value>
+            <csw:Value>Pirkanmaan maakuntamuseo</csw:Value>
+            <csw:Value>Pohjanmaan liitto</csw:Value>
+            <csw:Value>Pohjois-Karjalan maakuntaliitto</csw:Value>
+            <csw:Value>Pohjois-Pohjanmaan liitto</csw:Value>
+            <csw:Value>Pohjois-Savon liitto</csw:Value>
+            <csw:Value>Pori</csw:Value>
+            <csw:Value>Porin kaupunki</csw:Value>
+            <csw:Value>Porvoon kaupunki - kaupunkimittaus</csw:Value>
+            <csw:Value>Puolustusvoimien Tiedustelukeskus</csw:Value>
+            <csw:Value>Pyhtään kunta</csw:Value>
+            <csw:Value>Pyhärannan kunta</csw:Value>
+            <csw:Value>Päijät-Hämeen liitto</csw:Value>
+            <csw:Value>Pöytyän kunta</csw:Value>
+            <csw:Value>Raision kaupunki</csw:Value>
+            <csw:Value>Ramboll Finland Oy</csw:Value>
+            <csw:Value>Rauman kaupunki</csw:Value>
+            <csw:Value>Rauman kaupunki - kiinteistö- ja mittaustoimi</csw:Value>
+            <csw:Value>Rauman kaupunki, kiinteistö- ja mittaustoimi</csw:Value>
+            <csw:Value>Rauman kunta</csw:Value>
+            <csw:Value>Riihimäen kaupunki</csw:Value>
+            <csw:Value>Riista- ja kalatalouden tutkimuslaitos</csw:Value>
+            <csw:Value>Rovaniemen kaupunki</csw:Value>
+            <csw:Value>Salon kaupunki</csw:Value>
+            <csw:Value>Sastamala</csw:Value>
+            <csw:Value>Sastamalan kaupunki</csw:Value>
+            <csw:Value>Satakuntaliitto</csw:Value>
+            <csw:Value>Seinäjoen kaupunki</csw:Value>
+            <csw:Value>Seinäjoen kaupunki, Kiinteistö- ja mittauspalvelut</csw:Value>
+            <csw:Value>Sipoon kunta</csw:Value>
+            <csw:Value>Sipoon kunta, Kaavoitus</csw:Value>
+            <csw:Value>Sotkamon kunta, Kaavoituspalvelut</csw:Value>
+            <csw:Value>Suomen ympäristökeskus</csw:Value>
+            <csw:Value>Suomi.fi-toimitus/Valtion IT-palvelukeskus</csw:Value>
+            <csw:Value>Taivassalon kunta</csw:Value>
+            <csw:Value>Tampereen Kaupunki / Infra</csw:Value>
+            <csw:Value>Tampereen kaupunki</csw:Value>
+            <csw:Value>Tampereen kaupunki / Kaupunkimittaus</csw:Value>
+            <csw:Value>Tampereen kaupunki / katutilavalvonta</csw:Value>
+            <csw:Value>Tilastokeskus</csw:Value>
+            <csw:Value>Tornion kaupunki</csw:Value>
+            <csw:Value>Turun kaupungin Kiinteistöliikelaitos</csw:Value>
+            <csw:Value>Turun kaupunki, Kiinteistöliikelaitos</csw:Value>
+            <csw:Value>Turvallisuus- ja kemikaalivirasto</csw:Value>
+            <csw:Value>Turvallisuus- ja kemikaalivirasto (TUKES)</csw:Value>
+            <csw:Value>Turvallisuus- ja kemikaalivirasto (Tukes)</csw:Value>
+            <csw:Value>Tuusulan kunta</csw:Value>
+            <csw:Value>Tuusulan kunta, Maankäyttö- ja karttapalvelut</csw:Value>
+            <csw:Value>Uudenkaupungin kaupunki</csw:Value>
+            <csw:Value>Uudenmaan liitto</csw:Value>
+            <csw:Value>Vaasan kaupunki</csw:Value>
+            <csw:Value>Valkeakosken kaupunki</csw:Value>
+            <csw:Value>Valtiokonttori / Valtion IT-palvelukeskus</csw:Value>
+            <csw:Value>Vantaan Kaupunki, Kaupunkisuunnittelu</csw:Value>
+            <csw:Value>Vantaan kaupunki, mittausosasto</csw:Value>
+            <csw:Value>Varsinais-Suomen liitto</csw:Value>
+            <csw:Value>Vehmaan kunta</csw:Value>
+            <csw:Value>Vihdin kunta</csw:Value>
+            <csw:Value>Virtain kaupunki</csw:Value>
+            <csw:Value>Väestörekisterikeskus</csw:Value>
+            <csw:Value>Österbottens förbund</csw:Value>
+        </csw:ListOfValues>
+    </csw:DomainValues>
+</csw:GetDomainResponse>

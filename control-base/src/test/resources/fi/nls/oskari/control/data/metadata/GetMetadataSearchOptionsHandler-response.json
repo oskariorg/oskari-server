@@ -1,0 +1,4263 @@
+{"fields": [
+    {
+        "field": "type",
+        "values": [
+            {
+                "val": "dataset"
+            },
+            {
+                "val": "series"
+            },
+            {
+                "val": "service"
+            }
+        ],
+        "multi": true
+    },
+    {
+        "field": "serviceType",
+        "values": [
+            {
+                "val": "Katselupalvelu"
+            },
+            {
+                "val": "discovery"
+            },
+            {
+                "val": "download"
+            },
+            {
+                "val": "other"
+            },
+            {
+                "val": "transformation"
+            },
+            {
+                "val": "view"
+            }
+        ],
+        "multi": true
+    },
+    {
+        "field": "serviceName",
+        "values": [
+            {
+                "val": "Aaltoennustedata WAM"
+            },
+            {
+                "val": "Aaltohavainnot"
+            },
+            {
+                "val": "Aeromagneettiset matalalentomittaukset"
+            },
+            {
+                "val": "Ajoradan leveys (tierekisterin tietolaji 136)"
+            },
+            {
+                "val": "Ajoradat ja moottoriväylät (Tierekisterin tietolaji 135)"
+            },
+            {
+                "val": "Aluevesien rajat"
+            },
+            {
+                "val": "Arvokkaat kallioalueet"
+            },
+            {
+                "val": "Asemakaavoitettu alue"
+            },
+            {
+                "val": "Asuinalueet"
+            },
+            {
+                "val": "Auringon säteilyhavainnot"
+            },
+            {
+                "val": "Bussipysäkit (tierekisterin tietolaji 196)"
+            },
+            {
+                "val": "Corine Land Cover 2000"
+            },
+            {
+                "val": "Corine Land Cover 2006"
+            },
+            {
+                "val": "Digiroad"
+            },
+            {
+                "val": "Digitaalinen kallioperäkartta 1:200 000"
+            },
+            {
+                "val": "Digitaalinen maaperäkartta 1:200 000"
+            },
+            {
+                "val": "EU-meluselvitykset 2007"
+            },
+            {
+                "val": "EU-uimavedet"
+            },
+            {
+                "val": "Espoon WMS-palvelu"
+            },
+            {
+                "val": "Espoon ajantasa-asemakaava"
+            },
+            {
+                "val": "Espoon johtokartta"
+            },
+            {
+                "val": "Espoon kantakartta"
+            },
+            {
+                "val": "Espoon maankäyttökartta"
+            },
+            {
+                "val": "Espoon opaskartta"
+            },
+            {
+                "val": "Espoon ortokuva"
+            },
+            {
+                "val": "Espoon osoitekartta"
+            },
+            {
+                "val": "Espoon osoitteet"
+            },
+            {
+                "val": "Etelä-Karjalan maakuntakaava"
+            },
+            {
+                "val": "Etelä-Pohjanmaan vahvistettu maakuntakaava"
+            },
+            {
+                "val": "Etelä-Savon maakuntakaava"
+            },
+            {
+                "val": "Finnish Soildatabase"
+            },
+            {
+                "val": "GTKWFS"
+            },
+            {
+                "val": "GTKWMS"
+            },
+            {
+                "val": "Geodeettisen laitoksen koordinaattimuunnospalvelu"
+            },
+            {
+                "val": "HELCOM WMS"
+            },
+            {
+                "val": "Hanhikiven ydinvoimamaakuntakaava"
+            },
+            {
+                "val": "Havaitut tulva-alueet"
+            },
+            {
+                "val": "Helsingin kaupungin WMS-palvelu"
+            },
+            {
+                "val": "Helsingin kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Helsingin kaupungin kantakartta"
+            },
+            {
+                "val": "Helsingin kaupungin kiinteistökartta"
+            },
+            {
+                "val": "Helsingin kaupungin opaskartta"
+            },
+            {
+                "val": "Helsingin kaupungin ortoilmakuvat"
+            },
+            {
+                "val": "Helsingin kaupungin osoitekanta"
+            },
+            {
+                "val": "Helsingin kaupungin rakennuskieltokartta"
+            },
+            {
+                "val": "Henkilöliikennepaikat"
+            },
+            {
+                "val": "Hydrologiset havaintopaikat"
+            },
+            {
+                "val": "Hyvinkään ajantasa-asemakaava"
+            },
+            {
+                "val": "Hyvinkään kantakartta"
+            },
+            {
+                "val": "Hyvinkään opaskartta"
+            },
+            {
+                "val": "Hyvinkään ortokuvamosaiikki"
+            },
+            {
+                "val": "Hämeenlinnan WMS-palvelu"
+            },
+            {
+                "val": "Hämeenlinnan ajantasa-asemakaava"
+            },
+            {
+                "val": "Hämeenlinnan kantakartta"
+            },
+            {
+                "val": "Hämeenlinnan opaskartta"
+            },
+            {
+                "val": "INSPIRE - metatiedot Atom-syötteelle Kaivosviranomaisen kartta-aineisto"
+            },
+            {
+                "val": "INSPIRE - metatiedot GTK:n tiedostopalvelun Atom-syötteelle"
+            },
+            {
+                "val": "INSPIRE - metatiedot Lounaispaikan INSPIRE-tiedostopalvelun Atom-syötteelle"
+            },
+            {
+                "val": "INSPIRE - metatiedot SYKEn OIVA-palvelussa olevalle Atom-syötteelle"
+            },
+            {
+                "val": "INSPIRE - metatiedot WFS-palvelulle GTKWFS"
+            },
+            {
+                "val": "INSPIRE katselupalvelu; Säätutkahavainnot: tutkayhdistelmä ja yksittäiset tutkat"
+            },
+            {
+                "val": "INSPIRE katselupalvelu; merihavaintoaineistot sekä meriennusteet"
+            },
+            {
+                "val": "INSPIRE katselupalvelu; sää- ja säteilyhavaintoaineistot sekä sääennusteet"
+            },
+            {
+                "val": "INSPIRE latauspalvelu; sää-, säteily-, meri-, tiesäähavaintoaineistot sekä ennusteet ja säätutkahavainnot"
+            },
+            {
+                "val": "Iisalmen ajantasa-asemakaava"
+            },
+            {
+                "val": "Iisalmen asemakaavoitettu alue"
+            },
+            {
+                "val": "Iisalmen asemakaavojen rajaukset"
+            },
+            {
+                "val": "Iisalmen haja-asutusalueen osoitekartta"
+            },
+            {
+                "val": "Iisalmen kantakartta"
+            },
+            {
+                "val": "Iisalmen kaupunginosat"
+            },
+            {
+                "val": "Iisalmen oikeusvaikutteisten osayleiskaavojen rajaukset"
+            },
+            {
+                "val": "Iisalmen opaskartta"
+            },
+            {
+                "val": "Iisalmen oppilaaksiottoalueet"
+            },
+            {
+                "val": "Iisalmen ortokuva 2011"
+            },
+            {
+                "val": "Iisalmen osoiterekisteri"
+            },
+            {
+                "val": "Iisalmen rakennukset"
+            },
+            {
+                "val": "Iisalmen rakennuskiellot"
+            },
+            {
+                "val": "Iisalmen äänestysalueet"
+            },
+            {
+                "val": "Ilmastonmuutosskenaariot"
+            },
+            {
+                "val": "Image2000 mosaiikki"
+            },
+            {
+                "val": "Image2006 mosaiikki"
+            },
+            {
+                "val": "Imatran ajantasa-asemakaava"
+            },
+            {
+                "val": "Imatran kantakartta"
+            },
+            {
+                "val": "Imatran opaskartta"
+            },
+            {
+                "val": "Itä-Lapin maakuntakaava"
+            },
+            {
+                "val": "Itä-Uudenmaan maakuntakaava"
+            },
+            {
+                "val": "Itämeren biodiversiteetti tila (HELCOM BEAT)"
+            },
+            {
+                "val": "Itämeren ekosysteemi tila (HELCOM HOLAS)"
+            },
+            {
+                "val": "Itämeren kemikaali tila (HELCOM CHASE)"
+            },
+            {
+                "val": "Itämeren laivaliikenne (HELCOM AIS)"
+            },
+            {
+                "val": "Itämeren rehevöitymis tila (HELCOM HEAT)"
+            },
+            {
+                "val": "Itämeren suojelualueet (HELCOM BSPA)"
+            },
+            {
+                "val": "Itämeren ympäristöpaine indeksi (HELCOM BSPI)"
+            },
+            {
+                "val": "Itämeren ympäristövaikutus indeksi (HELCOM BSPI)"
+            },
+            {
+                "val": "Jalasjärven ajantasa-asemakaava"
+            },
+            {
+                "val": "Jalasjärven kantakartta"
+            },
+            {
+                "val": "Jalasjärven opaskartta"
+            },
+            {
+                "val": "Jalasjärven osayleiskaava"
+            },
+            {
+                "val": "Joensuun WMS-palvelu"
+            },
+            {
+                "val": "Joensuun ajantasa-asemakaava"
+            },
+            {
+                "val": "Joensuun kantakartta"
+            },
+            {
+                "val": "Joensuun opaskartta"
+            },
+            {
+                "val": "Jyväskylän WMS-palvelu"
+            },
+            {
+                "val": "Jyväskylän ajantasa-asemakaava"
+            },
+            {
+                "val": "Jyväskylän ilmakuva"
+            },
+            {
+                "val": "Jyväskylän kantakartta"
+            },
+            {
+                "val": "Jyväskylän kaupunginosat"
+            },
+            {
+                "val": "Jyväskylän linja-autoreitit"
+            },
+            {
+                "val": "Jyväskylän opaskartta"
+            },
+            {
+                "val": "Jyväskylän postialueet"
+            },
+            {
+                "val": "Jyväskylän ulkoilukartta"
+            },
+            {
+                "val": "Jyväskylän äänestysalueet"
+            },
+            {
+                "val": "Järvenpään kantakartta"
+            },
+            {
+                "val": "Järvenpään opaskartta"
+            },
+            {
+                "val": "Järvien syvyysaineisto"
+            },
+            {
+                "val": "Kainuun maakuntakaava 2020"
+            },
+            {
+                "val": "Kaivos- ja mineraalirekisterin kartta-aineisto"
+            },
+            {
+                "val": "Kaivosrekisterin kartta-aineisto (WMS)"
+            },
+            {
+                "val": "Kajaanin ajantasa-asemakaava"
+            },
+            {
+                "val": "Kajaanin kantakartta"
+            },
+            {
+                "val": "Kajaanin kaupungin WMS-palvelu"
+            },
+            {
+                "val": "Kajaanin opaskartta"
+            },
+            {
+                "val": "Kajaanin yleiskaava"
+            },
+            {
+                "val": "Kalavarojen arviointi (taloudellisesti tärkeiden kalalajien sekä rapujen esiintymisalueet)"
+            },
+            {
+                "val": "Kallioperä- ja lohkarehavaintoaineisto"
+            },
+            {
+                "val": "Kallioperäkartta 1:100 000"
+            },
+            {
+                "val": "Kangasalan kunnan ajantasa-asemakaava"
+            },
+            {
+                "val": "Kangasalan kunnan kantakartta"
+            },
+            {
+                "val": "Kangasalan kunnan opaskartta"
+            },
+            {
+                "val": "Kangasalan kunnan rakennukset"
+            },
+            {
+                "val": "Kangasalan kunnan ranta-asemakaavat"
+            },
+            {
+                "val": "Kangasalan kunnan yleiskaava"
+            },
+            {
+                "val": "Kangasniemen ajantasa-asemakaava"
+            },
+            {
+                "val": "Kangasniemen kantakartta"
+            },
+            {
+                "val": "Kangasniemen taajaman opaskartta"
+            },
+            {
+                "val": "Kanta-Hämeen maakuntakaava"
+            },
+            {
+                "val": "Karttapaikka"
+            },
+            {
+                "val": "Kasviatlas"
+            },
+            {
+                "val": "Kauhavan ajantasa-asemakaava Alahärmä"
+            },
+            {
+                "val": "Kauhavan ajantasa-asemakaava Kauhava"
+            },
+            {
+                "val": "Kauhavan ajantasa-asemakaava Kortesjärvi"
+            },
+            {
+                "val": "Kauhavan ajantasa-asemakaava Ylihärmä"
+            },
+            {
+                "val": "Kauhavan kantakartta Alahärmä"
+            },
+            {
+                "val": "Kauhavan kantakartta Kauhava"
+            },
+            {
+                "val": "Kauhavan kantakartta Kortesjärvi"
+            },
+            {
+                "val": "Kauhavan kantakartta Ylihärmä"
+            },
+            {
+                "val": "Kauhavan opaskartat"
+            },
+            {
+                "val": "Kauhavan yleiskaava"
+            },
+            {
+                "val": "Kauniaisten WMS-palvelu"
+            },
+            {
+                "val": "Kauniaisten ajantasa-asemakaava"
+            },
+            {
+                "val": "Kauniaisten kantakartta"
+            },
+            {
+                "val": "Kauniaisten opaskartta"
+            },
+            {
+                "val": "Kauniaisten ortokuva"
+            },
+            {
+                "val": "Kauniaisten osoitekartta"
+            },
+            {
+                "val": "Kauniaisten osoitteet"
+            },
+            {
+                "val": "Kemi-Tornio alueen ydinvoimamaakuntakaava"
+            },
+            {
+                "val": "Keravan Kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Keravan Kaupungin opaskartta"
+            },
+            {
+                "val": "Keravan Kaupungin ortokuvamosaiikki"
+            },
+            {
+                "val": "Keravan kaupungin WMS-palvelu"
+            },
+            {
+                "val": "Keski-Pohjanmaan maakuntakaava; vaiheet 1 - 3"
+            },
+            {
+                "val": "Keski-Suomen 1. vaihemaakuntakaava"
+            },
+            {
+                "val": "Keski-Suomen 2. vaihemaakuntakaava"
+            },
+            {
+                "val": "Keski-Suomen maakuntakaava"
+            },
+            {
+                "val": "Kiinteistöjen kauppahintarekisteri"
+            },
+            {
+                "val": "Kiinteistörekisteri"
+            },
+            {
+                "val": "Kiinteistötietojen kyselypalvelu (WFS)"
+            },
+            {
+                "val": "Kiintopisteet"
+            },
+            {
+                "val": "Kirkkonummen ajantasa-asemakaava"
+            },
+            {
+                "val": "Kirkkonummen kantakartta"
+            },
+            {
+                "val": "Kirkkonummen opaskartta"
+            },
+            {
+                "val": "Kokkolan WMS-palvelu"
+            },
+            {
+                "val": "Kokkolan ajantasa-asemakaava"
+            },
+            {
+                "val": "Kokkolan ilmakuvayhdistelmä"
+            },
+            {
+                "val": "Kokkolan kantakartta"
+            },
+            {
+                "val": "Kokkolan lintuvesialueet ja lintusaaret"
+            },
+            {
+                "val": "Kokkolan opaskartta"
+            },
+            {
+                "val": "Kokkolan osoiterekisteri"
+            },
+            {
+                "val": "Kokkolan seudun opaskartta"
+            },
+            {
+                "val": "Korkeusmalli 10 m"
+            },
+            {
+                "val": "Korkeusmalli 2 m"
+            },
+            {
+                "val": "Korkeusmalli 200 m"
+            },
+            {
+                "val": "Korkeusmalli 25 m"
+            },
+            {
+                "val": "Korkeusvyöhykerasteri"
+            },
+            {
+                "val": "Kotkan ajantasa-asemakaava"
+            },
+            {
+                "val": "Kotkan kantakartta"
+            },
+            {
+                "val": "Kotkan opaskartta"
+            },
+            {
+                "val": "Kouvolan WMS-palvelu"
+            },
+            {
+                "val": "Kouvolan ajantasa-asemakaava"
+            },
+            {
+                "val": "Kouvolan ilmakuva"
+            },
+            {
+                "val": "Kouvolan kantakartta"
+            },
+            {
+                "val": "Kouvolan opaskartta"
+            },
+            {
+                "val": "Kuntajako"
+            },
+            {
+                "val": "Kuntapohjaiset tilastointialueet"
+            },
+            {
+                "val": "Kuopion WMS-palvelu"
+            },
+            {
+                "val": "Kuopion ajantasa-asemakaava"
+            },
+            {
+                "val": "Kuopion kantakartta"
+            },
+            {
+                "val": "Kuopion opaskartta"
+            },
+            {
+                "val": "Kuopion seudun maakuntakaava"
+            },
+            {
+                "val": "Kymenlaakson maakuntakaava"
+            },
+            {
+                "val": "LIPAS WMS-palvelu"
+            },
+            {
+                "val": "Lapin meri- ja rannikkoalueen tuulivoimamaakuntakaava"
+            },
+            {
+                "val": "Lappeenrannan ajantasa-asemakaava"
+            },
+            {
+                "val": "Lappeenrannan kantakartta"
+            },
+            {
+                "val": "Lappeenrannan opaskartta"
+            },
+            {
+                "val": "Laserkeilausaineisto"
+            },
+            {
+                "val": "Leppävirran pohjoisosan valtatien 5 maakuntakaava (VT5)"
+            },
+            {
+                "val": "Liikennealueiden ympäristöriskiluokitus"
+            },
+            {
+                "val": "Liikennemäärä (tierekisterin tietolaji 201)"
+            },
+            {
+                "val": "Liikennevirasto maaliikenne WMS"
+            },
+            {
+                "val": "Liikennevirasto meriliikenne Primar WMS"
+            },
+            {
+                "val": "Liikuntapaikat.fi / Lipas"
+            },
+            {
+                "val": "Lintuatlas"
+            },
+            {
+                "val": "Liperin ajantasa-asemakaava"
+            },
+            {
+                "val": "Liperin osoitekartta"
+            },
+            {
+                "val": "Liperin suunnittelutarvealueet"
+            },
+            {
+                "val": "Liperin yleiskaava"
+            },
+            {
+                "val": "Lisäkaistat (tierekisterin tietolaji 161)"
+            },
+            {
+                "val": "Lohjan kantakartta"
+            },
+            {
+                "val": "Lohjan kiinteistötiedot"
+            },
+            {
+                "val": "Lohjan opaskartta"
+            },
+            {
+                "val": "Lohjan osoitetiedot"
+            },
+            {
+                "val": "Loimaan kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Loimaan kaupungin kantakartta"
+            },
+            {
+                "val": "Loimaan kaupungin opaskartta"
+            },
+            {
+                "val": "Loimaan kaupungin osoitekartta"
+            },
+            {
+                "val": "Luonnon virkistyskäyttömahdollisuudet"
+            },
+            {
+                "val": "Luonnonsuojelu- ja erämaa-alueet"
+            },
+            {
+                "val": "Luonnonsuojeluohjelma-alueet"
+            },
+            {
+                "val": "MRL:n mukaisten yleiskaavojen ulkorajaukset"
+            },
+            {
+                "val": "Maailmanperintökohteet"
+            },
+            {
+                "val": "Maakuntakaavat"
+            },
+            {
+                "val": "Maanmittauslaitoksen ilmakuva"
+            },
+            {
+                "val": "Maanmittauslaitoksen ortokuva"
+            },
+            {
+                "val": "Maanmittauslaitoksen rasteriaineistojen palvelurajapinta (WMS)"
+            },
+            {
+                "val": "Maanmittauslaitoksen tiedostopalvelun INSPIRE-syöte"
+            },
+            {
+                "val": "Maannostietokanta"
+            },
+            {
+                "val": "Maaperäkartta 1:20 000 / 1:50 000"
+            },
+            {
+                "val": "Maasto- ja vesiliikenteen rajoitusalueet"
+            },
+            {
+                "val": "Maastokartta 1:100 000"
+            },
+            {
+                "val": "Maastokartta 1:250 000"
+            },
+            {
+                "val": "Maastokarttarasteri 1:100 000"
+            },
+            {
+                "val": "Maastokarttarasteri 1:250 000"
+            },
+            {
+                "val": "Maastokarttarasteri 1:50 000"
+            },
+            {
+                "val": "Maastokarttarasteri 1:500 000"
+            },
+            {
+                "val": "Maastotietokannan osoitteiden kyselypalvelu"
+            },
+            {
+                "val": "Maastotietokanta"
+            },
+            {
+                "val": "Maisemamaakuntajako"
+            },
+            {
+                "val": "Merikartan johtotiedot"
+            },
+            {
+                "val": "Merikartan syvyystiedot"
+            },
+            {
+                "val": "Merikartta-aineisto"
+            },
+            {
+                "val": "Meriveden korkeusennuste"
+            },
+            {
+                "val": "Meriveden korkeushavainnot"
+            },
+            {
+                "val": "Meriveden virtausennustedata HBM"
+            },
+            {
+                "val": "Metsäkasvillisuusvyöhykkeet"
+            },
+            {
+                "val": "Mikkelin ajantasa-asemakaava"
+            },
+            {
+                "val": "Mikkelin kantakartta"
+            },
+            {
+                "val": "Mikkelin opaskartta"
+            },
+            {
+                "val": "Monilähteisen valtakunnan metsien inventoinnin (MVMI) kartta-aineisto 2009"
+            },
+            {
+                "val": "Monilähteisen valtakunnan metsien inventoinnin (MVMI) kartta-aineisto 2011"
+            },
+            {
+                "val": "Muinaisjäännökset (Muinaisjäännösrekisteri)"
+            },
+            {
+                "val": "Museoviraston WMS"
+            },
+            {
+                "val": "Museoviraston paikkatietojen tiedostolataus"
+            },
+            {
+                "val": "Muuramen kunnan ajantasa-asemakaava"
+            },
+            {
+                "val": "Muuramen kunnan opaskartta"
+            },
+            {
+                "val": "Muuramen kunnan pilaantuneet maa-alueet"
+            },
+            {
+                "val": "Muuramen kunnan rakennuskiellot"
+            },
+            {
+                "val": "Muuramen kunnan suunnittelutarvealueet"
+            },
+            {
+                "val": "Muuramen kunnan yleiskaavat"
+            },
+            {
+                "val": "Mänttä-Vilppulan WFS-palvelu"
+            },
+            {
+                "val": "Mänttä-Vilppulan WMS-palvelu"
+            },
+            {
+                "val": "Mänttä-Vilppulan ajantasa-asemakaava"
+            },
+            {
+                "val": "Mänttä-Vilppulan kantakartta"
+            },
+            {
+                "val": "Mänttä-Vilppulan opaskartta"
+            },
+            {
+                "val": "Mänttä-Vilppulan rakennukset"
+            },
+            {
+                "val": "Mänttä-Vilppulan suunnittelutarvealueet"
+            },
+            {
+                "val": "Mänttä-Vilppulan yleiskaava"
+            },
+            {
+                "val": "Naantalin asemakaavayhdelmä"
+            },
+            {
+                "val": "Naantalin kantakartta"
+            },
+            {
+                "val": "Natura2000"
+            },
+            {
+                "val": "Nimistö"
+            },
+            {
+                "val": "Nimistön kyselypalvelu (WFS)"
+            },
+            {
+                "val": "Nivalan ajantasa-asemakaava"
+            },
+            {
+                "val": "Nivalan kantakartta"
+            },
+            {
+                "val": "Nivalan opaskartta"
+            },
+            {
+                "val": "Nopeusrajoitus ja taajamanopeusrajoitus (tierekisterin tietolaji 168)"
+            },
+            {
+                "val": "Nurmijärven WMS-palvelu"
+            },
+            {
+                "val": "Nurmijärven ajantasa-asemakaava"
+            },
+            {
+                "val": "Nurmijärven kantakartta"
+            },
+            {
+                "val": "Nurmijärven opaskartta"
+            },
+            {
+                "val": "Nurmijärven osoiterekisteri"
+            },
+            {
+                "val": "Oppilaitokset"
+            },
+            {
+                "val": "Oriveden WFS-palvelu"
+            },
+            {
+                "val": "Oriveden WMS-palvelu"
+            },
+            {
+                "val": "Oriveden ajantasa-asemakaava"
+            },
+            {
+                "val": "Oriveden opaskartta"
+            },
+            {
+                "val": "Oriveden rakennukset"
+            },
+            {
+                "val": "Oriveden rakennuskiellot"
+            },
+            {
+                "val": "Oriveden suunnittelutarvealueet"
+            },
+            {
+                "val": "Oriveden yleiskaava"
+            },
+            {
+                "val": "Oulun WMS-palvelu"
+            },
+            {
+                "val": "Oulun kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Oulun kaupungin kantakartta"
+            },
+            {
+                "val": "Oulun kaupungin kiinteistörekisteri"
+            },
+            {
+                "val": "Oulun kaupungin luonnonmuistomerkit"
+            },
+            {
+                "val": "Oulun kaupungin opaskartta"
+            },
+            {
+                "val": "Oulun kaupungin ortoilmakuva"
+            },
+            {
+                "val": "Oulun kaupungin osoitekartta"
+            },
+            {
+                "val": "Oulun kaupungin osoiterekisteri"
+            },
+            {
+                "val": "Paikkatietohakemiston CSW-rajapinta"
+            },
+            {
+                "val": "Paimion ajantasa-asemakaava"
+            },
+            {
+                "val": "Paimion pilaantuneet maa-alueet"
+            },
+            {
+                "val": "Paimion suunnittelutarvealueet"
+            },
+            {
+                "val": "Paimion virkistyskohteet"
+            },
+            {
+                "val": "Paraisten opaskartta"
+            },
+            {
+                "val": "Peltolohkorekisteri"
+            },
+            {
+                "val": "Peltolohkorekisteri WMS"
+            },
+            {
+                "val": "Peruskarttarasteri"
+            },
+            {
+                "val": "Pietarsaaren kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Pietarsaaren kaupungin kantakartta"
+            },
+            {
+                "val": "Pietarsaaren kaupungin opaskartta"
+            },
+            {
+                "val": "Pirkanmaan 1. maakuntakaava"
+            },
+            {
+                "val": "Pirkanmaan kulttuuriympäristöalueet"
+            },
+            {
+                "val": "Pirkanmaan muinaisjäännökset"
+            },
+            {
+                "val": "Pirkanmaan rakennetun ympäristön kohteet"
+            },
+            {
+                "val": "Pohjanmaan maakuntakaava"
+            },
+            {
+                "val": "Pohjavesialueet"
+            },
+            {
+                "val": "Pohjois-Karjalan maakuntakaavat"
+            },
+            {
+                "val": "Pohjois-Lapin maakuntakaava"
+            },
+            {
+                "val": "Pohjois-Pohjanmaan maakuntakaava"
+            },
+            {
+                "val": "Pohjois-Savon maakuntakaava 2030"
+            },
+            {
+                "val": "Porin ajantasa-asemakaava"
+            },
+            {
+                "val": "Porin kaupungin kantakartta"
+            },
+            {
+                "val": "Porin kaupungin osoitekartta"
+            },
+            {
+                "val": "Porin opaskartta"
+            },
+            {
+                "val": "Porvoon kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Porvoon kaupungin opaskartta"
+            },
+            {
+                "val": "Puolustusvoimien ortoilmakuva (korkeakuvaus)"
+            },
+            {
+                "val": "Pyhtään kantakartta"
+            },
+            {
+                "val": "Pyhtään opaskartta"
+            },
+            {
+                "val": "Päijät-Hämeen maakuntakaava"
+            },
+            {
+                "val": "Pöytyän kunnan ajantasa-asemakaava"
+            },
+            {
+                "val": "RKTL WFS (kala)"
+            },
+            {
+                "val": "RKTL WFS (riista)"
+            },
+            {
+                "val": "RKTL WMS (kala)"
+            },
+            {
+                "val": "RKTL WMS (riista)"
+            },
+            {
+                "val": "Raision WMS-aineistot"
+            },
+            {
+                "val": "Raision ajantasa-asemakaava"
+            },
+            {
+                "val": "Raision kantakartta"
+            },
+            {
+                "val": "Rakennettu kulttuuriympäristö 1993 (RKY1993)"
+            },
+            {
+                "val": "Rakennustietojen kyselypalvelu (WFS)"
+            },
+            {
+                "val": "Rataverkko"
+            },
+            {
+                "val": "Rauman ajantasakaava"
+            },
+            {
+                "val": "Rauman kantakartta"
+            },
+            {
+                "val": "Rauman opaskartta"
+            },
+            {
+                "val": "Rauman ortokuvat"
+            },
+            {
+                "val": "Riihimäen WMS-palvelu"
+            },
+            {
+                "val": "Riihimäen ajantasa-asemakaava"
+            },
+            {
+                "val": "Riihimäen ilmakuva"
+            },
+            {
+                "val": "Riihimäen kantakartta"
+            },
+            {
+                "val": "Riihimäen opaskartta"
+            },
+            {
+                "val": "Rovaniemen kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Rovaniemen kaupungin kantakartta"
+            },
+            {
+                "val": "Rovaniemen kaupungin opaskartta"
+            },
+            {
+                "val": "Rovaniemen maakuntakaava"
+            },
+            {
+                "val": "Rovaniemen vaihemaakuntakaava"
+            },
+            {
+                "val": "SYKE AlueidenHallintaJaRajoitukset1 WMS"
+            },
+            {
+                "val": "SYKE AlueidenHallintaJaRajoitukset2 WMS"
+            },
+            {
+                "val": "SYKE EliomaantieteellisetAlueet WMS"
+            },
+            {
+                "val": "SYKE Geologia WMS"
+            },
+            {
+                "val": "SYKE Hydrografia WMS"
+            },
+            {
+                "val": "SYKE Korkeus WMS"
+            },
+            {
+                "val": "SYKE Luonnonriskialueet WMS"
+            },
+            {
+                "val": "SYKE Maanpeite WMS"
+            },
+            {
+                "val": "SYKE OIVA tiedostolatauspalvelu"
+            },
+            {
+                "val": "SYKE Ortoilmakuvat WMS"
+            },
+            {
+                "val": "SYKE SuojellutAlueet WMS"
+            },
+            {
+                "val": "SYKE YmparistontilanSeuranta WMS"
+            },
+            {
+                "val": "Salamahavainnot"
+            },
+            {
+                "val": "Salon kantakartta"
+            },
+            {
+                "val": "Salon opaskartta"
+            },
+            {
+                "val": "Sastamalan ajantasa-asemakaava"
+            },
+            {
+                "val": "Sastamalan kantakartta"
+            },
+            {
+                "val": "Sastamalan opaskartta"
+            },
+            {
+                "val": "Satakunnan maakuntakaava"
+            },
+            {
+                "val": "Seinäjoen WMS-palvelu"
+            },
+            {
+                "val": "Seinäjoen ajantasa-asemakaava"
+            },
+            {
+                "val": "Seinäjoen kantakartta"
+            },
+            {
+                "val": "Seinäjoen opaskartta"
+            },
+            {
+                "val": "Seurantatiedot riistakannoista"
+            },
+            {
+                "val": "Sipoon Kringelmalmin osayleiskaava"
+            },
+            {
+                "val": "Sipoon kunnan kantakartta"
+            },
+            {
+                "val": "Sipoon kunnan opaskartta"
+            },
+            {
+                "val": "Sipoon kunnan rakennuskieltoalueet"
+            },
+            {
+                "val": "Sipoon kunnan suunnittelutarvealueet"
+            },
+            {
+                "val": "Sipoon kunnan yleiskaava 2025"
+            },
+            {
+                "val": "Soklin kaivoshankkeen vaihemaakuntakaava"
+            },
+            {
+                "val": "Sotkamon ajantasa-asemakaava"
+            },
+            {
+                "val": "Sotkamon suunnittelutarvealueet"
+            },
+            {
+                "val": "Sulut ja rantarakenteet"
+            },
+            {
+                "val": "Suojeltu rakennusperintö (Rakennusperintörekisteri)"
+            },
+            {
+                "val": "Suokasvillisuusvyöhykkeet"
+            },
+            {
+                "val": "Suomen kalliogeokemian tietokanta"
+            },
+            {
+                "val": "Suomen kallioperä 1:1 000 000"
+            },
+            {
+                "val": "Suomen kallioperän ikämääritykset"
+            },
+            {
+                "val": "Suomen maaperä 1:1 000 000"
+            },
+            {
+                "val": "Suomen pintageologiakartta 1:1 000 000"
+            },
+            {
+                "val": "Suomi.fi-portaalin WMS-palvelu"
+            },
+            {
+                "val": "Suomi.fi-portaalin palvelukartan toimipaikka-aineisto"
+            },
+            {
+                "val": "Suuralueellinen moreenigeokemiallinen kartoitus"
+            },
+            {
+                "val": "Suuralueellinen purosedimenttigeokemiallinen kartoitus"
+            },
+            {
+                "val": "Suuralueellinen purovesigeokemiallinen kartoitus"
+            },
+            {
+                "val": "Sääennustedata RCR Hirlam"
+            },
+            {
+                "val": "Säähavainnot"
+            },
+            {
+                "val": "Säähavaintojen hilamuotoiset kuukausiarvot"
+            },
+            {
+                "val": "Säähavaintojen ilmastolliset vertailuarvot"
+            },
+            {
+                "val": "Säähavaintojen kuukausiarvot"
+            },
+            {
+                "val": "Säähavaintojen vuorokausiarvot"
+            },
+            {
+                "val": "Säätutkahavainnot"
+            },
+            {
+                "val": "Talvinopeusrajoitus (tierekisterin tietolaji 169)"
+            },
+            {
+                "val": "Tampereen WFS-palvelu"
+            },
+            {
+                "val": "Tampereen WMS-palvelu 1"
+            },
+            {
+                "val": "Tampereen WMS-palvelu 2"
+            },
+            {
+                "val": "Tampereen ajantasa-asemakaava"
+            },
+            {
+                "val": "Tampereen arseeniriskialueet"
+            },
+            {
+                "val": "Tampereen asemakaavaindeksi"
+            },
+            {
+                "val": "Tampereen fluoridiriskialueet"
+            },
+            {
+                "val": "Tampereen ilmanlaatu 2000"
+            },
+            {
+                "val": "Tampereen ilmanlaatu 2020"
+            },
+            {
+                "val": "Tampereen järvien vedenlaatu"
+            },
+            {
+                "val": "Tampereen kantakartta"
+            },
+            {
+                "val": "Tampereen katuosoitteet"
+            },
+            {
+                "val": "Tampereen kiinteistörajat"
+            },
+            {
+                "val": "Tampereen kiintopisteet"
+            },
+            {
+                "val": "Tampereen kunnossapidon urakka-alueet"
+            },
+            {
+                "val": "Tampereen luonnonmuistomerkit"
+            },
+            {
+                "val": "Tampereen luontopolkurastit"
+            },
+            {
+                "val": "Tampereen luontopolkureitit"
+            },
+            {
+                "val": "Tampereen melu päivä 2012 keskiäänitaso"
+            },
+            {
+                "val": "Tampereen melu päivä 2030 keskiäänitaso"
+            },
+            {
+                "val": "Tampereen melu yö 2012 keskiäänitaso"
+            },
+            {
+                "val": "Tampereen melu yö 2030 keskiäänitaso"
+            },
+            {
+                "val": "Tampereen omistamat kiinteistöt"
+            },
+            {
+                "val": "Tampereen opaskartta"
+            },
+            {
+                "val": "Tampereen perusopetuksen oppilasalueet"
+            },
+            {
+                "val": "Tampereen pienvedet"
+            },
+            {
+                "val": "Tampereen rakennuskieltoalueet"
+            },
+            {
+                "val": "Tampereen vanhat kaatopaikat"
+            },
+            {
+                "val": "Tampereen vanhat metsät 2006"
+            },
+            {
+                "val": "Tampereen voimassa olevat katuluvat"
+            },
+            {
+                "val": "Tampereen yleis- ja osayleiskaavojen käyttötarkoitusalueet"
+            },
+            {
+                "val": "Tampereen ympäristönsuojelun valvontakohteet"
+            },
+            {
+                "val": "Tasoristeykset"
+            },
+            {
+                "val": "Taustailmanlaadun havainnot"
+            },
+            {
+                "val": "Taustakarttasarja (rasteri)"
+            },
+            {
+                "val": "Tieluokat (tierekisterin tietolaji 130)"
+            },
+            {
+                "val": "Tien päällyste (tierekisterin tietolaji 137)"
+            },
+            {
+                "val": "Tienimet"
+            },
+            {
+                "val": "Tienkäyttäjien palvelualueet (tierekisterin tietolaji 195)"
+            },
+            {
+                "val": "Tierekisteri"
+            },
+            {
+                "val": "Tilastokeskuksen palvelurajapinta (WFS)"
+            },
+            {
+                "val": "Tilastokeskuksen palvelurajapinta (WMS)"
+            },
+            {
+                "val": "Tilastoruudukko 1 km x 1 km"
+            },
+            {
+                "val": "Tornion kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Tornion kaupungin kantakartta"
+            },
+            {
+                "val": "Tornion kaupungin opaskartta"
+            },
+            {
+                "val": "Tulvariskialueet"
+            },
+            {
+                "val": "Tulvavaaravyöhykkeet"
+            },
+            {
+                "val": "Tunturi-Lapin maakuntakaava"
+            },
+            {
+                "val": "Tuotanto- ja teollisuuslaitokset"
+            },
+            {
+                "val": "Turun WMS-palvelu"
+            },
+            {
+                "val": "Turun kaupungin Ajantasakaava"
+            },
+            {
+                "val": "Turun kaupungin Kantakartta"
+            },
+            {
+                "val": "Turun seudun Opaskartta"
+            },
+            {
+                "val": "Turun seudun ilmakuva"
+            },
+            {
+                "val": "Turvekartoitus"
+            },
+            {
+                "val": "Tuuliatlas 2500m"
+            },
+            {
+                "val": "Tuuliatlas 250m"
+            },
+            {
+                "val": "Tuusulan ajantasa-asemakaava"
+            },
+            {
+                "val": "Tuusulan kantakartta"
+            },
+            {
+                "val": "Tuusulan opaskartta"
+            },
+            {
+                "val": "Uomaverkosto"
+            },
+            {
+                "val": "Uudenkaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Uudenkaupungin osoitekartat"
+            },
+            {
+                "val": "Uudenkaupungin yleiskaavakartta"
+            },
+            {
+                "val": "Uudenmaan 1. vaihemaakuntakaava"
+            },
+            {
+                "val": "Uudenmaan 3. vaihemaakuntakaava"
+            },
+            {
+                "val": "Uudenmaan maakuntakaava"
+            },
+            {
+                "val": "Uudenmaan maakuntakaavojen yhdistelmä (wms)"
+            },
+            {
+                "val": "Vaasan kantakartta"
+            },
+            {
+                "val": "Vaasan opaskartta"
+            },
+            {
+                "val": "Valaistus (tierekisterin tietolaji 167)"
+            },
+            {
+                "val": "Valkeakosken WMS-palvelu"
+            },
+            {
+                "val": "Valkeakosken ajantasa-asemakaava"
+            },
+            {
+                "val": "Valkeakosken kantakartta"
+            },
+            {
+                "val": "Valkeakosken ortokuva"
+            },
+            {
+                "val": "Valkeakosken virastokartta"
+            },
+            {
+                "val": "Valtakunnallisesti arvokkaat moreenimuodostumat"
+            },
+            {
+                "val": "Valtakunnallisesti merkittävät rakennetut kulttuuriympäristöt (RKY)"
+            },
+            {
+                "val": "Valtakunnan metsien inventoinnin (VMI) monilähdekartta-aineisto"
+            },
+            {
+                "val": "Valuma-aluejako"
+            },
+            {
+                "val": "Vanhan rakennuslain mukaisesti vahvistettujen yleiskaavojen ulkorajaukset"
+            },
+            {
+                "val": "Vantaan ajantasa-asemakaava"
+            },
+            {
+                "val": "Vantaan kaupungin kiinteistörekisterikartta"
+            },
+            {
+                "val": "Vantaan kaupungin ortoilmakuvamosaiikki"
+            },
+            {
+                "val": "Vantaan kaupungin viistoilmakuvat"
+            },
+            {
+                "val": "Vantaan maanalaisten johtojen kartta"
+            },
+            {
+                "val": "Vantaan opaskartta"
+            },
+            {
+                "val": "Vantaan osoitteet"
+            },
+            {
+                "val": "Vantaan virastokartta"
+            },
+            {
+                "val": "Varsinais-Suomen vahvistetut maakuntakaavat"
+            },
+            {
+                "val": "Varsinais-Suomen vahvistetut maakuntakaavat (WMS)"
+            },
+            {
+                "val": "Vehmaan, Pyhärannan, Kustavin, Laitilan ja Taivassalon asemakaavayhdistelmä"
+            },
+            {
+                "val": "Vesienhoitoalueet"
+            },
+            {
+                "val": "Vesienhoitoalueiden pintavesien seurantapaikat 2010"
+            },
+            {
+                "val": "Vesienhoitoalueiden pohjavesien seurantapaikat 2010"
+            },
+            {
+                "val": "Vesipuitedirektiivin mukaiset vesimuodostumat"
+            },
+            {
+                "val": "Vesiväylät"
+            },
+            {
+                "val": "Vihdin kunnan Geo Web Publisher WMS-palvelu"
+            },
+            {
+                "val": "Vihdin opaskartta"
+            },
+            {
+                "val": "Vinovalovarjosterasteri"
+            },
+            {
+                "val": "Virtain kaupungin ajantasa-asemakaava"
+            },
+            {
+                "val": "Virtain kaupungin kantakartta"
+            },
+            {
+                "val": "Virtain kaupungin opaskartta"
+            },
+            {
+                "val": "Virtain kaupungin osoitekartta"
+            },
+            {
+                "val": "Vuokatin yleiskaava"
+            },
+            {
+                "val": "Väestö tilastointialueittain"
+            },
+            {
+                "val": "Väestöruutuaineisto 1 km x 1 km"
+            },
+            {
+                "val": "Väestötietojärjestelmän rakennus- ja huoneistotiedot"
+            },
+            {
+                "val": "YKR Kaupunkiseudut 2010"
+            },
+            {
+                "val": "Yhdyskuntarakenne"
+            },
+            {
+                "val": "Yleiskartta 1:1 000 000"
+            },
+            {
+                "val": "Yleiskartta 1:4 500 000"
+            },
+            {
+                "val": "Yleiskarttarasteri 1:1 000 000"
+            },
+            {
+                "val": "Yleiskarttarasteri 1:2 000 000"
+            },
+            {
+                "val": "Yleiskarttarasteri 1:4 500 000"
+            },
+            {
+                "val": "Yleiskarttarasteri 1:8 000 000"
+            },
+            {
+                "val": "Österbottens landskapsplan"
+            }
+        ],
+        "multi": false
+    },
+    {
+        "field": "organization",
+        "values": [
+            {
+                "val": "Espoo"
+            },
+            {
+                "val": "Espoon kaupunki"
+            },
+            {
+                "val": "Espoon kaupunki, kaupunkimittausyksikkö"
+            },
+            {
+                "val": "Etelä-Karjalan liitto"
+            },
+            {
+                "val": "Etelä-Pohjanmaan liitto"
+            },
+            {
+                "val": "Etelä-Savon maakuntaliitto"
+            },
+            {
+                "val": "GTK"
+            },
+            {
+                "val": "Geodeettinen laitos"
+            },
+            {
+                "val": "Geologian tutkimuskeskus"
+            },
+            {
+                "val": "HELCOM"
+            },
+            {
+                "val": "Helsingin kaupunki"
+            },
+            {
+                "val": "Hyvinkään kaupunki Kaavoitus"
+            },
+            {
+                "val": "Hyvinkään kaupunki Kaupunkimittaus"
+            },
+            {
+                "val": "Hämeen liitto"
+            },
+            {
+                "val": "Hämeenlinnan kaupunki/Yhdyskunta- ja ympäristöpalvelut/Tietopalvelut"
+            },
+            {
+                "val": "Hämeenlinnan kaupunki/yhdyskunta- ja ympäristöpalvelut/maankäytön suunnittelu"
+            },
+            {
+                "val": "Hämeenlinnan kaupunki/yhdyskunta- ja ympäristöpalvelut/tietopalvelut"
+            },
+            {
+                "val": "Iisalmen kaupunki, kartasto ja mittaus"
+            },
+            {
+                "val": "Iisalmen kaupunki, kaupunkisuunnittelu"
+            },
+            {
+                "val": "Iisalmen kaupunki, tonttipalvelut"
+            },
+            {
+                "val": "Ilmatieteen laitos"
+            },
+            {
+                "val": "Imatran kaupunki"
+            },
+            {
+                "val": "Jalasjärven kunta, Kaavoitus- ja mittaustoimi"
+            },
+            {
+                "val": "Joensuun kaupunki"
+            },
+            {
+                "val": "Joensuun kaupunki/Kaupunkirakenneyksikkö"
+            },
+            {
+                "val": "Jyväskylän kaupunki"
+            },
+            {
+                "val": "Jyväskylän kaupunki/Kaupunkirakennepalvelut/Tonttituotanto/Paikkatietopalvelut"
+            },
+            {
+                "val": "Jyväskylän yliopisto"
+            },
+            {
+                "val": "Jyväskylän yliopisto, Liikunta- ja terveystieteiden tiedekunta"
+            },
+            {
+                "val": "Järvenpään kaupunki, mittaus"
+            },
+            {
+                "val": "Kainuun maakunta -kuntayhtymä"
+            },
+            {
+                "val": "Kajaanin kaupunki"
+            },
+            {
+                "val": "Kajaanin kaupunki/Maankäyttöpalvelut"
+            },
+            {
+                "val": "Kangasalan kunta"
+            },
+            {
+                "val": "Kangasniemen kunta"
+            },
+            {
+                "val": "Kauhavan kaupunki"
+            },
+            {
+                "val": "Kauniaisten kaupunki"
+            },
+            {
+                "val": "Kauniaisten kaupunki, maankäyttöyksikkö"
+            },
+            {
+                "val": "Kauniaisten kaupunki, yhdyskuntatoimi, maankäyttöyksikkö"
+            },
+            {
+                "val": "Keravan Kaupunki"
+            },
+            {
+                "val": "Keravan kaupunki, maankäyttöpalvelut"
+            },
+            {
+                "val": "Keski-Pohjanmaan liitto"
+            },
+            {
+                "val": "Keski-Suomen liitto"
+            },
+            {
+                "val": "Kirkkonummi"
+            },
+            {
+                "val": "Kokkolan kaupunki"
+            },
+            {
+                "val": "Kokkolan kaupunki, kaavoituspalvelut"
+            },
+            {
+                "val": "Kokkolan kaupunki, paikkatietopalvelut"
+            },
+            {
+                "val": "Kotkan kaupunki, kaupunkisuunnittelun vastuualue"
+            },
+            {
+                "val": "Kouvolan kaupunki"
+            },
+            {
+                "val": "Kuopion kaupunki"
+            },
+            {
+                "val": "Kuopion kaupunki - asemakaavoitus"
+            },
+            {
+                "val": "Kustavin kunta"
+            },
+            {
+                "val": "Kymenlaakson liitto"
+            },
+            {
+                "val": "Laitilan kaupunki"
+            },
+            {
+                "val": "Lapin liitto"
+            },
+            {
+                "val": "Lappeenrannan kaupunki, tekninen toimi, kiinteistö- ja mittaustoimi"
+            },
+            {
+                "val": "Liikennevirasto"
+            },
+            {
+                "val": "Liikennevirasto / Merikartoitus"
+            },
+            {
+                "val": "Liperin kunta, Maankäyttö ja valvonta"
+            },
+            {
+                "val": "Lohjan kaupunki"
+            },
+            {
+                "val": "Lohjan kaupunki, Kiinteistö- ja kartastotoimi"
+            },
+            {
+                "val": "Loimaa"
+            },
+            {
+                "val": "Loimaan kaupunki"
+            },
+            {
+                "val": "Lounaispaikka"
+            },
+            {
+                "val": "Luonnontieteellinen keskusmuseo"
+            },
+            {
+                "val": "Maanmittauslaitos"
+            },
+            {
+                "val": "Maaseutuvirasto"
+            },
+            {
+                "val": "Metsäntutkimuslaitos"
+            },
+            {
+                "val": "Mikkelin kaupunki"
+            },
+            {
+                "val": "Mittauspalvelut"
+            },
+            {
+                "val": "Mtt Agrifood Research Finland"
+            },
+            {
+                "val": "Museovirasto"
+            },
+            {
+                "val": "Muuramen kunta, tekninen osasto"
+            },
+            {
+                "val": "Mänttä-Vilppulan kaupunki"
+            },
+            {
+                "val": "Naantalin kaupunki"
+            },
+            {
+                "val": "Nivalan kaupunki, Maankäyttö"
+            },
+            {
+                "val": "Nivalan kaupunki, Mittauspalvelut"
+            },
+            {
+                "val": "Nurmijärven kunta"
+            },
+            {
+                "val": "Oriveden kaupunki"
+            },
+            {
+                "val": "Oulun kaupunki"
+            },
+            {
+                "val": "Oulun kaupunki, Tekninen keskus, Maa ja mittaus"
+            },
+            {
+                "val": "Oulun kaupunki, Yhdyskunta- ja ympäristöpalvelut"
+            },
+            {
+                "val": "Oulun kaupunki, tekninen keskus"
+            },
+            {
+                "val": "Oulun kaupunki, yhdyskunta- ja ympäristöpalvelut"
+            },
+            {
+                "val": "Oulun kaupunki, yhdyskunta- ja ympäristöpalvelut / Maa ja mittaus"
+            },
+            {
+                "val": "Oulun seudun ympäristötoimi"
+            },
+            {
+                "val": "Paimion kaupunki"
+            },
+            {
+                "val": "Paraisten kaupungin mittaustoimisto"
+            },
+            {
+                "val": "Pietarsaaren kaupunki"
+            },
+            {
+                "val": "Pirkanmaan liitto"
+            },
+            {
+                "val": "Pirkanmaan maakuntamuseo"
+            },
+            {
+                "val": "Pohjanmaan liitto"
+            },
+            {
+                "val": "Pohjois-Karjalan maakuntaliitto"
+            },
+            {
+                "val": "Pohjois-Pohjanmaan liitto"
+            },
+            {
+                "val": "Pohjois-Savon liitto"
+            },
+            {
+                "val": "Pori"
+            },
+            {
+                "val": "Porin kaupunki"
+            },
+            {
+                "val": "Porvoon kaupunki - kaupunkimittaus"
+            },
+            {
+                "val": "Puolustusvoimien Tiedustelukeskus"
+            },
+            {
+                "val": "Pyhtään kunta"
+            },
+            {
+                "val": "Pyhärannan kunta"
+            },
+            {
+                "val": "Päijät-Hämeen liitto"
+            },
+            {
+                "val": "Pöytyän kunta"
+            },
+            {
+                "val": "Raision kaupunki"
+            },
+            {
+                "val": "Ramboll Finland Oy"
+            },
+            {
+                "val": "Rauman kaupunki"
+            },
+            {
+                "val": "Rauman kaupunki - kiinteistö- ja mittaustoimi"
+            },
+            {
+                "val": "Rauman kaupunki, kiinteistö- ja mittaustoimi"
+            },
+            {
+                "val": "Rauman kunta"
+            },
+            {
+                "val": "Riihimäen kaupunki"
+            },
+            {
+                "val": "Riista- ja kalatalouden tutkimuslaitos"
+            },
+            {
+                "val": "Rovaniemen kaupunki"
+            },
+            {
+                "val": "Salon kaupunki"
+            },
+            {
+                "val": "Sastamala"
+            },
+            {
+                "val": "Sastamalan kaupunki"
+            },
+            {
+                "val": "Satakuntaliitto"
+            },
+            {
+                "val": "Seinäjoen kaupunki"
+            },
+            {
+                "val": "Seinäjoen kaupunki, Kiinteistö- ja mittauspalvelut"
+            },
+            {
+                "val": "Sipoon kunta"
+            },
+            {
+                "val": "Sipoon kunta, Kaavoitus"
+            },
+            {
+                "val": "Sotkamon kunta, Kaavoituspalvelut"
+            },
+            {
+                "val": "Suomen ympäristökeskus"
+            },
+            {
+                "val": "Suomi.fi-toimitus/Valtion IT-palvelukeskus"
+            },
+            {
+                "val": "Taivassalon kunta"
+            },
+            {
+                "val": "Tampereen Kaupunki / Infra"
+            },
+            {
+                "val": "Tampereen kaupunki"
+            },
+            {
+                "val": "Tampereen kaupunki / Kaupunkimittaus"
+            },
+            {
+                "val": "Tampereen kaupunki / katutilavalvonta"
+            },
+            {
+                "val": "Tilastokeskus"
+            },
+            {
+                "val": "Tornion kaupunki"
+            },
+            {
+                "val": "Turun kaupungin Kiinteistöliikelaitos"
+            },
+            {
+                "val": "Turun kaupunki, Kiinteistöliikelaitos"
+            },
+            {
+                "val": "Turvallisuus- ja kemikaalivirasto"
+            },
+            {
+                "val": "Turvallisuus- ja kemikaalivirasto (TUKES)"
+            },
+            {
+                "val": "Turvallisuus- ja kemikaalivirasto (Tukes)"
+            },
+            {
+                "val": "Tuusulan kunta"
+            },
+            {
+                "val": "Tuusulan kunta, Maankäyttö- ja karttapalvelut"
+            },
+            {
+                "val": "Uudenkaupungin kaupunki"
+            },
+            {
+                "val": "Uudenmaan liitto"
+            },
+            {
+                "val": "Vaasan kaupunki"
+            },
+            {
+                "val": "Valkeakosken kaupunki"
+            },
+            {
+                "val": "Valtiokonttori / Valtion IT-palvelukeskus"
+            },
+            {
+                "val": "Vantaan Kaupunki, Kaupunkisuunnittelu"
+            },
+            {
+                "val": "Vantaan kaupunki, mittausosasto"
+            },
+            {
+                "val": "Varsinais-Suomen liitto"
+            },
+            {
+                "val": "Vehmaan kunta"
+            },
+            {
+                "val": "Vihdin kunta"
+            },
+            {
+                "val": "Virtain kaupunki"
+            },
+            {
+                "val": "Väestörekisterikeskus"
+            },
+            {
+                "val": "Österbottens förbund"
+            }
+        ],
+        "multi": false
+    },
+    {
+        "field": "coverage",
+        "values": [],
+        "multi": false
+    },
+    {
+        "field": "inspireTheme",
+        "values": [],
+        "multi": false
+    },
+    {
+        "field": "keyword",
+        "values": [
+            {
+                "val": "-- LISÄÄ AVAINSANOJA KIIKARITYÖKALULLA ---"
+            },
+            {
+                "val": "-Ei-Inspire"
+            },
+            {
+                "val": "1972-2007"
+            },
+            {
+                "val": "1990-2006"
+            },
+            {
+                "val": "Addresses"
+            },
+            {
+                "val": "Administrativa enheter"
+            },
+            {
+                "val": "Administrative boundaries"
+            },
+            {
+                "val": "Administrative units"
+            },
+            {
+                "val": "Adresser"
+            },
+            {
+                "val": "Aerial photographs"
+            },
+            {
+                "val": "Aeromagneettiset kartat"
+            },
+            {
+                "val": "Ajantasa-asemakaava"
+            },
+            {
+                "val": "Ajantasakaava"
+            },
+            {
+                "val": "Ajorata"
+            },
+            {
+                "val": "Alkuaineet"
+            },
+            {
+                "val": "Allmännyttiga och offentliga tjänster"
+            },
+            {
+                "val": "Aluegeologia"
+            },
+            {
+                "val": "Aluehallinnan, rajoitusten ja sääntelyn piiriin kuuluvat alueet ja raportointiyksiköt"
+            },
+            {
+                "val": "Aluejako"
+            },
+            {
+                "val": "Aluemeren raja"
+            },
+            {
+                "val": "Aluesuunnittelu"
+            },
+            {
+                "val": "Aluesuunnittelu / kiinteistöjärjestelmä"
+            },
+            {
+                "val": "Aluesuunnittelu ja rajoitukset"
+            },
+            {
+                "val": "Aluesuunnittelun, rajoitusten ja sääntelyn piiriin kuuluvat alueet ja raportointiyksiköt"
+            },
+            {
+                "val": "Aluevaraukset"
+            },
+            {
+                "val": "Aluevesien rajat"
+            },
+            {
+                "val": "Analyysi"
+            },
+            {
+                "val": "Arkeeinen"
+            },
+            {
+                "val": "Asemakaava"
+            },
+            {
+                "val": "Asemakaavaindeksi"
+            },
+            {
+                "val": "Asemakaavayhdelmä"
+            },
+            {
+                "val": "Asemakaavoitus"
+            },
+            {
+                "val": "Asuminen (asunnot, asuinolot)"
+            },
+            {
+                "val": "Atmospheric conditions"
+            },
+            {
+                "val": "Auringon lyhyt- ja pitkäaaltoinen säteily"
+            },
+            {
+                "val": "Avoin data"
+            },
+            {
+                "val": "Bannät"
+            },
+            {
+                "val": "Bebodd rut"
+            },
+            {
+                "val": "Befolkningsfördelning"
+            },
+            {
+                "val": "Befolkningsfördelning - demografi (theme)"
+            },
+            {
+                "val": "Befolkningsfördelning \u2013 demografi"
+            },
+            {
+                "val": "Biomaantieteelliset alueet"
+            },
+            {
+                "val": "Biomass"
+            },
+            {
+                "val": "Boundaries and regions"
+            },
+            {
+                "val": "Buildings"
+            },
+            {
+                "val": "Bussipysäkki"
+            },
+            {
+                "val": "Byar"
+            },
+            {
+                "val": "Byggnader"
+            },
+            {
+                "val": "Cadastral parcels"
+            },
+            {
+                "val": "City of Helsinki"
+            },
+            {
+                "val": "Conduit nets"
+            },
+            {
+                "val": "Control points"
+            },
+            {
+                "val": "Coordinate Transformation Service"
+            },
+            {
+                "val": "Database"
+            },
+            {
+                "val": "Datatrafiknät"
+            },
+            {
+                "val": "De Geer-moreenit"
+            },
+            {
+                "val": "Deltat"
+            },
+            {
+                "val": "Districts"
+            },
+            {
+                "val": "Drumliinit"
+            },
+            {
+                "val": "Dyynit"
+            },
+            {
+                "val": "EI-Inspire"
+            },
+            {
+                "val": "ETRS-TM35FIN"
+            },
+            {
+                "val": "EUREF-FIN"
+            },
+            {
+                "val": "Educational institution"
+            },
+            {
+                "val": "Ei-Inspire"
+            },
+            {
+                "val": "Elevation"
+            },
+            {
+                "val": "Elevation models"
+            },
+            {
+                "val": "Elevation points"
+            },
+            {
+                "val": "Elinympäristöt ja biotoopit"
+            },
+            {
+                "val": "Eliömaantieteelliset alueet"
+            },
+            {
+                "val": "Eläinsuojelu"
+            },
+            {
+                "val": "Energiahuolto"
+            },
+            {
+                "val": "Energiavarat"
+            },
+            {
+                "val": "Energy resources"
+            },
+            {
+                "val": "Enterprises and establishments"
+            },
+            {
+                "val": "Environment"
+            },
+            {
+                "val": "Environmental monitoring facilities"
+            },
+            {
+                "val": "Eoliset muodostumat"
+            },
+            {
+                "val": "Eroosiojäljet"
+            },
+            {
+                "val": "Espoo"
+            },
+            {
+                "val": "Fairways"
+            },
+            {
+                "val": "Fairways (channels)"
+            },
+            {
+                "val": "Farleder"
+            },
+            {
+                "val": "Fastigheter"
+            },
+            {
+                "val": "Fennoskandia"
+            },
+            {
+                "val": "Finlandia-talo"
+            },
+            {
+                "val": "Fixpunkter"
+            },
+            {
+                "val": "Fluviaaliset muodostumat"
+            },
+            {
+                "val": "Flygbilder"
+            },
+            {
+                "val": "Folkmängd"
+            },
+            {
+                "val": "Forest resource"
+            },
+            {
+                "val": "Forest resource assessment"
+            },
+            {
+                "val": "Företag och arbetsställen"
+            },
+            {
+                "val": "Förvaltningsgränser"
+            },
+            {
+                "val": "Geofysiikka"
+            },
+            {
+                "val": "Geofysikaaliset menetelmät"
+            },
+            {
+                "val": "Geografiska namn"
+            },
+            {
+                "val": "Geografiska rutnätssystem"
+            },
+            {
+                "val": "Geographical grid systems"
+            },
+            {
+                "val": "Geographical names"
+            },
+            {
+                "val": "Geokemia"
+            },
+            {
+                "val": "Geokemialliset kartat"
+            },
+            {
+                "val": "Geokemialliset provinssit"
+            },
+            {
+                "val": "Geokemialliset tutkimukset"
+            },
+            {
+                "val": "Geokoodauspalvelu"
+            },
+            {
+                "val": "Geologia"
+            },
+            {
+                "val": "Geologiset kartat"
+            },
+            {
+                "val": "Geologiset nähtävyydet"
+            },
+            {
+                "val": "Glasiaalimuodostumat"
+            },
+            {
+                "val": "Glasifluviaalinen sedimentaatio"
+            },
+            {
+                "val": "Glasifluviaaliset muodostumat"
+            },
+            {
+                "val": "Grid"
+            },
+            {
+                "val": "Grid model"
+            },
+            {
+                "val": "Gridmodell"
+            },
+            {
+                "val": "Gridmodell (grid)"
+            },
+            {
+                "val": "Gränser och regioner"
+            },
+            {
+                "val": "HIRLAM"
+            },
+            {
+                "val": "Hallinnolliset rajat"
+            },
+            {
+                "val": "Hallinnolliset yksiköt"
+            },
+            {
+                "val": "Halsua"
+            },
+            {
+                "val": "Harjut"
+            },
+            {
+                "val": "Helsingfors"
+            },
+            {
+                "val": "Helsingin kaupunki"
+            },
+            {
+                "val": "Helsinki"
+            },
+            {
+                "val": "Hiekka"
+            },
+            {
+                "val": "Hienorakeinen aines"
+            },
+            {
+                "val": "Hilamalli (grid)"
+            },
+            {
+                "val": "Historia"
+            },
+            {
+                "val": "Hki"
+            },
+            {
+                "val": "Hydraulic construction"
+            },
+            {
+                "val": "Hydrogeologia"
+            },
+            {
+                "val": "Hydrografia"
+            },
+            {
+                "val": "Hydrologia"
+            },
+            {
+                "val": "Höjd"
+            },
+            {
+                "val": "Höjdmodeller"
+            },
+            {
+                "val": "Höjdpunkter"
+            },
+            {
+                "val": "Ilmakehämalli"
+            },
+            {
+                "val": "Ilmakehän tila"
+            },
+            {
+                "val": "Ilmakuva"
+            },
+            {
+                "val": "Ilmakuvat"
+            },
+            {
+                "val": "Ilmaston maantieteelliset ominaispiirteet"
+            },
+            {
+                "val": "Inhabited grid"
+            },
+            {
+                "val": "Inland water and seas"
+            },
+            {
+                "val": "Insjövatten och hav"
+            },
+            {
+                "val": "Inspire"
+            },
+            {
+                "val": "Inspire-teema"
+            },
+            {
+                "val": "International classification"
+            },
+            {
+                "val": "Inventointi"
+            },
+            {
+                "val": "Johto"
+            },
+            {
+                "val": "Johtokartta"
+            },
+            {
+                "val": "Johtoverkot"
+            },
+            {
+                "val": "Joki"
+            },
+            {
+                "val": "Jordtäcke"
+            },
+            {
+                "val": "Joukkoliikenne"
+            },
+            {
+                "val": "Julkiset palvelut"
+            },
+            {
+                "val": "Juonet"
+            },
+            {
+                "val": "Järvisedimentit"
+            },
+            {
+                "val": "Jätevesihuolto"
+            },
+            {
+                "val": "Jäätikön kerrostama aines"
+            },
+            {
+                "val": "Kaasuhuolto"
+            },
+            {
+                "val": "Kaava"
+            },
+            {
+                "val": "Kaava-alueet"
+            },
+            {
+                "val": "Kaavakartta"
+            },
+            {
+                "val": "Kaavamääräykset"
+            },
+            {
+                "val": "Kaavan pohjakartta"
+            },
+            {
+                "val": "Kaavan pohjakartta (kantakartta)"
+            },
+            {
+                "val": "Kaavayhdistelmä"
+            },
+            {
+                "val": "Kaavoitus"
+            },
+            {
+                "val": "Kaavoitus ja mittaus"
+            },
+            {
+                "val": "Kaavoitusalueet"
+            },
+            {
+                "val": "Kadun nimi"
+            },
+            {
+                "val": "Kadut"
+            },
+            {
+                "val": "Kairaus"
+            },
+            {
+                "val": "Kaivokset"
+            },
+            {
+                "val": "Kaivosviranomainen"
+            },
+            {
+                "val": "Kallioleikkaukset"
+            },
+            {
+                "val": "Kallioperä"
+            },
+            {
+                "val": "Kallioperä (kalliot)"
+            },
+            {
+                "val": "Kallioperäkartat"
+            },
+            {
+                "val": "Kannus"
+            },
+            {
+                "val": "Kantakartta"
+            },
+            {
+                "val": "Karkearakeinen aines"
+            },
+            {
+                "val": "Kartastot"
+            },
+            {
+                "val": "Kartoitus"
+            },
+            {
+                "val": "Karttakuvapalvelu"
+            },
+            {
+                "val": "Karttakuvaselain"
+            },
+            {
+                "val": "Kasvillisuus"
+            },
+            {
+                "val": "Katselupalvelu"
+            },
+            {
+                "val": "Katuverkot"
+            },
+            {
+                "val": "Kaupunginosa"
+            },
+            {
+                "val": "Kaupunginosat"
+            },
+            {
+                "val": "Kaupunginosat , Liikenne , Opaskartta , Julkiset palvelut , Urheilu- ja liikuntapalvelut , Matkailu ja vapaa-aika (theme)."
+            },
+            {
+                "val": "Kaupunkisuunnittelu"
+            },
+            {
+                "val": "Kaupunkiympäristön kehittäminen"
+            },
+            {
+                "val": "Kaustinen"
+            },
+            {
+                "val": "Kemialliset analyysit"
+            },
+            {
+                "val": "Keski-Pohjanmaa"
+            },
+            {
+                "val": "Kevyen liikenteen verkko"
+            },
+            {
+                "val": "Kiinteistö"
+            },
+            {
+                "val": "Kiinteistökaupat"
+            },
+            {
+                "val": "Kiinteistörajat"
+            },
+            {
+                "val": "Kiinteistörekisterikartta"
+            },
+            {
+                "val": "Kiinteistöt"
+            },
+            {
+                "val": "Kiinteistöt, Maankäyttö"
+            },
+            {
+                "val": "Kiintopisteet"
+            },
+            {
+                "val": "Kiviaines"
+            },
+            {
+                "val": "Kivilajit"
+            },
+            {
+                "val": "Kokkola"
+            },
+            {
+                "val": "Kokokivi"
+            },
+            {
+                "val": "Koordinaattikonversiopalvelu"
+            },
+            {
+                "val": "Koordinaattimuunnospalvelu"
+            },
+            {
+                "val": "Korkeus"
+            },
+            {
+                "val": "Korkeuskiintopisteet"
+            },
+            {
+                "val": "Korkeuskäyrät"
+            },
+            {
+                "val": "Korkeusmallit"
+            },
+            {
+                "val": "Korkeuspisteet"
+            },
+            {
+                "val": "Koulupiirit"
+            },
+            {
+                "val": "Koulutus"
+            },
+            {
+                "val": "Kulttuurimaisema"
+            },
+            {
+                "val": "Kulttuuriperintö"
+            },
+            {
+                "val": "Kulttuuriympäristö"
+            },
+            {
+                "val": "Kumpumoreenit"
+            },
+            {
+                "val": "Kunnat"
+            },
+            {
+                "val": "Kvartääri"
+            },
+            {
+                "val": "Kylät"
+            },
+            {
+                "val": "Käyttöoikeusyksiköt"
+            },
+            {
+                "val": "LIDAR"
+            },
+            {
+                "val": "Lajien levinneisyys"
+            },
+            {
+                "val": "Land cover"
+            },
+            {
+                "val": "Land use"
+            },
+            {
+                "val": "Landtäcke"
+            },
+            {
+                "val": "Laserkeilaus"
+            },
+            {
+                "val": "Lastausalue"
+            },
+            {
+                "val": "Ledningsnät"
+            },
+            {
+                "val": "Lentomittaukset"
+            },
+            {
+                "val": "Lestijärvi"
+            },
+            {
+                "val": "Leveys"
+            },
+            {
+                "val": "Levähdysalue"
+            },
+            {
+                "val": "Lieju"
+            },
+            {
+                "val": "Liikenne"
+            },
+            {
+                "val": "Liikennemäärä"
+            },
+            {
+                "val": "Liikenneverkosto"
+            },
+            {
+                "val": "Liikenneverkot"
+            },
+            {
+                "val": "Liikenneverkot, tierekisteri, ajorata, moottoritie, moottoriliikennetie"
+            },
+            {
+                "val": "Liikenneväylät"
+            },
+            {
+                "val": "Liikenneyhteydet"
+            },
+            {
+                "val": "Liikuntapaikat"
+            },
+            {
+                "val": "Linja-autoliikenne"
+            },
+            {
+                "val": "Linja-autopysäkki"
+            },
+            {
+                "val": "Linja-autoreitit"
+            },
+            {
+                "val": "Linnut"
+            },
+            {
+                "val": "Lintuvesialueet"
+            },
+            {
+                "val": "Lisäkaista"
+            },
+            {
+                "val": "Litodeemiset yksiköt"
+            },
+            {
+                "val": "Litologia"
+            },
+            {
+                "val": "Litostratigrafiset yksiköt"
+            },
+            {
+                "val": "Location"
+            },
+            {
+                "val": "Logistiikka"
+            },
+            {
+                "val": "Lohkareet"
+            },
+            {
+                "val": "Louhikot"
+            },
+            {
+                "val": "Luettelopalvelu"
+            },
+            {
+                "val": "Luonnonmuistomerkit"
+            },
+            {
+                "val": "Luonnonriskialueet"
+            },
+            {
+                "val": "Luonnonsuojelu"
+            },
+            {
+                "val": "Luonto"
+            },
+            {
+                "val": "Luontopolut"
+            },
+            {
+                "val": "Läge"
+            },
+            {
+                "val": "Lämpöhuolto"
+            },
+            {
+                "val": "Läroanstalt"
+            },
+            {
+                "val": "Maailmanperintökohteet"
+            },
+            {
+                "val": "Maakaasuhuolto"
+            },
+            {
+                "val": "Maakuntakaavoitus"
+            },
+            {
+                "val": "Maankäyttö"
+            },
+            {
+                "val": "Maankäyttöluokitus"
+            },
+            {
+                "val": "Maankäytön rajoitukset"
+            },
+            {
+                "val": "Maankäytön suunnittelu"
+            },
+            {
+                "val": "Maannos"
+            },
+            {
+                "val": "Maanpeite"
+            },
+            {
+                "val": "Maaperä"
+            },
+            {
+                "val": "Maaperäkartat"
+            },
+            {
+                "val": "Maaperän pilaantuminen"
+            },
+            {
+                "val": "Maaperän saastuminen"
+            },
+            {
+                "val": "Maasto"
+            },
+            {
+                "val": "Maasto ja maanpeite"
+            },
+            {
+                "val": "Maastokartta"
+            },
+            {
+                "val": "Maastokohteet"
+            },
+            {
+                "val": "Maastotiedot"
+            },
+            {
+                "val": "Maatalous"
+            },
+            {
+                "val": "Magneettiset anomaliat"
+            },
+            {
+                "val": "Magneettiset menetelmät"
+            },
+            {
+                "val": "Malminetsintä"
+            },
+            {
+                "val": "Manufacturing"
+            },
+            {
+                "val": "Markanvändning"
+            },
+            {
+                "val": "Matkailu"
+            },
+            {
+                "val": "Matkailu ja vapaa-aika"
+            },
+            {
+                "val": "Matkailu- ja vapaa-aika"
+            },
+            {
+                "val": "Melu"
+            },
+            {
+                "val": "Merentutkimuksen maantieteelliset ominaispiirteet"
+            },
+            {
+                "val": "Merialueet"
+            },
+            {
+                "val": "Merikartta"
+            },
+            {
+                "val": "Merisedimentit"
+            },
+            {
+                "val": "Meteoriittikraatterit"
+            },
+            {
+                "val": "Meteorological geographical features"
+            },
+            {
+                "val": "Metsä"
+            },
+            {
+                "val": "Miljö"
+            },
+            {
+                "val": "Mineraalit"
+            },
+            {
+                "val": "Mineraalivarat"
+            },
+            {
+                "val": "Moottoriajoneuvojen määrä"
+            },
+            {
+                "val": "Moreeni"
+            },
+            {
+                "val": "Muinaisjäännökset (muinaismuistot)"
+            },
+            {
+                "val": "Muinaisrannat"
+            },
+            {
+                "val": "Muu poiju tai merkki"
+            },
+            {
+                "val": "Natura"
+            },
+            {
+                "val": "Natural resource"
+            },
+            {
+                "val": "Navigointi"
+            },
+            {
+                "val": "Navigointilinja"
+            },
+            {
+                "val": "Nimet"
+            },
+            {
+                "val": "Nimistö"
+            },
+            {
+                "val": "Non-profit and public services"
+            },
+            {
+                "val": "Nopeusrajoitus"
+            },
+            {
+                "val": "Näytteenotto"
+            },
+            {
+                "val": "Näytteet"
+            },
+            {
+                "val": "Oceanographic geographical features"
+            },
+            {
+                "val": "Oikaistu ilmakuva"
+            },
+            {
+                "val": "Olympia-stadion"
+            },
+            {
+                "val": "Olympic-stadium"
+            },
+            {
+                "val": "Opaskartta"
+            },
+            {
+                "val": "Oppilaitokset"
+            },
+            {
+                "val": "Orgaaniset sedimentit"
+            },
+            {
+                "val": "Orthoimagery"
+            },
+            {
+                "val": "Orthophotos"
+            },
+            {
+                "val": "Ortnamn"
+            },
+            {
+                "val": "Ortobilder"
+            },
+            {
+                "val": "Ortofoto"
+            },
+            {
+                "val": "Ortoilmakuva"
+            },
+            {
+                "val": "Ortoilmakuvat"
+            },
+            {
+                "val": "Ortokuva"
+            },
+            {
+                "val": "Ortokuva, Ilmakuva"
+            },
+            {
+                "val": "Ortokuvat"
+            },
+            {
+                "val": "Osoitekanta"
+            },
+            {
+                "val": "Osoitekartta"
+            },
+            {
+                "val": "Osoitenumero"
+            },
+            {
+                "val": "Osoitteet"
+            },
+            {
+                "val": "Osoitteet, Avoin data (theme)"
+            },
+            {
+                "val": "Osoitteisto"
+            },
+            {
+                "val": "Paikannimet"
+            },
+            {
+                "val": "Paikannusruudustot"
+            },
+            {
+                "val": "Paikkatiedon sijaintiprosessointipalvelut"
+            },
+            {
+                "val": "Paikkatietoselain"
+            },
+            {
+                "val": "Paleotsooinen"
+            },
+            {
+                "val": "Paljastumat"
+            },
+            {
+                "val": "Palvelut"
+            },
+            {
+                "val": "Pellot"
+            },
+            {
+                "val": "Pelvelut"
+            },
+            {
+                "val": "Perho"
+            },
+            {
+                "val": "Permanent points"
+            },
+            {
+                "val": "Petrofysiikka"
+            },
+            {
+                "val": "Pilaantuminen"
+            },
+            {
+                "val": "Pintageologia"
+            },
+            {
+                "val": "Pintamoreeni"
+            },
+            {
+                "val": "Pintavesi"
+            },
+            {
+                "val": "Pohjakartta"
+            },
+            {
+                "val": "Pohjakuviot"
+            },
+            {
+                "val": "Pohjamoreeni"
+            },
+            {
+                "val": "Pohjaveden laatu"
+            },
+            {
+                "val": "Pohjavedet"
+            },
+            {
+                "val": "Pohjavesi"
+            },
+            {
+                "val": "Poliisi"
+            },
+            {
+                "val": "Population"
+            },
+            {
+                "val": "Population distribution"
+            },
+            {
+                "val": "Posti"
+            },
+            {
+                "val": "Postialue"
+            },
+            {
+                "val": "Postinumero"
+            },
+            {
+                "val": "Postinumeroalueet"
+            },
+            {
+                "val": "Prekambrinen"
+            },
+            {
+                "val": "Production and Industrial Facilities"
+            },
+            {
+                "val": "Produktions- och industrianläggningar"
+            },
+            {
+                "val": "Protected object"
+            },
+            {
+                "val": "Protected sites"
+            },
+            {
+                "val": "Proterotsooinen"
+            },
+            {
+                "val": "Purosedimentti"
+            },
+            {
+                "val": "Purovesi"
+            },
+            {
+                "val": "Pysäkit"
+            },
+            {
+                "val": "Pysäkki"
+            },
+            {
+                "val": "Pysäköintialue"
+            },
+            {
+                "val": "Päällyste"
+            },
+            {
+                "val": "Päätemoreenit"
+            },
+            {
+                "val": "Railway network"
+            },
+            {
+                "val": "Raisio"
+            },
+            {
+                "val": "Rajat ja alueet"
+            },
+            {
+                "val": "Rajoitusten ja sääntelyn piiriin kuuluvat alueet"
+            },
+            {
+                "val": "Rakat"
+            },
+            {
+                "val": "Rakennelmat"
+            },
+            {
+                "val": "Rakennettu ympäristö"
+            },
+            {
+                "val": "Rakennukset"
+            },
+            {
+                "val": "Rakennukset ja rakennelmat"
+            },
+            {
+                "val": "Rakennuskieltoalueet"
+            },
+            {
+                "val": "Rakennuskivet"
+            },
+            {
+                "val": "Rakennussuojelu"
+            },
+            {
+                "val": "Rakenteet"
+            },
+            {
+                "val": "Rantamuodostumat"
+            },
+            {
+                "val": "Rantarakenne"
+            },
+            {
+                "val": "Raportointiyksiköt"
+            },
+            {
+                "val": "Rataverkko"
+            },
+            {
+                "val": "Rautatie"
+            },
+            {
+                "val": "Rautatieasemat"
+            },
+            {
+                "val": "Rautatieliikenne"
+            },
+            {
+                "val": "Real estates"
+            },
+            {
+                "val": "Reittijakojärjestelmä"
+            },
+            {
+                "val": "Retkeily"
+            },
+            {
+                "val": "Reunamuodostumat"
+            },
+            {
+                "val": "Road traffic network"
+            },
+            {
+                "val": "Rut"
+            },
+            {
+                "val": "Ruutu"
+            },
+            {
+                "val": "Saaret"
+            },
+            {
+                "val": "Saastuneet maa-alueet"
+            },
+            {
+                "val": "Savi"
+            },
+            {
+                "val": "Sedimentit"
+            },
+            {
+                "val": "Seinäjoki"
+            },
+            {
+                "val": "Settlements"
+            },
+            {
+                "val": "Sijainti"
+            },
+            {
+                "val": "Siltti"
+            },
+            {
+                "val": "Sisäisten aluevesien ulkoraja"
+            },
+            {
+                "val": "Sisävedet"
+            },
+            {
+                "val": "Sisävedet ja meret"
+            },
+            {
+                "val": "Skyddade områden"
+            },
+            {
+                "val": "Skyddsobjekt"
+            },
+            {
+                "val": "Soil"
+            },
+            {
+                "val": "Soil mapping"
+            },
+            {
+                "val": "Soil type"
+            },
+            {
+                "val": "Soil type classification"
+            },
+            {
+                "val": "Sora"
+            },
+            {
+                "val": "Stadsdelar"
+            },
+            {
+                "val": "Statistical units"
+            },
+            {
+                "val": "Statistican units"
+            },
+            {
+                "val": "Statistiska enheter"
+            },
+            {
+                "val": "Sulku"
+            },
+            {
+                "val": "Suo"
+            },
+            {
+                "val": "Suojellut alueet"
+            },
+            {
+                "val": "Suojellut kohteet"
+            },
+            {
+                "val": "Suojelualueet"
+            },
+            {
+                "val": "Suojelukohteet"
+            },
+            {
+                "val": "Suomi"
+            },
+            {
+                "val": "Suorasaantilatauspalvelu"
+            },
+            {
+                "val": "Suot"
+            },
+            {
+                "val": "Suunnittelu"
+            },
+            {
+                "val": "Suunnittelutarvealueet"
+            },
+            {
+                "val": "Syvyys"
+            },
+            {
+                "val": "Syvyysalue"
+            },
+            {
+                "val": "Syvyyskäyrät"
+            },
+            {
+                "val": "Syvyysmallit"
+            },
+            {
+                "val": "Syvyyspisteet"
+            },
+            {
+                "val": "Sähköhuolto"
+            },
+            {
+                "val": "TUKES"
+            },
+            {
+                "val": "Taajamageologia"
+            },
+            {
+                "val": "Taajamat"
+            },
+            {
+                "val": "Talvinopeusrajoitus"
+            },
+            {
+                "val": "Tampere"
+            },
+            {
+                "val": "Taululinja"
+            },
+            {
+                "val": "Tektoniikka"
+            },
+            {
+                "val": "Telecommunication networks"
+            },
+            {
+                "val": "Teollisuus"
+            },
+            {
+                "val": "Terrain and land cover"
+            },
+            {
+                "val": "Terräng och landtäcke"
+            },
+            {
+                "val": "Terrängkarta"
+            },
+            {
+                "val": "Terveys ja turvallisuus"
+            },
+            {
+                "val": "Tieliikenne"
+            },
+            {
+                "val": "Tieliikenneverkko"
+            },
+            {
+                "val": "Tieliikenneverkko, Osoitteet"
+            },
+            {
+                "val": "Tieluokka"
+            },
+            {
+                "val": "Tierekisteri"
+            },
+            {
+                "val": "Tierekisteri, tieluokka"
+            },
+            {
+                "val": "Tiet"
+            },
+            {
+                "val": "Tietokannat"
+            },
+            {
+                "val": "Tietokohdepalvelu"
+            },
+            {
+                "val": "Tietoliikenneverkot"
+            },
+            {
+                "val": "Tietotuotepalvelu"
+            },
+            {
+                "val": "Tilastointiyksiköt"
+            },
+            {
+                "val": "Tilastoyksiköt"
+            },
+            {
+                "val": "Tillverkning"
+            },
+            {
+                "val": "Toholampi"
+            },
+            {
+                "val": "Toiminnallinen luokka"
+            },
+            {
+                "val": "Tontit"
+            },
+            {
+                "val": "Topografi"
+            },
+            {
+                "val": "Topografia"
+            },
+            {
+                "val": "Topographic map"
+            },
+            {
+                "val": "Topography"
+            },
+            {
+                "val": "Transport networks"
+            },
+            {
+                "val": "Transportnät"
+            },
+            {
+                "val": "Tulva"
+            },
+            {
+                "val": "Tuotanto- ja teollisuuslaitokset"
+            },
+            {
+                "val": "Turvalaite"
+            },
+            {
+                "val": "Turvalaitteet"
+            },
+            {
+                "val": "Turvallisuus- ja kemikaalivirasto"
+            },
+            {
+                "val": "Turve"
+            },
+            {
+                "val": "Tuulienergia"
+            },
+            {
+                "val": "Tätorter"
+            },
+            {
+                "val": "UVB"
+            },
+            {
+                "val": "Uimavesi"
+            },
+            {
+                "val": "Ulkoilureitit"
+            },
+            {
+                "val": "Urheilu- ja liikuntapalvelut"
+            },
+            {
+                "val": "Valaistus"
+            },
+            {
+                "val": "Valokuva"
+            },
+            {
+                "val": "Valtakunnanraja merellä"
+            },
+            {
+                "val": "Valtakunnanrajat (valtiot)"
+            },
+            {
+                "val": "Valtameret"
+            },
+            {
+                "val": "Valuma-alueet"
+            },
+            {
+                "val": "Vattenbyggnad"
+            },
+            {
+                "val": "Vattendrag"
+            },
+            {
+                "val": "Vedenalainen johto ja putki"
+            },
+            {
+                "val": "Vedenalainen kaapeli ja putki"
+            },
+            {
+                "val": "Vesi"
+            },
+            {
+                "val": "Vesihuolto"
+            },
+            {
+                "val": "Vesijohtoverkostot"
+            },
+            {
+                "val": "Vesirakentaminen"
+            },
+            {
+                "val": "Vesistöt"
+            },
+            {
+                "val": "Vesiväylät"
+            },
+            {
+                "val": "Veteli"
+            },
+            {
+                "val": "Viemäriverkostot"
+            },
+            {
+                "val": "Viestintäverkot"
+            },
+            {
+                "val": "Viheralueet"
+            },
+            {
+                "val": "Villages"
+            },
+            {
+                "val": "Väestöjakauma"
+            },
+            {
+                "val": "Väestöjakauma - demografia"
+            },
+            {
+                "val": "Väestöjakauma \u2013 demografia"
+            },
+            {
+                "val": "Väestömäärä"
+            },
+            {
+                "val": "Väestön terveys ja turvallisuus"
+            },
+            {
+                "val": "Väestöruutu"
+            },
+            {
+                "val": "Vägtrafiknät"
+            },
+            {
+                "val": "Väyläalue"
+            },
+            {
+                "val": "Väylät"
+            },
+            {
+                "val": "Vääräväri-ilmakuva"
+            },
+            {
+                "val": "Väärävärikuva"
+            },
+            {
+                "val": "WMS"
+            },
+            {
+                "val": "WRB-classification"
+            },
+            {
+                "val": "WRB-luokitus"
+            },
+            {
+                "val": "Water bodies"
+            },
+            {
+                "val": "Web Map Service"
+            },
+            {
+                "val": "Wood product"
+            },
+            {
+                "val": "Yhdyskuntasuunnittelu"
+            },
+            {
+                "val": "Yhteiskunta"
+            },
+            {
+                "val": "Yhteiskunta ja talous"
+            },
+            {
+                "val": "Yhteiskuntasuunnittelu"
+            },
+            {
+                "val": "Yksittäinen syvyyspiste"
+            },
+            {
+                "val": "Yleishyödylliset ja muut julkiset palvelut"
+            },
+            {
+                "val": "Yleiskaava"
+            },
+            {
+                "val": "Yleiskaavoitus"
+            },
+            {
+                "val": "Ympäristö"
+            },
+            {
+                "val": "Ympäristölupa"
+            },
+            {
+                "val": "Ympäristömelu"
+            },
+            {
+                "val": "Ympäristön seuranta"
+            },
+            {
+                "val": "Ympäristön tilan seurantalaitteet"
+            },
+            {
+                "val": "Ympäristönsuojelu"
+            },
+            {
+                "val": "Yritykset ja toimipaikat"
+            },
+            {
+                "val": "aallonkorkeus"
+            },
+            {
+                "val": "aallot"
+            },
+            {
+                "val": "air temperature"
+            },
+            {
+                "val": "ajantasayleiskaava"
+            },
+            {
+                "val": "asemakaavoitus,ajantasa-asemakaava,Ilmakuvat,Ortokuvat,Opaskartta,rantakaava,ranta-ajantasa-asemakaava,yleiskaava,ajantasa-yleiskaava"
+            },
+            {
+                "val": "atmospheric model"
+            },
+            {
+                "val": "atmospheric precipitation"
+            },
+            {
+                "val": "auringon paiste"
+            },
+            {
+                "val": "auringon säteily"
+            },
+            {
+                "val": "auringonpaiste"
+            },
+            {
+                "val": "biomassa"
+            },
+            {
+                "val": "capital"
+            },
+            {
+                "val": "capital city"
+            },
+            {
+                "val": "city of Helsinki"
+            },
+            {
+                "val": "cloud"
+            },
+            {
+                "val": "elinympäristöt"
+            },
+            {
+                "val": "ennuste"
+            },
+            {
+                "val": "gazetteer"
+            },
+            {
+                "val": "hail"
+            },
+            {
+                "val": "hajasäteily"
+            },
+            {
+                "val": "havaintoasemat"
+            },
+            {
+                "val": "heijastunut säteily"
+            },
+            {
+                "val": "hetkellinen havainto"
+            },
+            {
+                "val": "hila"
+            },
+            {
+                "val": "humanGeographicFeatureEditor"
+            },
+            {
+                "val": "humanGeographicViewer"
+            },
+            {
+                "val": "ilmakuva"
+            },
+            {
+                "val": "ilmakuvakartat"
+            },
+            {
+                "val": "ilmakuvakartoitus"
+            },
+            {
+                "val": "ilman lämpötila"
+            },
+            {
+                "val": "ilmanlaatu"
+            },
+            {
+                "val": "ilmanlaatuhavainnot"
+            },
+            {
+                "val": "ilmanpaine"
+            },
+            {
+                "val": "ilmasto"
+            },
+            {
+                "val": "ilmastomalli"
+            },
+            {
+                "val": "ilmastonmuutokset"
+            },
+            {
+                "val": "ilmastonmuutos"
+            },
+            {
+                "val": "infoCatalogueService"
+            },
+            {
+                "val": "infoFeatureAccessService"
+            },
+            {
+                "val": "infoFeatureTypeService"
+            },
+            {
+                "val": "infoMapAccessService"
+            },
+            {
+                "val": "infoProductAccessService"
+            },
+            {
+                "val": "kadun nimet"
+            },
+            {
+                "val": "kansainvälinen luokitus"
+            },
+            {
+                "val": "kasvupaikat"
+            },
+            {
+                "val": "katselupalvelu"
+            },
+            {
+                "val": "katuluvat"
+            },
+            {
+                "val": "katunimi"
+            },
+            {
+                "val": "keskilämpötila"
+            },
+            {
+                "val": "kokonaissäteily"
+            },
+            {
+                "val": "kuukausiarvot"
+            },
+            {
+                "val": "lumensyvyys"
+            },
+            {
+                "val": "lumi"
+            },
+            {
+                "val": "luonnonvarat"
+            },
+            {
+                "val": "lyhytaaltoinen säteily"
+            },
+            {
+                "val": "lämpötila"
+            },
+            {
+                "val": "lämpötilan minimi- ja maksimiarvo"
+            },
+            {
+                "val": "maankäyttö"
+            },
+            {
+                "val": "maankäyttö kaava"
+            },
+            {
+                "val": "maankäyttösopimukset"
+            },
+            {
+                "val": "maannoskartoitus"
+            },
+            {
+                "val": "maaperä geologia"
+            },
+            {
+                "val": "maaperäkartoitus"
+            },
+            {
+                "val": "maasalama"
+            },
+            {
+                "val": "mareografit"
+            },
+            {
+                "val": "matkailu"
+            },
+            {
+                "val": "merenpinta"
+            },
+            {
+                "val": "meret"
+            },
+            {
+                "val": "merialueet"
+            },
+            {
+                "val": "merimalli"
+            },
+            {
+                "val": "merimallit"
+            },
+            {
+                "val": "merivirtaukset"
+            },
+            {
+                "val": "metsätalous"
+            },
+            {
+                "val": "metsävarat"
+            },
+            {
+                "val": "metsävarojen arviointi"
+            },
+            {
+                "val": "mittausasemat"
+            },
+            {
+                "val": "nimet"
+            },
+            {
+                "val": "nimi"
+            },
+            {
+                "val": "oikaistu ilmakuva"
+            },
+            {
+                "val": "oppilaaksiottoalue"
+            },
+            {
+                "val": "oppilasalue"
+            },
+            {
+                "val": "ortoilmakuva"
+            },
+            {
+                "val": "ortokuva"
+            },
+            {
+                "val": "osayleiskaava"
+            },
+            {
+                "val": "osoitteet"
+            },
+            {
+                "val": "osoitteisto"
+            },
+            {
+                "val": "paine"
+            },
+            {
+                "val": "pilvi"
+            },
+            {
+                "val": "pilvisalama"
+            },
+            {
+                "val": "pintasäähavainnot"
+            },
+            {
+                "val": "pintavesi"
+            },
+            {
+                "val": "pintavesi tulva"
+            },
+            {
+                "val": "pitkäaaltoinen säteily"
+            },
+            {
+                "val": "poijut"
+            },
+            {
+                "val": "posti"
+            },
+            {
+                "val": "postialue"
+            },
+            {
+                "val": "puutavaralaji"
+            },
+            {
+                "val": "pääkaupunki"
+            },
+            {
+                "val": "päästöskenaario"
+            },
+            {
+                "val": "rain"
+            },
+            {
+                "val": "reaaliaikainen"
+            },
+            {
+                "val": "sade"
+            },
+            {
+                "val": "sadealueet"
+            },
+            {
+                "val": "sadekertymä"
+            },
+            {
+                "val": "sademäärä"
+            },
+            {
+                "val": "sadesumma"
+            },
+            {
+                "val": "salama"
+            },
+            {
+                "val": "salamanpaikannin"
+            },
+            {
+                "val": "snow"
+            },
+            {
+                "val": "spatialCoordinateTransformationService"
+            },
+            {
+                "val": "suhteellinen kosteus"
+            },
+            {
+                "val": "suolaisuus"
+            },
+            {
+                "val": "suora säteily"
+            },
+            {
+                "val": "säteilyhavainnot"
+            },
+            {
+                "val": "säteilytase"
+            },
+            {
+                "val": "säämalli"
+            },
+            {
+                "val": "sään ennustaminen"
+            },
+            {
+                "val": "taustailmanlaatu"
+            },
+            {
+                "val": "tienimet"
+            },
+            {
+                "val": "tietokanta"
+            },
+            {
+                "val": "tontit"
+            },
+            {
+                "val": "tontti"
+            },
+            {
+                "val": "tulva"
+            },
+            {
+                "val": "tulvat"
+            },
+            {
+                "val": "tuuli"
+            },
+            {
+                "val": "tuuliatlas"
+            },
+            {
+                "val": "ulossäteily"
+            },
+            {
+                "val": "urheilu"
+            },
+            {
+                "val": "vastasäteily"
+            },
+            {
+                "val": "vedenkorkeus"
+            },
+            {
+                "val": "vesien tilan seuranta"
+            },
+            {
+                "val": "vuorokausiarvot"
+            },
+            {
+                "val": "wind"
+            },
+            {
+                "val": "ympäristön seuranta"
+            },
+            {
+                "val": "Äänestys"
+            },
+            {
+                "val": "Äänestysalue"
+            },
+            {
+                "val": "Äänestysalueet"
+            }
+        ],
+        "multi": false
+    },
+    {
+        "field": "topic",
+        "values": [
+            {
+                "val": "biota"
+            },
+            {
+                "val": "boundaries"
+            },
+            {
+                "val": "climatologyMeteorologyAtmosphere"
+            },
+            {
+                "val": "economy"
+            },
+            {
+                "val": "elevation"
+            },
+            {
+                "val": "environment"
+            },
+            {
+                "val": "farming"
+            },
+            {
+                "val": "geoscientificInformation"
+            },
+            {
+                "val": "imageryBaseMapsEarthCover"
+            },
+            {
+                "val": "inlandWaters"
+            },
+            {
+                "val": "location"
+            },
+            {
+                "val": "oceans"
+            },
+            {
+                "val": "planningCadastre"
+            },
+            {
+                "val": "society"
+            },
+            {
+                "val": "structure"
+            },
+            {
+                "val": "transportation"
+            },
+            {
+                "val": "utilitiesCommunication"
+            }
+        ],
+        "multi": false
+    }
+]}
