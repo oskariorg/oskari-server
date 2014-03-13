@@ -455,7 +455,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         // like ops
         for(MetadataField field : likeMappings.keySet()) {
             final Object param = searchCriteria.getParam(field.getProperty());
-            if(field.isMulti()) {
+            if(param != null && field.isMulti()) {
                 final String[] values = (String[]) param;
                 final List<Operation> multiOp = new ArrayList<Operation>();
                 for(String value: values) {
@@ -474,13 +474,15 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         final String keyword = (String) searchCriteria.getParam(MetadataField.KEYWORD.getProperty());
         addOperation(list, getCompOperation(keyword, "keyword", OperationDefines.PROPERTYISEQUALTO));
 
-        final String[] serviceTypes = (String[]) searchCriteria.getParam(MetadataField.SERVICE_TYPE.getProperty());
-        final List<Operation> multiOp = new ArrayList<Operation>();
-        for(String value: serviceTypes) {
-            addOperation(multiOp, getCompOperation(value, "srv:serviceType", OperationDefines.PROPERTYISEQUALTO));
-        }
-        if(!multiOp.isEmpty()) {
-            list.add(new LogicalOperation(OperationDefines.OR, multiOp));
+        final Object serviceTypes = searchCriteria.getParam(MetadataField.SERVICE_TYPE.getProperty());
+        if(serviceTypes != null) {
+            final List<Operation> multiOp = new ArrayList<Operation>();
+            for(String value: (String[]) serviceTypes) {
+                addOperation(multiOp, getCompOperation(value, "srv:serviceType", OperationDefines.PROPERTYISEQUALTO));
+            }
+            if(!multiOp.isEmpty()) {
+                list.add(new LogicalOperation(OperationDefines.OR, multiOp));
+            }
         }
 
         // spatial ops
