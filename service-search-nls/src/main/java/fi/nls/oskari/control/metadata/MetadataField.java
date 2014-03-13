@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
 /**
  * Created with IntelliJ IDEA.

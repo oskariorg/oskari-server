@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
@@ -11,7 +11,6 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;

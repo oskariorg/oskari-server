@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
@@ -24,7 +24,6 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * Problems mocking the responses -> IGNORE for now
@@ -53,14 +52,12 @@ public class GetMetadataSearchOptionsHandlerTest extends JSONActionRouteTest {
 
     private void mockInternalServices() throws Exception {
         final InspireThemeService service = mock(InspireThemeServiceIbatisImpl.class);
-        doReturn(
-                Collections.emptyList()
-        ).when(service).findAll();
+        doReturn(Collections.emptyList()).when(service).findAll();
 
 
         // return mocked service if a new one is created
         // classes doing this must be listed in PrepareForTest annotation
-        whenNew(InspireThemeServiceIbatisImpl.class).withNoArguments().
+        PowerMockito.whenNew(InspireThemeServiceIbatisImpl.class).withNoArguments().
                 thenAnswer(new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         return service;

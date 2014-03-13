@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

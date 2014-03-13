@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.nls.oskari.domain.map.InspireTheme;

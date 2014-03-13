@@ -48,14 +48,15 @@
 			<artifactId>nameregister</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.deegree</groupId>
-			<artifactId>deegree</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.deegree</groupId>
+            <artifactId>deegree</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

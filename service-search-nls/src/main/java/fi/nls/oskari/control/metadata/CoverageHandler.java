@@ -1,13 +1,6 @@
-package fi.nls.oskari.control.data.metadata;
+package fi.nls.oskari.control.metadata;
 
-import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.nls.oskari.domain.map.InspireTheme;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
