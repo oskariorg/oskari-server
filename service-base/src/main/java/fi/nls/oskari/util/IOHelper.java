@@ -378,8 +378,21 @@ public class IOHelper {
                                     final Map<String, String> headers) throws IOException {
         if (headers != null) {
             for (String key : headers.keySet()) {
-                con.setRequestProperty(key, headers.get(key));
+                writeHeader(con, key, headers.get(key));
             }
+        }
+    }
+    /**
+     * Writes the given http header to the connection.
+     * @param con       connection to write to
+     * @param header    header name
+     * @param value     header value
+     * @throws IOException
+     */
+    public static void writeHeader(final HttpURLConnection con,
+                                    final String header, final String value) throws IOException {
+        if (header != null && value != null) {
+            con.setRequestProperty(header, value);
         }
     }
 
@@ -543,6 +556,18 @@ public class IOHelper {
         return response;
     }
 
+    /**
+     * In many case we are not interested in exceptions generated on stream close.
+     * This method closes the given Closeable param and ignores any exception that might be thrown.
+     *
+     * @param in
+     */
+    public static void close(final Closeable in) {
+        try {
+            in.close();
+        } catch (Exception ignored) {
+        }
+    }
 
     /**
      * Handles HTTP error logging for HTTP request methods

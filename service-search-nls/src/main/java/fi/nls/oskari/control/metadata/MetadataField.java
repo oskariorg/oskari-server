@@ -13,18 +13,20 @@ public enum MetadataField {
     SERVICE_TYPE("serviceType", true), // serviceType
     SERVICE_NAME("serviceName", "Title"), // Title
     ORGANIZATION("organization", "orgName"), // orgName
-    COVERAGE("coverage", new CoverageHandler()), // CataloguePopulatorService.populateVillageSelects(locale)
+    COVERAGE("coverage", new CoverageHandler()),
     INSPIRE_THEME("inspireTheme", new InspireThemeHandler()),
     KEYWORD("keyword"), // keyword
     TOPIC("topic", "topicCategory"); // topicCategory
 
     private String name = null;
     private boolean multi = false;
+    private String property = null;
     private MetadataFieldHandler handler = null;
 
 
     private MetadataField(String name, final String property) {
-        this(name, new MetadataFieldHandler(property));
+        this(name, new MetadataFieldHandler());
+        this.property = property;
     }
 
     private MetadataField(String name) {
@@ -43,16 +45,37 @@ public enum MetadataField {
         this.multi = isMulti;
 
         if(handler == null) {
-            handler = new MetadataFieldHandler(name);
+            handler = new MetadataFieldHandler();
         }
         handler.setMetadataField(this);
         this.handler = handler;
     }
+
+    /**
+     * Single or multiple values
+     * @return
+     */
     public boolean isMulti() {
         return multi;
     }
+
+    /**
+     * Field name used by client
+     * @return
+     */
     public String getName() {
         return name;
+    }
+
+    /**
+     * The property name used when getting options from CSW
+     * @return
+     */
+    public String getProperty() {
+        if(property == null) {
+            return name;
+        }
+        return property;
     }
     public MetadataFieldHandler getHandler() {
         return handler;

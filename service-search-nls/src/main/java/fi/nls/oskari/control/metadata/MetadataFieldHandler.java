@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.metadata;
 
-import fi.mml.portti.service.search.MetadataCatalogueSearchCriteria;
+import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
@@ -34,7 +34,6 @@ public class MetadataFieldHandler {
     private final static NodeList EMPTY_NODELIST = new EmptyNodeList();
 
     private MetadataField field = null;
-    private String propertyName = null;
     private String serverURL = PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
     private String serverPath = PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
     private String queryParams = "?" + PropertyUtil.get("metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
@@ -43,16 +42,9 @@ public class MetadataFieldHandler {
 catalogue.geonetwork.search.url=http://geonetwork.nls.fi/geonetwork/srv/en/csw
 catalogue.geonetwork.server.url=http://geonetwork.nls.fi
  */
-    public MetadataFieldHandler() {
-    }
-
-    public MetadataFieldHandler(final String property) {
-        this();
-        propertyName = property;
-    }
 
     public String getPropertyName() {
-        return propertyName;
+        return getMetadataField().getProperty();
     }
 
     public void setMetadataField(final MetadataField field) {
@@ -79,39 +71,23 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         return values;
     }
 
-    public void handleParam(final String param, final String language, final MetadataCatalogueSearchCriteria criteria) {
+    public void handleParam(final String param, final String language, final SearchCriteria criteria) {
         if(param == null || !param.isEmpty()) {
             // empty param -> skip
             return;
         }
         final MetadataField field = getMetadataField();
         if(field.isMulti()) {
-            // TODO: MetadataCatalogueSearchCriteria doesn't support multi value
-            // TODO: refactor plz, this is terrible anyways
-            String[] values = param.split(",");
+            String[] values = param.split("\\s*,\\s*");
+            criteria.addParam(getPropertyName(), values);
         }
-        if(MetadataField.ORGANIZATION.equals(field)) {
-            criteria.setResponsibility(param);
-        }
-        else if(MetadataField.KEYWORD.equals(field)) {
-            criteria.setKeyWord(param);
-        }
-        else if(MetadataField.SERVICE_TYPE.equals(field)) {
-            criteria.setServiceType(param);
-        }
-        else if(MetadataField.TOPIC.equals(field)) {
-            criteria.setTopicClass(param);
-        }
-        else if(MetadataField.TYPE.equals(field)) {
-            criteria.setType(param);
-        }
-        else if(MetadataField.SERVICE_NAME.equals(field)) {
-            criteria.setName(param);
+        else {
+            criteria.addParam(getPropertyName(), param);
         }
     }
 
     private Set<SelectItem> getProperties() {
-        return getProperties(propertyName);
+        return getProperties(getPropertyName());
     }
 
     private Set<SelectItem> getProperties(final String propertyName) {

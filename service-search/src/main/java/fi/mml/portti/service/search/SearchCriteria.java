@@ -18,9 +18,7 @@ public class SearchCriteria implements Serializable {
 	private String locale = PropertyUtil.getDefaultLanguage();
 
     private final Map<String, Object> parameters = new HashMap<String, Object>();
-	
-	private MetadataCatalogueSearchCriteria metadataCatalogueSearchCriteria = new MetadataCatalogueSearchCriteria();
-	
+
 	/** our search string  */
 	private String searchString;
 
@@ -65,23 +63,14 @@ public class SearchCriteria implements Serializable {
 		
 		return false;
 	}
-	
-	public MetadataCatalogueSearchCriteria getMetadataCatalogueSearchCriteria() {
-		return metadataCatalogueSearchCriteria;
-	}
 
-	public void setMetadataCatalogueSearchCriteria(
-			MetadataCatalogueSearchCriteria metadataCatalogueSearchCriteria) {
-		this.metadataCatalogueSearchCriteria = metadataCatalogueSearchCriteria;
-	}
-	
 	public void addChannel(String channelId) {
 		channels.add(channelId);
 	}
 	
 	public String toString() {
 		return "SearchCriteria [searchString=" + searchString + ", fromDate=" + fromDate 
-		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]" + metadataCatalogueSearchCriteria;
+		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]";
 	}
 
     public String getSRS() {

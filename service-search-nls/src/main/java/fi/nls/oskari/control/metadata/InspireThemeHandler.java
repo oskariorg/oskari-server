@@ -23,11 +23,11 @@ public class InspireThemeHandler extends MetadataFieldHandler {
 
     private static InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
 
-    public void handleParam(final String param, final String language, final MetadataCatalogueSearchCriteria criteria) {
+    public void handleParam(final String param, final String language, final SearchCriteria criteria) {
         final int themeId = ConversionHelper.getInt(param, -1);
         if(themeId != -1) {
             InspireTheme theme = inspireThemeService.find(themeId);
-            criteria.setInspireTheme(theme.getName(language));
+            criteria.addParam(getPropertyName(), theme.getName(language));
         }
     }
 

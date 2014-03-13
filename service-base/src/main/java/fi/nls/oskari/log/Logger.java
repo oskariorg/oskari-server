@@ -1,9 +1,7 @@
 package fi.nls.oskari.log;
 
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -35,6 +33,18 @@ public abstract class Logger {
             w.append(" ");
         }
         return w.toString();
+    }
+
+    public List<String> getCauseMessages(final Throwable ex) {
+        List<String> list = new ArrayList<String>();
+        if(ex == null) {
+            return list;
+        }
+        list.add(ex.getMessage());
+        if(ex.getCause() != null) {
+            list.addAll(getCauseMessages(ex.getCause()));
+        }
+        return list;
     }
 
     private boolean hasToString(final Object arg) {
