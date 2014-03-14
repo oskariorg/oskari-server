@@ -43,7 +43,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
      * @param value
      */
     public void addValue(final String key, final Object value) {
-        properties.put(key, value);
+        if(key != null && value != null) {
+            properties.put(key, value);
+        }
     }
 
     /**

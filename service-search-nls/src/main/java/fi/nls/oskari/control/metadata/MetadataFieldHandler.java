@@ -71,7 +71,7 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
         return values;
     }
 
-    public void handleParam(final String param, final String language, final SearchCriteria criteria) {
+    public void handleParam(final String param, final SearchCriteria criteria) {
         if(param == null || !param.isEmpty()) {
             // empty param -> skip
             return;
