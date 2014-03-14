@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserLayerData">
+
+    <!-- Use type aliases to avoid typing the full classname every time. -->
+    <typeAlias alias="UserLayerData"
+        type="fi.nls.oskari.domain.map.userlayer.UserLayerData" />
+
+
+
+    <statement id="insertUserLayerData" resultClass="java.lang.Long"
+        parameterClass="UserLayerData">
+        INSERT INTO user_layer_data (
+
+        user_layer_id,
+        uuid,
+        feature_id,
+        property_json,
+        geometry)
+
+        VALUES (
+        #user_layer_id#,
+        #uuid#,
+        #feature_id#,
+        CAST (#property_json# as json),
+        ST_GeomFromGeoJSON(#geometry#) )
+        RETURNING
+        id
+    </statement>
+
+
+    <update id="updateUserLayerDataCols" parameterClass="UserLayerData">
+        update
+        user_layer_data set
+
+        property_json = #property_json#,
+        geometry = ST_GeomFromGeoJSON(#geometry#)
+
+
+        where feature_id = #feature_id# and uuid =#uuid#
+    </update>
+
+</sqlMap>

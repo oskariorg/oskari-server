@@ -28,6 +28,7 @@
 		<commons-collections.version>3.2.1</commons-collections.version>
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<commons-codec.version>1.7</commons-codec.version>
+		<commons-fileupload.version>1.2</commons-fileupload.version>
 		
 		<staxon.version>1.2</staxon.version>
 		<lambdaj.version>2.3.3</lambdaj.version>
@@ -297,7 +298,6 @@
 			    <artifactId>gt-referencing</artifactId>
 				<version>${geotools.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.deegree</groupId>
 				<artifactId>deegree</artifactId>
@@ -322,8 +322,11 @@
 				<artifactId>nameregister</artifactId>
 				<version>${fi.mml.nameregister.version}</version>
 			</dependency>
-
-			
+			<dependency>
+	        <groupId>commons-fileupload</groupId>
+	           <artifactId>commons-fileupload</artifactId>
+	           <version>${commons-fileupload.version}</version>
+             </dependency>
 			<!-- Managed test dependencies -->
 			<dependency>
 				<groupId>fi.nls.oskari</groupId>

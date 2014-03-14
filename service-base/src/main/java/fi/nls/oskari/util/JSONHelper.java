@@ -73,6 +73,17 @@ public class JSONHelper {
             return defaultValue;
         }   
     }
+    public static final String getStringFromJSON(final JSONObject data, final String defaultValue) {
+        try {
+            final String value = data.toString();
+            if (value != null) {
+                return value;
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
     
     public static final boolean putValue(final JSONObject json, final String key, final String value) {
         try {

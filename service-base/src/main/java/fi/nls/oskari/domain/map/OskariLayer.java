@@ -17,6 +17,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public static final String TYPE_WMTS = "wmtslayer";
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
+    public static final String TYPE_USERLAYER = "userlayer";
 
     private int id = -1;
     private int parentId = -1;
