@@ -1,9 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.OskariLayerResourceName;
 import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
@@ -14,6 +12,8 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
+import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
@@ -21,18 +21,20 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.List;
 import java.util.Set;
 
 @OskariActionRoute("CreateAnalysisLayer")
@@ -178,36 +180,37 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         analysisLayer.setLocaleFields(analysis);
         analysisLayer.setNativeFields(analysis);
 
-        // FIXME: For analysis and myplaces sources permissions will be copied from base layer
-        final OskariLayer wfsLayer = mapLayerService.find(analysisLayer.getId());
         // copy permissions from source layer to new analysis
-        List<Permissions> sourcePermissions = permissionsService.getResourcePermissions(new OskariLayerResourceName(wfsLayer), Permissions.EXTERNAL_TYPE_ROLE);
-
-        UniqueResourceName analysisResourceName = new UniqueResourceName();
-        analysisResourceName.setType(AnalysisLayer.TYPE);
-        analysisResourceName.setName(Long.toString(analysis.getId()));
-        analysisResourceName.setNamespace("analysis");
-        for (Permissions permission : sourcePermissions) {
-            List<String> grantedPermissions = permission.getGrantedPermissions();
-            for (String grantedPermission : grantedPermissions) {
-                if ((grantedPermission.equals(Permissions.PERMISSION_TYPE_PUBLISH)) || (grantedPermission.equals(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED))) {
-                    permissionsService.insertPermissions(analysisResourceName, permission.getExternalId(), permission.getExternalIdType(), grantedPermission);
+        final Resource sourceResource = getSourcePermission(analyse, params.getUser());
+        if(sourceResource != null) {
+            final Resource analysisResource = new Resource();
+            analysisResource.setType(AnalysisLayer.TYPE);
+            analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
+            for(Permission p : sourceResource.getPermissions()) {
+                // check if user has role matching permission?
+                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED)) {
+                    analysisResource.addPermission(p.clonePermission());
                 }
             }
+            log.debug("Trying to save permissions for analysis", analysisResource, analysisResource.getPermissions());
+            permissionsService.saveResourcePermissions(analysisResource);
+        }
+        else {
+            log.warn("Couldn't get source permissions for analysis, result will have none");
         }
 
-
         // Get analysisLayer JSON for response to front
-        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis); //analysisLayer.getJSON();
+        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis);
 
-        // notify client to remove layers defined in mergeLayers since they are removed from backend
+        // Additional param for new layer creation when merging layers:
+        // - Notify client to remove merged layers since they are removed from backend
         JSONArray mlayers = new JSONArray();
         if (analysisLayer.getMergeAnalysisLayers() != null) {
             for (String lay : analysisLayer.getMergeAnalysisLayers()) {
                 mlayers.put(lay);
             }
         }
-        JSONHelper.putValue(analysisLayerJSON,"mergeLayers", mlayers);
+        JSONHelper.putValue(analysisLayerJSON, "mergeLayers", mlayers);
 
         Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
         Set<String> editAccessList = null;
@@ -216,6 +219,49 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
 
         ResponseHelper.writeResponse(params, analysisLayerJSON);
+    }
+
+    private Resource getSourcePermission(final String analyseData, final User user) {
+        final String layerId = analysisParser.getSourceLayerId(analyseData);
+        if(layerId == null) {
+            return null;
+        }
+
+        if (layerId.startsWith(AnalysisParser.ANALYSIS_LAYER_PREFIX)) {
+
+            final Resource resource = new Resource();
+            resource.setType(AnalysisLayer.TYPE);
+            resource.setMapping("analysis", Long.toString(AnalysisHelper.getAnalysisIdFromLayerId(layerId)));
+            return permissionsService.findResource(resource);
+        }
+        else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)) {
+
+            final Resource resource = new Resource();
+            // permission to publish for self
+            final Permission permPublish = new Permission();
+            permPublish.setExternalType(Permissions.EXTERNAL_TYPE_USER);
+            permPublish.setExternalId("" + user.getId());
+            permPublish.setType(Permissions.PERMISSION_TYPE_PUBLISH);
+            resource.addPermission(permPublish);
+            try {
+                // add VIEW_PUBLISHED for all roles currently in the system
+                for(Role role: UserService.getInstance().getRoles()) {
+                    final Permission perm = new Permission();
+                    perm.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                    perm.setExternalId("" + role.getId());
+                    perm.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                    resource.addPermission(perm);
+                }
+            }catch (Exception e) {
+                log.error("Something went wrong when generating source permissions for myplaces layer");
+
+            }
+            return resource;
+        }
+        // default to usual layer
+        final OskariLayer layer = mapLayerService.find(layerId);
+        // copy permissions from source layer to new analysis
+        return permissionsService.getResource(Permissions.RESOURCE_TYPE_MAP_LAYER, new OskariLayerResource(layer).getMapping());
     }
 
 

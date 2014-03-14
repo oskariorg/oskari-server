@@ -8,7 +8,7 @@ removed and the server is restarted.
 
 Database recreation can be forced on startup by giving a system.property 'oskari.dropdb' with value 'true':
 
-    mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true
+    mvn clean install -f servlet-map-pom.xml -Doskari.dropdb=true -Pjetty-profile
 
 NOTE! All comment lines need to end with ; character or the next SQL statement will not be run!
 

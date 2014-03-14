@@ -113,7 +113,7 @@
         </c:choose>
         <c:choose>
             <c:when test="${!empty user}">
-                <a href="/ajax/?action=logout">Logout</a>
+                <a href="${ajaxUrl}action=logout">Logout</a>
             </c:when>
             <c:otherwise>
                 <form action='${ajaxUrl}action=login&viewId=${viewId}' method="post" accept-charset="UTF-8">

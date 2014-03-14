@@ -4,9 +4,11 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.GeonetworkSpatialOperation;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.deegree.datatypes.QualifiedName;
 import org.deegree.model.crs.CRSFactory;
@@ -29,9 +31,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,11 +41,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * TODO: remove unnecessary/commented out codes
+ */
 public class MetadataCatalogueChannelSearchService implements SearchableChannel {
 
-    private final static String PROPERTY_IS_LIKE_OPERATION = "PROPERTY_IS_LIKE_OPERATION";
-    private final static String PROPERTY_IS_COMP_OPERATION = "PROPERTY_IS_COMP_OPERATION";
-    private final static String SPATIAL_OPERATION = "SPATIAL_OPERATION";
     private static final String GCO_NAMESPACE = "gco";
     private static final String GMD_NAMESPACE = "gmd";
     // Some have inline name spacing, so we're using local name...
@@ -88,6 +89,15 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     private String serverURL = null;
     private final Map<String, String> imageURLs = new HashMap<String, String>();
     private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
+
+    private static final Map<MetadataField, String> likeMappings = new HashMap<MetadataField, String>();
+    static {
+        likeMappings.put(MetadataField.TYPE, "gmd:hierarchyLevel");
+        likeMappings.put(MetadataField.INSPIRE_THEME, "keyword");
+        likeMappings.put(MetadataField.SERVICE_NAME, "gmd:title");
+        likeMappings.put(MetadataField.TOPIC, "gmd:topicCategory");
+        likeMappings.put(MetadataField.ORGANIZATION, "orgName");
+    }
 
     /**
      * @param xpath    XPath instance
@@ -353,7 +363,6 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return ID;
     }
 
-    // FIXME no hardcoded locales, these should come from properties
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
             throws IllegalSearchCriteriaException {
         List<String> locales = new ArrayList<String>();
@@ -386,114 +395,114 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return channelSearchResult;
     }
 
-    /* If search criterion is set, add to operations list */
-    @SuppressWarnings("deprecation")
-    private void addOperation(
-            List<Operation> operations,
-            String operationType,
-            int operationId,
-            String searchCriterion,
-            String searchElementName) {
-        if (searchCriterion != null
-                && !"".equals(searchCriterion)
-                && !"-1".equals(searchCriterion)
-                && !"-2".equals(searchCriterion)
-                && !"-3".equals(searchCriterion)
-                && !"-4".equals(searchCriterion)
-                && !"-5".equals(searchCriterion)
-                && !"0".equals(searchCriterion)) {
-            if (PROPERTY_IS_LIKE_OPERATION.equals(operationType)) {
-                PropertyIsLikeOperation op = new PropertyIsLikeOperation(
-                        new PropertyName(new QualifiedName(searchElementName)),
-                        new Literal(searchCriterion), WILDCARD_CHARACTER, '?', '/');
-                operations.add(op);
-            } else if (PROPERTY_IS_COMP_OPERATION.equals(operationType)) {
-                PropertyIsCOMPOperation op = new PropertyIsCOMPOperation(
-                        operationId,
-                        new PropertyName(new QualifiedName(searchElementName)),
-                        new Literal(searchCriterion),
-                        false);
+    private Operation getLikeOperation(final String searchCriterion,
+                                       final String searchElementName) {
+        if (searchCriterion == null || searchCriterion.isEmpty()) {
+            return null;
+        }
+        PropertyIsLikeOperation op = new PropertyIsLikeOperation(
+                new PropertyName(new QualifiedName(searchElementName)),
+                new Literal(searchCriterion), WILDCARD_CHARACTER, '?', '/');
+        return op;
+    }
 
-                operations.add(op);
-            } else if (SPATIAL_OPERATION.equals(operationType)) {
-                CoordinateSystem crs = CRSFactory.createDummyCRS("EPSG:4326");
+    private Operation getCompOperation(final String searchCriterion,
+                                       final String searchElementName,
+                                       final int operationId) {
+        if (searchCriterion == null || searchCriterion.isEmpty()) {
+            return null;
+        }
+        PropertyIsCOMPOperation op = new PropertyIsCOMPOperation(
+                operationId,
+                new PropertyName(new QualifiedName(searchElementName)),
+                new Literal(searchCriterion),
+                false);
+        return op;
+    }
+    private Operation getSpatialOperation(final String searchCriterion,
+                                       final String searchElementName) {
+        if (searchCriterion == null || searchCriterion.isEmpty()) {
+            return null;
+        }
+        // FIXME: really create for each call?
+        final CoordinateSystem crs = CRSFactory.createDummyCRS("EPSG:4326");
+        try {
+            Geometry geom = WKTAdapter.wrap(searchCriterion, crs);
+            GeonetworkSpatialOperation op = new GeonetworkSpatialOperation(
+                    OperationDefines.INTERSECTS,
+                    new PropertyName(new QualifiedName(searchElementName)),
+                    geom,
+                    searchCriterion);
+            return op;
+        } catch (GeometryException e) {
+            log.error(e, "Error creating spatial operation!");
+        }
+        return null;
+    }
 
-                try {
-                    Geometry geom = WKTAdapter.wrap(searchCriterion, crs);
-                    GeonetworkSpatialOperation op = new GeonetworkSpatialOperation(
-                            OperationDefines.INTERSECTS,
-                            new PropertyName(new QualifiedName(searchElementName)),
-                            geom,
-                            searchCriterion);
-                    operations.add(op);
-                } catch (GeometryException e) {
-                    throw new RuntimeException("Failed create geometry.", e);
-                }
-            } else {
-                throw new RuntimeException("Unknown operationType: '" + operationType + "'");
-            }
+    private void addOperation(final List<Operation> list, final Operation op) {
+        if(op != null) {
+            list.add(op);
         }
     }
 
     private List<Operation> getOperations(SearchCriteria searchCriteria) {
-        List<Operation> operations = new ArrayList<Operation>();
+        List<Operation> list = new ArrayList<Operation>();
 
-        addOperation(
-                operations,
-                PROPERTY_IS_LIKE_OPERATION,
-                -1,
-                searchCriteria.getSearchString(),
-                "csw:anyText");
+        // user input
+        addOperation(list, getLikeOperation(searchCriteria.getSearchString(), "csw:anyText"));
 
-        if (searchCriteria.getMetadataCatalogueSearchCriteria() != null) {
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getType(),
-                    "gmd:hierarchyLevel");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getInspireTheme(),
-                    "keyword");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getName(),
-                    "gmd:title");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISEQUALTO,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getKeyWord(),
-                    "keyword");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISEQUALTO,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getServiceType(),
-                    "srv:serviceType");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getTopicClass(),
-                    "gmd:topicCategory");
+        // like ops
+        for(MetadataField field : likeMappings.keySet()) {
+            final Object param = searchCriteria.getParam(field.getProperty());
+            if(param != null && field.isMulti()) {
+                final String[] values = (String[]) param;
+                final List<Operation> multiOp = new ArrayList<Operation>();
+                for(String value: values) {
+                    addOperation(multiOp, getLikeOperation(value, likeMappings.get(field)));
+                }
+                if(!multiOp.isEmpty()) {
+                    list.add(new LogicalOperation(OperationDefines.OR, multiOp));
+                }
+            }
+            else {
+                addOperation(list, getLikeOperation((String) param, likeMappings.get(field)));
+            }
+        }
+
+        // comp ops
+        final String keyword = (String) searchCriteria.getParam(MetadataField.KEYWORD.getProperty());
+        addOperation(list, getCompOperation(keyword, "keyword", OperationDefines.PROPERTYISEQUALTO));
+
+        final Object serviceTypes = searchCriteria.getParam(MetadataField.SERVICE_TYPE.getProperty());
+        if(serviceTypes != null) {
+            final List<Operation> multiOp = new ArrayList<Operation>();
+            for(String value: (String[]) serviceTypes) {
+                addOperation(multiOp, getCompOperation(value, "srv:serviceType", OperationDefines.PROPERTYISEQUALTO));
+            }
+            if(!multiOp.isEmpty()) {
+                list.add(new LogicalOperation(OperationDefines.OR, multiOp));
+            }
+        }
+
+        // spatial ops
+        final String areaBbox = (String) searchCriteria.getParam(MetadataField.COVERAGE.getProperty());
+        addOperation(list, getSpatialOperation(areaBbox, "iso:BoundingBox"));
+
+
+// THE BELOW VALUES ARE NOT SENT FROM FORM, only commenting them out since they propably should come
+
+//        if (searchCriteria.getMetadataCatalogueSearchCriteria() != null) {
+            /*
             addOperation(
                     operations,
                     PROPERTY_IS_LIKE_OPERATION,
                     -1,
                     searchCriteria.getMetadataCatalogueSearchCriteria().getResourceId(),
                     "ResourceIdentifier");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getResponsibility(),
-                    "orgName");
+*/
+
+/*
             addOperation(
                     operations,
                     SPATIAL_OPERATION,
@@ -632,7 +641,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
                         "PublicationDate");
                 operations.add(new LogicalOperation(OperationDefines.OR, timeStartOperations));
             }
-
+            */
+/*
             if (searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd() != null &&
                     !"".equals(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd())) {
                 List<Operation> timeEndOperations = new ArrayList<Operation>();
@@ -656,7 +666,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
                         "PublicationDate");
                 operations.add(new LogicalOperation(OperationDefines.OR, timeEndOperations));
             }
-
+*/
+/*
             if (searchCriteria.getMetadataCatalogueSearchCriteria().isMetaInfoTargetHistory()) {
                 addOperation(
                         operations,
@@ -675,8 +686,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
                         "Abstract");
             }
         }
-
-        return operations;
+*/
+        return list;
     }
 
     private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
@@ -717,40 +728,28 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
 
         // debug output
-        Writer w = new PrintWriter(System.out);
         Properties p = new Properties();
         p.put("indent", "yes");
-
-        // if (log.isDebugEnabled()) {
-        //     getRecsDoc.write(w, p);
-        // }
-
-        w.flush();
+        // write the post data to postable string
+        final StringWriter xml = new StringWriter();
+        getRecsDoc.write(xml, p);
+        xml.flush();
 
         // POSTing GetRecords request
-        URL urlPost = new URL(queryURL);
-        URLConnection conn = urlPost.openConnection();
-        conn
-                .addRequestProperty("Content-Type",
-                        "application/xml;charset=UTF-8");
+        HttpURLConnection conn = IOHelper.getConnection(queryURL);
+        IOHelper.writeHeader(conn, "Content-Type", "application/xml;charset=UTF-8");
         conn.setUseCaches(false);
-        conn.setDoOutput(true);
-        OutputStreamWriter writer = new OutputStreamWriter(conn
-                .getOutputStream());
-        getRecsDoc.write(writer, p);
-        writer.flush();
-
+        IOHelper.writeToConnection(conn, xml.toString());
         GetRecordsResultDocument resultsDoc = new Csw202ResultsDoc();
+        InputStream response = IOHelper.debugResponse(conn.getInputStream());
         try {
-            resultsDoc.load(conn.getInputStream(), queryURL);
+            resultsDoc.load(response, queryURL);
         } finally {
-            writer.close();
+            IOHelper.close(response);
+            IOHelper.close(xml);
         }
 
-        //resultsDoc.write(w);
-
         GetRecordsResult getRecsResult = resultsDoc.parseGetRecordsResponse(getRecs);
-
         SearchResults results = getRecsResult.getSearchResults();
         return results.getRecords();
     }

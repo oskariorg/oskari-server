@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <csw:DomainValues type="csw:Record">
+        <csw:PropertyName>keyword</csw:PropertyName>
+        <csw:ListOfValues>
+            <csw:Value>-- LISÄÄ AVAINSANOJA KIIKARITYÖKALULLA ---</csw:Value>
+            <csw:Value>-Ei-Inspire</csw:Value>
+            <csw:Value>1972-2007</csw:Value>
+            <csw:Value>1990-2006</csw:Value>
+            <csw:Value>Addresses</csw:Value>
+            <csw:Value>Administrativa enheter</csw:Value>
+            <csw:Value>Administrative boundaries</csw:Value>
+            <csw:Value>Administrative units</csw:Value>
+            <csw:Value>Adresser</csw:Value>
+            <csw:Value>Aerial photographs</csw:Value>
+            <csw:Value>Aeromagneettiset kartat</csw:Value>
+            <csw:Value>Ajantasa-asemakaava</csw:Value>
+            <csw:Value>Ajantasakaava</csw:Value>
+            <csw:Value>Ajorata</csw:Value>
+            <csw:Value>Alkuaineet</csw:Value>
+            <csw:Value>Allmännyttiga och offentliga tjänster</csw:Value>
+            <csw:Value>Aluegeologia</csw:Value>
+            <csw:Value>Aluehallinnan, rajoitusten ja sääntelyn piiriin kuuluvat alueet ja raportointiyksiköt</csw:Value>
+            <csw:Value>Aluejako</csw:Value>
+            <csw:Value>Aluemeren raja</csw:Value>
+            <csw:Value>Aluesuunnittelu</csw:Value>
+            <csw:Value>Aluesuunnittelu / kiinteistöjärjestelmä</csw:Value>
+            <csw:Value>Aluesuunnittelu ja rajoitukset</csw:Value>
+            <csw:Value>Aluesuunnittelun, rajoitusten ja sääntelyn piiriin kuuluvat alueet ja raportointiyksiköt</csw:Value>
+            <csw:Value>Aluevaraukset</csw:Value>
+            <csw:Value>Aluevesien rajat</csw:Value>
+            <csw:Value>Analyysi</csw:Value>
+            <csw:Value>Arkeeinen</csw:Value>
+            <csw:Value>Asemakaava</csw:Value>
+            <csw:Value>Asemakaavaindeksi</csw:Value>
+            <csw:Value>Asemakaavayhdelmä</csw:Value>
+            <csw:Value>Asemakaavoitus</csw:Value>
+            <csw:Value>Asuminen (asunnot, asuinolot)</csw:Value>
+            <csw:Value>Atmospheric conditions</csw:Value>
+            <csw:Value>Auringon lyhyt- ja pitkäaaltoinen säteily</csw:Value>
+            <csw:Value>Avoin data</csw:Value>
+            <csw:Value>Bannät</csw:Value>
+            <csw:Value>Bebodd rut</csw:Value>
+            <csw:Value>Befolkningsfördelning</csw:Value>
+            <csw:Value>Befolkningsfördelning - demografi (theme)</csw:Value>
+            <csw:Value>Befolkningsfördelning – demografi</csw:Value>
+            <csw:Value>Biomaantieteelliset alueet</csw:Value>
+            <csw:Value>Biomass</csw:Value>
+            <csw:Value>Boundaries and regions</csw:Value>
+            <csw:Value>Buildings</csw:Value>
+            <csw:Value>Bussipysäkki</csw:Value>
+            <csw:Value>Byar</csw:Value>
+            <csw:Value>Byggnader</csw:Value>
+            <csw:Value>Cadastral parcels</csw:Value>
+            <csw:Value>City of Helsinki</csw:Value>
+            <csw:Value>Conduit nets</csw:Value>
+            <csw:Value>Control points</csw:Value>
+            <csw:Value>Coordinate Transformation Service</csw:Value>
+            <csw:Value>Database</csw:Value>
+            <csw:Value>Datatrafiknät</csw:Value>
+            <csw:Value>De Geer-moreenit</csw:Value>
+            <csw:Value>Deltat</csw:Value>
+            <csw:Value>Districts</csw:Value>
+            <csw:Value>Drumliinit</csw:Value>
+            <csw:Value>Dyynit</csw:Value>
+            <csw:Value>EI-Inspire</csw:Value>
+            <csw:Value>ETRS-TM35FIN</csw:Value>
+            <csw:Value>EUREF-FIN</csw:Value>
+            <csw:Value>Educational institution</csw:Value>
+            <csw:Value>Ei-Inspire</csw:Value>
+            <csw:Value>Elevation</csw:Value>
+            <csw:Value>Elevation models</csw:Value>
+            <csw:Value>Elevation points</csw:Value>
+            <csw:Value>Elinympäristöt ja biotoopit</csw:Value>
+            <csw:Value>Eliömaantieteelliset alueet</csw:Value>
+            <csw:Value>Eläinsuojelu</csw:Value>
+            <csw:Value>Energiahuolto</csw:Value>
+            <csw:Value>Energiavarat</csw:Value>
+            <csw:Value>Energy resources</csw:Value>
+            <csw:Value>Enterprises and establishments</csw:Value>
+            <csw:Value>Environment</csw:Value>
+            <csw:Value>Environmental monitoring facilities</csw:Value>
+            <csw:Value>Eoliset muodostumat</csw:Value>
+            <csw:Value>Eroosiojäljet</csw:Value>
+            <csw:Value>Espoo</csw:Value>
+            <csw:Value>Fairways</csw:Value>
+            <csw:Value>Fairways (channels)</csw:Value>
+            <csw:Value>Farleder</csw:Value>
+            <csw:Value>Fastigheter</csw:Value>
+            <csw:Value>Fennoskandia</csw:Value>
+            <csw:Value>Finlandia-talo</csw:Value>
+            <csw:Value>Fixpunkter</csw:Value>
+            <csw:Value>Fluviaaliset muodostumat</csw:Value>
+            <csw:Value>Flygbilder</csw:Value>
+            <csw:Value>Folkmängd</csw:Value>
+            <csw:Value>Forest resource</csw:Value>
+            <csw:Value>Forest resource assessment</csw:Value>
+            <csw:Value>Företag och arbetsställen</csw:Value>
+            <csw:Value>Förvaltningsgränser</csw:Value>
+            <csw:Value>Geofysiikka</csw:Value>
+            <csw:Value>Geofysikaaliset menetelmät</csw:Value>
+            <csw:Value>Geografiska namn</csw:Value>
+            <csw:Value>Geografiska rutnätssystem</csw:Value>
+            <csw:Value>Geographical grid systems</csw:Value>
+            <csw:Value>Geographical names</csw:Value>
+            <csw:Value>Geokemia</csw:Value>
+            <csw:Value>Geokemialliset kartat</csw:Value>
+            <csw:Value>Geokemialliset provinssit</csw:Value>
+            <csw:Value>Geokemialliset tutkimukset</csw:Value>
+            <csw:Value>Geokoodauspalvelu</csw:Value>
+            <csw:Value>Geologia</csw:Value>
+            <csw:Value>Geologiset kartat</csw:Value>
+            <csw:Value>Geologiset nähtävyydet</csw:Value>
+            <csw:Value>Glasiaalimuodostumat</csw:Value>
+            <csw:Value>Glasifluviaalinen sedimentaatio</csw:Value>
+            <csw:Value>Glasifluviaaliset muodostumat</csw:Value>
+            <csw:Value>Grid</csw:Value>
+            <csw:Value>Grid model</csw:Value>
+            <csw:Value>Gridmodell</csw:Value>
+            <csw:Value>Gridmodell (grid)</csw:Value>
+            <csw:Value>Gränser och regioner</csw:Value>
+            <csw:Value>HIRLAM</csw:Value>
+            <csw:Value>Hallinnolliset rajat</csw:Value>
+            <csw:Value>Hallinnolliset yksiköt</csw:Value>
+            <csw:Value>Halsua</csw:Value>
+            <csw:Value>Harjut</csw:Value>
+            <csw:Value>Helsingfors</csw:Value>
+            <csw:Value>Helsingin kaupunki</csw:Value>
+            <csw:Value>Helsinki</csw:Value>
+            <csw:Value>Hiekka</csw:Value>
+            <csw:Value>Hienorakeinen aines</csw:Value>
+            <csw:Value>Hilamalli (grid)</csw:Value>
+            <csw:Value>Historia</csw:Value>
+            <csw:Value>Hki</csw:Value>
+            <csw:Value>Hydraulic construction</csw:Value>
+            <csw:Value>Hydrogeologia</csw:Value>
+            <csw:Value>Hydrografia</csw:Value>
+            <csw:Value>Hydrologia</csw:Value>
+            <csw:Value>Höjd</csw:Value>
+            <csw:Value>Höjdmodeller</csw:Value>
+            <csw:Value>Höjdpunkter</csw:Value>
+            <csw:Value>Ilmakehämalli</csw:Value>
+            <csw:Value>Ilmakehän tila</csw:Value>
+            <csw:Value>Ilmakuva</csw:Value>
+            <csw:Value>Ilmakuvat</csw:Value>
+            <csw:Value>Ilmaston maantieteelliset ominaispiirteet</csw:Value>
+            <csw:Value>Inhabited grid</csw:Value>
+            <csw:Value>Inland water and seas</csw:Value>
+            <csw:Value>Insjövatten och hav</csw:Value>
+            <csw:Value>Inspire</csw:Value>
+            <csw:Value>Inspire-teema</csw:Value>
+            <csw:Value>International classification</csw:Value>
+            <csw:Value>Inventointi</csw:Value>
+            <csw:Value>Johto</csw:Value>
+            <csw:Value>Johtokartta</csw:Value>
+            <csw:Value>Johtoverkot</csw:Value>
+            <csw:Value>Joki</csw:Value>
+            <csw:Value>Jordtäcke</csw:Value>
+            <csw:Value>Joukkoliikenne</csw:Value>
+            <csw:Value>Julkiset palvelut</csw:Value>
+            <csw:Value>Juonet</csw:Value>
+            <csw:Value>Järvisedimentit</csw:Value>
+            <csw:Value>Jätevesihuolto</csw:Value>
+            <csw:Value>Jäätikön kerrostama aines</csw:Value>
+            <csw:Value>Kaasuhuolto</csw:Value>
+            <csw:Value>Kaava</csw:Value>
+            <csw:Value>Kaava-alueet</csw:Value>
+            <csw:Value>Kaavakartta</csw:Value>
+            <csw:Value>Kaavamääräykset</csw:Value>
+            <csw:Value>Kaavan pohjakartta</csw:Value>
+            <csw:Value>Kaavan pohjakartta (kantakartta)</csw:Value>
+            <csw:Value>Kaavayhdistelmä</csw:Value>
+            <csw:Value>Kaavoitus</csw:Value>
+            <csw:Value>Kaavoitus ja mittaus</csw:Value>
+            <csw:Value>Kaavoitusalueet</csw:Value>
+            <csw:Value>Kadun nimi</csw:Value>
+            <csw:Value>Kadut</csw:Value>
+            <csw:Value>Kairaus</csw:Value>
+            <csw:Value>Kaivokset</csw:Value>
+            <csw:Value>Kaivosviranomainen</csw:Value>
+            <csw:Value>Kallioleikkaukset</csw:Value>
+            <csw:Value>Kallioperä</csw:Value>
+            <csw:Value>Kallioperä (kalliot)</csw:Value>
+            <csw:Value>Kallioperäkartat</csw:Value>
+            <csw:Value>Kannus</csw:Value>
+            <csw:Value>Kantakartta</csw:Value>
+            <csw:Value>Karkearakeinen aines</csw:Value>
+            <csw:Value>Kartastot</csw:Value>
+            <csw:Value>Kartoitus</csw:Value>
+            <csw:Value>Karttakuvapalvelu</csw:Value>
+            <csw:Value>Karttakuvaselain</csw:Value>
+            <csw:Value>Kasvillisuus</csw:Value>
+            <csw:Value>Katselupalvelu</csw:Value>
+            <csw:Value>Katuverkot</csw:Value>
+            <csw:Value>Kaupunginosa</csw:Value>
+            <csw:Value>Kaupunginosat</csw:Value>
+            <csw:Value>Kaupunginosat , Liikenne , Opaskartta , Julkiset palvelut , Urheilu- ja liikuntapalvelut , Matkailu ja vapaa-aika (theme).</csw:Value>
+            <csw:Value>Kaupunkisuunnittelu</csw:Value>
+            <csw:Value>Kaupunkiympäristön kehittäminen</csw:Value>
+            <csw:Value>Kaustinen</csw:Value>
+            <csw:Value>Kemialliset analyysit</csw:Value>
+            <csw:Value>Keski-Pohjanmaa</csw:Value>
+            <csw:Value>Kevyen liikenteen verkko</csw:Value>
+            <csw:Value>Kiinteistö</csw:Value>
+            <csw:Value>Kiinteistökaupat</csw:Value>
+            <csw:Value>Kiinteistörajat</csw:Value>
+            <csw:Value>Kiinteistörekisterikartta</csw:Value>
+            <csw:Value>Kiinteistöt</csw:Value>
+            <csw:Value>Kiinteistöt, Maankäyttö</csw:Value>
+            <csw:Value>Kiintopisteet</csw:Value>
+            <csw:Value>Kiviaines</csw:Value>
+            <csw:Value>Kivilajit</csw:Value>
+            <csw:Value>Kokkola</csw:Value>
+            <csw:Value>Kokokivi</csw:Value>
+            <csw:Value>Koordinaattikonversiopalvelu</csw:Value>
+            <csw:Value>Koordinaattimuunnospalvelu</csw:Value>
+            <csw:Value>Korkeus</csw:Value>
+            <csw:Value>Korkeuskiintopisteet</csw:Value>
+            <csw:Value>Korkeuskäyrät</csw:Value>
+            <csw:Value>Korkeusmallit</csw:Value>
+            <csw:Value>Korkeuspisteet</csw:Value>
+            <csw:Value>Koulupiirit</csw:Value>
+            <csw:Value>Koulutus</csw:Value>
+            <csw:Value>Kulttuurimaisema</csw:Value>
+            <csw:Value>Kulttuuriperintö</csw:Value>
+            <csw:Value>Kulttuuriympäristö</csw:Value>
+            <csw:Value>Kumpumoreenit</csw:Value>
+            <csw:Value>Kunnat</csw:Value>
+            <csw:Value>Kvartääri</csw:Value>
+            <csw:Value>Kylät</csw:Value>
+            <csw:Value>Käyttöoikeusyksiköt</csw:Value>
+            <csw:Value>LIDAR</csw:Value>
+            <csw:Value>Lajien levinneisyys</csw:Value>
+            <csw:Value>Land cover</csw:Value>
+            <csw:Value>Land use</csw:Value>
+            <csw:Value>Landtäcke</csw:Value>
+            <csw:Value>Laserkeilaus</csw:Value>
+            <csw:Value>Lastausalue</csw:Value>
+            <csw:Value>Ledningsnät</csw:Value>
+            <csw:Value>Lentomittaukset</csw:Value>
+            <csw:Value>Lestijärvi</csw:Value>
+            <csw:Value>Leveys</csw:Value>
+            <csw:Value>Levähdysalue</csw:Value>
+            <csw:Value>Lieju</csw:Value>
+            <csw:Value>Liikenne</csw:Value>
+            <csw:Value>Liikennemäärä</csw:Value>
+            <csw:Value>Liikenneverkosto</csw:Value>
+            <csw:Value>Liikenneverkot</csw:Value>
+            <csw:Value>Liikenneverkot, tierekisteri, ajorata, moottoritie, moottoriliikennetie</csw:Value>
+            <csw:Value>Liikenneväylät</csw:Value>
+            <csw:Value>Liikenneyhteydet</csw:Value>
+            <csw:Value>Liikuntapaikat</csw:Value>
+            <csw:Value>Linja-autoliikenne</csw:Value>
+            <csw:Value>Linja-autopysäkki</csw:Value>
+            <csw:Value>Linja-autoreitit</csw:Value>
+            <csw:Value>Linnut</csw:Value>
+            <csw:Value>Lintuvesialueet</csw:Value>
+            <csw:Value>Lisäkaista</csw:Value>
+            <csw:Value>Litodeemiset yksiköt</csw:Value>
+            <csw:Value>Litologia</csw:Value>
+            <csw:Value>Litostratigrafiset yksiköt</csw:Value>
+            <csw:Value>Location</csw:Value>
+            <csw:Value>Logistiikka</csw:Value>
+            <csw:Value>Lohkareet</csw:Value>
+            <csw:Value>Louhikot</csw:Value>
+            <csw:Value>Luettelopalvelu</csw:Value>
+            <csw:Value>Luonnonmuistomerkit</csw:Value>
+            <csw:Value>Luonnonriskialueet</csw:Value>
+            <csw:Value>Luonnonsuojelu</csw:Value>
+            <csw:Value>Luonto</csw:Value>
+            <csw:Value>Luontopolut</csw:Value>
+            <csw:Value>Läge</csw:Value>
+            <csw:Value>Lämpöhuolto</csw:Value>
+            <csw:Value>Läroanstalt</csw:Value>
+            <csw:Value>Maailmanperintökohteet</csw:Value>
+            <csw:Value>Maakaasuhuolto</csw:Value>
+            <csw:Value>Maakuntakaavoitus</csw:Value>
+            <csw:Value>Maankäyttö</csw:Value>
+            <csw:Value>Maankäyttöluokitus</csw:Value>
+            <csw:Value>Maankäytön rajoitukset</csw:Value>
+            <csw:Value>Maankäytön suunnittelu</csw:Value>
+            <csw:Value>Maannos</csw:Value>
+            <csw:Value>Maanpeite</csw:Value>
+            <csw:Value>Maaperä</csw:Value>
+            <csw:Value>Maaperäkartat</csw:Value>
+            <csw:Value>Maaperän pilaantuminen</csw:Value>
+            <csw:Value>Maaperän saastuminen</csw:Value>
+            <csw:Value>Maasto</csw:Value>
+            <csw:Value>Maasto ja maanpeite</csw:Value>
+            <csw:Value>Maastokartta</csw:Value>
+            <csw:Value>Maastokohteet</csw:Value>
+            <csw:Value>Maastotiedot</csw:Value>
+            <csw:Value>Maatalous</csw:Value>
+            <csw:Value>Magneettiset anomaliat</csw:Value>
+            <csw:Value>Magneettiset menetelmät</csw:Value>
+            <csw:Value>Malminetsintä</csw:Value>
+            <csw:Value>Manufacturing</csw:Value>
+            <csw:Value>Markanvändning</csw:Value>
+            <csw:Value>Matkailu</csw:Value>
+            <csw:Value>Matkailu ja vapaa-aika</csw:Value>
+            <csw:Value>Matkailu- ja vapaa-aika</csw:Value>
+            <csw:Value>Melu</csw:Value>
+            <csw:Value>Merentutkimuksen maantieteelliset ominaispiirteet</csw:Value>
+            <csw:Value>Merialueet</csw:Value>
+            <csw:Value>Merikartta</csw:Value>
+            <csw:Value>Merisedimentit</csw:Value>
+            <csw:Value>Meteoriittikraatterit</csw:Value>
+            <csw:Value>Meteorological geographical features</csw:Value>
+            <csw:Value>Metsä</csw:Value>
+            <csw:Value>Miljö</csw:Value>
+            <csw:Value>Mineraalit</csw:Value>
+            <csw:Value>Mineraalivarat</csw:Value>
+            <csw:Value>Moottoriajoneuvojen määrä</csw:Value>
+            <csw:Value>Moreeni</csw:Value>
+            <csw:Value>Muinaisjäännökset (muinaismuistot)</csw:Value>
+            <csw:Value>Muinaisrannat</csw:Value>
+            <csw:Value>Muu poiju tai merkki</csw:Value>
+            <csw:Value>Natura</csw:Value>
+            <csw:Value>Natural resource</csw:Value>
+            <csw:Value>Navigointi</csw:Value>
+            <csw:Value>Navigointilinja</csw:Value>
+            <csw:Value>Nimet</csw:Value>
+            <csw:Value>Nimistö</csw:Value>
+            <csw:Value>Non-profit and public services</csw:Value>
+            <csw:Value>Nopeusrajoitus</csw:Value>
+            <csw:Value>Näytteenotto</csw:Value>
+            <csw:Value>Näytteet</csw:Value>
+            <csw:Value>Oceanographic geographical features</csw:Value>
+            <csw:Value>Oikaistu ilmakuva</csw:Value>
+            <csw:Value>Olympia-stadion</csw:Value>
+            <csw:Value>Olympic-stadium</csw:Value>
+            <csw:Value>Opaskartta</csw:Value>
+            <csw:Value>Oppilaitokset</csw:Value>
+            <csw:Value>Orgaaniset sedimentit</csw:Value>
+            <csw:Value>Orthoimagery</csw:Value>
+            <csw:Value>Orthophotos</csw:Value>
+            <csw:Value>Ortnamn</csw:Value>
+            <csw:Value>Ortobilder</csw:Value>
+            <csw:Value>Ortofoto</csw:Value>
+            <csw:Value>Ortoilmakuva</csw:Value>
+            <csw:Value>Ortoilmakuvat</csw:Value>
+            <csw:Value>Ortokuva</csw:Value>
+            <csw:Value>Ortokuva, Ilmakuva</csw:Value>
+            <csw:Value>Ortokuvat</csw:Value>
+            <csw:Value>Osoitekanta</csw:Value>
+            <csw:Value>Osoitekartta</csw:Value>
+            <csw:Value>Osoitenumero</csw:Value>
+            <csw:Value>Osoitteet</csw:Value>
+            <csw:Value>Osoitteet, Avoin data (theme)</csw:Value>
+            <csw:Value>Osoitteisto</csw:Value>
+            <csw:Value>Paikannimet</csw:Value>
+            <csw:Value>Paikannusruudustot</csw:Value>
+            <csw:Value>Paikkatiedon sijaintiprosessointipalvelut</csw:Value>
+            <csw:Value>Paikkatietoselain</csw:Value>
+            <csw:Value>Paleotsooinen</csw:Value>
+            <csw:Value>Paljastumat</csw:Value>
+            <csw:Value>Palvelut</csw:Value>
+            <csw:Value>Pellot</csw:Value>
+            <csw:Value>Pelvelut</csw:Value>
+            <csw:Value>Perho</csw:Value>
+            <csw:Value>Permanent points</csw:Value>
+            <csw:Value>Petrofysiikka</csw:Value>
+            <csw:Value>Pilaantuminen</csw:Value>
+            <csw:Value>Pintageologia</csw:Value>
+            <csw:Value>Pintamoreeni</csw:Value>
+            <csw:Value>Pintavesi</csw:Value>
+            <csw:Value>Pohjakartta</csw:Value>
+            <csw:Value>Pohjakuviot</csw:Value>
+            <csw:Value>Pohjamoreeni</csw:Value>
+            <csw:Value>Pohjaveden laatu</csw:Value>
+            <csw:Value>Pohjavedet</csw:Value>
+            <csw:Value>Pohjavesi</csw:Value>
+            <csw:Value>Poliisi</csw:Value>
+            <csw:Value>Population</csw:Value>
+            <csw:Value>Population distribution</csw:Value>
+            <csw:Value>Posti</csw:Value>
+            <csw:Value>Postialue</csw:Value>
+            <csw:Value>Postinumero</csw:Value>
+            <csw:Value>Postinumeroalueet</csw:Value>
+            <csw:Value>Prekambrinen</csw:Value>
+            <csw:Value>Production and Industrial Facilities</csw:Value>
+            <csw:Value>Produktions- och industrianläggningar</csw:Value>
+            <csw:Value>Protected object</csw:Value>
+            <csw:Value>Protected sites</csw:Value>
+            <csw:Value>Proterotsooinen</csw:Value>
+            <csw:Value>Purosedimentti</csw:Value>
+            <csw:Value>Purovesi</csw:Value>
+            <csw:Value>Pysäkit</csw:Value>
+            <csw:Value>Pysäkki</csw:Value>
+            <csw:Value>Pysäköintialue</csw:Value>
+            <csw:Value>Päällyste</csw:Value>
+            <csw:Value>Päätemoreenit</csw:Value>
+            <csw:Value>Railway network</csw:Value>
+            <csw:Value>Raisio</csw:Value>
+            <csw:Value>Rajat ja alueet</csw:Value>
+            <csw:Value>Rajoitusten ja sääntelyn piiriin kuuluvat alueet</csw:Value>
+            <csw:Value>Rakat</csw:Value>
+            <csw:Value>Rakennelmat</csw:Value>
+            <csw:Value>Rakennettu ympäristö</csw:Value>
+            <csw:Value>Rakennukset</csw:Value>
+            <csw:Value>Rakennukset ja rakennelmat</csw:Value>
+            <csw:Value>Rakennuskieltoalueet</csw:Value>
+            <csw:Value>Rakennuskivet</csw:Value>
+            <csw:Value>Rakennussuojelu</csw:Value>
+            <csw:Value>Rakenteet</csw:Value>
+            <csw:Value>Rantamuodostumat</csw:Value>
+            <csw:Value>Rantarakenne</csw:Value>
+            <csw:Value>Raportointiyksiköt</csw:Value>
+            <csw:Value>Rataverkko</csw:Value>
+            <csw:Value>Rautatie</csw:Value>
+            <csw:Value>Rautatieasemat</csw:Value>
+            <csw:Value>Rautatieliikenne</csw:Value>
+            <csw:Value>Real estates</csw:Value>
+            <csw:Value>Reittijakojärjestelmä</csw:Value>
+            <csw:Value>Retkeily</csw:Value>
+            <csw:Value>Reunamuodostumat</csw:Value>
+            <csw:Value>Road traffic network</csw:Value>
+            <csw:Value>Rut</csw:Value>
+            <csw:Value>Ruutu</csw:Value>
+            <csw:Value>Saaret</csw:Value>
+            <csw:Value>Saastuneet maa-alueet</csw:Value>
+            <csw:Value>Savi</csw:Value>
+            <csw:Value>Sedimentit</csw:Value>
+            <csw:Value>Seinäjoki</csw:Value>
+            <csw:Value>Settlements</csw:Value>
+            <csw:Value>Sijainti</csw:Value>
+            <csw:Value>Siltti</csw:Value>
+            <csw:Value>Sisäisten aluevesien ulkoraja</csw:Value>
+            <csw:Value>Sisävedet</csw:Value>
+            <csw:Value>Sisävedet ja meret</csw:Value>
+            <csw:Value>Skyddade områden</csw:Value>
+            <csw:Value>Skyddsobjekt</csw:Value>
+            <csw:Value>Soil</csw:Value>
+            <csw:Value>Soil mapping</csw:Value>
+            <csw:Value>Soil type</csw:Value>
+            <csw:Value>Soil type classification</csw:Value>
+            <csw:Value>Sora</csw:Value>
+            <csw:Value>Stadsdelar</csw:Value>
+            <csw:Value>Statistical units</csw:Value>
+            <csw:Value>Statistican units</csw:Value>
+            <csw:Value>Statistiska enheter</csw:Value>
+            <csw:Value>Sulku</csw:Value>
+            <csw:Value>Suo</csw:Value>
+            <csw:Value>Suojellut alueet</csw:Value>
+            <csw:Value>Suojellut kohteet</csw:Value>
+            <csw:Value>Suojelualueet</csw:Value>
+            <csw:Value>Suojelukohteet</csw:Value>
+            <csw:Value>Suomi</csw:Value>
+            <csw:Value>Suorasaantilatauspalvelu</csw:Value>
+            <csw:Value>Suot</csw:Value>
+            <csw:Value>Suunnittelu</csw:Value>
+            <csw:Value>Suunnittelutarvealueet</csw:Value>
+            <csw:Value>Syvyys</csw:Value>
+            <csw:Value>Syvyysalue</csw:Value>
+            <csw:Value>Syvyyskäyrät</csw:Value>
+            <csw:Value>Syvyysmallit</csw:Value>
+            <csw:Value>Syvyyspisteet</csw:Value>
+            <csw:Value>Sähköhuolto</csw:Value>
+            <csw:Value>TUKES</csw:Value>
+            <csw:Value>Taajamageologia</csw:Value>
+            <csw:Value>Taajamat</csw:Value>
+            <csw:Value>Talvinopeusrajoitus</csw:Value>
+            <csw:Value>Tampere</csw:Value>
+            <csw:Value>Taululinja</csw:Value>
+            <csw:Value>Tektoniikka</csw:Value>
+            <csw:Value>Telecommunication networks</csw:Value>
+            <csw:Value>Teollisuus</csw:Value>
+            <csw:Value>Terrain and land cover</csw:Value>
+            <csw:Value>Terräng och landtäcke</csw:Value>
+            <csw:Value>Terrängkarta</csw:Value>
+            <csw:Value>Terveys ja turvallisuus</csw:Value>
+            <csw:Value>Tieliikenne</csw:Value>
+            <csw:Value>Tieliikenneverkko</csw:Value>
+            <csw:Value>Tieliikenneverkko, Osoitteet</csw:Value>
+            <csw:Value>Tieluokka</csw:Value>
+            <csw:Value>Tierekisteri</csw:Value>
+            <csw:Value>Tierekisteri, tieluokka</csw:Value>
+            <csw:Value>Tiet</csw:Value>
+            <csw:Value>Tietokannat</csw:Value>
+            <csw:Value>Tietokohdepalvelu</csw:Value>
+            <csw:Value>Tietoliikenneverkot</csw:Value>
+            <csw:Value>Tietotuotepalvelu</csw:Value>
+            <csw:Value>Tilastointiyksiköt</csw:Value>
+            <csw:Value>Tilastoyksiköt</csw:Value>
+            <csw:Value>Tillverkning</csw:Value>
+            <csw:Value>Toholampi</csw:Value>
+            <csw:Value>Toiminnallinen luokka</csw:Value>
+            <csw:Value>Tontit</csw:Value>
+            <csw:Value>Topografi</csw:Value>
+            <csw:Value>Topografia</csw:Value>
+            <csw:Value>Topographic map</csw:Value>
+            <csw:Value>Topography</csw:Value>
+            <csw:Value>Transport networks</csw:Value>
+            <csw:Value>Transportnät</csw:Value>
+            <csw:Value>Tulva</csw:Value>
+            <csw:Value>Tuotanto- ja teollisuuslaitokset</csw:Value>
+            <csw:Value>Turvalaite</csw:Value>
+            <csw:Value>Turvalaitteet</csw:Value>
+            <csw:Value>Turvallisuus- ja kemikaalivirasto</csw:Value>
+            <csw:Value>Turve</csw:Value>
+            <csw:Value>Tuulienergia</csw:Value>
+            <csw:Value>Tätorter</csw:Value>
+            <csw:Value>UVB</csw:Value>
+            <csw:Value>Uimavesi</csw:Value>
+            <csw:Value>Ulkoilureitit</csw:Value>
+            <csw:Value>Urheilu- ja liikuntapalvelut</csw:Value>
+            <csw:Value>Valaistus</csw:Value>
+            <csw:Value>Valokuva</csw:Value>
+            <csw:Value>Valtakunnanraja merellä</csw:Value>
+            <csw:Value>Valtakunnanrajat (valtiot)</csw:Value>
+            <csw:Value>Valtameret</csw:Value>
+            <csw:Value>Valuma-alueet</csw:Value>
+            <csw:Value>Vattenbyggnad</csw:Value>
+            <csw:Value>Vattendrag</csw:Value>
+            <csw:Value>Vedenalainen johto ja putki</csw:Value>
+            <csw:Value>Vedenalainen kaapeli ja putki</csw:Value>
+            <csw:Value>Vesi</csw:Value>
+            <csw:Value>Vesihuolto</csw:Value>
+            <csw:Value>Vesijohtoverkostot</csw:Value>
+            <csw:Value>Vesirakentaminen</csw:Value>
+            <csw:Value>Vesistöt</csw:Value>
+            <csw:Value>Vesiväylät</csw:Value>
+            <csw:Value>Veteli</csw:Value>
+            <csw:Value>Viemäriverkostot</csw:Value>
+            <csw:Value>Viestintäverkot</csw:Value>
+            <csw:Value>Viheralueet</csw:Value>
+            <csw:Value>Villages</csw:Value>
+            <csw:Value>Väestöjakauma</csw:Value>
+            <csw:Value>Väestöjakauma - demografia</csw:Value>
+            <csw:Value>Väestöjakauma – demografia</csw:Value>
+            <csw:Value>Väestömäärä</csw:Value>
+            <csw:Value>Väestön terveys ja turvallisuus</csw:Value>
+            <csw:Value>Väestöruutu</csw:Value>
+            <csw:Value>Vägtrafiknät</csw:Value>
+            <csw:Value>Väyläalue</csw:Value>
+            <csw:Value>Väylät</csw:Value>
+            <csw:Value>Vääräväri-ilmakuva</csw:Value>
+            <csw:Value>Väärävärikuva</csw:Value>
+            <csw:Value>WMS</csw:Value>
+            <csw:Value>WRB-classification</csw:Value>
+            <csw:Value>WRB-luokitus</csw:Value>
+            <csw:Value>Water bodies</csw:Value>
+            <csw:Value>Web Map Service</csw:Value>
+            <csw:Value>Wood product</csw:Value>
+            <csw:Value>Yhdyskuntasuunnittelu</csw:Value>
+            <csw:Value>Yhteiskunta</csw:Value>
+            <csw:Value>Yhteiskunta ja talous</csw:Value>
+            <csw:Value>Yhteiskuntasuunnittelu</csw:Value>
+            <csw:Value>Yksittäinen syvyyspiste</csw:Value>
+            <csw:Value>Yleishyödylliset ja muut julkiset palvelut</csw:Value>
+            <csw:Value>Yleiskaava</csw:Value>
+            <csw:Value>Yleiskaavoitus</csw:Value>
+            <csw:Value>Ympäristö</csw:Value>
+            <csw:Value>Ympäristölupa</csw:Value>
+            <csw:Value>Ympäristömelu</csw:Value>
+            <csw:Value>Ympäristön seuranta</csw:Value>
+            <csw:Value>Ympäristön tilan seurantalaitteet</csw:Value>
+            <csw:Value>Ympäristönsuojelu</csw:Value>
+            <csw:Value>Yritykset ja toimipaikat</csw:Value>
+            <csw:Value>aallonkorkeus</csw:Value>
+            <csw:Value>aallot</csw:Value>
+            <csw:Value>air temperature</csw:Value>
+            <csw:Value>ajantasayleiskaava</csw:Value>
+            <csw:Value>asemakaavoitus,ajantasa-asemakaava,Ilmakuvat,Ortokuvat,Opaskartta,rantakaava,ranta-ajantasa-asemakaava,yleiskaava,ajantasa-yleiskaava</csw:Value>
+            <csw:Value>atmospheric model</csw:Value>
+            <csw:Value>atmospheric precipitation</csw:Value>
+            <csw:Value>auringon paiste</csw:Value>
+            <csw:Value>auringon säteily</csw:Value>
+            <csw:Value>auringonpaiste</csw:Value>
+            <csw:Value>biomassa</csw:Value>
+            <csw:Value>capital</csw:Value>
+            <csw:Value>capital city</csw:Value>
+            <csw:Value>city of Helsinki</csw:Value>
+            <csw:Value>cloud</csw:Value>
+            <csw:Value>elinympäristöt</csw:Value>
+            <csw:Value>ennuste</csw:Value>
+            <csw:Value>gazetteer</csw:Value>
+            <csw:Value>hail</csw:Value>
+            <csw:Value>hajasäteily</csw:Value>
+            <csw:Value>havaintoasemat</csw:Value>
+            <csw:Value>heijastunut säteily</csw:Value>
+            <csw:Value>hetkellinen havainto</csw:Value>
+            <csw:Value>hila</csw:Value>
+            <csw:Value>humanGeographicFeatureEditor</csw:Value>
+            <csw:Value>humanGeographicViewer</csw:Value>
+            <csw:Value>ilmakuva</csw:Value>
+            <csw:Value>ilmakuvakartat</csw:Value>
+            <csw:Value>ilmakuvakartoitus</csw:Value>
+            <csw:Value>ilman lämpötila</csw:Value>
+            <csw:Value>ilmanlaatu</csw:Value>
+            <csw:Value>ilmanlaatuhavainnot</csw:Value>
+            <csw:Value>ilmanpaine</csw:Value>
+            <csw:Value>ilmasto</csw:Value>
+            <csw:Value>ilmastomalli</csw:Value>
+            <csw:Value>ilmastonmuutokset</csw:Value>
+            <csw:Value>ilmastonmuutos</csw:Value>
+            <csw:Value>infoCatalogueService</csw:Value>
+            <csw:Value>infoFeatureAccessService</csw:Value>
+            <csw:Value>infoFeatureTypeService</csw:Value>
+            <csw:Value>infoMapAccessService</csw:Value>
+            <csw:Value>infoProductAccessService</csw:Value>
+            <csw:Value>kadun nimet</csw:Value>
+            <csw:Value>kansainvälinen luokitus</csw:Value>
+            <csw:Value>kasvupaikat</csw:Value>
+            <csw:Value>katselupalvelu</csw:Value>
+            <csw:Value>katuluvat</csw:Value>
+            <csw:Value>katunimi</csw:Value>
+            <csw:Value>keskilämpötila</csw:Value>
+            <csw:Value>kokonaissäteily</csw:Value>
+            <csw:Value>kuukausiarvot</csw:Value>
+            <csw:Value>lumensyvyys</csw:Value>
+            <csw:Value>lumi</csw:Value>
+            <csw:Value>luonnonvarat</csw:Value>
+            <csw:Value>lyhytaaltoinen säteily</csw:Value>
+            <csw:Value>lämpötila</csw:Value>
+            <csw:Value>lämpötilan minimi- ja maksimiarvo</csw:Value>
+            <csw:Value>maankäyttö</csw:Value>
+            <csw:Value>maankäyttö kaava</csw:Value>
+            <csw:Value>maankäyttösopimukset</csw:Value>
+            <csw:Value>maannoskartoitus</csw:Value>
+            <csw:Value>maaperä geologia</csw:Value>
+            <csw:Value>maaperäkartoitus</csw:Value>
+            <csw:Value>maasalama</csw:Value>
+            <csw:Value>mareografit</csw:Value>
+            <csw:Value>matkailu</csw:Value>
+            <csw:Value>merenpinta</csw:Value>
+            <csw:Value>meret</csw:Value>
+            <csw:Value>merialueet</csw:Value>
+            <csw:Value>merimalli</csw:Value>
+            <csw:Value>merimallit</csw:Value>
+            <csw:Value>merivirtaukset</csw:Value>
+            <csw:Value>metsätalous</csw:Value>
+            <csw:Value>metsävarat</csw:Value>
+            <csw:Value>metsävarojen arviointi</csw:Value>
+            <csw:Value>mittausasemat</csw:Value>
+            <csw:Value>nimet</csw:Value>
+            <csw:Value>nimi</csw:Value>
+            <csw:Value>oikaistu ilmakuva</csw:Value>
+            <csw:Value>oppilaaksiottoalue</csw:Value>
+            <csw:Value>oppilasalue</csw:Value>
+            <csw:Value>ortoilmakuva</csw:Value>
+            <csw:Value>ortokuva</csw:Value>
+            <csw:Value>osayleiskaava</csw:Value>
+            <csw:Value>osoitteet</csw:Value>
+            <csw:Value>osoitteisto</csw:Value>
+            <csw:Value>paine</csw:Value>
+            <csw:Value>pilvi</csw:Value>
+            <csw:Value>pilvisalama</csw:Value>
+            <csw:Value>pintasäähavainnot</csw:Value>
+            <csw:Value>pintavesi</csw:Value>
+            <csw:Value>pintavesi tulva</csw:Value>
+            <csw:Value>pitkäaaltoinen säteily</csw:Value>
+            <csw:Value>poijut</csw:Value>
+            <csw:Value>posti</csw:Value>
+            <csw:Value>postialue</csw:Value>
+            <csw:Value>puutavaralaji</csw:Value>
+            <csw:Value>pääkaupunki</csw:Value>
+            <csw:Value>päästöskenaario</csw:Value>
+            <csw:Value>rain</csw:Value>
+            <csw:Value>reaaliaikainen</csw:Value>
+            <csw:Value>sade</csw:Value>
+            <csw:Value>sadealueet</csw:Value>
+            <csw:Value>sadekertymä</csw:Value>
+            <csw:Value>sademäärä</csw:Value>
+            <csw:Value>sadesumma</csw:Value>
+            <csw:Value>salama</csw:Value>
+            <csw:Value>salamanpaikannin</csw:Value>
+            <csw:Value>snow</csw:Value>
+            <csw:Value>spatialCoordinateTransformationService</csw:Value>
+            <csw:Value>suhteellinen kosteus</csw:Value>
+            <csw:Value>suolaisuus</csw:Value>
+            <csw:Value>suora säteily</csw:Value>
+            <csw:Value>säteilyhavainnot</csw:Value>
+            <csw:Value>säteilytase</csw:Value>
+            <csw:Value>säämalli</csw:Value>
+            <csw:Value>sään ennustaminen</csw:Value>
+            <csw:Value>taustailmanlaatu</csw:Value>
+            <csw:Value>tienimet</csw:Value>
+            <csw:Value>tietokanta</csw:Value>
+            <csw:Value>tontit</csw:Value>
+            <csw:Value>tontti</csw:Value>
+            <csw:Value>tulva</csw:Value>
+            <csw:Value>tulvat</csw:Value>
+            <csw:Value>tuuli</csw:Value>
+            <csw:Value>tuuliatlas</csw:Value>
+            <csw:Value>ulossäteily</csw:Value>
+            <csw:Value>urheilu</csw:Value>
+            <csw:Value>vastasäteily</csw:Value>
+            <csw:Value>vedenkorkeus</csw:Value>
+            <csw:Value>vesien tilan seuranta</csw:Value>
+            <csw:Value>vuorokausiarvot</csw:Value>
+            <csw:Value>wind</csw:Value>
+            <csw:Value>ympäristön seuranta</csw:Value>
+            <csw:Value>Äänestys</csw:Value>
+            <csw:Value>Äänestysalue</csw:Value>
+            <csw:Value>Äänestysalueet</csw:Value>
+        </csw:ListOfValues>
+    </csw:DomainValues>
+</csw:GetDomainResponse>
+

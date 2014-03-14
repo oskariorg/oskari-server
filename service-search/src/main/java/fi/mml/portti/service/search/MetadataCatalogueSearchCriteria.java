@@ -5,6 +5,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+/**
+ * Deprecated, use SearchCriteria.addParam(final String key, final Object value) instead.
+ */
+@Deprecated
 public class MetadataCatalogueSearchCriteria implements Serializable {
 	
 	private static final long serialVersionUID = -7935284078629412075L;

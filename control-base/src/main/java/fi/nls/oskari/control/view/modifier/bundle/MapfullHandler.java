@@ -218,11 +218,12 @@ public class MapfullHandler extends BundleHandler {
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+        log.debug("Analysis layer permissions for published view", permissionsList);
 
         for(Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
-            if(analyseBundlePresent && user.getUuid().equals(analysis.getUuid())) {
-                // should check if its users own before continue!!
+            if(analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
+                // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
             }
             final String permissionKey = "analysis+"+id;

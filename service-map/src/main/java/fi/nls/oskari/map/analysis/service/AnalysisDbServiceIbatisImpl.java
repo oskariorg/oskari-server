@@ -1,9 +1,13 @@
 package fi.nls.oskari.map.analysis.service;
 
 import com.ibatis.sqlmap.client.SqlMapSession;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -18,6 +22,7 @@ public class AnalysisDbServiceIbatisImpl extends
 
     private static final Logger log = LogFactory.getLogger(AnalysisDbServiceIbatisImpl.class);
 
+    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     @Override
     protected String getNameSpace() {
@@ -100,6 +105,11 @@ public class AnalysisDbServiceIbatisImpl extends
         final SqlMapSession session = openSession();
         try {
             session.startTransaction();
+            // remove resource & permissions
+            final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+            permissionsService.deleteResource(res);
+
+            // remove analysis
             session.delete(getNameSpace() + ".delete-analysis-data", analysis.getId());
             session.delete(getNameSpace() + ".delete-analysis", analysis.getId());
             // style is for now 1:1 to analysis so we can delete it here

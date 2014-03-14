@@ -40,8 +40,8 @@ public class AnalysisParser {
             "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
 
 
-    private static final String ANALYSIS_LAYER_PREFIX = "analysis_";
-    private static final String MYPLACES_LAYER_PREFIX = "myplaces_";
+    public static final String ANALYSIS_LAYER_PREFIX = "analysis_";
+    public static final String MYPLACES_LAYER_PREFIX = "myplaces_";
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
@@ -87,6 +87,14 @@ public class AnalysisParser {
     final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
+    public String getSourceLayerId(String layerJSON) {
+        JSONObject json = JSONHelper.createJSONObject(layerJSON);
+        return getSourceLayerId(json);
+    }
+
+    public String getSourceLayerId(JSONObject json) {
+        return json.optString(JSON_KEY_LAYERID);
+    }
 
     /**
      * Parses method parameters to WPS execute xml syntax

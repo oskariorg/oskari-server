@@ -93,7 +93,7 @@
         { "id" : "layerselection2" },
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
-        { "id" : "featuredata" },
+        { "id" : "featuredata2" },
         { "id" : "personaldata" ,
             "config" : {
                 "publishedMapUrl": {

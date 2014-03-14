@@ -550,16 +550,13 @@ public class PublishHandler extends ActionHandler {
             return false;
         }
 
-        final Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
-        final String permissionKey = "analysis+"+analysisId;
-        boolean hasPermission = false;
-        // TODO: check this logic
-        for(Role role : user.getRoles()) {
-            hasPermission = permissionsList.contains(permissionKey + ":" + role.getId());
-            if(hasPermission) {
-                break;
-            }
-        }
+        final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_PUBLISH);
+        log.debug("Analysis layer publish permissions", permissionsList);
+        final String permissionKey = "analysis+"+analysis.getId();
+
+        log.debug("PublishPermissions:", permissionsList);
+        boolean hasPermission = permissionsList.contains(permissionKey);
         if (hasPermission) {
             // write publisher name for analysis
             analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());

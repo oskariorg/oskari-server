@@ -2,6 +2,26 @@
 
 ## 1.19
 
+### service-search
+
+SearchCriteria no longer has reference to MetadataCatalogueSearchCriteria. SearchCriteria.addParam() can be used to provide search channel additional criterias.
+
+SearchResultItem now has addValue() that can be used to provide calling component additional search result values.
+
+### service-base/Caching
+
+CacheManager is now available and can be used to provide simple in-memory caches. This will most likely be developed further to allow configurable custom cache implementations that can be used to wrap functionality used by caching libraries (similar to UserService and Logger).
+
+### servlet-map
+
+Jetty-maven-plugin is no longer started automatically on install step. To start jetty on install you can use profile jetty-profile:
+
+mvn clean install -Pjetty-profile
+
+### content-resources/DBHandler
+
+Setup-files can now refer to another setup-file. This removes much boilerplate for registering bundles and should make the files simpler.
+
 ### Analysis functionality
 
 CreateAnalysisLayer action route now returns a proper analysislayer json (same as GetAnalysisLayersHandler)

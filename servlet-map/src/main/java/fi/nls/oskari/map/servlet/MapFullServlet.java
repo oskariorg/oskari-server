@@ -85,7 +85,7 @@ public class MapFullServlet extends HttpServlet {
         // init jedis
         JedisManager.connect(ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_POOL_SIZE), 30), PropertyUtil
-                .get(KEY_REDIS_HOSTNAME), ConversionHelper.getInt(PropertyUtil
+                .get(KEY_REDIS_HOSTNAME, "localhost"), ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_PORT), 6379));
 
         // subscribe to schema channel
@@ -166,8 +166,13 @@ public class MapFullServlet extends HttpServlet {
             log.error("Couldn't handle action:", route, ". Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_NOT_IMPLEMENTED, e.getOptions());
         } catch (ActionDeniedException e) {
-            // User tried to execute action he/she is not authorized to execute
-            log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
+            // User tried to execute action he/she is not authorized to execute or session had expired
+            if(params.getUser().isGuest()) {
+                log.error("Session expired - Action was denied:", route, ". Parameters: ", params.getRequest().getParameterMap());
+            }
+            else {
+                log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
+            }
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, e.getOptions());
         } catch (ActionException e) {
             // Internal failure -> print stack trace
