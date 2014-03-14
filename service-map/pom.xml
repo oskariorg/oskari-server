@@ -65,13 +65,12 @@
             <artifactId>gt-geojson</artifactId>
         </dependency>
         <dependency>
-<<<<<<< HEAD
           <groupId>org.geotools</groupId>
           <artifactId>gt-shapefile</artifactId>
-=======
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
->>>>>>> e52c074d0f9170e389e57d6c3c2075b0ea9cb82a
+        </dependency>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-epsg-hsql</artifactId>
         </dependency>
     </dependencies>
 
