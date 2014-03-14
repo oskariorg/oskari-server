@@ -1,20 +1,19 @@
 package fi.nls.oskari.map.userlayer.service;
 
-import java.util.List;
-
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseService;
 
-public interface UserLayerDbService extends BaseService<Analysis> {
+import java.util.List;
 
-        public long insertAnalysisRow(final Analysis analysis);
-        public int updateAnalysisCols(final Analysis analysis);
-        public Analysis getAnalysisById(long id);
-        public List<Analysis> getAnalysisById(List<Long> idList);
-        public List<Analysis> getAnalysisByUid(String uid);
-        public void deleteAnalysisById(final long id) throws ServiceException;
-        public void deleteAnalysis(final Analysis analysis) throws ServiceException;
-        public void mergeAnalysis(final Analysis analysis, final List<Long> ids) throws ServiceException;
+public interface UserLayerDbService extends BaseService<UserLayer> {
+
+        public long insertUserLayerRow(final UserLayer userlayer );
+        public int updateUserLayerCols(final UserLayer userlayer);
+        public UserLayer getUserLayerById(long id);
+        public List<UserLayer> getUserLayerByUid(String uid);
+        public void deleteUserLayerById(final long id) throws ServiceException;
+        public void deleteUserLayer(final UserLayer analysis) throws ServiceException;
         public int updatePublisherName(final long id, final String uuid, final String name);
 }

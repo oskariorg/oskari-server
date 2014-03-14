@@ -1,177 +1,168 @@
 package fi.nls.oskari.map.userlayer.service;
 
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
-import java.io.*;
-import java.util.*;
-
-import fi.nls.oskari.util.JSONHelper;
-import org.geotools.data.*;
-import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.data.wfs.v1_0_0.WFSFeatureStore;
-import org.geotools.data.wfs.v1_0_0.WFSTransactionState;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.geometry.jts.ReferencedEnvelope;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
+
+import java.util.Map;
 
 
 public class UserLayerDataService {
-    private WFSDataStoreFactory dsf;
-    private Map<String, Serializable> params;
+
     private Logger log = LogFactory.getLogger(UserLayerDataService.class);
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
+    private static final UserLayerDataDbService userLayerDataService = new UserLayerDataDbServiceIbatisImpl();
+    private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
+    private final static LayerJSONFormatterUSERLAYER FORMATTER = new LayerJSONFormatterUSERLAYER();
 
-    public void testwfs() {
-
-
-        try
-
-        {
-            dsf = new WFSDataStoreFactory();
-            params = new HashMap<String, Serializable>();
-            params.put(WFSDataStoreFactory.URL.key,
-                    "http://dev.paikkatietoikkuna.fi/geoserver/oskari/ows?request=GetCapabilities");
-
-            params.put(WFSDataStoreFactory.USERNAME.key, "liferay");
-
-            params.put(WFSDataStoreFactory.PASSWORD.key, "pationus");
+    private static final String USERLAYER_LAYER_PREFIX = "userlayer_";
+    private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
+    private static final String KEY_DESC = "layer-desc";
+    private static final String KEY_NAME = "layer-name";
+    private static final String KEY_SOURCE = "layer-source";
 
 
-            // Step 2 - connection
-            DataStore data = DataStoreFinder.getDataStore(params);
-            // WFSDataStore dataStore = dsf.createDataStore(params);
+    final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
-            // Step 3 - discouvery
-            String typeNames[] = data.getTypeNames();
-            String typeName = typeNames[0];
-            SimpleFeatureType schema = data.getSchema(typeName);
+    /**
+     *
+     * @param geoJson import data in geojson format
+     * @param user  oskari user
+     * @param layername  layer name in import file
+     * @param fparams  user given attributes for layer
+     * @return user layer data in user_layer table
+     */
 
-            // Step 4 - target
-            FeatureSource<SimpleFeatureType, SimpleFeature> source = data.getFeatureSource(typeName);
-            System.out.println("Metadata Bounds:" + source.getBounds());
-
-            // Step 5 - query
-            String geomName = schema.getGeometryDescriptor().getLocalName();
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
-            Filter idFilter = ff.equal(ff.property("layer_id"), ff.literal(1), false);
-           // Filter uidFilter = ff.equal(ff.property(layerUidField), ff.literal(uid), false);
-           // Filtter combi = ff.and(idFilter, uidFilter);
+    public UserLayer storeUserData(JSONObject geoJson, User user, String layername, Map<String, String> fparams) {
 
 
-           // Object polygon = JTS.toGeometry(bbox);
-            //Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
+        final UserLayer userLayer = new UserLayer();
 
-            Query query = new Query(typeName, idFilter);
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(query);
+        //TODO: Style insert
 
-            ReferencedEnvelope bounds = new ReferencedEnvelope();
-            FeatureIterator<SimpleFeature> iterator = features.features();
-            try
+        try {
+            // Insert user_layer row
+            // --------------------
+            userLayer.setLayer_name(layername);
+            userLayer.setLayer_desc("");
+            userLayer.setLayer_source("");
+            userLayer.setUuid(user.getUuid());
+            userLayer.setStyle_id(1);
+            if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
+            if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
+            if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
 
-            {
-                while (iterator.hasNext()) {
-                    Feature feature = (Feature) iterator.next();
-                    bounds.include(feature.getBounds());
-                }
-                System.out.println("Calculated Bounds:" + bounds);
-            } finally
+            log.debug("Adding user_layer row", userLayer);
+            userLayerService.insertUserLayerRow(userLayer);
 
-            {
-                features.features().close();
+            // Insert user_layer data rows
+            // --------------------
+
+            int count = this.storeUserLayerData(geoJson, user, userLayer.getId());
+            log.info("stored ", count, " rows");
+
+            if (count == 0) {
+                return null;
+                //TODO:  delete user_layer row if no rows
             }
+
         } catch (Exception e) {
-            log.error("Couldn't get wfs features",
-                    e);
+            log
+                    .debug(
+                            "Unable to store user layer data",
+                            e);
+            return null;
         }
+
+        return userLayer;
     }
-    public void doWfsInsert(JSONObject geoJson) {
 
-        try
-
-        {
-            dsf = new WFSDataStoreFactory();
-            params = new HashMap<String, Serializable>();
-            params.clear();
-            params.put(WFSDataStoreFactory.URL.key,
-                    "http://dev.paikkatietoikkuna.fi/geoserver/oskari/ows?request=GetCapabilities&service=wfs&version=1.0.0");
-
-            params.put(WFSDataStoreFactory.USERNAME.key, "liferay");
-
-            params.put(WFSDataStoreFactory.PASSWORD.key, "liferay");
+    /**
+     *
+     * @param geoJson   import data in geojson format
+     * @param user   oskari user
+     * @param id user layer id in user_layer table
+     * @return
+     */
+    public int storeUserLayerData(JSONObject geoJson, User user, long id) {
 
 
-            // Step 1 - wfs connection
-            DataStore ds = DataStoreFinder.getDataStore(params);
+        int count = 0;
+        String uuid = user.getUuid();
 
-            // Step 2 - target
-            String typeName = "oskari:user_layer_data";
-
-            SimpleFeatureType schema = ds.getSchema(typeName);
-
-            Transaction t = new DefaultTransaction();
-            WFSFeatureStore fs = (WFSFeatureStore) ds.getFeatureSource(typeName);
-            fs.setTransaction(t);
-
-            // Step 3 - input
-            FeatureJSON jsonio = new FeatureJSON();
-            //jsonio.setFeatureType(schema);
-
+        try {
             JSONArray geofeas = geoJson.getJSONArray("features");
-            DefaultFeatureCollection  fc = new DefaultFeatureCollection();
+            DefaultFeatureCollection fc = new DefaultFeatureCollection();
 
             // Loop json features and fix to user_layer_data structure
-            for(int i = 0; i < geofeas.length(); i++)
-            {
-                JSONObject geofea= geofeas.getJSONObject(i);
+            for (int i = 0; i < geofeas.length(); i++) {
+                JSONObject geofea = geofeas.getJSONObject(i);
 
                 // Fix fea properties  (user_layer_id, uuid, property_json, feature_id
-                JSONObject userproperties = new JSONObject();
-                JSONHelper.putValue(userproperties,"user_layer_id",1);
-                JSONHelper.putValue(userproperties,"uuid",0);
-                JSONHelper.putValue(userproperties, "feature_id", geofea.optString("id", ""));
-                //JSONHelper.putValue(userproperties,"properties",JSONHelper.getStringFromJSON(geofea.getJSONObject("properties"), "{}"));
-                //JSONHelper.putValue(userproperties,"properties","test");
+                final UserLayerData userLayerData = new UserLayerData();
+                userLayerData.setUuid(uuid);
+                userLayerData.setFeature_id(geofea.optString("id", ""));
+                userLayerData.setGeometry(geofea.optJSONObject("geometry").toString());
+                userLayerData.setProperty_json(geofea.optJSONObject("properties").toString());
+                userLayerData.setUser_layer_id(id);
 
-                geofea.put("properties", userproperties);
-                // Create feature and add to
-                SimpleFeature f2 = jsonio.readFeature(geofea.toString());
-                fc.add(f2);
+                userLayerDataService.insertUserLayerDataRow(userLayerData);
+                count++;
 
             }
-
-            // Step 4 - featurecollection for to store
-
-            FeatureCollection test = jsonio.readFeatureCollection(geoJson.toString());
-
-
-            fs.addFeatures(fc.reader());
-
-
-            t.commit();
-
-
-
-
-            WFSTransactionState ts = (WFSTransactionState) t.getState(ds);
-
-            String[] fids = ts.getFids(typeName);
-
-               int tt=0;
-
         } catch (Exception e) {
-            log.error("Couldn't get wfs features",
-                    e);
+            log
+                    .debug(
+                            "Unable to store user layer data",
+                            e);
+            return 0;
+        }
+
+        return count;
+    }
+
+
+    /**
+     *
+     * @param ulayer   data in user_layer table
+     * @return
+     * @throws ServiceException
+     */
+    public JSONObject parseUserLayer2JSON(UserLayer ulayer) throws ServiceException {
+
+        try {
+            int id = ConversionHelper.getInt(userlayerBaseLayerId, 0);
+            if (id == 0) return null;
+
+            final OskariLayer wfsuserLayer = mapLayerService.find(id);
+
+            // Merge userlayer values
+            wfsuserLayer.setExternalId(USERLAYER_LAYER_PREFIX + ulayer.getId());
+            wfsuserLayer.setName(ulayer.getLayer_name());
+            wfsuserLayer.setType(OskariLayer.TYPE_USERLAYER);
+
+            JSONObject json = FORMATTER.getJSON(wfsuserLayer, PropertyUtil.getDefaultLanguage(), false, ulayer);
+
+            return json;
+
+        } catch (Exception ex) {
+            log.error("Couldn't parse userlayer to json", ex);
+            return null;
         }
     }
+
 }

@@ -4,213 +4,120 @@
     PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
     "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="Analysis">
+<sqlMap namespace="UserLayer">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="Analysis"
-        type="fi.nls.oskari.domain.map.analysis.Analysis" />
+    <typeAlias alias="UserLayer"
+        type="fi.nls.oskari.domain.map.userlayer.UserLayer" />
 
 
-
-    <resultMap id="AnalysisResult" class="Analysis">
+    <resultMap id="UserLayerResult" class="UserLayer">
         <result property="id" column="id" />
         <result property="uuid" column="uuid" />
-        <result property="name" column="name" />
-        <result property="layer_id" column="layer_id" />
-        <result property="analyse_json" column="analyse_json" />
+        <result property="layer_name" column="_layer_name" />
+        <result property="layer_desc" column="layer_desc" />
+        <result property="layer_source" column="layer_source" />
+        <result property="publisher_name" column="publisher_name" />
         <result property="style_id" column="style_id" />
-        <result property="col1" column="col1" />
-        <result property="col2" column="col2" />
-        <result property="col3" column="col3" />
-        <result property="col4" column="col4" />
-        <result property="col5" column="col5" />
-        <result property="col6" column="col6" />
-        <result property="col7" column="col7" />
-        <result property="col8" column="col8" />
-        <result property="col9" column="col9" />
-        <result property="col10" column="col10" />
-        <result property="select_to_data" column="select_to_data" />
-
     </resultMap>
 
 
 
-    <select id="findAnalysis" parameterClass="long" resultMap="AnalysisResult">
+    <select id="findUserLayer" parameterClass="long" resultMap="UserLayerResult">
         select
         id,
         uuid,
-        name,
-        layer_id,
-        analyse_json,
-        style_id,
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
-        select_to_data
-
+        layer_name,
+        layer_desc,
+        layer_source,
+        publisher_name,
+        style_id
         from
-        analysis
+        user_layer
         where id = #id# 
  
     </select>
 
-    <select id="findByIds" parameterClass="List" resultMap="AnalysisResult">
-        select
-        id,
-        uuid,
-        name,
-        layer_id,
-        analyse_json,
-        style_id,
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
-        select_to_data
-
-        from
-        analysis
-        where id in
-        <iterate open="(" close=")" conjunction=",">
-            #[]#
-        </iterate>
-    </select>
     
-     <select id="findAnalysisByUid" parameterClass="string" resultMap="AnalysisResult">
+     <select id="findUserLayerByUid" parameterClass="string" resultMap="UserLayerResult">
         select
-        id,
+          id,
         uuid,
-        name,
-        layer_id,
-        analyse_json,
-        style_id,
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
-        select_to_data
-
+        layer_name,
+        layer_desc,
+        layer_source,
+        publisher_name,
+        style_id
         from
-        analysis
+         user_layer
         where uuid = #uid# 
  
     </select>
     
 
-    <statement id="deleteAnalysis" parameterClass="long">
+    <statement id="deleteUserLayer" parameterClass="long">
         delete from
-        analysis where id=#analysisId#
+         user_layer where id=#layerId#
     </statement>
 
 
 
-    <statement id="insertAnalysis" resultClass="java.lang.Long"
-        parameterClass="Analysis">
-        INSERT INTO analysis (
+    <statement id="insertUserLayer" resultClass="java.lang.Long"
+        parameterClass="UserLayer">
+        INSERT INTO user_layer (
         uuid,
-        name,
-        layer_id,
-        analyse_json,
-        style_id,
-        col1,
-        col2,
-        col3,
-        col4,
-        col5,
-        col6,
-        col7,
-        col8,
-        col9,
-        col10,
-        select_to_data )
-        VALUES ( #uuid#,
-        #name#,
-        #layer_id#,
-        #analyse_json#,
-        #style_id#,
-        #col1#,
-        #col2#,
-        #col3#,
-        #col4#,
-        #col5#,
-        #col6#,
-        #col7#,
-        #col8#,
-        #col9#,
-        #col10#,
-        #select_to_data# )
+        layer_name,
+        layer_desc,
+        layer_source,
+        publisher_name,
+        style_id)
+        VALUES (
+        #uuid#,
+        #layer_name#,
+        #layer_desc#,
+        #layer_source#,
+        #publisher_name#,
+        #style_id#)
         RETURNING
         id
     </statement>
 
 
-    <update id="updateAnalysisCols" parameterClass="Analysis">
+    <update id="updateUserLayerCols" parameterClass="UserLayer">
         update
-        analysis set
-        col1 = #col1#,
-        col2 = #col2#,
-        col3 = #col3#,
-        col4 = #col4#,
-        col5 = #col5#,
-        col6 = #col6#,
-        col7 = #col7#,
-        col8 = #col8#,
-        col9 = #col9#,
-        col10 = #col10#,
-        select_to_data = #select_to_data#
-
-        where id = #id#
-    </update>
-    <update id="merge-analysis-data" parameterClass="Analysis">
-    update
-    analysis_data set
-    analysis_id = #id#
-    WHERE analysis_id = #old_id#
+        user_layer set
+        layer_name = #layer_name#,
+        layer_desc = #layer_desc#,
+        layer_source = #layer_source#,
+        publisher_name = #publisher_name#,
+        style_id = #style_id#
+        where id = #id# and uuid =#uuid#
     </update>
 
-    <statement id="delete-analysis-data"
+    <statement id="delete-userLayer-data"
                parameterClass="java.lang.Long">
-        DELETE FROM analysis_data WHERE analysis_id = #id#
+        DELETE FROM user_layer_data WHERE layer_id = #id#
     </statement>
 
-    <statement id="delete-analysis"
+    <statement id="delete-userLayer"
                parameterClass="java.lang.Long">
-        DELETE FROM analysis WHERE id = #id#
+        DELETE FROM user_layer WHERE id = #id#
     </statement>
 
-    <statement id="delete-analysis-style"
+    <statement id="delete-userLayer-style"
                parameterClass="java.lang.Long">
-        <!-- Note! id is style_id from analysis table -->
-        DELETE FROM analysis_style WHERE id = #id#
+        <!-- Note! id is style_id from user_layer table -->
+        DELETE FROM user_layer_style WHERE id = #id#
     </statement>
-    <statement id=" delete-analysis-style-by-analysis-id"
+    <statement id=" delete-userLayer-style-by-layer-id"
                parameterClass="java.lang.Long">
-        <!-- Note! id is style_id from analysis table -->
-        DELETE FROM analysis_style WHERE id = #id#
+        <!-- Note! id is style_id from user_layer table -->
+        DELETE FROM user_layer_style WHERE id = #id#
     </statement>
 
     <update id="updatePublisherName"
         parameterClass="Map">
-        update analysis set
+        update user_layer set
             publisher_name = #publisher_name:VarChar#
         where uuid = #uuid# and id = #id#
     </update>

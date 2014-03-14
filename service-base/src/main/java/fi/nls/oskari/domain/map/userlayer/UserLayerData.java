@@ -4,12 +4,11 @@ package fi.nls.oskari.domain.map.userlayer;
 public class UserLayerData {
 
     private long id;
+    private long user_layer_id;
     private String uuid;
-    private String layer_name;
-    private String layer_desc;
-    private String layer_source;
-    private String publisher_name;
-    private long style_id;
+    private String feature_id ;
+    private String property_json;
+    private String  geometry;
 
     public long getId() {
         return id;
@@ -17,6 +16,14 @@ public class UserLayerData {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUser_layer_id() {
+        return user_layer_id;
+    }
+
+    public void setUser_layer_id(long user_layer_id) {
+        this.user_layer_id = user_layer_id;
     }
 
     public String getUuid() {
@@ -27,43 +34,27 @@ public class UserLayerData {
         this.uuid = uuid;
     }
 
-    public String getLayer_name() {
-        return layer_name;
+    public String getFeature_id() {
+        return feature_id;
     }
 
-    public void setLayer_name(String layer_name) {
-        this.layer_name = layer_name;
+    public void setFeature_id(String feature_id) {
+        this.feature_id = feature_id;
     }
 
-    public String getLayer_desc() {
-        return layer_desc;
+    public String getProperty_json() {
+        return property_json;
     }
 
-    public void setLayer_desc(String layer_desc) {
-        this.layer_desc = layer_desc;
+    public void setProperty_json(String property_json) {
+        this.property_json = property_json;
     }
 
-    public String getLayer_source() {
-        return layer_source;
+    public String getGeometry() {
+        return geometry;
     }
 
-    public void setLayer_source(String layer_source) {
-        this.layer_source = layer_source;
-    }
-
-    public String getPublisher_name() {
-        return publisher_name;
-    }
-
-    public void setPublisher_name(String publisher_name) {
-        this.publisher_name = publisher_name;
-    }
-
-    public long getStyle_id() {
-        return style_id;
-    }
-
-    public void setStyle_id(long style_id) {
-        this.style_id = style_id;
+    public void setGeometry(String geometry) {
+        this.geometry = geometry;
     }
 }
