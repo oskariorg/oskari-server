@@ -14,7 +14,7 @@
     <resultMap id="UserLayerResult" class="UserLayer">
         <result property="id" column="id" />
         <result property="uuid" column="uuid" />
-        <result property="layer_name" column="_layer_name" />
+        <result property="layer_name" column="layer_name" />
         <result property="layer_desc" column="layer_desc" />
         <result property="layer_source" column="layer_source" />
         <result property="publisher_name" column="publisher_name" />
