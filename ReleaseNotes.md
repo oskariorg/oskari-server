@@ -2,9 +2,15 @@
 
 ## 1.19
 
+### service-search
+
+SearchCriteria no longer has reference to MetadataCatalogueSearchCriteria. SearchCriteria.addParam() can be used to provide search channel additional criterias.
+
+SearchResultItem now has addValue() that can be used to provide calling component additional search result values.
+
 ### service-base/Caching
 
-CacheManager is now available and can be used to provide simple in-memory caches.
+CacheManager is now available and can be used to provide simple in-memory caches. This will most likely be developed further to allow configurable custom cache implementations that can be used to wrap functionality used by caching libraries (similar to UserService and Logger).
 
 ### servlet-map
 

@@ -565,8 +565,7 @@ public class IOHelper {
     public static void close(final Closeable in) {
         try {
             in.close();
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) { }
     }
 
     /**

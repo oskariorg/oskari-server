@@ -1,6 +1,8 @@
 package fi.mml.portti.service.search;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Search result item.
@@ -31,9 +33,28 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String trunkateDescription;
 	private boolean downloadable = false;
 	private boolean downloadAllowed = false;
+    private Map<String, Object> properties = new HashMap<String, Object>();
 	
 	private int rank;
-	
+
+    /**
+     * Add custom result field value for result
+     * @param key
+     * @param value
+     */
+    public void addValue(final String key, final Object value) {
+        properties.put(key, value);
+    }
+
+    /**
+     * Get value for a custom result field
+     * @param key
+     * @return
+     */
+    public Object getValue(final String key) {
+        return properties.get(key);
+    }
+
 	public String toString() {
 		return "resourceId=" + resourceId + ", resourceNameSpace=" + resourceNameSpace 
 		+ ", title=" + title + ", actionURL=" + actionURL + ", gmdURL=" + gmdURL;
