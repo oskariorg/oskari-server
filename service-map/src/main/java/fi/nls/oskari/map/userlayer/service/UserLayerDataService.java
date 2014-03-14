@@ -142,7 +142,7 @@ public class UserLayerDataService {
      * @return
      * @throws ServiceException
      */
-    public JSONObject parseUserLayer2JSON(UserLayer ulayer) throws ServiceException {
+    public JSONObject parseUserLayer2JSON(UserLayer ulayer)  {
 
         try {
             int id = ConversionHelper.getInt(userlayerBaseLayerId, 0);
