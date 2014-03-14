@@ -19,7 +19,7 @@ public class AnalysisAndStyleDbServiceIbatisImpl extends
 	     * single portlet
 	     */
 	    protected String getSqlMapLocation() {
-	        return "META-INF/SqlMapConfig_AnalysisAndStyle.xml";
+	        return "META-INF/SqlMapConfig_Analysis.xml";
 	    }
 
 	  
