@@ -8,13 +8,15 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 
   <settings enhancementEnabled="true" useStatementNamespaces="true"/>
 
-    <!-- Use custom myplaces datasource -->
+    <!-- Use custom analysis datasource -->
   <transactionManager type="JDBC" commitRequired="true">
     <dataSource type="JNDI">
-      <property name="DataSource" value="java:/comp/env/jdbc/omat_paikatPool" />
+      <property name="DataSource" value="java:/comp/env/jdbc/analysisPool" />
     </dataSource>
   </transactionManager>
   
-  <sqlMap resource="META-INF/MyPlace.xml" />
+   <sqlMap resource="META-INF/Analysis.xml" />
+   <sqlMap resource="META-INF/AnalysisStyle.xml" />
+   <sqlMap resource="META-INF/AnalysisAndStyle.xml" />
  
 </sqlMapConfig>
