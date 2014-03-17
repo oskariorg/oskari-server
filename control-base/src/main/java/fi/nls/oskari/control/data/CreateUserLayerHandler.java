@@ -213,6 +213,9 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             int i =  fileName.lastIndexOf(".");
             String[] parts =  {fileName.substring(0, i),fileName.substring(i+1)};
+            // Clean and jump extra files
+            String parts0 = checkFileName(parts[0]);
+            if(parts0 == null) continue;
 
             if (parts.length < 2) return null;
             if (ACCEPTED_FORMATS.contains(parts[1]))
@@ -220,7 +223,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 imp_extension = parts[1];
             }
 
-            File newFile = File.createTempFile(parts[0],"."+parts[1]);
+            File newFile = File.createTempFile(parts0,"."+parts[1]);
 
             log.info("file unzip : " + newFile.getAbsoluteFile());
 
@@ -267,5 +270,11 @@ public class CreateUserLayerHandler extends ActionHandler {
         return  new File(filename+"."+imp_extension);
     }
 
-
+  private static String checkFileName(String filenam)
+  {
+      // no dots any more allowed
+      if(filenam.indexOf(".") > -1 ) return null;
+      String[] parts = filenam.split("\\/");
+      return parts[parts.length-1];
+  }
 }

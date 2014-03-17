@@ -40,10 +40,10 @@ public class UserLayerDataDbServiceIbatisImpl extends
 
     public long insertUserLayerDataRow(final UserLayerData userLayer) {
 
-        log.debug("Insert user layer data row:", userLayer);
+       // log.debug("Insert user layer data row:", userLayer);
         final Long id = queryForObject(getNameSpace() + ".insertUserLayerData", userLayer);
         userLayer.setId(id);
-        log.debug("Got user layer data id:", id);
+
         return id;
     }
 
