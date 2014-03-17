@@ -48,6 +48,10 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     public static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
     public static final String MYPLACES_PREFIX = "myplaces_";
 
+    // User layer
+    public static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
+    public static final String USERLAYER_PREFIX = "userlayer_";
+
     public void handleAction(ActionParameters params) throws ActionException {
 
         final JSONObject root = new JSONObject();
@@ -89,6 +93,11 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
                 // set id to original my places layer id
                 lc.setLayerId(sid);
             }
+            else if (sid.indexOf(USERLAYER_PREFIX) > -1) {
+                log.warn("sid", sid);
+                // set id to original user layer id
+                lc.setLayerId(sid);
+            }
             if (lc == null) {
                 JSONHelper.putValue(root, ERROR, ERROR_NOT_FOUND);
                 ResponseHelper.writeResponse(params, root);
@@ -116,6 +125,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         }
         else if (sid.indexOf(MYPLACES_PREFIX) == 0) {
             id = PropertyUtil.get(MYPLACES_BASELAYER_ID);
+        }
+        else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+            id = PropertyUtil.get(USERLAYER_BASELAYER_ID);
         }
         return id;
     }

@@ -50,6 +50,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
+    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("shp");
+
 
     @Override
     public void init() {
@@ -193,7 +195,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static File unZip(FileItem zipFile) throws Exception {
 
         byte[] buffer = new byte[1024];
-
+        String imp_extension = null;
         String filename = null;
 
         ZipInputStream zis = new ZipInputStream(zipFile.getInputStream());
@@ -210,11 +212,15 @@ public class CreateUserLayerHandler extends ActionHandler {
             String fileName = ze.getName();
 
             int i =  fileName.lastIndexOf(".");
-            String[] parts =  {fileName.substring(0, i),fileName.substring(i)};
+            String[] parts =  {fileName.substring(0, i),fileName.substring(i+1)};
 
             if (parts.length < 2) return null;
+            if (ACCEPTED_FORMATS.contains(parts[1]))
+            {
+                imp_extension = parts[1];
+            }
 
-            File newFile = File.createTempFile(parts[0],"."+ parts[1]);
+            File newFile = File.createTempFile(parts[0],"."+parts[1]);
 
             log.info("file unzip : " + newFile.getAbsoluteFile());
 
@@ -250,8 +256,15 @@ public class CreateUserLayerHandler extends ActionHandler {
         zis.closeEntry();
         zis.close();
 
-        // master file of Esri shape file set
-        return  new File(filename+".shp");
+        // is acceptable extension found
+        if (imp_extension == null)
+        {
+            log.info("Acceptable format extension not found - valid extensions: ",ACCEPTED_FORMATS );
+            return null;
+        }
+
+        // master file of import  file set
+        return  new File(filename+"."+imp_extension);
     }
 
 

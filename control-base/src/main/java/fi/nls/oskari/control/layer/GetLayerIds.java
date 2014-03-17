@@ -42,6 +42,7 @@ public class GetLayerIds extends ActionHandler {
         super.init();
         final String[] properties = {
                 GetWFSLayerConfigurationHandler.ANALYSIS_BASELAYER_ID,
+                GetWFSLayerConfigurationHandler.USERLAYER_BASELAYER_ID,
                 GetWFSLayerConfigurationHandler.MYPLACES_BASELAYER_ID
         };
         for(String prop: properties) {
