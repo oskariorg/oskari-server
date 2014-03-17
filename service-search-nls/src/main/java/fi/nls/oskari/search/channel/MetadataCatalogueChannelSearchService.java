@@ -60,6 +60,10 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             "./" + GMD_NAMESPACE + ":abstract";
     private static final String IMAGE_FILE_NAME_EXPRESSION =
             "./" + GMD_NAMESPACE + ":graphicOverview[position()=last()]/" + GMD_NAMESPACE + ":MD_BrowseGraphic/" + GMD_NAMESPACE + ":fileName";
+
+    private static final String XPATH_ORGANIZATION =
+            "./" + GMD_NAMESPACE + ":pointOfContact/" + GMD_NAMESPACE + ":CI_ResponsibleParty/" + GMD_NAMESPACE + ":organisationName/" + GCO_NAMESPACE + ":CharacterString";
+
     // root for west, south, east and north
     private static final String BBOX_EXPRESSION =
             // Someone is serving extent with srv namespace...
@@ -260,6 +264,11 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             if (imageFileNameNode != null) {
                 imageFileName = getLocalizedString(xpath, imageFileNameNode, locales);
             }
+
+
+
+            String organization = (String) xpath.evaluate(XPATH_ORGANIZATION, identificationNode, XPathConstants.STRING);
+            searchResultItem.addValue(MetadataField.ORGANIZATION.getProperty(), organization);
 
             Node boundingBoxnode = (Node) xpath.evaluate(BBOX_EXPRESSION, identificationNode, XPathConstants.NODE);
             if (boundingBoxnode != null) {

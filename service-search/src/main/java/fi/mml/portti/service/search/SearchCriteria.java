@@ -118,6 +118,9 @@ public class SearchCriteria implements Serializable {
 	}
 
 	public String getLocale() {
+        if(locale == null) {
+            return PropertyUtil.getDefaultLanguage();
+        }
 		return locale;
 	}
 

@@ -21,8 +21,14 @@ public class CoverageHandler extends MetadataFieldHandler {
 
     private final Logger log = LogFactory.getLogger(CoverageHandler.class);
 
-    // FIXME: the service is old code but the table it's trying to use is not in the db
-    private static VillageService villageService = new VillageServiceIbatisImpl();
+    // the table for villages is in another DB
+    // FIXME: bring the table with contents to common DB or expose as a service
+    private static VillageService villageService = new VillageServiceIbatisImpl() {
+        @Override
+        protected String getSqlMapLocation() {
+            return "/META-INF/SqlMapConfigMMLPool.xml";
+        }
+    };
 
     public JSONArray getOptions(final String language) {
         final JSONArray values = new JSONArray();
