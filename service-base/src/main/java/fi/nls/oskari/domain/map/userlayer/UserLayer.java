@@ -12,6 +12,7 @@ public class UserLayer {
     private String layer_name;
     private String layer_desc;
     private String layer_source;
+    private String fields;
     private String publisher_name;
     private long style_id;
 
@@ -53,6 +54,14 @@ public class UserLayer {
 
     public void setLayer_source(String layer_source) {
         this.layer_source = layer_source;
+    }
+
+    public String getFields() {
+        return fields;
+    }
+
+    public void setFields(String fields) {
+        this.fields = fields;
     }
 
     public String getPublisher_name() {

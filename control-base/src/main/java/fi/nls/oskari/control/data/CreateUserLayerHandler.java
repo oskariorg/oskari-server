@@ -110,7 +110,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             // Store geojson via ibatis
 
-            UserLayer ulayer = userlayerService.storeUserData(geoJson, user, typeName, fparams);
+            UserLayer ulayer = userlayerService.storeUserData(geoJson, user, typeName, schema, fparams);
 
             params.getResponse().setContentType("application/json;charset=utf-8");
             ResponseHelper.writeResponse(params,  userlayerService.parseUserLayer2JSON(ulayer));
@@ -209,7 +209,8 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             String fileName = ze.getName();
 
-            String[] parts = fileName.split("[.]");
+            int i =  fileName.lastIndexOf(".");
+            String[] parts =  {fileName.substring(0, i),fileName.substring(i)};
 
             if (parts.length < 2) return null;
 
@@ -228,7 +229,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             if (filename == null)
             {
-                int i =  newFile.getPath().lastIndexOf(".");
+                i =  newFile.getPath().lastIndexOf(".");
                 String[] parts3 =  {newFile.getPath().substring(0, i),newFile.getPath().substring(i)};
 
                 filename = parts3[0];
@@ -238,7 +239,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 // Use same file name basics
 
 
-                int i =  newFile.getPath().lastIndexOf(".");
+                i =  newFile.getPath().lastIndexOf(".");
                 String[] parts3 =  {newFile.getPath().substring(0, i),newFile.getPath().substring(i)};
                 newFile.renameTo(new File(filename+parts3[1]));
             }

@@ -11,12 +11,16 @@ import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.feature.DefaultFeatureCollection;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 
 import java.util.Map;
 
@@ -35,7 +39,6 @@ public class UserLayerDataService {
     private static final String KEY_NAME = "layer-name";
     private static final String KEY_SOURCE = "layer-source";
 
-
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
     /**
@@ -43,11 +46,12 @@ public class UserLayerDataService {
      * @param geoJson import data in geojson format
      * @param user  oskari user
      * @param layername  layer name in import file
+     * @param schema  field names of data
      * @param fparams  user given attributes for layer
      * @return user layer data in user_layer table
      */
 
-    public UserLayer storeUserData(JSONObject geoJson, User user, String layername, Map<String, String> fparams) {
+    public UserLayer storeUserData(JSONObject geoJson, User user, String layername, FeatureType schema, Map<String, String> fparams) {
 
 
         final UserLayer userLayer = new UserLayer();
@@ -60,6 +64,7 @@ public class UserLayerDataService {
             userLayer.setLayer_name(layername);
             userLayer.setLayer_desc("");
             userLayer.setLayer_source("");
+            userLayer.setFields(parseFields(schema));
             userLayer.setUuid(user.getUuid());
             userLayer.setStyle_id(1);
             if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
@@ -164,5 +169,20 @@ public class UserLayerDataService {
             return null;
         }
     }
+    public String parseFields(FeatureType schema)  {
 
+        JSONObject jsfields = new JSONObject();
+        try {
+           String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
+           String[] tfields = fields.split("[:,]");
+            for( int i = 0; i < tfields.length - 1; i=i+2)
+            {
+                jsfields.put(tfields[i], tfields[i+1]);
+            }
+
+        } catch (Exception ex) {
+            log.error("Couldn't parse field schema", ex);
+        }
+        return JSONHelper.getStringFromJSON(jsfields, "{}");
+    }
 }
