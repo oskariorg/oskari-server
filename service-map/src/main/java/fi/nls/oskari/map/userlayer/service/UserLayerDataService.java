@@ -42,16 +42,13 @@ public class UserLayerDataService {
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
     /**
-     *
-     * @param geoJson import data in geojson format
-     * @param user  oskari user
-     * @param layername  layer name in import file
-     * @param schema  field names of data
-     * @param fparams  user given attributes for layer
+     * @param gjsWorker geoJSON and featurecollection items
+     * @param user      oskari user
+     * @param fparams   user given attributes for layer
      * @return user layer data in user_layer table
      */
 
-    public UserLayer storeUserData(JSONObject geoJson, User user, String layername, FeatureType schema, Map<String, String> fparams) {
+    public UserLayer storeUserData(GeoJsonWorker gjsWorker, User user, Map<String, String> fparams) {
 
 
         final UserLayer userLayer = new UserLayer();
@@ -59,12 +56,13 @@ public class UserLayerDataService {
         //TODO: Style insert
 
         try {
+
             // Insert user_layer row
             // --------------------
-            userLayer.setLayer_name(layername);
+            userLayer.setLayer_name(gjsWorker.getTypeName());
             userLayer.setLayer_desc("");
             userLayer.setLayer_source("");
-            userLayer.setFields(parseFields(schema));
+            userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
             userLayer.setUuid(user.getUuid());
             userLayer.setStyle_id(1);
             if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
@@ -77,7 +75,7 @@ public class UserLayerDataService {
             // Insert user_layer data rows
             // --------------------
 
-            int count = this.storeUserLayerData(geoJson, user, userLayer.getId());
+            int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
             log.info("stored ", count, " rows");
 
             if (count == 0) {
@@ -97,10 +95,9 @@ public class UserLayerDataService {
     }
 
     /**
-     *
-     * @param geoJson   import data in geojson format
-     * @param user   oskari user
-     * @param id user layer id in user_layer table
+     * @param geoJson import data in geojson format
+     * @param user    oskari user
+     * @param id      user layer id in user_layer table
      * @return
      */
     public int storeUserLayerData(JSONObject geoJson, User user, long id) {
@@ -110,12 +107,15 @@ public class UserLayerDataService {
         String uuid = user.getUuid();
 
         try {
-            JSONArray geofeas = geoJson.getJSONArray("features");
+            final JSONArray geofeas = geoJson.getJSONArray("features");
             DefaultFeatureCollection fc = new DefaultFeatureCollection();
 
             // Loop json features and fix to user_layer_data structure
             for (int i = 0; i < geofeas.length(); i++) {
-                JSONObject geofea = geofeas.getJSONObject(i);
+
+                JSONObject geofea = geofeas.optJSONObject(i);
+                if (geofea == null) continue;
+                if (!geofea.has("geometry")) continue;
 
                 // Fix fea properties  (user_layer_id, uuid, property_json, feature_id
                 final UserLayerData userLayerData = new UserLayerData();
@@ -127,6 +127,7 @@ public class UserLayerDataService {
 
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
                 count++;
+
 
             }
         } catch (Exception e) {
@@ -142,12 +143,11 @@ public class UserLayerDataService {
 
 
     /**
-     *
-     * @param ulayer   data in user_layer table
+     * @param ulayer data in user_layer table
      * @return
      * @throws ServiceException
      */
-    public JSONObject parseUserLayer2JSON(UserLayer ulayer)  {
+    public JSONObject parseUserLayer2JSON(UserLayer ulayer) {
 
         try {
             int id = ConversionHelper.getInt(userlayerBaseLayerId, 0);
@@ -169,15 +169,15 @@ public class UserLayerDataService {
             return null;
         }
     }
-    public String parseFields(FeatureType schema)  {
+
+    public String parseFields(FeatureType schema) {
 
         JSONObject jsfields = new JSONObject();
         try {
-           String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
-           String[] tfields = fields.split("[:,]");
-            for( int i = 0; i < tfields.length - 1; i=i+2)
-            {
-                jsfields.put(tfields[i], tfields[i+1]);
+            String fields = DataUtilities.encodeType((SimpleFeatureType) schema);
+            String[] tfields = fields.split("[:,]");
+            for (int i = 0; i < tfields.length - 1; i = i + 2) {
+                jsfields.put(tfields[i], tfields[i + 1]);
             }
 
         } catch (Exception ex) {

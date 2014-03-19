@@ -47,6 +47,7 @@ public class UserLayerData {
     }
 
     public void setProperty_json(String property_json) {
+        if(property_json == null) property_json="{}";
         this.property_json = property_json;
     }
 
