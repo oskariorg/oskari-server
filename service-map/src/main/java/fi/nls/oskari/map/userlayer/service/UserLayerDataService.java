@@ -38,6 +38,7 @@ public class UserLayerDataService {
     private static final String KEY_DESC = "layer-desc";
     private static final String KEY_NAME = "layer-name";
     private static final String KEY_SOURCE = "layer-source";
+    private static final int MAX_FEATURES = 2000;   //TODO: get max from wfs base layer configuration
 
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
@@ -126,8 +127,9 @@ public class UserLayerDataService {
                 userLayerData.setUser_layer_id(id);
 
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
-                count++;
 
+                count++;
+                if(count > MAX_FEATURES) break;
 
             }
         } catch (Exception e) {
