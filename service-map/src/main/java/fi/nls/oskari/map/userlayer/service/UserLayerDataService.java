@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
+import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -18,6 +19,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.feature.DefaultFeatureCollection;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
@@ -30,6 +32,7 @@ public class UserLayerDataService {
     private Logger log = LogFactory.getLogger(UserLayerDataService.class);
     private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
     private static final UserLayerDataDbService userLayerDataService = new UserLayerDataDbServiceIbatisImpl();
+    private static final UserLayerStyleDbService styleService = new UserLayerStyleDbServiceIbatisImpl();
     private OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
     private final static LayerJSONFormatterUSERLAYER FORMATTER = new LayerJSONFormatterUSERLAYER();
 
@@ -38,6 +41,7 @@ public class UserLayerDataService {
     private static final String KEY_DESC = "layer-desc";
     private static final String KEY_NAME = "layer-name";
     private static final String KEY_SOURCE = "layer-source";
+    private static final String KEY_STYLE = "layer-style";
     private static final int MAX_FEATURES = 2000;   //TODO: get max from wfs base layer configuration
 
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
@@ -53,47 +57,67 @@ public class UserLayerDataService {
 
 
         final UserLayer userLayer = new UserLayer();
+        final UserLayerStyle style = new UserLayerStyle();
 
         //TODO: Style insert
 
         try {
+            //TODO: all inserts should be in one transaction
 
-            // Insert user_layer row
-            // --------------------
-            userLayer.setLayer_name(gjsWorker.getTypeName());
-            userLayer.setLayer_desc("");
-            userLayer.setLayer_source("");
-            userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
-            userLayer.setUuid(user.getUuid());
-            userLayer.setStyle_id(1);
-            if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
-            if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
-            if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
-
-            log.debug("Adding user_layer row", userLayer);
-            userLayerService.insertUserLayerRow(userLayer);
-
-            // Insert user_layer data rows
-            // --------------------
-
-            int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
-            log.info("stored ", count, " rows");
-
-            if (count == 0) {
-                return null;
-                //TODO:  delete user_layer row if no rows
+            // Insert style row
+            style.setId(1);  // for default, even if style should be always valued
+            if (fparams.containsKey(KEY_STYLE))
+            {
+                final JSONObject stylejs = JSONHelper
+                        .createJSONObject(fparams.get(KEY_STYLE));
+                style.populateFromJSON(stylejs);
+                styleService.insertUserLayerStyleRow(style);
+                log.debug("Add style: ", style.getId());
             }
 
-        } catch (Exception e) {
-            log
-                    .debug(
-                            "Unable to store user layer data",
-                            e);
+
+        // Insert user_layer row
+        // --------------------
+        userLayer.setLayer_name(gjsWorker.getTypeName());
+        userLayer.setLayer_desc("");
+        userLayer.setLayer_source("");
+        userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
+        userLayer.setUuid(user.getUuid());
+        userLayer.setStyle_id(style.getId());
+        if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
+        if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
+        if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
+
+        log.debug("Adding user_layer row", userLayer);
+        userLayerService.insertUserLayerRow(userLayer);
+
+        // Insert user_layer data rows
+        // --------------------
+
+        int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
+        log.info("stored ", count, " rows");
+
+        if (count == 0) {
             return null;
+            //TODO:  delete user_layer row if no rows
         }
 
-        return userLayer;
     }
+
+    catch(
+    Exception e
+    )
+
+    {
+        log
+                .debug(
+                        "Unable to store user layer data",
+                        e);
+        return null;
+    }
+
+    return userLayer;
+}
 
     /**
      * @param geoJson import data in geojson format
@@ -129,7 +153,7 @@ public class UserLayerDataService {
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
 
                 count++;
-                if(count > MAX_FEATURES) break;
+                if (count > MAX_FEATURES) break;
 
             }
         } catch (Exception e) {
