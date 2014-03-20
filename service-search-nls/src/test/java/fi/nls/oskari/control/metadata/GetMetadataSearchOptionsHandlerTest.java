@@ -3,6 +3,7 @@ package fi.nls.oskari.control.metadata;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ServiceFactory;
@@ -67,7 +68,7 @@ public class GetMetadataSearchOptionsHandlerTest extends JSONActionRouteTest {
         PowerMockito.mockStatic(IOHelper.class);
 
 
-        for(MetadataField field : MetadataField.values()) {
+        for(MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             MetadataFieldHandler handler = field.getHandler();
 
             final HttpURLConnection connection = mock(HttpURLConnection.class);

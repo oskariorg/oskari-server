@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -29,9 +30,10 @@ public class GetMetadataSearchOptionsHandler extends ActionHandler {
 
         // fields for form
         final JSONArray fields = new JSONArray();
-        for(MetadataField field : MetadataField.values()) {
+        for(MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             final JSONObject node = JSONHelper.createJSONObject("field", field.getName());
             JSONHelper.putValue(node, "multi", field.isMulti());
+            JSONHelper.putValue(node, "shownIf", field.getShownIf());
             JSONHelper.putValue(node, "values", field.getHandler().getOptions(language));
             fields.put(node);
         }
