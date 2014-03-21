@@ -59,6 +59,8 @@ public class UserLayerDataService {
         final UserLayer userLayer = new UserLayer();
         final UserLayerStyle style = new UserLayerStyle();
 
+        log.info("user data store start: ", fparams);
+
         //TODO: Style insert
 
         try {
@@ -72,7 +74,7 @@ public class UserLayerDataService {
                         .createJSONObject(fparams.get(KEY_STYLE));
                 style.populateFromJSON(stylejs);
                 styleService.insertUserLayerStyleRow(style);
-                log.debug("Add style: ", style.getId());
+                log.info("Add style: ", style.getId());
             }
 
 
@@ -110,7 +112,7 @@ public class UserLayerDataService {
 
     {
         log
-                .debug(
+                .info(
                         "Unable to store user layer data",
                         e);
         return null;
