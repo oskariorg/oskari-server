@@ -46,6 +46,7 @@ import java.util.*;
  */
 public class MetadataCatalogueChannelSearchService implements SearchableChannel {
 
+
     private static final String GCO_NAMESPACE = "gco";
     private static final String GMD_NAMESPACE = "gmd";
     // Some have inline name spacing, so we're using local name...
@@ -94,13 +95,23 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     private final Map<String, String> imageURLs = new HashMap<String, String>();
     private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
 
-    private static final Map<MetadataField, String> likeMappings = new HashMap<MetadataField, String>();
-    static {
-        likeMappings.put(MetadataField.TYPE, "gmd:hierarchyLevel");
-        likeMappings.put(MetadataField.INSPIRE_THEME, "keyword");
-        likeMappings.put(MetadataField.SERVICE_NAME, "gmd:title");
-        likeMappings.put(MetadataField.TOPIC, "gmd:topicCategory");
-        likeMappings.put(MetadataField.ORGANIZATION, "orgName");
+    private final static List<MetadataField> fields = new ArrayList<MetadataField>();
+
+    public static List<MetadataField> getFields() {
+        if(!fields.isEmpty()) {
+            return fields;
+        }
+
+        String[] propFields = PropertyUtil.getCommaSeparatedList("MetadataCatalogueChannelSearchService.fields");
+        final String propPrefix =  "MetadataCatalogueChannelSearchService.field.";
+        for(String name : propFields) {
+            final MetadataField field = new MetadataField(name, PropertyUtil.getOptional(propPrefix + name + ".isMulti", false));
+            field.setFilter(PropertyUtil.getOptional(propPrefix + name + ".filter"));
+            field.setShownIf(PropertyUtil.getOptional(propPrefix + name + ".shownIf"));
+            field.setFilterOp(PropertyUtil.getOptional(propPrefix + name + ".filterOp"));
+            fields.add(field);
+        }
+        return fields;
     }
 
     /**
@@ -268,7 +279,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
 
             String organization = (String) xpath.evaluate(XPATH_ORGANIZATION, identificationNode, XPathConstants.STRING);
-            searchResultItem.addValue(MetadataField.ORGANIZATION.getProperty(), organization);
+            searchResultItem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, organization);
 
             Node boundingBoxnode = (Node) xpath.evaluate(BBOX_EXPRESSION, identificationNode, XPathConstants.NODE);
             if (boundingBoxnode != null) {
@@ -455,48 +466,55 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         }
     }
 
+    private static final Map<String, Integer> opMap = new HashMap<String, Integer>();
+    static {
+        // only one needed at the moment
+        opMap.put("COMP_EQUAL", OperationDefines.PROPERTYISEQUALTO);
+    }
+
+    private Operation getOperation(MetadataField field, String value) {
+        if(field.getFilterOp() == null) {
+            return getLikeOperation(value, field.getFilter());
+        }
+        else {
+            return getCompOperation(value, field.getFilter(), opMap.get(field.getFilterOp()));
+        }
+    }
+
     private List<Operation> getOperations(SearchCriteria searchCriteria) {
         List<Operation> list = new ArrayList<Operation>();
 
         // user input
         addOperation(list, getLikeOperation(searchCriteria.getSearchString(), "csw:anyText"));
 
-        // like ops
-        for(MetadataField field : likeMappings.keySet()) {
+        List<Operation> theOrList = new ArrayList<Operation>();
+        for(MetadataField field : getFields()) {
             final Object param = searchCriteria.getParam(field.getProperty());
-            if(param != null && field.isMulti()) {
-                final String[] values = (String[]) param;
-                final List<Operation> multiOp = new ArrayList<Operation>();
-                for(String value: values) {
-                    addOperation(multiOp, getLikeOperation(value, likeMappings.get(field)));
-                }
-                if(!multiOp.isEmpty()) {
-                    list.add(new LogicalOperation(OperationDefines.OR, multiOp));
-                }
+            if(param == null) {
+                continue;
+            }
+            String[] values = null;
+            if(field.isMulti()) {
+                values = (String[]) param;
             }
             else {
-                addOperation(list, getLikeOperation((String) param, likeMappings.get(field)));
+                values = new String[]{(String) param};
+            }
+
+            for(String value: values) {
+                addOperation(theOrList, getOperation(field, value));
             }
         }
-
-        // comp ops
-        final String keyword = (String) searchCriteria.getParam(MetadataField.KEYWORD.getProperty());
-        addOperation(list, getCompOperation(keyword, "keyword", OperationDefines.PROPERTYISEQUALTO));
-
-        final Object serviceTypes = searchCriteria.getParam(MetadataField.SERVICE_TYPE.getProperty());
-        if(serviceTypes != null) {
-            final List<Operation> multiOp = new ArrayList<Operation>();
-            for(String value: (String[]) serviceTypes) {
-                addOperation(multiOp, getCompOperation(value, "srv:serviceType", OperationDefines.PROPERTYISEQUALTO));
-            }
-            if(!multiOp.isEmpty()) {
-                list.add(new LogicalOperation(OperationDefines.OR, multiOp));
-            }
+        if(theOrList.size() == 1) {
+            addOperation(list, theOrList.get(0));
+        } else if (theOrList.size() > 1) {
+            addOperation(list, new LogicalOperation(OperationDefines.OR, theOrList));
         }
+
 
         // spatial ops
-        final String areaBbox = (String) searchCriteria.getParam(MetadataField.COVERAGE.getProperty());
-        addOperation(list, getSpatialOperation(areaBbox, "iso:BoundingBox"));
+        //final String areaBbox = (String) searchCriteria.getParam(MetadataField.COVERAGE.getProperty());
+        //addOperation(list, getSpatialOperation(areaBbox, "iso:BoundingBox"));
 
 
 // THE BELOW VALUES ARE NOT SENT FROM FORM, only commenting them out since they propably should come

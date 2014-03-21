@@ -103,6 +103,10 @@ public class PropertyUtil {
         final String prop = getOptional(propertyName);
         return ConversionHelper.getInt(prop, defaultValue);
     }
+    public static boolean getOptional(final String propertyName, final boolean defaultValue) {
+        final String prop = getOptional(propertyName);
+        return ConversionHelper.getBoolean(prop, defaultValue);
+    }
 
     public static String get(final Locale locale, final String propertyName) {
         return get(locale, propertyName, "--" + propertyName + "--");

@@ -7,18 +7,21 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.RegisterOfNomenclatureChannelSearchService;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.xmlbeans.XmlObject;
 import org.json.XMLTokener;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.namespace.QName;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -393,7 +396,14 @@ public class SearchUtil {
 			throw new RuntimeException("Failed to update village cache", e);
 		}
 	}
-	
+
+    private static Document getDocument(InputStream inputStream)
+            throws ParserConfigurationException, SAXException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(new InputSource(inputStream));
+    }
 	
 	/**
 	 * Updating village cache 
@@ -401,22 +411,14 @@ public class SearchUtil {
 	 */
 	
 	static void updateVillageCache(String villages) {
-		
-		try {
-			
-			
+        InputStream is = null;
+        try {
+
 	    	URL villagesUrl = new URL(villages);
 	        URLConnection villagesCon = villagesUrl.openConnection();
-	    	InputStream is = villagesCon.getInputStream();
-	    	
-	    	InputSource inputSource = new InputSource(is);
-	    	
-			DOMParser parser = new DOMParser();
-			parser.parse(inputSource);
-			Document doc = parser.getDocument();
-			
+	    	is = villagesCon.getInputStream();
+			Document doc = getDocument(is);
 			NodeList nl = doc.getElementsByTagName("xsd:enumeration");
-			
 			
 			for (int i = 0; i < nl.getLength(); i++) {
 				String code = nl.item(i).getAttributes().item(0).getNodeValue();
@@ -433,11 +435,6 @@ public class SearchUtil {
 						
 						villageCache.put(code+"_"+language, name);
 	   				 	villageCache.put(name,code);
-	   				 	/*
-	   				    System.out.println(code+"_"+language+","+ name);
-	   				    System.out.println(name +"," +code);
-	   				 	*/
-	   				 	
 					}
 					
 				}
@@ -447,6 +444,9 @@ public class SearchUtil {
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to update village cache", e);
 		}
+        finally {
+            IOHelper.close(is);
+        }
 	}
 	
 	

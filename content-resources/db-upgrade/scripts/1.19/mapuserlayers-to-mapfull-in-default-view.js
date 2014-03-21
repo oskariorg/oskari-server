@@ -35,7 +35,7 @@ module.exports = function(client) {
       startup['metadata']['Import-Bundle']['mapuserlayers'] = {
         "bundlePath" : "/Oskari/packages/framework/bundle/"
       };
-      var infoPlugin = _.find(config.plugins, {"id": "Oskari.mapframework.mapmodule.GetInfoPlugin"}
+      var infoPlugin = _.find(config.plugins, {"id": "Oskari.mapframework.mapmodule.GetInfoPlugin"});
       if (infoPlugin) {
         infoPlugin.config.ignoredLayerTypes.push('USERLAYER');
       }

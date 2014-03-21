@@ -48,7 +48,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         final SearchCriteria sc = new SearchCriteria();
         final String language = params.getLocale().getLanguage();
         sc.setLocale(language);
-        for(MetadataField field : MetadataField.values()) {
+        for(MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             field.getHandler().handleParam(params.getHttpParam(field.getName()), sc);
         }
 
@@ -66,7 +66,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         for(SearchResultItem item : searchResult.getSearchResultItems()) {
             final JSONObject node = JSONHelper.createJSONObject(KEY_RESULT_NAME, item.getTitle());
             JSONHelper.putValue(node, KEY_RESULT_ID, item.getResourceId());
-            JSONHelper.putValue(node, "organization", (String) item.getValue(MetadataField.ORGANIZATION.getProperty()));
+            JSONHelper.putValue(node, MetadataField.RESULT_KEY_ORGANIZATION, (String) item.getValue(MetadataField.RESULT_KEY_ORGANIZATION));
             results.put(node);
         }
 
