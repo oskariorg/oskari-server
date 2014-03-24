@@ -22,6 +22,8 @@ mvn clean install -Pjetty-profile
 
 Setup-files can now refer to another setup-file. This removes much boilerplate for registering bundles and should make the files simpler.
 
+Myplaces trigger has been updated to do initial update timestamp on insert as well (thanks posiki).
+
 ### Analysis functionality
 
 CreateAnalysisLayer action route now returns a proper analysislayer json (same as GetAnalysisLayersHandler)
