@@ -22,8 +22,6 @@ import org.deegree.ogcbase.SortProperty;
 import org.deegree.ogcwebservices.csw.discovery.*;
 import org.deegree.ogcwebservices.csw.discovery.GetRecords.RESULT_TYPE;
 import org.deegree.ogcwebservices.csw.discovery.XMLFactory;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -120,9 +118,19 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             field.setShownIf(PropertyUtil.getOptional(propPrefix + name + ".shownIf"));
             field.setFilterOp(PropertyUtil.getOptional(propPrefix + name + ".filterOp"));
             field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
+            field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
             fields.add(field);
         }
         return fields;
+    }
+
+    private MetadataField getField(String name) {
+        for(MetadataField field: getFields()) {
+            if(field.getName().equals(name)) {
+                return field;
+            }
+        }
+        return null;
     }
 
     /**
@@ -495,6 +503,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         }
     }
 
+
     private List<Operation> getOperations(SearchCriteria searchCriteria) {
         final List<Operation> list = new ArrayList<Operation>();
 
@@ -503,39 +512,17 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
         final List<Operation> theOrList = new ArrayList<Operation>();
         for(MetadataField field : getFields()) {
-            final Object param = searchCriteria.getParam(field.getProperty());
-            log.debug(field.getProperty(), "=", param);
-            if(param == null) {
+            final Operation operation = getOperationForField(searchCriteria, field);
+            if(operation == null) {
                 continue;
             }
-            String[] values = null;
-            if(field.isMulti()) {
-                values = (String[]) param;
+            // add must matches to toplevel list
+            if(field.isMustMatch()) {
+                addOperation(list, operation);
             }
+            // others to OR-list
             else {
-                values = new String[]{(String) param};
-            }
-            /*
-            List<Operation> fieldOperations = new ArrayList<Operation>();
-            if(field.getShownIf() != null) {
-                JSONArray moi = field.getShownIf();
-                JSONObject jee = moi.optJSONObject(0);
-                final String depFieldName = (String)jee.keys().next();
-                final Object depValue = searchCriteria.getParam(depFieldName);
-                if(depValue.equals(jee.opt(depFieldName))) {
-
-                }
-            }
-            */
-            for(String value: values) {
-                // add must matches to toplevel list and others to OR-list
-                if(field.isMustMatch()) {
-                    // TODO: for now this is ok, but if field ismulti && ismustmatch we should create an OR-list to add to toplevel operation
-                    addOperation(list, getOperation(field, value));
-                }
-                else {
-                    addOperation(theOrList, getOperation(field, value));
-                }
+                addOperation(theOrList, operation);
             }
         }
         if(theOrList.size() == 1) {
@@ -546,9 +533,69 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
         return list;
     }
+    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field) {
+        return getOperationForField(searchCriteria, field, false);
+    }
 
-    private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
-        List<Operation> operations = getOperations(searchCriteria);
+    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field, boolean recursion) {
+        final String[] values = getValuesForField(searchCriteria, field);
+        if(values == null || (!recursion && field.getShownIf() != null)) {
+            // FIXME: not too proud of the shownIf handling
+            // shownIf is meant to link fields for frontend but it also means we need special handling for it in here
+            // another field should have this one linked as dependency so we skip the actual field handling by default
+            return null;
+        }
+        final Map<String, String> deps = field.getDependencies();
+        log.debug("Field dependencies:", deps);
+        final List<Operation> multiOp = new ArrayList<Operation>();
+        for(String value: values) {
+            Operation op = getOperation(field, value);
+            final String dep = deps.get(value);
+            if(dep != null) {
+                final MetadataField depField = getField(dep);
+                Operation depOp = getOperationForField(searchCriteria, depField, true);
+                if(depOp != null) {
+                    List<Operation> combination = new ArrayList<Operation>(2);
+                    combination.add(op);
+                    combination.add(depOp);
+                    op = new LogicalOperation(OperationDefines.AND, combination);
+                }
+            }
+            addOperation(multiOp, op);
+        }
+        if(multiOp.isEmpty()) {
+            return null;
+        }
+
+        if(field.isMulti() && multiOp.size() > 1) {
+            // combine to one OR-statement if we have a multivalue field with more than one selection
+            Operation op = new LogicalOperation(OperationDefines.OR, multiOp);
+            return op;
+        }
+        return multiOp.get(0);
+    }
+
+    private String[] getValuesForField(SearchCriteria searchCriteria, MetadataField field) {
+        if(searchCriteria == null || field == null) {
+            return null;
+        }
+
+        final Object param = searchCriteria.getParam(field.getProperty());
+        if(param == null) {
+            return null;
+        }
+        log.debug("Got value for metadata field:", field.getProperty(), "=", param);
+        if(field.isMulti()) {
+            return (String[]) param;
+        }
+        else {
+            return new String[]{(String) param};
+        }
+    }
+
+    public GetRecords getRecordsQuery(SearchCriteria searchCriteria) {
+
+        final List<Operation> operations = getOperations(searchCriteria);
         Operation operation;
 
         if (operations.isEmpty()) {
@@ -559,52 +606,70 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             operation = new LogicalOperation(OperationDefines.AND, operations);
         }
 
-        ComplexFilter filter = new ComplexFilter(operation);
+        final ComplexFilter filter = new ComplexFilter(operation);
+        try {
+            final Map<String, URI> nsmap = new HashMap<String, URI>();
+            nsmap.put(GMD_NAMESPACE, new URI("http://www.isotc211.org/2005/gmd"));
+            nsmap.put(GCO_NAMESPACE, new URI("http://www.isotc211.org/2005/gco"));
+            nsmap.put("csw", new URI("http://www.opengis.net/cat/csw/2.0.2"));
 
-        Map<String, URI> nsmap = new HashMap<String, URI>();
-        nsmap.put(GMD_NAMESPACE, new URI("http://www.isotc211.org/2005/gmd"));
-        nsmap.put(GCO_NAMESPACE, new URI("http://www.isotc211.org/2005/gco"));
-        nsmap.put("csw", new URI("http://www.opengis.net/cat/csw/2.0.2"));
+            final List<QualifiedName> typeNames = new ArrayList<QualifiedName>();
+            typeNames.add(new QualifiedName("gmd:MD_Metadata"));
 
-        List<QualifiedName> typeNames = new ArrayList<QualifiedName>();
-        typeNames.add(new QualifiedName("gmd:MD_Metadata"));
+            final List<PropertyPath> elementNamesAsPropertyPaths = new ArrayList<PropertyPath>();
 
-        List<PropertyPath> elementNamesAsPropertyPaths = new ArrayList<PropertyPath>();
+            final SortProperty[] sortProperties = SortProperty.create(null, nsmap);
 
-        SortProperty[] sortProperties = SortProperty.create(null, nsmap);
+            final Query query = new Query("summary", new ArrayList<QualifiedName>(),
+                    new HashMap<String, QualifiedName>(),
+                    elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
+                    new HashMap<String, QualifiedName>());
 
-        Query query = new Query("summary", new ArrayList<QualifiedName>(),
-                new HashMap<String, QualifiedName>(),
-                elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
-                new HashMap<String, QualifiedName>());
+            final GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
+                    RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
+                    10000, 0, null, query);
+            return getRecs;
+        } catch (Exception ex) {
+            log.error(ex, "Error generating GetRecords document for CSW Query");
+        }
+        return null;
+    }
 
-        GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
-                RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
-                10000, 0, null, query);
-
-        GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
-
-        // debug output
-        Properties p = new Properties();
-        p.put("indent", "yes");
-        // write the post data to postable string
+    public String getQueryPayload(final GetRecords getRecs) {
         final StringWriter xml = new StringWriter();
-        getRecsDoc.write(xml, p);
-        xml.flush();
+        try {
+            final GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
+            final Properties p = new Properties();
+            p.put("indent", "yes");
+            // write the post data to postable string
+            getRecsDoc.write(xml, p);
+            xml.flush();
+            return xml.toString();
+        } catch (Exception ex) {
+            log.error(ex, "Error generating payload for CSW Query");
+        }
+        finally {
+            IOHelper.close(xml);
+        }
+        return null;
+    }
 
-        final String queryURL = serverURL + queryPath;
+
+    private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
+        final GetRecords getRecs = getRecordsQuery(searchCriteria);
+
         // POSTing GetRecords request
+        final String queryURL = serverURL + queryPath;
         HttpURLConnection conn = IOHelper.getConnection(queryURL);
         IOHelper.writeHeader(conn, "Content-Type", "application/xml;charset=UTF-8");
         conn.setUseCaches(false);
-        IOHelper.writeToConnection(conn, xml.toString());
+        IOHelper.writeToConnection(conn, getQueryPayload(getRecs));
         GetRecordsResultDocument resultsDoc = new Csw202ResultsDoc();
         InputStream response = IOHelper.debugResponse(conn.getInputStream());
         try {
             resultsDoc.load(response, queryURL);
         } finally {
             IOHelper.close(response);
-            IOHelper.close(xml);
         }
 
         GetRecordsResult getRecsResult = resultsDoc.parseGetRecordsResponse(getRecs);

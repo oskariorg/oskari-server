@@ -3,6 +3,9 @@ package fi.nls.oskari.control.metadata;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: SMAKINEN
@@ -27,6 +30,7 @@ public class MetadataField {
     private String filter = null;
     private String filterOp = null;
     private boolean mustMatch = false;
+    private Map<String,String> dependencies = Collections.emptyMap();
     private MetadataFieldHandler handler = null;
     private JSONArray shownIf = null;
 
@@ -134,5 +138,13 @@ public class MetadataField {
 
     public void setMustMatch(boolean mustMatch) {
         this.mustMatch = mustMatch;
+    }
+
+    public void setDependencies(final Map<String,String> map) {
+        dependencies = map;
+    }
+
+    public Map<String, String> getDependencies() {
+        return Collections.unmodifiableMap(dependencies);
     }
 }

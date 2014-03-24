@@ -83,6 +83,29 @@ public class PropertyUtil {
         return propertiesList.split("\\s*,\\s*");
     }
 
+    /**
+     * Returns a property formatted like this: key1|val1,key2|val2 as a map.
+     * @param propertyName
+     * @return
+     */
+    public static Map<String, String> getMap(final String propertyName) {
+
+        final String[] propertiesList = getCommaSeparatedList(propertyName);
+        if (propertiesList.length == 0) {
+            return Collections.emptyMap();
+        }
+        final Map<String, String> map = new HashMap<String, String>();
+        for(String str : propertiesList) {
+            log.debug(str);
+            final String[] vals = str.split("\\s*\\|\\s*");
+            log.debug(vals);
+            if(vals.length == 2) {
+                map.put(vals[0], vals[1]);
+            }
+        }
+        return map;
+    }
+
     public static String getOptionalNonLocalized(final String propertyName) {
         return properties.getProperty(propertyName);
     }
