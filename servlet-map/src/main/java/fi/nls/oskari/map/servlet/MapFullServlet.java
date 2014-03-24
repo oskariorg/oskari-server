@@ -158,6 +158,10 @@ public class MapFullServlet extends HttpServlet {
     private void handleActionRoute(final ActionParameters params) {
 
         final String route = params.getHttpParam("action_route");
+        if(!ActionControl.hasAction(route)) {
+            ResponseHelper.writeError(params, "No such route registered: " + route, HttpServletResponse.SC_NOT_IMPLEMENTED);
+            return;
+        }
         try {
             ActionControl.routeAction(route, params);
             // TODO:  HANDLE THE EXCEPTION, LOG USER AGENT ETC. on exceptions
