@@ -14,6 +14,8 @@ import org.json.JSONObject;
 
 /**
  * Constructs a JSON object describing the metadata search form selectable values.
+ * The fields returned are configured with MetadataCatalogueChannelSearchService.fields():
+ * search.channel.METADATA_CATALOGUE_CHANNEL.fields=type,serviceType,Title,OrganisationName,Subject,TopicCategory,Language,ResourceLanguage
  */
 @OskariActionRoute("GetMetadataSearchOptions")
 public class GetMetadataSearchOptionsHandler extends ActionHandler {

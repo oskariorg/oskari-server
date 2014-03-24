@@ -88,8 +88,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     public static final String ID = "METADATA_CATALOGUE_CHANNEL";
     private final static char WILDCARD_CHARACTER = '*';
     private final Logger log = LogFactory.getLogger(this.getClass());
-    private static String serverURL = PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
-    private static String queryPath = PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
+    private static String serverURL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server", "http://geonetwork.nls.fi");
+    private static String queryPath = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path", "/geonetwork/srv/en/csw");
 
     private final Map<String, String> imageURLs = new HashMap<String, String>();
     private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
@@ -109,9 +109,9 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             return fields;
         }
 
-        final String[] propFields = PropertyUtil.getCommaSeparatedList("MetadataCatalogueChannelSearchService.fields");
+        final String[] propFields = PropertyUtil.getCommaSeparatedList("search.channel.METADATA_CATALOGUE_CHANNEL.fields");
 
-        final String propPrefix =  "MetadataCatalogueChannelSearchService.field.";
+        final String propPrefix =  "search.channel.METADATA_CATALOGUE_CHANNEL.field.";
         for(String name : propFields) {
             final MetadataField field = new MetadataField(name, PropertyUtil.getOptional(propPrefix + name + ".isMulti", false));
             field.setFilter(PropertyUtil.getOptional(propPrefix + name + ".filter"));
@@ -385,18 +385,12 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     public void setProperty(String propertyName, String propertyValue) {
 
         if (null != propertyName) {
-            /*
-            if ("query.url".equals(propertyName)) {
-                queryURL = propertyValue;
-            } else if ("server.url".equals(propertyName)) {
-                serverURL = propertyValue;
-            } else */
             if (propertyName.indexOf("image.url.") == 0) {
+                // after first 10 chars there is a language code
                 imageURLs.put(propertyName.substring(10), propertyValue);
             } else if (propertyName.indexOf("fetchpage.url.") == 0) {
+                // after first 14 chars there is a language code
                 fetchPageURLs.put(propertyName.substring(14), propertyValue);
-            } else {
-                log.warn("Unknown property for " + ID + " search channel: " + propertyName);
             }
         }
     }
@@ -636,6 +630,9 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     }
 
     public String getQueryPayload(final GetRecords getRecs) {
+        if(getRecs == null) {
+            return null;
+        }
         final StringWriter xml = new StringWriter();
         try {
             final GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
@@ -657,6 +654,10 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
     private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
         final GetRecords getRecs = getRecordsQuery(searchCriteria);
+        if(getRecs == null) {
+            // no point in making the query without GetRecords
+            return null;
+        }
 
         // POSTing GetRecords request
         final String queryURL = serverURL + queryPath;

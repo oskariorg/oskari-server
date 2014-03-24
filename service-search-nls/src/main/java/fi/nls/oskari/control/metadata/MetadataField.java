@@ -7,11 +7,16 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 11.3.2014
- * Time: 14:00
- * To change this template use File | Settings | File Templates.
+ * Represents a CSW query field:
+ * - name is used as key in JSON API
+ * - property is as key used for internal operations (defaults to name)
+ * - isMulti means multiple values can be selected (comma separated as param and String[] for search criteria)
+ * - filter is the property name in CSW query filter (example inspire name can be used as keyword property filter)
+ * - filterOp is an internal key for filter operation (defaults to LIKE)
+ * - mustMatch means that this is a top level inclusion filter (AND-operation)
+ * - dependencies maps a possible field value to another field for combining filter (example type=service can be further filtered with serviceType field ->
+ * these need to be wrapped in Logical AND operation)
+ * - shownIf is a dumb JSON presentation for frontend form (example serviceType should only be shown if value 'service' is selected in field 'type')
  */
 public class MetadataField {
 /*

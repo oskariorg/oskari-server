@@ -5,6 +5,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
@@ -22,7 +23,7 @@ import org.json.JSONObject;
  *      "results" : [
  *      {
  *          "name" : "[result name]"
- *          "organization" : "[result producer]",
+ *          "organization" : "[optional result producer]",
  *          "id" : "[optional metadata id]"
  *      }
  *      ]
@@ -56,7 +57,8 @@ public class GetMetadataSearchHandler extends ActionHandler {
         sc.setSearchString(userInput);
 
         sc.addChannel(MetadataCatalogueChannelSearchService.ID);
-
+        // validate will throw exception if we can't make the query
+        validateRequest(sc);
         // root object
         final JSONObject result = new JSONObject();
         final JSONArray results = new JSONArray();
@@ -72,5 +74,18 @@ public class GetMetadataSearchHandler extends ActionHandler {
         // write response
         JSONHelper.putValue(result, KEY_RESULTS, results);
         ResponseHelper.writeResponse(params, result);
+    }
+
+    private void validateRequest(final SearchCriteria sc) throws ActionParamsException {
+        // check free input field content
+        if(sc.getSearchString() != null && !sc.getSearchString().isEmpty()) {
+            // ok if user has written anything
+            return;
+        }
+        // check advanced options, NOT OK if we get this far and don't have any selections so throw an exception
+        log.debug("No free input, params are:", sc.getParams());
+        if(sc.getParams().isEmpty()) {
+            throw new ActionParamsException("No search string and no additional selections");
+        }
     }
 }
