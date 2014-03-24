@@ -1,6 +1,5 @@
 package fi.nls.oskari.search.util;
 
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import fi.mml.nameregister.FeatureCollectionDocument;
 import fi.mml.nameregister.FeaturePropertyType;
 import fi.mml.portti.service.search.ChannelSearchResult;

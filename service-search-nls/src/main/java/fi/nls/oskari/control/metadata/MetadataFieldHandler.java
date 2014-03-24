@@ -6,6 +6,7 @@ import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -34,8 +35,8 @@ public class MetadataFieldHandler {
     private final static NodeList EMPTY_NODELIST = new EmptyNodeList();
 
     private MetadataField field = null;
-    private String serverURL = PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
-    private String serverPath = PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
+    private String serverURL = MetadataCatalogueChannelSearchService.getServerURL(); //PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
+    private String serverPath = MetadataCatalogueChannelSearchService.getServerPath(); //PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
     private String queryParams = "?" + PropertyUtil.get("metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
     private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 /*
@@ -72,7 +73,7 @@ catalogue.geonetwork.server.url=http://geonetwork.nls.fi
     }
 
     public void handleParam(final String param, final SearchCriteria criteria) {
-        if(param == null || !param.isEmpty()) {
+        if(param == null || param.isEmpty()) {
             // empty param -> skip
             return;
         }

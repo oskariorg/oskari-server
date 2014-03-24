@@ -2,7 +2,6 @@ package fi.nls.oskari.control.metadata;
 
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +26,7 @@ public class MetadataField {
     private String property = null;
     private String filter = null;
     private String filterOp = null;
+    private boolean mustMatch = false;
     private MetadataFieldHandler handler = null;
     private JSONArray shownIf = null;
 
@@ -126,5 +126,13 @@ public class MetadataField {
 
     public void setFilterOp(String filterOp) {
         this.filterOp = filterOp;
+    }
+
+    public boolean isMustMatch() {
+        return mustMatch;
+    }
+
+    public void setMustMatch(boolean mustMatch) {
+        this.mustMatch = mustMatch;
     }
 }

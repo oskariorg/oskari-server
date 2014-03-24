@@ -60,7 +60,6 @@ public class GetMetadataSearchHandler extends ActionHandler {
         // root object
         final JSONObject result = new JSONObject();
         final JSONArray results = new JSONArray();
-
         final Query query = service.doSearch(sc);
         final ChannelSearchResult searchResult = query.findResult(MetadataCatalogueChannelSearchService.ID);
         for(SearchResultItem item : searchResult.getSearchResultItems()) {
