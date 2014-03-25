@@ -237,6 +237,17 @@
 				<groupId>org.apache.ws.commons.axiom</groupId>
 				<artifactId>axiom-api</artifactId>
 				<version>${axiom.version}</version>
+				<!-- http://jira.codehaus.org/browse/JAXEN-217 -->
+				<exclusions>
+					<exclusion>
+						<groupId>maven-plugins</groupId>
+						<artifactId>maven-cobertura-plugin</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>maven-plugins</groupId>
+						<artifactId>maven-findbugs-plugin</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.ws.commons.axiom</groupId>
