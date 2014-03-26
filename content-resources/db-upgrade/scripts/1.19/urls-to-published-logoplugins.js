@@ -6,20 +6,20 @@ module.exports = function (client) {
             return console.error('Could not connect to postgres', err);
         }
         var query = client.query(
-            "SELECT" +
-            "  view_id," +
-            "  config" +
-            "FROM" +
-            "  portti_view_bundle_seq" +
-            "WHERE" +
-            "  config LIKE '%LogoPlugin%' AND" +
-            "  (" +
-            "    config NOT LIKE '%mapUrlPrefix%' OR" +
-            "    config NOT LIKE '%termsUrl%'" +
-            "  ) AND" +
-            "  view_id IN (SELECT id FROM portti_view WHERE type='PUBLISHED') AND" +
-            "  bundle_id IN (SELECT id FROM portti_bundle WHERE name='mapfull')" +
-            "ORDER BY" +
+            "SELECT " +
+            "  view_id, " +
+            "  config " +
+            "FROM " +
+            "  portti_view_bundle_seq " +
+            "WHERE " +
+            "  config LIKE '%LogoPlugin%' AND " +
+            "  ( " +
+            "    config NOT LIKE '%mapUrlPrefix%' OR " +
+            "    config NOT LIKE '%termsUrl%' " +
+            "  ) AND " +
+            "  view_id IN (SELECT id FROM portti_view WHERE type='PUBLISHED') AND " +
+            "  bundle_id IN (SELECT id FROM portti_bundle WHERE name='mapfull') " +
+            "ORDER BY " +
             "  view_id"
         );
 
@@ -64,7 +64,6 @@ module.exports = function (client) {
 
 
             var updatedConfig = JSON.stringify(config);
-
             var updateQuery = "UPDATE portti_view_bundle_seq SET config='" + updatedConfig + "' WHERE" +
                 " bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') AND view_id=" + row.view_id;
 
