@@ -3,6 +3,7 @@ package fi.nls.oskari.control.data;
  * Store zipped shape file set to oskari_user_store database
  *
  */
+
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -16,6 +17,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 
+import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -50,7 +54,10 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
-    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("shp");
+    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP","KML");
+    private static final String  IMPORT_SHP = ".SHP";
+    private static final String  IMPORT_KML = ".KML";
+
 
 
     @Override
@@ -65,60 +72,47 @@ public class CreateUserLayerHandler extends ActionHandler {
 
 
         final HttpServletResponse response = params.getResponse();
-        PrintWriter writer = null;
-
-        try {
-            writer = response.getWriter();
-        } catch (IOException ex) {
-            throw new ActionException("Couldn't get the zip shp file set",
-                    ex);
-        }
-
 
         try {
 
-            Map fparams = new HashMap<String, String>();
+            RawUpLoadItem loadItem = getZipFiles(params);
 
-            FileItem fileitem = getZipShpFiles(params, fparams);
-
-            File file = unZip(fileitem);
+            File file = unZip(loadItem.getFileitem());
 
             if (file == null) {
-                return;
+                throw new ActionException("Couldn't find valid import file in zip file");
             }
 
             User user = params.getUser();
 
-            FeatureJSON io = new FeatureJSON();
+            // import format
 
-            ShapefileDataStore dataStore = new ShapefileDataStore(file.toURI().toURL());
-            String typeName = dataStore.getTypeNames()[0];
+            GeoJsonWorker geojsonWorker = null;
 
-            FeatureSource source = dataStore.getFeatureSource(typeName);
-            FeatureCollection collection = source.getFeatures();
+            if(file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1)
+            {
+                geojsonWorker = new SHPGeoJsonCollection();
+            }
+            else if(file.getName().toUpperCase().indexOf(IMPORT_KML) > -1)
+            {
+                geojsonWorker = new KMLGeoJsonCollection();
+            }
 
-            FeatureType schema = collection.getSchema();
-            //TODO: Coordinate transformation support
-            // Helsinki City crs is 3879
-            // CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:3879");
-            // TODO add geotools specs to prj file   epsg:3879 data schema.getCoordinateReferenceSystem();
-            // CoordinateReferenceSystem target = CRS.decode("EPSG:3067");
-
-            MathTransform transform = null;
-            //TODO: if (sourceCrs != null) transform = CRS.findMathTransform(sourceCrs, target);
+                if(!geojsonWorker.parseGeoJSON(file))
+                {
+                    throw new ActionException("Couldn't parse geoJSON out of import file");
+                }
 
 
-            JSONObject geoJson = JSONHelper.createJSONObject(io.toString(collection));
 
             // Store geojson via ibatis
-
-            UserLayer ulayer = userlayerService.storeUserData(geoJson, user, typeName, schema, fparams);
+            UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
 
             params.getResponse().setContentType("application/json;charset=utf-8");
-            ResponseHelper.writeResponse(params,  userlayerService.parseUserLayer2JSON(ulayer));
+            ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
 
         } catch (Exception e) {
-            throw new ActionException("Couldn't get the shp file set",
+            throw new ActionException("Couldn't get the import file set",
                     e);
         }
 
@@ -128,16 +122,17 @@ public class CreateUserLayerHandler extends ActionHandler {
      * unzip and write shp files as temp filesz
      *
      * @param params
-     * @return fparams  formdata params
-     * @return File of shp master file of shp file set  (.shp)
+     * @return File of import master file of  file set  (.shp, .kml, mif)
      */
-    private FileItem getZipShpFiles(ActionParameters params, Map fparams) throws ActionException {
+    private RawUpLoadItem getZipFiles(ActionParameters params) throws ActionException {
 
 
         InputStream is = null;
         FileOutputStream fos = null;
-        FileItem shpFileItem = null;
+        FileItem impFileItem = null;
         HttpServletRequest request = params.getRequest();
+        Map fparams = new HashMap<String, String>();
+        RawUpLoadItem loadItem = new RawUpLoadItem();
 
 
         if (request.getContentType().indexOf("multipart") > -1) {
@@ -168,11 +163,9 @@ public class CreateUserLayerHandler extends ActionHandler {
                     FileItem fileItem = (FileItem) li.next();
                     if (!fileItem.isFormField()) {
                         // Take only 1st one
-                        if(shpFileItem == null) shpFileItem = fileItem;
+                        if (impFileItem == null) impFileItem = fileItem;
 
-                    }
-                    else
-                    {
+                    } else {
                         fparams.put(fileItem.getFieldName(), fileItem.getString());
                     }
                 }
@@ -180,13 +173,13 @@ public class CreateUserLayerHandler extends ActionHandler {
                 log.error("Could not parse request", ex);
             }
         }
+        loadItem.setFileitem(impFileItem);
+        loadItem.setFparams(fparams);
 
-
-        return shpFileItem;
+        return loadItem;
     }
 
     /**
-     *
      * @param zipFile
      * @return
      * @throws Exception
@@ -211,19 +204,18 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             String fileName = ze.getName();
 
-            int i =  fileName.lastIndexOf(".");
-            String[] parts =  {fileName.substring(0, i),fileName.substring(i+1)};
+            int i = fileName.lastIndexOf(".");
+            String[] parts = {fileName.substring(0, i), fileName.substring(i + 1)};
             // Clean and jump extra files
             String parts0 = checkFileName(parts[0]);
-            if(parts0 == null) continue;
+            if (parts0 == null) continue;
 
             if (parts.length < 2) return null;
-            if (ACCEPTED_FORMATS.contains(parts[1]))
-            {
+            if (ACCEPTED_FORMATS.contains(parts[1].toUpperCase())) {
                 imp_extension = parts[1];
             }
 
-            File newFile = File.createTempFile(parts0,"."+parts[1]);
+            File newFile = File.createTempFile(parts0, "." + parts[1]);
 
             log.info("file unzip : " + newFile.getAbsoluteFile());
 
@@ -236,21 +228,18 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             fos.close();
 
-            if (filename == null)
-            {
-                i =  newFile.getPath().lastIndexOf(".");
-                String[] parts3 =  {newFile.getPath().substring(0, i),newFile.getPath().substring(i)};
+            if (filename == null) {
+                i = newFile.getPath().lastIndexOf(".");
+                String[] parts3 = {newFile.getPath().substring(0, i), newFile.getPath().substring(i)};
 
                 filename = parts3[0];
-            }
-            else
-            {
+            } else {
                 // Use same file name basics
 
 
-                i =  newFile.getPath().lastIndexOf(".");
-                String[] parts3 =  {newFile.getPath().substring(0, i),newFile.getPath().substring(i)};
-                newFile.renameTo(new File(filename+parts3[1]));
+                i = newFile.getPath().lastIndexOf(".");
+                String[] parts3 = {newFile.getPath().substring(0, i), newFile.getPath().substring(i)};
+                newFile.renameTo(new File(filename + parts3[1]));
             }
             newFile.deleteOnExit();
             ze = zis.getNextEntry();
@@ -260,21 +249,49 @@ public class CreateUserLayerHandler extends ActionHandler {
         zis.close();
 
         // is acceptable extension found
-        if (imp_extension == null)
-        {
-            log.info("Acceptable format extension not found - valid extensions: ",ACCEPTED_FORMATS );
+        if (imp_extension == null) {
+            log.info("Acceptable format extension not found - valid extensions: ", ACCEPTED_FORMATS);
             return null;
         }
 
         // master file of import  file set
-        return  new File(filename+"."+imp_extension);
+        return new File(filename + "." + imp_extension);
     }
 
-  private static String checkFileName(String filenam)
-  {
-      // no dots any more allowed
-      if(filenam.indexOf(".") > -1 ) return null;
-      String[] parts = filenam.split("\\/");
-      return parts[parts.length-1];
-  }
+    private static String checkFileName(String filenam) {
+        String[] parts = filenam.split("\\/");
+        // no dots any more allowed in filename
+        if (parts[parts.length - 1].indexOf(".") > -1) return null;
+        return parts[parts.length - 1];
+    }
+
+    class RawUpLoadItem {
+        FileItem fileitem;
+        Map<String, String> fparams;
+        String imp_extension;
+
+        FileItem getFileitem() {
+            return fileitem;
+        }
+
+        void setFileitem(FileItem fileitem) {
+            this.fileitem = fileitem;
+        }
+
+        Map<String, String> getFparams() {
+            return fparams;
+        }
+
+        void setFparams(Map<String, String> fparams) {
+            this.fparams = fparams;
+        }
+
+        String getImp_extension() {
+            return imp_extension;
+        }
+
+        void setImp_extension(String imp_extension) {
+            this.imp_extension = imp_extension;
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class UserLayerDataDbServiceIbatisImpl extends
      * single portlet
      */
     protected String getSqlMapLocation() {
-        return "META-INF/SqlMapConfig_UserLayerData.xml";
+        return "META-INF/SqlMapConfig_UserLayer.xml";
     }
 
     /**

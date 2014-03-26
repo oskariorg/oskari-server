@@ -2,6 +2,12 @@
 
 ## 1.19
 
+### geoserver-ext/OskariMarkFactory (also affects transport WFS custom style)
+
+Fixed resource leaking when loading font. Tmp-files were being created recklessly, now caches the font after loading it.
+
+Also enabled the use of another font in classpath, previously font was hardcoded into dot-markers. Now the font specified in SLD is used with a fallback to dot-markers if specified font can't be loaded.
+
 ### service-search
 
 SearchCriteria no longer has reference to MetadataCatalogueSearchCriteria. SearchCriteria.addParam() can be used to provide search channel additional criterias.
@@ -21,6 +27,8 @@ mvn clean install -Pjetty-profile
 ### content-resources/DBHandler
 
 Setup-files can now refer to another setup-file. This removes much boilerplate for registering bundles and should make the files simpler.
+
+Myplaces trigger has been updated to do initial update timestamp on insert as well (thanks posiki).
 
 ### Analysis functionality
 

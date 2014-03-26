@@ -34,8 +34,6 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,6 +43,7 @@ import java.util.*;
  * TODO: remove unnecessary/commented out codes
  */
 public class MetadataCatalogueChannelSearchService implements SearchableChannel {
+
 
     private static final String GCO_NAMESPACE = "gco";
     private static final String GMD_NAMESPACE = "gmd";
@@ -89,18 +88,49 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     public static final String ID = "METADATA_CATALOGUE_CHANNEL";
     private final static char WILDCARD_CHARACTER = '*';
     private final Logger log = LogFactory.getLogger(this.getClass());
-    private String queryURL = null;
-    private String serverURL = null;
+    private static String serverURL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server", "http://geonetwork.nls.fi");
+    private static String queryPath = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path", "/geonetwork/srv/en/csw");
+
     private final Map<String, String> imageURLs = new HashMap<String, String>();
     private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
 
-    private static final Map<MetadataField, String> likeMappings = new HashMap<MetadataField, String>();
-    static {
-        likeMappings.put(MetadataField.TYPE, "gmd:hierarchyLevel");
-        likeMappings.put(MetadataField.INSPIRE_THEME, "keyword");
-        likeMappings.put(MetadataField.SERVICE_NAME, "gmd:title");
-        likeMappings.put(MetadataField.TOPIC, "gmd:topicCategory");
-        likeMappings.put(MetadataField.ORGANIZATION, "orgName");
+    private final static List<MetadataField> fields = new ArrayList<MetadataField>();
+
+    public static String getServerURL() {
+        return serverURL;
+    }
+
+    public static String getServerPath() {
+        return queryPath;
+    }
+
+    public static List<MetadataField> getFields() {
+        if(!fields.isEmpty()) {
+            return fields;
+        }
+
+        final String[] propFields = PropertyUtil.getCommaSeparatedList("search.channel.METADATA_CATALOGUE_CHANNEL.fields");
+
+        final String propPrefix =  "search.channel.METADATA_CATALOGUE_CHANNEL.field.";
+        for(String name : propFields) {
+            final MetadataField field = new MetadataField(name, PropertyUtil.getOptional(propPrefix + name + ".isMulti", false));
+            field.setFilter(PropertyUtil.getOptional(propPrefix + name + ".filter"));
+            field.setShownIf(PropertyUtil.getOptional(propPrefix + name + ".shownIf"));
+            field.setFilterOp(PropertyUtil.getOptional(propPrefix + name + ".filterOp"));
+            field.setMustMatch(PropertyUtil.getOptional(propPrefix + name + ".mustMatch", false));
+            field.setDependencies(PropertyUtil.getMap(propPrefix + name + ".dependencies"));
+            fields.add(field);
+        }
+        return fields;
+    }
+
+    private MetadataField getField(String name) {
+        for(MetadataField field: getFields()) {
+            if(field.getName().equals(name)) {
+                return field;
+            }
+        }
+        return null;
     }
 
     /**
@@ -267,8 +297,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
 
 
-            String organization = (String) xpath.evaluate(XPATH_ORGANIZATION, identificationNode, XPathConstants.STRING);
-            searchResultItem.addValue(MetadataField.ORGANIZATION.getProperty(), organization);
+            final String organization = (String) xpath.evaluate(XPATH_ORGANIZATION, identificationNode, XPathConstants.STRING);
+            searchResultItem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, organization);
 
             Node boundingBoxnode = (Node) xpath.evaluate(BBOX_EXPRESSION, identificationNode, XPathConstants.NODE);
             if (boundingBoxnode != null) {
@@ -353,17 +383,14 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     }
 
     public void setProperty(String propertyName, String propertyValue) {
+
         if (null != propertyName) {
-            if ("query.url".equals(propertyName)) {
-                queryURL = propertyValue;
-            } else if ("server.url".equals(propertyName)) {
-                serverURL = propertyValue;
-            } else if (propertyName.indexOf("image.url.") == 0) {
+            if (propertyName.indexOf("image.url.") == 0) {
+                // after first 10 chars there is a language code
                 imageURLs.put(propertyName.substring(10), propertyValue);
             } else if (propertyName.indexOf("fetchpage.url.") == 0) {
+                // after first 14 chars there is a language code
                 fetchPageURLs.put(propertyName.substring(14), propertyValue);
-            } else {
-                log.warn("Unknown property for " + ID + " search channel: " + propertyName);
             }
         }
     }
@@ -455,252 +482,114 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         }
     }
 
+    private static final Map<String, Integer> opMap = new HashMap<String, Integer>();
+    static {
+        // only one needed at the moment
+        opMap.put("COMP_EQUAL", OperationDefines.PROPERTYISEQUALTO);
+    }
+
+    private Operation getOperation(MetadataField field, String value) {
+        if(field.getFilterOp() == null) {
+            return getLikeOperation(value, field.getFilter());
+        }
+        else {
+            return getCompOperation(value, field.getFilter(), opMap.get(field.getFilterOp()));
+        }
+    }
+
+
     private List<Operation> getOperations(SearchCriteria searchCriteria) {
-        List<Operation> list = new ArrayList<Operation>();
+        final List<Operation> list = new ArrayList<Operation>();
 
         // user input
         addOperation(list, getLikeOperation(searchCriteria.getSearchString(), "csw:anyText"));
 
-        // like ops
-        for(MetadataField field : likeMappings.keySet()) {
-            final Object param = searchCriteria.getParam(field.getProperty());
-            if(param != null && field.isMulti()) {
-                final String[] values = (String[]) param;
-                final List<Operation> multiOp = new ArrayList<Operation>();
-                for(String value: values) {
-                    addOperation(multiOp, getLikeOperation(value, likeMappings.get(field)));
-                }
-                if(!multiOp.isEmpty()) {
-                    list.add(new LogicalOperation(OperationDefines.OR, multiOp));
-                }
+        final List<Operation> theOrList = new ArrayList<Operation>();
+        for(MetadataField field : getFields()) {
+            final Operation operation = getOperationForField(searchCriteria, field);
+            if(operation == null) {
+                continue;
             }
+            // add must matches to toplevel list
+            if(field.isMustMatch()) {
+                addOperation(list, operation);
+            }
+            // others to OR-list
             else {
-                addOperation(list, getLikeOperation((String) param, likeMappings.get(field)));
+                addOperation(theOrList, operation);
             }
         }
-
-        // comp ops
-        final String keyword = (String) searchCriteria.getParam(MetadataField.KEYWORD.getProperty());
-        addOperation(list, getCompOperation(keyword, "keyword", OperationDefines.PROPERTYISEQUALTO));
-
-        final Object serviceTypes = searchCriteria.getParam(MetadataField.SERVICE_TYPE.getProperty());
-        if(serviceTypes != null) {
-            final List<Operation> multiOp = new ArrayList<Operation>();
-            for(String value: (String[]) serviceTypes) {
-                addOperation(multiOp, getCompOperation(value, "srv:serviceType", OperationDefines.PROPERTYISEQUALTO));
-            }
-            if(!multiOp.isEmpty()) {
-                list.add(new LogicalOperation(OperationDefines.OR, multiOp));
-            }
+        if(theOrList.size() == 1) {
+            addOperation(list, theOrList.get(0));
+        } else if (theOrList.size() > 1) {
+            addOperation(list, new LogicalOperation(OperationDefines.OR, theOrList));
         }
 
-        // spatial ops
-        final String areaBbox = (String) searchCriteria.getParam(MetadataField.COVERAGE.getProperty());
-        addOperation(list, getSpatialOperation(areaBbox, "iso:BoundingBox"));
-
-
-// THE BELOW VALUES ARE NOT SENT FROM FORM, only commenting them out since they propably should come
-
-//        if (searchCriteria.getMetadataCatalogueSearchCriteria() != null) {
-            /*
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getResourceId(),
-                    "ResourceIdentifier");
-*/
-
-/*
-            addOperation(
-                    operations,
-                    SPATIAL_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getAreaId(),
-                    "iso:BoundingBox");
-            addOperation(
-                    operations,
-                    SPATIAL_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getBbox(),
-                    "ows:boundingBox");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getSampleResolutionMin(),
-                    "DistanceValue");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getSampleResolutionMax(),
-                    "DistanceValue");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getAccessConstraints(),
-                    "AccessConstraints");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getSecurityClassification(),
-                    "Classification");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getRule(),
-                    "SpecificationTitle");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_LIKE_OPERATION,
-                    -1,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getConformanceDegree(),
-                    "Degree");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                    getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getConformanceDateStart()),
-                    "SpecificationDate");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                    getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getConformanceDateEnd()),
-                    "SpecificationDate");
-            addOperation(
-                    operations,
-                    PROPERTY_IS_COMP_OPERATION,
-                    OperationDefines.PROPERTYISEQUALTO,
-                    searchCriteria.getMetadataCatalogueSearchCriteria().getConformanceDateType(),
-                    "SpecificationDateType");
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().isShowOnlyDownloadable()) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_LIKE_OPERATION,
-                        -1,
-                        WILDCARD_CHARACTER + "download" + WILDCARD_CHARACTER,
-                        "protocol");
-            }
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().getOtherConstraints() != null
-                    && !"".equals(searchCriteria.getMetadataCatalogueSearchCriteria().getOtherConstraints())) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_LIKE_OPERATION,
-                        -1,
-                        WILDCARD_CHARACTER
-                                + searchCriteria.getMetadataCatalogueSearchCriteria().getOtherConstraints()
-                                + WILDCARD_CHARACTER,
-                        "OtherConstraints");
-            }
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().getAccessConditions() != null
-                    && !"".equals(searchCriteria.getMetadataCatalogueSearchCriteria().getAccessConditions())) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_LIKE_OPERATION,
-                        -1,
-                        WILDCARD_CHARACTER
-                                + searchCriteria.getMetadataCatalogueSearchCriteria().getAccessConditions()
-                                + WILDCARD_CHARACTER,
-                        "ConditionApplyingToAccessAndUse");
-            }
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().isScaleSelected()) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                        searchCriteria.getMetadataCatalogueSearchCriteria().getScaleMinDenominator(),
-                        "Denominator");
-                addOperation(
-                        operations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                        searchCriteria.getMetadataCatalogueSearchCriteria().getScaleMaxDenominator(),
-                        "gmd:denominator");
-            }
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().getTimeStart() != null &&
-                    !"".equals(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeStart())) {
-                List<Operation> timeStartOperations = new ArrayList<Operation>();
-                addOperation(
-                        timeStartOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeStart()),
-                        "RevisionDate");
-                addOperation(
-                        timeStartOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeStart()),
-                        "CreationDate");
-                addOperation(
-                        timeStartOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISGREATERTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeStart()),
-                        "PublicationDate");
-                operations.add(new LogicalOperation(OperationDefines.OR, timeStartOperations));
-            }
-            */
-/*
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd() != null &&
-                    !"".equals(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd())) {
-                List<Operation> timeEndOperations = new ArrayList<Operation>();
-                addOperation(
-                        timeEndOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd()),
-                        "RevisionDate");
-                addOperation(
-                        timeEndOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd()),
-                        "CreationDate");
-                addOperation(
-                        timeEndOperations,
-                        PROPERTY_IS_COMP_OPERATION,
-                        OperationDefines.PROPERTYISLESSTHANOREQUALTO,
-                        getDateAsString(searchCriteria.getMetadataCatalogueSearchCriteria().getTimeEnd()),
-                        "PublicationDate");
-                operations.add(new LogicalOperation(OperationDefines.OR, timeEndOperations));
-            }
-*/
-/*
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().isMetaInfoTargetHistory()) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_LIKE_OPERATION,
-                        -1,
-                        WILDCARD_CHARACTER + searchCriteria.getMetadataCatalogueSearchCriteria().getMetaInfo() + WILDCARD_CHARACTER,
-                        "Lineage");
-            }
-
-            if (searchCriteria.getMetadataCatalogueSearchCriteria().isMetaInfoTargetDescription()) {
-                addOperation(
-                        operations,
-                        PROPERTY_IS_LIKE_OPERATION,
-                        -1,
-                        searchCriteria.getMetadataCatalogueSearchCriteria().getMetaInfo(),
-                        "Abstract");
-            }
-        }
-*/
         return list;
     }
+    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field) {
+        return getOperationForField(searchCriteria, field, false);
+    }
 
-    private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
-        List<Operation> operations = getOperations(searchCriteria);
+    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field, boolean recursion) {
+        final String[] values = getValuesForField(searchCriteria, field);
+        if(values == null || (!recursion && field.getShownIf() != null)) {
+            // FIXME: not too proud of the shownIf handling
+            // shownIf is meant to link fields for frontend but it also means we need special handling for it in here
+            // another field should have this one linked as dependency so we skip the actual field handling by default
+            return null;
+        }
+        final Map<String, String> deps = field.getDependencies();
+        log.debug("Field dependencies:", deps);
+        final List<Operation> multiOp = new ArrayList<Operation>();
+        for(String value: values) {
+            Operation op = getOperation(field, value);
+            final String dep = deps.get(value);
+            if(dep != null) {
+                final MetadataField depField = getField(dep);
+                Operation depOp = getOperationForField(searchCriteria, depField, true);
+                if(depOp != null) {
+                    List<Operation> combination = new ArrayList<Operation>(2);
+                    combination.add(op);
+                    combination.add(depOp);
+                    op = new LogicalOperation(OperationDefines.AND, combination);
+                }
+            }
+            addOperation(multiOp, op);
+        }
+        if(multiOp.isEmpty()) {
+            return null;
+        }
+
+        if(field.isMulti() && multiOp.size() > 1) {
+            // combine to one OR-statement if we have a multivalue field with more than one selection
+            Operation op = new LogicalOperation(OperationDefines.OR, multiOp);
+            return op;
+        }
+        return multiOp.get(0);
+    }
+
+    private String[] getValuesForField(SearchCriteria searchCriteria, MetadataField field) {
+        if(searchCriteria == null || field == null) {
+            return null;
+        }
+
+        final Object param = searchCriteria.getParam(field.getProperty());
+        if(param == null) {
+            return null;
+        }
+        log.debug("Got value for metadata field:", field.getProperty(), "=", param);
+        if(field.isMulti()) {
+            return (String[]) param;
+        }
+        else {
+            return new String[]{(String) param};
+        }
+    }
+
+    public GetRecords getRecordsQuery(SearchCriteria searchCriteria) {
+
+        final List<Operation> operations = getOperations(searchCriteria);
         Operation operation;
 
         if (operations.isEmpty()) {
@@ -711,51 +600,77 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             operation = new LogicalOperation(OperationDefines.AND, operations);
         }
 
-        ComplexFilter filter = new ComplexFilter(operation);
+        final ComplexFilter filter = new ComplexFilter(operation);
+        try {
+            final Map<String, URI> nsmap = new HashMap<String, URI>();
+            nsmap.put(GMD_NAMESPACE, new URI("http://www.isotc211.org/2005/gmd"));
+            nsmap.put(GCO_NAMESPACE, new URI("http://www.isotc211.org/2005/gco"));
+            nsmap.put("csw", new URI("http://www.opengis.net/cat/csw/2.0.2"));
 
-        Map<String, URI> nsmap = new HashMap<String, URI>();
-        nsmap.put(GMD_NAMESPACE, new URI("http://www.isotc211.org/2005/gmd"));
-        nsmap.put(GCO_NAMESPACE, new URI("http://www.isotc211.org/2005/gco"));
-        nsmap.put("csw", new URI("http://www.opengis.net/cat/csw/2.0.2"));
+            final List<QualifiedName> typeNames = new ArrayList<QualifiedName>();
+            typeNames.add(new QualifiedName("gmd:MD_Metadata"));
 
-        List<QualifiedName> typeNames = new ArrayList<QualifiedName>();
-        typeNames.add(new QualifiedName("gmd:MD_Metadata"));
+            final List<PropertyPath> elementNamesAsPropertyPaths = new ArrayList<PropertyPath>();
 
-        List<PropertyPath> elementNamesAsPropertyPaths = new ArrayList<PropertyPath>();
+            final SortProperty[] sortProperties = SortProperty.create(null, nsmap);
 
-        SortProperty[] sortProperties = SortProperty.create(null, nsmap);
+            final Query query = new Query("summary", new ArrayList<QualifiedName>(),
+                    new HashMap<String, QualifiedName>(),
+                    elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
+                    new HashMap<String, QualifiedName>());
 
-        Query query = new Query("summary", new ArrayList<QualifiedName>(),
-                new HashMap<String, QualifiedName>(),
-                elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
-                new HashMap<String, QualifiedName>());
+            final GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
+                    RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
+                    10000, 0, null, query);
+            return getRecs;
+        } catch (Exception ex) {
+            log.error(ex, "Error generating GetRecords document for CSW Query");
+        }
+        return null;
+    }
 
-        GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
-                RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
-                10000, 0, null, query);
-
-        GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
-
-        // debug output
-        Properties p = new Properties();
-        p.put("indent", "yes");
-        // write the post data to postable string
+    public String getQueryPayload(final GetRecords getRecs) {
+        if(getRecs == null) {
+            return null;
+        }
         final StringWriter xml = new StringWriter();
-        getRecsDoc.write(xml, p);
-        xml.flush();
+        try {
+            final GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
+            final Properties p = new Properties();
+            p.put("indent", "yes");
+            // write the post data to postable string
+            getRecsDoc.write(xml, p);
+            xml.flush();
+            return xml.toString();
+        } catch (Exception ex) {
+            log.error(ex, "Error generating payload for CSW Query");
+        }
+        finally {
+            IOHelper.close(xml);
+        }
+        return null;
+    }
+
+
+    private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
+        final GetRecords getRecs = getRecordsQuery(searchCriteria);
+        if(getRecs == null) {
+            // no point in making the query without GetRecords
+            return null;
+        }
 
         // POSTing GetRecords request
+        final String queryURL = serverURL + queryPath;
         HttpURLConnection conn = IOHelper.getConnection(queryURL);
         IOHelper.writeHeader(conn, "Content-Type", "application/xml;charset=UTF-8");
         conn.setUseCaches(false);
-        IOHelper.writeToConnection(conn, xml.toString());
+        IOHelper.writeToConnection(conn, getQueryPayload(getRecs));
         GetRecordsResultDocument resultsDoc = new Csw202ResultsDoc();
         InputStream response = IOHelper.debugResponse(conn.getInputStream());
         try {
             resultsDoc.load(response, queryURL);
         } finally {
             IOHelper.close(response);
-            IOHelper.close(xml);
         }
 
         GetRecordsResult getRecsResult = resultsDoc.parseGetRecordsResponse(getRecs);

@@ -3,11 +3,7 @@ package fi.mml.portti.service.search;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Search criteria.
@@ -47,6 +43,10 @@ public class SearchCriteria implements Serializable {
 	
     public Object getParam(final String key) {
         return parameters.get(key);
+    }
+
+    public Map<String, Object> getParams() {
+        return Collections.unmodifiableMap(parameters);
     }
 	
 	/**

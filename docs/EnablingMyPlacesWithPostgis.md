@@ -54,7 +54,7 @@ Uncomment or add the following settings and set them point to your geoserver url
 	myplaces.wms.url=http://localhost:8082/geoserver/oskari/wms?buffer=128&tiled=yes&tilesorigin=0,0&CQL_FILTER=
 	myplaces.user=admin
 	myplaces.password=geoserver
-	# Base WFS layer id for myplaces (portti_maplayer and portti_wfs_layer tables)
+	# Base WFS layer id for myplaces (oskari_maplayer and portti_wfs_layer tables)
 	# Find correct id layer later on when my_places wfs base layer is inserted
     myplaces.baselayer.id=14
     # My places namespace

@@ -6,9 +6,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author SMAKINEN
@@ -20,7 +23,7 @@ public class PropertyUtilTest {
         PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
-            properties.load(PropertyUtilTest.class.getResourceAsStream("test.properties"));
+            properties.load(PropertyUtilTest.class.getResourceAsStream("PropertyUtilTest.properties"));
             PropertyUtil.addProperties(properties);
         } catch (IOException ioe) {
             fail("Should not throw IOException:\n" + ioe.getStackTrace());
@@ -87,4 +90,35 @@ public class PropertyUtilTest {
         String[] values3 = PropertyUtil.getCommaSeparatedList("non-existing-property");
         assertEquals("Non-existing list should be zero length", values3.length, 0);
     }
+
+    @Test
+    public void testEmptyMapProperty() throws Exception {
+        Map<String, String> values = PropertyUtil.getMap("non-existing-property");
+        assertEquals("Map should be empty", 0, values.size());
+    }
+
+
+    @Test
+    public void testMapProperty() throws Exception {
+        Map<String, String> values1 = PropertyUtil.getMap("mapProperty1");
+        assertEquals("Map should have one key", 1, values1.size());
+
+        Map<String, String> values2 = PropertyUtil.getMap("mapProperty2");
+        assertEquals("Map should have two keys", 2, values2.size());
+    }
+
+    @Test
+    public void testMapPropertyTrimming() throws Exception {
+        Map<String, String> values2 = PropertyUtil.getMap("mapProperty2");
+        assertEquals("Map should have two keys", 2, values2.size());
+        Map<String, String> values3 = PropertyUtil.getMap("mapProperty3");
+        assertEquals("Map should have two keys", 2, values3.size());
+        for(String key : values2.keySet()) {
+            assertTrue("PropertyUtil should trim whitespace and both maps should have same keys", values3.keySet().contains(key));
+            final String val2 = values2.get(key);
+            final String val3 = values3.get(key);
+            assertEquals("Both should have same values with the same key", val2, val3);
+        }
+    }
+
 }
