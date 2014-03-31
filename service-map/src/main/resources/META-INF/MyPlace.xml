@@ -7,9 +7,10 @@
 <sqlMap namespace="MyPlace">
 
     <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="MyPlace" type="fi.nls.oskari.domain.map.MyPlaceCategory" />
+    <typeAlias alias="MyPlaceCategory" type="fi.nls.oskari.domain.map.MyPlaceCategory" />
+    <typeAlias alias="MyPlace" type="fi.nls.oskari.domain.map.MyPlace" />
 
-    <resultMap id="MyPlaceResult" class="MyPlace">
+    <resultMap id="CategoryResult" class="MyPlaceCategory">
 	    <result property="id" column="id" /> 
 	    <result property="category_name" column="category_name" />
         <result property="stroke_width" column="stroke_width" />
@@ -23,10 +24,37 @@
         <result property="publisher_name" column="publisher_name" />
     </resultMap>
 
+    <resultMap id="PlaceResult" class="MyPlace">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="categoryId" column="category_id" />
+        <result property="name" column="name" />
+        <result property="desc" column="place_desc" />
+        <result property="link" column="link" />
+        <result property="imageUrl" column="image_url" />
+        <result property="attentionText" column="attention_text" />
+    </resultMap>
+
+    <select id="findPlace"
+            parameterClass="long"
+            resultMap="PlaceResult">
+        select
+            id,
+            uuid,
+            category_id,
+            name,
+            place_desc,
+            link,
+            image_url,
+            attention_text
+        from
+            my_places
+        where id = #id#
+    </select>
 
     <select id="find" 
         parameterClass="int" 
-        resultMap="MyPlaceResult">
+        resultMap="CategoryResult">
         select 
             id, 
             category_name,
@@ -46,7 +74,7 @@
     
      <select id="findByIds" 
         parameterClass="List" 
-        resultMap="MyPlaceResult">
+        resultMap="CategoryResult">
         select 
             id, 
             category_name,
@@ -68,7 +96,7 @@
     </select>
 
     <select id="findAll" 
-        resultMap="MyPlaceResult">
+        resultMap="CategoryResult">
         select 
             id, 
             category_name,
@@ -88,7 +116,7 @@
     
      <select id="freeFind" 
         parameterClass="Map" 
-        resultMap="MyPlaceResult">
+        resultMap="CategoryResult">
          <![CDATA[
         select 
             id, 

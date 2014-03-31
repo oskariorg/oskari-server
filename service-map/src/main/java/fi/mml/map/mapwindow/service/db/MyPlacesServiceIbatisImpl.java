@@ -10,6 +10,8 @@ import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -40,6 +42,13 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
 
     private SqlMapClient client = null;
 
+    /*
+     * The purpose of this method is to allow many SqlMapConfig.xml files in a
+     * single portlet
+     */
+    protected String getSqlMapLocation() {
+        return "META-INF/SqlMapConfig_MyPlace.xml";
+    }
     /**
      * Returns SQLmap
      * 
@@ -70,12 +79,46 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
         }
     }
 
-    /*
-     * The purpose of this method is to allow many SqlMapConfig.xml files in a
-     * single portlet
+    /**
+     * Check if user can insert a place in category
+     * @param user
+     * @return
      */
-    protected String getSqlMapLocation() {
-        return "META-INF/SqlMapConfig_MyPlace.xml";
+    public boolean canInsert(final User user, final long categoryId) {
+        // TODO: now returns true if users own layer, should also return true if published as a draw layer
+        return canModifyCategory(user,categoryId);
+    }
+
+    /**
+     * Check if user can update/delete place
+     * @param user
+     * @return
+     */
+    public boolean canModifyPlace(final User user, final long placeId) {
+
+        try {
+            MyPlace place = (MyPlace) getSqlMapClient().queryForObject(getNameSpace() + ".findPlace", placeId);
+            if(place == null) {
+                return false;
+            }
+            return place.isOwnedBy(user.getUuid());
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to load place with id:", placeId);
+        }
+        return false;
+    }
+
+    /**
+     * Check if user can update/delete category
+     * @param user
+     * @return
+     */
+    public boolean canModifyCategory(final User user, final long categoryId) {
+        MyPlaceCategory cat = queryForObject(getNameSpace() + ".find", (int) categoryId);
+        if(cat == null) {
+            return false;
+        }
+        return cat.isOwnedBy(user.getUuid());
     }
 
     /**
