@@ -23,13 +23,14 @@
     </xsl:template>
 
     <xsl:template match="Range">
-        <!-- Move outside Rule? -->
-        <LineSymbolizer>
-            <Stroke>
-                <CssParameter name="stroke"><xsl:value-of select="@line-color" /></CssParameter>
-                <CssParameter name="stroke-width"><xsl:value-of select="@line-width" /></CssParameter>
-            </Stroke>
-        </LineSymbolizer>
+        <Rule>
+            <LineSymbolizer>
+                <Stroke>
+                    <CssParameter name="stroke"><xsl:value-of select="@line-color" /></CssParameter>
+                    <CssParameter name="stroke-width"><xsl:value-of select="@line-width" /></CssParameter>
+                </Stroke>
+            </LineSymbolizer>
+        </Rule>
         <Rule>
             <Name><xsl:value-of select="@name" /></Name>
             <Title><xsl:value-of select="@title" /></Title>
