@@ -10,12 +10,18 @@ import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSCapabilities;
@@ -31,7 +37,10 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
     private static String MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("myplaces.client.wmsurl");
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
 
+    private static final String MYPLACES_LAYERID_PREFIX = "myplaces_";
+
     private final static LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
+    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     @Override
     protected String getNameSpace() {
@@ -40,6 +49,13 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
 
     private SqlMapClient client = null;
 
+    /*
+     * The purpose of this method is to allow many SqlMapConfig.xml files in a
+     * single portlet
+     */
+    protected String getSqlMapLocation() {
+        return "META-INF/SqlMapConfig_MyPlace.xml";
+    }
     /**
      * Returns SQLmap
      * 
@@ -70,12 +86,79 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
         }
     }
 
-    /*
-     * The purpose of this method is to allow many SqlMapConfig.xml files in a
-     * single portlet
+    /**
+     * Check if user can insert a place in category
+     * @param user
+     * @return
      */
-    protected String getSqlMapLocation() {
-        return "META-INF/SqlMapConfig_MyPlace.xml";
+    public boolean canInsert(final User user, final long categoryId) {
+        final Resource resource = getResource(categoryId);
+        final boolean isDrawLayer = resource.hasPermission(user, PERMISSION_TYPE_DRAW);
+        // returns true if users own layer or if published as a draw layer
+        return isDrawLayer || canModifyCategory(user,categoryId);
+    }
+
+    public Resource getResource(final long categoryId) {
+        return getResource(MYPLACES_LAYERID_PREFIX + categoryId);
+    }
+
+    public Resource getResource(final String myplacesLayerId) {
+        final Resource resource = new Resource();
+        resource.setType(RESOURCE_TYPE_MYPLACES);
+        resource.setMapping(myplacesLayerId);
+        final Resource dbRes = permissionsService.findResource(resource);
+        if(dbRes == null) {
+            return resource;
+        }
+        return dbRes;
+    }
+
+    /**
+     * Check if user can update/delete place
+     * @param user
+     * @return
+     */
+    public boolean canModifyPlace(final User user, final long placeId) {
+
+        try {
+            MyPlace place = (MyPlace) getSqlMapClient().queryForObject(getNameSpace() + ".findPlace", placeId);
+            if(place == null) {
+                return false;
+            }
+            return place.isOwnedBy(user.getUuid());
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to load place with id:", placeId);
+        }
+        return false;
+    }
+
+    public boolean canModifyCategory(final User user, final String layerId) {
+        log.debug("canModifyCategory - layer:", layerId, "- User:", user);
+        if(layerId == null || user.isGuest()) {
+            return false;
+        }
+        if(!layerId.startsWith(MYPLACES_LAYERID_PREFIX)) {
+            return false;
+        }
+        final long categoryId = ConversionHelper.getLong(layerId.substring(MYPLACES_LAYERID_PREFIX.length()), -1);
+        if(categoryId == -1) {
+            return false;
+        }
+        return canModifyCategory(user, categoryId);
+    }
+
+    /**
+     * Check if user can update/delete category
+     * @param user
+     * @return
+     */
+    public boolean canModifyCategory(final User user, final long categoryId) {
+        log.debug("canModifyCategory - categoryId:", categoryId, "- User:", user);
+        MyPlaceCategory cat = queryForObject(getNameSpace() + ".find", (int) categoryId);
+        if(cat == null) {
+            return false;
+        }
+        return cat.isOwnedBy(user.getUuid());
     }
 
     /**
@@ -118,7 +201,7 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
                                               final String uuid, final boolean modifyURLs) {
 
         final OskariLayer layer = new OskariLayer();
-        layer.setExternalId("myplaces_" + mpLayer.getId());
+        layer.setExternalId(MYPLACES_LAYERID_PREFIX + mpLayer.getId());
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
         layer.setName(lang, mpLayer.getCategory_name());

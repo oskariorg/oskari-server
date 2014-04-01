@@ -2,6 +2,10 @@
 
 ## 1.19
 
+### Documentation
+
+Docs has been removed from oskari-server repository and they are now available in http://www.oskari.org/documentation and https://github.com/nls-oskari/oskari.org/tree/master/md/documentation along with frontend documentation
+
 ### geoserver-ext/OskariMarkFactory (also affects transport WFS custom style)
 
 Fixed resource leaking when loading font. Tmp-files were being created recklessly, now caches the font after loading it.

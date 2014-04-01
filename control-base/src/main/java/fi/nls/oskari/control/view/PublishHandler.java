@@ -4,7 +4,6 @@ import fi.mml.map.mapwindow.service.db.MyPlacesService;
 import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
@@ -23,6 +22,9 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.apache.commons.lang.StringUtils;
@@ -233,7 +235,8 @@ public class PublishHandler extends ActionHandler {
 
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(user.hasAnyRoleIn(drawToolsEnabledRoles)) {
-            setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            final Bundle myplaces = setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            handleMyplacesDrawLayer(myplaces, user);
         }
 
         // Setup toolbar bundle if user has configured it
@@ -270,6 +273,40 @@ public class PublishHandler extends ActionHandler {
             log.error(je, "Could not create JSON response.");
             ResponseHelper.writeResponse(params, false);
         }
+    }
+
+    private void handleMyplacesDrawLayer(final Bundle myplaces, final User user) throws ActionException {
+
+        if(myplaces == null) {
+            // nothing to handle, bundle not added
+            return;
+        }
+        final JSONObject config = myplaces.getConfigJSON();
+        final String drawLayerId = config.optString("layer");
+        if(!myPlaceService.canModifyCategory(user, drawLayerId)) {
+            throw new ActionDeniedException("Trying to publish another users layer as drawlayer!");
+        }
+        Resource resource = myPlaceService.getResource(drawLayerId);
+        if(resource.hasPermission(user, myPlaceService.PERMISSION_TYPE_DRAW)) {
+            // clear up any previous DRAW permissions
+            resource.removePermissionsOfType(myPlaceService.PERMISSION_TYPE_DRAW);
+        }
+        try {
+            // add DRAW permission for all roles currently in the system
+            for(Role role: UserService.getInstance().getRoles()) {
+                final Permission perm = new Permission();
+                perm.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                perm.setExternalId("" + role.getId());
+                perm.setType(myPlaceService.PERMISSION_TYPE_DRAW);
+                resource.addPermission(perm);
+            }
+        } catch (Exception e) {
+            log.error("Something went wrong when generating DRAW permissions for myplaces layer");
+        }
+
+        permissionsService.saveResourcePermissions(resource);
+        // NOTE! allowing guests to draw features on the layer
+        JSONHelper.putValue(config, "allowGuest", true);
     }
 
     private void setupMapState(final Bundle mapFullBundle, final JSONObject publisherData, final User user) throws ActionException {
@@ -426,19 +463,21 @@ public class PublishHandler extends ActionHandler {
         return view;
     }
 
-    private void setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
+    private Bundle setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
 
         final JSONObject bundleData = publisherData.optJSONObject(bundleid);
         if (bundleData != null && bundleData.names().length() > 0) {
             log.info("config found for", bundleid);
             final Bundle bundle = addBundle(view, bundleid);
             mergeBundleConfiguration(bundle, bundleData, null);
+            return bundle;
         } else {
             log.warn("config not found for", bundleid, "- removing bundle.");
             // We have to remove the bundle...
             // TODO: check if we really want to remove the bundle from view since it could be template view???
             view.removeBundle(bundleid);
         }
+        return null;
     }
     private Bundle addBundle(final View view, final String bundleid) {
         Bundle bundle = view.getBundleByName(bundleid);
