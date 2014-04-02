@@ -205,8 +205,8 @@
 						<!-- Try running: http://localhost:2373/ajax?action_route=GetAppSetup 
 							http://localhost:2373/ajax?action_route=GetSearchResult&searchKey=Tampere -->
 						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>maven-jetty-plugin</artifactId>
-						<version>6.1.26</version>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>8.1.14.v20131031</version>
 						<configuration>
 							<scanIntervalSeconds>10</scanIntervalSeconds>
 							<stopKey>STOP</stopKey>
@@ -214,7 +214,7 @@
 							<webAppConfig>
 								<contextPath>/</contextPath>
 
-								<baseResource implementation="org.mortbay.resource.ResourceCollection">
+								<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
 									<resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
 								</baseResource>
 								<!-- TODO: service targets are scanned but not included in classpath 
@@ -229,7 +229,7 @@
 								<scanTarget>service-control/target/classes</scanTarget>
 							</scanTargets>
 							<connectors>
-								<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+								<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
 									<port>2373</port>
 									<maxIdleTime>60000</maxIdleTime>
 								</connector>
