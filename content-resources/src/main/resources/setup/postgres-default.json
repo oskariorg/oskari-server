@@ -1,7 +1,8 @@
 {
     "setup" : [
         "create-empty-db",
-        "register-bundles"
+        "register-bundles",
+        "postgres-users"
     ],
     "views" : [
         "default-view.json",

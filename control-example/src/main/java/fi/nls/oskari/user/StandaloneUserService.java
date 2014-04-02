@@ -2,16 +2,20 @@ package fi.nls.oskari.user;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StandaloneUserService extends UserService {
 
@@ -90,19 +94,8 @@ public class StandaloneUserService extends UserService {
                 if (username.equals(jsuser.optString(JSKEY_USER))
                         && password.equals(jsuser.optString(JSKEY_PASS))) {
                     // Credentials ok
-                    user = new User();
-                    user.setId(jsuser.optLong(JSKEY_ID, 0));
-                    user.setFirstname(jsuser.optString(JSKEY_FIRSTNAME));
-                    user.setLastname(jsuser.optString(JSKEY_LASTNAME));
-                    user.setUuid(jsuser.optString(JSKEY_UUID));
-                    // Roles
-                    JSONArray roles = jsuser.optJSONArray(JSKEY_ROLES);
-                    for (int k = 0; k < roles.length(); k++) {
-                        long id = roles.optLong(k);
-                        user.addRole(id, this.roles.get(id));
-                    }
+                    user = oskariUserFromJson(jsuser);
                 }
-
             }
         } catch (Exception e) {
             throw new ServiceException("User parameters missing." + e);
@@ -151,5 +144,40 @@ public class StandaloneUserService extends UserService {
         }
 
         return roles.toArray(new Role[0]);
+    }
+
+    @Override
+    public User getUser(String username) throws ServiceException {
+        User user = null;
+        try {
+            JSONObject jsusers = JSONHelper.createJSONObject(this.getJsonFile(FILE_JSON_USER));
+            JSONArray users = jsusers.optJSONArray(JSKEY_USERS);
+
+            for (int i = 0; i < users.length(); i++) {
+                JSONObject jsuser = users.getJSONObject(i);
+                if (username.equals(jsuser.optString(JSKEY_USER))) {
+                    user = oskariUserFromJson(jsuser);
+                }
+            }
+        } catch (JSONException e) {
+            throw new ServiceException("JSON parsing failed: " + e);
+        }
+
+        return user;
+    }
+
+    private User oskariUserFromJson(JSONObject jsuser) {
+        User user = new User();
+        user.setId(jsuser.optLong(JSKEY_ID, 0));
+        user.setFirstname(jsuser.optString(JSKEY_FIRSTNAME));
+        user.setLastname(jsuser.optString(JSKEY_LASTNAME));
+        user.setUuid(jsuser.optString(JSKEY_UUID));
+        // Roles
+        JSONArray roles = jsuser.optJSONArray(JSKEY_ROLES);
+        for (int k = 0; k < roles.length(); k++) {
+            long id = roles.optLong(k);
+            user.addRole(id, this.roles.get(id));
+        }
+        return user;
     }
 }

@@ -1,5 +1,5 @@
-<Configure class="org.mortbay.jetty.webapp.WebAppContext">
-    <New id="oskaridb" class="org.mortbay.jetty.plus.naming.Resource">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="oskaridb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>${db.jndi.name}</Arg>
         <Arg>
             <New class="org.apache.commons.dbcp.BasicDataSource">
@@ -10,4 +10,14 @@
             </New>
         </Arg>
     </New>
+    <Set name="securityHandler">
+        <New class="org.eclipse.jetty.security.ConstraintSecurityHandler">
+            <Set name="loginService">
+                <New class="org.eclipse.jetty.plus.jaas.JAASLoginService">
+                    <Set name="name">OskariRealm</Set>
+                    <Set name="loginModuleName">oskariLoginModule</Set>
+                </New>
+            </Set>
+        </New>
+    </Set>
 </Configure>

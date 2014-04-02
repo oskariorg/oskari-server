@@ -125,20 +125,16 @@ public class MapFullServlet extends HttpServlet {
             // JSP
             try {
                 final String action = params.getHttpParam("action");
-                if (action != null) {
-                    // login form handling/logout
-                    if ("login".equals(action)) {
-                        handleLogin(params);
-                    }
-                    else if ("logout".equals(action)) {
-                        HttpSession session = params.getRequest().getSession();
-                        session.invalidate();
-                        log.debug("Logout");
-                        params.getResponse().sendRedirect("/");
-                        return;
-                    }
+                if ("failed".equals(request.getParameter("loginState"))) {
+                    params.getRequest().setAttribute("loginState", "failed");
                 }
-
+                if ("logout".equals(action)) {
+                    HttpSession session = params.getRequest().getSession();
+                    session.invalidate();
+                    log.debug("Logout");
+                    params.getResponse().sendRedirect("/");
+                    return;
+                }
                 final String viewJSP = setupRenderParameters(params);
                 if(viewJSP == null) {
                     // view not found
@@ -305,32 +301,6 @@ public class MapFullServlet extends HttpServlet {
         params.setUser(user);
         return params;
     }
-
-    /**
-     * Processes submitted login form.
-     * @param params
-     */
-    private void handleLogin(ActionParameters params) {
-
-        final String username = params.getHttpParam("username", "");
-        final String password = params.getHttpParam("password", "");
-        try {
-            // user service implementation is configured in properties 'oskari.user.service'
-            UserService service = UserService.getInstance();
-            User user = service.login(username, password);
-            HttpSession session = params.getRequest().getSession();
-
-            if (user != null) {
-                //session.removeAttribute("loginState");
-                session.setAttribute("user", user);
-            } else {
-                params.getRequest().setAttribute("loginState", "failed");
-            }
-        } catch (Exception e) {
-            log.error(e, "Error handling login");
-        }
-    }
-
 
     @Override
     public void destroy() {
