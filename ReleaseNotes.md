@@ -2,6 +2,10 @@
 
 ## 1.19
 
+### WMTS layer support
+
+No longer formats style/styles array with hard coded "default". Instead uses oskari_maplayer tables style to create the JSON values.
+
 ### Documentation
 
 Docs has been removed from oskari-server repository and they are now available in http://www.oskari.org/documentation and https://github.com/nls-oskari/oskari.org/tree/master/md/documentation along with frontend documentation
