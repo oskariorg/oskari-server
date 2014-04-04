@@ -21,6 +21,9 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Handles and validates WFS-T traffic from frontend myplaces2 bundle to geoserver.
+ */
 @OskariActionRoute("MyPlaces")
 public class MyPlacesBundleHandler extends ActionHandler {
 
