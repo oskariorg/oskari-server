@@ -1,0 +1,6 @@
+{
+  "sql" : [
+    "createJaasUserTables.sql",
+    "exampleJaasUsers.sql"
+  ]
+}

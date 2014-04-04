@@ -2,7 +2,7 @@
     "setup" : [
         "create-empty-db",
         "register-bundles",
-        "postgres-users"
+        "postgres-jaas-users"
     ],
     "views" : [
         "default-view.json",
