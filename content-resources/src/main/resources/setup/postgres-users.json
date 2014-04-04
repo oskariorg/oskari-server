@@ -1,0 +1,6 @@
+{
+  "sql" : [
+    "createUserTables.sql",
+    "exampleUsers.sql"
+  ]
+}

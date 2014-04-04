@@ -1,0 +1,6 @@
+INSERT INTO oskari_users(user_name, first_name, last_name, uuid) VALUES('admin', 'Antti', 'Aalto', 'asdf-asdf-asdf-asdf-asdf');
+INSERT INTO oskari_users(user_name, first_name, last_name, uuid) VALUES('user', 'Oskari', 'Olematon', 'fdsa-fdsa-fdsa-fdsa-fdsa');
+
+INSERT INTO oskari_roles(name, is_guest) VALUES('Guest', TRUE);
+INSERT INTO oskari_roles(name) VALUES('User');
+INSERT INTO oskari_roles(name) VALUES('Admin');
