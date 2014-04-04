@@ -438,8 +438,13 @@
 			</plugin>
 		</plugins>
 	</build>
- 
  	<repositories>
+ 		<!-- In Project repository -->
+		<repository>
+		    <id>in-project</id>
+		    <name>In Project Repo</name>
+		    <url>file://${project.basedir}/../external-libs/</url>
+		</repository>
 	    <repository>
 	      <id>central</id>
 	      <name>Central Repository</name>

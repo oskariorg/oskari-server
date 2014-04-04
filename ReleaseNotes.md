@@ -2,6 +2,11 @@
 
 ## 1.19
 
+### External libs
+
+External libs are now handled as an in-project repository. The location of libs is defined in oskari-server/pom.xml as a repository.
+The files can still be installed into local repository as before but it's not mandatory.
+
 ### WMTS layer support
 
 No longer formats style/styles array with hard coded "default". Instead uses oskari_maplayer tables style to create the JSON values.

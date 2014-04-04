@@ -1,3 +1,5 @@
+The files under this folder are used as additional libs that can't be found in public repositories. The oskari-server/pom.xml defines this folder as an in-project repository so everything should work out of the box. If you have any issues, the files can be installed to local repository with these commands:
+-------------------------------------------------------------------------
 
 mvn install:install-file -Dfile=capabilities_1_3_0.jar -DgroupId=fi.mml -DartifactId=capabilities -Dversion=1.3.0 -Dpackaging=jar
 
