@@ -109,6 +109,12 @@
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-users</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-permissions</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
@@ -485,6 +491,7 @@
         <module>shared-test-resources</module>
 
         <module>service-base</module>
+        <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
 

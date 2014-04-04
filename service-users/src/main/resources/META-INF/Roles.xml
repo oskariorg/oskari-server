@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Roles">
+
+    <typeAlias alias="Role" type="fi.nls.oskari.domain.Role" />
+
+    <resultMap id="RolesResult" class="Role">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+    </resultMap>
+
+    <select id="findAll" resultMap="RolesResult">
+        select id, name from oskari_roles
+    </select>
+
+</sqlMap>
