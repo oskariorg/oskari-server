@@ -291,7 +291,7 @@ public class MapFullServlet extends HttpServlet {
         // determine user locale
         String lang = request.getParameter("lang");
         if ((lang == null) || (lang.isEmpty())) {
-            params.setLocale(Locale.ENGLISH);
+            params.setLocale(new Locale(PropertyUtil.getDefaultLanguage()));
         } else {
             params.setLocale(new Locale(lang));
         }

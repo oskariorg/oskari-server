@@ -3,7 +3,7 @@ INSERT INTO portti_bundle (name, startup)
        VALUES ('metadatacatalogue','{}');
 
 UPDATE portti_bundle set startup = '{
-    "title" : "Metadata Flyout",
+    "title" : "Metadata Catalogue",
     "fi" : "metadatacatalogue",
     "sv" : "metadatacatalogue",
     "en" : "metadatacatalogue",
