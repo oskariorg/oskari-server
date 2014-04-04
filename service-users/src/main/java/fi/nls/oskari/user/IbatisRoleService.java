@@ -14,4 +14,10 @@ public class IbatisRoleService extends BaseIbatisService<Role> {
     public List<Role> findByUserName(String username) {
         return queryForList(getNameSpace() + ".findByUserName", username);
     }
+
+    public Role findGuestRole() {
+        List<Role> guestRoles = queryForList(getNameSpace() + ".findGuestRoles");
+        if(guestRoles.isEmpty()) return null;
+        return guestRoles.get(0);
+    }
 }

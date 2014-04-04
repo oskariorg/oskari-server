@@ -17,6 +17,10 @@
         select id, name from oskari_roles
     </select>
 
+    <select id="findGuestRoles" resultMap="RolesResult">
+        select id, name from oskari_roles where is_guest is true;
+    </select>
+
     <select id="findByUserName" parameterClass="String" resultMap="RolesResult">
         select r.id, r.name from oskari_roles r, oskari_role_oskari_user m
             where r.id = m.role_id and m.user_name = #id#

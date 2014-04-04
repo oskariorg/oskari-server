@@ -13,8 +13,15 @@ public class DatabaseUserService extends UserService {
     private IbatisUserService userService = new IbatisUserService();
 
     @Override
+    public User getGuestUser() {
+        User user = super.getGuestUser();
+        user.addRole(roleService.findGuestRole());
+        return user;
+    }
+
+    @Override
     public User login(String user, String pass) throws ServiceException {
-        return null;
+        throw new ServiceException("Unsupported!");
     }
 
     @Override
