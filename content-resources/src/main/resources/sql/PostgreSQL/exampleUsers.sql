@@ -4,3 +4,7 @@ INSERT INTO oskari_users(user_name, first_name, last_name, uuid) VALUES('user', 
 INSERT INTO oskari_roles(name, is_guest) VALUES('Guest', TRUE);
 INSERT INTO oskari_roles(name) VALUES('User');
 INSERT INTO oskari_roles(name) VALUES('Admin');
+
+INSERT INTO oskari_role_oskari_user(user_name, role_id) VALUES('admin', (SELECT id FROM oskari_roles WHERE name = 'User'));
+INSERT INTO oskari_role_oskari_user(user_name, role_id) VALUES('admin', (SELECT id FROM oskari_roles WHERE name = 'Admin'));
+INSERT INTO oskari_role_oskari_user(user_name, role_id) VALUES('user', (SELECT id FROM oskari_roles WHERE name = 'User'));
