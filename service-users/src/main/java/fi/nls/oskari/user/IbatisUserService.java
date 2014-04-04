@@ -2,28 +2,24 @@ package fi.nls.oskari.user;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.util.List;
-import java.util.Map;
 
-public class IbatisUserService extends UserService {
-    private IbatisRoleService roleService = new IbatisRoleService();
+public class IbatisUserService extends BaseIbatisService<User> {
+    IbatisRoleService roleService = new IbatisRoleService();
 
     @Override
-    public User login(String user, String pass) throws ServiceException {
-        return null;
+    protected String getNameSpace() {
+        return "Users";
     }
 
-    @Override
-    public Role[] getRoles(Map<Object, Object> platformSpecificParams) throws ServiceException {
-        List<Role> roleList = roleService.findAll();
-        return roleList.toArray(new Role[roleList.size()]);
-    }
-
-    @Override
-    public User getUser(String username) throws ServiceException {
-        return null;
+    public User findByUserName(String username) {
+        User user = queryForObject(getNameSpace() + ".findByUserName", username);
+        List<Role> roleList = roleService.findByUserName(username);
+        for(Role role : roleList) {
+            user.addRole(role.getId(), role.getName());
+        }
+        return user;
     }
 }
