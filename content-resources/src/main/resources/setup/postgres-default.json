@@ -3,7 +3,8 @@
         "create-empty-db",
         "register-bundles",
         "postgres-jaas-users",
-        "postgres-users"
+        "postgres-users",
+        "postgres-permissions"
     ],
     "views" : [
         "default-view.json",
@@ -12,6 +13,6 @@
     ],
     "sql" : [
         "populateInspireThemes.sql",
-        "exampleLayersAndPermissions.sql"
+        "exampleLayers.sql"
     ]
 }
