@@ -79,4 +79,12 @@ public class UserLayer {
     public void setStyle_id(long style_id) {
         this.style_id = style_id;
     }
+
+    public boolean isOwnedBy(final String uuid) {
+        if(uuid == null || getUuid() == null) {
+            return false;
+        }
+        return getUuid().equals(uuid);
+    }
+
 }
