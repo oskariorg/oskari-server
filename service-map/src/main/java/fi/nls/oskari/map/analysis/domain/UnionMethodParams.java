@@ -12,6 +12,7 @@ public class UnionMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-geomunion.xml";
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-geomunion.xml";
+    private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-geomunion.xml";
    
 
     public Document getWPSXML() throws XPathExpressionException, IOException,
@@ -26,6 +27,8 @@ public class UnionMethodParams extends AnalysisMethodParams {
         String doctemp = null;
         if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
             doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+            doctemp = this.getTemplate(this.analysisMethodTemplate3);
         else
             doctemp = this.getTemplate(this.analysisMethodTemplate);
 
@@ -39,6 +42,7 @@ public class UnionMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(XMLNS, this.getXmlns());
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(LOCALTYPENAME, this.getLocalTypeName());
+        doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());
 
         //Properties
         if (this.getProperties() != null) {
