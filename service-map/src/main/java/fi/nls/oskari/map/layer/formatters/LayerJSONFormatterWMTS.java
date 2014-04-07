@@ -27,9 +27,13 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "tileMatrixSetData", JSONHelper.createJSONObject(layer.getTileMatrixSetData()));
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
-        JSONHelper.putValue(layerJson, "style", "default");
+        String styleName = layer.getStyle();
+        if(styleName == null || styleName.isEmpty()) {
+            styleName = "default";
+        }
+        JSONHelper.putValue(layerJson, "style", styleName);
         JSONArray styles = new JSONArray();
-        JSONObject style = JSONHelper.createJSONObject("identifier", "default");
+        JSONObject style = JSONHelper.createJSONObject("identifier", styleName);
         JSONHelper.putValue(style,  "isDefault", true);
         styles.put(style);
         JSONHelper.putValue(layerJson, "styles", styles);

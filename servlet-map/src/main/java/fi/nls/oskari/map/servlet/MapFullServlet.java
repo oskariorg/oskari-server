@@ -288,8 +288,13 @@ public class MapFullServlet extends HttpServlet {
         params.setRequest(request);
         params.setResponse(response);
 
-        // add logic here to determine user locale
-        params.setLocale(Locale.ENGLISH);
+        // determine user locale
+        String lang = request.getParameter("lang");
+        if ((lang == null) || (lang.isEmpty())) {
+            params.setLocale(Locale.ENGLISH);
+        } else {
+            params.setLocale(new Locale(lang));
+        }
 
         final HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");

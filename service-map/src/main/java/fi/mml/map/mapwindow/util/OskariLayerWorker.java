@@ -196,10 +196,10 @@ public class OskariLayerWorker {
             JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
         } else {
             for (Role role : user.getRoles()) {
-                if (editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (editAccessList != null && editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "edit", true);
                 }
-                if (permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (permissionsList != null && permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
                 }
             }

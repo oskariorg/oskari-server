@@ -1,11 +1,12 @@
 package fi.nls.oskari.util;
 
-import org.apache.axiom.om.OMAbstractFactory;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.util.AXIOMUtil;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.StringWriter;
 import java.util.Iterator;
 
 /**
@@ -16,6 +17,9 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class XmlHelper {
+
+    private static final Logger log = LogFactory.getLogger(XmlHelper.class);
+
 /*
     <wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <wfs:Insert>
@@ -29,13 +33,13 @@ public class XmlHelper {
     </gml:pointMember>
     </gml:MultiPoint>
     </feature:geometry>
-    <feature:name>poster julkaisupiirto</feature:name>
+    <feature:name>poster test</feature:name>
     <feature:place_desc></feature:place_desc>
     <feature:attention_text></feature:attention_text>
     <feature:link></feature:link>
     <feature:image_url></feature:image_url>
     <feature:category_id>11588</feature:category_id>
-    <feature:uuid>d3a216dd-077d-44ce-b79a-adf20ca88367</feature:uuid>
+    <feature:uuid>aaaaa-bbbbb-cccc-dddd-eeee</feature:uuid>
     </feature:my_places>
     </wfs:Insert>
     </wfs:Transaction>
@@ -44,8 +48,19 @@ public class XmlHelper {
     public static OMElement parseXML(final String xml) {
         try {
             return AXIOMUtil.stringToOM(xml);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception e) {
+            log.error("Couldnt't parse XML", log.getCauseMessages(e), xml);
+        }
+        return null;
+    }
+
+    public static String toString(final OMElement xml) {
+        try {
+            StringWriter writer = new StringWriter();
+            xml.serialize(writer);
+            return writer.toString();
+        } catch (Exception e) {
+            log.error("Couldnt't serialize XML to String", log.getCauseMessages(e), xml);
         }
         return null;
     }

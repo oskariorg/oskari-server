@@ -5,6 +5,7 @@ import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
@@ -35,6 +36,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
     private static final String TYPE_PLACE = "feature:my_places";
 
     private AXIOMXPath XPATH_MYPLACE_INSERT_CATEGORYID = null;
+    private AXIOMXPath XPATH_MYPLACE_INSERT_UUID = null;
     private AXIOMXPath XPATH_MYPLACE = null;
     private AXIOMXPath XPATH_CATEGORY = null;
 
@@ -54,6 +56,10 @@ public class MyPlacesBundleHandler extends ActionHandler {
             XPATH_MYPLACE_INSERT_CATEGORYID = new AXIOMXPath("//wfs:Transaction/wfs:Insert/feature:my_places/feature:category_id");
             XPATH_MYPLACE_INSERT_CATEGORYID.addNamespace("wfs", "http://www.opengis.net/wfs");
             XPATH_MYPLACE_INSERT_CATEGORYID.addNamespace("feature", MY_PLACES_NAMESPACE);
+
+            XPATH_MYPLACE_INSERT_UUID = new AXIOMXPath("//wfs:Transaction/wfs:Insert/feature:my_places/feature:uuid");
+            XPATH_MYPLACE_INSERT_UUID.addNamespace("wfs", "http://www.opengis.net/wfs");
+            XPATH_MYPLACE_INSERT_UUID.addNamespace("feature", MY_PLACES_NAMESPACE);
 
             XPATH_MYPLACE = new AXIOMXPath("//wfs:Transaction/*/feature:my_places");
             XPATH_MYPLACE.addNamespace("wfs", "http://www.opengis.net/wfs");
@@ -79,8 +85,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         final HttpServletRequest request = params.getRequest();
-        final String postData = readPayload(request);
-        final OMElement doc = XmlHelper.parseXML(postData);
+        final OMElement doc = XmlHelper.parseXML(readPayload(request));
 
         // check permissions
         validateRequest(params, doc);
@@ -107,7 +112,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
                 final String value = request.getHeader(key);
                 req.addHeader(key,  Jsoup.clean(value, Whitelist.none()));
             }
-            req.setPostData(postData);
+            req.setPostData(XmlHelper.toString(doc));
         }
         try {
             final String response = proxyService.proxy(req);
@@ -191,12 +196,30 @@ public class MyPlacesBundleHandler extends ActionHandler {
     }
 
     private void validateMyplaceInsertCategories(final OMElement root, final User user) throws ActionException {
+        if(XPATH_MYPLACE_INSERT_UUID == null) {
+            throw new ActionParamsException("Xpath definitions missing");
+        }
         // check that user can insert into the listed categories
         List<Long> categoryIds = getCategoryIdsFromMyplace(root);
         for(Long id: categoryIds) {
             if(!service.canInsert(user, id)) {
                 throw new ActionDeniedException("Tried to insert feature into category: " + id);
             }
+        }
+        try {
+            // setup place uuid from the first category (there should be only one anyways)
+            // this way the place will be visible both in map and in the layer owners personal data
+            final OMElement uuidNode = (OMElement) XPATH_MYPLACE_INSERT_UUID.selectSingleNode(root);
+            final List<MyPlaceCategory> categories = service.getMyPlaceLayersById(categoryIds);
+            if(categories.isEmpty()) {
+                throw new ActionParamsException("Couldn't load categories");
+            }
+            uuidNode.setText(categories.get(0).getUuid());
+        } catch (Exception ex) {
+            if(ex instanceof ActionException) {
+                throw (ActionException) ex;
+            }
+            throw new ActionException("Error parsing payload", ex);
         }
     }
 
