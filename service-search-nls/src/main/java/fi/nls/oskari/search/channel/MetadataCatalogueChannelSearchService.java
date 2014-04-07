@@ -103,14 +103,20 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     private ChannelSearchResult readQueryData(SearchCriteria searchCriteria, List<String> locales) {
 
         ChannelSearchResult channelSearchResult = null;
+        StAXOMBuilder builder = null;
         try {
-            final StAXOMBuilder builder = makeQuery(searchCriteria);
+            builder = makeQuery(searchCriteria);
             channelSearchResult = parseResults(builder, searchCriteria.getLocale());
         } catch (Exception x) {
             log.error(x, "Failed to search");
             channelSearchResult = new ChannelSearchResult();
             channelSearchResult.setException(x);
             channelSearchResult.setQueryFailed(true);
+        }
+        finally {
+            try {
+                builder.close();
+            } catch (Exception ignored) {}
         }
         return channelSearchResult;
     }
