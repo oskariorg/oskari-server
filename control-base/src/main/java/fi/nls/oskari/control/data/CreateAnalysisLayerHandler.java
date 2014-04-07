@@ -51,6 +51,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER = "filter";
+    private static final String PARAM_GEOJSON = "geojson";
+    private static final String PARAM_GEOJSON2 = "geojson2";
 
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
 
@@ -95,6 +97,13 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // filter conf data
         final String filter = params.getHttpParam(PARAM_FILTER);
 
+        // GeoJson input data
+        final String geojson = params.getHttpParam(PARAM_GEOJSON);
+        final String geojson2 = params.getHttpParam(PARAM_GEOJSON2);
+        //Test
+       // final String geojson = "{\"features\": [{\"id\": \"alue.1\",\"properties\": {},\"type\": \"Feature\",\"geometry\": {\"type\": \"MultiPolygon\",\"coordinates\": [[[[614942.9408, 7495432.426],[614858.3646, 7495489.605],[615097.9649, 7495912.429],[615188.1402, 7495865.628],[614942.9408, 7495432.426]]]]}}]}";
+       // final String geojson2 = ""; // "{\"features\": [{\"id\": \"alue.1\",\"properties\": {},\"type\": \"Feature\",\"geometry\": {\"type\": \"MultiPolygon\",\"coordinates\": [[[[614942.9408, 7495432.426],[614858.3646, 7495489.605],[615097.9649, 7495912.429],[615188.1402, 7495865.628],[614942.9408, 7495432.426]]]]}}]}";
+
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
         AnalysisLayer analysisLayer = null;
@@ -102,7 +111,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // User
         String uuid = params.getUser().getUuid();
         try {
-            analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, baseUrl, uuid);
+            analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, geojson, geojson2, baseUrl, uuid);
         } catch (ServiceException e) {
             this.MyError(ERROR_UNABLE_TO_PARSE_ANALYSE, params, e);
             return;
@@ -149,7 +158,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         analysisLayer));
 
                 try {
-                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, baseUrl);
+                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, geojson, geojson2, baseUrl);
                 } catch (ServiceException e) {
                     this.MyError(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, params, e);
                     return;
@@ -234,7 +243,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             resource.setMapping("analysis", Long.toString(AnalysisHelper.getAnalysisIdFromLayerId(layerId)));
             return permissionsService.findResource(resource);
         }
-        else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)) {
+        else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)  || layerId.equals("-1")) {
 
             final Resource resource = new Resource();
             // permission to publish for self
@@ -253,7 +262,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     resource.addPermission(perm);
                 }
             }catch (Exception e) {
-                log.error("Something went wrong when generating source permissions for myplaces layer");
+                log.error("Something went wrong when generating source permissions for myplaces layer or temporary");
 
             }
             return resource;

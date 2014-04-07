@@ -14,6 +14,7 @@ public class BufferMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-buffer.xml";
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-buffer.xml";
+    private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-buffer.xml";
 
     // xml template paths {}
     private final String DISTANCE = "{distance}";
@@ -41,12 +42,22 @@ public class BufferMethodParams extends AnalysisMethodParams {
         this.attributeName = attributeName;
     }
 
+    /**
+     * DEPRECATED - NOT IN USE
+     * @return
+     * @throws XPathExpressionException
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public Document getWPSXML() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
         // Deprecated
         Document doc = null;
         if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
             doc = this.getDocument(this.analysisMethodTemplate2);
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+            doc = this.getDocument(this.analysisMethodTemplate3);
         else
             doc = this.getDocument(this.analysisMethodTemplate);
 
@@ -65,11 +76,20 @@ public class BufferMethodParams extends AnalysisMethodParams {
 
         String doctemp = null;
         if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+        {
             doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        }
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+        {
+            doctemp = this.getTemplate(this.analysisMethodTemplate3);
+            doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());
+        }
         else
+        {
             doctemp = this.getTemplate(this.analysisMethodTemplate);
-        
-        doctemp = doctemp.replace(HREF, this.getHref());
+            doctemp = doctemp.replace(HREF,this.getHref());
+        }
+
         doctemp = doctemp.replace(MAXFEATURES, this.getMaxFeatures()); // may be capacity problems, if big one
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
