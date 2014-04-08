@@ -7,87 +7,18 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.search.util.GeonetworkSpatialOperation;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.deegree.datatypes.QualifiedName;
-import org.deegree.model.crs.CRSFactory;
-import org.deegree.model.crs.CoordinateSystem;
-import org.deegree.model.filterencoding.*;
-import org.deegree.model.spatialschema.Geometry;
-import org.deegree.model.spatialschema.GeometryException;
-import org.deegree.model.spatialschema.WKTAdapter;
-import org.deegree.ogcbase.PropertyPath;
-import org.deegree.ogcbase.SortProperty;
-import org.deegree.ogcwebservices.csw.discovery.*;
-import org.deegree.ogcwebservices.csw.discovery.GetRecords.RESULT_TYPE;
-import org.deegree.ogcwebservices.csw.discovery.XMLFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * TODO: remove unnecessary/commented out codes
- */
 public class MetadataCatalogueChannelSearchService implements SearchableChannel {
 
-
-    private static final String GCO_NAMESPACE = "gco";
-    private static final String GMD_NAMESPACE = "gmd";
-    // Some have inline name spacing, so we're using local name...
-    private static final String MD_METADATA_EXPRESSION =
-            "./*[local-name()='MD_Metadata']";
-    // root for title, description, imageFileName and bounding box
-    private static final String IDENTIFICATION_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":identificationInfo/*[local-name()='MD_DataIdentification' or local-name()='SV_ServiceIdentification']";
-    private static final String TITLE_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":citation/" + GMD_NAMESPACE + ":CI_Citation/" + GMD_NAMESPACE + ":title";
-    private static final String DESCRIPTION_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":abstract";
-    private static final String IMAGE_FILE_NAME_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":graphicOverview[position()=last()]/" + GMD_NAMESPACE + ":MD_BrowseGraphic/" + GMD_NAMESPACE + ":fileName";
-
-    private static final String XPATH_ORGANIZATION =
-            "./" + GMD_NAMESPACE + ":pointOfContact/" + GMD_NAMESPACE + ":CI_ResponsibleParty/" + GMD_NAMESPACE + ":organisationName/" + GCO_NAMESPACE + ":CharacterString";
-
-    // root for west, south, east and north
-    private static final String BBOX_EXPRESSION =
-            // Someone is serving extent with srv namespace...
-            "./*[local-name()='extent']/" + GMD_NAMESPACE + ":EX_Extent/" + GMD_NAMESPACE + ":geographicElement/" + GMD_NAMESPACE + ":EX_GeographicBoundingBox";
-    private static final String WEST_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":westBoundLongitude/" + GCO_NAMESPACE + ":Decimal/text()";
-    private static final String SOUTH_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":southBoundLatitude/" + GCO_NAMESPACE + ":Decimal/text()";
-    private static final String EAST_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":eastBoundLongitude/" + GCO_NAMESPACE + ":Decimal/text()";
-    private static final String NORTH_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":northBoundLatitude/" + GCO_NAMESPACE + ":Decimal/text()";
-    // TODO schema allows [0..N] transferOptions :P We should handle the possibility of multiple onlineResources somehow
-    // root for downloadable and gmdURL, replaced localName="" with transferOptions... schema seems to only allow gmd:transferOptions there?
-    private static final String ONLINE_RESOURCE_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":distributionInfo/" + GMD_NAMESPACE + ":MD_Distribution/" + GMD_NAMESPACE + ":transferOptions/" + GMD_NAMESPACE + ":MD_DigitalTransferOptions/" + GMD_NAMESPACE + ":onLine/" + GMD_NAMESPACE + ":CI_OnlineResource";
-    private static final String DOWNLOADABLE_EXPRESSION =
-            "boolean(./" + GMD_NAMESPACE + ":protocol)";
-    private static final String GMD_URL_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":linkage/" + GMD_NAMESPACE + ":URL/text()";
-    private static final String UUID_EXPRESSION =
-            "./" + GMD_NAMESPACE + ":fileIdentifier";
-    public static final String ID = "METADATA_CATALOGUE_CHANNEL";
-    private final static char WILDCARD_CHARACTER = '*';
     private final Logger log = LogFactory.getLogger(this.getClass());
+
+    public static final String ID = "METADATA_CATALOGUE_CHANNEL";
     private static String serverURL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server", "http://geonetwork.nls.fi");
     private static String queryPath = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path", "/geonetwork/srv/en/csw");
 
@@ -95,6 +26,13 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
 
     private final static List<MetadataField> fields = new ArrayList<MetadataField>();
+
+    private final MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
+    private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
+
+    public String getId() {
+        return ID;
+    }
 
     public static String getServerURL() {
         return serverURL;
@@ -124,262 +62,13 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return fields;
     }
 
-    private MetadataField getField(String name) {
+    public static MetadataField getField(String name) {
         for(MetadataField field: getFields()) {
             if(field.getName().equals(name)) {
                 return field;
             }
         }
         return null;
-    }
-
-    /**
-     * @param xpath    XPath instance
-     * @param rootNode SearchResults node containing the string in one format or another
-     * @param locales  List of locales in order of preference
-     * @return Localized string if available
-     * @throws XPathExpressionException
-     */
-    private static String getLocalizedString(XPath xpath, Node rootNode, List<String> locales) throws XPathExpressionException {
-        final String getGenericCharacterStringExpression = "./" + GCO_NAMESPACE + ":CharacterString/text()";
-        final String getLocalizedCharacterStringsExpression =
-                "./" + GMD_NAMESPACE + ":PT_FreeText/" + GMD_NAMESPACE + ":textGroup/" + GMD_NAMESPACE + ":LocalisedCharacterString";
-        String localizedString = (String) xpath.evaluate(getGenericCharacterStringExpression, rootNode, XPathConstants.STRING);
-        if (localizedString != null && !localizedString.isEmpty()) {
-            return localizedString;
-        }
-        // Value is localized, get all locales in case we don't find ours...
-        Map<String, String> localizedContentValues = new HashMap<String, String>();
-        NodeList nodes = (NodeList) xpath.evaluate(getLocalizedCharacterStringsExpression, rootNode, XPathConstants.NODESET);
-        for (int i = 0, j = nodes.getLength(); i < j; i++) {
-            Node textGroupChild = nodes.item(i);
-            Node localeAttrValue = textGroupChild.getAttributes().getNamedItem("locale");
-
-            if (localeAttrValue != null) {
-                localizedContentValues.put(
-                        localeAttrValue.getTextContent().toLowerCase(),
-                        textGroupChild.getTextContent());
-            }
-        }
-
-        // FIXME this seems to be rather wrong. locales are marked thus: locale="#locale-eng", we're looking for locale="#en"
-
-        String locale = locales.get(0);
-
-        // try to find a perfect match
-        String returnValue = localizedContentValues.get("#" + locale);
-
-        if (returnValue != null && !"".equals(returnValue)) {
-            return returnValue;
-        }
-
-        // try to find some match in provided locales
-        for (String matchLocale : locales) {
-            if (!locale.equals(matchLocale)) {
-                returnValue = localizedContentValues.get("#" + matchLocale);
-
-                if (returnValue != null && !"".equals(returnValue)) {
-                    // log.warn("No character string value found for locale '" + locale
-                    //       + "'. Returning value for locale '" + localeOrderArray[j] + "': " + returnValue);
-                    return returnValue;
-                }
-            }
-        }
-
-        // return something non-empty if possible
-        for (String key : localizedContentValues.keySet()) {
-            returnValue = localizedContentValues.get(key);
-
-            if (returnValue != null && !"".equals(returnValue)) {
-                // log.warn("No character string value found for locale '" + locale
-                //       + "'. Returning value for locale '" + key + "': " + returnValue);
-                return returnValue;
-            }
-        }
-
-        return localizedString;
-    }
-
-    /**
-     * Creates and initializes an instance of XPath
-     * @return XPath instance with namespaces set.
-     */
-    private static XPath getXPath() {
-        // init xpath
-        XPathFactory xPathFactory = XPathFactory.newInstance();
-        XPath xpath = xPathFactory.newXPath();
-
-        // Add namespaces. It would be nice to get this from the xml, but that would be hard.
-        xpath.setNamespaceContext(new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-                if (prefix == null) {
-                    throw new NullPointerException("Null prefix");
-                } else if (GCO_NAMESPACE.equals(prefix)) {
-                    return "http://www.isotc211.org/2005/gco";
-                } else if (GMD_NAMESPACE.equals(prefix)) {
-                    return "http://www.isotc211.org/2005/gmd";
-                } else if ("srv".equals(prefix)) {
-                    return "http://www.isotc211.org/2005/srv";
-                }
-                return XMLConstants.NULL_NS_URI;
-            }
-
-            // This method isn't necessary for XPath processing.
-            public String getPrefix(String uri) {
-                throw new UnsupportedOperationException();
-            }
-
-            // This method isn't necessary for XPath processing either.
-            public Iterator getPrefixes(String uri) {
-                throw new UnsupportedOperationException();
-            }
-        });
-        return xpath;
-    }
-
-    /**
-     * Parses a single search result
-     * @param xpath XPath instance with the proper namespaces set
-     * @param rootNode MD_Metadata node
-     * @param locale Locale from search criteria
-     * @param locales List of locales in order of preference
-     * @param fetchPageURLs ActionURLs
-     * @param imageURLs BaseURLs for images
-     * @param serverURL Resource namespace
-     * @return SearchResultItem filled with the MD_Metadata node's contents
-     * @throws XPathExpressionException
-     */
-    private static SearchResultItem parseSearchResultItem(XPath xpath, Node rootNode, String locale, List<String> locales, Map<String, String> fetchPageURLs, Map<String, String> imageURLs, String serverURL) throws XPathExpressionException {
-        SearchResultItem searchResultItem = new SearchResultItem();
-        if (rootNode == null) {
-            return searchResultItem;
-        }
-        Node identificationNode = (Node) xpath.evaluate(
-                IDENTIFICATION_EXPRESSION,
-                rootNode,
-                XPathConstants.NODE
-        );
-        String imageFileName = null;
-        if (identificationNode != null) {
-
-            Node titleNode = (Node) xpath.evaluate(
-                    TITLE_EXPRESSION,
-                    identificationNode,
-                    XPathConstants.NODE
-            );
-
-            if (titleNode != null) {
-                searchResultItem.setTitle(
-                        getLocalizedString(xpath, titleNode, locales)
-                );
-            }
-            Node descriptionNode = (Node) xpath.evaluate(
-                    DESCRIPTION_EXPRESSION,
-                    identificationNode,
-                    XPathConstants.NODE
-            );
-
-            if (descriptionNode != null) {
-                searchResultItem.setDescription(
-                        getLocalizedString(xpath, descriptionNode, locales)
-                );
-            }
-
-            Node imageFileNameNode = (Node) xpath.evaluate(
-                    IMAGE_FILE_NAME_EXPRESSION,
-                    identificationNode,
-                    XPathConstants.NODE
-            );
-
-            if (imageFileNameNode != null) {
-                imageFileName = getLocalizedString(xpath, imageFileNameNode, locales);
-            }
-
-
-
-            final String organization = (String) xpath.evaluate(XPATH_ORGANIZATION, identificationNode, XPathConstants.STRING);
-            searchResultItem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, organization);
-
-            Node boundingBoxnode = (Node) xpath.evaluate(BBOX_EXPRESSION, identificationNode, XPathConstants.NODE);
-            if (boundingBoxnode != null) {
-                String west = (String) xpath.evaluate(WEST_EXPRESSION, boundingBoxnode, XPathConstants.STRING);
-                searchResultItem.setWestBoundLongitude(west);
-
-                String south = (String) xpath.evaluate(SOUTH_EXPRESSION, boundingBoxnode, XPathConstants.STRING);
-                searchResultItem.setSouthBoundLatitude(south);
-
-                String east = (String) xpath.evaluate(EAST_EXPRESSION, boundingBoxnode, XPathConstants.STRING);
-                searchResultItem.setEastBoundLongitude(east);
-
-                String north = (String) xpath.evaluate(NORTH_EXPRESSION, boundingBoxnode, XPathConstants.STRING);
-                searchResultItem.setNorthBoundLatitude(north);
-            }
-        }
-
-        Node onlineResourceNode = (Node) xpath.evaluate(ONLINE_RESOURCE_EXPRESSION, rootNode, XPathConstants.NODE);
-        if (null != onlineResourceNode) {
-            Boolean downloadable = (Boolean) xpath.evaluate(DOWNLOADABLE_EXPRESSION, onlineResourceNode, XPathConstants.BOOLEAN);
-            if (downloadable) {
-                searchResultItem.setDownloadable(true);
-            }
-            String gmdUrl = (String) xpath.evaluate(GMD_URL_EXPRESSION, onlineResourceNode, XPathConstants.STRING);
-            searchResultItem.setGmdURL(gmdUrl);
-        }
-        Node uuidNode = (Node) xpath.evaluate(
-                UUID_EXPRESSION,
-                rootNode,
-                XPathConstants.NODE
-        );
-        String uuid = null;
-        if (uuidNode != null) {
-            uuid = getLocalizedString(xpath, uuidNode, locales);
-            searchResultItem.setActionURL(fetchPageURLs.get(locale) + uuid);
-        }
-        if (imageFileName != null && imageFileName.startsWith("http://")) {
-            searchResultItem.setContentURL(imageFileName);
-        } else if (uuid != null && !uuid.isEmpty() && imageFileName != null && !imageFileName.isEmpty()) {
-            try {
-                searchResultItem.setContentURL(
-                        imageURLs.get(locale)
-                                + "uuid=" + uuid + "&fname=" + imageFileName);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to get image url from property", e);
-            }
-        }
-
-        if (uuid != null && !uuid.isEmpty()) {
-            searchResultItem.setResourceId(uuid);
-            try {
-                searchResultItem.setResourceNameSpace(serverURL);
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to get geonetwork server url from property", e);
-            }
-        }
-        return searchResultItem;
-    }
-
-    /**
-     * @param node           Root node for xpath queries
-     * @param searchCriteria Criteria for search, locale and such
-     * @return List of search results
-     * @throws XPathExpressionException
-     */
-    public static List<SearchResultItem> parseSearchResultItems(Node node, SearchCriteria searchCriteria, Map<String, String> fetchPageURLs, Map<String, String> imageURLs, String serverURL, List<String> locales) throws XPathExpressionException {
-        List<SearchResultItem> searchResultItems = new ArrayList<SearchResultItem>();
-        if (node == null) {
-            return searchResultItems;
-        }
-
-        XPath xpath = getXPath();
-
-        // get result elements
-        NodeList mdMetadataNodes = (NodeList) xpath.evaluate(MD_METADATA_EXPRESSION, node, XPathConstants.NODESET);
-
-        for (int i = 0; i < mdMetadataNodes.getLength(); i++) {
-           searchResultItems.add(parseSearchResultItem(xpath, mdMetadataNodes.item(i), searchCriteria.getLocale(), locales, fetchPageURLs, imageURLs, serverURL));
-        }
-
-        return searchResultItems;
     }
 
     public void setProperty(String propertyName, String propertyValue) {
@@ -393,10 +82,6 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
                 fetchPageURLs.put(propertyName.substring(14), propertyValue);
             }
         }
-    }
-
-    public String getId() {
-        return ID;
     }
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
@@ -416,246 +101,80 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     }
 
     private ChannelSearchResult readQueryData(SearchCriteria searchCriteria, List<String> locales) {
-        ChannelSearchResult channelSearchResult = new ChannelSearchResult();
 
+        ChannelSearchResult channelSearchResult = null;
+        StAXOMBuilder builder = null;
         try {
-            Node resultNode = makeQuery(searchCriteria);
-            channelSearchResult.setSearchResultItems(parseSearchResultItems(resultNode, searchCriteria, fetchPageURLs, imageURLs, serverURL, locales));
-            channelSearchResult.setQueryFailed(false);
-
+            builder = makeQuery(searchCriteria);
+            channelSearchResult = parseResults(builder, searchCriteria.getLocale());
         } catch (Exception x) {
+            log.error(x, "Failed to search");
+            channelSearchResult = new ChannelSearchResult();
             channelSearchResult.setException(x);
             channelSearchResult.setQueryFailed(true);
         }
-
+        finally {
+            try {
+                builder.close();
+            } catch (Exception ignored) {}
+        }
         return channelSearchResult;
     }
 
-    private Operation getLikeOperation(final String searchCriterion,
-                                       final String searchElementName) {
-        if (searchCriterion == null || searchCriterion.isEmpty()) {
-            return null;
+    public ChannelSearchResult parseResults(final StAXOMBuilder builder, final String locale) {
+        ChannelSearchResult channelSearchResult = new ChannelSearchResult();
+        try {
+            final OMElement resultsWrapper = getResultsElement(builder);
+            // resultsWrapper == null -> no search results
+            final Iterator<OMElement> results = resultsWrapper.getChildrenWithLocalName("MD_Metadata");
+            final long start = System.currentTimeMillis();
+            while(results.hasNext()) {
+                final SearchResultItem item = RESULT_PARSER.parseResult(results.next());
+                setupResultItemURLs(item, locale);
+                channelSearchResult.addItem(item);
+            }
+            final long end =  System.currentTimeMillis();
+            log.debug("Parsing metadata results took", (end-start), "ms");
+            channelSearchResult.setQueryFailed(false);
+        } catch (Exception x) {
+            log.error(x, "Failed to search");
+            channelSearchResult.setException(x);
+            channelSearchResult.setQueryFailed(true);
         }
-        PropertyIsLikeOperation op = new PropertyIsLikeOperation(
-                new PropertyName(new QualifiedName(searchElementName)),
-                new Literal(searchCriterion), WILDCARD_CHARACTER, '?', '/');
-        return op;
+        return channelSearchResult;
     }
 
-    private Operation getCompOperation(final String searchCriterion,
-                                       final String searchElementName,
-                                       final int operationId) {
-        if (searchCriterion == null || searchCriterion.isEmpty()) {
-            return null;
+    private void setupResultItemURLs(final SearchResultItem item, final String locale) {
+        final String uuid = item.getResourceId();
+
+        if (uuid != null) {
+            // uuid = getLocalizedString(xpath, uuidNode, locales);
+            item.setActionURL(fetchPageURLs.get(locale) + uuid);
+
+            final boolean replaceImageURL = item.getContentURL() != null &&
+                    !item.getContentURL().isEmpty() &&
+                    !item.getContentURL().startsWith("http://") ;
+
+            if (replaceImageURL) {
+                item.setContentURL(imageURLs.get(locale) + "uuid=" + uuid + "&fname=" + item.getContentURL());
+            }
         }
-        PropertyIsCOMPOperation op = new PropertyIsCOMPOperation(
-                operationId,
-                new PropertyName(new QualifiedName(searchElementName)),
-                new Literal(searchCriterion),
-                false);
-        return op;
+        item.setResourceNameSpace(getServerURL());
     }
-    private Operation getSpatialOperation(final String searchCriterion,
-                                       final String searchElementName) {
-        if (searchCriterion == null || searchCriterion.isEmpty()) {
-            return null;
-        }
-        // FIXME: really create for each call?
-        final CoordinateSystem crs = CRSFactory.createDummyCRS("EPSG:4326");
-        try {
-            Geometry geom = WKTAdapter.wrap(searchCriterion, crs);
-            GeonetworkSpatialOperation op = new GeonetworkSpatialOperation(
-                    OperationDefines.INTERSECTS,
-                    new PropertyName(new QualifiedName(searchElementName)),
-                    geom,
-                    searchCriterion);
-            return op;
-        } catch (GeometryException e) {
-            log.error(e, "Error creating spatial operation!");
+
+    private OMElement getResultsElement(final StAXOMBuilder builder) {
+        final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");
+        if(resultIt.hasNext()) {
+            return resultIt.next();
         }
         return null;
     }
 
-    private void addOperation(final List<Operation> list, final Operation op) {
-        if(op != null) {
-            list.add(op);
-        }
-    }
-
-    private static final Map<String, Integer> opMap = new HashMap<String, Integer>();
-    static {
-        // only one needed at the moment
-        opMap.put("COMP_EQUAL", OperationDefines.PROPERTYISEQUALTO);
-    }
-
-    private Operation getOperation(MetadataField field, String value) {
-        if(field.getFilterOp() == null) {
-            return getLikeOperation(value, field.getFilter());
-        }
-        else {
-            return getCompOperation(value, field.getFilter(), opMap.get(field.getFilterOp()));
-        }
-    }
-
-
-    private List<Operation> getOperations(SearchCriteria searchCriteria) {
-        final List<Operation> list = new ArrayList<Operation>();
-
-        // user input
-        addOperation(list, getLikeOperation(searchCriteria.getSearchString(), "csw:anyText"));
-
-        final List<Operation> theOrList = new ArrayList<Operation>();
-        for(MetadataField field : getFields()) {
-            final Operation operation = getOperationForField(searchCriteria, field);
-            if(operation == null) {
-                continue;
-            }
-            // add must matches to toplevel list
-            if(field.isMustMatch()) {
-                addOperation(list, operation);
-            }
-            // others to OR-list
-            else {
-                addOperation(theOrList, operation);
-            }
-        }
-        if(theOrList.size() == 1) {
-            addOperation(list, theOrList.get(0));
-        } else if (theOrList.size() > 1) {
-            addOperation(list, new LogicalOperation(OperationDefines.OR, theOrList));
-        }
-
-        return list;
-    }
-    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field) {
-        return getOperationForField(searchCriteria, field, false);
-    }
-
-    private Operation getOperationForField(SearchCriteria searchCriteria, MetadataField field, boolean recursion) {
-        final String[] values = getValuesForField(searchCriteria, field);
-        if(values == null || (!recursion && field.getShownIf() != null)) {
-            // FIXME: not too proud of the shownIf handling
-            // shownIf is meant to link fields for frontend but it also means we need special handling for it in here
-            // another field should have this one linked as dependency so we skip the actual field handling by default
-            return null;
-        }
-        final Map<String, String> deps = field.getDependencies();
-        log.debug("Field dependencies:", deps);
-        final List<Operation> multiOp = new ArrayList<Operation>();
-        for(String value: values) {
-            Operation op = getOperation(field, value);
-            final String dep = deps.get(value);
-            if(dep != null) {
-                final MetadataField depField = getField(dep);
-                Operation depOp = getOperationForField(searchCriteria, depField, true);
-                if(depOp != null) {
-                    List<Operation> combination = new ArrayList<Operation>(2);
-                    combination.add(op);
-                    combination.add(depOp);
-                    op = new LogicalOperation(OperationDefines.AND, combination);
-                }
-            }
-            addOperation(multiOp, op);
-        }
-        if(multiOp.isEmpty()) {
-            return null;
-        }
-
-        if(field.isMulti() && multiOp.size() > 1) {
-            // combine to one OR-statement if we have a multivalue field with more than one selection
-            Operation op = new LogicalOperation(OperationDefines.OR, multiOp);
-            return op;
-        }
-        return multiOp.get(0);
-    }
-
-    private String[] getValuesForField(SearchCriteria searchCriteria, MetadataField field) {
-        if(searchCriteria == null || field == null) {
-            return null;
-        }
-
-        final Object param = searchCriteria.getParam(field.getProperty());
-        if(param == null) {
-            return null;
-        }
-        log.debug("Got value for metadata field:", field.getProperty(), "=", param);
-        if(field.isMulti()) {
-            return (String[]) param;
-        }
-        else {
-            return new String[]{(String) param};
-        }
-    }
-
-    public GetRecords getRecordsQuery(SearchCriteria searchCriteria) {
-
-        final List<Operation> operations = getOperations(searchCriteria);
-        Operation operation;
-
-        if (operations.isEmpty()) {
-            return null;
-        } else if (operations.size() == 1) {
-            operation = operations.get(0);
-        } else {
-            operation = new LogicalOperation(OperationDefines.AND, operations);
-        }
-
-        final ComplexFilter filter = new ComplexFilter(operation);
-        try {
-            final Map<String, URI> nsmap = new HashMap<String, URI>();
-            nsmap.put(GMD_NAMESPACE, new URI("http://www.isotc211.org/2005/gmd"));
-            nsmap.put(GCO_NAMESPACE, new URI("http://www.isotc211.org/2005/gco"));
-            nsmap.put("csw", new URI("http://www.opengis.net/cat/csw/2.0.2"));
-
-            final List<QualifiedName> typeNames = new ArrayList<QualifiedName>();
-            typeNames.add(new QualifiedName("gmd:MD_Metadata"));
-
-            final List<PropertyPath> elementNamesAsPropertyPaths = new ArrayList<PropertyPath>();
-
-            final SortProperty[] sortProperties = SortProperty.create(null, nsmap);
-
-            final Query query = new Query("summary", new ArrayList<QualifiedName>(),
-                    new HashMap<String, QualifiedName>(),
-                    elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
-                    new HashMap<String, QualifiedName>());
-
-            final GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
-                    RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
-                    10000, 0, null, query);
-            return getRecs;
-        } catch (Exception ex) {
-            log.error(ex, "Error generating GetRecords document for CSW Query");
-        }
-        return null;
-    }
-
-    public String getQueryPayload(final GetRecords getRecs) {
-        if(getRecs == null) {
-            return null;
-        }
-        final StringWriter xml = new StringWriter();
-        try {
-            final GetRecordsDocument getRecsDoc = XMLFactory.exportWithVersion(getRecs);
-            final Properties p = new Properties();
-            p.put("indent", "yes");
-            // write the post data to postable string
-            getRecsDoc.write(xml, p);
-            xml.flush();
-            return xml.toString();
-        } catch (Exception ex) {
-            log.error(ex, "Error generating payload for CSW Query");
-        }
-        finally {
-            IOHelper.close(xml);
-        }
-        return null;
-    }
-
-
-    private Node makeQuery(SearchCriteria searchCriteria) throws Exception {
-        final GetRecords getRecs = getRecordsQuery(searchCriteria);
-        if(getRecs == null) {
-            // no point in making the query without GetRecords
+    private StAXOMBuilder makeQuery(SearchCriteria searchCriteria) throws Exception {
+        final long start = System.currentTimeMillis();
+        final String payload = QUERY_HELPER.getQueryPayload(searchCriteria);
+        if(payload == null) {
+            // no point in making the query without payload
             return null;
         }
 
@@ -664,36 +183,12 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         HttpURLConnection conn = IOHelper.getConnection(queryURL);
         IOHelper.writeHeader(conn, "Content-Type", "application/xml;charset=UTF-8");
         conn.setUseCaches(false);
-        IOHelper.writeToConnection(conn, getQueryPayload(getRecs));
-        GetRecordsResultDocument resultsDoc = new Csw202ResultsDoc();
-        InputStream response = IOHelper.debugResponse(conn.getInputStream());
-        try {
-            resultsDoc.load(response, queryURL);
-        } finally {
-            IOHelper.close(response);
-        }
+        IOHelper.writeToConnection(conn, payload);
 
-        GetRecordsResult getRecsResult = resultsDoc.parseGetRecordsResponse(getRecs);
-        SearchResults results = getRecsResult.getSearchResults();
-        return results.getRecords();
-    }
+        final long end =  System.currentTimeMillis();
 
-    /* Return date as String YYYY-MM-DD */
-    private String getDateAsString(String inputDateAsString) {
-        if (inputDateAsString == null || "".equals(inputDateAsString)) {
-            return "";
-        }
-
-        DateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
-        Date date;
-
-        try {
-            date = inputFormat.parse(inputDateAsString);
-        } catch (ParseException e) {
-            return "";
-        }
-
-        DateFormat returnFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return returnFormat.format(date);
+        final StAXOMBuilder stAXOMBuilder = new StAXOMBuilder(conn.getInputStream());
+        log.debug("Querying metadata service took", (end-start), "ms");
+        return stAXOMBuilder;
     }
 }
