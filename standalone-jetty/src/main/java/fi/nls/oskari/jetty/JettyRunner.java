@@ -1,8 +1,10 @@
 package fi.nls.oskari.jetty;
 
+import fi.nls.oskari.map.servlet.MapFullServlet;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.naming.NamingException;
@@ -23,11 +25,20 @@ public class JettyRunner {
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
+
         servletContext.addServlet(DebugServlet.class, "/debug");
+        servletContext.addServlet(createMapServlet(), "/");
 
         setupDatabaseConnectionInContext(servletContext);
 
         return servletContext;
+    }
+
+    private static ServletHolder createMapServlet() {
+        ServletHolder holder = new ServletHolder(MapFullServlet.class);
+        // TODO: Read oskari.client.version from properties and set to init parameter
+        holder.setInitParameter("version", "ADD_VERSION_NUMBER_HERE");
+        return holder;
     }
 
     private static void setupDatabaseConnectionInContext(WebAppContext servletContext) throws NamingException {

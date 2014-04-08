@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <version>9.1.0.M0</version>

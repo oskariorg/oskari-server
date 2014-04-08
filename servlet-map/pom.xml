@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>map-servlet</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Oskari map Servlet</name>
 
