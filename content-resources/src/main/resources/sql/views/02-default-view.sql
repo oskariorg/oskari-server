@@ -155,6 +155,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapuserlayers" : {
+              "bundlePath" : "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance" : []
@@ -175,7 +178,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
          "config" : { 
-            "ignoredLayerTypes" : ["WFS","MYPLACES"], 
+            "ignoredLayerTypes" : ["WFS","MYPLACES", "USERLAYER"],
             "infoBox": false 
          }
        },
@@ -221,7 +224,8 @@ UPDATE portti_view_bundle_seq set config = '{
                 "fi": "http://www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
                 "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
             }
-        } }
+        } },
+        {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
       ],
       "layers": [
       ]
