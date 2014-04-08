@@ -4,6 +4,7 @@ import fi.nls.oskari.map.servlet.MapFullServlet;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -26,6 +27,7 @@ public class JettyRunner {
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
 
+        servletContext.addServlet(DefaultServlet.class, "/index.jsp");
         servletContext.addServlet(DebugServlet.class, "/debug");
         servletContext.addServlet(createMapServlet(), "/");
 
