@@ -15,8 +15,6 @@ import javax.naming.NamingException;
 
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
-        System.out.println("JettyRunner.main");
-
         Server server = new Server(2373);
         WebAppContext servletContext = createServletContext();
         server.setHandler(servletContext);
