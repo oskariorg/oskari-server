@@ -5,7 +5,10 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.naming.NamingException;
@@ -27,13 +30,28 @@ public class JettyRunner {
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
 
-        servletContext.addServlet(JspServlet.class, "/index.jsp");
+        servletContext.setBaseResource(createResourceCollection());
+
+        servletContext.addServlet(createFrontEndServlet(), "/Oskari/*");
+        servletContext.addServlet(JspServlet.class, "*.jsp");
         servletContext.addServlet(DebugServlet.class, "/debug");
         servletContext.addServlet(createMapServlet(), "/");
 
         setupDatabaseConnectionInContext(servletContext);
 
         return servletContext;
+    }
+
+    private static Resource createResourceCollection() {
+        ResourceCollection collection = new ResourceCollection();
+        collection.setResourcesAsCSV("src/main/webapp,../..");
+        return collection;
+    }
+
+    private static ServletHolder createFrontEndServlet() {
+        ServletHolder holder = new ServletHolder(DefaultServlet.class);
+        holder.setInitParameter("useFileMappedBuffer", "false");
+        return holder;
     }
 
     private static ServletHolder createMapServlet() {
