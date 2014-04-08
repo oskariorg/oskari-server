@@ -7,7 +7,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.factory.Hints;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geojson.feature.FeatureJSON;
 
 import org.geotools.geometry.jts.JTS;
@@ -18,12 +17,10 @@ import org.geotools.xml.PullParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
-import org.geotools.kml.bindings.DocumentTypeBinding;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 
 
@@ -38,7 +35,13 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
     private static final Logger log = LogFactory
             .getLogger(KMLGeoJsonCollection.class);
 
-    public boolean parseGeoJSON(File file) {
+    /**
+     *  Parse Google kml import data to geojson features
+     * @param file            kml import file
+     * @param target_epsg     target CRS
+     * @return
+     */
+    public boolean parseGeoJSON(File file, String target_epsg) {
 
 
         try {
@@ -55,7 +58,7 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             CoordinateReferenceSystem sourceCrs = factory.createCoordinateReferenceSystem("EPSG:4326");
             // Oskari crs
             // TODO: get crs from request  (oskari OL map crs)
-            CoordinateReferenceSystem target = CRS.decode("EPSG:3067");
+            CoordinateReferenceSystem target = CRS.decode(target_epsg);
             MathTransform transform = CRS.findMathTransform(sourceCrs, target, true);
             // Switch direction, if 1st coord is to the north
             // boolean switchxy =(sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
