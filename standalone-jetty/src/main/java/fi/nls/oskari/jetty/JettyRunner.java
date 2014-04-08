@@ -23,7 +23,7 @@ public class JettyRunner {
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
-        servletContext.addServlet(DebugServlet.class, "/");
+        servletContext.addServlet(DebugServlet.class, "/debug");
 
         setupDatabaseConnectionInContext(servletContext);
 
