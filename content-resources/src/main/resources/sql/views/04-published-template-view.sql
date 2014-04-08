@@ -139,6 +139,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapwfs2" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "mapanalysis" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
@@ -183,6 +186,7 @@ UPDATE portti_view_bundle_seq set config = '{
          }
        },
        { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        {
         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
         "config": {
@@ -198,7 +202,8 @@ UPDATE portti_view_bundle_seq set config = '{
             }
         }
        },
-       { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
+       { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" }
       ],
       "layers": [
       ],

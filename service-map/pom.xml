@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.18</version>
+        <version>1.19</version>
 	</parent>
     
     <groupId>fi.nls.oskari.service</groupId>
@@ -63,6 +63,18 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-shapefile</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-epsg-hsql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools.xsd</groupId>
+            <artifactId>gt-xsd-kml</artifactId>
         </dependency>
     </dependencies>
 

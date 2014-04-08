@@ -15,6 +15,7 @@ import javax.xml.transform.stream.StreamResult;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.service.db.BaseService;
+import fi.nls.oskari.util.IOHelper;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -37,6 +38,7 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
     private final static String DEFAULT_RULE_ABSTRACT = "Kuvaus";
 
     public final static String XSLT_FILE = "stats-sld.xslt";
+    private OMElement xslt = null;
 
     final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
@@ -162,7 +164,10 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
      * @throws Exception
      */
     public OMElement getDefaultXSLT() throws Exception {
-        return buildOMElement(getClass().getResourceAsStream(XSLT_FILE));
+        if(xslt == null) {
+            xslt = buildOMElement(getClass().getResourceAsStream(XSLT_FILE));
+        }
+        return xslt;
     }
 
     /**
@@ -182,7 +187,8 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
             throw new Exception(msg, e);
         }
         finally {
-           log.info("Reading data from configuration file");
+            log.info("Reading data from configuration file");
+            IOHelper.close(inputStream);
         }
     }
 

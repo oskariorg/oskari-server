@@ -4,21 +4,28 @@ import fi.mml.map.mapwindow.service.db.MyPlacesService;
 import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.*;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -57,12 +64,14 @@ public class PublishHandler extends ActionHandler {
 
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2};
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
+            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
+            ViewModifier.BUNDLE_DIVMANAZER};
     private Map<String, Bundle> bundleCache = new HashMap<String, Bundle>(CACHED_BUNDLE_IDS.length);
 
     private static final String PREFIX_MYPLACES = "myplaces_";
+    private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_BASELAYER = "base_";
-    private static final String LOGO_PLUGIN_ID = "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin";
     private static final Set<String> CLASS_WHITELIST;
     static {
         CLASS_WHITELIST = new TreeSet<String>();
@@ -76,8 +85,10 @@ public class PublishHandler extends ActionHandler {
 
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
+    private AnalysisDbService analysisService = null;
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
+    private OskariLayerService layerService = null;
 
     private String[] drawToolsEnabledRoles = new String[0];
     
@@ -90,6 +101,10 @@ public class PublishHandler extends ActionHandler {
     	myPlaceService = service;
     }
 
+    public void setAnalysisService(final AnalysisDbService service) {
+    	analysisService = service;
+    }
+
     public void setPermissionsService(final PermissionsService service) {
     	permissionsService = service;
     }
@@ -98,22 +113,34 @@ public class PublishHandler extends ActionHandler {
     	bundleService = service;
     }
 
+    public void setOskariLayerService(final OskariLayerService service) {
+        layerService = service;
+    }
+
     public void init() {
         // setup service if it hasn't been initialized
-        if (viewService == null) {
-            setViewService(new ViewServiceIbatisImpl());
-        }
-
         if (myPlaceService == null) {
         	setMyPlacesService(new MyPlacesServiceIbatisImpl());
         }
 
+        if (analysisService == null) {
+            setAnalysisService(new AnalysisDbServiceIbatisImpl());
+        }
+
         if (permissionsService == null) {
-        	setPermissionsService(new PermissionsServiceIbatisImpl());
+        	setPermissionsService(ServiceFactory.getPermissionsService());
+        }
+
+        if (viewService == null) {
+            setViewService(new ViewServiceIbatisImpl());
         }
 
         if (bundleService == null) {
         	setBundleService(new BundleServiceIbatisImpl());
+        }
+
+        if (layerService == null) {
+            setOskariLayerService(ServiceFactory.getMapLayerService());
         }
         final String publishTemplateIdProperty = PropertyUtil.getOptional("view.template.publish");
         PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
@@ -208,11 +235,23 @@ public class PublishHandler extends ActionHandler {
 
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(user.hasAnyRoleIn(drawToolsEnabledRoles)) {
-            setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            final Bundle myplaces = setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            handleMyplacesDrawLayer(myplaces, user);
         }
 
         // Setup toolbar bundle if user has configured it
         setupBundle(currentView, publisherData, ViewModifier.BUNDLE_TOOLBAR);
+
+        // Setup feature data bundle if user has configured it
+        final JSONObject featureData = publisherData.optJSONObject(ViewModifier.BUNDLE_FEATUREDATA2);
+        if (featureData != null && featureData.names().length() > 0) {
+            // Add divmanazer first since feature data uses flyout
+            log.info("Adding bundle", ViewModifier.BUNDLE_DIVMANAZER);
+            addBundle(currentView, ViewModifier.BUNDLE_DIVMANAZER);
+            // then setup feature data
+            final Bundle bundle = addBundle(currentView, ViewModifier.BUNDLE_FEATUREDATA2);
+            mergeBundleConfiguration(bundle, featureData, null);
+        }
 
         // Setup thematic map/published grid bundle
         final JSONObject gridState = publisherData.optJSONObject(KEY_GRIDSTATE);
@@ -234,6 +273,40 @@ public class PublishHandler extends ActionHandler {
             log.error(je, "Could not create JSON response.");
             ResponseHelper.writeResponse(params, false);
         }
+    }
+
+    private void handleMyplacesDrawLayer(final Bundle myplaces, final User user) throws ActionException {
+
+        if(myplaces == null) {
+            // nothing to handle, bundle not added
+            return;
+        }
+        final JSONObject config = myplaces.getConfigJSON();
+        final String drawLayerId = config.optString("layer");
+        if(!myPlaceService.canModifyCategory(user, drawLayerId)) {
+            throw new ActionDeniedException("Trying to publish another users layer as drawlayer!");
+        }
+        Resource resource = myPlaceService.getResource(drawLayerId);
+        if(resource.hasPermission(user, myPlaceService.PERMISSION_TYPE_DRAW)) {
+            // clear up any previous DRAW permissions
+            resource.removePermissionsOfType(myPlaceService.PERMISSION_TYPE_DRAW);
+        }
+        try {
+            // add DRAW permission for all roles currently in the system
+            for(Role role: UserService.getInstance().getRoles()) {
+                final Permission perm = new Permission();
+                perm.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                perm.setExternalId("" + role.getId());
+                perm.setType(myPlaceService.PERMISSION_TYPE_DRAW);
+                resource.addPermission(perm);
+            }
+        } catch (Exception e) {
+            log.error("Something went wrong when generating DRAW permissions for myplaces layer");
+        }
+
+        permissionsService.saveResourcePermissions(resource);
+        // NOTE! allowing guests to draw features on the layer
+        JSONHelper.putValue(config, "allowGuest", true);
     }
 
     private void setupMapState(final Bundle mapFullBundle, final JSONObject publisherData, final User user) throws ActionException {
@@ -390,19 +463,21 @@ public class PublishHandler extends ActionHandler {
         return view;
     }
 
-    private void setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
+    private Bundle setupBundle(final View view, final JSONObject publisherData, final String bundleid) {
 
         final JSONObject bundleData = publisherData.optJSONObject(bundleid);
         if (bundleData != null && bundleData.names().length() > 0) {
             log.info("config found for", bundleid);
             final Bundle bundle = addBundle(view, bundleid);
             mergeBundleConfiguration(bundle, bundleData, null);
+            return bundle;
         } else {
             log.warn("config not found for", bundleid, "- removing bundle.");
             // We have to remove the bundle...
             // TODO: check if we really want to remove the bundle from view since it could be template view???
             view.removeBundle(bundleid);
         }
+        return null;
     }
     private Bundle addBundle(final View view, final String bundleid) {
         Bundle bundle = view.getBundleByName(bundleid);
@@ -459,15 +534,15 @@ public class PublishHandler extends ActionHandler {
         try {
             for (int i = 0; i < selectedLayers.length(); ++i) {
                 JSONObject layer = selectedLayers.getJSONObject(i);
-                String layerId = layer.getString("id");
+                final String layerId = layer.getString("id");
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     // check publish right for published myplaces layer
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
                         filteredList.put(layer);
                     }
-                } else if (layerId.startsWith(PREFIX_BASELAYER)) {
-                    // check publish right for base layer
-                    if (hasRightToPublishBaseLayer(layerId, user)) {
+                } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
+                    // check publish right for published analysis layer
+                    if (hasRightToPublishAnalysisLayer(layerId, user)) {
                         filteredList.put(layer);
                     }
                 }
@@ -493,48 +568,55 @@ public class PublishHandler extends ActionHandler {
         publishedMyPlaces.add(categoryId);
         final List<MyPlaceCategory> myPlacesLayers = myPlaceService.getMyPlaceLayersById(publishedMyPlaces);
         for (MyPlaceCategory place : myPlacesLayers) {
-            if (place.getUuid().equals(userUuid)) {
+            if (place.isOwnedBy(userUuid)) {
                 myPlaceService.updatePublisherName(categoryId, userUuid, publisherName); // make it public
                 return true;
             }
         }
-        log.warn("Found my places layer in selected that isn't users own or isnt published any more! LayerId:", layerId, "User UUID:", userUuid);
+        log.warn("Found my places layer in selected that isn't users own or isn't published any more! LayerId:", layerId, "User UUID:", userUuid);
         return false;
     }
 
 
-    private boolean hasRightToPublishBaseLayer(final String layerId, final User user) {
-
-        final long id = ConversionHelper.getLong(layerId.substring(PREFIX_BASELAYER.length()), -1);
-        if (id == -1) {
-            log.warn("Error parsing layerId:", layerId);
+    private boolean hasRightToPublishAnalysisLayer(final String layerId, final User user) {
+        final long analysisId = AnalysisHelper.getAnalysisIdFromLayerId(layerId);
+        if(analysisId == -1) {
             return false;
         }
-        List<Long> list = new ArrayList<Long>();
-        list.add(id);
-        Map<Long, List<Permissions>> map =
-                permissionsService.getPermissionsForBaseLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
-        List<Permissions> permissions = map.get(id);
+        final Analysis analysis = analysisService.getAnalysisById(analysisId);
+        if (!analysis.getUuid().equals(user.getUuid())) {
+            log.warn("Found analysis layer in selected that isn't users own! LayerId:", layerId, "User UUID:", user.getUuid(), "Analysis UUID:", analysis.getUuid());
+            return false;
+        }
 
-        boolean hasPermission = false;
-        hasPermission = permissionsService.permissionGrantedForRolesOrUser(
-                user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);
-        if (!hasPermission) {
-            log.warn("User tried to publish layer with no publish permission. LayerID:", layerId, "- User:", user);
+        final List<String> permissionsList = permissionsService.getResourcesWithGrantedPermissions(
+                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_PUBLISH);
+        log.debug("Analysis layer publish permissions", permissionsList);
+        final String permissionKey = "analysis+"+analysis.getId();
+
+        log.debug("PublishPermissions:", permissionsList);
+        boolean hasPermission = permissionsList.contains(permissionKey);
+        if (hasPermission) {
+            // write publisher name for analysis
+            analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());
+        }
+        else {
+            log.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
         }
         return hasPermission;
     }
 
-
     private boolean hasRightToPublishLayer(final String layerId, final User user) {
-        final long id = ConversionHelper.getLong(layerId, -1);
-        if (id == -1) {
-            log.warn("Error parsing layerId:", layerId);
+        // layerId might be external so don't use it straight up
+        final OskariLayer layer = layerService.find(layerId);
+        if (layer == null) {
+            log.warn("Couldn't find layer with id:", layerId);
             return false;
         }
-        List<Long> list = new ArrayList<Long>();
+        final Long id = new Long(layer.getId());
+        final List<Long> list = new ArrayList<Long>();
         list.add(id);
-        Map<Long, List<Permissions>> map = permissionsService.getPermissionsForLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
+        final Map<Long, List<Permissions>> map = permissionsService.getPermissionsForLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
         List<Permissions> permissions = map.get(id);
         boolean hasPermission = permissionsService.permissionGrantedForRolesOrUser(
                 user, permissions, Permissions.PERMISSION_TYPE_PUBLISH);

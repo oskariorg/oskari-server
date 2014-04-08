@@ -1,20 +1,28 @@
 package fi.nls.oskari.map.analysis.service;
 
 import com.ibatis.sqlmap.client.SqlMapSession;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
+import fi.nls.oskari.util.ConversionHelper;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnalysisDbServiceIbatisImpl extends
         BaseIbatisService<Analysis> implements AnalysisDbService {
 
     private static final Logger log = LogFactory.getLogger(AnalysisDbServiceIbatisImpl.class);
 
+    private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     @Override
     protected String getNameSpace() {
@@ -71,6 +79,10 @@ public class AnalysisDbServiceIbatisImpl extends
         return queryForObject(getNameSpace() + ".findAnalysis", id);
     }
 
+    public List<Analysis> getAnalysisById(List<Long> idList) {
+        return queryForList(getNameSpace() + ".findByIds", idList);
+    }
+
     /**
      * Get Analysis rows of one user by uuid
      *
@@ -93,6 +105,11 @@ public class AnalysisDbServiceIbatisImpl extends
         final SqlMapSession session = openSession();
         try {
             session.startTransaction();
+            // remove resource & permissions
+            final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
+            permissionsService.deleteResource(res);
+
+            // remove analysis
             session.delete(getNameSpace() + ".delete-analysis-data", analysis.getId());
             session.delete(getNameSpace() + ".delete-analysis", analysis.getId());
             // style is for now 1:1 to analysis so we can delete it here
@@ -134,4 +151,25 @@ public class AnalysisDbServiceIbatisImpl extends
         }
     }
 
+    /**
+     * Updates a analysis publisher screenName
+     *
+     * @param id
+     * @param uuid
+     * @param name
+     */
+    public int updatePublisherName(final long id, final String uuid, final String name) {
+
+        final Map<String, Object> data = new HashMap<String,Object>();
+        data.put("publisher_name", name);
+        data.put("uuid", uuid);
+        data.put("id", id);
+        try {
+            return getSqlMapClient().update(
+                    getNameSpace() + ".updatePublisherName", data);
+        } catch (SQLException e) {
+            log.error(e, "Failed to update publisher name", data);
+        }
+        return 0;
+    }
 }

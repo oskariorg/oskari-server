@@ -121,6 +121,9 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "params", layer.getParams());
         JSONHelper.putValue(layerJson, "options", layer.getOptions());
 
+        JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
+        JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());
+
         //log.debug("getLegendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());

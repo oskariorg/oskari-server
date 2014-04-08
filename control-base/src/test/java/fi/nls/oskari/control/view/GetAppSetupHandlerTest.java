@@ -1,10 +1,10 @@
 package fi.nls.oskari.control.view;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.User;
@@ -15,13 +15,11 @@ import fi.nls.oskari.map.data.service.PublishedMapRestrictionService;
 import fi.nls.oskari.map.data.service.PublishedMapRestrictionServiceImpl;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
-import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -31,14 +29,12 @@ import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,9 +60,8 @@ import static org.powermock.api.support.membermodification.MemberModifier.suppre
  * Time: 12:50
  * To change this template use File | Settings | File Templates.
  */
-@Ignore
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class})
+@PrepareForTest(value = {WFSHighlightParamHandler.class, OskariLayerWorker.class, PropertyUtil.class, MapfullHandler.class})
 public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
     final private GetAppSetupHandler handler = new GetAppSetupHandler();
@@ -74,7 +69,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private ViewService viewService = null;
     private BundleService bundleService = null;
     private PublishedMapRestrictionService restrictionService = null;
-    private PropertyUtil properties = null;
 
     //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
     //
@@ -102,11 +96,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
         handler.setPublishedMapRestrictionService(restrictionService);
-
-        /*
-        PowerMockito.mockStatic(ParamControl.class);
-        doNothing().when(ParamControl.class);
-        */
 
         handler.init();
     }

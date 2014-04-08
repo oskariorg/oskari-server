@@ -47,6 +47,8 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String MYPLACES_PREFIX = "myplaces_";
     private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
+    public static final String USERLAYER_PREFIX = "userlayer_";
+    private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
 
     private static final List<String> NUMERIC_FIELD_TYPES = Arrays.asList("double",
             "byte",
@@ -65,6 +67,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
             "unsignedByte"
     );
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
+    final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
     // is needed ?? private String[] permittedRoles = new String[0];
 
@@ -89,7 +92,10 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
             // WFS layer, myplaces or analysis layer
             if (layer_id.indexOf(MYPLACES_PREFIX) > -1) {
                 id = ConversionHelper.getInt(myplacesBaseLayerId, 0);
-            } else {
+            }
+            else if (layer_id.indexOf(USERLAYER_PREFIX) > -1) {
+                id = ConversionHelper.getInt(userlayerBaseLayerId, 0);
+            }else {
                 // Wfs layer id
                 id = ConversionHelper.getInt(layer_id, 0);
             }

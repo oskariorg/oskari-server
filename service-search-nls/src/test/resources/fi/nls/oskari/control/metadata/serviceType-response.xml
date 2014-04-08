@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <csw:DomainValues type="csw:Record">
+        <csw:PropertyName>serviceType</csw:PropertyName>
+        <csw:ListOfValues>
+            <csw:Value>Katselupalvelu</csw:Value>
+            <csw:Value>discovery</csw:Value>
+            <csw:Value>download</csw:Value>
+            <csw:Value>other</csw:Value>
+            <csw:Value>transformation</csw:Value>
+            <csw:Value>view</csw:Value>
+        </csw:ListOfValues>
+    </csw:DomainValues>
+</csw:GetDomainResponse>

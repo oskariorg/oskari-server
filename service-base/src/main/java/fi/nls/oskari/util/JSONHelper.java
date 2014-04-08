@@ -24,7 +24,16 @@ public class JSONHelper {
         putValue(object, key, value);
         return object;
     }
-
+    public static final JSONObject createJSONObject(final String key, final boolean value) {
+        final JSONObject object = new JSONObject();
+        putValue(object, key, value);
+        return object;
+    }
+    public static final JSONObject createJSONObject(final String key, final JSONArray value) {
+        final JSONObject object = new JSONObject();
+        putValue(object, key, value);
+        return object;
+    }
     public static final JSONObject createJSONObject(final String content) {
         try {
             return new JSONObject(content);
@@ -67,6 +76,17 @@ public class JSONHelper {
         } catch (Exception e) {
             return defaultValue;
         }   
+    }
+    public static final String getStringFromJSON(final JSONObject data, final String defaultValue) {
+        try {
+            final String value = data.toString();
+            if (value != null) {
+                return value;
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
     
     public static final boolean putValue(final JSONObject json, final String key, final String value) {
@@ -158,10 +178,28 @@ public class JSONHelper {
         try {
             return new JSONArray(content);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Couldn't create JSONObject for " + content );
+            throw new IllegalArgumentException("Couldn't create JSONArray for " + content );
         }
 	}
 
+    /**
+     *
+     * @param json
+     * @return Array of 1st level keys
+     */
+    public static JSONArray createJSONArrayJsonKeys(final JSONObject json) {
+        try {
+            JSONArray jsarray =  new JSONArray();
+            Iterator<String> keys = json.keys();
+            while(keys.hasNext()){
+                String key = keys.next();
+                jsarray.put(key);
+            }
+            return jsarray;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Couldn't create JSONArray of Json keys" );
+        }
+    }
     /**
      * Compares 2 JSONObjects for equality. Ignores property order and only matches on defined properties and property values.
      * @param jsonObject1

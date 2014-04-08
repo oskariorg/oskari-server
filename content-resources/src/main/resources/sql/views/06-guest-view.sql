@@ -204,6 +204,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
+       { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
@@ -535,7 +536,6 @@ UPDATE portti_view_bundle_seq set config = '{
 
 --------------------------------------------
 -- 11. Promote - Personal data
---    NOTE! Check that seqno in WHERE matches the correct promote
 --------------------------------------------
 
 -- add bundle to view
@@ -562,8 +562,8 @@ UPDATE portti_view_bundle_seq set startup = '{
              "Require-Bundle-Instance" : []
         },
         "instanceProps" : {}
-    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'promote') 
-    AND seqno = 11
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'promote')
+    AND bundleinstance = 'personaldata'
     AND view_id=[VIEW_ID];
 
 -- update proper config for view
@@ -628,15 +628,14 @@ UPDATE portti_view_bundle_seq set config = '{
                 }
             }
         }
-    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
-    AND seqno = 11
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
+    AND bundleinstance = 'personaldata'
     AND view_id=[VIEW_ID];
 
 
 
 --------------------------------------------
--- 12. Promote - Publisher 
---    NOTE! Check that seqno in WHERE matches the correct promote
+-- 12. Promote - Publisher
 --------------------------------------------
 
 -- add bundle to view
@@ -664,7 +663,7 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
-    AND seqno = 12
+    AND bundleinstance = 'publisher'
     AND view_id=[VIEW_ID];
 
 -- update proper config for view
@@ -700,8 +699,8 @@ UPDATE portti_view_bundle_seq set config = '{
             "fi": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
             "sv": "/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
         }
-    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
-    AND seqno = 12
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
+    AND bundleinstance = 'publisher'
     AND view_id=[VIEW_ID];
 
 
@@ -1025,7 +1024,6 @@ UPDATE portti_view_bundle_seq set config = '{
 
 --------------------------------------------
 -- 22. Promote - Analyse
---    NOTE! Check that seqno in WHERE matches the correct promote
 --------------------------------------------
 
 -- add bundle to view
@@ -1053,7 +1051,7 @@ UPDATE portti_view_bundle_seq set startup = '{
         },
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
-    AND seqno = 22
+    AND bundleinstance = 'analyse'
     AND view_id=[VIEW_ID];
 
 -- update proper config for view
@@ -1089,7 +1087,38 @@ UPDATE portti_view_bundle_seq set config = '{
             "fi": "/web/fi/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account",
             "sv": "/web/sv/login?p_p_id=58&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&saveLastPath=0&_58_struts_action=%2Flogin%2Fcreate_account"
         }
-    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote') 
-    AND seqno = 22
+    }' WHERE bundle_id = (SELECT max(id) FROM portti_bundle WHERE name = 'promote')
+    AND bundleinstance = 'analyse'
+    AND view_id=[VIEW_ID];
+
+--------------------------------------------
+-- 23. Metadata Catalogue
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup, bundleinstance) 
+    VALUES ([VIEW_ID], 
+    (SELECT id FROM portti_bundle WHERE name = 'metadatacatalogue'), 
+    (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]), 
+    '{}','{}', '{}', 'metadatacatalogue');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+        "title" : "metadatacatalogue",
+        "fi" : "metadatacatalogue",
+        "sv" : "metadatacatalogue",
+        "en" : "metadatacatalogue",
+        "bundlename" : "metadatacatalogue",
+        "bundleinstancename" : "metadatacatalogue",
+        "metadata" : {
+            "Import-Bundle" : {
+                "metadatacatalogue" : {
+                    "bundlePath" : "/Oskari/packages/catalogue/bundle/"
+                }
+            },
+            "Require-Bundle-Instance" : []
+        },
+        "instanceProps" : {}
+    }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'metadatacatalogue') 
     AND view_id=[VIEW_ID];
 

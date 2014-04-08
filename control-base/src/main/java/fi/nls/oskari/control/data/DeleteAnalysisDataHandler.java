@@ -1,14 +1,18 @@
 package fi.nls.oskari.control.data;
 
+import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.ServiceFactory;
 
 /**
  * Deletes analysis data if it belongs to current user.
@@ -25,6 +29,7 @@ public class DeleteAnalysisDataHandler extends ActionHandler {
     public void setAnalysisDataService(final AnalysisDbService service) {
         analysisDataService = service;
     }
+
     @Override
     public void init() {
         super.init();
@@ -47,11 +52,12 @@ public class DeleteAnalysisDataHandler extends ActionHandler {
         if(analysis == null) {
             throw new ActionParamsException("Analysis id didn't match any analysis: " + id);
         }
-        if(!params.getUser().getUuid().equals(analysis.getUuid())) {
+        if(!analysis.isOwnedBy(params.getUser().getUuid())) {
             throw new ActionDeniedException("Analysis belongs to another user");
         }
 
         try {
+            // remove analysis
             analysisDataService.deleteAnalysis(analysis);
             // write static response to notify success {"result" : "success"}
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("result", "success"));

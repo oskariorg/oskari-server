@@ -3,11 +3,7 @@ package fi.mml.portti.service.search;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Search criteria.
@@ -18,11 +14,12 @@ public class SearchCriteria implements Serializable {
 	private String locale = PropertyUtil.getDefaultLanguage();
 
     private final Map<String, Object> parameters = new HashMap<String, Object>();
-	
-	private MetadataCatalogueSearchCriteria metadataCatalogueSearchCriteria = new MetadataCatalogueSearchCriteria();
-	
+
 	/** our search string  */
 	private String searchString;
+
+    /** output location SRS  */
+    private String srs;
 	
 	/** from */
 	private Date fromDate;
@@ -47,6 +44,10 @@ public class SearchCriteria implements Serializable {
     public Object getParam(final String key) {
         return parameters.get(key);
     }
+
+    public Map<String, Object> getParams() {
+        return Collections.unmodifiableMap(parameters);
+    }
 	
 	/**
 	 * Returns true if search should be done using given channel
@@ -62,26 +63,25 @@ public class SearchCriteria implements Serializable {
 		
 		return false;
 	}
-	
-	public MetadataCatalogueSearchCriteria getMetadataCatalogueSearchCriteria() {
-		return metadataCatalogueSearchCriteria;
-	}
 
-	public void setMetadataCatalogueSearchCriteria(
-			MetadataCatalogueSearchCriteria metadataCatalogueSearchCriteria) {
-		this.metadataCatalogueSearchCriteria = metadataCatalogueSearchCriteria;
-	}
-	
 	public void addChannel(String channelId) {
 		channels.add(channelId);
 	}
 	
 	public String toString() {
 		return "SearchCriteria [searchString=" + searchString + ", fromDate=" + fromDate 
-		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]" + metadataCatalogueSearchCriteria;
+		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]";
 	}
-	
-	public Date getFromDate() {
+
+    public String getSRS() {
+        return srs;
+    }
+
+    public void setSRS(String srs) {
+        this.srs = srs;
+    }
+
+    public Date getFromDate() {
 		return fromDate;
 	}
 	public void setFromDate(Date fromDate) {
@@ -109,12 +109,18 @@ public class SearchCriteria implements Serializable {
 	public String getSearchString() {
 		return searchString;
 	}
+    public String getSearchString1stUp() {
+        return searchString.substring(0, 1).toUpperCase() + searchString.substring(1);
+    }
 
 	public void setSearchString(String searchString) {
 		this.searchString = searchString;
 	}
 
 	public String getLocale() {
+        if(locale == null) {
+            return PropertyUtil.getDefaultLanguage();
+        }
 		return locale;
 	}
 

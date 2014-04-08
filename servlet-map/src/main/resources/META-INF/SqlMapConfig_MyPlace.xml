@@ -7,8 +7,8 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 <sqlMapConfig>
 
   <settings enhancementEnabled="true" useStatementNamespaces="true"/>
-  
-  <!-- Use liferay datasource -->
+
+    <!-- Use custom myplaces datasource -->
   <transactionManager type="JDBC" commitRequired="true">
     <dataSource type="JNDI">
       <property name="DataSource" value="java:/comp/env/jdbc/omat_paikatPool" />

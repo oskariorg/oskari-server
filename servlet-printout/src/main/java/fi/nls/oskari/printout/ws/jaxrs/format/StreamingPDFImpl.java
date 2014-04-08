@@ -38,18 +38,18 @@ import fi.nls.oskari.printout.printing.PDFProducer;
  */
 public class StreamingPDFImpl implements StreamingOutput {
 	private static Log log = LogFactory.getLog(StreamingPDFImpl.class);
-	MapProducer producer;
-	MapLink mapLink;
-	PDFProducer.Options pageOptions;
-	ScaleOps scaleOps = new ScaleOps();
+	final MapProducer producer;
+	final MapLink mapLink;
+	final PDFProducer.Options pageOptions;
+	final ScaleOps scaleOps = new ScaleOps();
 
-	ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+	final ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 
-	PDFProducer.Page page;
-	private Envelope env;
-	private Point centre;
-	private int width;
-	private int height;
+	final PDFProducer.Page page;
+	final private Envelope env;
+	final private Point centre;
+	final private int width;
+	final private int height;
 
 	/**
 	 * 
@@ -70,8 +70,8 @@ public class StreamingPDFImpl implements StreamingOutput {
 		this.producer = producer;
 		this.pageOptions = pageOptions;
 
-		width = page.getWidthTargetInPoints();
-		height = page.getHeightTargetInPoints();
+		width = page.getMapWidthTargetInPoints(pageOptions);
+		height = page.getMapHeightTargetInPoints(pageOptions);
 		centre = mapLink.getCentre();
 		env = producer.getProcessor().getEnvFromPointZoomAndExtent(centre,
 				mapLink.getZoom(), width, height);
@@ -273,7 +273,7 @@ public class StreamingPDFImpl implements StreamingOutput {
 	/**
      * 
      */
-	
+
 	public void write(OutputStream outputStream) throws IOException,
 			WebApplicationException {
 
@@ -284,8 +284,8 @@ public class StreamingPDFImpl implements StreamingOutput {
 			 * int width = mapLink.getWidth(); int height = mapLink.getHeight();
 			 */
 
-			pdf.createLayeredPDFFromImages(images, outputStream, width, height,
-					env, centre);
+			pdf.createLayeredPDFFromImages(images, outputStream, env, centre);
+
 		} catch (COSVisitorException e) {
 
 			throw new IOException(e);

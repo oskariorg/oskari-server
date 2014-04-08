@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        	<version>1.18</version>
+        <version>1.19</version>
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>map-servlet</artifactId>
@@ -167,9 +167,6 @@
 		</profile>
 		<profile>
 			<id>jetty-profile</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -188,7 +185,6 @@
 								<resource>
 									<directory>src/jetty-maven/resources/</directory>
 									<filtering>true</filtering>
-									<targetPath>../jetty-maven</targetPath>
 									<includes>
 										<include>*.xml</include>
 									</includes>
@@ -210,17 +206,16 @@
 							http://localhost:2373/ajax?action_route=GetSearchResult&searchKey=Tampere -->
 						<groupId>org.mortbay.jetty</groupId>
 						<artifactId>maven-jetty-plugin</artifactId>
-						<version>6.1.12</version>
+						<version>6.1.26</version>
 						<configuration>
 							<scanIntervalSeconds>10</scanIntervalSeconds>
 							<stopKey>STOP</stopKey>
 							<stopPort>9999</stopPort>
-							<!-- jettyEnvXml>${basedir}/src/main/webapp/WEB-INF/jetty-env.xml</jettyEnvXml -->
 							<webAppConfig>
 								<contextPath>/</contextPath>
 
 								<baseResource implementation="org.mortbay.resource.ResourceCollection">
-									<resourcesAsCSV>${basedir}/target/jetty-maven,${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
+									<resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
 								</baseResource>
 								<!-- TODO: service targets are scanned but not included in classpath 
 									so changes arent reflected. It can be done like this: -->

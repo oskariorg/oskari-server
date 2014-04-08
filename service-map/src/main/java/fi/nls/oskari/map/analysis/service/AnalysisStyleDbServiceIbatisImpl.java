@@ -22,7 +22,7 @@ public class AnalysisStyleDbServiceIbatisImpl extends
 	     */
    
     protected String getSqlMapLocation() {
-	        return "META-INF/SqlMapConfig_AnalysisStyle.xml";
+	        return "META-INF/SqlMapConfig_Analysis.xml";
 	    }
 
 	  

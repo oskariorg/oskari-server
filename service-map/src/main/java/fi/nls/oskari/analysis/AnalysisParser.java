@@ -40,8 +40,8 @@ public class AnalysisParser {
             "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
 
 
-    private static final String LAYER_PREFIX = "analysis_";
-    private static final String MYPLACES_LAYER_PREFIX = "myplaces_";
+    public static final String ANALYSIS_LAYER_PREFIX = "analysis_";
+    public static final String MYPLACES_LAYER_PREFIX = "myplaces_";
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
@@ -87,6 +87,14 @@ public class AnalysisParser {
     final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
+    public String getSourceLayerId(String layerJSON) {
+        JSONObject json = JSONHelper.createJSONObject(layerJSON);
+        return getSourceLayerId(json);
+    }
+
+    public String getSourceLayerId(JSONObject json) {
+        return json.optString(JSON_KEY_LAYERID);
+    }
 
     /**
      * Parses method parameters to WPS execute xml syntax
@@ -97,10 +105,12 @@ public class AnalysisParser {
      * @param baseUrl
      *            Url for Geoserver WPS reference input (input
      *            FeatureCollection)
+     * @param uuid
+     *            User identification
      * @return AnalysisLayer parameters for WPS execution
      ************************************************************************/
     public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter,
-                                             String baseUrl) throws ServiceException {
+                                             String baseUrl, String uuid) throws ServiceException {
         AnalysisLayer analysisLayer = new AnalysisLayer();
 
         JSONObject json = JSONHelper.createJSONObject(layerJSON);
@@ -123,7 +133,7 @@ public class AnalysisParser {
             String sid = json.getString(JSON_KEY_LAYERID);
 
             // Input is wfs layer or analaysis layer or my places
-            if (sid.indexOf(LAYER_PREFIX) == 0 ) {
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 ) {
                 // Analysislayer is input
                 if (!this.prepareAnalysis4Analysis(analysisLayer, json))
                     throw new ServiceException(
@@ -152,6 +162,7 @@ public class AnalysisParser {
 
         final OskariLayer wfsLayer = mapLayerService.find(id);
         log.debug("got wfs layer", wfsLayer);
+
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
 
@@ -277,7 +288,7 @@ public class AnalysisParser {
             try {
                 sid = params.getString(JSON_KEY_LAYERID);
                 // Input is wfs layer or analaysis layer
-                if (sid.indexOf(LAYER_PREFIX) == 0) {
+                if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0) {
                     // Analysislayer is input
                     // eg. analyse_216_340
                     id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
@@ -304,7 +315,7 @@ public class AnalysisParser {
                     json, baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            if (sid.indexOf(LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
@@ -939,7 +950,7 @@ public class AnalysisParser {
         try {
 
             String sid = json.optString(JSON_KEY_LAYERID);
-            if (sid.indexOf(LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
                 return null;
             String sids[] = sid.split("_");
             if (sids.length > 1) {
@@ -1018,7 +1029,7 @@ public class AnalysisParser {
         // Switch to UNION method
         layerJSON = layerJSON.replace("\"method\":\"aggregate\"","\"method\":\"union\"");
 
-        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, baseUrl);
+        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, baseUrl, null);
         al2.setResult(analysisLayer.getResult());
         return al2;
 

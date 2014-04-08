@@ -17,6 +17,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public static final String TYPE_WMTS = "wmtslayer";
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
+    public static final String TYPE_USERLAYER = "userlayer";
 
     private int id = -1;
     private int parentId = -1;
@@ -47,6 +48,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private JSONObject params = new JSONObject();
     private JSONObject options = new JSONObject();
+
+    private boolean realtime = false;
+    private int refreshRate;
 
     private String gfiXslt;
     private String gfiType;
@@ -341,5 +345,19 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+    }
+
+    public boolean getRealtime() { return realtime; }
+
+    public void setRealtime(boolean realtime) { this.realtime = realtime; }
+
+    public int getRefreshRate() { return refreshRate; }
+
+    public void setRefreshRate(int refreshRate) {
+        if (refreshRate < 0) {
+            this.refreshRate = 0;
+        } else {
+            this.refreshRate = refreshRate;
+        }
     }
 }

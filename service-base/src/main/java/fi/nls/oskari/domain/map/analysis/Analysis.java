@@ -1,7 +1,6 @@
 package fi.nls.oskari.domain.map.analysis;
 
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -26,6 +25,13 @@ public class Analysis {
     private String col10;
     private String select_to_data;
     private long old_id;
+
+    public boolean isOwnedBy(final String uuid) {
+        if(uuid == null || getUuid() == null) {
+            return false;
+        }
+        return getUuid().equals(uuid);
+    }
 
     public long getId() {
         return id;

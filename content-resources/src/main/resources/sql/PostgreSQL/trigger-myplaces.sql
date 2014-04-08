@@ -11,6 +11,7 @@ NEW.updated := current_timestamp;
 RETURN NEW;
 ELSIF (TG_OP = 'INSERT') THEN
 NEW.created := current_timestamp;
+NEW.updated := current_timestamp;
 RETURN NEW;
 END IF;
 RETURN NEW;

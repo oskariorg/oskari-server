@@ -24,6 +24,14 @@
 
     <xsl:template match="Range">
         <Rule>
+            <LineSymbolizer>
+                <Stroke>
+                    <CssParameter name="stroke"><xsl:value-of select="@line-color" /></CssParameter>
+                    <CssParameter name="stroke-width"><xsl:value-of select="@line-width" /></CssParameter>
+                </Stroke>
+            </LineSymbolizer>
+        </Rule>
+        <Rule>
             <Name><xsl:value-of select="@name" /></Name>
             <Title><xsl:value-of select="@title" /></Title>
             <Abstract><xsl:value-of select="@abstract" /></Abstract>
@@ -42,12 +50,6 @@
                     <CssParameter name="fill">#<xsl:value-of select="@color" /></CssParameter>
                 </Fill>
             </PolygonSymbolizer>
-            <LineSymbolizer>
-                <Stroke>
-                    <CssParameter name="stroke"><xsl:value-of select="@line-color" /></CssParameter>
-                    <CssParameter name="stroke-width"><xsl:value-of select="@line-width" /></CssParameter>
-                </Stroke>
-            </LineSymbolizer>
         </Rule>
     </xsl:template>
 </xsl:stylesheet>

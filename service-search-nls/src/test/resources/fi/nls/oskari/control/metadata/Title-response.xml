@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetDomainResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <csw:DomainValues type="csw:Record">
+        <csw:PropertyName>Title</csw:PropertyName>
+        <csw:ListOfValues>
+            <csw:Value>Aaltoennustedata WAM</csw:Value>
+            <csw:Value>Aaltohavainnot</csw:Value>
+            <csw:Value>Aeromagneettiset matalalentomittaukset</csw:Value>
+            <csw:Value>Ajoradan leveys (tierekisterin tietolaji 136)</csw:Value>
+            <csw:Value>Ajoradat ja moottoriväylät (Tierekisterin tietolaji 135)</csw:Value>
+            <csw:Value>Aluevesien rajat</csw:Value>
+            <csw:Value>Arvokkaat kallioalueet</csw:Value>
+            <csw:Value>Asemakaavoitettu alue</csw:Value>
+            <csw:Value>Asuinalueet</csw:Value>
+            <csw:Value>Auringon säteilyhavainnot</csw:Value>
+            <csw:Value>Bussipysäkit (tierekisterin tietolaji 196)</csw:Value>
+            <csw:Value>Corine Land Cover 2000</csw:Value>
+            <csw:Value>Corine Land Cover 2006</csw:Value>
+            <csw:Value>Digiroad</csw:Value>
+            <csw:Value>Digitaalinen kallioperäkartta 1:200 000</csw:Value>
+            <csw:Value>Digitaalinen maaperäkartta 1:200 000</csw:Value>
+            <csw:Value>EU-meluselvitykset 2007</csw:Value>
+            <csw:Value>EU-uimavedet</csw:Value>
+            <csw:Value>Espoon WMS-palvelu</csw:Value>
+            <csw:Value>Espoon ajantasa-asemakaava</csw:Value>
+            <csw:Value>Espoon johtokartta</csw:Value>
+            <csw:Value>Espoon kantakartta</csw:Value>
+            <csw:Value>Espoon maankäyttökartta</csw:Value>
+            <csw:Value>Espoon opaskartta</csw:Value>
+            <csw:Value>Espoon ortokuva</csw:Value>
+            <csw:Value>Espoon osoitekartta</csw:Value>
+            <csw:Value>Espoon osoitteet</csw:Value>
+            <csw:Value>Etelä-Karjalan maakuntakaava</csw:Value>
+            <csw:Value>Etelä-Pohjanmaan vahvistettu maakuntakaava</csw:Value>
+            <csw:Value>Etelä-Savon maakuntakaava</csw:Value>
+            <csw:Value>Finnish Soildatabase</csw:Value>
+            <csw:Value>GTKWFS</csw:Value>
+            <csw:Value>GTKWMS</csw:Value>
+            <csw:Value>Geodeettisen laitoksen koordinaattimuunnospalvelu</csw:Value>
+            <csw:Value>HELCOM WMS</csw:Value>
+            <csw:Value>Hanhikiven ydinvoimamaakuntakaava</csw:Value>
+            <csw:Value>Havaitut tulva-alueet</csw:Value>
+            <csw:Value>Helsingin kaupungin WMS-palvelu</csw:Value>
+            <csw:Value>Helsingin kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Helsingin kaupungin kantakartta</csw:Value>
+            <csw:Value>Helsingin kaupungin kiinteistökartta</csw:Value>
+            <csw:Value>Helsingin kaupungin opaskartta</csw:Value>
+            <csw:Value>Helsingin kaupungin ortoilmakuvat</csw:Value>
+            <csw:Value>Helsingin kaupungin osoitekanta</csw:Value>
+            <csw:Value>Helsingin kaupungin rakennuskieltokartta</csw:Value>
+            <csw:Value>Henkilöliikennepaikat</csw:Value>
+            <csw:Value>Hydrologiset havaintopaikat</csw:Value>
+            <csw:Value>Hyvinkään ajantasa-asemakaava</csw:Value>
+            <csw:Value>Hyvinkään kantakartta</csw:Value>
+            <csw:Value>Hyvinkään opaskartta</csw:Value>
+            <csw:Value>Hyvinkään ortokuvamosaiikki</csw:Value>
+            <csw:Value>Hämeenlinnan WMS-palvelu</csw:Value>
+            <csw:Value>Hämeenlinnan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Hämeenlinnan kantakartta</csw:Value>
+            <csw:Value>Hämeenlinnan opaskartta</csw:Value>
+            <csw:Value>INSPIRE - metatiedot Atom-syötteelle Kaivosviranomaisen kartta-aineisto</csw:Value>
+            <csw:Value>INSPIRE - metatiedot GTK:n tiedostopalvelun Atom-syötteelle</csw:Value>
+            <csw:Value>INSPIRE - metatiedot Lounaispaikan INSPIRE-tiedostopalvelun Atom-syötteelle</csw:Value>
+            <csw:Value>INSPIRE - metatiedot SYKEn OIVA-palvelussa olevalle Atom-syötteelle</csw:Value>
+            <csw:Value>INSPIRE - metatiedot WFS-palvelulle GTKWFS</csw:Value>
+            <csw:Value>INSPIRE katselupalvelu; Säätutkahavainnot: tutkayhdistelmä ja yksittäiset tutkat</csw:Value>
+            <csw:Value>INSPIRE katselupalvelu; merihavaintoaineistot sekä meriennusteet</csw:Value>
+            <csw:Value>INSPIRE katselupalvelu; sää- ja säteilyhavaintoaineistot sekä sääennusteet</csw:Value>
+            <csw:Value>INSPIRE latauspalvelu; sää-, säteily-, meri-, tiesäähavaintoaineistot sekä ennusteet ja säätutkahavainnot</csw:Value>
+            <csw:Value>Iisalmen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Iisalmen asemakaavoitettu alue</csw:Value>
+            <csw:Value>Iisalmen asemakaavojen rajaukset</csw:Value>
+            <csw:Value>Iisalmen haja-asutusalueen osoitekartta</csw:Value>
+            <csw:Value>Iisalmen kantakartta</csw:Value>
+            <csw:Value>Iisalmen kaupunginosat</csw:Value>
+            <csw:Value>Iisalmen oikeusvaikutteisten osayleiskaavojen rajaukset</csw:Value>
+            <csw:Value>Iisalmen opaskartta</csw:Value>
+            <csw:Value>Iisalmen oppilaaksiottoalueet</csw:Value>
+            <csw:Value>Iisalmen ortokuva 2011</csw:Value>
+            <csw:Value>Iisalmen osoiterekisteri</csw:Value>
+            <csw:Value>Iisalmen rakennukset</csw:Value>
+            <csw:Value>Iisalmen rakennuskiellot</csw:Value>
+            <csw:Value>Iisalmen äänestysalueet</csw:Value>
+            <csw:Value>Ilmastonmuutosskenaariot</csw:Value>
+            <csw:Value>Image2000 mosaiikki</csw:Value>
+            <csw:Value>Image2006 mosaiikki</csw:Value>
+            <csw:Value>Imatran ajantasa-asemakaava</csw:Value>
+            <csw:Value>Imatran kantakartta</csw:Value>
+            <csw:Value>Imatran opaskartta</csw:Value>
+            <csw:Value>Itä-Lapin maakuntakaava</csw:Value>
+            <csw:Value>Itä-Uudenmaan maakuntakaava</csw:Value>
+            <csw:Value>Itämeren biodiversiteetti tila (HELCOM BEAT)</csw:Value>
+            <csw:Value>Itämeren ekosysteemi tila (HELCOM HOLAS)</csw:Value>
+            <csw:Value>Itämeren kemikaali tila (HELCOM CHASE)</csw:Value>
+            <csw:Value>Itämeren laivaliikenne (HELCOM AIS)</csw:Value>
+            <csw:Value>Itämeren rehevöitymis tila (HELCOM HEAT)</csw:Value>
+            <csw:Value>Itämeren suojelualueet (HELCOM BSPA)</csw:Value>
+            <csw:Value>Itämeren ympäristöpaine indeksi (HELCOM BSPI)</csw:Value>
+            <csw:Value>Itämeren ympäristövaikutus indeksi (HELCOM BSPI)</csw:Value>
+            <csw:Value>Jalasjärven ajantasa-asemakaava</csw:Value>
+            <csw:Value>Jalasjärven kantakartta</csw:Value>
+            <csw:Value>Jalasjärven opaskartta</csw:Value>
+            <csw:Value>Jalasjärven osayleiskaava</csw:Value>
+            <csw:Value>Joensuun WMS-palvelu</csw:Value>
+            <csw:Value>Joensuun ajantasa-asemakaava</csw:Value>
+            <csw:Value>Joensuun kantakartta</csw:Value>
+            <csw:Value>Joensuun opaskartta</csw:Value>
+            <csw:Value>Jyväskylän WMS-palvelu</csw:Value>
+            <csw:Value>Jyväskylän ajantasa-asemakaava</csw:Value>
+            <csw:Value>Jyväskylän ilmakuva</csw:Value>
+            <csw:Value>Jyväskylän kantakartta</csw:Value>
+            <csw:Value>Jyväskylän kaupunginosat</csw:Value>
+            <csw:Value>Jyväskylän linja-autoreitit</csw:Value>
+            <csw:Value>Jyväskylän opaskartta</csw:Value>
+            <csw:Value>Jyväskylän postialueet</csw:Value>
+            <csw:Value>Jyväskylän ulkoilukartta</csw:Value>
+            <csw:Value>Jyväskylän äänestysalueet</csw:Value>
+            <csw:Value>Järvenpään kantakartta</csw:Value>
+            <csw:Value>Järvenpään opaskartta</csw:Value>
+            <csw:Value>Järvien syvyysaineisto</csw:Value>
+            <csw:Value>Kainuun maakuntakaava 2020</csw:Value>
+            <csw:Value>Kaivos- ja mineraalirekisterin kartta-aineisto</csw:Value>
+            <csw:Value>Kaivosrekisterin kartta-aineisto (WMS)</csw:Value>
+            <csw:Value>Kajaanin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kajaanin kantakartta</csw:Value>
+            <csw:Value>Kajaanin kaupungin WMS-palvelu</csw:Value>
+            <csw:Value>Kajaanin opaskartta</csw:Value>
+            <csw:Value>Kajaanin yleiskaava</csw:Value>
+            <csw:Value>Kalavarojen arviointi (taloudellisesti tärkeiden kalalajien sekä rapujen esiintymisalueet)</csw:Value>
+            <csw:Value>Kallioperä- ja lohkarehavaintoaineisto</csw:Value>
+            <csw:Value>Kallioperäkartta 1:100 000</csw:Value>
+            <csw:Value>Kangasalan kunnan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kangasalan kunnan kantakartta</csw:Value>
+            <csw:Value>Kangasalan kunnan opaskartta</csw:Value>
+            <csw:Value>Kangasalan kunnan rakennukset</csw:Value>
+            <csw:Value>Kangasalan kunnan ranta-asemakaavat</csw:Value>
+            <csw:Value>Kangasalan kunnan yleiskaava</csw:Value>
+            <csw:Value>Kangasniemen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kangasniemen kantakartta</csw:Value>
+            <csw:Value>Kangasniemen taajaman opaskartta</csw:Value>
+            <csw:Value>Kanta-Hämeen maakuntakaava</csw:Value>
+            <csw:Value>Karttapaikka</csw:Value>
+            <csw:Value>Kasviatlas</csw:Value>
+            <csw:Value>Kauhavan ajantasa-asemakaava Alahärmä</csw:Value>
+            <csw:Value>Kauhavan ajantasa-asemakaava Kauhava</csw:Value>
+            <csw:Value>Kauhavan ajantasa-asemakaava Kortesjärvi</csw:Value>
+            <csw:Value>Kauhavan ajantasa-asemakaava Ylihärmä</csw:Value>
+            <csw:Value>Kauhavan kantakartta Alahärmä</csw:Value>
+            <csw:Value>Kauhavan kantakartta Kauhava</csw:Value>
+            <csw:Value>Kauhavan kantakartta Kortesjärvi</csw:Value>
+            <csw:Value>Kauhavan kantakartta Ylihärmä</csw:Value>
+            <csw:Value>Kauhavan opaskartat</csw:Value>
+            <csw:Value>Kauhavan yleiskaava</csw:Value>
+            <csw:Value>Kauniaisten WMS-palvelu</csw:Value>
+            <csw:Value>Kauniaisten ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kauniaisten kantakartta</csw:Value>
+            <csw:Value>Kauniaisten opaskartta</csw:Value>
+            <csw:Value>Kauniaisten ortokuva</csw:Value>
+            <csw:Value>Kauniaisten osoitekartta</csw:Value>
+            <csw:Value>Kauniaisten osoitteet</csw:Value>
+            <csw:Value>Kemi-Tornio alueen ydinvoimamaakuntakaava</csw:Value>
+            <csw:Value>Keravan Kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Keravan Kaupungin opaskartta</csw:Value>
+            <csw:Value>Keravan Kaupungin ortokuvamosaiikki</csw:Value>
+            <csw:Value>Keravan kaupungin WMS-palvelu</csw:Value>
+            <csw:Value>Keski-Pohjanmaan maakuntakaava; vaiheet 1 - 3</csw:Value>
+            <csw:Value>Keski-Suomen 1. vaihemaakuntakaava</csw:Value>
+            <csw:Value>Keski-Suomen 2. vaihemaakuntakaava</csw:Value>
+            <csw:Value>Keski-Suomen maakuntakaava</csw:Value>
+            <csw:Value>Kiinteistöjen kauppahintarekisteri</csw:Value>
+            <csw:Value>Kiinteistörekisteri</csw:Value>
+            <csw:Value>Kiinteistötietojen kyselypalvelu (WFS)</csw:Value>
+            <csw:Value>Kiintopisteet</csw:Value>
+            <csw:Value>Kirkkonummen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kirkkonummen kantakartta</csw:Value>
+            <csw:Value>Kirkkonummen opaskartta</csw:Value>
+            <csw:Value>Kokkolan WMS-palvelu</csw:Value>
+            <csw:Value>Kokkolan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kokkolan ilmakuvayhdistelmä</csw:Value>
+            <csw:Value>Kokkolan kantakartta</csw:Value>
+            <csw:Value>Kokkolan lintuvesialueet ja lintusaaret</csw:Value>
+            <csw:Value>Kokkolan opaskartta</csw:Value>
+            <csw:Value>Kokkolan osoiterekisteri</csw:Value>
+            <csw:Value>Kokkolan seudun opaskartta</csw:Value>
+            <csw:Value>Korkeusmalli 10 m</csw:Value>
+            <csw:Value>Korkeusmalli 2 m</csw:Value>
+            <csw:Value>Korkeusmalli 200 m</csw:Value>
+            <csw:Value>Korkeusmalli 25 m</csw:Value>
+            <csw:Value>Korkeusvyöhykerasteri</csw:Value>
+            <csw:Value>Kotkan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kotkan kantakartta</csw:Value>
+            <csw:Value>Kotkan opaskartta</csw:Value>
+            <csw:Value>Kouvolan WMS-palvelu</csw:Value>
+            <csw:Value>Kouvolan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kouvolan ilmakuva</csw:Value>
+            <csw:Value>Kouvolan kantakartta</csw:Value>
+            <csw:Value>Kouvolan opaskartta</csw:Value>
+            <csw:Value>Kuntajako</csw:Value>
+            <csw:Value>Kuntapohjaiset tilastointialueet</csw:Value>
+            <csw:Value>Kuopion WMS-palvelu</csw:Value>
+            <csw:Value>Kuopion ajantasa-asemakaava</csw:Value>
+            <csw:Value>Kuopion kantakartta</csw:Value>
+            <csw:Value>Kuopion opaskartta</csw:Value>
+            <csw:Value>Kuopion seudun maakuntakaava</csw:Value>
+            <csw:Value>Kymenlaakson maakuntakaava</csw:Value>
+            <csw:Value>LIPAS WMS-palvelu</csw:Value>
+            <csw:Value>Lapin meri- ja rannikkoalueen tuulivoimamaakuntakaava</csw:Value>
+            <csw:Value>Lappeenrannan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Lappeenrannan kantakartta</csw:Value>
+            <csw:Value>Lappeenrannan opaskartta</csw:Value>
+            <csw:Value>Laserkeilausaineisto</csw:Value>
+            <csw:Value>Leppävirran pohjoisosan valtatien 5 maakuntakaava (VT5)</csw:Value>
+            <csw:Value>Liikennealueiden ympäristöriskiluokitus</csw:Value>
+            <csw:Value>Liikennemäärä (tierekisterin tietolaji 201)</csw:Value>
+            <csw:Value>Liikennevirasto maaliikenne WMS</csw:Value>
+            <csw:Value>Liikennevirasto meriliikenne Primar WMS</csw:Value>
+            <csw:Value>Liikuntapaikat.fi / Lipas</csw:Value>
+            <csw:Value>Lintuatlas</csw:Value>
+            <csw:Value>Liperin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Liperin osoitekartta</csw:Value>
+            <csw:Value>Liperin suunnittelutarvealueet</csw:Value>
+            <csw:Value>Liperin yleiskaava</csw:Value>
+            <csw:Value>Lisäkaistat (tierekisterin tietolaji 161)</csw:Value>
+            <csw:Value>Lohjan kantakartta</csw:Value>
+            <csw:Value>Lohjan kiinteistötiedot</csw:Value>
+            <csw:Value>Lohjan opaskartta</csw:Value>
+            <csw:Value>Lohjan osoitetiedot</csw:Value>
+            <csw:Value>Loimaan kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Loimaan kaupungin kantakartta</csw:Value>
+            <csw:Value>Loimaan kaupungin opaskartta</csw:Value>
+            <csw:Value>Loimaan kaupungin osoitekartta</csw:Value>
+            <csw:Value>Luonnon virkistyskäyttömahdollisuudet</csw:Value>
+            <csw:Value>Luonnonsuojelu- ja erämaa-alueet</csw:Value>
+            <csw:Value>Luonnonsuojeluohjelma-alueet</csw:Value>
+            <csw:Value>MRL:n mukaisten yleiskaavojen ulkorajaukset</csw:Value>
+            <csw:Value>Maailmanperintökohteet</csw:Value>
+            <csw:Value>Maakuntakaavat</csw:Value>
+            <csw:Value>Maanmittauslaitoksen ilmakuva</csw:Value>
+            <csw:Value>Maanmittauslaitoksen ortokuva</csw:Value>
+            <csw:Value>Maanmittauslaitoksen rasteriaineistojen palvelurajapinta (WMS)</csw:Value>
+            <csw:Value>Maanmittauslaitoksen tiedostopalvelun INSPIRE-syöte</csw:Value>
+            <csw:Value>Maannostietokanta</csw:Value>
+            <csw:Value>Maaperäkartta 1:20 000 / 1:50 000</csw:Value>
+            <csw:Value>Maasto- ja vesiliikenteen rajoitusalueet</csw:Value>
+            <csw:Value>Maastokartta 1:100 000</csw:Value>
+            <csw:Value>Maastokartta 1:250 000</csw:Value>
+            <csw:Value>Maastokarttarasteri 1:100 000</csw:Value>
+            <csw:Value>Maastokarttarasteri 1:250 000</csw:Value>
+            <csw:Value>Maastokarttarasteri 1:50 000</csw:Value>
+            <csw:Value>Maastokarttarasteri 1:500 000</csw:Value>
+            <csw:Value>Maastotietokannan osoitteiden kyselypalvelu</csw:Value>
+            <csw:Value>Maastotietokanta</csw:Value>
+            <csw:Value>Maisemamaakuntajako</csw:Value>
+            <csw:Value>Merikartan johtotiedot</csw:Value>
+            <csw:Value>Merikartan syvyystiedot</csw:Value>
+            <csw:Value>Merikartta-aineisto</csw:Value>
+            <csw:Value>Meriveden korkeusennuste</csw:Value>
+            <csw:Value>Meriveden korkeushavainnot</csw:Value>
+            <csw:Value>Meriveden virtausennustedata HBM</csw:Value>
+            <csw:Value>Metsäkasvillisuusvyöhykkeet</csw:Value>
+            <csw:Value>Mikkelin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Mikkelin kantakartta</csw:Value>
+            <csw:Value>Mikkelin opaskartta</csw:Value>
+            <csw:Value>Monilähteisen valtakunnan metsien inventoinnin (MVMI) kartta-aineisto 2009</csw:Value>
+            <csw:Value>Monilähteisen valtakunnan metsien inventoinnin (MVMI) kartta-aineisto 2011</csw:Value>
+            <csw:Value>Muinaisjäännökset (Muinaisjäännösrekisteri)</csw:Value>
+            <csw:Value>Museoviraston WMS</csw:Value>
+            <csw:Value>Museoviraston paikkatietojen tiedostolataus</csw:Value>
+            <csw:Value>Muuramen kunnan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Muuramen kunnan opaskartta</csw:Value>
+            <csw:Value>Muuramen kunnan pilaantuneet maa-alueet</csw:Value>
+            <csw:Value>Muuramen kunnan rakennuskiellot</csw:Value>
+            <csw:Value>Muuramen kunnan suunnittelutarvealueet</csw:Value>
+            <csw:Value>Muuramen kunnan yleiskaavat</csw:Value>
+            <csw:Value>Mänttä-Vilppulan WFS-palvelu</csw:Value>
+            <csw:Value>Mänttä-Vilppulan WMS-palvelu</csw:Value>
+            <csw:Value>Mänttä-Vilppulan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Mänttä-Vilppulan kantakartta</csw:Value>
+            <csw:Value>Mänttä-Vilppulan opaskartta</csw:Value>
+            <csw:Value>Mänttä-Vilppulan rakennukset</csw:Value>
+            <csw:Value>Mänttä-Vilppulan suunnittelutarvealueet</csw:Value>
+            <csw:Value>Mänttä-Vilppulan yleiskaava</csw:Value>
+            <csw:Value>Naantalin asemakaavayhdelmä</csw:Value>
+            <csw:Value>Naantalin kantakartta</csw:Value>
+            <csw:Value>Natura2000</csw:Value>
+            <csw:Value>Nimistö</csw:Value>
+            <csw:Value>Nimistön kyselypalvelu (WFS)</csw:Value>
+            <csw:Value>Nivalan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Nivalan kantakartta</csw:Value>
+            <csw:Value>Nivalan opaskartta</csw:Value>
+            <csw:Value>Nopeusrajoitus ja taajamanopeusrajoitus (tierekisterin tietolaji 168)</csw:Value>
+            <csw:Value>Nurmijärven WMS-palvelu</csw:Value>
+            <csw:Value>Nurmijärven ajantasa-asemakaava</csw:Value>
+            <csw:Value>Nurmijärven kantakartta</csw:Value>
+            <csw:Value>Nurmijärven opaskartta</csw:Value>
+            <csw:Value>Nurmijärven osoiterekisteri</csw:Value>
+            <csw:Value>Oppilaitokset</csw:Value>
+            <csw:Value>Oriveden WFS-palvelu</csw:Value>
+            <csw:Value>Oriveden WMS-palvelu</csw:Value>
+            <csw:Value>Oriveden ajantasa-asemakaava</csw:Value>
+            <csw:Value>Oriveden opaskartta</csw:Value>
+            <csw:Value>Oriveden rakennukset</csw:Value>
+            <csw:Value>Oriveden rakennuskiellot</csw:Value>
+            <csw:Value>Oriveden suunnittelutarvealueet</csw:Value>
+            <csw:Value>Oriveden yleiskaava</csw:Value>
+            <csw:Value>Oulun WMS-palvelu</csw:Value>
+            <csw:Value>Oulun kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Oulun kaupungin kantakartta</csw:Value>
+            <csw:Value>Oulun kaupungin kiinteistörekisteri</csw:Value>
+            <csw:Value>Oulun kaupungin luonnonmuistomerkit</csw:Value>
+            <csw:Value>Oulun kaupungin opaskartta</csw:Value>
+            <csw:Value>Oulun kaupungin ortoilmakuva</csw:Value>
+            <csw:Value>Oulun kaupungin osoitekartta</csw:Value>
+            <csw:Value>Oulun kaupungin osoiterekisteri</csw:Value>
+            <csw:Value>Paikkatietohakemiston CSW-rajapinta</csw:Value>
+            <csw:Value>Paimion ajantasa-asemakaava</csw:Value>
+            <csw:Value>Paimion pilaantuneet maa-alueet</csw:Value>
+            <csw:Value>Paimion suunnittelutarvealueet</csw:Value>
+            <csw:Value>Paimion virkistyskohteet</csw:Value>
+            <csw:Value>Paraisten opaskartta</csw:Value>
+            <csw:Value>Peltolohkorekisteri</csw:Value>
+            <csw:Value>Peltolohkorekisteri WMS</csw:Value>
+            <csw:Value>Peruskarttarasteri</csw:Value>
+            <csw:Value>Pietarsaaren kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Pietarsaaren kaupungin kantakartta</csw:Value>
+            <csw:Value>Pietarsaaren kaupungin opaskartta</csw:Value>
+            <csw:Value>Pirkanmaan 1. maakuntakaava</csw:Value>
+            <csw:Value>Pirkanmaan kulttuuriympäristöalueet</csw:Value>
+            <csw:Value>Pirkanmaan muinaisjäännökset</csw:Value>
+            <csw:Value>Pirkanmaan rakennetun ympäristön kohteet</csw:Value>
+            <csw:Value>Pohjanmaan maakuntakaava</csw:Value>
+            <csw:Value>Pohjavesialueet</csw:Value>
+            <csw:Value>Pohjois-Karjalan maakuntakaavat</csw:Value>
+            <csw:Value>Pohjois-Lapin maakuntakaava</csw:Value>
+            <csw:Value>Pohjois-Pohjanmaan maakuntakaava</csw:Value>
+            <csw:Value>Pohjois-Savon maakuntakaava 2030</csw:Value>
+            <csw:Value>Porin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Porin kaupungin kantakartta</csw:Value>
+            <csw:Value>Porin kaupungin osoitekartta</csw:Value>
+            <csw:Value>Porin opaskartta</csw:Value>
+            <csw:Value>Porvoon kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Porvoon kaupungin opaskartta</csw:Value>
+            <csw:Value>Puolustusvoimien ortoilmakuva (korkeakuvaus)</csw:Value>
+            <csw:Value>Pyhtään kantakartta</csw:Value>
+            <csw:Value>Pyhtään opaskartta</csw:Value>
+            <csw:Value>Päijät-Hämeen maakuntakaava</csw:Value>
+            <csw:Value>Pöytyän kunnan ajantasa-asemakaava</csw:Value>
+            <csw:Value>RKTL WFS (kala)</csw:Value>
+            <csw:Value>RKTL WFS (riista)</csw:Value>
+            <csw:Value>RKTL WMS (kala)</csw:Value>
+            <csw:Value>RKTL WMS (riista)</csw:Value>
+            <csw:Value>Raision WMS-aineistot</csw:Value>
+            <csw:Value>Raision ajantasa-asemakaava</csw:Value>
+            <csw:Value>Raision kantakartta</csw:Value>
+            <csw:Value>Rakennettu kulttuuriympäristö 1993 (RKY1993)</csw:Value>
+            <csw:Value>Rakennustietojen kyselypalvelu (WFS)</csw:Value>
+            <csw:Value>Rataverkko</csw:Value>
+            <csw:Value>Rauman ajantasakaava</csw:Value>
+            <csw:Value>Rauman kantakartta</csw:Value>
+            <csw:Value>Rauman opaskartta</csw:Value>
+            <csw:Value>Rauman ortokuvat</csw:Value>
+            <csw:Value>Riihimäen WMS-palvelu</csw:Value>
+            <csw:Value>Riihimäen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Riihimäen ilmakuva</csw:Value>
+            <csw:Value>Riihimäen kantakartta</csw:Value>
+            <csw:Value>Riihimäen opaskartta</csw:Value>
+            <csw:Value>Rovaniemen kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Rovaniemen kaupungin kantakartta</csw:Value>
+            <csw:Value>Rovaniemen kaupungin opaskartta</csw:Value>
+            <csw:Value>Rovaniemen maakuntakaava</csw:Value>
+            <csw:Value>Rovaniemen vaihemaakuntakaava</csw:Value>
+            <csw:Value>SYKE AlueidenHallintaJaRajoitukset1 WMS</csw:Value>
+            <csw:Value>SYKE AlueidenHallintaJaRajoitukset2 WMS</csw:Value>
+            <csw:Value>SYKE EliomaantieteellisetAlueet WMS</csw:Value>
+            <csw:Value>SYKE Geologia WMS</csw:Value>
+            <csw:Value>SYKE Hydrografia WMS</csw:Value>
+            <csw:Value>SYKE Korkeus WMS</csw:Value>
+            <csw:Value>SYKE Luonnonriskialueet WMS</csw:Value>
+            <csw:Value>SYKE Maanpeite WMS</csw:Value>
+            <csw:Value>SYKE OIVA tiedostolatauspalvelu</csw:Value>
+            <csw:Value>SYKE Ortoilmakuvat WMS</csw:Value>
+            <csw:Value>SYKE SuojellutAlueet WMS</csw:Value>
+            <csw:Value>SYKE YmparistontilanSeuranta WMS</csw:Value>
+            <csw:Value>Salamahavainnot</csw:Value>
+            <csw:Value>Salon kantakartta</csw:Value>
+            <csw:Value>Salon opaskartta</csw:Value>
+            <csw:Value>Sastamalan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Sastamalan kantakartta</csw:Value>
+            <csw:Value>Sastamalan opaskartta</csw:Value>
+            <csw:Value>Satakunnan maakuntakaava</csw:Value>
+            <csw:Value>Seinäjoen WMS-palvelu</csw:Value>
+            <csw:Value>Seinäjoen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Seinäjoen kantakartta</csw:Value>
+            <csw:Value>Seinäjoen opaskartta</csw:Value>
+            <csw:Value>Seurantatiedot riistakannoista</csw:Value>
+            <csw:Value>Sipoon Kringelmalmin osayleiskaava</csw:Value>
+            <csw:Value>Sipoon kunnan kantakartta</csw:Value>
+            <csw:Value>Sipoon kunnan opaskartta</csw:Value>
+            <csw:Value>Sipoon kunnan rakennuskieltoalueet</csw:Value>
+            <csw:Value>Sipoon kunnan suunnittelutarvealueet</csw:Value>
+            <csw:Value>Sipoon kunnan yleiskaava 2025</csw:Value>
+            <csw:Value>Soklin kaivoshankkeen vaihemaakuntakaava</csw:Value>
+            <csw:Value>Sotkamon ajantasa-asemakaava</csw:Value>
+            <csw:Value>Sotkamon suunnittelutarvealueet</csw:Value>
+            <csw:Value>Sulut ja rantarakenteet</csw:Value>
+            <csw:Value>Suojeltu rakennusperintö (Rakennusperintörekisteri)</csw:Value>
+            <csw:Value>Suokasvillisuusvyöhykkeet</csw:Value>
+            <csw:Value>Suomen kalliogeokemian tietokanta</csw:Value>
+            <csw:Value>Suomen kallioperä 1:1 000 000</csw:Value>
+            <csw:Value>Suomen kallioperän ikämääritykset</csw:Value>
+            <csw:Value>Suomen maaperä 1:1 000 000</csw:Value>
+            <csw:Value>Suomen pintageologiakartta 1:1 000 000</csw:Value>
+            <csw:Value>Suomi.fi-portaalin WMS-palvelu</csw:Value>
+            <csw:Value>Suomi.fi-portaalin palvelukartan toimipaikka-aineisto</csw:Value>
+            <csw:Value>Suuralueellinen moreenigeokemiallinen kartoitus</csw:Value>
+            <csw:Value>Suuralueellinen purosedimenttigeokemiallinen kartoitus</csw:Value>
+            <csw:Value>Suuralueellinen purovesigeokemiallinen kartoitus</csw:Value>
+            <csw:Value>Sääennustedata RCR Hirlam</csw:Value>
+            <csw:Value>Säähavainnot</csw:Value>
+            <csw:Value>Säähavaintojen hilamuotoiset kuukausiarvot</csw:Value>
+            <csw:Value>Säähavaintojen ilmastolliset vertailuarvot</csw:Value>
+            <csw:Value>Säähavaintojen kuukausiarvot</csw:Value>
+            <csw:Value>Säähavaintojen vuorokausiarvot</csw:Value>
+            <csw:Value>Säätutkahavainnot</csw:Value>
+            <csw:Value>Talvinopeusrajoitus (tierekisterin tietolaji 169)</csw:Value>
+            <csw:Value>Tampereen WFS-palvelu</csw:Value>
+            <csw:Value>Tampereen WMS-palvelu 1</csw:Value>
+            <csw:Value>Tampereen WMS-palvelu 2</csw:Value>
+            <csw:Value>Tampereen ajantasa-asemakaava</csw:Value>
+            <csw:Value>Tampereen arseeniriskialueet</csw:Value>
+            <csw:Value>Tampereen asemakaavaindeksi</csw:Value>
+            <csw:Value>Tampereen fluoridiriskialueet</csw:Value>
+            <csw:Value>Tampereen ilmanlaatu 2000</csw:Value>
+            <csw:Value>Tampereen ilmanlaatu 2020</csw:Value>
+            <csw:Value>Tampereen järvien vedenlaatu</csw:Value>
+            <csw:Value>Tampereen kantakartta</csw:Value>
+            <csw:Value>Tampereen katuosoitteet</csw:Value>
+            <csw:Value>Tampereen kiinteistörajat</csw:Value>
+            <csw:Value>Tampereen kiintopisteet</csw:Value>
+            <csw:Value>Tampereen kunnossapidon urakka-alueet</csw:Value>
+            <csw:Value>Tampereen luonnonmuistomerkit</csw:Value>
+            <csw:Value>Tampereen luontopolkurastit</csw:Value>
+            <csw:Value>Tampereen luontopolkureitit</csw:Value>
+            <csw:Value>Tampereen melu päivä 2012 keskiäänitaso</csw:Value>
+            <csw:Value>Tampereen melu päivä 2030 keskiäänitaso</csw:Value>
+            <csw:Value>Tampereen melu yö 2012 keskiäänitaso</csw:Value>
+            <csw:Value>Tampereen melu yö 2030 keskiäänitaso</csw:Value>
+            <csw:Value>Tampereen omistamat kiinteistöt</csw:Value>
+            <csw:Value>Tampereen opaskartta</csw:Value>
+            <csw:Value>Tampereen perusopetuksen oppilasalueet</csw:Value>
+            <csw:Value>Tampereen pienvedet</csw:Value>
+            <csw:Value>Tampereen rakennuskieltoalueet</csw:Value>
+            <csw:Value>Tampereen vanhat kaatopaikat</csw:Value>
+            <csw:Value>Tampereen vanhat metsät 2006</csw:Value>
+            <csw:Value>Tampereen voimassa olevat katuluvat</csw:Value>
+            <csw:Value>Tampereen yleis- ja osayleiskaavojen käyttötarkoitusalueet</csw:Value>
+            <csw:Value>Tampereen ympäristönsuojelun valvontakohteet</csw:Value>
+            <csw:Value>Tasoristeykset</csw:Value>
+            <csw:Value>Taustailmanlaadun havainnot</csw:Value>
+            <csw:Value>Taustakarttasarja (rasteri)</csw:Value>
+            <csw:Value>Tieluokat (tierekisterin tietolaji 130)</csw:Value>
+            <csw:Value>Tien päällyste (tierekisterin tietolaji 137)</csw:Value>
+            <csw:Value>Tienimet</csw:Value>
+            <csw:Value>Tienkäyttäjien palvelualueet (tierekisterin tietolaji 195)</csw:Value>
+            <csw:Value>Tierekisteri</csw:Value>
+            <csw:Value>Tilastokeskuksen palvelurajapinta (WFS)</csw:Value>
+            <csw:Value>Tilastokeskuksen palvelurajapinta (WMS)</csw:Value>
+            <csw:Value>Tilastoruudukko 1 km x 1 km</csw:Value>
+            <csw:Value>Tornion kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Tornion kaupungin kantakartta</csw:Value>
+            <csw:Value>Tornion kaupungin opaskartta</csw:Value>
+            <csw:Value>Tulvariskialueet</csw:Value>
+            <csw:Value>Tulvavaaravyöhykkeet</csw:Value>
+            <csw:Value>Tunturi-Lapin maakuntakaava</csw:Value>
+            <csw:Value>Tuotanto- ja teollisuuslaitokset</csw:Value>
+            <csw:Value>Turun WMS-palvelu</csw:Value>
+            <csw:Value>Turun kaupungin Ajantasakaava</csw:Value>
+            <csw:Value>Turun kaupungin Kantakartta</csw:Value>
+            <csw:Value>Turun seudun Opaskartta</csw:Value>
+            <csw:Value>Turun seudun ilmakuva</csw:Value>
+            <csw:Value>Turvekartoitus</csw:Value>
+            <csw:Value>Tuuliatlas 2500m</csw:Value>
+            <csw:Value>Tuuliatlas 250m</csw:Value>
+            <csw:Value>Tuusulan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Tuusulan kantakartta</csw:Value>
+            <csw:Value>Tuusulan opaskartta</csw:Value>
+            <csw:Value>Uomaverkosto</csw:Value>
+            <csw:Value>Uudenkaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Uudenkaupungin osoitekartat</csw:Value>
+            <csw:Value>Uudenkaupungin yleiskaavakartta</csw:Value>
+            <csw:Value>Uudenmaan 1. vaihemaakuntakaava</csw:Value>
+            <csw:Value>Uudenmaan 3. vaihemaakuntakaava</csw:Value>
+            <csw:Value>Uudenmaan maakuntakaava</csw:Value>
+            <csw:Value>Uudenmaan maakuntakaavojen yhdistelmä (wms)</csw:Value>
+            <csw:Value>Vaasan kantakartta</csw:Value>
+            <csw:Value>Vaasan opaskartta</csw:Value>
+            <csw:Value>Valaistus (tierekisterin tietolaji 167)</csw:Value>
+            <csw:Value>Valkeakosken WMS-palvelu</csw:Value>
+            <csw:Value>Valkeakosken ajantasa-asemakaava</csw:Value>
+            <csw:Value>Valkeakosken kantakartta</csw:Value>
+            <csw:Value>Valkeakosken ortokuva</csw:Value>
+            <csw:Value>Valkeakosken virastokartta</csw:Value>
+            <csw:Value>Valtakunnallisesti arvokkaat moreenimuodostumat</csw:Value>
+            <csw:Value>Valtakunnallisesti merkittävät rakennetut kulttuuriympäristöt (RKY)</csw:Value>
+            <csw:Value>Valtakunnan metsien inventoinnin (VMI) monilähdekartta-aineisto</csw:Value>
+            <csw:Value>Valuma-aluejako</csw:Value>
+            <csw:Value>Vanhan rakennuslain mukaisesti vahvistettujen yleiskaavojen ulkorajaukset</csw:Value>
+            <csw:Value>Vantaan ajantasa-asemakaava</csw:Value>
+            <csw:Value>Vantaan kaupungin kiinteistörekisterikartta</csw:Value>
+            <csw:Value>Vantaan kaupungin ortoilmakuvamosaiikki</csw:Value>
+            <csw:Value>Vantaan kaupungin viistoilmakuvat</csw:Value>
+            <csw:Value>Vantaan maanalaisten johtojen kartta</csw:Value>
+            <csw:Value>Vantaan opaskartta</csw:Value>
+            <csw:Value>Vantaan osoitteet</csw:Value>
+            <csw:Value>Vantaan virastokartta</csw:Value>
+            <csw:Value>Varsinais-Suomen vahvistetut maakuntakaavat</csw:Value>
+            <csw:Value>Varsinais-Suomen vahvistetut maakuntakaavat (WMS)</csw:Value>
+            <csw:Value>Vehmaan, Pyhärannan, Kustavin, Laitilan ja Taivassalon asemakaavayhdistelmä</csw:Value>
+            <csw:Value>Vesienhoitoalueet</csw:Value>
+            <csw:Value>Vesienhoitoalueiden pintavesien seurantapaikat 2010</csw:Value>
+            <csw:Value>Vesienhoitoalueiden pohjavesien seurantapaikat 2010</csw:Value>
+            <csw:Value>Vesipuitedirektiivin mukaiset vesimuodostumat</csw:Value>
+            <csw:Value>Vesiväylät</csw:Value>
+            <csw:Value>Vihdin kunnan Geo Web Publisher WMS-palvelu</csw:Value>
+            <csw:Value>Vihdin opaskartta</csw:Value>
+            <csw:Value>Vinovalovarjosterasteri</csw:Value>
+            <csw:Value>Virtain kaupungin ajantasa-asemakaava</csw:Value>
+            <csw:Value>Virtain kaupungin kantakartta</csw:Value>
+            <csw:Value>Virtain kaupungin opaskartta</csw:Value>
+            <csw:Value>Virtain kaupungin osoitekartta</csw:Value>
+            <csw:Value>Vuokatin yleiskaava</csw:Value>
+            <csw:Value>Väestö tilastointialueittain</csw:Value>
+            <csw:Value>Väestöruutuaineisto 1 km x 1 km</csw:Value>
+            <csw:Value>Väestötietojärjestelmän rakennus- ja huoneistotiedot</csw:Value>
+            <csw:Value>YKR Kaupunkiseudut 2010</csw:Value>
+            <csw:Value>Yhdyskuntarakenne</csw:Value>
+            <csw:Value>Yleiskartta 1:1 000 000</csw:Value>
+            <csw:Value>Yleiskartta 1:4 500 000</csw:Value>
+            <csw:Value>Yleiskarttarasteri 1:1 000 000</csw:Value>
+            <csw:Value>Yleiskarttarasteri 1:2 000 000</csw:Value>
+            <csw:Value>Yleiskarttarasteri 1:4 500 000</csw:Value>
+            <csw:Value>Yleiskarttarasteri 1:8 000 000</csw:Value>
+            <csw:Value>Österbottens landskapsplan</csw:Value>
+        </csw:ListOfValues>
+    </csw:DomainValues>
+</csw:GetDomainResponse>

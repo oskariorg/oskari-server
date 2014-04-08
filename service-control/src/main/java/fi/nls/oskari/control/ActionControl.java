@@ -98,6 +98,21 @@ public class ActionControl {
 	}
 
     /**
+     * Convenient way to check if we have an implementation for the route registered
+     * @param action
+     * @return true if we have a handler registered for the route
+     */
+    public static boolean hasAction(final String action) {
+        if(action == null) {
+            return false;
+        }
+        if (actions.isEmpty()) {
+            addDefaultControls();
+        }
+        return actions.containsKey(action);
+    }
+
+    /**
      * Cleanup method. Calls teardown on all registered handlers.
      */
     public static void teardown() {

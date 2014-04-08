@@ -8,9 +8,11 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -183,7 +185,7 @@ public class OskariLayerWorker {
      * @param permissionsList    List of user publish permissions
      * @param editAccessList     List of user edit permissions
      */
-    private static JSONObject getPermissions(final User user, final String layerPermissionKey,
+    public static JSONObject getPermissions(final User user, final String layerPermissionKey,
                                              final Set<String> permissionsList, final Set<String> editAccessList) {
 
         final JSONObject permission = new JSONObject();
@@ -194,10 +196,10 @@ public class OskariLayerWorker {
             JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
         } else {
             for (Role role : user.getRoles()) {
-                if (editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (editAccessList != null && editAccessList.contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "edit", true);
                 }
-                if (permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
+                if (permissionsList != null && permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
                 }
             }

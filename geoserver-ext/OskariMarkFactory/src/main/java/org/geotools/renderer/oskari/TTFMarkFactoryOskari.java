@@ -16,36 +16,36 @@
  */
 package org.geotools.renderer.oskari;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.geotools.renderer.style.shape.ExplicitBoundsShape;
 import org.geotools.renderer.style.MarkFactory;
-import org.geotools.renderer.style.FontCache;
 import org.opengis.feature.Feature;
 import org.opengis.filter.expression.Expression;
 
 /**
  * This factory accepts mark paths in the <code>oskari://fontName#code</code>
- * format, where fontName is the name of a TrueType font installed in the
- * system, or a URL to a TTF file, and the code is the character code, which may
+ * format, where fontName is the filename without extension (.ttf is added automatically) of a TrueType font found in classpath,
+ * and the code is the character code, which may
  * be expressed in decimal, hexadecimal (e.g. <code>0x10</code>) octal (e.g.
  * <code>045</code>) form, as well as Unicode codes (e.g. <code>U+F054</code>
  * or <code>\uF054</code>).
  *
- * @author Andrea Aime - TOPP
+ * Its built on top of geotools TTFMarkFactory, but handles mark placement a bit differently.
+ * The main purpose is to have point markers with correct placement in the font file and NOT trying to
+ * determine placement using font size.
  *
- *
- *
+ * @author Matti Pulakka
+ * @author Sami Mäkinen
  *
  * @source $URL$
  */
@@ -57,6 +57,13 @@ public class TTFMarkFactoryOskari implements MarkFactory {
 
     private static FontRenderContext FONT_RENDER_CONTEXT = new FontRenderContext(
             new AffineTransform(), false, false);
+
+    // TODO: maybe use org.geotools.renderer.style.FontCache.getDefaultInstance().registerFont(); instead?
+    // need to check how font gets name with fontcache so we can use 'dot-markers' to get it back.
+    // in the meantime, using custom cache to avoid any conflicts
+    private Map<String, Font> fontCache = new HashMap<String, Font>();
+
+    private final String DEFAULT_FONT = "dot-markers";
 
     public Shape getShape(Graphics2D graphics, Expression symbolUrl, Feature feature)
             throws Exception {
@@ -76,11 +83,7 @@ public class TTFMarkFactoryOskari implements MarkFactory {
         String[] fontElements = markUrl.substring(9).split("#");
 
         // look up the font
-        Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/dot-markers.ttf"));
-        
-        if (font == null) {
-            throw new IllegalArgumentException("Unknown font " + fontElements[0]);
-        }
+        final Font font = getFont(fontElements[0]);
 
         // get the symbol number
         String code = fontElements[1];
@@ -88,15 +91,17 @@ public class TTFMarkFactoryOskari implements MarkFactory {
         char character;
         try {
             // see if a unicode escape sequence has been used
-            if (code.startsWith("U+") || code.startsWith("\\u")) 
+            if (code.startsWith("U+") || code.startsWith("\\u")) {
                 code = "0x" + code.substring(2);
+            }
             
             // this will handle most numeric formats like decimal, hex and octal
             character = (char) Integer.decode(code).intValue();
             
             // handle charmap code reporting issues 
-            if(!font.canDisplay(character))
+            if(!font.canDisplay(character)) {
                 character = (char) (0xF000 | character);
+            }
             
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
@@ -105,26 +110,12 @@ public class TTFMarkFactoryOskari implements MarkFactory {
 
         // build the shape out of the font
         GlyphVector textGlyphVector = font.createGlyphVector(FONT_RENDER_CONTEXT,
-                new char[] { (char) character });
-        float offset = font.getSize();
+                new char[] { character });
         Shape s = textGlyphVector.getOutline();
-        
-        // have the shape be centered in the origin, and sitting in a square of side 1
-        Rectangle2D bounds = s.getBounds2D();
-        
-        AffineTransform tx = new AffineTransform();
-        double max = Math.max(bounds.getWidth(), bounds.getHeight());
-        // all shapes are defined looking "upwards" (see ShapeMarkFactory or WellKnownMarkFactory)
-        // but the fonts ones are flipped to compensate for the fact the y coords grow from top
-        // to bottom on the screen. We have to flip the symbol so that it conforms to the
-        // other marks convention
-//      tx.scale(1 / max, -1 / max);
 
+        AffineTransform tx = new AffineTransform();
         double fontSize = font.getSize();
         tx.scale(1 / fontSize, -1 / fontSize);
-
-//      tx.translate(-bounds.getCenterX(), -bounds.getCenterY());
-
         tx.translate(-0.5, 0.5);
 
         ExplicitBoundsShape shape = new ExplicitBoundsShape(tx.createTransformedShape(s));
@@ -132,4 +123,21 @@ public class TTFMarkFactoryOskari implements MarkFactory {
         return shape;
     }
 
+    private Font getFont(final String name) throws Exception {
+
+        Font font = fontCache.get(name);
+        if(font != null) {
+            return font;
+        }
+        font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/" + name + ".ttf"));
+        if(font != null) {
+            fontCache.put(name, font);
+            return font;
+        }
+        if(!DEFAULT_FONT.equals(name)) {
+            LOGGER.warning("Couldn't find font with name: '" + name + "' - using default font instead: " + DEFAULT_FONT);
+            return getFont(DEFAULT_FONT);
+        }
+        throw new IllegalArgumentException("Unknown font " + name);
+    }
 }

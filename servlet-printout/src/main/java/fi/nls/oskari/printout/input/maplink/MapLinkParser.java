@@ -14,9 +14,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
+import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.input.content.PrintoutContentParser;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import fi.nls.oskari.printout.input.layers.MapLayerJSON;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
 import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolution;
 
 /**
@@ -28,6 +29,7 @@ public class MapLinkParser {
 	private static Log log = LogFactory.getLog(MapLinkParser.class);
 	private ScaleResolution sr;
 	private Integer zoomOffset = 0;
+	PrintoutContentParser contentParser = new PrintoutContentParser();
 
 	public MapLinkParser(ScaleResolution sr, Integer zoomOffset) {
 		this.sr = sr;
@@ -126,6 +128,17 @@ public class MapLinkParser {
 				mapLink.getMapLinkLayers().add(layerSelection);
 
 			}
+		}
+
+		if (mapLink != null) {
+			Map<String, ?> printoutInfo = (Map<String, ?>) obj.get("printout");
+
+			if (printoutInfo != null) {
+				PrintoutContent content = contentParser.parse(printoutInfo);
+
+				mapLink.setPrintoutContent(content);
+			}
+
 		}
 
 		return mapLink;
@@ -244,9 +257,13 @@ public class MapLinkParser {
 		return mapLink;
 	}
 
+	int maxWidth = 2560;
+	int maxHeight = 2560;
+	int minWidth = 128;
+	int minHeight = 128;
+	
 	public void validate(MapLink mapLink) throws IOException {
-		int maxWidth = 2560;
-		int maxHeight = 2560;
+		
 
 		Map<String, String> values = mapLink.getValues();
 
@@ -254,20 +271,32 @@ public class MapLinkParser {
 			if (Integer.valueOf(values.get("WIDTH"), 10) > maxWidth) {
 				throw new IOException("Too Large a map requested");
 			}
+			if (Integer.valueOf(values.get("WIDTH"), 10) < minWidth) {
+				throw new IOException("Too Small a map requested");
+			}
 		}
 		if (values.get("HEIGHT") != null) {
 			if (Integer.valueOf(values.get("HEIGHT"), 10) > maxHeight) {
 				throw new IOException("Too Large a map requested");
+			}
+			if (Integer.valueOf(values.get("HEIGHT"), 10) < minHeight) {
+				throw new IOException("Too Small a map requested");
 			}
 		}
 		if (values.get("SCALEDWIDTH") != null) {
 			if (Integer.valueOf(values.get("SCALEDWIDTH"), 10) > maxWidth) {
 				throw new IOException("Too Large a map requested");
 			}
+			if (Integer.valueOf(values.get("SCALEDWIDTH"), 10) < minWidth) {
+				throw new IOException("Too Small a map requested");
+			}
 		}
 		if (values.get("SCALEDHEIGHT") != null) {
 			if (Integer.valueOf(values.get("SCALEDHEIGHT"), 10) > maxHeight) {
 				throw new IOException("Too Large a map requested");
+			}
+			if (Integer.valueOf(values.get("SCALEDHEIGHT"), 10) < minHeight) {
+				throw new IOException("Too Small a map requested");
 			}
 		}
 

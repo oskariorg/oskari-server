@@ -10,7 +10,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 
   <typeHandler javaType="org.json.JSONObject" jdbcType="VARCHAR" callback="fi.nls.oskari.domain.utils.JSONTypeHandler"/>
   
-  <!-- Use liferay datasource -->
+  <!-- Use common oskari-map datasource -->
   <transactionManager type="JDBC" commitRequired="true">
     <dataSource type="JNDI">
       <property name="DataSource" value="java:/comp/env/jdbc/OskariPool" />

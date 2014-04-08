@@ -1,5 +1,79 @@
 # Release Notes
 
+## 1.19
+
+### control-base/Myplaces2Handler
+
+Now validates WFS-T from frontend a bit more thorougly. Also lets Guest users to insert features to a myplaces layer which is marked as "draw layer" ie. is published as public drawable layer.
+
+
+### External libs
+
+External libs are now handled as an in-project repository. The location of libs is defined in oskari-server/pom.xml as a repository.
+The files can still be installed into local repository as before but it's not mandatory.
+
+### WMTS layer support
+
+No longer formats style/styles array with hard coded "default". Instead uses oskari_maplayer tables style to create the JSON values.
+
+### Documentation
+
+Docs has been removed from oskari-server repository and they are now available in http://www.oskari.org/documentation and https://github.com/nls-oskari/oskari.org/tree/master/md/documentation along with frontend documentation
+
+### geoserver-ext/OskariMarkFactory (also affects transport WFS custom style)
+
+Fixed resource leaking when loading font. Tmp-files were being created recklessly, now caches the font after loading it.
+
+Also enabled the use of another font in classpath, previously font was hardcoded into dot-markers. Now the font specified in SLD is used with a fallback to dot-markers if specified font can't be loaded.
+
+### service-search
+
+SearchCriteria no longer has reference to MetadataCatalogueSearchCriteria. SearchCriteria.addParam() can be used to provide search channel additional criterias.
+
+SearchResultItem now has addValue() that can be used to provide calling component additional search result values.
+
+### service-base/Caching
+
+CacheManager is now available and can be used to provide simple in-memory caches. This will most likely be developed further to allow configurable custom cache implementations that can be used to wrap functionality used by caching libraries (similar to UserService and Logger).
+
+### servlet-map
+
+Jetty-maven-plugin is no longer started automatically on install step. To start jetty on install you can use profile jetty-profile:
+
+mvn clean install -Pjetty-profile
+
+### content-resources/DBHandler
+
+Setup-files can now refer to another setup-file. This removes much boilerplate for registering bundles and should make the files simpler.
+
+Myplaces trigger has been updated to do initial update timestamp on insert as well (thanks posiki).
+
+### Analysis functionality
+
+CreateAnalysisLayer action route now returns a proper analysislayer json (same as GetAnalysisLayersHandler)
+
+JSON for analysislayer is now created based on Analysis object with the help of AnalysisHelper. This will propably be refactored in the future to use the LayerJSONFormatter and the misleading AnalysisLayer class will propably be removed in favor of the Analysis class.
+
+AnalysisDataService refactored a bit and to 
+
+### control-base/PublishHandler
+
+Now handles publish permissions correctly (previously checked layer id for 'base_' prefix and used deprecated portti_layerclass db table).
+
+Now allows selected roles to publish maps with drawtools. Roles allowed to publish draw tools is configured with property "actionhandler.Publish.drawToolsRoles".
+
+### service-map/MyPlacesService
+
+Now has a method for creating myplaces layer as wmslayer (used in published maps)
+
+Now has a method for checking permissions based on category id/place id
+
+### control-base/MapfullHandler
+
+MapfullHandler now uses the MyPlacesService for creating json for myplaces layer.
+
+Now handles layers with non-numeric ids correctly (same fix as with PublishHandler and 'base_' prefix on layer name)
+
 ## 1.18.1
 
 ### control-base/PublishHandler

@@ -1,12 +1,6 @@
 package fi.mml.portti.service.db.permissions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.UniqueResourceName;
@@ -15,6 +9,8 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions> implements PermissionsService {		
@@ -64,29 +60,65 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			String resourceType, 
 			User user,
 			String permissionsType) {
-		long userId = user.getId();
-		log.debug("Getting resources with granted'", permissionsType, "' permissions to user '", 
-				userId,"' for resource '", resourceType, "'");
-		
+
+        // user id based permissions
+        long userId = user.getId();
+        log.debug("Getting resources with granted'", permissionsType, "' permissions to user '",
+                userId,"' for resource '", resourceType, "'");
 		List<String> userPermissions = 
 			getResourcesWithGrantedPermissions(
 				resourceType, String.valueOf(userId), Permissions.EXTERNAL_TYPE_USER, permissionsType);
 		
 		log.debug("Found", userPermissions.size(), "permissions given directly to user.");
-		
-		Set<String> groupPermissions = 
-			getResourcesWithGrantedPermissionsToRolesOfUser(
-				resourceType, user ,permissionsType);
-		
+
+        // user role based permissions
+        final Set<String> roleIds = new HashSet<String>(user.getRoles().size());
+        for(Role role : user.getRoles()) {
+            roleIds.add("" + role.getId());
+        }
+        final Set<String> groupPermissions =
+                getResourcesWithGrantedPermissions(
+                        resourceType, roleIds, Permissions.EXTERNAL_TYPE_ROLE, permissionsType);
 		log.debug("Found", groupPermissions.size(), "permissions given to roles that user has.");
 		
-		/* finally collect all together and sort */
-		userPermissions.addAll(groupPermissions);
-		List<String> resourceList = new ArrayList<String>(userPermissions);
+		// finally collect all together and sort
+		List<String> resourceList = new ArrayList<String>(userPermissions.size() + groupPermissions.size());
+        resourceList.addAll(userPermissions);
+        resourceList.addAll(groupPermissions);
+        // sort permissions
 		Collections.sort(resourceList);
 		
 		return resourceList;
 	}
+    private Set<String> getResourcesWithGrantedPermissions(
+            String resourceType,
+            Set<String> externalId,
+            String externalIdType,
+            String permissionsType) {
+
+        // declare sorted set
+        final Set<String> result = new TreeSet<String>();
+        if(externalId == null || externalId.isEmpty()) {
+            log.warn("Tried to get permissions without externalIds. ResourceType", resourceType, "Permission type", permissionsType, " ExternalIdType", externalIdType);
+            return result;
+        }
+
+        log.debug("Getting resources with granted", permissionsType, "permissions for resourceType", resourceType,
+                " with externalIdType", externalIdType, "and idList of", externalId);
+
+        final Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("resourceType", resourceType);
+        // ibatis couldn't handle a set param out of the box so wrapping it in list
+        // TODO: check if there is a way to use sets with ibatis
+        parameterMap.put("externalId", new ArrayList<String>(externalId));
+        parameterMap.put("externalType", externalIdType);
+        parameterMap.put("permission", permissionsType);
+
+        final List<String> permittedResources = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
+        result.addAll(permittedResources);
+
+        return result;
+    }
 	
 	public List<String> getResourcesWithGrantedPermissions(
 			String resourceType, 
@@ -94,114 +126,75 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
 			String externalIdType,
 			String permissionsType) {
 
-       log.debug("Getting resources with granted " + permissionsType + " permissions to externalId='" + externalId
-				+ "', externalIdType='" + externalIdType + "' for resource '" + resourceType + "'");
+        // wrap single id to a set for convenience
+        final Set<String> idList = new HashSet<String>(1);
+        idList.add(externalId);
 
-
-        Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType", resourceType);
-		parameterMap.put("externalId", externalId);
-		parameterMap.put("externalType", externalIdType);
-		parameterMap.put("permission", permissionsType);
-		
-		List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
-		List<String> resourceList = new ArrayList<String>();
-		
-		for (Map<String, String> resultMap : listOfMaps) {
-           resourceList.add(resultMap.get("resourceMapping"));
-		}
-		
-		Collections.sort(resourceList);
-		return resourceList;
+        final Set<String> sortedPermissions = getResourcesWithGrantedPermissions(resourceType, idList, externalIdType, permissionsType);
+        // TODO: change signature to Set instead of List so we can get rid of this
+        final List<String> results = new ArrayList<String>();
+        results.addAll(sortedPermissions);
+        return results;
 	}
-	
-	/*
-	 * Get permissions granted to roles to which the user belongs.
-	 */
-	private Set<String> getResourcesWithGrantedPermissionsToRolesOfUser(
-			String resourceType, 
-			User user, 
-			String permissionsType) {
-		Set<String> resourceSet = new HashSet<String>();
-		
-		for (Role role : user.getRoles()) {		
-			Map<String, String> parameterMap = new HashMap<String, String>();
-			parameterMap.put("resourceType", resourceType);
-			parameterMap.put("externalId", String.valueOf(role.getId()));
-			parameterMap.put("externalType", Permissions.EXTERNAL_TYPE_ROLE);
-			parameterMap.put("permission", permissionsType);
 
-         	List<Map<String, String>> listOfMaps = queryForList(getNameSpace() + ".findResourcesWithGrantedPermissions", parameterMap);
-
-				for (Map<String, String> resultMap : listOfMaps) {
-                String resourceMapping =  resultMap.get("resourceMapping");
-                if ("layerclass".equals(resourceType)) {
-                    resourceSet.add(resourceMapping.substring(4)); // TODO: fix this
-                } else {
-				    resourceSet.add(resourceMapping);
-                }
-			}
-		}
-		
-		return resourceSet;
-	}
-	
 	public List<Permissions> getResourcePermissions(UniqueResourceName uniqueResourceName, String externalIdType) {
-		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);		
-		//TODO: this
-		Map<String, String> parameterMap = new HashMap<String, String>();
+		log.debug("Getting " + externalIdType + " permissions to " + uniqueResourceName);
+        Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("resourceMapping", uniqueResourceName.getNamespace() +"+"+ uniqueResourceName.getName());
 		parameterMap.put("resourceType", uniqueResourceName.getType());
 		parameterMap.put("externalIdType", externalIdType);
-		
+
 		List<Map<String, Object>> listOfMaps = queryForList(getNameSpace() + ".findPermissionsOfResource", parameterMap);
-		
+
 		// KEY: permissionsId, VALUE: permissions
 		Map<Integer, Permissions> permissionsMap = new HashMap<Integer, Permissions>();		
-		
+
 		for (Map<String, Object> resultMap : listOfMaps) {
 			int permissionsId = (Integer) resultMap.get("id");			
 			Permissions p = permissionsMap.get(permissionsId);
 			
 			if (p == null) {
-				p = new Permissions();
-				p.setId(permissionsId);
-				p.setUniqueResourceName(new UniqueResourceName());
-				p.getUniqueResourceName().setName((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[0])); //TODO: fix this split is not good
-				p.getUniqueResourceName().setNamespace((String.valueOf(resultMap.get("resourceMapping")).split("\\+")[1]));
-				p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
-				p.setExternalId((String) resultMap.get("externalId"));
-				p.setExternalIdType((String) resultMap.get("externalType"));
-				permissionsMap.put(p.getId(), p);
-
-                // id, resource_mapping, resource_type, external_id,external_type
-
+                p = new Permissions();
+                p.setId(permissionsId);
+                p.setUniqueResourceName(new UniqueResourceName());
+                final String[] mapping = String.valueOf(resultMap.get("resourceMapping")).split("\\+");
+                p.getUniqueResourceName().setName(mapping[0]);
+                p.getUniqueResourceName().setNamespace(mapping[1]);
+                p.getUniqueResourceName().setType((String) resultMap.get("resourceType"));
+                p.setExternalId((String) resultMap.get("externalId"));
+                p.setExternalIdType((String) resultMap.get("externalIdType"));
+                permissionsMap.put(p.getId(), p);
 			}
 			
-			p.getGrantedPermissions().add((String) resultMap.get("permissionsType"));
+			p.getGrantedPermissions().add((String) resultMap.get("permissions"));
 		}
 		
 		List<Permissions> permissionsList = new ArrayList<Permissions>(permissionsMap.values());
 		Collections.sort(permissionsList);
 		return permissionsList;
 	}
-	
-
+    /**
+	 *   Use getPublishPermissions(String resourceType) instead.
+	 */
+    @Deprecated
     public Set<String> getPublishPermissions() {
+        return getPublishPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER);
+	}
+
+    public Set<String> getPublishPermissions(String resourceType) {
 
 		Map<String, String> parameterMap = new HashMap<String, String>();
-		parameterMap.put("resourceType",Permissions.RESOURCE_TYPE_MAP_LAYER);
+		parameterMap.put("resourceType",resourceType);
 		List<Map<String, Object>> publishPermissions = queryForList(getNameSpace() + ".findPublishPermissions", parameterMap);
-		
+
 		Set<String> permissions = new HashSet<String>();
-		
+
 		for (Map<String, Object> resultMap : publishPermissions) {
             permissions.add(resultMap.get("resourceMapping")+":"+resultMap.get("externalId") );
 		}
 
 		return permissions;
 	}
-
 
     public Set<String> getEditPermissions() {
 
@@ -271,7 +264,15 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         }
         return result;
     }
-    // Done
+
+    /**
+     * Deprecated! Base layers are no longer separated from other layers, use getPermissionsForLayers() instead.
+     * As such this method doesn't work correctly!
+     * @param layeridList
+     * @param permissionsType
+     * @return
+     */
+    @Deprecated
     public Map<Long, List<Permissions>> getPermissionsForBaseLayers(List<Long> layeridList, String permissionsType) {
         Map<Long, List<Permissions>> result = new HashMap<Long, List<Permissions>>();
 
@@ -406,4 +407,137 @@ public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions>
         
         return externalIds;
     }
+
+    /**
+     * Returns resource for id or null if not found
+     * @param id
+     * @return
+     */
+    private Resource getResource(final long id) {
+        final Resource resource = queryForObject(getNameSpace() + ".findResourceById", id);
+        log.debug("Resource:", resource);
+        return resource;
+    }
+
+    public Resource getResource(final String type, final String mapping) {
+        log.debug("Getting permissions for", type, " with mapping", mapping);
+
+        final Map<String, String> parameterMap = new HashMap<String, String>();
+        parameterMap.put("type", type);
+        parameterMap.put("mapping", mapping);
+
+        Resource resource = queryForObject(getNameSpace() + ".findResourceWithMapping", parameterMap);
+
+        if(resource == null) {
+            resource = new Resource();
+            resource.setMapping(mapping);
+            resource.setType(type);
+            log.info("Resource not found, returning empty object");
+        }
+        log.debug("Resource:", resource);
+        return resource;
+    }
+
+    public Resource findResource(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+
+        // try to find with id
+        if(resource.getId() != -1) {
+            // check mapping for existing by id
+            return getResource(resource.getId());
+        }
+        // try to find with mapping
+        final Resource dbRes = getResource(resource.getType(), resource.getMapping());
+        if(dbRes.getId() != -1) {
+            return dbRes;
+        }
+        return null;
+    }
+
+    public Resource saveResourcePermissions(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+        // ensure resource is in db
+        Resource res = findResource(resource);
+        if(res == null) {
+            res = createResourceRow(resource);
+        }
+        // double check we managed to insert or find
+        if(res == null || res.getId() == -1) {
+            log.error("Something went wrong with inserting the resource, can't find it in DB", resource);
+            return null;
+        }
+
+        // set up id for resource
+        resource.setId(res.getId());
+        // remove all previous permissions
+        removeResourcePermissions(resource);
+        // persist resource.getPermissions() to DB
+        for(Permission permission : resource.getPermissions()) {
+            insertPermission(resource, permission, false);
+        }
+        // return object through db query
+        return findResource(resource);
+    }
+
+    private void removeResourcePermissions(final Resource resource) {
+        if(resource == null || resource.getId() == -1) {
+            return;
+        }
+        log.debug("Deleting permissions for resource:", resource);
+        delete(getNameSpace() + ".deleteResourcePermissions", resource.getId());
+    }
+
+    private Resource createResourceRow(final Resource resource) {
+        if(resource == null) {
+            return null;
+        }
+
+        return createResourceRow(resource.getType(), resource.getMapping());
+    }
+    public void deleteResource(final Resource resource) {
+        removeResourcePermissions(resource);
+        log.debug("Deleting permissions for resource:", resource);
+        delete(getNameSpace() + ".deleteResource", resource.getId());
+    }
+
+    private Resource createResourceRow(final String type, final String mapping) {
+        log.debug("Creating resource row for type:", type, "mapping:", mapping);
+        Map<String, String> parameterResource = new HashMap<String, String>();
+        parameterResource.put("type", type);
+        parameterResource.put("mapping", mapping);
+
+        insert(getNameSpace() + ".createResource", parameterResource);
+        return getResource(type, mapping);
+    }
+
+    private boolean insertPermission(final Resource resource, final Permission permission) {
+        return insertPermission(resource, permission, true);
+    }
+    private boolean insertPermission(final Resource resource, final Permission permission, final boolean checkExisting) {
+        if(resource == null || permission == null || resource.getId() == -1) {
+            return false;
+        }
+
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("oskariResourceId", resource.getId());
+        paramMap.put("externalType", permission.getExternalType());
+        paramMap.put("permission", permission.getType());
+        paramMap.put("externalId", permission.getExternalId());
+
+        if(checkExisting) {
+            Integer permissionId = queryForObject(getNameSpace() + ".findPermission", paramMap);
+            if( permissionId != null) {
+                // exists
+                return true;
+            }
+        }
+
+        insert(getNameSpace() + ".insertPermission", paramMap);
+        return true;
+    }
+
 }

@@ -88,7 +88,7 @@ public class GetStatsTileHandler extends ActionHandler {
 
         StatsVisualization vis = getVisualization(params);
         if(vis == null) {
-            log.warn("Visualization couldn't be generated - parameters/db data missing", params);
+            log.info("Visualization couldn't be generated - parameters/db data missing", params);
         } else {
             // using prefetched values so we don't need to get them from db again on SLD action
             ajaxUrl.append("&");
