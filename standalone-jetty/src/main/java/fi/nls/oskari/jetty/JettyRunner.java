@@ -1,5 +1,6 @@
 package fi.nls.oskari.jetty;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -30,6 +31,11 @@ public class JettyRunner {
     }
 
     private static void setupDatabaseConnectionInContext(WebAppContext servletContext) throws NamingException {
-        new EnvEntry(servletContext, "jdbc/OskariPool", new Integer(1), true);
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://localhost:5433/oskaridb");
+        dataSource.setUsername("vagrant");
+        dataSource.setPassword("secret");
+        new EnvEntry(servletContext, "jdbc/OskariPool", dataSource, true);
     }
 }

@@ -1,5 +1,7 @@
 package fi.nls.oskari.jetty;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -16,16 +18,16 @@ public class DebugServlet extends HttpServlet {
         httpServletResponse.getWriter().println("<h1>DebugServlet in Oskari Standalone Jetty Server</h1>");
 
         try {
-            Integer entry = lookupJNDIEnvironmentEntry();
-            httpServletResponse.getWriter().println("<h2>JNDI Environment Entry: " + Integer.toString(entry) + "</h2>");
+            BasicDataSource dataSource = lookupJNDIDataSource();
+            httpServletResponse.getWriter().println("<h2>JNDI Data Source: " + dataSource.getUrl() + "</h2>");
         } catch (NamingException e) {
-            httpServletResponse.getWriter().println("<h2>JNDI Environment Entry undefined.</h2>");
+            httpServletResponse.getWriter().println("<h2>JNDI Data Source undefined.</h2>");
             e.printStackTrace();
         }
     }
 
-    private Integer lookupJNDIEnvironmentEntry() throws NamingException {
+    private BasicDataSource lookupJNDIDataSource() throws NamingException {
         InitialContext ic = new InitialContext();
-        return (Integer)ic.lookup("java:comp/env/jdbc/OskariPool");
+        return (BasicDataSource)ic.lookup("java:comp/env/jdbc/OskariPool");
     }
 }
