@@ -14,7 +14,8 @@ public class JettyRunner {
 
         Server server = JettyLauncher.launch(
                 PropertyUtil.getOptional("oskari.server.port", 2373),
-                PropertyUtil.get("oskari.client.version"));
+                PropertyUtil.get("oskari.client.version"),
+                PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"));
         server.start();
         server.join();
     }

@@ -24,13 +24,15 @@ import java.util.EnumSet;
 import java.util.HashMap;
 
 public class JettyLauncher {
-    public static Server launch(int serverPort, String oskariClientVersion) throws NamingException {
+    public static Server launch(int serverPort,
+                                String oskariClientVersion,
+                                String jndiDriverClassName) throws NamingException {
         Server server = new Server(serverPort);
-        server.setHandler(createServletContext(oskariClientVersion));
+        server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName));
         return server;
     }
 
-    private static WebAppContext createServletContext(String oskariClientVersion) throws NamingException {
+    private static WebAppContext createServletContext(String oskariClientVersion, String jndiDriverClassName) throws NamingException {
         WebAppContext servletContext = new WebAppContext();
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
@@ -43,7 +45,7 @@ public class JettyLauncher {
         servletContext.addServlet(DebugServlet.class, "/debug");
         servletContext.addServlet(createMapServlet(oskariClientVersion), "/");
 
-        setupDatabaseConnectionInContext(servletContext);
+        setupDatabaseConnectionInContext(servletContext, jndiDriverClassName);
 
         setupJaasInContext(servletContext);
 
@@ -74,9 +76,10 @@ public class JettyLauncher {
         return holder;
     }
 
-    private static void setupDatabaseConnectionInContext(WebAppContext servletContext) throws NamingException {
+    private static void setupDatabaseConnectionInContext(WebAppContext servletContext,
+                                                         String jndiDriverClassName) throws NamingException {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setDriverClassName(jndiDriverClassName);
         dataSource.setUrl("jdbc:postgresql://localhost:5433/oskaridb");
         dataSource.setUsername("vagrant");
         dataSource.setPassword("secret");
