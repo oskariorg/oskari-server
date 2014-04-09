@@ -1,9 +1,14 @@
 package fi.nls.oskari.jetty;
 
+import fi.nls.oskari.map.servlet.JaasAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
+import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -12,6 +17,8 @@ import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.naming.NamingException;
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
@@ -35,6 +42,9 @@ public class JettyRunner {
         servletContext.addServlet(createMapServlet(), "/");
 
         setupDatabaseConnectionInContext(servletContext);
+
+        servletContext.setSecurityHandler(createJaasSecurityHandler());
+        servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
 
         return servletContext;
     }
@@ -65,5 +75,18 @@ public class JettyRunner {
         dataSource.setUsername("vagrant");
         dataSource.setPassword("secret");
         new EnvEntry(servletContext, "jdbc/OskariPool", dataSource, true);
+    }
+
+    private static SecurityHandler createJaasSecurityHandler() {
+        System.setProperty("java.security.auth.login.config", "src/main/resources/jndi-login.conf");
+
+        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+        JAASLoginService loginService = new JAASLoginService();
+        loginService.setName("OskariRealm");
+        loginService.setLoginModuleName("oskariLoginModule");
+        securityHandler.setLoginService(loginService);
+        securityHandler.setAuthenticator(new FormAuthenticator("/", "/?loginState=failed", true));
+        securityHandler.setRealmName("OskariRealm");
+        return securityHandler;
     }
 }
