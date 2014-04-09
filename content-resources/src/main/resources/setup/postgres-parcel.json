@@ -3,6 +3,10 @@
         "00-create-tables.sql",
         "create-preparcel-tables.sql"
     ],
+    "setup" : [
+        "postgres-jaas-users",
+        "postgres-users"
+    ],
     "bundles" : {
         "framework" : [
             "001-openlayers-default-theme.sql",
@@ -30,7 +34,7 @@
         ],
         "catalogue" : [
             "metadataflyout.sql",
-            "metadatacatalogue.sql",
+            "metadatacatalogue.sql"
         ]
     },
     "views" : [
@@ -44,6 +48,7 @@
         "nlsfi-orthophoto-map-wmtslayer.sql",
         "nlsfi-topographic-map-wmtslayer.sql",
         "nlsfi-cadastre-boundaries-map-wmtslayer.sql",
-        "nlsfi-cadastre-unit-ids-map-wmtslayer.sql"
+        "nlsfi-cadastre-unit-ids-map-wmtslayer.sql",
+        "examplePermissions.sql"
    ]
 }
