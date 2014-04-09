@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <wfs:Insert>
+        <feature:categories xmlns:feature="http://www.oskari.org">
+            <feature:category_name>My Maplayer</feature:category_name>
+            <feature:default>true</feature:default>
+            <feature:stroke_width>1</feature:stroke_width>
+            <feature:stroke_dasharray></feature:stroke_dasharray>
+            <feature:stroke_linecap>0</feature:stroke_linecap>
+            <feature:stroke_linejoin>0</feature:stroke_linejoin>
+            <feature:stroke_color>#3233ff</feature:stroke_color>
+            <feature:border_width>1</feature:border_width>
+            <feature:border_dasharray></feature:border_dasharray>
+            <feature:border_linejoin>0</feature:border_linejoin>
+            <feature:border_color>#000000</feature:border_color>
+            <feature:fill_color>#ffde00</feature:fill_color>
+            <feature:fill_pattern>-1</feature:fill_pattern>
+            <feature:dot_color>#000000</feature:dot_color>
+            <feature:dot_size>3</feature:dot_size>
+            <feature:dot_shape>1</feature:dot_shape>
+            <feature:uuid>dummy uuid not matching users</feature:uuid>
+        </feature:categories>
+    </wfs:Insert>
+</wfs:Transaction>
