@@ -18,7 +18,8 @@ public class JettyRunner {
                 PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"),
                 PropertyUtil.get("db.jndi.url", "jdbc:postgresql://localhost:5432/oskaridb"),
                 PropertyUtil.get("db.jndi.username"),
-                PropertyUtil.get("db.jndi.password"));
+                PropertyUtil.get("db.jndi.password"),
+                PropertyUtil.get("db.jndi.name", "jdbc/OskariPool"));
         server.start();
         server.join();
     }

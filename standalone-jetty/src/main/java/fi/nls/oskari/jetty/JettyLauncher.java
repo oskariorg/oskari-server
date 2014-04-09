@@ -29,9 +29,10 @@ public class JettyLauncher {
                                 String jndiDriverClassName,
                                 String jndiDbUrl,
                                 String jndiDbUsername,
-                                String jndiDbPassword) throws NamingException {
+                                String jndiDbPassword,
+                                String jndiDbPoolName) throws NamingException {
         Server server = new Server(serverPort);
-        server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword));
+        server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword, jndiDbPoolName));
         return server;
     }
 
@@ -39,7 +40,8 @@ public class JettyLauncher {
                                                       String jndiDriverClassName,
                                                       String jndiDbUrl,
                                                       String jndiDbUsername,
-                                                      String jndiDbPassword) throws NamingException {
+                                                      String jndiDbPassword,
+                                                      String jndiDbPoolName) throws NamingException {
         WebAppContext servletContext = new WebAppContext();
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
@@ -52,15 +54,15 @@ public class JettyLauncher {
         servletContext.addServlet(DebugServlet.class, "/debug");
         servletContext.addServlet(createMapServlet(oskariClientVersion), "/");
 
-        setupDatabaseConnectionInContext(servletContext, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword);
+        setupDatabaseConnectionInContext(servletContext, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword, jndiDbPoolName);
 
-        setupJaasInContext(servletContext);
+        setupJaasInContext(servletContext, jndiDbPoolName);
 
         return servletContext;
     }
 
-    private static void setupJaasInContext(WebAppContext servletContext) {
-        Configuration.setConfiguration(new JNDILoginConfiguration());
+    private static void setupJaasInContext(WebAppContext servletContext, String jndiDbPoolName) {
+        Configuration.setConfiguration(new JNDILoginConfiguration(jndiDbPoolName));
         servletContext.setSecurityHandler(createJaasSecurityHandler());
         servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
     }
@@ -87,13 +89,14 @@ public class JettyLauncher {
                                                          String jndiDriverClassName,
                                                          String jndiDbUrl,
                                                          String jndiDbUsername,
-                                                         String jndiDbPassword) throws NamingException {
+                                                         String jndiDbPassword,
+                                                         String jndiDbPoolName) throws NamingException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(jndiDriverClassName);
         dataSource.setUrl(jndiDbUrl);
         dataSource.setUsername(jndiDbUsername);
         dataSource.setPassword(jndiDbPassword);
-        new EnvEntry(servletContext, "jdbc/OskariPool", dataSource, true);
+        new EnvEntry(servletContext, jndiDbPoolName, dataSource, true);
     }
 
     private static SecurityHandler createJaasSecurityHandler() {
@@ -108,11 +111,17 @@ public class JettyLauncher {
     }
 
     private static class JNDILoginConfiguration extends Configuration {
+        private final String jndiDbPoolName;
+
+        public JNDILoginConfiguration(String jndiDbPoolName) {
+            this.jndiDbPoolName = jndiDbPoolName;
+        }
+
         @Override
         public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
             HashMap<String, String> loginModuleOptions = new HashMap<String, String>();
             loginModuleOptions.put("debug", "true");
-            loginModuleOptions.put("dbJNDIName", "jdbc/OskariPool");
+            loginModuleOptions.put("dbJNDIName", jndiDbPoolName);
             loginModuleOptions.put("userTable", "oskari_jaas_users");
             loginModuleOptions.put("userField", "login");
             loginModuleOptions.put("credentialField", "password");
