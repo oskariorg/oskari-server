@@ -17,8 +17,11 @@ import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.naming.NamingException;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
 import javax.servlet.DispatcherType;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
@@ -43,10 +46,15 @@ public class JettyRunner {
 
         setupDatabaseConnectionInContext(servletContext);
 
-        servletContext.setSecurityHandler(createJaasSecurityHandler());
-        servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
+        setupJaasInContext(servletContext);
 
         return servletContext;
+    }
+
+    private static void setupJaasInContext(WebAppContext servletContext) {
+        Configuration.setConfiguration(new JNDILoginConfiguration());
+        servletContext.setSecurityHandler(createJaasSecurityHandler());
+        servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
     }
 
     private static Resource createResourceCollection() {
@@ -78,8 +86,6 @@ public class JettyRunner {
     }
 
     private static SecurityHandler createJaasSecurityHandler() {
-        System.setProperty("java.security.auth.login.config", "src/main/resources/jndi-login.conf");
-
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         JAASLoginService loginService = new JAASLoginService();
         loginService.setName("OskariRealm");
@@ -88,5 +94,25 @@ public class JettyRunner {
         securityHandler.setAuthenticator(new FormAuthenticator("/", "/?loginState=failed", true));
         securityHandler.setRealmName("OskariRealm");
         return securityHandler;
+    }
+
+    private static class JNDILoginConfiguration extends Configuration {
+        @Override
+        public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
+            HashMap<String, String> loginModuleOptions = new HashMap<String, String>();
+            loginModuleOptions.put("debug", "true");
+            loginModuleOptions.put("dbJNDIName", "jdbc/OskariPool");
+            loginModuleOptions.put("userTable", "oskari_jaas_users");
+            loginModuleOptions.put("userField", "login");
+            loginModuleOptions.put("credentialField", "password");
+            loginModuleOptions.put("userRoleTable", "oskari_jaas_roles");
+            loginModuleOptions.put("userRoleUserField", "login");
+            loginModuleOptions.put("userRoleRoleField", "role");
+
+            return new AppConfigurationEntry[] {
+                    new AppConfigurationEntry("org.eclipse.jetty.jaas.spi.DataSourceLoginModule",
+                            AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, loginModuleOptions)
+            };
+        }
     }
 }
