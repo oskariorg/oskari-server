@@ -16,7 +16,9 @@ public class JettyRunner {
                 PropertyUtil.getOptional("oskari.server.port", 2373),
                 PropertyUtil.get("oskari.client.version"),
                 PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"),
-                PropertyUtil.get("db.jndi.url", "jdbc:postgresql://localhost:5432/oskaridb"));
+                PropertyUtil.get("db.jndi.url", "jdbc:postgresql://localhost:5432/oskaridb"),
+                PropertyUtil.get("db.jndi.username"),
+                PropertyUtil.get("db.jndi.password"));
         server.start();
         server.join();
     }

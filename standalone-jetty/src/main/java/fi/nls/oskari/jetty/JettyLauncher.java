@@ -27,13 +27,19 @@ public class JettyLauncher {
     public static Server launch(int serverPort,
                                 String oskariClientVersion,
                                 String jndiDriverClassName,
-                                String jndiDbUrl) throws NamingException {
+                                String jndiDbUrl,
+                                String jndiDbUsername,
+                                String jndiDbPassword) throws NamingException {
         Server server = new Server(serverPort);
-        server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl));
+        server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword));
         return server;
     }
 
-    private static WebAppContext createServletContext(String oskariClientVersion, String jndiDriverClassName, String jndiDbUrl) throws NamingException {
+    private static WebAppContext createServletContext(String oskariClientVersion,
+                                                      String jndiDriverClassName,
+                                                      String jndiDbUrl,
+                                                      String jndiDbUsername,
+                                                      String jndiDbPassword) throws NamingException {
         WebAppContext servletContext = new WebAppContext();
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
@@ -46,7 +52,7 @@ public class JettyLauncher {
         servletContext.addServlet(DebugServlet.class, "/debug");
         servletContext.addServlet(createMapServlet(oskariClientVersion), "/");
 
-        setupDatabaseConnectionInContext(servletContext, jndiDriverClassName, jndiDbUrl);
+        setupDatabaseConnectionInContext(servletContext, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword);
 
         setupJaasInContext(servletContext);
 
@@ -79,12 +85,14 @@ public class JettyLauncher {
 
     private static void setupDatabaseConnectionInContext(WebAppContext servletContext,
                                                          String jndiDriverClassName,
-                                                         String jndiDbUrl) throws NamingException {
+                                                         String jndiDbUrl,
+                                                         String jndiDbUsername,
+                                                         String jndiDbPassword) throws NamingException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(jndiDriverClassName);
         dataSource.setUrl(jndiDbUrl);
-        dataSource.setUsername("vagrant");
-        dataSource.setPassword("secret");
+        dataSource.setUsername(jndiDbUsername);
+        dataSource.setPassword(jndiDbPassword);
         new EnvEntry(servletContext, "jdbc/OskariPool", dataSource, true);
     }
 
