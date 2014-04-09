@@ -2,6 +2,8 @@ package fi.nls.oskari.jetty;
 
 import fi.nls.oskari.map.servlet.JaasAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.jaas.JAASLoginService;
@@ -20,15 +22,27 @@ import javax.naming.NamingException;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.servlet.DispatcherType;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
-        Server server = new Server(2373);
+        addProperties("/standalone.properties");
+
+        Server server = new Server(PropertyUtil.getOptional("oskari.server.port", 2373));
         server.setHandler(createServletContext());
         server.start();
         server.join();
+    }
+
+    private static void addProperties(String propertiesFile) throws IOException, DuplicateException {
+        Properties properties = new Properties();
+        InputStream inputStream = JettyRunner.class.getResourceAsStream(propertiesFile);
+        properties.load(inputStream);
+        PropertyUtil.addProperties(properties);
     }
 
     private static WebAppContext createServletContext() throws NamingException {
@@ -71,8 +85,7 @@ public class JettyRunner {
 
     private static ServletHolder createMapServlet() {
         ServletHolder holder = new ServletHolder(MapFullServlet.class);
-        // TODO: Read oskari.client.version from properties and set to init parameter
-        holder.setInitParameter("version", "ADD_VERSION_NUMBER_HERE");
+        holder.setInitParameter("version", PropertyUtil.get("oskari.client.version"));
         return holder;
     }
 
