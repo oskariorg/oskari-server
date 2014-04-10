@@ -236,8 +236,13 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
+            <artifactId>feature-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>OskariMarkFactory</artifactId>

@@ -129,6 +129,11 @@
 				<artifactId>oskari-OGC</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>fi.nls.oskari</groupId>
+				<artifactId>feature-engine</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>fi.mml</groupId>
@@ -501,6 +506,9 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
+        <module>feature-engine</module>
+        <module>geoserver-ext/OskariMarkFactory</module>
+        <module>transport</module>
     </modules>
 
 </project>

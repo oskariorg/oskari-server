@@ -78,7 +78,7 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                 }
 
                 // set testing location
-                Location location = new Location();
+                /*Location location = new Location();
                 location.setSrs(layer.getSRSName());
                 location.setBbox(layer.getTestLocation());
                 location.setZoom(layer.getTestZoom());
@@ -153,6 +153,7 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                 JSONHelper.putValue(root, "schema", schema);
                 JSONHelper.putValue(root, "status", "ok");
                 JedisManager.publish(SCHEMA_CHANNEL, root.toString());
+                */
             }
         }
     }

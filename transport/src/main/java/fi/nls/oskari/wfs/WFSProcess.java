@@ -15,6 +15,8 @@ import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.List;
 
+import fi.nls.oskari.work.OWSMapLayerJob.RequestResponse;
+
 public class WFSProcess {
     private static final Logger log = LogFactory.getLogger(WFSProcess.class);
 
@@ -56,14 +58,17 @@ public class WFSProcess {
         }
 
         // make request
-        BufferedReader res = WFSMapLayerJob.request(processType, layer, store, bounds, transformService);
+        // TODO transportService == null
+        WFSMapLayerJob job = new WFSMapLayerJob(null, processType, store, layerId);
+        
+        RequestResponse res = job.request(processType, layer, store, bounds, transformService);
         if(res == null) {
             log.warn("Request failed for layer", layer.getLayerId());
             return null;
         }
 
         // parse response
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSMapLayerJob.response(layer, res);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> features = job.response(layer, res);
         if(features == null || features.size() == 0) {
             log.warn("No features", layer.getLayerId());
             return null;

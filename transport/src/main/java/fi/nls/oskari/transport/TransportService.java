@@ -29,7 +29,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.work.Job;
 import fi.nls.oskari.work.JobQueue;
+import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.WFSMapLayerJob;
+import fi.nls.oskari.work.fe.FEMapLayerJob;
 
 /**
  * Handles all incoming requests (channels) and manages Job queues
@@ -41,7 +43,7 @@ public class TransportService extends AbstractService {
         // Wanting to use (X,Y) order always (not flip when transforming for
         // example from EPSG:3067 to EPSG:4326
         // http://docs.geotools.org/latest/userguide/library/referencing/order.html
-        System.setProperty("org.geotools.referencing.forceXY", "true");
+        // System.setProperty("org.geotools.referencing.forceXY", "true");
 
         // populate properties before initializing logger since logger
         // implementation is configured in properties
@@ -393,7 +395,7 @@ public class TransportService extends AbstractService {
      * @param layerId
      */
     private void initMapLayerJob(SessionStore store, String layerId) {
-        Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+        Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
         jobs.remove(job);
         jobs.add(job);
     }
@@ -423,7 +425,7 @@ public class TransportService extends AbstractService {
         String layerId = layer.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
         if (store.containsLayer(layerId)) {
             // first remove from jobs then from store
-            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
 
             store.removeLayer(layerId);
@@ -480,7 +482,7 @@ public class TransportService extends AbstractService {
         Layer layer = store.getLayers().get(layerId);
         if(layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
-            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
             jobs.add(job);
         }
@@ -531,7 +533,7 @@ public class TransportService extends AbstractService {
                 this.save(store);
                 if(tmpLayer.isVisible()) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-                    Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
+                    Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
                     jobs.remove(job);
                     jobs.add(job);
                 }
@@ -635,7 +637,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -660,7 +662,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -691,7 +693,7 @@ public class TransportService extends AbstractService {
 	    		this.save(store);
 	    		if(layerVisible) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-		    		Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+		    		Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
 		        	jobs.remove(job);
 		        	jobs.add(job);
 	    		}
@@ -732,7 +734,7 @@ public class TransportService extends AbstractService {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
             	// job without feature sending
-    			Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
+    			Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
 	        	jobs.remove(job);
 	        	jobs.add(job);
     		}
@@ -804,4 +806,63 @@ public class TransportService extends AbstractService {
             }
         }
     }
+    
+    /**
+     * Creates a new runnable job with own Jedis instance
+     * 
+     * Parameters define client's service (communication channel), session and
+     * layer's id. Sends all resources that the layer configuration allows.
+     * 
+     * @param service
+     * @param store
+     * @param layerId
+     * @return
+     */
+    public Job createOWSMapLayerJob(TransportService service, OWSMapLayerJob.Type type,
+            SessionStore store, String layerId) {
+        
+        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+        
+        Job job;
+        if (layer.getCustomParserType() != null && layer.getCustomParserType().equals("oskari-feature-engine") ) {
+            job = new FEMapLayerJob(service, type, store, layerId);
+        } else {
+            job = new WFSMapLayerJob(service, type, store, layerId);
+        }
+        return job;
+    }
+
+    /**
+     * Creates a new runnable job with own Jedis instance
+     * 
+     * Parameters define client's service (communication channel), session and
+     * layer's id. Also sets resources that will be sent if the layer
+     * configuration allows.
+     * 
+     * @param service
+     * @param store
+     * @param layerId
+     * @param reqSendFeatures
+     * @param reqSendImage
+     * @param reqSendHighlight
+     */
+    public Job createOWSMapLayerJob(TransportService service, OWSMapLayerJob.Type type,
+            SessionStore store, String layerId, boolean reqSendFeatures,
+            boolean reqSendImage, boolean reqSendHighlight) {
+        
+        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+        
+        Job job;
+        if (layer.getCustomParserType() != null && layer.getCustomParserType().equals("oskari-feature-engine") ) {
+            job = new FEMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+        } else {
+            job = new WFSMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+
+        }
+        return job;
+
+    }
+
 }

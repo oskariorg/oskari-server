@@ -120,6 +120,7 @@ public class WFSLayerStore {
     private Map<String, Double> tileBuffer;
     private String WMSLayerId;
     private boolean customParser;
+    private String customParserType;
     private List<Double> testLocation;
     private int testZoom;
 
@@ -709,6 +710,10 @@ public class WFSLayerStore {
     public boolean isCustomParser() {
         return customParser;
     }
+    
+    public String getCustomParserType() {
+        return customParserType;
+    }
 
     /**
      * Sets if custom parsed
@@ -720,6 +725,7 @@ public class WFSLayerStore {
             this.customParser = true;
         else
             this.customParser = false;
+        customParserType =customParser; 
     }
 
     /**
