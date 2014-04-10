@@ -2,6 +2,16 @@
 
 ## 1.19
 
+### control-base/Myplaces2Handler
+
+Now validates WFS-T from frontend a bit more thorougly. Also lets Guest users to insert features to a myplaces layer which is marked as "draw layer" ie. is published as public drawable layer.
+
+
+### External libs
+
+External libs are now handled as an in-project repository. The location of libs is defined in oskari-server/pom.xml as a repository.
+The files can still be installed into local repository as before but it's not mandatory.
+
 ### WMTS layer support
 
 No longer formats style/styles array with hard coded "default". Instead uses oskari_maplayer tables style to create the JSON values.
@@ -50,9 +60,13 @@ AnalysisDataService refactored a bit and to
 
 Now handles publish permissions correctly (previously checked layer id for 'base_' prefix and used deprecated portti_layerclass db table).
 
+Now allows selected roles to publish maps with drawtools. Roles allowed to publish draw tools is configured with property "actionhandler.Publish.drawToolsRoles".
+
 ### service-map/MyPlacesService
 
 Now has a method for creating myplaces layer as wmslayer (used in published maps)
+
+Now has a method for checking permissions based on category id/place id
 
 ### control-base/MapfullHandler
 

@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>oskari-parent</artifactId>
-	<version>1.19-SNAPSHOT</version>
+	<version>1.20-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Oskari parent POM</name>
@@ -438,8 +438,13 @@
 			</plugin>
 		</plugins>
 	</build>
- 
  	<repositories>
+ 		<!-- In Project repository -->
+		<repository>
+		    <id>in-project</id>
+		    <name>In Project Repo</name>
+		    <url>file://${project.basedir}/../external-libs/</url>
+		</repository>
 	    <repository>
 	      <id>central</id>
 	      <name>Central Repository</name>
