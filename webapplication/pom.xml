@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.nls.oskari</groupId>
+        <artifactId>oskari-parent</artifactId>
+        <version>1.19-SNAPSHOT</version>
+    </parent>
+
+    <groupId>fi.nls.oskari</groupId>
+    <artifactId>webapplication</artifactId>
+    <packaging>war</packaging>
+    <name>Oskari Web Application</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.1.0.M0</version>
+
+                <configuration>
+                    <httpConnector>
+                        <port>2373</port>
+                    </httpConnector>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>jetty-run</id>
+                        <phase>install</phase>
+                        <goals><goal>run-exploded</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
