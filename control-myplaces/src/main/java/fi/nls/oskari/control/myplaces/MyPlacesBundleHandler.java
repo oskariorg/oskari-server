@@ -28,7 +28,6 @@ import java.util.*;
 public class MyPlacesBundleHandler extends ActionHandler {
 
     private final static Logger log = LogFactory.getLogger(MyPlacesBundleHandler.class);
-    private final static GeoServerProxyService proxyService = new GeoServerProxyService();
     private static final String TAG_TRANSACTION = "Transaction";
     private static final String TAG_GETFEATURE = "GetFeature";
     private static final String TAG_INSERT = "Insert";
@@ -45,14 +44,29 @@ public class MyPlacesBundleHandler extends ActionHandler {
 
     private AXIOMXPath XPATH_MODIFY_FEATURE = null;
     private AXIOMXPath XPATH_GETFEATURE_PROPERTY_FILTER = null;
-    private final MyPlacesService service = new MyPlacesServiceIbatisImpl();
+
+    private MyPlacesService service = null;
+    private static GeoServerProxyService proxyService = null;
+
     private final String MY_PLACES_NAMESPACE = PropertyUtil.get("myplaces.xmlns", "http://www.oskari.org");
 
     private final Set<String> ALLOWED_MAIN_LEVEL_TAGS = new HashSet<String>();
 
+    public void setMyPlacesService(final MyPlacesService service) {
+        this.service = service;
+    }
+    public void setGeoServerProxyService(final GeoServerProxyService proxyService) {
+        this.proxyService = proxyService;
+    }
     @Override
     public void init() {
         super.init();
+        if(service == null) {
+            setMyPlacesService(new MyPlacesServiceIbatisImpl());
+        }
+        if(proxyService == null) {
+            setGeoServerProxyService(new GeoServerProxyService());
+        }
         ALLOWED_MAIN_LEVEL_TAGS.add("GetFeature");
         ALLOWED_MAIN_LEVEL_TAGS.add("Transaction");
         try {
@@ -108,7 +122,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
 
         final String methodName = request.getMethod();
         req.setMethod(methodName);
-        if (methodName.equals("POST")) {
+        if ("POST".equals(methodName)) {
             for (Enumeration<String> e = request.getHeaderNames(); e
                     .hasMoreElements();) {
                 final String key = e.nextElement().toString();

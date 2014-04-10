@@ -11,7 +11,8 @@ import org.jaxen.SimpleNamespaceContext;
 import java.util.Iterator;
 
 /**
- * Helper class for parsing search results for MetadataCatalogue
+ * Helper class for parsing search results for MetadataCatalogue:
+ *
  */
 public class MetadataCatalogueResultParser {
 
@@ -35,7 +36,25 @@ public class MetadataCatalogueResultParser {
         NAMESPACE_CTX.addNamespace("gmd", "http://www.isotc211.org/2005/gmd");
         NAMESPACE_CTX.addNamespace("gco", "http://www.isotc211.org/2005/gco");
         NAMESPACE_CTX.addNamespace("srv", "http://www.isotc211.org/2005/srv");
+/*
+gmd:identificationInfo/gmd:MD_DataIdentification
+  -> gmd:citation/gmd:CI_Citation/gmd:title = title (gco:CharacterString)
+  -> gmd:abstract = description (gco:CharacterString)
+  -> gmd:graphicOverview/gmd:MD_BrowseGraphic/gmd:fileName(position = last) = setContentURL (gco:CharacterString)
+  -> gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName = MetadataField.RESULT_KEY_ORGANIZATION (gco:CharacterString)
+  -> gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox = WestBoundLongitude jne (gco:Decimal)
 
+gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource
+  -> gmd:linkage = setGmdURL (gmd:URL)
+  -> set downloadable (no example, skipped)
+
+gmd:fileIdentifier = uuid (gco:CharacterString)
+  -> setResourceId(uuid)
+  -> setActionURL(fetchPageURLs.get(locale) + uuid);
+  -> setContentURL(imageURLs.get(locale) + "uuid=" + uuid + "&fname=" + imageFileName) IF imageurl doesn't start with http://
+
+setResourceNameSpace(serverURL)
+ */
         XPATH_IDENTIFICATION = getXPath("./gmd:identificationInfo/*[local-name()='MD_DataIdentification' or local-name()='SV_ServiceIdentification']");
 
         XPATH_IDENTIFICATION_TITLE = getXPath("./gmd:citation/gmd:CI_Citation/gmd:title/gco:CharacterString");

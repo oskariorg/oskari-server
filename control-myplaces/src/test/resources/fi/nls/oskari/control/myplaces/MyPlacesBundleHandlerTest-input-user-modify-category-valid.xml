@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <wfs:Update typeName="feature:categories" xmlns:feature="http://www.oskari.org">
+        <wfs:Property>
+            <wfs:Name>category_name</wfs:Name>
+            <wfs:Value>layer name here</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>default</wfs:Name>
+            <wfs:Value>false</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>stroke_width</wfs:Name>
+            <wfs:Value>1</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>stroke_dasharray</wfs:Name>
+            <wfs:Value></wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>stroke_linecap</wfs:Name>
+            <wfs:Value>butt</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>stroke_linejoin</wfs:Name>
+            <wfs:Value>mitre</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>stroke_color</wfs:Name>
+            <wfs:Value>#3233ff</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>border_width</wfs:Name>
+            <wfs:Value>1</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>border_dasharray</wfs:Name>
+            <wfs:Value></wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>border_linejoin</wfs:Name>
+            <wfs:Value>mitre</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>border_color</wfs:Name>
+            <wfs:Value>#000000</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>fill_color</wfs:Name>
+            <wfs:Value>#ffde00</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>fill_pattern</wfs:Name>
+            <wfs:Value>-1</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>dot_color</wfs:Name>
+            <wfs:Value>#000000</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>dot_size</wfs:Name>
+            <wfs:Value>3</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>dot_shape</wfs:Name>
+            <wfs:Value>1</wfs:Value>
+        </wfs:Property>
+        <wfs:Property>
+            <wfs:Name>uuid</wfs:Name>
+            <wfs:Value>my uuid is secrets</wfs:Value>
+        </wfs:Property>
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+            <ogc:FeatureId fid="categories.1"></ogc:FeatureId>
+        </ogc:Filter>
+    </wfs:Update>
+</wfs:Transaction>
