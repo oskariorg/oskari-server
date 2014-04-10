@@ -78,11 +78,13 @@ public class MetadataCatalogueChannelSearchServiceTest {
 
     @Test
     public void testMDDataIdentification() throws Exception {
-
         StAXOMBuilder builder = getTestResponse("MD_DataIdentification.xml");
         assertTrue("We should have a results object", builder != null);
 
+        final long start = System.currentTimeMillis();
         ChannelSearchResult channelResult =  getSearchChannel().parseResults(builder, getSearchCriteria().getLocale());
+        final long end = System.currentTimeMillis();
+        System.out.println("Parse time:" + (end-start) + "ms");
         List<SearchResultItem> results = channelResult.getSearchResultItems();
         // enable later...
         assertTrue("Result count should match: " + results.size() + "/" + 1, results.size() == 1);
@@ -105,6 +107,31 @@ public class MetadataCatalogueChannelSearchServiceTest {
             assertEquals("Content URL mismatch", "imageURL.fiuuid=UUIDUUID-UUID-UUID-UUID-UUIDUUIDUUID&fname=taajama_vammala.png", result.getContentURL());
             assertEquals("UUID mismatch", "UUIDUUID-UUID-UUID-UUID-UUIDUUIDUUID", result.getResourceId());
             assertEquals("Resource Namespace mismatch", SERVER_URL, result.getResourceNameSpace());
+        }
+    }
+
+    @Test
+    public void testLocalizedTitle() throws Exception {
+
+        StAXOMBuilder builderSV = getTestResponse("MD_DataIdentification.xml");
+        StAXOMBuilder builderFI = getTestResponse("MD_DataIdentification.xml");
+
+        ChannelSearchResult channelResultSV =  getSearchChannel().parseResults(builderSV, "sv");
+        ChannelSearchResult channelResultFI =  getSearchChannel().parseResults(builderFI, "fi");
+        List<SearchResultItem> resultsSV = channelResultSV.getSearchResultItems();
+        List<SearchResultItem> resultsFI = channelResultFI.getSearchResultItems();
+
+        assertEquals("Results size should be same:", resultsFI.size(), resultsSV.size());
+
+        for (int i = 0, j = resultsFI.size(); i < j; i++) {
+
+            SearchResultItem itemSV = resultsSV.get(i);
+            SearchResultItem itemFI = resultsFI.get(i);
+            assertTrue("Action url should be .fi", itemFI.getActionURL().startsWith("fetchPageURL.fi"));
+            assertTrue("Action url should be .sv", itemSV.getActionURL().startsWith("fetchPageURL.sv"));
+
+            assertEquals("Default language organization should match", "Title", itemFI.getTitle());
+            assertEquals("SV language organization should match", "Title SV", itemSV.getTitle());
         }
     }
 

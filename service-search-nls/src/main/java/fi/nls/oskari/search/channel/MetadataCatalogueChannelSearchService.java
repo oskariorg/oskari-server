@@ -86,21 +86,13 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
             throws IllegalSearchCriteriaException {
-        List<String> locales = new ArrayList<String>();
-        locales.add(searchCriteria.getLocale());
-        for (String supportedLocale : PropertyUtil.getSupportedLocales()) {
-            String localeLang = supportedLocale.split("_")[0];
-            if (!localeLang.matches(searchCriteria.getLocale())) {
-                locales.add(localeLang);
-            }
-        }
-        ChannelSearchResult searchResultList = readQueryData(searchCriteria, locales);
+        ChannelSearchResult searchResultList = readQueryData(searchCriteria);
         searchResultList.setChannelId(getId());
 
         return searchResultList;
     }
 
-    private ChannelSearchResult readQueryData(SearchCriteria searchCriteria, List<String> locales) {
+    private ChannelSearchResult readQueryData(SearchCriteria searchCriteria) {
 
         ChannelSearchResult channelSearchResult = null;
         StAXOMBuilder builder = null;
@@ -129,7 +121,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             final Iterator<OMElement> results = resultsWrapper.getChildrenWithLocalName("MD_Metadata");
             final long start = System.currentTimeMillis();
             while(results.hasNext()) {
-                final SearchResultItem item = RESULT_PARSER.parseResult(results.next());
+                final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
                 setupResultItemURLs(item, locale);
                 channelSearchResult.addItem(item);
             }
