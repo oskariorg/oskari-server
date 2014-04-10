@@ -47,7 +47,7 @@
                             <directory>src/main/resources/</directory>
                             <filtering>true</filtering>
                             <targetPath>WEB-INF</targetPath>
-                            <includes><include>jetty-env.xml</include></includes>
+                            <includes><include>*.xml</include></includes>
                         </resource>
                     </webResources>
                 </configuration>
