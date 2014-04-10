@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webapp>
+    <servlet>
+        <servlet-name>mapFullServlet</servlet-name>
+        <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
+        <init-param>
+            <param-name>version</param-name>
+            <param-value>1.19-SNAPSHOT</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>mapFullServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+</webapp>
