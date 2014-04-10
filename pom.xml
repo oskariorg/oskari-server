@@ -506,9 +506,6 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
-        <module>feature-engine</module>
-        <module>geoserver-ext/OskariMarkFactory</module>
-        <module>transport</module>
     </modules>
 
 </project>
