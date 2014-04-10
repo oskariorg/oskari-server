@@ -40,7 +40,7 @@
 
                 <configuration>
                     <filters>
-                        <filter>src/main/resources/webapplication.properties</filter>
+                        <filter>${basedir}/src/main/resources/webapplication.properties</filter>
                     </filters>
                     <webResources>
                         <resource>

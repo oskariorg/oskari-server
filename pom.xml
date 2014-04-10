@@ -511,6 +511,7 @@
         <module>content-resources</module>
 
         <module>servlet-map</module>
+        <module>webapplication</module>
         <module>standalone-jetty</module>
     </modules>
 
