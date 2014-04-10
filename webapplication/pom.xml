@@ -10,6 +10,7 @@
     <groupId>fi.nls.oskari</groupId>
     <artifactId>webapplication</artifactId>
     <packaging>war</packaging>
+    <version>${parent.version}</version>
     <name>Oskari Web Application</name>
 
     <dependencies>
@@ -61,6 +62,11 @@
                     <httpConnector>
                         <port>2373</port>
                     </httpConnector>
+                    <webAppConfig>
+                        <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                            <resourcesAsCSV>${basedir}/target/webapplication-${project.version},${basedir}/../..</resourcesAsCSV>
+                        </baseResource>
+                    </webAppConfig>
                 </configuration>
 
                 <dependencies>
