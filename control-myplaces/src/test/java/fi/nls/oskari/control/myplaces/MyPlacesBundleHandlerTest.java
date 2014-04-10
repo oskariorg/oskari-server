@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -49,9 +48,10 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         MyPlaceCategory cat = new MyPlaceCategory();
         cat.setId(1);
         cat.setUuid("category uuid");
+        list.add(cat);
         MyPlaceCategory cat2 = new MyPlaceCategory();
-        cat.setId(3);
-        cat.setUuid(getLoggedInUser().getUuid());
+        cat2.setId(2);
+        cat2.setUuid(getLoggedInUser().getUuid());
         list.add(cat2);
 
         doReturn(list).when(service).getMyPlaceLayersById(anyList());
@@ -65,6 +65,10 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
 
         doReturn(false).when(service).canModifyPlace(getGuestUser(), 2);
         doReturn(false).when(service).canModifyPlace(getLoggedInUser(), 2);
+
+        doReturn(true).when(service).canModifyCategory(getLoggedInUser(), 1);
+        doReturn(false).when(service).canModifyCategory(getLoggedInUser(), 2);
+
 
         proxyService = mock(GeoServerProxyService.class);
         handler.setGeoServerProxyService(proxyService);
@@ -276,4 +280,60 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         fail("ActionDeniedException should have been thrown with other users place");
     }
 
+    /**
+     * Tests that users can call the action route with modify own place
+     */
+    @Test
+    public void testMoveUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-move-place-category-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can call the action route with delete own place
+     */
+    @Test
+    public void testDeleteUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-delete-place-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can't call the action route with delete other users place
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testDeleteOtherUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-delete-place-other-user-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown with other users place");
+    }
+    /**
+     * Tests that users can call the action route with delete own category
+     */
+    @Test
+    public void testDeleteUsersCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-delete-category-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can't call the action route with delete other users place
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testDeleteOtherUsersCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-delete-category-other-user-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown with other users category");
+    }
 }

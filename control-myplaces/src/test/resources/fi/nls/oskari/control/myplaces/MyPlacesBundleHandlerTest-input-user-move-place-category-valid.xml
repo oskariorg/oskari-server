@@ -35,7 +35,7 @@
         </wfs:Property>
         <wfs:Property>
             <wfs:Name>category_id</wfs:Name>
-            <wfs:Value>2</wfs:Value>
+            <wfs:Value>3</wfs:Value>
         </wfs:Property>
         <wfs:Property>
             <wfs:Name>uuid</wfs:Name>
