@@ -24,13 +24,6 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 9.4.2014
- * Time: 14:00
- * To change this template use File | Settings | File Templates.
- */
 public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
 
     private final static MyPlacesBundleHandler handler = new MyPlacesBundleHandler();
@@ -335,5 +328,39 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         ActionParameters params = createActionParams(getLoggedInUser(), payload);
         handler.handleAction(params);
         fail("ActionDeniedException should have been thrown with other users category");
+    }
+
+    /**
+     * Tests that users can call the action route with get their own place
+     */
+    @Test
+    public void testUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-get-feature-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can't call the action route with get other users place
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testOtherUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-get-feature-wrong-uuid-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown with other users place");
+    }
+
+    /**
+     * Tests that users can't call the action route with get place and without uuid filter
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testUsersPlaceMissingUUID() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-get-feature-missing-uuid-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown without uuid filter");
     }
 }
