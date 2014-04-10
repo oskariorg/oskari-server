@@ -49,11 +49,22 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         MyPlaceCategory cat = new MyPlaceCategory();
         cat.setId(1);
         cat.setUuid("category uuid");
-        list.add(cat);
+        MyPlaceCategory cat2 = new MyPlaceCategory();
+        cat.setId(3);
+        cat.setUuid(getLoggedInUser().getUuid());
+        list.add(cat2);
 
         doReturn(list).when(service).getMyPlaceLayersById(anyList());
         doReturn(false).when(service).canInsert(getGuestUser(), 2);
+        doReturn(true).when(service).canInsert(getLoggedInUser(), 2);
         doReturn(true).when(service).canInsert(getGuestUser(), 1);
+        doReturn(true).when(service).canInsert(getLoggedInUser(), 1);
+
+        doReturn(false).when(service).canModifyPlace(getGuestUser(), 1);
+        doReturn(true).when(service).canModifyPlace(getLoggedInUser(), 1);
+
+        doReturn(false).when(service).canModifyPlace(getGuestUser(), 2);
+        doReturn(false).when(service).canModifyPlace(getLoggedInUser(), 2);
 
         proxyService = mock(GeoServerProxyService.class);
         handler.setGeoServerProxyService(proxyService);
@@ -94,7 +105,7 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
      */
     @Test(expected = ActionException.class)
     public void testInsertWithGuestMissingUUID() throws Exception {
-        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-missing-uuid.xml");
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-insert-place-missing-uuid.xml");
         handler.handleAction(createActionParams(payload));
         fail("ActionException should have been thrown with invalid content");
     }
@@ -105,7 +116,7 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
      */
     @Test(expected = ActionDeniedException.class)
     public void testInsertWithGuestInvalidCategoryId() throws Exception {
-        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-invalid-id.xml");
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-insert-place-invalid-id.xml");
         ActionParameters params = createActionParams(payload);
         handler.handleAction(params);
         fail("ActionDeniedException should have been thrown with invalid categoryId");
@@ -117,8 +128,34 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
      */
     @Test
     public void testInsertWithGuestValidContent() throws Exception {
-        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-valid.xml");
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-guest-insert-place-valid.xml");
         ActionParameters params = createActionParams(payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can insert place in their own categories
+     * NOTE! categoryId is mocked to be writable in setup!!
+     */
+    @Test
+    public void testInsertWithUserOwnCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-insert-place-own-category-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can insert place in another users published draw categories
+     * NOTE! categoryId is mocked to be writable in setup!!
+     */
+    @Test
+    public void testInsertWithUserIntoDrawCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-insert-place-draw-category-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
         handler.handleAction(params);
         verifyResponseWritten(params);
         assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
@@ -156,7 +193,7 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         ActionParameters params = createActionParams(getLoggedInUser(), payload);
         handler.handleAction(params);
         verifyResponseWritten(params);
-        assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
     }
 
 
@@ -191,7 +228,7 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         ActionParameters params = createActionParams(getLoggedInUser(), payload);
         handler.handleAction(params);
         verifyResponseWritten(params);
-        assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
     }
 
     /**
@@ -217,15 +254,26 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
     }
 
     /**
-     * Tests that users can call the action route with valid content and their own uuid
+     * Tests that users can call the action route with modify own place
      */
     @Test
-    public void testInsertCategoryWithValidUser() throws Exception {
-        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-insert-category-valid.xml");
+    public void testModifyUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-modify-place-valid.xml");
         ActionParameters params = createActionParams(getLoggedInUser(), payload);
         handler.handleAction(params);
         verifyResponseWritten(params);
-        assertEquals("Should write '"+ SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can't call the action route with modify other users place
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testModifyOtherUsersPlace() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-modify-place-other-users-place-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown with other users place");
     }
 
 }
