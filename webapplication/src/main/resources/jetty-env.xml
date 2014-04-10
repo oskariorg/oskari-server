@@ -10,4 +10,14 @@
             </New>
         </Arg>
     </New>
+    <Set name="securityHandler">
+        <New class="org.eclipse.jetty.security.ConstraintSecurityHandler">
+            <Set name="loginService">
+                <New class="org.eclipse.jetty.jaas.JAASLoginService">
+                    <Set name="name">OskariRealm</Set>
+                    <Set name="loginModuleName">oskariLoginModule</Set>
+                </New>
+            </Set>
+        </New>
+    </Set>
 </Configure>

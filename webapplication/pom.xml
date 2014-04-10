@@ -59,6 +59,12 @@
                 <version>9.1.0.M0</version>
 
                 <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>java.security.auth.login.config</name>
+                            <value>src/main/resources/jndi-login.conf</value>
+                        </systemProperty>
+                    </systemProperties>
                     <httpConnector>
                         <port>2373</port>
                     </httpConnector>
