@@ -363,4 +363,28 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
         handler.handleAction(params);
         fail("ActionDeniedException should have been thrown without uuid filter");
     }
+
+
+    /**
+     * Tests that users can call the action route with modify their own category
+     */
+    @Test
+    public void testModifyCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-modify-category-valid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        verifyResponseWritten(params);
+        assertEquals("Should write '" + SUCCESS_TEXT + "' if request is proxied to geoserver", SUCCESS_TEXT, getResponseString());
+    }
+
+    /**
+     * Tests that users can't call the action route with modify other users category
+     */
+    @Test(expected = ActionDeniedException.class)
+    public void testModifyOtherUsersCategory() throws Exception {
+        InputStream payload = getClass().getResourceAsStream("MyPlacesBundleHandlerTest-input-user-modify-category-other-users-category-invalid.xml");
+        ActionParameters params = createActionParams(getLoggedInUser(), payload);
+        handler.handleAction(params);
+        fail("ActionDeniedException should have been thrown without uuid filter");
+    }
 }
