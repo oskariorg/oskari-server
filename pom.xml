@@ -509,6 +509,9 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
+
+        <module>servlet-map</module>
+        <module>standalone-jetty</module>
     </modules>
 
 </project>
