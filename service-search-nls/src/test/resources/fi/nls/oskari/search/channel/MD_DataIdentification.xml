@@ -18,12 +18,46 @@
       <gmd:dateStamp>
         <gco:DateTime xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gmx="http://www.isotc211.org/2005/gmx">2011-10-18T08:56:51</gco:DateTime>
       </gmd:dateStamp>
+        <gmd:locale>
+            <gmd:PT_Locale xmlns:xlink="http://www.w3.org/1999/xlink"
+                           xmlns:srv="http://www.isotc211.org/2005/srv"
+                           xmlns:gmx="http://www.isotc211.org/2005/gmx"
+                           id="EN">
+                <gmd:languageCode>
+                    <gmd:LanguageCode codeList="" codeListValue="eng"/>
+                </gmd:languageCode>
+                <gmd:characterEncoding>
+                    <gmd:MD_CharacterSetCode codeList="" codeListValue=""/>
+                </gmd:characterEncoding>
+            </gmd:PT_Locale>
+        </gmd:locale>
+        <gmd:locale>
+            <gmd:PT_Locale xmlns:xlink="http://www.w3.org/1999/xlink"
+                           xmlns:srv="http://www.isotc211.org/2005/srv"
+                           xmlns:gmx="http://www.isotc211.org/2005/gmx"
+                           id="SW">
+                <gmd:languageCode>
+                    <gmd:LanguageCode codeList="" codeListValue="swe"/>
+                </gmd:languageCode>
+                <gmd:characterEncoding>
+                    <gmd:MD_CharacterSetCode codeList="" codeListValue=""/>
+                </gmd:characterEncoding>
+            </gmd:PT_Locale>
+        </gmd:locale>
       <gmd:identificationInfo>
         <gmd:MD_DataIdentification>
           <gmd:citation>
             <gmd:CI_Citation>
               <gmd:title>
                 <gco:CharacterString>Title</gco:CharacterString>
+                  <gmd:PT_FreeText>
+                      <gmd:textGroup>
+                          <gmd:LocalisedCharacterString locale="#SW">Title SV</gmd:LocalisedCharacterString>
+                      </gmd:textGroup>
+                      <gmd:textGroup>
+                          <gmd:LocalisedCharacterString locale="#EN">Title EN</gmd:LocalisedCharacterString>
+                      </gmd:textGroup>
+                  </gmd:PT_FreeText>
               </gmd:title>
               <gmd:date>
                 <gmd:CI_Date>
@@ -49,6 +83,14 @@
           </gmd:citation>
           <gmd:abstract>
             <gco:CharacterString>Abstract text.</gco:CharacterString>
+              <gmd:PT_FreeText>
+                  <gmd:textGroup>
+                      <gmd:LocalisedCharacterString locale="#SW">Title SV</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+                  <gmd:textGroup>
+                      <gmd:LocalisedCharacterString locale="#EN">Title EN</gmd:LocalisedCharacterString>
+                  </gmd:textGroup>
+              </gmd:PT_FreeText>
           </gmd:abstract>
           <gmd:graphicOverview xmlns:srv="http://www.isotc211.org/2005/srv">
             <gmd:MD_BrowseGraphic>
@@ -68,6 +110,14 @@
             <gmd:CI_ResponsibleParty>
               <gmd:organisationName>
                 <gco:CharacterString>Sastamala</gco:CharacterString>
+                  <gmd:PT_FreeText>
+                      <gmd:textGroup>
+                          <gmd:LocalisedCharacterString locale="#SW">Title SV</gmd:LocalisedCharacterString>
+                      </gmd:textGroup>
+                      <gmd:textGroup>
+                          <gmd:LocalisedCharacterString locale="#EN">Title EN</gmd:LocalisedCharacterString>
+                      </gmd:textGroup>
+                  </gmd:PT_FreeText>
               </gmd:organisationName>
               <gmd:contactInfo>
                 <gmd:CI_Contact>
