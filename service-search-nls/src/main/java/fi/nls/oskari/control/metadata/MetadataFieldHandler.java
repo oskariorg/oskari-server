@@ -32,8 +32,8 @@ public class MetadataFieldHandler {
     private final static NodeList EMPTY_NODELIST = new EmptyNodeList();
 
     private MetadataField field = null;
-    private String serverURL = MetadataCatalogueChannelSearchService.getServerURL(); //PropertyUtil.get("metadata.catalogue.server", "http://geonetwork.nls.fi");
-    private String serverPath = MetadataCatalogueChannelSearchService.getServerPath(); //PropertyUtil.get("metadata.catalogue.path", "/geonetwork/srv/en/csw");
+    private String serverURL = MetadataCatalogueChannelSearchService.getServerURL();
+    private String serverPath = MetadataCatalogueChannelSearchService.getServerPath();
     private String queryParams = "?" + PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
     private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 
@@ -115,9 +115,7 @@ public class MetadataFieldHandler {
             log.error("Error parsing tags (", tagName, ") from response at", url, ". Message:", e.getMessage());
         }
         finally {
-            try {
-                dis.close();
-            } catch (Exception ignored) {}
+            IOHelper.close(dis);
         }
         // default to empty NodeList
         return EMPTY_NODELIST;
