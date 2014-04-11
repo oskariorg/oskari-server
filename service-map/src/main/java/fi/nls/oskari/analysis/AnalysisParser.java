@@ -82,7 +82,8 @@ public class AnalysisParser {
     private static final String JSON_KEY_FILTERS = "filters";
     private static final String JSON_KEY_LAYERS = "layers";
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
-    private static final String JSON_KEY_GEOJSON = "geojson";
+    private static final String JSON_KEY_FEATURES = "features";
+    private static final String JSON_KEY_NAME = "name";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
@@ -111,7 +112,7 @@ public class AnalysisParser {
      *            User identification
      * @return AnalysisLayer parameters for WPS execution
      ************************************************************************/
-    public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter, String geojson, String geojson2, String baseUrl, String uuid) throws ServiceException {
+    public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter, String baseUrl, String uuid) throws ServiceException {
         AnalysisLayer analysisLayer = new AnalysisLayer();
 
         JSONObject json = JSONHelper.createJSONObject(layerJSON);
@@ -124,6 +125,10 @@ public class AnalysisParser {
         analysisLayer.setWpsUrl(analysisRenderingUrl);
         // analysis element name
         analysisLayer.setWpsName(analysisRenderingElement);
+
+        // GeoJson input data
+        final String geojson = prepareGeoJsonFeatures(json, json.optString(JSON_KEY_NAME,"feature"));
+
 
 
         analysisLayer.setInputAnalysisId(null);
@@ -161,6 +166,12 @@ public class AnalysisParser {
                 id = ConversionHelper.getInt(sid, -1);
             }
         } catch (JSONException e) {
+            throw new ServiceException(
+                    "AnalysisInAnalysis parameters are invalid");
+        }
+
+        if(id == -1)
+        {
             throw new ServiceException(
                     "AnalysisInAnalysis parameters are invalid");
         }
@@ -292,6 +303,9 @@ public class AnalysisParser {
             } catch (JSONException e) {
                 throw new ServiceException("Method parameters missing.");
             }
+
+            final String geojson2 = prepareGeoJsonFeatures(params, json.optString(JSON_KEY_NAME,"feature"));
+
             WFSLayerConfiguration lc2 = null;
             int id2 = 0;
             String sid = "";
@@ -1067,12 +1081,12 @@ public class AnalysisParser {
         }
         return featureSet;
     }
-    public AnalysisLayer parseSwitch2UnionLayer(AnalysisLayer analysisLayer, String layerJSON, String filter, String geojson, String geojson2,
+    public AnalysisLayer parseSwitch2UnionLayer(AnalysisLayer analysisLayer, String layerJSON, String filter,
                                             String baseUrl) throws ServiceException {
         // Switch to UNION method
         layerJSON = layerJSON.replace("\"method\":\"aggregate\"","\"method\":\"union\"");
 
-        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, geojson, geojson2, baseUrl, null);
+        AnalysisLayer al2 = this.parseAnalysisLayer(layerJSON, filter, baseUrl, null);
         al2.setResult(analysisLayer.getResult());
         return al2;
 
@@ -1085,6 +1099,32 @@ public class AnalysisParser {
             log.debug("Feature property insert to FeatureCollection failed: ", e);
         }
         return featureSet;
+    }
+
+    private String prepareGeoJsonFeatures(JSONObject json, String id) {
+        try {
+            if (json.has(JSON_KEY_FEATURES)) {
+                JSONArray features = new JSONArray();
+                final String geojs = json.optString(JSON_KEY_FEATURES);
+                JSONArray geofeas = JSONHelper.createJSONArray(geojs);
+                // Loop array
+                for (int i = 0; i < geofeas.length(); i++) {
+
+                    JSONObject geofea = JSONHelper.createJSONObject(geofeas.optString(i, null));
+                    if (geofea != null) {
+                        geofea.put("id", id + "." + String.valueOf(i));
+                        geofea.remove("crs");   // WPS töks, töks to crs
+                        features.put(geofea);
+                    }
+                }
+
+                return JSONHelper.getStringFromJSON(JSONHelper.createJSONObject("features", features), null);
+            }
+
+        } catch (Exception e) {
+            log.debug("Preparing geojson for WPS failed: ", e);
+        }
+        return null;
     }
 
     /**
