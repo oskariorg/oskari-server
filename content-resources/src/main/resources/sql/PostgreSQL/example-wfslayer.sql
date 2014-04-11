@@ -32,15 +32,15 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
 -- add layer as resource for mapping permissions;
 INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+palvelupisteiden_kyselypalvelu');
 
--- give view_layer permission for the resource to ROLE 10110 (guest);
+-- give view_layer permission for the resource to guest role;
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', 10110);
+((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', (SELECT id FROM oskari_roles WHERE name = 'Guest'));
 
--- give view_layer permission for the resource to ROLE 2 (user);
+-- give view_layer permission for the resource to user role;
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', 2);
+((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', (SELECT id FROM oskari_roles WHERE name = 'User'));
 
--- give view_layer permission for the resource to ROLE 3 (admin);
+-- give view_layer permission for the resource to admin role;
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
-((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', 3);
+((SELECT id FROM oskari_resource WHERE resource_type = 'maplayer' AND resource_mapping = 'wfs+palvelupisteiden_kyselypalvelu'), 'ROLE', 'VIEW_LAYER', (SELECT id FROM oskari_roles WHERE name = 'Admin'));
 
