@@ -42,13 +42,6 @@ public class MetadataCatalogueResultParser {
 
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
-    static {
-        String[] languages = Locale.getISOLanguages();
-        for (String language : languages) {
-            Locale locale = new Locale(language);
-            ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
-        }
-    }
 
     public MetadataCatalogueResultParser() {
         NAMESPACE_CTX = new SimpleNamespaceContext();
@@ -87,7 +80,14 @@ setResourceNameSpace(serverURL)
 
         XPATH_LOCALE_MAP = getXPath("./gmd:locale/gmd:PT_Locale");
 
-
+        if(ISO3letterOskariLangMapping.isEmpty()) {
+            final String[] languages = Locale.getISOLanguages();
+            for (String language : languages) {
+                Locale locale = new Locale(language);
+                log.debug("Adding mapping:", locale.getISO3Language(), " -> ", locale.getLanguage());
+                ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
+            }
+        }
     }
 
     private AXIOMXPath getXPath(final String str) {
@@ -213,6 +213,9 @@ setResourceNameSpace(serverURL)
                 final String lang = ISO3letterOskariLangMapping.get(lang3letter);
                 if(lang != null) {
                     locales.put(lang, localeKey);
+                }
+                else {
+                    log.warn("Failed to find locale mapping for:", lang3letter);
                 }
             }
         } catch (Exception e) {
