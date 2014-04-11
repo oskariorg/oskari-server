@@ -25,7 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
-
+import java.io.IOException;
 /**
  * Job for WFS Map Layer
  */
@@ -41,6 +41,12 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             this.response = response;
         }
         
+        public void flush() throws IOException {
+            if( response != null ) {
+                response.close();
+                response = null;
+            }
+        }
     }
     
     protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
@@ -391,9 +397,9 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     protected boolean requestHandler(List<Double> bounds) {
 
         // make a request
-        RequestResponse response = request(type, layer, session, bounds, transformService);
-
         Map<String, Object> output = new HashMap<String, Object>();
+        RequestResponse response = request(type, layer, session, bounds, transformService);
+       
         try {
 
         // request failed
@@ -458,6 +464,14 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         catch (Exception ee)
         {
             log.debug("exception: ", ee);
+        } finally {
+            if( response != null ) {
+                try {
+                    response.flush();
+                } catch( java.io.IOException e) {
+                    return false;
+                }
+            }
         }
 
         return true;

@@ -1,6 +1,7 @@
 package fi.nls.oskari.work.fe;
 
 import java.util.Map;
+import java.io.IOException;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.filter.Filter;
@@ -8,6 +9,7 @@ import org.opengis.filter.Filter;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.work.OWSMapLayerJob.RequestResponse;
+import java.io.IOException;
 
 public class FERequestResponse implements RequestResponse {
     Map<Resource, SimpleFeatureCollection> response;
@@ -47,6 +49,10 @@ public class FERequestResponse implements RequestResponse {
 
     public void setFeatureIri(Resource featureIri) {
         this.featureIri = featureIri;
+    }
+    
+    public void flush() throws IOException {
+        
     }
 
 }

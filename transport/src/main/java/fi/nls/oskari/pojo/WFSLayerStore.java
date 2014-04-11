@@ -78,7 +78,7 @@ public class WFSLayerStore {
     private static final String TEMPLATE_TYPE = "templateType";
     private static final String REQUEST_TEMPLATE = "requestTemplate";
     private static final String RESPONSE_TEMPLATE = "responseTemplate";
-
+    
     private static final String SELECTION_SLD_STYLE = "selectionSLDStyle";
 
     private static final String STYLES = "styles";
@@ -88,6 +88,9 @@ public class WFSLayerStore {
 
     private static final String ERROR = "error";
     private static final String DEFAULT_LOCALE = "default";
+    
+    private static final String JOB_TYPE = "jobType";
+    private static final String REQUEST_IMPULSE = "requestImpulse";
 
     private String layerId;
     private Map<String, Map<String, String>> nameLocales;
@@ -121,7 +124,7 @@ public class WFSLayerStore {
     private String WMSLayerId;
     private boolean customParser;
     private String customParserType;
-    private List<Double> testLocation;
+        private List<Double> testLocation;
     private int testZoom;
 
 

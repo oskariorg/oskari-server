@@ -269,6 +269,8 @@ public abstract class OWSMapLayerJob extends Job {
     protected abstract boolean normalHandlers(List<Double> bounds, boolean first);
 
     public interface RequestResponse {
+        
+        public void flush() throws IOException;
 
     }
 
