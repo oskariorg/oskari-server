@@ -32,7 +32,7 @@ public class MarkersParamHandler extends ParamHandler {
     // defaults
     private final static String DEFAULT_SHAPE = "2";
     private final static String DEFAULT_SIZE = "3";
-    private final static String DEFAULT_COLOR = "ffd100";
+    private final static String DEFAULT_COLOR = "ffde00";
 
     // link parameter value separators
     private static final String MARKER_SEPARATOR = "___";
