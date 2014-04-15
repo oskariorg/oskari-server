@@ -29,9 +29,14 @@ public class MarkersParamHandler extends ParamHandler {
 
     private static final Logger log = LogFactory.getLogger(MarkersParamHandler.class);
 
+    // defaults
+    private final static String DEFAULT_SHAPE = "2";
+    private final static String DEFAULT_SIZE = "3";
+    private final static String DEFAULT_COLOR = "ffd100";
+
     // link parameter value separators
     private static final String MARKER_SEPARATOR = "___";
-    private static final String FIELD_SEPARATOR = "\\s*\\|\\s*";
+    private static final String FIELD_SEPARATOR = "|";
     private static final String COORD_SEPARATOR = "_";
 
     private static final String KEY_MARKERS = "markers";
@@ -65,8 +70,16 @@ public class MarkersParamHandler extends ParamHandler {
         }
         // setup plugin config if there were any markers
         if(list.length() > 0) {
-            final JSONObject mapfullConf = getBundleConfig(params.getConfig(), "mapfull");
-            addMarkers(mapfullConf, list);
+            final JSONObject mapfullConf = getBundleConfig(params.getConfig(), BUNDLE_MAPFULL);
+            final JSONObject markersPlugin = getMarkersPlugin(mapfullConf);
+            final JSONArray existing = getMarkersFromPluginState(markersPlugin);
+            if(existing == null) {
+                log.info("Couldn't create markers array");
+                return false;
+            }
+            for(int i = 0; i < list.length(); ++i) {
+                existing.put(list.optJSONObject(i));
+            }
         }
         return false;
     }
@@ -77,16 +90,12 @@ public class MarkersParamHandler extends ParamHandler {
      * @return
      */
     private JSONObject getMarker(final String linkText) {
-        final String[] fields = linkText.split(FIELD_SEPARATOR);
+        final String[] fields = linkText.split("\\" + FIELD_SEPARATOR);
         if(fields.length < 5 ) {
             log.debug(fields);
             return null;
         }
 
-        final JSONObject marker = new JSONObject();
-        JSONHelper.putValue(marker, KEY_SHAPE, fields[0]);
-        JSONHelper.putValue(marker, KEY_SIZE, fields[1]);
-        JSONHelper.putValue(marker, KEY_COLOR, fields[2]);
         final String[] coords = fields[3].split(COORD_SEPARATOR);
         if(coords.length != 2) {
             return null;
@@ -94,12 +103,6 @@ public class MarkersParamHandler extends ParamHandler {
         // parse as doubles to be sure
         final double x = ConversionHelper.getDouble(coords[0], -1);
         final double y = ConversionHelper.getDouble(coords[1], -1);
-        if(x == -1 || y == -1) {
-            // couldn't parse coordinates
-            return null;
-        }
-        JSONHelper.putValue(marker, KEY_X, x);
-        JSONHelper.putValue(marker, KEY_Y, y);
 
         // just to be sure loop out every last part if user happened to use separator in text
         final StringWriter txt = new StringWriter();
@@ -109,47 +112,79 @@ public class MarkersParamHandler extends ParamHandler {
                 txt.write(FIELD_SEPARATOR);
             }
         }
-        JSONHelper.putValue(marker, KEY_MESSAGE, txt.toString());
+        final JSONObject marker = getMarker(fields[0], fields[1], fields[2], x, y,  txt.toString());
 
         return marker;
     }
 
     /**
-     * Find MarkersPlugin from mapfull config and setup markers for it.
-     * @param mapfullConf
-     * @param markers
+     * Create a default marker for coordinates
+     * @param x
+     * @param y
+     * @return
      */
-    private void addMarkers(final JSONObject mapfullConf, final JSONArray markers) {
-        final JSONArray plugins = mapfullConf.optJSONArray(KEY_PLUGINS);
-        // merge user configs for template plugins
-        boolean found = false;
-        for(int i = 0; i < plugins.length(); ++i) {
-            JSONObject plugin = plugins.optJSONObject(i);
-            final String id = plugin.optString(KEY_ID);
-            if(MARKERSPLUGIN_ID.equals(id)) {
-                modifyMarkersPluginConf(plugin, markers);
-                found = true;
-                break;
-            }
+    protected JSONObject getMarker(final double x, final double y) {
+        return getMarker(DEFAULT_SHAPE, DEFAULT_SIZE, DEFAULT_COLOR, x, y, null);
+    }
+
+    protected JSONObject getMarker(final String shape, final String size, final String color,
+                                final double x, final double y, final String text) {
+
+        if(x == -1 || y == -1) {
+            // couldn't parse coordinates
+            return null;
         }
-        if(!found) {
-            log.info("Tried to modify markers config but couldn't find plugin in view");
+        final JSONObject marker = new JSONObject();
+        JSONHelper.putValue(marker, KEY_SHAPE, shape);
+        JSONHelper.putValue(marker, KEY_SIZE, size);
+        JSONHelper.putValue(marker, KEY_COLOR, color);
+        JSONHelper.putValue(marker, KEY_X, x);
+        JSONHelper.putValue(marker, KEY_Y, y);
+        if(text != null) {
+            JSONHelper.putValue(marker, KEY_MESSAGE, text);
         }
+        return marker;
     }
 
     /**
-     * Modify given plugin JSON and add markers array into its config
-     * @param plugin
-     * @param markers
+     * Find MarkersPlugin from mapfull config
+     * @param mapfullConf
+     * @return JSONObject for MarkersPlugin or null if not found
      */
-    private void modifyMarkersPluginConf(final JSONObject plugin, final JSONArray markers) {
+    protected JSONObject getMarkersPlugin(final JSONObject mapfullConf) {
+        final JSONArray plugins = mapfullConf.optJSONArray(KEY_PLUGINS);
+        for(int i = 0; i < plugins.length(); ++i) {
+            final JSONObject plugin = plugins.optJSONObject(i);
+            final String id = plugin.optString(KEY_ID);
+            if(MARKERSPLUGIN_ID.equals(id)) {
+                return plugin;
+            }
+        }
+        log.info("Tried to modify markers config but couldn't find plugin in view");
+        return null;
+    }
+
+    /**
+     * Find markers array from MarkersPlugin. Creating it if doesn't exist.
+     * @param plugin
+     * @return JSONArray for adding markers or null if plugin was null
+     */
+    protected JSONArray getMarkersFromPluginState(final JSONObject plugin) {
+        if(plugin == null) {
+            return null;
+        }
         JSONObject state = plugin.optJSONObject(KEY_STATE);
         if(state == null) {
             // no existing config, create one
             state = new JSONObject();
             JSONHelper.putValue(plugin, KEY_STATE, state);
         }
-        // TODO: now overwrites markers key if present, should check for existing key?
-        JSONHelper.putValue(state, KEY_MARKERS, markers);
+        JSONArray existing = state.optJSONArray(KEY_MARKERS);
+        if(existing == null) {
+            existing = new JSONArray();
+            JSONHelper.putValue(state, KEY_MARKERS, existing);
+        }
+        return existing;
     }
+
 }
