@@ -1,13 +1,12 @@
 package fi.nls.oskari.user;
 
-import java.util.Map;
-
-import fi.nls.oskari.domain.Role;
-
 import fi.nls.oskari.domain.GuestUser;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.UserService;
+
+import java.util.Map;
 
 public class DummyUserService extends UserService {
     private final static int GUEST_ROLE = 10110;
@@ -43,4 +42,8 @@ public class DummyUserService extends UserService {
         return new Role[0];
     }
 
+    @Override
+    public User getUser(String username) throws ServiceException {
+        return login(username, null);
+    }
 }

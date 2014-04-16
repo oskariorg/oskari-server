@@ -119,6 +119,8 @@ public class DBHandler {
             final String pass = PropertyUtil.getOptional("pass");
             if(pass != null) connectionProps.put("password", pass);
 
+            overrideConnectionPropertiesFromSystemProperties(connectionProps);
+
             final Connection conn = DriverManager.getConnection(url, connectionProps);
             if(conn != null) {
                 log.info("Using connection:", url);
@@ -128,6 +130,15 @@ public class DBHandler {
         }
         throw new SQLException("Couldn't get db connection! Tried with datasource: "
                 +datasource + " and url: " + url + ". Aborting...");
+    }
+
+    private static void overrideConnectionPropertiesFromSystemProperties(Properties connectionProps) {
+        overridePropertyIfNotNull(connectionProps, "user", System.getProperty("db.username"));
+        overridePropertyIfNotNull(connectionProps, "password", System.getProperty("db.password"));
+    }
+
+    private static void overridePropertyIfNotNull(Properties properties, String propertyName, String propertyValue) {
+        if(propertyValue != null) properties.put(propertyName, propertyValue);
     }
 
     public static void createContentIfNotCreated() {

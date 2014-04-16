@@ -81,4 +81,6 @@ public abstract class UserService {
     public Role[] getRoles() throws ServiceException {
         return getRoles(Collections.emptyMap());
     }
+
+    public abstract User getUser(String username) throws ServiceException;
 }

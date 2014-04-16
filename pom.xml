@@ -109,6 +109,12 @@
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-users</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-permissions</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
@@ -128,6 +134,12 @@
 				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-OGC</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari</groupId>
+				<artifactId>map-servlet</artifactId>
+				<version>${fi.nls.oskari.version}</version>
 			</dependency>
 
 			<dependency>
@@ -378,7 +390,7 @@
 				<scope>test</scope>
 			</dependency>
 
-						
+
 		</dependencies>
 	</dependencyManagement>
 	
@@ -490,6 +502,7 @@
         <module>shared-test-resources</module>
 
         <module>service-base</module>
+        <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
 
@@ -501,6 +514,10 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
+
+        <module>servlet-map</module>
+        <module>webapplication</module>
+        <module>standalone-jetty</module>
     </modules>
 
 </project>

@@ -1,0 +1,23 @@
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="oskaridb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
+        <Arg>${db.jndi.name}</Arg>
+        <Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="driverClassName">${db.jndi.driverClassName}</Set>
+                <Set name="url">${db.jndi.url}</Set>
+                <Set name="username">${db.jndi.username}</Set>
+                <Set name="password">${db.jndi.password}</Set>
+            </New>
+        </Arg>
+    </New>
+    <Set name="securityHandler">
+        <New class="org.eclipse.jetty.security.ConstraintSecurityHandler">
+            <Set name="loginService">
+                <New class="org.eclipse.jetty.jaas.JAASLoginService">
+                    <Set name="name">OskariRealm</Set>
+                    <Set name="loginModuleName">oskariLoginModule</Set>
+                </New>
+            </Set>
+        </New>
+    </Set>
+</Configure>

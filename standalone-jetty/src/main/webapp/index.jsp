@@ -116,10 +116,10 @@
                 <a href="${ajaxUrl}action=logout">Logout</a>
             </c:when>
             <c:otherwise>
-                <form action='${ajaxUrl}action=login&viewId=${viewId}' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="username" type="text" placeholder="Username" autofocus
+                <form action='j_security_check' method="post" accept-charset="UTF-8">
+                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
                            required>
-                    <input size="16" id="password" name="password" type="password" placeholder="Password" required>
+                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
                     <input type="submit" id="submit" value="Log in">
                 </form>
             </c:otherwise>
