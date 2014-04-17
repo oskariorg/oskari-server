@@ -38,7 +38,6 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
     private final static String DEFAULT_RULE_ABSTRACT = "Kuvaus";
 
     public final static String XSLT_FILE = "stats-sld.xslt";
-    private OMElement xslt = null;
 
     final private static OMFactory OM_FACTORY = OMAbstractFactory.getOMFactory();
 
@@ -159,15 +158,16 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
 
     /**
      * Returns a default XSLT. Reads it as a resource through classloader
+     * @Todo always building from file. Change so that we load it once to memory
+     * and use the reference. Don't just take buildOMElement() result into variable since
+     * that was tried and didn't work. Maybe find another builder that creates
+     * concrete OMElement if its an inputstream streaming issue?
      * @return
      * @see #XSLT_FILE
      * @throws Exception
      */
     public OMElement getDefaultXSLT() throws Exception {
-        if(xslt == null) {
-            xslt = buildOMElement(getClass().getResourceAsStream(XSLT_FILE));
-        }
-        return xslt;
+        return buildOMElement(getClass().getResourceAsStream(XSLT_FILE));
     }
 
     /**
