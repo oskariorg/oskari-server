@@ -11,7 +11,6 @@
 
     <groupId>fi.nls.oskari</groupId>
     <artifactId>standalone-jetty</artifactId>
-    <version>${parent.version}</version>
     <packaging>jar</packaging>
     <name>Standalone Jetty Server</name>
 
@@ -24,49 +23,41 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-plus</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jsp</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jaas</artifactId>
-            <version>9.1.0.M0</version>
         </dependency>
 
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>8.4-702.jdbc4</version>
         </dependency>
     </dependencies>
 
@@ -88,6 +79,42 @@
                 <configuration>
                     <mainClass>fi.nls.oskari.jetty.JettyRunner</mainClass>
                     <includePluginDependencies>true</includePluginDependencies>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>oskari-jetty-${project.version}</finalName>
+                  <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <manifestEntries>
+                            <Main-Class>fi.nls.oskari.jetty.JettyRunner</Main-Class>
+                            <Build-Number>${project.version}</Build-Number>
+                        </manifestEntries>
+                    </transformer>
+                  </transformers>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <!-- Exclude any manifest files since java doesnt like the jar signature if we do-->
+                            <excludes>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
             </plugin>
         </plugins>

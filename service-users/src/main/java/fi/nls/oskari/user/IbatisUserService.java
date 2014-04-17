@@ -7,7 +7,7 @@ import fi.nls.oskari.service.db.BaseIbatisService;
 import java.util.List;
 
 public class IbatisUserService extends BaseIbatisService<User> {
-    IbatisRoleService roleService = new IbatisRoleService();
+    private IbatisRoleService roleService = new IbatisRoleService();
 
     @Override
     protected String getNameSpace() {
