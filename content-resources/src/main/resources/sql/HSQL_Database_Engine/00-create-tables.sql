@@ -75,6 +75,7 @@ CREATE TABLE oskari_maplayer
   options character varying(20000) DEFAULT '{}',
   gfi_type character varying(200),
   gfi_xslt character varying(20000),
+  gfi_content character varying(20000),
   realtime boolean DEFAULT false,
   refresh_rate integer DEFAULT 0,
   created timestamp DEFAULT CURRENT_TIMESTAMP,

@@ -77,6 +77,7 @@ CREATE TABLE oskari_maplayer
   options text DEFAULT '{}'::text,
   gfi_type character varying(200),
   gfi_xslt text,
+  gfi_contet text,
   realtime boolean DEFAULT false,
   refresh_rate integer DEFAULT 0,
   created timestamp with time zone,
