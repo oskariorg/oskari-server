@@ -140,6 +140,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         // gfi configurations
         result.setGfiType((String) data.get("gfi_type"));
         result.setGfiXslt((String) data.get("gfi_xslt"));
+        result.setGfiContent((String) data.get("gfi_content"));
 
         // realtime configurations
         result.setRealtime((Boolean) data.get("realtime"));
