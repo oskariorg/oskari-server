@@ -10,18 +10,24 @@ public class PrintoutContent {
 	final Map<String, PrintoutContentStyle> styles;
 
 	final List<PrintoutContentPart> parts;
+	final List<PrintoutContentPage> pages;
 
 	public PrintoutContent() {
-		styles = new HashMap<String,PrintoutContentStyle>();
+		styles = new HashMap<String, PrintoutContentStyle>();
 		parts = new ArrayList<PrintoutContentPart>();
+		pages = new ArrayList<PrintoutContentPage>();
 	}
 
-	public Map<String, PrintoutContentStyle> getStyles() {
-		return styles;
+	public List<PrintoutContentPage> getPages() {
+		return pages;
 	}
 
 	public List<PrintoutContentPart> getParts() {
 		return parts;
+	}
+
+	public Map<String, PrintoutContentStyle> getStyles() {
+		return styles;
 	}
 
 }

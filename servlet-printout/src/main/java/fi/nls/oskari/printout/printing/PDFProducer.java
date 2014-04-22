@@ -7,19 +7,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.jempbox.xmp.XMPMetadata;
+import org.apache.jempbox.xmp.XMPSchemaBasic;
+import org.apache.jempbox.xmp.XMPSchemaDublinCore;
+import org.apache.jempbox.xmp.XMPSchemaPDF;
 import org.apache.jempbox.xmp.pdfa.XMPSchemaPDFAId;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
@@ -30,6 +34,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.printing.page.PDFContentPage;
 import fi.nls.oskari.printout.printing.page.PDFLayeredImagesPage;
 import fi.nls.oskari.printout.printing.page.PDFLegendPage;
 
@@ -187,6 +192,7 @@ public class PDFProducer {
 					targetDoc, targetPage, true, true, true)
 					: new PDPageContentStream(targetDoc, targetPage, false,
 							false);
+			contentStream.setResources(targetPage.findResources());
 			PDRectangle pageSize = targetPage.findMediaBox();
 			float pageWidth = pageSize.getWidth();
 			if (degrees != -1) {
@@ -273,6 +279,14 @@ public class PDFProducer {
 			return ++page;
 		}
 
+		public int getPage() {
+			return page;
+		}
+
+		public int getPage1Based() {
+			return page + 1;
+		}
+
 	}
 
 	Page page = Page.A4;
@@ -310,7 +324,14 @@ public class PDFProducer {
 
 			URL url = getClass().getResource(opts.getPageTemplate());
 
-			return PDDocument.load(url);
+			PDDocument doc = PDDocument.load(url);
+
+			if (doc.isEncrypted()) {
+				throw new IOException(
+						"Encrypted documents are not supported as templates");
+			}
+
+			return doc;
 
 		} else {
 			return new PDDocument();
@@ -327,12 +348,30 @@ public class PDFProducer {
 			createLayeredPDFPages(targetDoc, images, env, centre);
 			createMetadata(targetDoc);
 			createIcc(targetDoc);
+			shaveTemplatePages(targetDoc);
 
 			targetDoc.save(outputStream);
 		} finally {
 			targetDoc.close();
 
 		}
+	}
+
+	private void shaveTemplatePages(PDDocument targetDoc) {
+		if (opts.getPageTemplate() == null) {
+			return;
+		}
+
+		/* let's remove unnecessary template pages */
+		if (!(targetDoc.getNumberOfPages() > pageCounter.getPage() + 1)) {
+			return;
+		}
+
+		for (int n = targetDoc.getNumberOfPages() - 1; n > pageCounter
+				.getPage(); n--) {
+			targetDoc.removePage(n);
+		}
+
 	}
 
 	/**
@@ -353,6 +392,8 @@ public class PDFProducer {
 			createLayeredPDFPages(targetDoc, images, env, centre);
 			createMetadata(targetDoc);
 			createIcc(targetDoc);
+
+			shaveTemplatePages(targetDoc);
 
 			File targetFile = new File(outputFile);
 			targetDoc.save(targetFile.getAbsolutePath());
@@ -381,6 +422,15 @@ public class PDFProducer {
 					opts, font, crs, images, env, centre);
 
 			pageImages.createPages(targetDoc, pageCounter);
+		}
+
+		if (opts.getContent() != null) {
+			for (int n = pageCounter.getPage() + 1; n < opts.getContent()
+					.getPages().size(); n++) {
+				PDFContentPage contentPage = new PDFContentPage(page, opts,
+						font);
+				contentPage.createPages(targetDoc, pageCounter);
+			}
 		}
 
 		if (opts.isPageLegend()) {
@@ -413,6 +463,15 @@ public class PDFProducer {
 			pageImages.createPages(targetDoc, pageCounter);
 		}
 
+		if (opts.getContent() != null) {
+			for (int n = pageCounter.getPage() + 1; n < opts.getContent()
+					.getPages().size(); n++) {
+				PDFContentPage contentPage = new PDFContentPage(page, opts,
+						font);
+				contentPage.createPages(targetDoc, pageCounter);
+			}
+		}
+
 		if (opts.isPageLegend()) {
 
 			PDFLegendPage pageLegend = new PDFLegendPage(page, opts, font);
@@ -427,17 +486,40 @@ public class PDFProducer {
 			TransformerException {
 
 		PDDocumentCatalog cat = targetDoc.getDocumentCatalog();
-		PDMetadata metadata = new PDMetadata(targetDoc);
-		cat.setMetadata(metadata);
+		PDMetadata metadataStream = new PDMetadata(targetDoc);
+		cat.setMetadata(metadataStream);
 
 		// jempbox version
-		XMPMetadata xmp = new XMPMetadata();
-		XMPSchemaPDFAId pdfaid = new XMPSchemaPDFAId(xmp);
-		xmp.addSchema(pdfaid);
+		XMPMetadata metadata = new XMPMetadata();
+		XMPSchemaPDFAId pdfaid = new XMPSchemaPDFAId(metadata);
+		metadata.addSchema(pdfaid);
 		pdfaid.setConformance("B");
 		pdfaid.setPart(1);
 		pdfaid.setAbout("");
-		metadata.importXMPMetadata(xmp);
+
+		XMPSchemaPDF pdfSchema = metadata.addPDFSchema();
+		// pdfSchema.setKeywords( "" );
+		pdfSchema.setProducer("oskari.org/printout-servlet");
+
+		XMPSchemaBasic basicSchema = metadata.addBasicSchema();
+		basicSchema.setModifyDate(new GregorianCalendar());
+		basicSchema.setCreateDate(new GregorianCalendar());
+		basicSchema.setCreatorTool("oskari.org/printout-servlet");
+		basicSchema.setMetadataDate(new GregorianCalendar());
+
+		XMPSchemaDublinCore dcSchema = metadata.addDublinCoreSchema();
+		dcSchema.setTitle("oskari.org/printout-servlet");
+		dcSchema.addCreator("oskari.org/printout-servlet");
+		dcSchema.setDescription("");
+		
+		
+		PDFContentMetadata ctSchema = new PDFContentMetadata(metadata);
+		ctSchema.addCreator("Testing Proprietary metadata");
+		ctSchema.addCreator("Testing Proprietary metadata values");
+		metadata.addSchema(ctSchema);
+
+		metadataStream.importXMPMetadata(metadata);
+		cat.setMetadata(metadataStream);
 
 	}
 

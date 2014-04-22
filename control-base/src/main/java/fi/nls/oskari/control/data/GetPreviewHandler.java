@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.layout.OskariLayoutWorker;
 import fi.nls.oskari.service.ProxyService;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.codec.binary.Base64;
@@ -38,7 +39,9 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String PARM_FORMAT = "format";
     private static final String PARM_GEOJSON = "geojson";
     private static final String PARM_TILES = "tiles";
+    private static final String PARM_TABLE = "tabledata";
     private static final String PARM_SAVE = "saveFile";
+    private static final String PARM_TABLETEMPLATE = "tableTemplate";
 
     private static final String KEY_EAST = "east";
     private static final String KEY_NORTH = "north";
@@ -46,6 +49,7 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String KEY_SELECTEDLAYERS = "selectedLayers";
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_MAPLINK = "maplink";
+    private static final String KEY_PRINTOUT = "printout";
     private static final String KEY_STATE = "state";
     private static final String KEY_LAYER_ID = "id";
     // Tiles json param keys
@@ -79,6 +83,7 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
 
     private static final List<String> ACCEPTED_FORMATS = new ArrayList<String>();
+    private static final List<String> EXTRA_PARAMS = new ArrayList<String>();
     private static String printBaseURL;
     private static String printBaseGeojsURL;
     private static String printSaveFilePath;
@@ -90,6 +95,14 @@ public class GetPreviewHandler extends ActionHandler {
 
         ACCEPTED_FORMATS.add("application/pdf");
         ACCEPTED_FORMATS.add("image/png");
+
+        EXTRA_PARAMS.add(PARM_GEOJSON);
+        EXTRA_PARAMS.add(PARM_TILES);
+        EXTRA_PARAMS.add(PARM_TABLE);
+        EXTRA_PARAMS.add(PARM_TABLETEMPLATE);
+        EXTRA_PARAMS.add(PARM_SAVE);
+
+
 
         ProxyService.init();
     }
@@ -103,11 +116,8 @@ public class GetPreviewHandler extends ActionHandler {
                 "application/pdf");
         final JSONObject jsonprint = getPrintJSON(params);
         String file_save = params.getHttpParam(PARM_SAVE, "");
-        boolean geojsCase = false;
-        if (!params.getHttpParam(PARM_GEOJSON, "").isEmpty())
-            geojsCase = true;
 
-        final HttpURLConnection con = getConnection(pformat, geojsCase);
+        final HttpURLConnection con = getConnection(pformat, !params.getHttpParam(PARM_GEOJSON, "").isEmpty());
         for (Enumeration<String> e = httpRequest.getHeaderNames(); e
                 .hasMoreElements();) {
             final String key = e.nextElement();
@@ -172,12 +182,17 @@ public class GetPreviewHandler extends ActionHandler {
             JSONObject jsparamdata = new JSONObject();
             for (Object key : httpRequest.getParameterMap().keySet()) {
                 String keyStr = (String) key;
-                // not geojson param
-                if (!keyStr.equals(PARM_GEOJSON) && !keyStr.equals(PARM_TILES)) {
+                // not geojson, tiles, tabledata param ..
+                if (!EXTRA_PARAMS.contains(keyStr)) {
                     jsparamdata.put(keyStr, params.getHttpParam(keyStr));
                 }
             }
             jsonprint.put(KEY_MAPLINK, jsparamdata);
+
+            // Table data
+            final JSONObject jsTableData = this.populateTableData(params);
+            if(jsTableData != null) jsonprint.put(KEY_PRINTOUT, jsTableData);
+
 
             // construct state
             final JSONObject jsonstatedata = new JSONObject();
@@ -529,6 +544,38 @@ public class GetPreviewHandler extends ActionHandler {
         } catch (Exception e) {
             throw new ActionException("Failed to put tiles into layer json", e);
         }
+    }
+    private JSONObject populateTableData(ActionParameters params)
+            throws ActionException {
+
+        try {
+            // Get template
+            final String tableLayout = params.getHttpParam(PARM_TABLETEMPLATE, "");
+            if(tableLayout.isEmpty()) return null;
+            String tabledata = OskariLayoutWorker.getTableTemplate(tableLayout);
+            if(tabledata == null) return null;
+
+            JSONObject jstable = JSONHelper.createJSONObject(tabledata);
+            if(jstable == null) return null;
+
+            // Get table row data
+            final String rows = params.getHttpParam(PARM_TABLE, "");
+            JSONObject jsrows = JSONHelper.createJSONObject(rows);
+            if(jsrows == null) return null;
+
+            JSONObject jsprint = jstable.optJSONObject(KEY_PRINTOUT);
+
+            // Add data rows
+
+            return OskariLayoutWorker.fillTables(jsprint, jsrows);
+
+            // Get table row data
+            // final String rows = params.getHttpParam(PARM_TABLE, "");
+
+        } catch (Exception e) {
+            throw new ActionException("Failed to populate printout table data", e);
+        }
+
     }
 
 }

@@ -18,7 +18,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 /*import org.apache.pdfbox.pdmodel.font.PDType1Font;*/
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
@@ -33,6 +33,7 @@ import org.opengis.referencing.operation.TransformException;
 import fi.nls.oskari.printout.printing.PDFProducer.Options;
 import fi.nls.oskari.printout.printing.PDFProducer.Page;
 import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
+import fi.nls.oskari.printout.printing.PDPageContentStream;
 
 /**
  * this class adds map legend page. W-i-P as some map legend images span
@@ -80,6 +81,8 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 				targetDoc, targetPage, opts.getPageTemplate() != null);
 
 		createTextLayerOverlay(targetDoc, contentStream, ocprops, props);
+		
+		contentStream.close();
 
 	}
 
@@ -146,16 +149,14 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 		/* BEGIN overlay content */
 
 		/* title */
-		
+
 		if (opts.getPageTitle() != null) {
 			String pageTitle = StringEscapeUtils.unescapeHtml4(Jsoup.clean(
 					opts.getPageTitle(), Whitelist.simpleText()));
 
-			
-			createTextAt(contentStream, pageTitle, 9.0f,
-					page.getHeight()-1f, opts.getFontSize(), 0,
-					0, 0);
-			
+			createTextAt(contentStream, pageTitle, 9.0f, page.getHeight() - 1f,
+					opts.getFontSize(), 0, 0, 0);
+
 		}
 
 		/* pvm */
@@ -166,14 +167,10 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 
 			String dateStr = sdf.format(dte);
 
-			createTextAt(contentStream, dateStr,
-					page.getWidth() - 4f,
-					page.getHeight()-1f, opts.getFontSize(), 0,
-					0, 0);
+			createTextAt(contentStream, dateStr, page.getWidth() - 4f,
+					page.getHeight() - 1f, opts.getFontSize(), 0, 0, 0);
 
 		}
-
-	
 
 		/* logo */
 		if (opts.isPageLogo()) {
