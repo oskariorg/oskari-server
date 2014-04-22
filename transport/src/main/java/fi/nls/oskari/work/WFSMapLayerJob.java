@@ -468,8 +468,10 @@ public class WFSMapLayerJob extends Job {
             this.featuresHandler();
             if(!goNext()) return;
             if(this.sendFeatures) {
+                log.debug("Feature values list", this.featureValuesList);
                 this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
             } else {
+                log.debug("No feature data!");
                 this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
             }
         } else if(this.type == Type.GEOJSON) {

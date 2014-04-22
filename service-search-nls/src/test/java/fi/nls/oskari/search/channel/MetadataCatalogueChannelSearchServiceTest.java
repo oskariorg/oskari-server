@@ -20,6 +20,7 @@ public class MetadataCatalogueChannelSearchServiceTest {
 
     @BeforeClass
     public static void setUp() {
+        PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
             properties.load(MetadataCatalogueChannelSearchServiceTest.class.getResourceAsStream("test.properties"));
@@ -35,6 +36,7 @@ public class MetadataCatalogueChannelSearchServiceTest {
             return channel;
         }
         channel = new MetadataCatalogueChannelSearchService();
+        MetadataCatalogueChannelSearchService.resetProperties();
         channel.setProperty("fetchpage.url.fi", "fetchPageURL.fi");
         channel.setProperty("fetchpage.url.en", "fetchPageURL.en");
         channel.setProperty("fetchpage.url.sv", "fetchPageURL.sv");
@@ -100,7 +102,7 @@ public class MetadataCatalogueChannelSearchServiceTest {
             assertEquals("Northbound latitude mismatch", "70.09229553", result.getNorthBoundLatitude());
             // FIXME: downloadable points to:
             // gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource/gmd:protocol
-            // which should is used as boolean but in test XML it's "OGC:WMS-1.1.1-http-get-map" so ignoring for now...
+            // which was previously parsed as boolean but in test XML it's "OGC:WMS-1.1.1-http-get-map" so ignoring for now...
             //assertEquals("IsDownloadable mismatch", true, result.isDownloadable());
             assertEquals("GMD URL mismatch", "http://www.gee-em-dee.com", result.getGmdURL());
             assertEquals("Action URL mismatch", "fetchPageURL.fiUUIDUUID-UUID-UUID-UUID-UUIDUUIDUUID", result.getActionURL());

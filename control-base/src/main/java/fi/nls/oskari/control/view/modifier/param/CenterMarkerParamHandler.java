@@ -5,21 +5,13 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.log.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+/**
+ * Alternate (legacy) parameter for showMarker. Both do the same thing.
+ */
 @OskariViewModifier("isCenterMarker")
-public class CenterMarkerParamHandler extends ParamHandler {
-
-    private static final Logger log = LogFactory.getLogger(CenterMarkerParamHandler.class);
-    private static final String PARAM_IS_CENTER_MARKER = "isCenterMarker";
-
-    public boolean handleParam(final ModifierParams params) throws ModifierException {
-        if(params.getParamValue() == null) {
-            return false;
-        }
-
-        // TODO: not implemented yet, need to add to bundle state?
-        // [jira / PORTTISK-691]
-        return true;
-    }
-    
+public class CenterMarkerParamHandler extends ShowMarkerParamHandler {
+// dummy class for mapping showMarker to isCenterMarker
 }

@@ -262,6 +262,11 @@ public class SaveLayerHandler extends ActionHandler {
             // TODO: some validation of XSLT data
             ml.setGfiXslt(xslt);
         }
+        final String gfiContent = request.getParameter("gfiContent");
+        if (gfiContent != null) {
+            // TODO: some sanitation of content data
+            ml.setGfiContent(gfiContent);
+        }
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));

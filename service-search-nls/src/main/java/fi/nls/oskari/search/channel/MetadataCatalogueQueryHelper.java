@@ -75,7 +75,12 @@ public class MetadataCatalogueQueryHelper {
 
             final SortProperty[] sortProperties = SortProperty.create(null, nsmap);
 
-            final Query query = new Query("summary", new ArrayList<QualifiedName>(),
+            // we need "full" query to get locale mapping like #SW -> swe -> sv
+            // to optimize we could try to do an "init" query to get mappings and use
+            // "summary" query to get the data. Note! Since locale mappings are at "result item" level
+            // this might lead to complications. Just using "full" for now, it's more XML to transfer and
+            // parse but it's safe.
+            final Query query = new Query("full", new ArrayList<QualifiedName>(),
                     new HashMap<String, QualifiedName>(),
                     elementNamesAsPropertyPaths, filter, sortProperties, typeNames,
                     new HashMap<String, QualifiedName>());

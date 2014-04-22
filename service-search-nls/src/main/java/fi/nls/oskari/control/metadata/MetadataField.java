@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.metadata;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 
@@ -19,16 +21,8 @@ import java.util.Map;
  * - shownIf is a dumb JSON presentation for frontend form (example serviceType should only be shown if value 'service' is selected in field 'type')
  */
 public class MetadataField {
-/*
-    TYPE("type", true), // type
-    SERVICE_TYPE("serviceType", true), // serviceType
-    SERVICE_NAME("serviceName", "Title"), // Title
-    ORGANIZATION("organization", "orgName"), // orgName
-    COVERAGE("coverage", new CoverageHandler()),
-    INSPIRE_THEME("inspireTheme", new InspireThemeHandler()),
-    KEYWORD("keyword"), // keyword
-    TOPIC("topic", "topicCategory"); // topicCategory
-*/
+
+    private Logger log = LogFactory.getLogger(MetadataField.class);
     private String name = null;
     private boolean multi = false;
     private String property = null;
@@ -40,7 +34,6 @@ public class MetadataField {
     private JSONArray shownIf = null;
 
     public static final String RESULT_KEY_ORGANIZATION = "organization";
-
 
     private MetadataField(String name, final String property) {
         this(name, new MetadataFieldHandler());
@@ -120,8 +113,12 @@ public class MetadataField {
 
     public void setShownIf(String shownIf) {
         if(shownIf != null) {
-            // TODO: maybe try catch errors or make JSONHelper create empty array on errors...
-            this.shownIf = JSONHelper.createJSONArray(shownIf);
+            try {
+                this.shownIf = JSONHelper.createJSONArray(shownIf);
+            }
+            catch (Exception ex) {
+                log.warn("Field had shownIf, but couldn't parse it to JSONArray: ", getName());
+            }
         }
     }
 
