@@ -7,6 +7,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,7 +23,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
@@ -40,16 +41,18 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.input.content.PrintoutContentPage;
 import fi.nls.oskari.printout.input.content.PrintoutContentPart;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle;
-import fi.nls.oskari.printout.input.content.PrintoutContentTable;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.ColourStyleAttr;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.MetricsStyleAttr;
+import fi.nls.oskari.printout.input.content.PrintoutContentTable;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Col;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Row;
 import fi.nls.oskari.printout.printing.PDFProducer.Options;
 import fi.nls.oskari.printout.printing.PDFProducer.Page;
 import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
+import fi.nls.oskari.printout.printing.PDPageContentStream;
 
 /**
  * This class embeds layers of map images as PDF optional contents.
@@ -83,11 +86,12 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 	 * @param images
 	 * @throws IOException
 	 */
-	void createMapLayersImages(PDDocument targetDoc,
+	protected void createMapLayersImages(PDDocument targetDoc,
 			List<PDXObjectImage> ximages, List<BufferedImage> images)
 			throws IOException {
 
 		for (BufferedImage image : images) {
+
 			PDXObjectImage ximage = new PDPixelMap(targetDoc, image);
 
 			ximages.add(ximage);
@@ -107,8 +111,9 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 	 * @param height
 	 * @throws IOException
 	 */
-	void createMapLayersOverlay(PDDocument targetDoc,
-			PDPageContentStream contentStream,
+
+	protected void createMapLayersOverlay(PDDocument targetDoc,
+			PDPage targetPage, PDPageContentStream contentStream,
 			PDOptionalContentProperties ocprops, PDPropertyList props,
 			List<PDXObjectImage> ximages) throws IOException {
 
@@ -137,6 +142,7 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 			contentStream.beginMarkedContentSequence(COSName.OC, mc0);
 
 			contentStream.drawXObject(ximage, f[0], f[1], width, height);
+
 			contentStream.endMarkedContentSequence();
 
 		}
@@ -175,13 +181,13 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 		PDPageContentStream contentStream = page.createContentStreamTo(
 				targetDoc, targetPage, opts.getPageTemplate() != null);
 
-		createMapLayersOverlay(targetDoc, contentStream, ocprops, props,
-				ximages);
-		createTextLayerOverlay(targetDoc, contentStream, ocprops, props, env,
-				centre);
+		createMapLayersOverlay(targetDoc, targetPage, contentStream, ocprops,
+				props, ximages);
+		createTextLayerOverlay(targetDoc, targetPage, contentStream, ocprops,
+				props, env, centre);
 
 		createContentOverlay(targetDoc, contentStream, ocprops, props,
-				opts.getContent());
+				opts.getContent(), pageCounter);
 
 		contentStream.close();
 
@@ -301,6 +307,7 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 	 * logo , title, etc are put on another optional overlay
 	 * 
 	 * @param targetDoc
+	 * @param targetPage
 	 * @param contentStream
 	 * @param ocprops
 	 * @param props
@@ -311,8 +318,8 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 	 * @throws IOException
 	 * @throws TransformException
 	 */
-	void createTextLayerOverlay(PDDocument targetDoc,
-			PDPageContentStream contentStream,
+	protected void createTextLayerOverlay(PDDocument targetDoc,
+			PDPage targetPage, PDPageContentStream contentStream,
 			PDOptionalContentProperties ocprops, PDPropertyList props,
 			Envelope env, Point centre) throws IOException, TransformException {
 
@@ -408,189 +415,49 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
 
 	}
 
-	private void createContentOverlay(PDDocument targetDoc,
-			PDPageContentStream contentStream,
-			PDOptionalContentProperties ocprops, PDPropertyList props,
-			PrintoutContent content) throws IOException {
-		if (content == null || content.getParts().isEmpty()) {
-			return;
-		}
-
-		PDOptionalContentGroup tablesGroup = new PDOptionalContentGroup(
-				"tables");
-		ocprops.addGroup(tablesGroup);
-
-		COSName mc0 = COSName.getPDFName("Mtables");
-		props.putMapping(mc0, tablesGroup);
-
-		contentStream.beginMarkedContentSequence(COSName.OC, mc0);
-
-		contentStream.saveGraphicsState();
-
-		for (PrintoutContentPart part : content.getParts()) {
-
-			switch (part.getType()) {
-			case table: {
-
-				PrintoutContentTable table = (PrintoutContentTable) part;
-
-				PrintoutContentStyle style = table.getStyle();
-
-				Float width = style.getMetrics().get(MetricsStyleAttr.width);
-				Float height = style.getMetrics().get(MetricsStyleAttr.height);
-				Float left = style.getMetrics().get(MetricsStyleAttr.left);
-				Float bottom = style.getMetrics().get(MetricsStyleAttr.bottom);
-
-				AffineTransform anchorTransform = new AffineTransform(
-						page.getTransform());
-
-				anchorTransform.translate(left, bottom);
-				anchorTransform.translate(0, height);
-
-				/* headers */
-				for (Col col : table.getCols()) {
-				}
-
-				/* cells */
-
-				int r = 0;
-				for (Row row : table.getRows()) {
-
-					int c = 0;
-					for (Col col : table.getCols()) {
-
-						PrintoutContentStyle colStyle = col.getStyle();
-
-						String cellValue = (String) row.getValue(col);
-						if (cellValue == null) {
-							continue;
-						}
-
-						Float xcm = colStyle.getMetrics().get(
-								MetricsStyleAttr.width);
-						if (xcm == null) {
-							xcm = 5f;
-						}
-						Float ycm = colStyle.getMetrics().get(
-								MetricsStyleAttr.height);
-						if (ycm == null) {
-							ycm = 1f;
-						}
-
-						AffineTransform rowTransform = new AffineTransform(
-								anchorTransform);
-						rowTransform.translate(xcm * c, ycm * -r);
-
-						float fontSize = 10 / 72f * 2.54f;
-						contentStream.setFont(font, fontSize);
-
-						/*
-						 * Color backgroundColor = colStyle.getColours().get(
-						 * ColourStyleAttr.backgroundColor);
-						 */
-
-						Color color = colStyle.getColours().get(
-								ColourStyleAttr.color);
-						if (color == null) {
-							color = Color.black;
-						}
-						contentStream.beginText();
-						contentStream.setTextMatrix(rowTransform);
-						contentStream.setNonStrokingColor(color);
-
-						contentStream.drawString(cellValue);
-						contentStream.endText();
-
-						Color borderColor = colStyle.getColours().get(
-								ColourStyleAttr.borderColor);
-
-						if (borderColor != null) {
-
-						}
-
-						c++;
-					}
-
-					r++;
-
-				}
-
-				break;
-			}
-			default:
-				break;
-
-			}
-
-		}
-
-		contentStream.restoreGraphicsState();
-
-		contentStream.endMarkedContentSequence();
-
-	}
-
-	public void createContent(PDDocument targetDoc,
-			PDPageContentStream contentStream,
-			PDOptionalContentProperties ocprops, PDPropertyList props,
-			Page page, Options opts) throws IOException {
-
-		PDOptionalContentGroup tablesGroup = new PDOptionalContentGroup(
-				"tables");
-		ocprops.addGroup(tablesGroup);
-
-		COSName mc0 = COSName.getPDFName("Mtables");
-		props.putMapping(mc0, tablesGroup);
-
-		contentStream.beginMarkedContentSequence(COSName.OC, mc0);
-
-		String[][] content = { {} };
-		float margin = 20;
-		float y = 20;
-
-		final int rows = content.length;
-		final int cols = content[0].length;
-		final float rowHeight = 20f;
-		final float tableWidth = page.getWidth() / 2.54f * 72f - margin
-				- margin;
-		final float tableHeight = rowHeight * rows;
-		final float colWidth = tableWidth / (float) cols;
-		final float cellMargin = 5f;
-
-		// draw the rows
-		float nexty = y;
-		for (int i = 0; i <= rows; i++) {
-			contentStream.drawLine(margin, nexty, margin + tableWidth, nexty);
-			nexty -= rowHeight;
-		}
-
-		// draw the columns
-		float nextx = margin;
-		for (int i = 0; i <= cols; i++) {
-			contentStream.drawLine(nextx, y, nextx, y - tableHeight);
-			nextx += colWidth;
-		}
-
-		float fontSize = opts.getFontSize();
-		// contentStream.setFont(font, fontSize);
-
-		float textx = margin + cellMargin;
-		float texty = y - 15;
-		for (int i = 0; i < content.length; i++) {
-			for (int j = 0; j < content[i].length; j++) {
-				String text = content[i][j];
-				contentStream.beginText();
-				contentStream.moveTextPositionByAmount(textx, texty);
-				contentStream.drawString("[" + i + "," + j + "]");
-				contentStream.endText();
-				textx += colWidth;
-			}
-			texty -= rowHeight;
-			textx = margin + cellMargin;
-		}
-
-		contentStream.endMarkedContentSequence();
-
-	}
+	/*
+	 * public void createContent(PDDocument targetDoc, PDPageContentStream
+	 * contentStream, PDOptionalContentProperties ocprops, PDPropertyList props,
+	 * Page page, Options opts) throws IOException {
+	 * 
+	 * PDOptionalContentGroup tablesGroup = new PDOptionalContentGroup(
+	 * "tables"); ocprops.addGroup(tablesGroup);
+	 * 
+	 * COSName mc0 = COSName.getPDFName("Mtables"); props.putMapping(mc0,
+	 * tablesGroup);
+	 * 
+	 * contentStream.beginMarkedContentSequence(COSName.OC, mc0);
+	 * 
+	 * String[][] content = { {} }; float margin = 20; float y = 20;
+	 * 
+	 * final int rows = content.length; final int cols = content[0].length;
+	 * final float rowHeight = 20f; final float tableWidth = page.getWidth() /
+	 * 2.54f * 72f - margin - margin; final float tableHeight = rowHeight *
+	 * rows; final float colWidth = tableWidth / (float) cols; final float
+	 * cellMargin = 5f;
+	 * 
+	 * // draw the rows float nexty = y; for (int i = 0; i <= rows; i++) {
+	 * contentStream.drawLine(margin, nexty, margin + tableWidth, nexty); nexty
+	 * -= rowHeight; }
+	 * 
+	 * // draw the columns float nextx = margin; for (int i = 0; i <= cols; i++)
+	 * { contentStream.drawLine(nextx, y, nextx, y - tableHeight); nextx +=
+	 * colWidth; }
+	 * 
+	 * //float fontSize = opts.getFontSize(); // contentStream.setFont(font,
+	 * fontSize);
+	 * 
+	 * float textx = margin + cellMargin; float texty = y - 15; for (int i = 0;
+	 * i < content.length; i++) { for (int j = 0; j < content[i].length; j++) {
+	 * String text = content[i][j]; contentStream.beginText();
+	 * contentStream.moveTextPositionByAmount(textx, texty);
+	 * contentStream.drawString("[" + i + "," + j + "]");
+	 * contentStream.endText(); textx += colWidth; } texty -= rowHeight; textx =
+	 * margin + cellMargin; }
+	 * 
+	 * contentStream.endMarkedContentSequence();
+	 * 
+	 * }
+	 */
 
 }

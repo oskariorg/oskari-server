@@ -162,8 +162,31 @@ public class PrintoutContentParser {
 		parseStyles(content.getStyles(), (Map<String, ?>) obj.get("styles"));
 		parseContent(content.getStyles(), content.getParts(),
 				(Map<String, ?>) obj.get("content"));
+		parsePages(content.getStyles(), content.getPages(),
+				(List<Map<String, ?>>) obj.get("pages"));
 
 		return content;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void parsePages(Map<String, PrintoutContentStyle> styles,
+			List<PrintoutContentPage> pages, List<Map<String, ?>> list) {
+		if (list == null) {
+			return;
+		}
+
+		for (Map<String, ?> pageObj : list) {
+
+			/* String styleRef = (String) pageObj.get("style"); */
+
+			PrintoutContentPage page = new PrintoutContentPage();
+
+			parseContent(styles, page.getParts(),
+					(Map<String, ?>) pageObj.get("content"));
+
+			pages.add(page);
+		}
+
 	}
 
 }

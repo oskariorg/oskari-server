@@ -52,7 +52,6 @@ public class PrintoutContentTable implements PrintoutContentPart {
 
 	}
 
-	@Override
 	public void setStyle(final PrintoutContentStyle style) {
 		this.style = style;
 
@@ -78,12 +77,12 @@ public class PrintoutContentTable implements PrintoutContentPart {
 		return row;
 	}
 
-	@Override
+	
 	public PrintoutContentPartType getType() {
 		return PrintoutContentPartType.table;
 	}
 
-	@Override
+	
 	public PrintoutContentStyle getStyle() {
 		return style;
 	}
