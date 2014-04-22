@@ -1,4 +1,3 @@
-<%@ page import="fi.nls.oskari.util.PropertyUtil" %>
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -99,7 +98,6 @@
 
 <nav id="maptools">
     <div id="loginbar">
-        <%= PropertyUtil.get("oskari.logger") %>
     </div>
     <div id="menubar">
     </div>

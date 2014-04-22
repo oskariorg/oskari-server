@@ -44,19 +44,12 @@
     </dependencies>
 
     <properties>
+        <env>default</env>
         <profile-filter>${basedir}/env/default/default-filter.properties</profile-filter>
+        <profile-resources>${basedir}/env/${env}</profile-resources>
     </properties>
 
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <env>default</env>
-            </properties>
-        </profile>
         <profile>
             <id>jetty</id>
             <properties>
@@ -76,6 +69,18 @@
                 <profile-filter>${basedir}/env/${env}/tomcat-filter.properties</profile-filter>
             </properties>
         </profile>
+        <!--
+        Add a custom profile for your maven settings.xml or here to use your own filter properties instead of defaults:
+        <profile>
+            <id>custom</id>
+            <properties>
+        		<profile-resources>/path/to/custom/resources</profile-resources>
+                <profile-filter>/path/to/custom/my-filter.properties</profile-filter>
+            </properties>
+        </profile>
+
+        Compile using profile with "mvn clean install -Pcustom"
+        -->
     </profiles>
 
     <build>
@@ -92,7 +97,7 @@
             </resource>
             <resource>
                 <!-- profile specific resources -->
-                <directory>${basedir}/env/${env}</directory>
+                <directory>${profile-resources}</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -104,7 +109,7 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${basedir}/env/${env}</directory>
+                            <directory>${profile-resources}</directory>
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
@@ -119,7 +124,7 @@
                     <systemProperties>
                         <systemProperty>
                             <name>java.security.auth.login.config</name>
-                            <value>src/main/resources/jndi-login.conf</value>
+                            <value>${basedir}/env/jetty-jaas/WEB-INF/jndi-login.conf</value>
                         </systemProperty>
                     </systemProperties>
                     <httpConnector>
