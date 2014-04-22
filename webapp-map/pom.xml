@@ -106,11 +106,6 @@
                         <resource>
                             <directory>${basedir}/env/${env}</directory>
                             <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                            <includes>
-                                <include>*.xml</include>
-                                <include>*.conf</include>
-                            </includes>
                         </resource>
                     </webResources>
                 </configuration>

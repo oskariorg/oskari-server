@@ -177,7 +177,7 @@ public class DBHandler {
         }
     }
     private static void createContent(Connection conn, final String dbname) {
-        final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "default");
+        final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "app-default");
         createContent(conn, dbname, setup);
     }
 
