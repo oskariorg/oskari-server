@@ -68,11 +68,11 @@ public class JettyLauncher {
     }
 
     private static Resource createResourceCollection() throws Exception {
-        ResourceCollection collection = new ResourceCollection();
-        //collection.setResourcesAsCSV("src/main/webapp,../..");
-        collection.addPath("src/main/webapp");
-        collection.addPath("../..");
-        return collection;
+        final String[] paths = {
+                "src/main/webapp",
+                "../.."
+        };
+        return new ResourceCollection(paths);
     }
 
     private static ServletHolder createFrontEndServlet() {
