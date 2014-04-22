@@ -247,8 +247,6 @@ CREATE TABLE portti_published_map_statistics
 );
 
 
------- Additional table not found in hsqldb - needed for publisher;
-
 CREATE TABLE portti_terms_of_use_for_publishing
 (
   userid bigint NOT NULL,

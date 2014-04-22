@@ -1,0 +1,13 @@
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="oskaridb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
+        <Arg>${db.jndi.name}</Arg>
+        <Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="driverClassName">${db.jndi.driverClassName}</Set>
+                <Set name="url">${db.url}</Set>
+                <Set name="username">${db.username}</Set>
+                <Set name="password">${db.password}</Set>
+            </New>
+        </Arg>
+    </New>
+</Configure>

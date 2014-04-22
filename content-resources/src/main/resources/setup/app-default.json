@@ -3,18 +3,19 @@
         "create-empty-db",
         "register-bundles",
         "postgres-add-myplaces",
-        "postgres-add-wfs"
+        "postgres-add-users",
+        "postgres-add-JAAS"
     ],
     "views" : [
         "default-view.json",
         "postgres-view.json",
-        "publisher-template-view.json",
-        "postgres-myplaces2-view.json"
+        "publisher-template-view.json"
     ],
     "sql" : [
-        "populateInspireThemes.sql",
-        "exampleLayersAndPermissions.sql",
+        "populate-Inspire-themes.sql",
+        "example-layers.sql",
+        "example-permissions.sql",
         "example-wfslayer.sql",
-        "example-myplaces-wfs-baselayer.sql"
+        "example-permissions.sql"
     ]
 }

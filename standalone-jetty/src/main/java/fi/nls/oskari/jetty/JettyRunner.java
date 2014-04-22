@@ -1,16 +1,13 @@
 package fi.nls.oskari.jetty;
 
-import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.eclipse.jetty.server.Server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
-        addProperties("/standalone.properties");
+        PropertyUtil.loadProperties("/oskari.properties");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
+        PropertyUtil.loadProperties("/standalone.properties");
 
         String username = fromSystemPropertiesOrPropertyUtil("db.username", "db.jndi.username");
         String password = fromSystemPropertiesOrPropertyUtil("db.password", "db.jndi.password");
@@ -30,12 +27,5 @@ public class JettyRunner {
     private static String fromSystemPropertiesOrPropertyUtil(String systemPropertyKey, String propertyUtilKey) {
         String systemProperty = System.getProperty(systemPropertyKey);
         return systemProperty != null ? systemProperty : PropertyUtil.get(propertyUtilKey);
-    }
-
-    private static void addProperties(String propertiesFile) throws IOException, DuplicateException {
-        Properties properties = new Properties();
-        InputStream inputStream = JettyRunner.class.getResourceAsStream(propertiesFile);
-        properties.load(inputStream);
-        PropertyUtil.addProperties(properties);
     }
 }

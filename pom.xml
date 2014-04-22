@@ -262,6 +262,11 @@
 				<artifactId>jetty-jaas</artifactId>
 				<version>${jetty.version}</version>
 			</dependency>
+			<dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>postgresql</groupId>
@@ -565,7 +570,7 @@
         <module>content-resources</module>
 
         <module>servlet-map</module>
-        <module>webapplication</module>
+        <module>webapp-map</module>
         <module>standalone-jetty</module>
     </modules>
 

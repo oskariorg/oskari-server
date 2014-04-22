@@ -32,6 +32,7 @@ public class IOHelper {
 
     private static int CONNECTION_TIMEOUT_MS = 3000;
     private static int READ_TIMEOUT_MS = 60000;
+    private static String MY_DOMAIN = "http://localhost:2373";
 
     private static boolean trustAllCerts = false;
     private static boolean trustAllHosts = false;
@@ -39,8 +40,10 @@ public class IOHelper {
     static {
         CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
         READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
+        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
         trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
         trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
+        MY_DOMAIN = PropertyUtil.get("oskari.domain", MY_DOMAIN);
     }
 
     public static int getConnectionTimeoutMs() {
@@ -48,6 +51,9 @@ public class IOHelper {
     }
     public static int getReadTimeoutMs() {
         return READ_TIMEOUT_MS;
+    }
+    public static String getMyDomain() {
+        return MY_DOMAIN;
     }
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET

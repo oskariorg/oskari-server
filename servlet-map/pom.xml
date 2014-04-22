@@ -65,35 +65,20 @@
 			line -->
 		<filter-profile>template</filter-profile>
 		<filter-path>${basedir}/filter</filter-path>
-		<app.server>jetty</app.server>
 	</properties>
 
 	<build>
-		<finalName>oskari-map</finalName>
-
 		<filters>
 			<!-- The base filtering path and file should always be hardcoded, it's 
 				not dependent on any profile change -->
-			<filter>${basedir}/filter/filter-base.properties</filter>
-			<filter>${filter-path}/${filter-profile}.properties</filter>
+			<filter>${filter-path}/filter-base.properties</filter>
+			<!-- filter>${filter-path}/${filter-profile}.properties</filter -->
 		</filters>
 
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-				<includes>
-					<!-- No XML filtering activated <include>**/*.xml</include>  -->
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<excludes>
-					<!-- No XML filtering activated <exclude>**/*.xml</exclude>  -->
-					<exclude>**/*.properties</exclude>
-				</excludes>
 			</resource>
 		</resources>
 	</build>

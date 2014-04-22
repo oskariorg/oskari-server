@@ -30,7 +30,7 @@ public class JettyLauncher {
                                 String jndiDbUrl,
                                 String jndiDbUsername,
                                 String jndiDbPassword,
-                                String jndiDbPoolName) throws NamingException {
+                                String jndiDbPoolName) throws Exception {
         Server server = new Server(serverPort);
         server.setHandler(createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword, jndiDbPoolName));
         return server;
@@ -41,7 +41,7 @@ public class JettyLauncher {
                                                       String jndiDbUrl,
                                                       String jndiDbUsername,
                                                       String jndiDbPassword,
-                                                      String jndiDbPoolName) throws NamingException {
+                                                      String jndiDbPoolName) throws Exception {
         WebAppContext servletContext = new WebAppContext();
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
@@ -67,9 +67,11 @@ public class JettyLauncher {
         servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
     }
 
-    private static Resource createResourceCollection() {
+    private static Resource createResourceCollection() throws Exception {
         ResourceCollection collection = new ResourceCollection();
-        collection.setResourcesAsCSV("src/main/webapp,../..");
+        //collection.setResourcesAsCSV("src/main/webapp,../..");
+        collection.addPath("src/main/webapp");
+        collection.addPath("../..");
         return collection;
     }
 

@@ -17,8 +17,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.wfs.SchemaSubscriber;
-import fi.nls.oskari.wfs.Triggerer;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -27,10 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -41,7 +37,7 @@ public class MapFullServlet extends HttpServlet {
     static {
         // populate properties before initializing logger since logger implementation is
         // configured in properties
-        PropertyUtil.loadProperties("/oskari.properties", false);
+        PropertyUtil.loadProperties("/oskari.properties");
         PropertyUtil.loadProperties("/oskari-ext.properties");
     }
 
@@ -49,10 +45,12 @@ public class MapFullServlet extends HttpServlet {
     private static final String KEY_REDIS_PORT = "redis.port";
     private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
 
-    private final static String KEY_DEVELOPMENT = "development";
+    private final static String PROPERTY_DEVELOPMENT = "development";
+    private final static String PROPERTY_VERSION = "oskari.client.version";
     private final static String KEY_PRELOADED = "preloaded";
     private final static String KEY_PATH = "path";
     private final static String KEY_VERSION = "version";
+
     private final static String KEY_AJAX_URL = "ajaxUrl";
     private final static String KEY_CONTROL_PARAMS = "controlParams";
 
@@ -60,8 +58,6 @@ public class MapFullServlet extends HttpServlet {
     private boolean isDevelopmentMode = false;
     private String version = null;
     private final Set<String> paramHandlers = new HashSet<String>();
-    private SchemaSubscriber sub;
-    Triggerer triggerer;
 
     private static final long serialVersionUID = 1L;
 
@@ -88,14 +84,6 @@ public class MapFullServlet extends HttpServlet {
                 .get(KEY_REDIS_HOSTNAME, "localhost"), ConversionHelper.getInt(PropertyUtil
                 .get(KEY_REDIS_PORT), 6379));
 
-        // subscribe to schema channel
-        sub = new SchemaSubscriber();
-        JedisManager.subscribe(sub, SchemaSubscriber.CHANNEL);
-
-        // cache and job initializing
-        triggerer = new Triggerer();
-        triggerer.initWFSLayerConfigurationUpdater();
-
         // Action route initialization
         ActionControl.addDefaultControls();
         // check control params to pass for getappsetup
@@ -103,10 +91,9 @@ public class MapFullServlet extends HttpServlet {
         log.debug("Checking for params", paramHandlers);
 
         // check if we have development flag -> serve non-minified js
-        isDevelopmentMode = "true".equals(PropertyUtil.get(KEY_DEVELOPMENT));
-        // Get version from init params
-        version = getServletConfig().getInitParameter(KEY_VERSION);
-
+        isDevelopmentMode = "true".equals(PropertyUtil.get(PROPERTY_DEVELOPMENT));
+        // Get version from init params or properties, prefer version from properties and default to init param
+        version = PropertyUtil.get(PROPERTY_VERSION, getServletConfig().getInitParameter(KEY_VERSION));
     }
 
     /**
@@ -132,7 +119,8 @@ public class MapFullServlet extends HttpServlet {
                     HttpSession session = params.getRequest().getSession();
                     session.invalidate();
                     log.debug("Logout");
-                    params.getResponse().sendRedirect("/");
+                    // redirect to oskari.map.url or / if not defined
+                    params.getResponse().sendRedirect(PropertyUtil.get("oskari.map.url", "/"));
                     return;
                 }
                 final String viewJSP = setupRenderParameters(params);
@@ -310,8 +298,6 @@ public class MapFullServlet extends HttpServlet {
     @Override
     public void destroy() {
         ActionControl.teardown();
-        sub.unsubscribe();
-        triggerer.destroy();
         super.destroy();
     }
 }

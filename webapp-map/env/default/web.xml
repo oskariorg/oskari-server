@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webapp>
+    <servlet>
+        <servlet-name>mapFullServlet</servlet-name>
+        <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
+        <init-param>
+            <param-name>version</param-name>
+            <param-value>${oskari.client.version}</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>mapFullServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <resource-ref>
+        <description>Primary database</description>
+        <res-ref-name>${db.jndi.name}</res-ref-name>
+        <res-type>${db.jndi.type}</res-type>
+        <res-auth>${db.jndi.auth}</res-auth>
+    </resource-ref>
+</webapp>
