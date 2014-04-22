@@ -37,35 +37,11 @@ public class DBHandler {
 
     public static void main(String[] args) throws Exception {
         // populate standalone properties
-        InputStream in = null;
-        try {
-            final Properties prop = new Properties();
-            in = DBHandler.class.getResourceAsStream("/db.properties");
-            prop.load(in);
-            PropertyUtil.addProperties(prop);
-        } catch (Exception e) {
-            System.out.println("Error when populating properties!");
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (Exception ignored) { }
-        }
+        PropertyUtil.loadProperties("/db.properties");
         final String environment = System.getProperty("oskari.env");
-        if(environment != null && !environment.isEmpty()) {
-            try {
-                final Properties prop = new Properties();
-                in = DBHandler.class.getResourceAsStream("/db-" + environment + ".properties");
-                prop.load(in);
-                PropertyUtil.addProperties(prop, true);
-            } catch (Exception ignored) {
-                System.out.println("Error when populating env-properties for '" + environment + "'!!");
-            } finally {
-                try {
-                    in.close();
-                } catch (Exception ignored) { }
-            }
-        }
+        PropertyUtil.loadProperties("/db-" + environment + ".properties");
+        PropertyUtil.loadProperties("/oskari.properties");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
 
         // replace logger after properties are populated
         log = LogFactory.getLogger(DBHandler.class);
@@ -94,15 +70,15 @@ public class DBHandler {
 
     /**
      * Returns connection based on db.properties.
-     * Prefers a datasource -> property 'datasource' (defaults to "jdbc/OskariPool").
-     * Falls back to db url -> property 'url' (defaults to "jdbc:postgresql://localhost:5432/oskaridb")
-     * Username and password ('user' and 'pass' properties)
+     * Prefers a datasource -> property 'db.jndi.name' (defaults to "jdbc/OskariPool").
+     * Falls back to db url -> property 'db.url' (defaults to "jdbc:postgresql://localhost:5432/oskaridb")
+     * Username and password ('db.username' and 'db.password' properties)
      * @return connection to the database
      * @throws SQLException if connection cannot be fetched
      */
     public static Connection getConnection() throws SQLException {
 
-        final String datasource = PropertyUtil.get("datasource", "jdbc/OskariPool");
+        final String datasource = PropertyUtil.get("db.jndi.name", "jdbc/OskariPool");
         try {
             final InitialContext ctx = new InitialContext();
             final DataSource ds = (DataSource) ctx.lookup("java:/comp/env/" + datasource);
@@ -113,10 +89,10 @@ public class DBHandler {
         final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
         try {
             final Properties connectionProps = new Properties();
-            final String user = PropertyUtil.getOptional("user");
+            final String user = PropertyUtil.getOptional("db.username");
             if(user != null) connectionProps.put("user", user);
 
-            final String pass = PropertyUtil.getOptional("pass");
+            final String pass = PropertyUtil.getOptional("db.password");
             if(pass != null) connectionProps.put("password", pass);
 
             overrideConnectionPropertiesFromSystemProperties(connectionProps);

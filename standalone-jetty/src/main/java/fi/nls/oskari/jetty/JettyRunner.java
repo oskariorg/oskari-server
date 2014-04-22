@@ -6,7 +6,6 @@ import org.eclipse.jetty.server.Server;
 public class JettyRunner {
     public static void main(String[] args) throws Exception {
         PropertyUtil.loadProperties("/oskari.properties");
-        //PropertyUtil.loadProperties("/standalone.properties");
         PropertyUtil.loadProperties("/oskari-ext.properties");
 
         String username = fromSystemPropertiesOrPropertyUtil("db.username");
