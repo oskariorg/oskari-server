@@ -230,14 +230,19 @@ public class AnalysisDataService {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
                         if (colx.indexOf("=") != -1) {
-                            columnNames.add(colx.split("=")[0]);
-
+                            String columnName = colx.split("=")[0];
+                            // Let's make sure no geometry field gets involved.
+                            if (columnName != ANALYSIS_GEOMETRY_FIELD) {
+                                columnNames.add(colx.split("=")[0]);
+                            }
                         }
                     }
 
                 }
-                // Add geometry for filter and for highlight
-                columnNames.add(ANALYSIS_GEOMETRY_FIELD);
+                // Add geometry for filter and for highlight.
+                // On the other hand, let's not add it so it won't pollute our gfi.
+                // (it gets added to the query by WFS anyway)
+                //columnNames.add(ANALYSIS_GEOMETRY_FIELD);
                 return "{default:" + columnNames.toString() + "}";
             }
         }

@@ -524,6 +524,33 @@ public class WebServiceMapProducerResourceTest {
 				WebServiceMapProducerResourceTestFileType.PDF);
 
 	}
+	
+	@Test
+	public void testWmtsLayerPrintZoom7png8opacityAndTemplateWithPagedTableContentAsPDF()
+			throws NoSuchAuthorityCodeException, IOException,
+			GeoWebCacheException, FactoryException, ParseException,
+			XMLStreamException, FactoryConfigurationError,
+			RequestFilterException, TransformException,
+			com.vividsolutions.jts.io.ParseException, InterruptedException,
+			URISyntaxException, org.json.simple.parser.ParseException {
+
+		Properties props = getFixedTestProperties("jhs.properties",
+				"layers.json");
+		props.store(System.out, "");
+
+		WebServiceMapProducerResource resource = new WebServiceMapProducerResource(
+				props);
+		String layersUrlFromProps = props.getProperty("layersURL");
+		resource.setLayerJSONurl(new URL(layersUrlFromProps));
+		resource.setLayersDirty(false);
+		runner.setResource(resource);
+
+		runner.run(
+				"testWmtsLayerPrintZoom7png8opacityAndTemplateWithPagedTableContent",
+				WebServiceMapProducerResourceTestFileType.GEOJSON,
+				WebServiceMapProducerResourceTestFileType.PDF);
+
+	}
 
 	/* FOR TESTING ONLY */
 	/* synchronized for create on call only */

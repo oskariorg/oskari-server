@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 
 public class RequestUTF8Filter implements javax.servlet.Filter {
 
-	@Override
+	
 	public void init(FilterConfig filterConfig) throws ServletException {
 
 	}
 
-	@Override
+	
 	public void doFilter(ServletRequest req, ServletResponse rsp,
 			FilterChain chain) throws IOException, ServletException {
 
@@ -27,7 +27,7 @@ public class RequestUTF8Filter implements javax.servlet.Filter {
 
 	}
 
-	@Override
+	
 	public void destroy() {
 
 	}

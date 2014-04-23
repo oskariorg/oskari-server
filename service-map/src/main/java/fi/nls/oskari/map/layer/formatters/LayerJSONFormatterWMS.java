@@ -48,6 +48,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
         JSONHelper.putValue(layerJson, "style", layer.getStyle());
+        JSONHelper.putValue(layerJson, "gfiContent", layer.getGfiContent());
 
         includeCapabilitiesInfo(layerJson, layer, capabilities);
 

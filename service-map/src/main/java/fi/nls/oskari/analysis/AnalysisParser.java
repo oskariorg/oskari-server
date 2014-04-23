@@ -37,7 +37,7 @@ public class AnalysisParser {
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
             "__fid", "metaDataProperty", "description", "boundedBy", "name",
-            "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
+            "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "created", "updated", "uuid");
 
 
     public static final String ANALYSIS_LAYER_PREFIX = "analysis_";

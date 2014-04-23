@@ -116,12 +116,15 @@ public class StreamingPDFImpl implements StreamingOutput {
 						mapLink.getZoom(), width, height, overlayLayers,
 						MapProducer.ImageType.ARGB, null);
 
-				BufferedImage scaledImage = scaleOps.doScaleWithFilters(image,
-						width * 2, height * 2);
+				if (image != null) {
 
-				images.add(scaledImage);
+					BufferedImage scaledImage = scaleOps.doScaleWithFilters(
+							image, width * 2, height * 2);
 
-				image.flush();
+					images.add(scaledImage);
+
+					image.flush();
+				}
 
 			}
 		} finally {
@@ -256,12 +259,14 @@ public class StreamingPDFImpl implements StreamingOutput {
 						mapLink.getZoom(), adjWidth, adjHeight, overlayLayers,
 						MapProducer.ImageType.ARGB, envAdj);
 
-				BufferedImage scaledImage = scaleOps.doScaleWithFilters(image,
-						width * 2, height * 2);
+				if (image != null) {
+					BufferedImage scaledImage = scaleOps.doScaleWithFilters(
+							image, width * 2, height * 2);
 
-				images.add(scaledImage);
+					images.add(scaledImage);
 
-				image.flush();
+					image.flush();
+				}
 
 			}
 		} finally {
