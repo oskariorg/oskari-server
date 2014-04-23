@@ -6,7 +6,7 @@
 
 A new module has been added for user management. Oskari now has database tables for users and roles and a new UserService
 implementation utilizing them (DatabaseUserService). The DatabaseUserService is now configured as default in oskari.properties
- but can be overridden by oskari-ext.properties
+ but can be overridden by oskari-ext.properties.
 
 ### servlet-map/webapp-map/JAAS authentication
 
