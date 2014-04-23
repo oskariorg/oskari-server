@@ -18,6 +18,7 @@ package fi.nls.oskari.printout.printing;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.jempbox.xmp.XMPMetadata;
 import org.apache.jempbox.xmp.XMPSchema;
@@ -84,6 +85,14 @@ public class PDFContentMetadata extends XMPSchema {
 	 */
 	public List<String> getCreators() {
 		return getSequenceList(prefix + ":creator");
+	}
+
+	public void setMetadataFromMap(Map<String, ?> metas) {
+		for (String key : metas.keySet()) {
+			String val = (String) metas.get(key);
+			setTextProperty(prefix + ":" + key, val);
+		}
+
 	}
 
 }

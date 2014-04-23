@@ -511,11 +511,19 @@ public class PDFProducer {
 		dcSchema.setTitle("oskari.org/printout-servlet");
 		dcSchema.addCreator("oskari.org/printout-servlet");
 		dcSchema.setDescription("");
-		
-		
+
 		PDFContentMetadata ctSchema = new PDFContentMetadata(metadata);
-		ctSchema.addCreator("Testing Proprietary metadata");
-		ctSchema.addCreator("Testing Proprietary metadata values");
+		/*
+		 * ctSchema.addCreator("Testing Proprietary metadata");
+		 * ctSchema.addCreator("Testing Proprietary metadata values");
+		 */
+		if (opts.getContent() != null) {
+			if (opts.getContent().getMetadata() != null) {
+
+				ctSchema.setMetadataFromMap(opts.getContent().getMetadata());
+			}
+		}
+
 		metadata.addSchema(ctSchema);
 
 		metadataStream.importXMPMetadata(metadata);

@@ -12,10 +12,13 @@ public class PrintoutContent {
 	final List<PrintoutContentPart> parts;
 	final List<PrintoutContentPage> pages;
 
+	Map<String, ?> metadata;
+
 	public PrintoutContent() {
 		styles = new HashMap<String, PrintoutContentStyle>();
 		parts = new ArrayList<PrintoutContentPart>();
 		pages = new ArrayList<PrintoutContentPage>();
+
 	}
 
 	public List<PrintoutContentPage> getPages() {
@@ -28,6 +31,14 @@ public class PrintoutContent {
 
 	public Map<String, PrintoutContentStyle> getStyles() {
 		return styles;
+	}
+
+	public Map<String, ?> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, ?> metadata) {
+		this.metadata = metadata;
 	}
 
 }
