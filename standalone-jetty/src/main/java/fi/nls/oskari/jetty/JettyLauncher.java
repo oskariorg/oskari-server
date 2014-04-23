@@ -79,7 +79,14 @@ public class JettyLauncher {
                 PropertyUtil.get("oskari.server.jsp.location", "src/main/webapp"),
                 PropertyUtil.get("oskari.client.location", "../..")
         };
-        return new ResourceCollection(paths);
+        try {
+            return new ResourceCollection(paths);
+        }
+        catch (Exception ex) {
+            // TODO: maybe a bit more generic paths handling
+            System.out.println("Problem with resource paths: " + paths[0] + " and " + paths[1]);
+            throw ex;
+        }
     }
 
     private static ServletHolder createFrontEndServlet() {

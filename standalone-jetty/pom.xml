@@ -130,6 +130,28 @@
                     </filters>
                 </configuration>
             </plugin>
+            <!-- Copy the JSP files for dist/jsp folder -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                  <execution>
+                    <id>copy-resources</id>
+                    <phase>validate</phase>
+                    <goals>
+                      <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                      <outputDirectory>${basedir}/dist/jsp</outputDirectory>
+                      <resources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp</directory>
+                        </resource>
+                      </resources>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
         </plugins>
     </build>
 </project>
