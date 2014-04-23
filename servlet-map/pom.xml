@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>map-servlet</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Oskari map Servlet</name>
 
@@ -25,6 +25,11 @@
 		<dependency>
 			<groupId>fi.nls.oskari</groupId>
 			<artifactId>content-resources</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-users</artifactId>
 		</dependency>
 
 		<!-- artifactId "oskari-control-base" is implied by adding extended actions -->
@@ -60,72 +65,22 @@
 			line -->
 		<filter-profile>template</filter-profile>
 		<filter-path>${basedir}/filter</filter-path>
-		<app.server>jetty</app.server>
 	</properties>
 
 	<build>
-		<finalName>oskari-map</finalName>
-
 		<filters>
 			<!-- The base filtering path and file should always be hardcoded, it's 
 				not dependent on any profile change -->
-			<filter>${basedir}/filter/filter-base.properties</filter>
-			<filter>${filter-path}/${filter-profile}.properties</filter>
+			<filter>${filter-path}/filter-base.properties</filter>
+			<!-- filter>${filter-path}/${filter-profile}.properties</filter -->
 		</filters>
 
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
-				<includes>
-					<!-- No XML filtering activated <include>**/*.xml</include>  -->
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<excludes>
-					<!-- No XML filtering activated <exclude>**/*.xml</exclude>  -->
-					<exclude>**/*.properties</exclude>
-				</excludes>
 			</resource>
 		</resources>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<filters>
-						<!-- The base filtering path and file should always be hardcoded, it's 
-							not dependent on any profile change -->
-						<filter>${basedir}/filter/filter-base.properties</filter>
-						<filter>${filter-path}/${filter-profile}.properties</filter>
-					</filters>
-					<archive>
-						<!-- 
-						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-						 -->
-					</archive>
-					<webResources>
-						<resource>
-							<directory>src/main/resources/WEB-INF/${app.server}</directory>
-							<filtering>true</filtering>
-							<targetPath>WEB-INF</targetPath>
-							<includes>
-								<include>*.xml</include>
-							</includes>
-						</resource>
-					</webResources>
-					
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<profiles>
@@ -164,114 +119,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-			<id>jetty-profile</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<filters>
-								<!-- The base filtering path and file should always be hardcoded, it's 
-									not dependent on any profile change -->
-								<filter>${basedir}/filter/filter-base.properties</filter>
-								<filter>${filter-path}/${filter-profile}.properties</filter>
-							</filters>
-							<archive>
-							</archive>
-							<webResources>
-								<resource>
-									<directory>src/jetty-maven/resources/</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>*.xml</include>
-									</includes>
-								</resource>
-								<resource>
-									<directory>src/main/resources/WEB-INF/${app.server}</directory>
-									<filtering>true</filtering>
-									<targetPath>WEB-INF</targetPath>
-									<includes>
-										<include>*.xml</include>
-									</includes>
-								</resource>
-							</webResources>
-							
-						</configuration>
-					</plugin>
-					<plugin>
-						<!-- Try running: http://localhost:2373/ajax?action_route=GetAppSetup 
-							http://localhost:2373/ajax?action_route=GetSearchResult&searchKey=Tampere -->
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>maven-jetty-plugin</artifactId>
-						<version>6.1.26</version>
-						<configuration>
-							<scanIntervalSeconds>10</scanIntervalSeconds>
-							<stopKey>STOP</stopKey>
-							<stopPort>9999</stopPort>
-							<webAppConfig>
-								<contextPath>/</contextPath>
-
-								<baseResource implementation="org.mortbay.resource.ResourceCollection">
-									<resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
-								</baseResource>
-								<!-- TODO: service targets are scanned but not included in classpath 
-									so changes arent reflected. It can be done like this: -->
-								<!-- extraClasspath>target/classes;../service-base/target/classes</extraClasspath -->
-							</webAppConfig>
-							<scanTargets>
-								<scanTarget>service-base/target/classes</scanTarget>
-								<scanTarget>service-permissions/target/classes</scanTarget>
-								<scanTarget>service-map/target/classes</scanTarget>
-								<scanTarget>service-search/target/classes</scanTarget>
-								<scanTarget>service-control/target/classes</scanTarget>
-							</scanTargets>
-							<connectors>
-								<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-									<port>2373</port>
-									<maxIdleTime>60000</maxIdleTime>
-								</connector>
-							</connectors>
-						</configuration>
-						<executions>
-							<execution>
-								<id>jetty-run</id>
-								<phase>install</phase>
-								<goals>
-									<goal>run-exploded</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>stop-jetty</id>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>stop</goal>
-								</goals>
-							</execution>
-						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>commons-dbcp</groupId>
-								<artifactId>commons-dbcp</artifactId>
-								<version>1.4</version>
-							</dependency>
-							<dependency>
-								<groupId>hsqldb</groupId>
-								<artifactId>hsqldb</artifactId>
-								<version>1.8.0.7</version>
-							</dependency>
-							<dependency>
-								<groupId>postgresql</groupId>
-								<artifactId>postgresql</artifactId>
-								<version>8.4-702.jdbc4</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-				</plugins>
-			</build>
-
 		</profile>
 	</profiles>
 </project>

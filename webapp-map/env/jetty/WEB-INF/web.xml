@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webapp>
+    <servlet>
+        <servlet-name>default</servlet-name>
+        <init-param>
+            <param-name>useFileMappedBuffer</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet>
+        <servlet-name>mapFullServlet</servlet-name>
+        <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
+        <init-param>
+            <param-name>version</param-name>
+            <param-value>${oskari.client.version}</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/Oskari/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>mapFullServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+</webapp>

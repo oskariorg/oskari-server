@@ -10,6 +10,8 @@ target/
 .project
 /data/
 /servlet-map/data/
-/servlet-map/src/main/webapp/WEB-INF/jetty-env.xml
 transport.log
 *pom.xml.versionsBackup
+/standalone-jetty/dist/public/oskari
+/standalone-jetty/dist/public/Oskari
+

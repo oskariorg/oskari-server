@@ -81,4 +81,15 @@ public abstract class UserService {
     public Role[] getRoles() throws ServiceException {
         return getRoles(Collections.emptyMap());
     }
+
+    /**
+     * Return the user by username. This method should be overridden in concrete implementation. The
+     * default implementation always throws an exception.
+     * @param username
+     * @return
+     * @throws ServiceException
+     */
+    public User getUser(String username) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
 }

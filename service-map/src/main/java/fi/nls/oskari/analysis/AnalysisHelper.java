@@ -201,8 +201,10 @@ public class AnalysisHelper {
                     }
 
                 }
-                // Add geometry for filter and for highlight
-                fm.put(AnalysisDataService.ANALYSIS_GEOMETRY_FIELD);
+                // Add geometry for filter and for highlight.
+                // ...or maybe not since Transport will add it anyway.
+                // This prevents the geometry text from polluting the GFI and feature data.
+                //fm.put(AnalysisDataService.ANALYSIS_GEOMETRY_FIELD);
                 fm.put("__centerX");
                 fm.put("__centerY");
             }

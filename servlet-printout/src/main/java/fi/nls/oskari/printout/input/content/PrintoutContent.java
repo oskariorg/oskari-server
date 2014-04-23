@@ -10,18 +10,35 @@ public class PrintoutContent {
 	final Map<String, PrintoutContentStyle> styles;
 
 	final List<PrintoutContentPart> parts;
+	final List<PrintoutContentPage> pages;
+
+	Map<String, ?> metadata;
 
 	public PrintoutContent() {
-		styles = new HashMap<String,PrintoutContentStyle>();
+		styles = new HashMap<String, PrintoutContentStyle>();
 		parts = new ArrayList<PrintoutContentPart>();
+		pages = new ArrayList<PrintoutContentPage>();
+
+	}
+
+	public List<PrintoutContentPage> getPages() {
+		return pages;
+	}
+
+	public List<PrintoutContentPart> getParts() {
+		return parts;
 	}
 
 	public Map<String, PrintoutContentStyle> getStyles() {
 		return styles;
 	}
 
-	public List<PrintoutContentPart> getParts() {
-		return parts;
+	public Map<String, ?> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, ?> metadata) {
+		this.metadata = metadata;
 	}
 
 }
