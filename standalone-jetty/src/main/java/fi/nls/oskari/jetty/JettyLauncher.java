@@ -47,12 +47,18 @@ public class JettyLauncher {
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
 
+        // setup JSP/static resources
         servletContext.setBaseResource(createResourceCollection());
-
         servletContext.addServlet(createFrontEndServlet(), "/Oskari/*");
         servletContext.addServlet(JspServlet.class, "*.jsp");
         servletContext.addServlet(DebugServlet.class, "/debug");
+
+        // map servlet
         servletContext.addServlet(createMapServlet(oskariClientVersion), "/");
+
+        // TODO: replace these with actual impls
+        servletContext.addServlet(NotImplementedYetServlet.class, "/transport/*");
+        servletContext.addServlet(NotImplementedYetServlet.class, "/geoserver/*");
 
         setupDatabaseConnectionInContext(servletContext, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword, jndiDbPoolName);
 
