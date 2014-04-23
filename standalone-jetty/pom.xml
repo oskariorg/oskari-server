@@ -74,7 +74,11 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
                 <executions>
-                    <execution><goals><goal>java</goal></goals></execution>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
                 </executions>
                 <configuration>
                     <mainClass>fi.nls.oskari.jetty.JettyRunner</mainClass>
@@ -95,20 +99,23 @@
                 </executions>
                 <configuration>
                     <finalName>oskari-jetty-${project.version}</finalName>
-                  <transformers>
-                      <!-- annotation processing using SPI needs services transformer or only the last SPI with same name is used.
-                      This means multiple dependencies with OskariActionRoutes won't work without ServicesResourceTransformer
-                        -->
-                    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                    <!-- Write out main class so we can start with just "java -jar oskari-jetty-[version].jar" -->
-                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                        <manifestEntries>
-                            <Main-Class>fi.nls.oskari.jetty.JettyRunner</Main-Class>
-                            <Build-Number>${project.version}</Build-Number>
-                            <Class-Path>.</Class-Path>
-                        </manifestEntries>
-                    </transformer>
-                  </transformers>
+                    <outputDirectory>${basedir}/dist</outputDirectory>
+                    <transformers>
+                        <!-- annotation processing using SPI needs services transformer or only the last SPI with same name is used.
+                        This means multiple dependencies with OskariActionRoutes won't work without ServicesResourceTransformer
+                          -->
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                        <!-- Write out main class so we can start with just "java -jar oskari-jetty-[version].jar" -->
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <manifestEntries>
+                                <Main-Class>fi.nls.oskari.jetty.JettyRunner</Main-Class>
+                                <Build-Number>${project.version}</Build-Number>
+                                <Class-Path>.</Class-Path>
+                            </manifestEntries>
+                        </transformer>
+                    </transformers>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>

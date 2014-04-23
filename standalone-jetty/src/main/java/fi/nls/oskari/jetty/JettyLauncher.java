@@ -2,6 +2,7 @@ package fi.nls.oskari.jetty;
 
 import fi.nls.oskari.map.servlet.JaasAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.jaas.JAASLoginService;
@@ -75,8 +76,8 @@ public class JettyLauncher {
 
     private static Resource createResourceCollection() throws Exception {
         final String[] paths = {
-                "src/main/webapp",
-                "../.."
+                PropertyUtil.get("oskari.server.jsp.location", "src/main/webapp"),
+                PropertyUtil.get("oskari.client.location", "../..")
         };
         return new ResourceCollection(paths);
     }
