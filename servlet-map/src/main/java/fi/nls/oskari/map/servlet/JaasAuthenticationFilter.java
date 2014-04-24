@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.servlet;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -31,9 +32,10 @@ public class JaasAuthenticationFilter implements Filter {
 
     private void setupSession(HttpServletRequest httpRequest, Principal userPrincipal) throws ServiceException {
         if(userPrincipal != null) {
+            final String KEY_ATTR = User.class.getName();
             HttpSession session = httpRequest.getSession(false);
-            if(session == null || session.getAttribute("user") == null) {
-                httpRequest.getSession().setAttribute("user", UserService.getInstance().getUser(userPrincipal.getName()));
+            if(session == null || session.getAttribute(KEY_ATTR) == null) {
+                httpRequest.getSession().setAttribute(KEY_ATTR, UserService.getInstance().getUser(userPrincipal.getName()));
             }
         }
     }

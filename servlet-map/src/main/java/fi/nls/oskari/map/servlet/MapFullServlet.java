@@ -281,7 +281,7 @@ public class MapFullServlet extends HttpServlet {
         }
 
         final HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(User.class.getName());
         if (user == null) {
             try {
                 UserService service = UserService.getInstance();
