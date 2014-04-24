@@ -121,6 +121,7 @@ public class CreateUserLayerHandler extends ActionHandler {
         FileOutputStream fos = null;
         FileItem impFileItem = null;
         HttpServletRequest request = params.getRequest();
+        request.setCharacterEncoding("UTF-8");
         Map fparams = new HashMap<String, String>();
         RawUpLoadItem loadItem = new RawUpLoadItem();
 
@@ -156,7 +157,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                         if (impFileItem == null) impFileItem = fileItem;
 
                     } else {
-                        fparams.put(fileItem.getFieldName(), fileItem.getString());
+                        fparams.put(fileItem.getFieldName(), fileItem.getString("UTF-8"));
                     }
                 }
             } catch (Exception ex) {
