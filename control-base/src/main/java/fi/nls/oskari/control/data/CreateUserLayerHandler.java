@@ -41,11 +41,10 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
-    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP","KML");
-    private static final String  IMPORT_SHP = ".SHP";
-    private static final String  IMPORT_KML = ".KML";
+    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML");
+    private static final String IMPORT_SHP = ".SHP";
+    private static final String IMPORT_KML = ".KML";
     private static final String PARAM_EPSG_KEY = "epsg";
-
 
 
     @Override
@@ -79,20 +78,15 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             GeoJsonWorker geojsonWorker = null;
 
-            if(file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1)
-            {
+            if (file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1) {
                 geojsonWorker = new SHPGeoJsonCollection();
-            }
-            else if(file.getName().toUpperCase().indexOf(IMPORT_KML) > -1)
-            {
+            } else if (file.getName().toUpperCase().indexOf(IMPORT_KML) > -1) {
                 geojsonWorker = new KMLGeoJsonCollection();
             }
-                // Parse import data to geojson
-                if(!geojsonWorker.parseGeoJSON(file, target_epsg))
-                {
-                    throw new ActionException("Couldn't parse geoJSON out of import file");
-                }
-
+            // Parse import data to geojson
+            if (!geojsonWorker.parseGeoJSON(file, target_epsg)) {
+                throw new ActionException("Couldn't parse geoJSON out of import file");
+            }
 
 
             // Store geojson via ibatis
@@ -121,48 +115,53 @@ public class CreateUserLayerHandler extends ActionHandler {
         FileOutputStream fos = null;
         FileItem impFileItem = null;
         HttpServletRequest request = params.getRequest();
-        request.setCharacterEncoding("UTF-8");
+
         Map fparams = new HashMap<String, String>();
         RawUpLoadItem loadItem = new RawUpLoadItem();
 
+        try {
+            request.setCharacterEncoding("UTF-8");
 
-        if (request.getContentType().indexOf("multipart") > -1) {
+            if (request.getContentType().indexOf("multipart") > -1) {
 
-            DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+                DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 
             /*
              * Set the file size limit in bytes. This should be set as an
              * initialization parameter
              */
-            // diskFileItemFactory.setSizeThreshold(1024 * 1024 * 10); //10MB.
+                // diskFileItemFactory.setSizeThreshold(1024 * 1024 * 10); //10MB.
 
 
-            // Create a new file upload handler
-            ServletFileUpload upload = new ServletFileUpload(diskFileItemFactory);
+                // Create a new file upload handler
+                ServletFileUpload upload = new ServletFileUpload(diskFileItemFactory);
 
-            List items = null;
+                List items = null;
 
-            try {
-                items = upload.parseRequest(request);
-            } catch (FileUploadException ex) {
-                log.error("Could not parse request", ex);
-            }
-            try {
-                ListIterator li = items.listIterator();
-
-                while (li.hasNext()) {
-                    FileItem fileItem = (FileItem) li.next();
-                    if (!fileItem.isFormField()) {
-                        // Take only 1st one
-                        if (impFileItem == null) impFileItem = fileItem;
-
-                    } else {
-                        fparams.put(fileItem.getFieldName(), fileItem.getString("UTF-8"));
-                    }
+                try {
+                    items = upload.parseRequest(request);
+                } catch (FileUploadException ex) {
+                    log.error("Could not parse request", ex);
                 }
-            } catch (Exception ex) {
-                log.error("Could not parse request", ex);
+                try {
+                    ListIterator li = items.listIterator();
+
+                    while (li.hasNext()) {
+                        FileItem fileItem = (FileItem) li.next();
+                        if (!fileItem.isFormField()) {
+                            // Take only 1st one
+                            if (impFileItem == null) impFileItem = fileItem;
+
+                        } else {
+                            fparams.put(fileItem.getFieldName(), fileItem.getString("UTF-8"));
+                        }
+                    }
+                } catch (Exception ex) {
+                    log.error("Could not parse request", ex);
+                }
             }
+        } catch (Exception ex) {
+            log.error("Could not parse request", ex);
         }
         loadItem.setFileitem(impFileItem);
         loadItem.setFparams(fparams);
@@ -199,8 +198,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             String[] parts = {fileName.substring(0, i), fileName.substring(i + 1)};
             // Clean and jump extra files
             String parts0 = checkFileName(parts[0]);
-            if (parts0 == null)
-            {
+            if (parts0 == null) {
                 ze = zis.getNextEntry();
                 continue;
             }
