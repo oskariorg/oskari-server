@@ -4,14 +4,18 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.transport.TransportService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.WFSParser;
 
+import fi.nls.oskari.wfs.extension.UserLayerFilter;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -659,7 +663,17 @@ public class WFSMapLayerJob extends Job {
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
                     if(selectedProperties != null && selectedProperties.size() != 0) {
                         for(String attr : selectedProperties) {
-                            values.add(feature.getAttribute(attr));
+                            if (this.layer.getLayerId().startsWith(UserLayerFilter.USERLAYER_PREFIX)) {
+                                Object prop = feature.getAttribute(attr);
+                                try {
+                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
+                                    values.add(propMap);
+                                } catch(Exception e) {
+                                    values.add(prop);
+                                }
+                            } else {
+                                values.add(feature.getAttribute(attr));
+                            }
                         }
                     } else { // all values
                         for(Property prop : this.features.features().next().getProperties()) {
