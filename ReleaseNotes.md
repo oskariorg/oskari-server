@@ -8,15 +8,24 @@ A new module has been added for user management. Oskari now has database tables 
 implementation utilizing them (DatabaseUserService). The DatabaseUserService is now configured as default in oskari.properties
  but can be overridden by oskari-ext.properties.
 
-### servlet-map/webapp-map/JAAS authentication
+### servlet-map/webapp-map restructuring
 
 Servlet for map application has been separated into servlet code and webapp with JSPs and webapp configuration (webapp-map).
-Building the webapp-map is essentially the same as building servlet-map before this. The user login handling has been taken
-out of the servlet implementation and a reference JAAS configuration is now available in webapp-map. A servletfilter is now
-available in servlet-map to handle login using JAAS. The login form field names have changes to reflect this.
+Building the webapp-map is essentially the same as building servlet-map before this.
 
 Servlet aggregate pom.xml (servlet-map-pom.xml) has been removed since the parent pom now builds the servlet, webapp and standalone
 so you can use mvn clean install on the oskari-server root to build the modules.
+
+### servlet-map/JAAS authentication/user login
+
+The user login handling has been taken out of the servlet implementation and a reference JAAS configuration is now available in webapp-map.
+The login form field names have changes to reflect this.
+
+Servlet no longer handles login but expects a fi.nls.oskari.domain.User class object to be present in http session with key
+'fi.nls.oskari.domain.User' if the user is logged in. The User object should be added to session in a servletfilter handling the
+login as in servlet-map/fi.nls.oskari.map.servlet.JaasAuthenticationFilter.
+
+Building the webapp-map with mvn clean install -Pjetty-jaas will create a war file that has JAAS enabled and login working out of the box.
 
 ### standalone-jetty
 
