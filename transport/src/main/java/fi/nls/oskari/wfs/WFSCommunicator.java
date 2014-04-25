@@ -115,7 +115,7 @@ public class WFSCommunicator {
                 //}
             }
             // loop for all properties
-            if(selectedProperties != null) {
+      /*      if(selectedProperties != null) {
                 for(String prop : selectedProperties) {
                     OMElement property = factory.createOMElement("PropertyName", wfs);
                     if(!prop.contains(":")) {
@@ -125,7 +125,7 @@ public class WFSCommunicator {
                     }
                     query.addChild(property);
                 }
-            }
+            }  -- eliminated because of GetFeature fails when property name is not valid or not for all features */
 
             // load filter
             WFSFilter wfsFilter = constructFilter(layer.getLayerId());

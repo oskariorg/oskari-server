@@ -1,5 +1,9 @@
 {
     "create" : [
-        "00-create-tables.sql"
+        "create-base-tables.sql",
+        "create-wfs-tables.sql",
+        "create-statistics-tables.sql",
+        "create-user-tables.sql",
+        "create-JAAS-user-tables.sql"
     ]
 }

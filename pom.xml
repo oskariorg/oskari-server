@@ -30,6 +30,7 @@
 		<commons-httpclient.version>3.1</commons-httpclient.version>
 		<commons-codec.version>1.7</commons-codec.version>
 		<commons-fileupload.version>1.2</commons-fileupload.version>
+		<commons-dbcp.version>1.4</commons-dbcp.version>
 		
 		<staxon.version>1.2</staxon.version>
 		<lambdaj.version>2.3.3</lambdaj.version>
@@ -46,6 +47,9 @@
 		<fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 		<gt-xsd-kml.version>9.3</gt-xsd-kml.version>
 		
+		<jetty.version>9.1.0.M0</jetty.version>
+		<postgresql.version>8.4-702.jdbc4</postgresql.version>
+
 		<xerces.version>2.10.0</xerces.version>
 		<xmlbeans.version>2.5.0</xmlbeans.version>
 		<geotools.version>10.2</geotools.version>
@@ -109,6 +113,12 @@
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-users</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-permissions</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
@@ -128,6 +138,12 @@
 				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-OGC</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari</groupId>
+				<artifactId>map-servlet</artifactId>
+				<version>${fi.nls.oskari.version}</version>
 			</dependency>
 
 			<dependency>
@@ -208,6 +224,56 @@
 				<artifactId>commons-codec</artifactId>
 				<version>${commons-codec.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>${commons-dbcp.version}</version>
+			</dependency>
+
+			<!-- jetty -->
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-servlet</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-webapp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-plus</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-jsp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-jaas</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>de.odysseus.staxon</groupId>
 				<artifactId>staxon</artifactId>
@@ -378,7 +444,7 @@
 				<scope>test</scope>
 			</dependency>
 
-						
+
 		</dependencies>
 	</dependencyManagement>
 	
@@ -490,6 +556,7 @@
         <module>shared-test-resources</module>
 
         <module>service-base</module>
+        <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
 
@@ -501,6 +568,10 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>content-resources</module>
+
+        <module>servlet-map</module>
+        <module>webapp-map</module>
+        <module>standalone-jetty</module>
     </modules>
 
 </project>

@@ -717,6 +717,10 @@
       "north":6674305
    },
    "printout":{
+   	  "metadata": {
+   	  		"sample": "Metadata sample",
+   	  		"another": "viktig information" 
+   	  },
       "styles":{
          "table1Style":{
             "width":"20cm",

@@ -2,6 +2,7 @@ package fi.nls.oskari.map.view;
 
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ public class ViewServiceIbatisImplTest {
         PropertyUtil.addProperty("view.default.User", "3");
         PropertyUtil.addProperty("view.default.Guest", "4");
         PropertyUtil.addProperty("view.default.roles", "Admin, User, Guest");
+        PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
 
         service = new ViewServiceIbatisImpl();
     }

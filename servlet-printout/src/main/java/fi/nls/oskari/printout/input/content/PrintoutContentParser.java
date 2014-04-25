@@ -165,6 +165,8 @@ public class PrintoutContentParser {
 		parsePages(content.getStyles(), content.getPages(),
 				(List<Map<String, ?>>) obj.get("pages"));
 
+		content.setMetadata((Map<String, ?>) obj.get("metadata"));
+
 		return content;
 	}
 

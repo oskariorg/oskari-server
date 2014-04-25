@@ -1,5 +1,8 @@
 package fi.nls.oskari.domain;
 
+import fi.nls.oskari.service.DummyUserService;
+import fi.nls.oskari.util.PropertyUtil;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,6 +11,11 @@ import static org.junit.Assert.assertTrue;
  * @author SMAKINEN
  */
 public class UserTest {
+
+    @Before
+    public void setup() throws Exception {
+        PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
+    }
 
     @Test
     public void testHasRole() {

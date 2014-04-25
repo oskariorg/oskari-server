@@ -3,6 +3,7 @@ package fi.nls.oskari.service;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -121,7 +122,13 @@ public class ProxyServiceConfig {
                 urlBuilder.append("&");
             }
         }
-        return urlBuilder.toString();
+        final String url = urlBuilder.toString();
+
+        if(url.startsWith("/")) {
+            // default to self if domain not specified
+            return IOHelper.getMyDomain() + url;
+        }
+        return url;
     }
 
     public void setUrl(String url) {

@@ -153,8 +153,15 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
 
         // populate groups/themes for top level layers
         if(result.getParentId() == -1) {
-            // sublayers don't have groupId
-            result.setGroupId((Integer) data.get("groupid"));
+            // sublayers and internal baselayers don't have groupId
+            Object groupId = data.get("groupid");
+            if(groupId != null) {
+                result.setGroupId((Integer)groupId);
+                // populate layer group
+                // first run (~700 layers) with this lasts ~1800ms, second run ~300ms (cached)
+                final LayerGroup group = layerGroupService.find(result.getGroupId());
+                result.addGroup(group);
+            }
 
             // FIXME: inspireThemeService has built in caching (very crude) to make this fast,
             // without it getting themes makes the query 10 x slower
@@ -162,11 +169,6 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
             // populate inspirethemes
             final List<InspireTheme> themes = inspireThemeService.findByMaplayerId(result.getId());
             result.addInspireThemes(themes);
-
-            // populate layer group
-            // first run (all layers) with this lasts ~1800ms, second run ~300ms (cached)
-            final LayerGroup group = layerGroupService.find(result.getGroupId());
-            result.addGroup(group);
         }
 
         return result;

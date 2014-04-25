@@ -20,7 +20,8 @@ public class ResponseHelper {
     public static final void writeResponse(ActionParameters params, final Object response) {
         try {
             if(response instanceof JSONObject) {
-                params.getResponse().setContentType("application/json");
+                params.getResponse().setCharacterEncoding("UTF-8");
+                params.getResponse().setContentType("application/json;charset=UTF-8");
             }
             params.getResponse().getWriter().print(response);
         } catch (IOException e) {
