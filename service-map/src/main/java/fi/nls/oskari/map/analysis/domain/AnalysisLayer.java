@@ -21,6 +21,7 @@ public class AnalysisLayer {
     private String inputType = "";
     private String inputAnalysisId = null;
     private String inputCategoryId = null;
+    private String inputUserdataId = null;
     
     private List<Permissions> permissions = null;
     private String orgName = "";
@@ -364,5 +365,13 @@ public class AnalysisLayer {
 
     public String getInputCategoryId() {
         return inputCategoryId;
+    }
+
+    public String getInputUserdataId() {
+        return inputUserdataId;
+    }
+
+    public void setInputUserdataId(String inputUserdataId) {
+        this.inputUserdataId = inputUserdataId;
     }
 }
