@@ -51,6 +51,12 @@ Property keys in db.properties have been changed to use the same ones as utilize
 Also oskari.properties and oskari-ext.properties now override db.properties so each component can be configured to use the same
 credentials/urls with single properties file.
 
+### transport
+
+The `property_json` feature property of userlayers now gets parsed to json before sending to clients.
+
+All feature requests now include the geometry property, even if configured in the database not to request map tiles.
+
 ## 1.19
 
 ### control-base/Myplaces2Handler
