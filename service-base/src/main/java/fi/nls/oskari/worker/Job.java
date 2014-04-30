@@ -1,4 +1,4 @@
-package fi.nls.oskari.work;
+package fi.nls.oskari.worker;
 
 /**
  * Defines Job interface for JobQueue
@@ -35,6 +35,12 @@ public abstract class Job implements Runnable {
 	protected boolean goNext() {
 		return running;
 	}
+
+    /**
+     * Can be used to hook some post processing stuff. Think of this as "finally".
+     */
+    public void teardown() {
+    }
 
 	/**
 	 * Checks if job is running and hasNext is true

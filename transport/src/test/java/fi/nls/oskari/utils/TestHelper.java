@@ -9,8 +9,6 @@ import java.net.URL;
 /**
  * Helper for checking if we have correct proxy settings available. Tests can use
  * assume(TestHelper.canDoHttp()) to ignore a test if http is not available.
- *
- * TODO: add similar isRedisAvailable() method.
  */
 public class TestHelper {
 

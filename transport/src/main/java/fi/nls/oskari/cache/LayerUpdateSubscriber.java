@@ -19,6 +19,12 @@ import org.opengis.feature.type.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.util.*;
 
+/**
+ * To use this:
+ *
+ * // subscribe to schema channel
+ * JedisManager.subscribe(new LayerUpdateSubscriber(), LayerUpdateSubscriber.CHANNEL);
+ */
 public class LayerUpdateSubscriber extends JedisSubscriber {
     private final static Logger log = LogFactory.getLogger(LayerUpdateSubscriber.class);
 
@@ -78,7 +84,7 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                 }
 
                 // set testing location
-                Location location = new Location();
+                /*Location location = new Location();
                 location.setSrs(layer.getSRSName());
                 location.setBbox(layer.getTestLocation());
                 location.setZoom(layer.getTestZoom());
@@ -153,6 +159,7 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                 JSONHelper.putValue(root, "schema", schema);
                 JSONHelper.putValue(root, "status", "ok");
                 JedisManager.publish(SCHEMA_CHANNEL, root.toString());
+                */
             }
         }
     }

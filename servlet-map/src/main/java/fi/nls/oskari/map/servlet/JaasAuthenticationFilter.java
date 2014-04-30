@@ -35,7 +35,10 @@ public class JaasAuthenticationFilter implements Filter {
             final String KEY_ATTR = User.class.getName();
             HttpSession session = httpRequest.getSession(false);
             if(session == null || session.getAttribute(KEY_ATTR) == null) {
-                httpRequest.getSession().setAttribute(KEY_ATTR, UserService.getInstance().getUser(userPrincipal.getName()));
+                log.debug("Setting user", userPrincipal.getName(), "in session with key", KEY_ATTR);
+                User user = UserService.getInstance().getUser(userPrincipal.getName());
+                log.debug("Got user", user, "from", UserService.getInstance().getClass().getName());
+                httpRequest.getSession().setAttribute(KEY_ATTR, user);
             }
         }
     }

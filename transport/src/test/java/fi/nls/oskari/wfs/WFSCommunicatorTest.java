@@ -54,7 +54,7 @@ public class WFSCommunicatorTest {
 
         Properties properties = new Properties();
         try {
-            properties.load(TransportService.class.getResourceAsStream("config.properties"));
+            properties.load(TransportService.class.getResourceAsStream("transport.properties"));
             PropertyUtil.addProperties(properties, true);
         } catch (Exception e) {
             System.err.println("Configuration could not be loaded");

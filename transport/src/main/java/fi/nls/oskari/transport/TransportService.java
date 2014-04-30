@@ -1,21 +1,21 @@
 package fi.nls.oskari.transport;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.List;
-import java.util.Properties;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.cache.LayerUpdateSubscriber;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.work.*;
+import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.worker.JobQueue;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
@@ -27,17 +27,16 @@ import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
-import fi.nls.oskari.work.Job;
-import fi.nls.oskari.work.JobQueue;
-import fi.nls.oskari.work.WFSMapLayerJob;
+import fi.nls.oskari.work.fe.FEMapLayerJob;
 
 /**
  * Handles all incoming requests (channels) and manages Job queues
  * 
  * @see org.cometd.server.AbstractService
  */
-public class TransportService extends AbstractService {
+public class TransportService extends AbstractService implements ResultProcessor {
     static {
+        // FIXME: Check where the axis should be flipped and fix the code instead of forcing with system property!
         // Wanting to use (X,Y) order always (not flip when transforming for
         // example from EPSG:3067 to EPSG:4326
         // http://docs.geotools.org/latest/userguide/library/referencing/order.html
@@ -45,8 +44,10 @@ public class TransportService extends AbstractService {
 
         // populate properties before initializing logger since logger
         // implementation is configured in properties
-        addProperties("config.properties", false);
-        addProperties("/transport-ext.properties", true);
+        PropertyUtil.loadProperties("/oskari.properties");
+        PropertyUtil.loadProperties("/transport.properties");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
+        PropertyUtil.loadProperties("/transport-ext.properties");
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
 
@@ -126,11 +127,6 @@ public class TransportService extends AbstractService {
 	public static final String CHANNEL_FILTER = "/wfs/filter";
 	public static final String CHANNEL_RESET = "/wfs/reset";
 
-	// API URL (action routes)
-	public static String SERVICE_URL;
-    public static String SERVICE_URL_PATH;
-    public static String SERVICE_URL_SESSION_PARAM;
-    public static String SERVICE_URL_LIFERAY_PATH;
 
     // action user uid API
     private static final String UID_API = "GetCurrentUser";
@@ -142,8 +138,6 @@ public class TransportService extends AbstractService {
 	
 	// JobQueue singleton
 	private JobQueue jobs;
-
-    private LayerUpdateSubscriber sub;
 
 	/**
 	 * Constructs TransportService with BayeuxServer instance
@@ -157,15 +151,10 @@ public class TransportService extends AbstractService {
     {
         super(bayeux, "transport");
 
-        log.debug("STARTED");
-
-        TransportService.SERVICE_URL = PropertyUtil.get("serviceURL", null);
-        TransportService.SERVICE_URL_PATH = PropertyUtil.get("serviceURLParam", null);
-        TransportService.SERVICE_URL_SESSION_PARAM = PropertyUtil.get("serviceURLSessionParam", null);
-        TransportService.SERVICE_URL_LIFERAY_PATH = PropertyUtil.get("serviceURLLiferayPath", "");
-
         int workerCount = ConversionHelper.getInt(PropertyUtil
                 .get("workerCount"), 10);
+
+        log.debug("Transport STARTED with worker count", workerCount);
 
         this.bayeux = bayeux;
         this.local = getServerSession();
@@ -173,12 +162,8 @@ public class TransportService extends AbstractService {
 
         // init jedis
         JedisManager.connect(workerCount + 2,
-                PropertyUtil.get("redisHostname"), ConversionHelper.getInt(
-                        PropertyUtil.get("redisPort"), 6379));
-
-        // subscribe to schema channel
-        sub = new LayerUpdateSubscriber();
-        JedisManager.subscribe(sub, LayerUpdateSubscriber.CHANNEL);
+                PropertyUtil.get("redis.hostname"),
+                PropertyUtil.getOptional("redis.port", 6379));
 
         CachingSchemaLocator.init(); // init schemas
 
@@ -209,6 +194,15 @@ public class TransportService extends AbstractService {
         log.debug("DESTROYED");
     }
 
+    /**
+     * Call through implementation of ResultProcessor
+     * @param clientId
+     * @param channel
+     * @param data
+     */
+    public void addResults(final String clientId, final String channel, final Object data) {
+        send(clientId, channel, data);
+    }
     /**
      * Sends data to certain client on a given channel
      * 
@@ -293,6 +287,7 @@ public class TransportService extends AbstractService {
      */
     public void processRequest(ServerSession client, Message message)
     {
+        log.debug("Serving client:", client.getId());
     	Map<String, Object> output = new HashMap<String, Object>();
     	Map<String, Object> params = message.getDataAsMap();
     	String json = message.getJSON();
@@ -310,6 +305,7 @@ public class TransportService extends AbstractService {
 
         // channel processing
         String channel = message.getChannel();
+        log.debug("Processing request on channel:", channel, "- payload:", json);
         if (channel.equals(CHANNEL_INIT)) {
             processInit(client, store, json);
         } else if (channel.equals(CHANNEL_ADD_MAP_LAYER)) {
@@ -393,7 +389,7 @@ public class TransportService extends AbstractService {
      * @param layerId
      */
     private void initMapLayerJob(SessionStore store, String layerId) {
-        Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+        Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
         jobs.remove(job);
         jobs.add(job);
     }
@@ -423,7 +419,7 @@ public class TransportService extends AbstractService {
         String layerId = layer.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
         if (store.containsLayer(layerId)) {
             // first remove from jobs then from store
-            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
 
             store.removeLayer(layerId);
@@ -480,7 +476,7 @@ public class TransportService extends AbstractService {
         Layer layer = store.getLayers().get(layerId);
         if(layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
-            Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
             jobs.remove(job);
             jobs.add(job);
         }
@@ -531,7 +527,7 @@ public class TransportService extends AbstractService {
                 this.save(store);
                 if(tmpLayer.isVisible()) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-                    Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
+                    Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
                     jobs.remove(job);
                     jobs.add(job);
                 }
@@ -635,7 +631,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -660,7 +656,7 @@ public class TransportService extends AbstractService {
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -691,7 +687,7 @@ public class TransportService extends AbstractService {
 	    		this.save(store);
 	    		if(layerVisible) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-		    		Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.NORMAL, store, layerId);
+		    		Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
 		        	jobs.remove(job);
 		        	jobs.add(job);
 	    		}
@@ -732,7 +728,7 @@ public class TransportService extends AbstractService {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
             	// job without feature sending
-    			Job job = new WFSMapLayerJob(this, WFSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
+    			Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
 	        	jobs.remove(job);
 	        	jobs.add(job);
     		}
@@ -784,24 +780,54 @@ public class TransportService extends AbstractService {
         return bounds;
     }
 
-    private static void addProperties(final String propertiesFile, final boolean overwrite) {
-        InputStream in = null;
-        try {
-            Properties prop = new Properties();
-            in = TransportService.class.getResourceAsStream(propertiesFile);
-            prop.load(in);
-            PropertyUtil.addProperties(prop, overwrite);
-        } catch (Exception e) {
-            if(!overwrite) {
-                // base properties
-                System.err.println("Configuration could not be loaded");
-                e.printStackTrace();
-            }
-        } finally {
-            try {
-                in.close();
-            } catch (Exception ignored) {
-            }
+    /**
+     * Creates a new runnable job with own Jedis instance
+     * 
+     * Parameters define client's service (communication channel), session and
+     * layer's id. Sends all resources that the layer configuration allows.
+     * 
+     * @param service
+     * @param store
+     * @param layerId
+     * @return
+     */
+    public Job createOWSMapLayerJob(ResultProcessor service, OWSMapLayerJob.Type type,
+            SessionStore store, String layerId) {
+        
+        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+
+        if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
+            return new FEMapLayerJob(service, type, store, layerId);
         }
+        return new WFSMapLayerJob(service, type, store, layerId);
     }
+
+    /**
+     * Creates a new runnable job with own Jedis instance
+     * 
+     * Parameters define client's service (communication channel), session and
+     * layer's id. Also sets resources that will be sent if the layer
+     * configuration allows.
+     * 
+     * @param service
+     * @param store
+     * @param layerId
+     * @param reqSendFeatures
+     * @param reqSendImage
+     * @param reqSendHighlight
+     */
+    public Job createOWSMapLayerJob(ResultProcessor service, OWSMapLayerJob.Type type,
+            SessionStore store, String layerId, boolean reqSendFeatures,
+            boolean reqSendImage, boolean reqSendHighlight) {
+        
+        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+
+        if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
+            return new FEMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+        }
+        return new WFSMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+    }
+
 }

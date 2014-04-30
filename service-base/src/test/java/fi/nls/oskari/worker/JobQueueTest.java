@@ -1,4 +1,4 @@
-package fi.nls.oskari.work;
+package fi.nls.oskari.worker;
 
 import static org.junit.Assert.*;
 

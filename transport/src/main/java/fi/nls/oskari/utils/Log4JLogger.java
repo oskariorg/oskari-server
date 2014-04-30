@@ -1,5 +1,6 @@
 package fi.nls.oskari.utils;
 
+import fi.nls.oskari.util.IOHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -48,11 +49,7 @@ public class Log4JLogger extends fi.nls.oskari.log.Logger {
             System.err.println("Error reading properties from 'log4j.properties'");
         }
         finally {
-            if(inStream != null ) {
-                try {
-                    inStream.close();
-                }catch (Exception ignored) {}
-            }
+            IOHelper.close(inStream);
         }
         /*
         // To configure with xml you need this:

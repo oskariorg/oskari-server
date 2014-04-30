@@ -1,4 +1,4 @@
-package fi.nls.oskari.work;
+package fi.nls.oskari.worker;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -90,17 +90,20 @@ public class JobQueue
                             queue.wait();
                         } catch (InterruptedException ignored) { }
                     }
-                    r = (Runnable) queue.removeFirst();
+                    r = queue.removeFirst();
                 }
 
                 try {
                     r.run();
+                } catch (Exception e) {
+                    log.error("Exception while running job:", e.getMessage());
+                    log.debug(e, "Here's the stacktrace");
+                }
+                finally {
+                    ((Job) r).teardown();
                     jobs.remove(((Job) r).getKey());
-                    if(r instanceof WFSMapLayerJob) {
-                        // finish job
-                    }
                     log.debug("Finished", ((Job) r).getKey());
-                } catch (RuntimeException e) { }
+                }
             }
         }
     }

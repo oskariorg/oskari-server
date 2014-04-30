@@ -16,132 +16,52 @@
     <build>
     	<!-- This name is referenced in proxy forwards-->
 		<finalName>transport-0.0.1</finalName>
+        <filters>
+            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
+        </filters>
+        <resources>
+            <!-- Get the oskari.properties from servlet-map as baseline properties -->
+            <resource>
+                <directory>${basedir}/../servlet-map/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <!-- Get additional properties based on profile -->
+            <resource>
+                <directory>${transport.resourceDir}</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.8.v20121106</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webAppConfig>
+                        <contextPath>/transport</contextPath>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>2374</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
-	<profiles>
-        <profile>
-            <id>example</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <defaultGoal>install</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <version>8.1.8.v20121106</version>
-                        <configuration>
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
-                            <webAppConfig>
-                                <contextPath>/transport</contextPath>
-                            </webAppConfig>
-                            <connectors>
-                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                                    <port>2374</port>
-                                    <maxIdleTime>60000</maxIdleTime>
-                                </connector>
-                            </connectors>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+    <properties>
+        <transport.resourceDir>${basedir}/src/main/resources</transport.resourceDir>
+    </properties>
 
-		<profile>
-			<id>development</id>
-			<build>
-	        	<defaultGoal>install</defaultGoal>
-	        	<resources>
-				  <resource>  
-				      <directory>../../servers/development/wfs</directory>
-				      <includes>
-				          <include>**/*.properties</include>
-				          <include>**/*.xml</include>
-				      </includes>
-				  </resource>
-				</resources>
-	        	<plugins>
-		            <plugin>
-		                <groupId>org.mortbay.jetty</groupId>
-		                <artifactId>jetty-maven-plugin</artifactId>
-		                <version>8.1.8.v20121106</version>
-		                <configuration>
-		                    <scanIntervalSeconds>10</scanIntervalSeconds>
-		                    <webAppConfig>
-		                        <contextPath>/transport</contextPath>
-		                    </webAppConfig>
-                            <connectors>
-                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                                    <port>2374</port>
-                                    <maxIdleTime>60000</maxIdleTime>
-                                </connector>
-                            </connectors>
-		                </configuration>
-		            </plugin>
-		        </plugins>
-		    </build>
-		</profile>
-		
-		<profile>
-			<id>demo</id>
-			<build>
-	        	<defaultGoal>install</defaultGoal>
-	        	<resources>
-				  <resource>  
-				      <directory>../../servers/solmudmzke/wfs</directory>
-				      <includes>
-				          <include>**/*.properties</include>
-				          <include>**/*.xml</include>
-				      </includes>
-				  </resource>
-				</resources>
-	        	<plugins>
-		            <plugin>
-		                <groupId>org.mortbay.jetty</groupId>
-		                <artifactId>jetty-maven-plugin</artifactId>
-		                <version>8.1.8.v20121106</version>
-		                <configuration>
-		                    <scanIntervalSeconds>10</scanIntervalSeconds>
-		                    <webAppConfig>
-		                        <contextPath>/transport</contextPath>
-		                    </webAppConfig>
-		                </configuration>
-		            </plugin>
-		        </plugins>
-		    </build>
-		</profile>
-		
-		<profile>
-			<id>production</id>
-			<build>
-	        	<defaultGoal>install</defaultGoal>
-	        	<resources>
-				  <resource>  
-				      <directory>../../servers/solmudmztu/wfs</directory>
-				      <includes>
-				          <include>**/*.properties</include>
-				          <include>**/*.xml</include>
-				      </includes>
-				  </resource>
-				</resources>
-	        	<plugins>
-		            <plugin>
-		                <groupId>org.mortbay.jetty</groupId>
-		                <artifactId>jetty-maven-plugin</artifactId>
-		                <version>8.1.8.v20121106</version>
-		                <configuration>
-		                    <scanIntervalSeconds>10</scanIntervalSeconds>
-		                    <webAppConfig>
-		                        <contextPath>/transport</contextPath>
-		                    </webAppConfig>
-		                </configuration>
-		            </plugin>
-		        </plugins>
-		    </build>
-		</profile>
-	</profiles>
-    
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -236,24 +156,17 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
+            <artifactId>feature-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>OskariMarkFactory</artifactId>
             <version>1.0</version>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <groupId>org.geoserver</groupId>
-                    <artifactId>main</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.geotools</groupId>
-                    <artifactId>gt-shapefile-renderer</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
         </dependency>
         <dependency>
           <groupId>xml-apis</groupId>

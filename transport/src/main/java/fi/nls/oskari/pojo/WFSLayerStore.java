@@ -78,7 +78,7 @@ public class WFSLayerStore {
     private static final String TEMPLATE_TYPE = "templateType";
     private static final String REQUEST_TEMPLATE = "requestTemplate";
     private static final String RESPONSE_TEMPLATE = "responseTemplate";
-
+    
     private static final String SELECTION_SLD_STYLE = "selectionSLDStyle";
 
     private static final String STYLES = "styles";
@@ -88,6 +88,9 @@ public class WFSLayerStore {
 
     private static final String ERROR = "error";
     private static final String DEFAULT_LOCALE = "default";
+    
+    private static final String JOB_TYPE = "jobType";
+    private static final String REQUEST_IMPULSE = "requestImpulse";
 
     private String layerId;
     private Map<String, Map<String, String>> nameLocales;
@@ -120,7 +123,8 @@ public class WFSLayerStore {
     private Map<String, Double> tileBuffer;
     private String WMSLayerId;
     private boolean customParser;
-    private List<Double> testLocation;
+    private String customParserType;
+        private List<Double> testLocation;
     private int testZoom;
 
 
@@ -709,6 +713,10 @@ public class WFSLayerStore {
     public boolean isCustomParser() {
         return customParser;
     }
+    
+    public String getCustomParserType() {
+        return customParserType;
+    }
 
     /**
      * Sets if custom parsed
@@ -720,6 +728,7 @@ public class WFSLayerStore {
             this.customParser = true;
         else
             this.customParser = false;
+        customParserType =customParser; 
     }
 
     /**
@@ -969,7 +978,7 @@ public class WFSLayerStore {
      * Saves object to redis
      */
     public void save() {
-        JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
+        JedisManager.setex(KEY + this.layerId, JedisManager.EXPIRY_TIME_DAY, getAsJSON()); // expire in 1 day
     }
 
     /**
