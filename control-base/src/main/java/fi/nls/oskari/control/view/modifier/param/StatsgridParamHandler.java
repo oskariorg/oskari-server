@@ -22,6 +22,7 @@ public class StatsgridParamHandler extends ParamHandler {
     private static final String PARAM_MANUALBREAKSINPUT = "manualBreaksInput";
     private static final String PARAM_NUMBEROFCLASSES = "numberOfClasses";
     private static final String PARAM_CLASSIFICATIONMODE = "classificationMode";
+    private static final String PARAM_ISACTIVE = "isActive";
 
     private static final String PARAM_INDICATORS = "indicators";
     private static final String KEY_INDICATOR = "indicator";
@@ -33,7 +34,7 @@ public class StatsgridParamHandler extends ParamHandler {
     private static final String KEY_COLORINDEX = "index";
     private static final String KEY_COLORFLIPPED = "flipped";
 
-    
+
     public boolean handleParam(final ModifierParams params) throws ModifierException {
     	final String paramValues = params.getParamValue();
         if(paramValues == null) {
@@ -43,7 +44,7 @@ public class StatsgridParamHandler extends ParamHandler {
 
     	final String[] parts = paramValues.split("-");
 
-    	if (parts.length != 2 && parts.length != 3) {
+    	if (parts.length < 2) {
     		// We need both value and indicator list, if not provided we bail
             // optional colors part is the third one
     		return false;
@@ -53,7 +54,7 @@ public class StatsgridParamHandler extends ParamHandler {
         final String[] indicators = parts[1].split(",");
 
         // parse indicators
-        final JSONArray indicatorsJson = new JSONArray();        
+        final JSONArray indicatorsJson = new JSONArray();
         for (String indicatorString : indicators) {
             final String[] indicatorProps = indicatorString.split(" ");
             final JSONObject indicator =  getIndicatorJson(indicatorProps, params.getReferer());
@@ -75,7 +76,7 @@ public class StatsgridParamHandler extends ParamHandler {
         final String methodId = values[2];
         final String numberOfClasses = values[3];
         
-       
+       log.info("parts length: " + parts.length);
         try {
             final JSONObject statsgridState = getBundleState(params.getConfig(), BUNDLE_STATSGRID);
             statsgridState.put(PARAM_LAYERID, layerId);
@@ -91,12 +92,16 @@ public class StatsgridParamHandler extends ParamHandler {
                 final String manualBreaksInput = values[5];
             	statsgridState.put(PARAM_MANUALBREAKSINPUT, manualBreaksInput);
             }
-            if (parts.length == 3) {
+            if (parts.length >= 3 && parts[2].length() > 0) {
                 final String[] colors = parts[2].split(",");
                 JSONObject colorsJson = getColorsJson(colors);
                 if (colorsJson != null) {
                     statsgridState.put(PARAM_COLORS, colorsJson);
                 }
+            }
+            if (parts.length >= 4) {
+                final boolean isActive = "1".equals(parts[3]);
+                statsgridState.put(PARAM_ISACTIVE, isActive);
             }
             statsgridState.put(PARAM_INDICATORS, indicatorsJson);
         } catch (JSONException je) {

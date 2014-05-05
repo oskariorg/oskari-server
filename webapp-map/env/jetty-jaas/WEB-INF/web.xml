@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <webapp>
+    <listener>
+        <listener-class>fi.nls.oskari.map.servlet.OskariContextInitializer</listener-class>
+    </listener>
+
     <filter>
         <filter-name>authenticationFilter</filter-name>
-        <filter-class>fi.nls.oskari.map.servlet.JaasAuthenticationFilter</filter-class>
+        <filter-class>fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter</filter-class>
     </filter>
 
     <servlet>
@@ -31,6 +35,7 @@
         <servlet-name>mapFullServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
     <filter-mapping>
         <filter-name>authenticationFilter</filter-name>
         <servlet-name>mapFullServlet</servlet-name>

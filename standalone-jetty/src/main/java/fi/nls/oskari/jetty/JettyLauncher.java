@@ -1,6 +1,7 @@
 package fi.nls.oskari.jetty;
 
-import fi.nls.oskari.map.servlet.JaasAuthenticationFilter;
+import fi.nls.oskari.map.servlet.OskariContextInitializer;
+import fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -47,6 +48,7 @@ public class JettyLauncher {
         servletContext.setConfigurationClasses(new String[]{"org.eclipse.jetty.plus.webapp.EnvConfiguration", "org.eclipse.jetty.plus.webapp.PlusConfiguration"});
         servletContext.setResourceBase("src/main/webapp");
         servletContext.setContextPath("/");
+        servletContext.addEventListener(new OskariContextInitializer());
 
         // setup JSP/static resources
         servletContext.setBaseResource(createResourceCollection());
@@ -71,7 +73,7 @@ public class JettyLauncher {
     private static void setupJaasInContext(WebAppContext servletContext, String jndiDbPoolName) {
         Configuration.setConfiguration(new JNDILoginConfiguration(jndiDbPoolName));
         servletContext.setSecurityHandler(createJaasSecurityHandler());
-        servletContext.addFilter(JaasAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
+        servletContext.addFilter(PrincipalAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
     }
 
     private static Resource createResourceCollection() throws Exception {
