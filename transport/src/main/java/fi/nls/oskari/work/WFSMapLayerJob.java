@@ -1,7 +1,6 @@
 package fi.nls.oskari.work;
 
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
 import fi.nls.oskari.wfs.WFSFilter;
@@ -47,8 +46,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             }
         }
     }
-    
-    protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
+
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
@@ -190,7 +188,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, "wfs_no_permissions");
-            this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR, output);
+            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
             return;
         }
 
@@ -202,7 +200,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, "wfs_configuring_layer_failed");
-            this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR, output);
+            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
             return;
         }
 
@@ -307,8 +305,12 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 this.featuresHandler();
                 if(!goNext()) return;
 
-                log.debug("highlight image handling", this.features.size());
+                // Send geometries, if requested as well
+                if(this.session.isGeomRequest()){
+                    this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
+                }
 
+                log.debug("highlight image handling", this.features.size());
                 // IMAGE HANDLING
                 log.debug("sending");
                 Location location = this.session.getLocation();
@@ -336,17 +338,17 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             }
         } else if(this.type == Type.MAP_CLICK) {
             if(!this.requestHandler(null)) {
-                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
                 return;
             }
             this.featuresHandler();
             if(!goNext()) return;
             if(this.sendFeatures) {
                 log.debug("Feature values list", this.featureValuesList);
-                this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_MAP_CLICK);
             } else {
                 log.debug("No feature data!");
-                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
             }
         } else if(this.type == Type.GEOJSON) {
             if(!this.requestHandler(null)) {
@@ -355,7 +357,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             this.featuresHandler();
             if(!goNext()) return;
             if(this.sendFeatures) {
-                this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_FILTER);
+                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_FILTER);
             }
         } else {
             log.error("Type is not handled", this.type);
@@ -403,7 +405,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	   	 	output.put(OUTPUT_LAYER_ID, layer.getLayerId());
 	   	 	output.put(OUTPUT_ONCE, true);
 	   	 	output.put(OUTPUT_MESSAGE, "wfs_request_failed");
-	    	this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR, output);
+	    	this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
 	        log.debug(PROCESS_ENDED, getKey());
 			return false;
 		}
@@ -417,7 +419,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	   	 	output.put(OUTPUT_LAYER_ID, this.layerId);
 	   	 	output.put(OUTPUT_ONCE, true);
 	   	 	output.put(OUTPUT_MESSAGE, "features_parsing_failed");
-	    	this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR, output);
+	    	this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
 	        log.debug(PROCESS_ENDED, getKey());
 			return false;
 		}
@@ -428,14 +430,14 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
-            this.service.addResults(session.getClient(), TransportService.CHANNEL_MAP_CLICK, output);
+            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_MAP_CLICK, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
         } else if(this.type == Type.GEOJSON && this.features.size() == 0) {
             log.debug("Empty result for filter",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
-            this.service.addResults(session.getClient(), TransportService.CHANNEL_FILTER, output);
+            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FILTER, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
         } else {
@@ -443,14 +445,14 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 log.debug("Empty result",  this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURE, "empty");
-                this.service.addResults(session.getClient(), TransportService.CHANNEL_FEATURE, output);
+                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             } else if(this.features.size() == layer.getMaxFeatures()) {
                 log.debug("Max feature result",  this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURE, "max");
-                this.service.addResults(session.getClient(), TransportService.CHANNEL_FEATURE, output);
+                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
             }
         }
 
@@ -513,6 +515,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
 
         this.featureValuesList = new ArrayList<List<Object>>();
+        this.geomValuesList = new ArrayList<List<Object>>();
+
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
 
@@ -532,6 +536,15 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
                 // get feature geometry (transform if needed) and get geometry center
                 Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
+
+                // Add geometry property, if requested  in hili
+                if (this.session.isGeomRequest())
+                {
+                    List<Object> gvalues = new ArrayList<Object>();
+                    gvalues.add(fid);
+                    gvalues.add(geometry); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+                    this.geomValuesList.add(gvalues);
+                }
 
                 // send values
                 if(this.sendFeatures) {
@@ -727,13 +740,12 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     	} else {
     		locales = new ArrayList<String>();
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FIELDS, fields);
    	 	output.put(OUTPUT_LOCALES, locales);
 
-    	this.service.addResults(this.session.getClient(), TransportService.CHANNEL_PROPERTIES, output);
+    	this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_PROPERTIES, output);
     }
     
     /**
@@ -746,12 +758,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             log.warn("Failed to send feature");
     		return;   	
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FEATURE, values);
 
-    	this.service.addResults(this.session.getClient(), TransportService.CHANNEL_FEATURE, output);
+    	this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
     }
 
     /**
@@ -765,15 +776,32 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             log.warn("Failed to send features");
     		return;   	
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FEATURES, features);
-   	 	if(channel.equals(TransportService.CHANNEL_MAP_CLICK)) {
+   	 	if(channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
    	 		output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
    	 	}
 
     	this.service.addResults(this.session.getClient(), channel, output);
+    }
+    /**
+     * Sends list of feature geometries
+     *
+     * @param geometries
+     * @param channel
+     */
+    private void sendWFSFeatureGeometries(List<List<Object>> geometries, String channel) {
+        if(geometries == null || geometries.size() == 0) {
+            log.warn("Failed to send feature geometries");
+            return;
+        }
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_GEOMETRIES, geometries);
+        output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+
+        this.service.addResults(this.session.getClient(), channel, output);
     }
 
     /**
@@ -823,6 +851,6 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
        	 	output.put(OUTPUT_IMAGE_DATA, base64Image);
     	}
 
-    	this.service.addResults(this.session.getClient(), TransportService.CHANNEL_IMAGE, output);
+    	this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_IMAGE, output);
     }
 }

@@ -86,6 +86,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	public static final String PARAM_LAYER_VISIBLE = "visible";
 	public static final String PARAM_FEATURE_IDS = "featureIds";
 	public static final String PARAM_KEEP_PREVIOUS = "keepPrevious";
+    public static final String PARAM_GEOM_REQUEST = "geomRequest";
 
     // custom style params
     public static final String PARAM_FILL_COLOR = "fill_color";
@@ -119,13 +120,6 @@ public class TransportService extends AbstractService implements ResultProcessor
 
 	public static final String CHANNEL_DISCONNECT = "/meta/disconnect";
 
-	public static final String CHANNEL_ERROR = "/error";
-	public static final String CHANNEL_IMAGE = "/wfs/image";
-	public static final String CHANNEL_PROPERTIES = "/wfs/properties";
-	public static final String CHANNEL_FEATURE = "/wfs/feature";
-	public static final String CHANNEL_MAP_CLICK = "/wfs/mapClick";
-	public static final String CHANNEL_FILTER = "/wfs/filter";
-	public static final String CHANNEL_RESET = "/wfs/reset";
 
 
     // action user uid API
@@ -601,8 +595,8 @@ public class TransportService extends AbstractService implements ResultProcessor
     private void setMapClick(SessionStore store, Map<String, Object> point) {
         if (!point.containsKey(PARAM_LONGITUDE)
                 || !point.containsKey(PARAM_LATITUDE)
-                || !point.containsKey(PARAM_KEEP_PREVIOUS)) {
-            log.warn("Failed to set a map click");
+                || !point.containsKey(PARAM_KEEP_PREVIOUS)){
+            log.warn("Failed to set a map click", point);
             return;
         }
 
@@ -707,7 +701,8 @@ public class TransportService extends AbstractService implements ResultProcessor
             Map<String, Object> layer) {
         if (!layer.containsKey(PARAM_LAYER_ID)
                 || !layer.containsKey(PARAM_FEATURE_IDS)
-                || !layer.containsKey(PARAM_KEEP_PREVIOUS)) {
+                || !layer.containsKey(PARAM_KEEP_PREVIOUS)
+                || !layer.containsKey(PARAM_GEOM_REQUEST)) {
             log.warn("Layer features not defined");
     		return;
     	}
@@ -715,6 +710,7 @@ public class TransportService extends AbstractService implements ResultProcessor
     	String layerId = layer.get(PARAM_LAYER_ID).toString();
     	List<String> featureIds = new ArrayList<String>();
     	boolean keepPrevious;
+        boolean geomRequest;
     	
     	Object[] tmpfids = (Object[])layer.get(PARAM_FEATURE_IDS);
     	for(Object obj : tmpfids) {
@@ -723,6 +719,8 @@ public class TransportService extends AbstractService implements ResultProcessor
     	
     	keepPrevious = (Boolean)layer.get(PARAM_KEEP_PREVIOUS);
     	store.setKeepPrevious(keepPrevious);
+        geomRequest = (Boolean) layer.get(PARAM_GEOM_REQUEST);
+        store.setGeomRequest(geomRequest);
     	
     	if(store.containsLayer(layerId)) {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);

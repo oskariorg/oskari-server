@@ -53,6 +53,7 @@ public abstract class OWSMapLayerJob extends Job {
     public static final String OUTPUT_ONCE = "once";
     public static final String OUTPUT_MESSAGE = "message";
     public static final String OUTPUT_FEATURES = "features";
+    public static final String OUTPUT_GEOMETRIES = "geometries";
     public static final String OUTPUT_FEATURE = "feature";
     public static final String OUTPUT_FIELDS = "fields";
     public static final String OUTPUT_LOCALES = "locales";
@@ -94,6 +95,7 @@ public abstract class OWSMapLayerJob extends Job {
     protected FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     protected List<String> processedFIDs = new ArrayList<String>();
     protected List<List<Object>> featureValuesList;
+    protected List<List<Object>> geomValuesList;
 
     protected WFSImage image = null;
     protected Units units = new Units();
@@ -102,6 +104,7 @@ public abstract class OWSMapLayerJob extends Job {
     public static final String PERMISSIONS_API = "GetLayerIds";
     public static final String LAYER_CONFIGURATION_API = "GetWFSLayerConfiguration&id=";
 
+    protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
     // COOKIE
     public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";
 

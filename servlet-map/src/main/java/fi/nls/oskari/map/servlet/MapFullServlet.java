@@ -31,15 +31,9 @@ import java.util.Set;
 
 /**
  * Example implementation for oskari-server endpoint.
+ * Assumes PropertyUtil has been populated in ContextInitializer!!
  */
 public class MapFullServlet extends HttpServlet {
-
-    static {
-        // populate properties before initializing logger since logger implementation is
-        // configured in properties
-        PropertyUtil.loadProperties("/oskari.properties");
-        PropertyUtil.loadProperties("/oskari-ext.properties");
-    }
 
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
     private static final String KEY_REDIS_PORT = "redis.port";

@@ -6,6 +6,15 @@ package fi.nls.oskari.work;
  */
 public interface ResultProcessor {
 
+    public static final String CHANNEL_ERROR = "/error";
+    public static final String CHANNEL_IMAGE = "/wfs/image";
+    public static final String CHANNEL_PROPERTIES = "/wfs/properties";
+    public static final String CHANNEL_FEATURE = "/wfs/feature";
+    public static final String CHANNEL_MAP_CLICK = "/wfs/mapClick";
+    public static final String CHANNEL_FILTER = "/wfs/filter";
+    public static final String CHANNEL_RESET = "/wfs/reset";
+    public static final String CHANNEL_FEATURE_GEOMETRIES = "/wfs/featureGeometries";
+
     /**
      * Adds results for given task
      * @param clientId the client that requested processing
