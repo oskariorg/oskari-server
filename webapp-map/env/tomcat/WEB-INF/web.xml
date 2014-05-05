@@ -5,6 +5,15 @@
          id="OskariMap" version="2.5">
     <display-name>Oskari</display-name>
 
+    <listener>
+        <listener-class>fi.nls.oskari.map.servlet.OskariContextInitializer</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>authenticationFilter</filter-name>
+        <filter-class>fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter</filter-class>
+    </filter>
+
     <servlet>
         <servlet-name>mapFullServlet</servlet-name>
         <servlet-class>fi.nls.oskari.map.servlet.MapFullServlet</servlet-class>
@@ -19,6 +28,11 @@
         <url-pattern>/main</url-pattern>
         <url-pattern>/service</url-pattern>
     </servlet-mapping>
+
+    <filter-mapping>
+        <filter-name>authenticationFilter</filter-name>
+        <servlet-name>mapFullServlet</servlet-name>
+    </filter-mapping>
 
     <welcome-file-list>
         <welcome-file>main</welcome-file>
