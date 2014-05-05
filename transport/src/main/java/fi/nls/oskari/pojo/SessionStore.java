@@ -44,6 +44,7 @@ public class SessionStore {
 	private Coordinate mapClick; // passed parameter - not saved
 	private GeoJSONFilter filter; // passed parameter - not saved
 	private boolean keepPrevious = false; // passed parameter - not saved
+    private boolean geomRequest = false; // passed parameter - geom property returned or not - not saved
 
 	/**
 	 * Constructor with defined session key
@@ -384,9 +385,26 @@ public class SessionStore {
 	 */
 	public void setKeepPrevious(boolean keepPrevious) {
 		this.keepPrevious = keepPrevious;
-	}	
-	
-	/**
+	}
+
+    /**
+     *  Is geometry property in feature response
+     * @return
+     */
+    @JsonIgnore
+    public boolean isGeomRequest() {
+        return geomRequest;
+    }
+
+    /**
+     * Geometry property in feature response
+     * @param geomRequest  true (yes)
+     */
+    public void setGeomRequest(boolean geomRequest) {
+        this.geomRequest = geomRequest;
+    }
+
+    /**
 	 * Saves into redis
 	 * 
 	 * @return <code>true</code> if saved a valid session; <code>false</code>
