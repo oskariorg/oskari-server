@@ -23,7 +23,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <sqlMap resource="META-INF/Users.xml" />
   <sqlMap resource="META-INF/Roles.xml" />
   <sqlMap resource="META-INF/Permissions.xml" />
-  <sqlMap resource="META-INF/WFSService.xml" />
   <sqlMap resource="META-INF/PublishedMapUsage.xml" />
   <sqlMap resource="META-INF/TermsOfUse.xml" />
   <sqlMap resource="META-INF/CapabilitiesCache.xml" />

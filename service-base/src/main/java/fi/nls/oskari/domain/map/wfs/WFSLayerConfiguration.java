@@ -1,4 +1,4 @@
-package fi.nls.oskari.wfs;
+package fi.nls.oskari.domain.map.wfs;
 
 import java.util.List;
 
@@ -525,7 +525,7 @@ public class WFSLayerConfiguration {
 
 
 	public void save() {
-		JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
+		JedisManager.setex(KEY + this.layerId, JedisManager.EXPIRY_TIME_DAY, getAsJSON()); // expire in 1 day
 	}
 
 	public void destroy(String layerId) {

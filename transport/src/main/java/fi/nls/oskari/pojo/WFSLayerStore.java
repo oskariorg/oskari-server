@@ -88,9 +88,9 @@ public class WFSLayerStore {
 
     private static final String ERROR = "error";
     private static final String DEFAULT_LOCALE = "default";
-    
-    private static final String JOB_TYPE = "jobType";
-    private static final String REQUEST_IMPULSE = "requestImpulse";
+
+    //private static final String JOB_TYPE = "jobType";
+    //private static final String REQUEST_IMPULSE = "requestImpulse";
 
     private String layerId;
     private Map<String, Map<String, String>> nameLocales;

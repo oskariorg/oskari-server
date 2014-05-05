@@ -132,7 +132,7 @@
                     </httpConnector>
                     <webAppConfig>
                         <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
-                            <resourcesAsCSV>${basedir}/target/webapplication-${project.version},${basedir}/../..</resourcesAsCSV>
+                            <resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
                         </baseResource>
                     </webAppConfig>
                 </configuration>

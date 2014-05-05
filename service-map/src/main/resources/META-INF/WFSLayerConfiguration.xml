@@ -6,7 +6,7 @@
 
 <sqlMap namespace="WFSLayerConfiguration">
 
-    <typeAlias alias="WFSLayerConfiguration" type="fi.nls.oskari.wfs.WFSLayerConfiguration" />
+    <typeAlias alias="WFSLayerConfiguration" type="fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration" />
     <typeAlias alias="WFSSLDStyle" type="fi.nls.oskari.domain.map.wfs.WFSSLDStyle" />
     
     <resultMap class="WFSLayerConfiguration" id="WFSLayerConfiguration">

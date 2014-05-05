@@ -1,5 +1,6 @@
 package fi.nls.oskari.wfs;
 
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.service.db.BaseService;
 
