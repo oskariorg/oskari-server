@@ -234,7 +234,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             resource.setMapping("analysis", Long.toString(AnalysisHelper.getAnalysisIdFromLayerId(layerId)));
             return permissionsService.findResource(resource);
         }
-        else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)  || layerId.equals("-1")) {
+        else if (layerId.startsWith(AnalysisParser.MYPLACES_LAYER_PREFIX)  || layerId.equals("-1") || layerId.startsWith(AnalysisParser.USERLAYER_PREFIX)) {
 
             final Resource resource = new Resource();
             // permission to publish for self
@@ -253,7 +253,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     resource.addPermission(perm);
                 }
             }catch (Exception e) {
-                log.error("Something went wrong when generating source permissions for myplaces layer or temporary");
+                log.error("Something went wrong when generating source permissions for myplaces layer or temporary or user data layer");
 
             }
             return resource;

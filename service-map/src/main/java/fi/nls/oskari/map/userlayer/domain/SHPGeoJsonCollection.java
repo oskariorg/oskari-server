@@ -51,11 +51,13 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
 
             //Coordinate transformation support
             CoordinateReferenceSystem sourceCrs = source.getBounds().getCoordinateReferenceSystem();
+            if(sourceCrs == null) sourceCrs = schema.getCoordinateReferenceSystem();
+
             // TODO get map crs from request (current OL map crs)
             CoordinateReferenceSystem target = CRS.decode(target_epsg);
             // Source and target are identical ?
             // TODO: better check algorithm - name is not 100% proof
-            if(target.getName().equals(sourceCrs.getName())) sourceCrs = null;
+            if(sourceCrs != null && target.getName().equals(sourceCrs.getName())) sourceCrs = null;
 
             MathTransform transform = null;
             JSONArray feas = new JSONArray();

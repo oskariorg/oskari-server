@@ -4,14 +4,18 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.transport.TransportService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.utils.HttpHelper;
 import fi.nls.oskari.wfs.WFSCommunicator;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.WFSParser;
 
+import fi.nls.oskari.wfs.extension.UserLayerFilter;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -56,6 +60,7 @@ public class WFSMapLayerJob extends Job {
     public static final String OUTPUT_ONCE = "once";
     public static final String OUTPUT_MESSAGE = "message";
     public static final String OUTPUT_FEATURES = "features";
+    public static final String OUTPUT_GEOMETRIES = "geometries";
     public static final String OUTPUT_FEATURE = "feature";
     public static final String OUTPUT_FIELDS = "fields";
     public static final String OUTPUT_LOCALES = "locales";
@@ -96,6 +101,7 @@ public class WFSMapLayerJob extends Job {
 	private Type type;
 	private FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     private List<List<Object>> featureValuesList;
+    private List<List<Object>> geomValuesList;
     private List<String> processedFIDs = new ArrayList<String>();
     private WFSImage image = null;
     private Units units = new Units();
@@ -433,8 +439,12 @@ public class WFSMapLayerJob extends Job {
                 this.featuresHandler();
                 if(!goNext()) return;
 
-                log.debug("highlight image handling", this.features.size());
+                // Send geometries, if requested as well
+                if(this.session.isGeomRequest()){
+                    this.sendWFSFeatureGeometries(this.geomValuesList, TransportService.CHANNEL_FEATURE_GEOMETRIES);
+                }
 
+                log.debug("highlight image handling", this.features.size());
                 // IMAGE HANDLING
                 log.debug("sending");
                 Location location = this.session.getLocation();
@@ -631,6 +641,8 @@ public class WFSMapLayerJob extends Job {
         FeatureIterator<SimpleFeature> featuresIter =  this.features.features();
 
         this.featureValuesList = new ArrayList<List<Object>>();
+        this.geomValuesList = new ArrayList<List<Object>>();
+
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
 
@@ -651,6 +663,15 @@ public class WFSMapLayerJob extends Job {
                 // get feature geometry (transform if needed) and get geometry center
                 Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
 
+                // Add geometry property, if requested  in hili
+                if (this.session.isGeomRequest())
+                {
+                    List<Object> gvalues = new ArrayList<Object>();
+                    gvalues.add(fid);
+                    gvalues.add(geometry); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+                    this.geomValuesList.add(gvalues);
+                }
+
                 // send values
                 if(this.sendFeatures) {
                     Point centerPoint = WFSParser.getGeometryCenter(geometry);
@@ -659,7 +680,17 @@ public class WFSMapLayerJob extends Job {
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
                     if(selectedProperties != null && selectedProperties.size() != 0) {
                         for(String attr : selectedProperties) {
-                            values.add(feature.getAttribute(attr));
+                            if (this.layer.getLayerId().startsWith(UserLayerFilter.USERLAYER_PREFIX)) {
+                                Object prop = feature.getAttribute(attr);
+                                try {
+                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
+                                    values.add(propMap);
+                                } catch(Exception e) {
+                                    values.add(prop);
+                                }
+                            } else {
+                                values.add(feature.getAttribute(attr));
+                            }
                         }
                     } else { // all values
                         for(Property prop : this.features.features().next().getProperties()) {
@@ -845,7 +876,6 @@ public class WFSMapLayerJob extends Job {
     	} else {
     		locales = new ArrayList<String>();
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FIELDS, fields);
@@ -864,7 +894,6 @@ public class WFSMapLayerJob extends Job {
             log.warn("Failed to send feature");
     		return;   	
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FEATURE, values);
@@ -883,7 +912,6 @@ public class WFSMapLayerJob extends Job {
             log.warn("Failed to send features");
     		return;   	
     	}
-    	
     	Map<String, Object> output = new HashMap<String, Object>();
    	 	output.put(OUTPUT_LAYER_ID, this.layerId);
    	 	output.put(OUTPUT_FEATURES, features);
@@ -892,6 +920,24 @@ public class WFSMapLayerJob extends Job {
    	 	}
 
     	this.service.send(this.session.getClient(), channel, output);
+    }
+    /**
+     * Sends list of feature geometries
+     *
+     * @param geometries
+     * @param channel
+     */
+    private void sendWFSFeatureGeometries(List<List<Object>> geometries, String channel) {
+        if(geometries == null || geometries.size() == 0) {
+            log.warn("Failed to send feature geometries");
+            return;
+        }
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_GEOMETRIES, geometries);
+        output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+
+        this.service.send(this.session.getClient(), channel, output);
     }
 
     /**
