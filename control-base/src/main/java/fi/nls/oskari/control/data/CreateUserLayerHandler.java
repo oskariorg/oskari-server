@@ -121,7 +121,12 @@ public class CreateUserLayerHandler extends ActionHandler {
         FileOutputStream fos = null;
         FileItem impFileItem = null;
         HttpServletRequest request = params.getRequest();
-        request.setCharacterEncoding("UTF-8");
+        try {
+            // Incoming strings are in UTF-8 but they're not read as such unless we force it...
+            request.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         Map fparams = new HashMap<String, String>();
         RawUpLoadItem loadItem = new RawUpLoadItem();
 
