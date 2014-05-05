@@ -57,6 +57,9 @@ public class PropertyUtil {
     public static void setLogger(Logger logger) {
         log = logger;
     }
+    
+    
+    static Set<String> propertiesFiles = new HashSet<String>();
 
     /**
      * Loads given properties file relative to PropertyUtil class (use root relative path "/my-properties.properties").
@@ -73,13 +76,21 @@ public class PropertyUtil {
      * @param overwrite true to overwrite existing properties
      */
     public static void loadProperties(final String propertiesFile, final boolean overwrite) {
+        
+        if( propertiesFiles.contains(propertiesFile)) {
+            return;
+        }
         InputStream in = null;
         try {
             Properties prop = new Properties();
             in = PropertyUtil.class.getResourceAsStream(propertiesFile);
             prop.load(in);
             addProperties(prop, overwrite);
+            
+            propertiesFiles.add(propertiesFile);
+            
         } catch (Exception ignored) {
+            
         } finally {
             IOHelper.close(in);
         }

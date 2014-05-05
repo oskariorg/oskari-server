@@ -37,7 +37,7 @@ public class JettyLauncher {
         return server;
     }
 
-    private static WebAppContext createServletContext(String oskariClientVersion,
+    public static WebAppContext createServletContext(String oskariClientVersion,
                                                       String jndiDriverClassName,
                                                       String jndiDbUrl,
                                                       String jndiDbUsername,

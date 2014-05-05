@@ -157,6 +157,12 @@
 				<artifactId>wms</artifactId>
 				<version>${fi.mml.wms.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>fi.nls.oskari</groupId>
+				<artifactId>standalone-jetty</artifactId>
+				<version>${fi.nls.oskari.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>xerces</groupId>
