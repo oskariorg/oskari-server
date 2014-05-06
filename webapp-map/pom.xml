@@ -1,0 +1,142 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.nls.oskari</groupId>
+        <artifactId>oskari-parent</artifactId>
+        <version>1.20</version>
+    </parent>
+
+    <groupId>fi.nls.oskari</groupId>
+    <artifactId>webapp-map</artifactId>
+    <packaging>war</packaging>
+    <name>Oskari Map Web Application</name>
+
+    <dependencies>
+        <!-- Replace icu4j version included by axiom-api with newer version
+        which does not brake .jar investigation performed by jetty-maven plugin  -->
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>51.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <env>default</env>
+        <profile-filter>${basedir}/env/default/default-filter.properties</profile-filter>
+        <profile-resources>${basedir}/env/${env}</profile-resources>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>jetty</id>
+            <properties>
+                <env>jetty</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>jetty-jaas</id>
+            <properties>
+                <env>jetty-jaas</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>tomcat</id>
+            <properties>
+                <env>tomcat</env>
+                <profile-filter>${basedir}/env/${env}/tomcat-filter.properties</profile-filter>
+            </properties>
+        </profile>
+        <!--
+        Add a custom profile for your maven settings.xml or here to use your own filter properties instead of defaults:
+        <profile>
+            <id>custom</id>
+            <properties>
+        		<profile-resources>/path/to/custom/resources</profile-resources>
+                <profile-filter>/path/to/custom/my-filter.properties</profile-filter>
+            </properties>
+        </profile>
+
+        Compile using profile with "mvn clean install -Pcustom"
+        -->
+    </profiles>
+
+    <build>
+        <finalName>oskari-map</finalName>
+        <filters>
+            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
+            <filter>${basedir}/env/default/default-filter.properties</filter>
+            <filter>${profile-filter}</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>${basedir}/../servlet-map/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <!-- profile specific resources -->
+                <directory>${profile-resources}</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${profile-resources}</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>java.security.auth.login.config</name>
+                            <value>${basedir}/env/jetty-jaas/WEB-INF/jndi-login.conf</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <httpConnector>
+                        <port>2373</port>
+                    </httpConnector>
+                    <webAppConfig>
+                        <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                            <resourcesAsCSV>${basedir}/target/webapplication-${project.version},${basedir}/../..</resourcesAsCSV>
+                        </baseResource>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -13,6 +13,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-aggregate.xml";
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-aggregate.xml";
+    private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-aggregate.xml";
     private final String functionsTemplate = "<wps:Input><ows:Identifier>function</ows:Identifier><wps:Data><wps:LiteralData>{functions}</wps:LiteralData></wps:Data></wps:Input>";
 
     // xml template paths {}
@@ -51,6 +52,8 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         String doctemp = null;
         if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
             doctemp = this.getTemplate(this.analysisMethodTemplate2);
+        if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+            doctemp = this.getTemplate(this.analysisMethodTemplate3);
         else
             doctemp = this.getTemplate(this.analysisMethodTemplate);
 
@@ -63,6 +66,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(AGGREFUNCTIONS, this.buildAggreFunctions());
         doctemp = doctemp.replace(AGGREFIELD1, this.getAggreField1());
+        doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());
 
         // Filter
         String wfsfilter = "";

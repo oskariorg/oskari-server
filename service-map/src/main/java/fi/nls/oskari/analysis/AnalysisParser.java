@@ -37,11 +37,12 @@ public class AnalysisParser {
 
     private static final List<String> HIDDEN_FIELDS = Arrays.asList("ID",
             "__fid", "metaDataProperty", "description", "boundedBy", "name",
-            "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "uuid");
+            "location", "__centerX", "__centerY", "geometry", "geom", "the_geom", "created", "updated", "uuid");
 
 
     public static final String ANALYSIS_LAYER_PREFIX = "analysis_";
     public static final String MYPLACES_LAYER_PREFIX = "myplaces_";
+    public static final String USERLAYER_PREFIX = "userlayer_";
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
@@ -52,6 +53,7 @@ public class AnalysisParser {
 
     private static final String ANALYSIS_INPUT_TYPE_WFS = "wfs";
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
+    private static final String ANALYSIS_INPUT_TYPE_GEOJSON = "geojson";
     private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
     private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
@@ -61,6 +63,9 @@ public class AnalysisParser {
 
     private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
     private static final String MYPLACES_PROPERTY_NAME = "category_id";
+
+    private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
+    private static final String USERLAYER_PROPERTY_NAME = "user_layer_id";
 
     private static final String ANALYSIS_WFST_GEOMETRY = "feature:geometry>";
     private static final String ANALYSIS_WPS_UNION_GEOM = "gml:geom>";
@@ -81,9 +86,12 @@ public class AnalysisParser {
     private static final String JSON_KEY_FILTERS = "filters";
     private static final String JSON_KEY_LAYERS = "layers";
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
+    private static final String JSON_KEY_FEATURES = "features";
+    private static final String JSON_KEY_NAME = "name";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
+    final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
     final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
@@ -109,11 +117,11 @@ public class AnalysisParser {
      *            User identification
      * @return AnalysisLayer parameters for WPS execution
      ************************************************************************/
-    public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter,
-                                             String baseUrl, String uuid) throws ServiceException {
+    public AnalysisLayer parseAnalysisLayer(String layerJSON, String filter, String baseUrl, String uuid) throws ServiceException {
         AnalysisLayer analysisLayer = new AnalysisLayer();
 
         JSONObject json = JSONHelper.createJSONObject(layerJSON);
+
         WFSLayerConfiguration lc = null;
 
         // analysis input data type - default is WFS layer
@@ -122,6 +130,10 @@ public class AnalysisParser {
         analysisLayer.setWpsUrl(analysisRenderingUrl);
         // analysis element name
         analysisLayer.setWpsName(analysisRenderingElement);
+
+        // GeoJson input data
+        final String geojson = prepareGeoJsonFeatures(json, json.optString(JSON_KEY_NAME,"feature"));
+
 
 
         analysisLayer.setInputAnalysisId(null);
@@ -132,7 +144,8 @@ public class AnalysisParser {
 
             String sid = json.getString(JSON_KEY_LAYERID);
 
-            // Input is wfs layer or analaysis layer or my places
+
+            // Input is wfs layer or analaysis layer or my places or geojson
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 ) {
                 // Analysislayer is input
                 if (!this.prepareAnalysis4Analysis(analysisLayer, json))
@@ -146,11 +159,31 @@ public class AnalysisParser {
                     throw new ServiceException(
                             "AnalysisInMyPlaces parameters are invalid");
                 id = analysisLayer.getId();
+            }
+            else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+                // user data layer is input
+                if (!this.prepareAnalysis4Userlayer(analysisLayer, json))
+                    throw new ServiceException(
+                            "Analysis user data layer parameters are invalid");
+                id = analysisLayer.getId();
+            }
+            else if (geojson != null && !geojson.isEmpty() ) {
+                // GeoJson is input
+                if (!this.prepareGeoJson4Analysis(analysisLayer))
+                    throw new ServiceException(
+                            "GeoJson parameter is invalid");
+                id = analysisLayer.getId();
             } else {
                 // Wfs layer id
                 id = ConversionHelper.getInt(sid, -1);
             }
         } catch (JSONException e) {
+            throw new ServiceException(
+                    "AnalysisInAnalysis parameters are invalid");
+        }
+
+        if(id == -1)
+        {
             throw new ServiceException(
                     "AnalysisInAnalysis parameters are invalid");
         }
@@ -166,7 +199,7 @@ public class AnalysisParser {
         analysisLayer.setMinScale(wfsLayer.getMinScale());
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
 
-        // Set WFS input type, other than analysis_ and myplaces_- default is REFERENCE
+        // Set WFS input type, other than analysis_ and myplaces and geojson - default is REFERENCE
         this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
 
         // Extract parameters for analysis methods from layer
@@ -258,7 +291,7 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            BufferMethodParams method = this.parseBufferParams(lc, json,
+            BufferMethodParams method = this.parseBufferParams(lc, json, geojson,
                     baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -267,7 +300,7 @@ public class AnalysisParser {
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
-                            .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
+                            .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
             analysisLayer.getAnalysisMethodParams().setProperties(
                     this
@@ -282,12 +315,15 @@ public class AnalysisParser {
             } catch (JSONException e) {
                 throw new ServiceException("Method parameters missing.");
             }
+
+            final String geojson2 = prepareGeoJsonFeatures(params, json.optString(JSON_KEY_NAME,"feature"));
+
             WFSLayerConfiguration lc2 = null;
             int id2 = 0;
             String sid = "";
             try {
                 sid = params.getString(JSON_KEY_LAYERID);
-                // Input is wfs layer or analaysis layer
+                // Input is wfs layer or analaysis layer or geojson
                 if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0) {
                     // Analysislayer is input
                     // eg. analyse_216_340
@@ -296,8 +332,17 @@ public class AnalysisParser {
                 }else if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                     // Myplaces is input
                     id2 = ConversionHelper.getInt(myplacesBaseLayerId, 0);
+                }
+                else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+                // user data layer is input
+                    id2 = ConversionHelper.getInt(userlayerBaseLayerId, 0);
+                }
+                else if (geojson2 != null && !geojson2.isEmpty() ) {
+                        // GeoJson is input - use analysis base layer metadata
+                    id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
+                }
 
-                } else {
+                else {
                     // Wfs layer id
                     id2 = ConversionHelper.getInt(sid, -1);
                 }
@@ -312,29 +357,35 @@ public class AnalysisParser {
             // Set params for WPS execute
 
             IntersectMethodParams method = this.parseIntersectParams(lc, lc2,
-                    json, baseUrl);
+                    json, geojson, geojson2, baseUrl);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0 ) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+            } else if (geojson2 != null && !geojson2.isEmpty()) {
+                method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GEOJSON);
             } else {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
-            // Set WFS input type, other than analysis_ and myplaces_- default is REFERENCE
+            // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
             this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
 
             // WFS filter
 
             method.setFilter(this.parseFilter(lc, filter, analysisLayer
-                    .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
+                    .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                 method.setFilter2(this.parseFilter(lc2, null, null, this
+                        .getAnalysisInputId(params), null));
+            }
+            else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+                method.setFilter2(this.parseFilter(lc2, null, null, null, this
                         .getAnalysisInputId(params)));
             }
             else {
                 method.setFilter2(this.parseFilter(lc2, null, this
-                        .getAnalysisInputId(params), null));
+                        .getAnalysisInputId(params), null, null));
             }
             // WFS Query properties
             method.setProperties(this.parseProperties(
@@ -345,7 +396,7 @@ public class AnalysisParser {
             //------------------ AGGREGATE -----------------------
         } else if (AGGREGATE.equals(analysisMethod)) {
 
-            // 1 to n aggregate wps tasks
+            // aggregate fields
             String aggre_field = null;
             try {
 
@@ -387,7 +438,7 @@ public class AnalysisParser {
             if (aggre_field == null)
                 throw new ServiceException(
                         "Aggregate field parameter missing.");
-            AggregateMethodParams method = this.parseAggregateParams(lc, json,
+            AggregateMethodParams method = this.parseAggregateParams(lc, json, geojson,
                     baseUrl, aggre_field, analysisLayer.getAggreFunctions());
 
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -396,7 +447,7 @@ public class AnalysisParser {
 
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter, analysisLayer
-                            .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
+                            .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             //------------------ UNION -----------------------
         } else if (UNION.equals(analysisMethod)) {
             JSONObject params;
@@ -408,13 +459,13 @@ public class AnalysisParser {
 
             // Set params for WPS execute
 
-            UnionMethodParams method = this.parseUnionParams(lc, json, baseUrl);
+            UnionMethodParams method = this.parseUnionParams(lc, json, geojson, baseUrl);
             method.setWps_reference_type(analysisLayer.getInputType());
 
             // WFS filter
 
             method.setFilter(this.parseFilter(lc, filter, analysisLayer
-                    .getInputAnalysisId(), analysisLayer.getInputCategoryId()));
+                    .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
 
             analysisLayer.setAnalysisMethodParams(method);
 
@@ -438,7 +489,7 @@ public class AnalysisParser {
      * @return BufferMethodParams parameters for WPS execution
      ************************************************************************/
     private BufferMethodParams parseBufferParams(WFSLayerConfiguration lc,
-                                                 JSONObject json, String baseUrl) throws ServiceException {
+                                                 JSONObject json, String geojson, String baseUrl) throws ServiceException {
         final BufferMethodParams method = new BufferMethodParams();
         method.setMethod(BUFFER);
         //
@@ -466,6 +517,7 @@ public class AnalysisParser {
             method.setY_upper(bbox.optString("top"));
 
             method.setDistance(params.optString("distance"));
+            method.setGeojson(geojson);
 
         } catch (JSONException e) {
             throw new ServiceException("Method parameters missing.");
@@ -488,7 +540,7 @@ public class AnalysisParser {
      * @return AggregateMethodParams parameters for WPS execution
      ************************************************************************/
     private AggregateMethodParams parseAggregateParams(
-            WFSLayerConfiguration lc, JSONObject json, String baseUrl,
+            WFSLayerConfiguration lc, JSONObject json, String geojson, String baseUrl,
             String aggre_field, List<String> aggre_funcs)
             throws ServiceException {
         AggregateMethodParams method = new AggregateMethodParams();
@@ -509,6 +561,7 @@ public class AnalysisParser {
                     + lc.getFeatureNamespaceURI() + "\"");
 
             method.setGeom(lc.getGMLGeometryProperty());
+            method.setGeojson(geojson);
 
             JSONObject bbox = null;
 
@@ -544,7 +597,7 @@ public class AnalysisParser {
      * @return UnionMethodParams parameters for WPS execution
      ************************************************************************/
     private UnionMethodParams parseUnionParams(WFSLayerConfiguration lc,
-                                               JSONObject json, String baseUrl) throws ServiceException {
+                                               JSONObject json, String geojson, String baseUrl) throws ServiceException {
         UnionMethodParams method = new UnionMethodParams();
         //
         method.setMethod(UNION);
@@ -563,6 +616,7 @@ public class AnalysisParser {
         method.setXmlns("xmlns:" + lc.getFeatureNamespace() + "=\""
                 + lc.getFeatureNamespaceURI() + "\"");
         method.setGeom(lc.getGMLGeometryProperty());
+        method.setGeojson(geojson);
 
         JSONObject bbox = null;
 
@@ -593,7 +647,7 @@ public class AnalysisParser {
      ************************************************************************/
     private IntersectMethodParams parseIntersectParams(
             WFSLayerConfiguration lc, WFSLayerConfiguration lc2,
-            JSONObject json, String baseUrl) throws ServiceException {
+            JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
         IntersectMethodParams method = new IntersectMethodParams();
         //
         method.setMethod(INTERSECT);
@@ -613,6 +667,7 @@ public class AnalysisParser {
         method.setXmlns("xmlns:" + lc.getFeatureNamespace() + "=\""
                 + lc.getFeatureNamespaceURI() + "\"");
         method.setGeom(lc.getGMLGeometryProperty());
+        method.setGeojson(gjson);
 
         // Variable values of Union input 2
         method.setHref2(baseUrl + String.valueOf(lc2.getLayerId()));
@@ -621,6 +676,7 @@ public class AnalysisParser {
         method.setXmlns2("xmlns:" + lc2.getFeatureNamespace() + "=\""
                 + lc2.getFeatureNamespaceURI() + "\"");
         method.setGeom2(lc2.getGMLGeometryProperty());
+        method.setGeojson2(gjson2);
 
         JSONObject bbox = null;
 
@@ -696,7 +752,7 @@ public class AnalysisParser {
      * @throws fi.nls.oskari.service.ServiceException
      ************************************************************************/
     private String parseFilter(WFSLayerConfiguration lc, String filter,
-                               String analysisId, String categoryId) throws ServiceException {
+                               String analysisId, String categoryId, String userdataId) throws ServiceException {
 
         JSONObject filter_js = null;
         try {
@@ -710,7 +766,12 @@ public class AnalysisParser {
                     // Add category id filter when myplaces in analysis
                     idfilter = FILTER_ID_TEMPLATE1.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
                     idfilter = idfilter.replace("{propertyValue}", categoryId);
+                } else if (userdataId != null) {
+                    // Add user_data_layer id filter when user data layer in analysis
+                    idfilter = FILTER_ID_TEMPLATE1.replace("{propertyName}", USERLAYER_PROPERTY_NAME);
+                    idfilter = idfilter.replace("{propertyValue}", userdataId);
                 }
+
                 if (idfilter != null) filter_js = JSONHelper.createJSONObject(idfilter);
 
             } else {
@@ -726,7 +787,12 @@ public class AnalysisParser {
                         // Add category id filter when myplaces in analysis
                         idfilter = FILTER_ID_TEMPLATE2.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
                         idfilter = idfilter.replace("{propertyValue}", categoryId);
+                    } else if (userdataId != null) {
+                        // Add user_data_layer id filter when user data in analysis
+                        idfilter = FILTER_ID_TEMPLATE2.replace("{propertyName}", USERLAYER_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", userdataId);
                     }
+
                     if (idfilter != null) {
                         JSONObject analysis_id_filter = JSONHelper
                                 .createJSONObject(idfilter);
@@ -744,6 +810,10 @@ public class AnalysisParser {
                         // Add category id filter when myplaces in analysis
                         idfilter = FILTER_ID_TEMPLATE3.replace("{propertyName}", MYPLACES_PROPERTY_NAME);
                         idfilter = idfilter.replace("{propertyValue}", categoryId);
+                    } else if (userdataId != null) {
+                        // Add user_data_layer id filter when user data in analysis
+                        idfilter = FILTER_ID_TEMPLATE3.replace("{propertyName}", USERLAYER_PROPERTY_NAME);
+                        idfilter = idfilter.replace("{propertyValue}", userdataId);
                     }
                     if (idfilter != null) {
                         JSONArray idfilter_js = JSONHelper
@@ -806,6 +876,27 @@ public class AnalysisParser {
         return false;
     }
     /**
+     * Setup extra data for analysis layer when input is geojson
+     * use analysis base layer
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     * @return false, if no id found
+     */
+    private boolean prepareGeoJson4Analysis(AnalysisLayer analysisLayer) {
+
+        try {
+                analysisLayer.setId(ConversionHelper.getInt(
+                        analysisBaseLayerId, 0));
+                analysisLayer.setInputType(ANALYSIS_INPUT_TYPE_GEOJSON);
+                return true;
+
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+    /**
      * Setup extra data for analysis layer when input is myplaces
      *
      * @param analysisLayer
@@ -826,6 +917,34 @@ public class AnalysisParser {
                         myplacesBaseLayerId, 0));
                 analysisLayer.setInputType(ANALYSIS_INPUT_TYPE_GS_VECTOR);
                 analysisLayer.setInputCategoryId(sid);
+                return true;
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
+    /**
+     * Setup extra data for analysis layer when input is user data layer
+     *
+     * @param analysisLayer
+     *            analysis input layer data
+     * @param json
+     *            wps analysis parameters
+     * @return false, if no id found
+     */
+    private boolean prepareAnalysis4Userlayer(AnalysisLayer analysisLayer,
+                                             JSONObject json) {
+
+        try {
+
+            String sid = this.getAnalysisInputId(json);
+            if (sid != null) {
+
+                analysisLayer.setId(ConversionHelper.getInt(
+                        userlayerBaseLayerId, 0));
+                analysisLayer.setInputType(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                analysisLayer.setInputUserdataId(sid);
                 return true;
             }
         } catch (Exception e) {
@@ -950,11 +1069,11 @@ public class AnalysisParser {
         try {
 
             String sid = json.optString(JSON_KEY_LAYERID);
-            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1)
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == -1 && sid.indexOf(MYPLACES_LAYER_PREFIX) == -1 && sid.indexOf(USERLAYER_PREFIX) == -1)
                 return null;
             String sids[] = sid.split("_");
             if (sids.length > 1) {
-                // Old analysis is input for analysis or myplaces
+                // Old analysis is input for analysis or myplaces or user data layer
 
                 return sids[sids.length-1];
             }
@@ -1042,6 +1161,32 @@ public class AnalysisParser {
             log.debug("Feature property insert to FeatureCollection failed: ", e);
         }
         return featureSet;
+    }
+
+    private String prepareGeoJsonFeatures(JSONObject json, String id) {
+        try {
+            if (json.has(JSON_KEY_FEATURES)) {
+                JSONArray features = new JSONArray();
+                final String geojs = json.optString(JSON_KEY_FEATURES);
+                JSONArray geofeas = JSONHelper.createJSONArray(geojs);
+                // Loop array
+                for (int i = 0; i < geofeas.length(); i++) {
+
+                    JSONObject geofea = JSONHelper.createJSONObject(geofeas.optString(i, null));
+                    if (geofea != null) {
+                        geofea.put("id", id + "." + String.valueOf(i));
+                        geofea.remove("crs");   // WPS töks, töks to crs
+                        features.put(geofea);
+                    }
+                }
+
+                return JSONHelper.getStringFromJSON(JSONHelper.createJSONObject("features", features), null);
+            }
+
+        } catch (Exception e) {
+            log.debug("Preparing geojson for WPS failed: ", e);
+        }
+        return null;
     }
 
     /**

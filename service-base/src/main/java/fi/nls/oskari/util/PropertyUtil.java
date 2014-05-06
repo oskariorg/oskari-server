@@ -3,6 +3,7 @@ package fi.nls.oskari.util;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.log.NullLogger;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,6 +58,32 @@ public class PropertyUtil {
         log = logger;
     }
 
+    /**
+     * Loads given properties file relative to PropertyUtil class (use root relative path "/my-properties.properties").
+     * Overwrites any existing properties
+     * @param propertiesFile
+     */
+    public static void loadProperties(final String propertiesFile) {
+        loadProperties(propertiesFile, true);
+    }
+
+    /**
+     * Loads given properties file relative to PropertyUtil class.
+     * @param propertiesFile use root relative path "/my-properties.properties" for this to be useful.
+     * @param overwrite true to overwrite existing properties
+     */
+    public static void loadProperties(final String propertiesFile, final boolean overwrite) {
+        InputStream in = null;
+        try {
+            Properties prop = new Properties();
+            in = PropertyUtil.class.getResourceAsStream(propertiesFile);
+            prop.load(in);
+            addProperties(prop, overwrite);
+        } catch (Exception ignored) {
+        } finally {
+            IOHelper.close(in);
+        }
+    }
     /**
      * Clears all previously loaded properties, use with caution!
      */

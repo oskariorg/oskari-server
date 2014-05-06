@@ -1,5 +1,8 @@
 {
     "create" : [
-        "create-wfs-tables.sql"
+        "create-myplaces-tables.sql"
+    ],
+    "sql" : [
+        "example-myplaces-wfs-baselayer.sql"
     ]
 }

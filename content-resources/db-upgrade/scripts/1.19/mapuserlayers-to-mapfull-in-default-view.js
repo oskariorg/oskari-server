@@ -47,7 +47,7 @@ module.exports = function(client) {
       var updatedStartup = JSON.stringify(startup);
 
       var updateQuery = "UPDATE portti_view_bundle_seq SET config='" + updatedConfig + "', " +
-        "startup='" + updatedStartup + "' "
+        "startup='" + updatedStartup + "' " +
         "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') " + 
         "AND view_id=" + row.view_id;
 

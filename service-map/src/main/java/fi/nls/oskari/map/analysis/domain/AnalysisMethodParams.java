@@ -41,8 +41,11 @@ public abstract class AnalysisMethodParams {
     public final String Y_LOWER = "{y_lower}";
     public final String X_UPPER = "{x_upper}";
     public final String Y_UPPER = "{y_upper}";
+    public final String GEOJSONFEATURES = "{geoJsonFeatures}";
+
     public final String REFERENCE_TYPE_WFS = "wfs";
     public final String REFERENCE_TYPE_GS = "gs_vector";
+    public final String INPUT_GEOJSON = "geojson";
 
     private String method = "";
     private String wps_reference_type = "";
@@ -64,6 +67,7 @@ public abstract class AnalysisMethodParams {
     private String y_lower = "";
     private String x_upper = "";
     private String y_upper = "";
+    private String geojson = "";
 
     public String getMethod() {
         return method;
@@ -220,6 +224,15 @@ public abstract class AnalysisMethodParams {
 
     public void setY_upper(String yUpper) {
         y_upper = yUpper;
+    }
+
+    public String getGeojson() {
+        if(geojson == null) return "";
+        return geojson;
+    }
+
+    public void setGeojson(String geojson) {
+        this.geojson = geojson;
     }
 
     protected XPath getXPath() {

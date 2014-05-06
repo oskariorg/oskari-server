@@ -1,5 +1,62 @@
 # Release Notes
 
+## 1.20
+
+### service-users
+
+A new module has been added for user management. Oskari now has database tables for users and roles and a new UserService
+implementation utilizing them (DatabaseUserService). The DatabaseUserService is now configured as default in oskari.properties
+ but can be overridden by oskari-ext.properties.
+
+### servlet-map/webapp-map restructuring
+
+Servlet for map application has been separated into servlet code and webapp with JSPs and webapp configuration (webapp-map).
+Building the webapp-map is essentially the same as building servlet-map before this.
+
+Servlet aggregate pom.xml (servlet-map-pom.xml) has been removed since the parent pom now builds the servlet, webapp and standalone
+so you can use mvn clean install on the oskari-server root to build the modules.
+
+### servlet-map/JAAS authentication/user login
+
+The user login handling has been taken out of the servlet implementation and a reference JAAS configuration is now available in webapp-map.
+The login form field names have changes to reflect this.
+
+Servlet no longer handles login but expects a fi.nls.oskari.domain.User class object to be present in http session with key
+'fi.nls.oskari.domain.User' if the user is logged in. The User object should be added to session in a servletfilter handling the
+login as in servlet-map/fi.nls.oskari.map.servlet.JaasAuthenticationFilter.
+
+Building the webapp-map with mvn clean install -Pjetty-jaas will create a war file that has JAAS enabled and login working out of the box.
+
+### standalone-jetty
+
+The separation of servlet-map to wepapp/servlet allows for new packaging "standalone-jetty" that uses preconfigured embedded
+jetty to serve basic oskari-map functionality without the need to install any server software. Some default values for properties
+containing URLs have been changed in oskari.properties to make the configuration easier and some new properties describing the
+run environment has been added to configure the running environment (domain/path to map application).
+
+### content-resources
+
+The database used should now have postgis extension enabled to successfully run the whole default setup!
+The default setup will now do a whole lot more (creates also myplaces, users and JAAS tables etc).
+Lots of setup files have been merged and renamed since some have become irrelevant.
+Many SQL-files have been renamed and some have been separated into smaller pieces.
+
+Property keys in db.properties have been changed to use the same ones as utilized by other properties:
+
+* datasource -> db.jndi.name
+* url -> db.url
+* user -> db.username
+* pass -> db.password
+
+Also oskari.properties and oskari-ext.properties now override db.properties so each component can be configured to use the same
+credentials/urls with single properties file.
+
+### transport
+
+The `property_json` feature property of userlayers now gets parsed to json before sending to clients.
+
+All feature requests now include the geometry property, even if configured in the database not to request map tiles.
+
 ## 1.19
 
 ### control-base/Myplaces2Handler

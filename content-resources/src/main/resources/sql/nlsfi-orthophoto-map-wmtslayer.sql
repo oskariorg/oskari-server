@@ -349,6 +349,18 @@ UPDATE oskari_maplayer SET minScale = 50000, maxScale = 1, tile_matrix_set_data=
                       "tileHeight": 256,
                       "matrixWidth": 16384,
                       "matrixHeight": 16384
+                  }, {
+                      "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                      "identifier": "15",
+                      "scaleDenominator": 892.85714285714288962481,
+                      "topLeftCorner": {
+                          "lon": -548576,
+                          "lat": 8388608
+                      },
+                      "tileWidth": 256,
+                      "tileHeight": 256,
+                      "matrixWidth": 32768,
+                      "matrixHeight": 32768
                   }
               ],
               "identifier": "ETRS-TM35FIN",

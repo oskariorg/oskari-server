@@ -102,7 +102,7 @@
 
     <statement id="delete-userLayer-data"
                parameterClass="java.lang.Long">
-        DELETE FROM user_layer_data WHERE layer_id = #id#
+        DELETE FROM user_layer_data WHERE user_layer_id = #id#
     </statement>
 
     <statement id="delete-userLayer"

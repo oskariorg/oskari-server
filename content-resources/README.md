@@ -20,11 +20,11 @@ hence the  safety measure.
 # Setup files
 
 You can configure a specific setup file to run by adding a parameter -Doskari.setup=[setup file under resources/setup].
-The setup file that is used if the parameter is NOT defined is '[default](src/main/resources/setup/default.json)'.
+The setup file that is used if the parameter is NOT defined is '[default](src/main/resources/setup/app-default.json)'.
 
 The parameter '-Doskari.setup=postgres-default' references a setup file located in oskari-server/content-resources/src/main/resources/setup/
 
-The value of the parameter is the filename without extension so the actual file referenced is 'postgres-default.json' in the above link.
+The value of the parameter is the filename without extension so the actual file referenced is 'app-default.json' in the above link.
 
 Setup file can have 5 segments: "create", "setup", "bundles", "views" and "sql". These are run in the listed order.
 

@@ -109,12 +109,13 @@ public class WFSCommunicator {
             } else if(selectedProperties == null || selectedProperties.isEmpty()) {
                 // empty selection, and features wanted - give all (also map tiles
             } else {
-                if(layer.isGetMapTiles()) {
-                    selectedProperties.add(layer.getGMLGeometryProperty());
-                }
+                // Commented out since we always want the geometry field in queries
+                //if(layer.isGetMapTiles()) {
+                selectedProperties.add(layer.getGMLGeometryProperty());
+                //}
             }
             // loop for all properties
-            if(selectedProperties != null) {
+      /*      if(selectedProperties != null) {
                 for(String prop : selectedProperties) {
                     OMElement property = factory.createOMElement("PropertyName", wfs);
                     if(!prop.contains(":")) {
@@ -124,7 +125,7 @@ public class WFSCommunicator {
                     }
                     query.addChild(property);
                 }
-            }
+            }  -- eliminated because of GetFeature fails when property name is not valid or not for all features */
 
             // load filter
             WFSFilter wfsFilter = constructFilter(layer.getLayerId());

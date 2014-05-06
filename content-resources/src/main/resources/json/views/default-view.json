@@ -20,8 +20,12 @@
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
-                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                      "config" : {
+                        "ignoredLayerTypes" : ["WFS"]
+                    }},
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },

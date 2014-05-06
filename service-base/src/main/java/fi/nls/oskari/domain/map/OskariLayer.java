@@ -54,6 +54,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private String gfiXslt;
     private String gfiType;
+    private String gfiContent;
     private String geometry;
 
     private Date created = null;
@@ -337,6 +338,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setGfiXslt(String gfiXslt) {
         this.gfiXslt = gfiXslt;
+    }
+
+    public String getGfiContent() {
+        return gfiContent;
+    }
+
+    public void setGfiContent(String gfiContent) {
+        this.gfiContent = gfiContent;
     }
 
     public String getGeometry() {

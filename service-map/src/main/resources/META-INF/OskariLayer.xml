@@ -37,6 +37,7 @@
 
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
+        <parameter property="gfiContent" />
 
         <parameter property="realtime" />
         <parameter property="refreshRate" />
@@ -71,6 +72,7 @@
 
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
+        <parameter property="gfiContent" />
 
         <parameter property="realtime" />
         <parameter property="refreshRate" />
@@ -111,6 +113,7 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.gfi_content,
         l.realtime,
         l.refresh_rate,
         m.geom,
@@ -158,6 +161,7 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.gfi_content,
         l.realtime,
         l.refresh_rate,
         m.geom,
@@ -205,6 +209,7 @@
 
         l.gfi_xslt,
         l.gfi_type,
+        l.gfi_content,
         l.realtime,
         l.refresh_rate,
         m.geom,
@@ -252,6 +257,7 @@
 
     l.gfi_xslt,
     l.gfi_type,
+    l.gfi_content,
     l.realtime,
     l.refresh_rate,
     m.geom,
@@ -299,13 +305,14 @@
 
             gfi_xslt,
             gfi_type,
+            gfi_content,
 
             realtime,
             refresh_rate,
 
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -334,6 +341,7 @@
 
         gfi_xslt = ?,
         gfi_type=?,
+        gfi_content=?,
 
         realtime = ?,
         refresh_rate = ?,

@@ -151,6 +151,7 @@ public class GetWmsServicesHandler extends ActionHandler {
 */
                 mapProperties.put("xslt", ml.getGfiXslt());
                 mapProperties.put("gfiType", ml.getGfiType());
+                mapProperties.put("gfiContent", ml.getGfiContent());
 
                 mapProperties.put("realtime", ml.getRealtime());
                 mapProperties.put("refreshRate", ml.getRefreshRate());

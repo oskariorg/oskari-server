@@ -11,9 +11,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
@@ -52,12 +54,20 @@ public class JSONActionRouteTest {
         return createActionParams(getGuestUser());
     }
 
+    public ActionParameters createActionParams(final InputStream payload) {
+        return createActionParams(getGuestUser(), payload);
+    }
+
     /**
      * Creates an empty ActionParams with no http parameters and given User
      * @return
      */
     public ActionParameters createActionParams(final User user) {
         return createActionParams(new HashMap<String, String>(), user);
+    }
+
+    public ActionParameters createActionParams(final User user, final InputStream payload) {
+        return createActionParams(new HashMap<String, String>(), user, payload);
     }
 
     /**
@@ -68,19 +78,41 @@ public class JSONActionRouteTest {
         return createActionParams(parameters, getGuestUser());
     }
 
+    public ActionParameters createActionParams(final Map<String, String> parameters, final InputStream payload) {
+        return createActionParams(parameters, getGuestUser(), payload);
+    }
+
     /**
      * Creates an ActionParams with given http parameters and User
      * @return
      */
     public ActionParameters createActionParams(final Map<String, String> parameters, final User user) {
+        return createActionParams(parameters, user, null);
+    }
+    public ActionParameters createActionParams(final Map<String, String> parameters, final User user, final InputStream payload) {
         final ActionParameters params = new ActionParameters();
         // request params
         HttpServletRequest req = mock(HttpServletRequest.class);
         for(String key : parameters.keySet()) {
             when(req.getParameter(key)).thenReturn(parameters.get(key));
         }
+
+        doReturn(new Vector(parameters.keySet()).elements()).when(req).getParameterNames();
         if(!response.toString().isEmpty()) {
             fail("Creating new ActionParams, but response already has content: " + response.toString());
+        }
+        // mock possible payload inputstream
+        if(payload != null) {
+            try {
+                ServletInputStream wrapper = new ServletInputStream() {
+                    @Override
+                    public int read() throws IOException {
+                        return payload.read();
+                    }
+                };
+                doReturn(wrapper).when(req).getInputStream();
+            }
+            catch (IOException ignored ) {}
         }
         // response handler
         HttpServletResponse resp = mock(HttpServletResponse.class);

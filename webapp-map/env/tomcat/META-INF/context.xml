@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/${project.build.finalName}" antiJARLocking="${app.tomcat.context.antiJarLocking}"
+	useNaming="${app.tomcat.context.useNaming}" unpackWAR="${app.tomcat.context.unpackWAR}"
+	disableURLRewriting="${app.tomcat.context.disableURLRewriting}"
+	useHttpOnly="${app.tomcat.context.useHTTPOnly}">
+
+	<Resource username="${db.username}" password="${db.password}"
+		url="${db.url}" name="${db.jndi.name}" driverClassName="${db.jndi.driverClassName}"
+        initialSize="${db.jndi.initialsize}" removeAbandoned="true"
+        maxActive="${db.jndi.maxactive}" maxIdle="${db.jndi.maxidle}" maxWait="${db.jndi.maxwait}"
+        validationQuery="select 1"
+		type="${db.jndi.type}" auth="${db.jndi.auth}" />
+
+</Context>

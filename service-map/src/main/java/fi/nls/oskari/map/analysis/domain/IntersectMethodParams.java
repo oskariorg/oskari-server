@@ -14,6 +14,11 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-intersect2.xml";
     private final String analysisMethodTemplate3 = "analysis2wfs-layer-wps-intersect2.xml";
     private final String analysisMethodTemplate4 = "wfs2analysis-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate5 = "geojson2geojson-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate6 = "geojson2wfs-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate7 = "geojson2analysis-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate8 = "wfs2geojson-layer-wps-intersect2.xml";
+    private final String analysisMethodTemplate9 = "analysis2geojson-layer-wps-intersect2.xml";
     private final String bboxFilter2Template = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom2}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 
     // xml template paths {}
@@ -26,6 +31,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private final String FIELDA1 = "{fieldA1}";
     private final String FIELDB1 = "{fieldB1}";
     private final String SRSNAME2 = "{srsName2}";
+    public final String GEOJSONFEATURES2 = "{geoJsonFeatures2}";
 
     private String href2 = "";
     private String xmlns2 = "";
@@ -35,6 +41,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private String fieldA1 = "";
     private String fieldB1 = "";
     private String properties2 = "";
+    private String geojson2 = "";
     private String wps_reference_type2 = "";
 
     public String getFieldA1() {
@@ -113,6 +120,15 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         wps_reference_type2 = wpsReferenceType2;
     }
 
+    public String getGeojson2() {
+        if(geojson2 == null) return "";
+        return geojson2;
+    }
+
+    public void setGeojson2(String geojson2) {
+        this.geojson2 = geojson2;
+    }
+
     public Document getWPSXML() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
@@ -131,6 +147,17 @@ public class IntersectMethodParams extends AnalysisMethodParams {
             doctemp = this.getTemplate(this.analysisMethodTemplate4);
         else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
             doctemp = this.getTemplate(this.analysisMethodTemplate3);
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate9);
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
+            doctemp = this.getTemplate(this.analysisMethodTemplate5);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
+            doctemp = this.getTemplate(this.analysisMethodTemplate7);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
+            doctemp = this.getTemplate(this.analysisMethodTemplate6);
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
+            doctemp = this.getTemplate(this.analysisMethodTemplate8);
+
 
         if(doctemp == null) return null;
 
@@ -149,8 +176,11 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(FIELDA1, this.getFieldA1());
         doctemp = doctemp.replace(FIELDB1, this.getFieldB1());
         doctemp = doctemp.replace(SRSNAME2, this.getSrsName());
-        
-       
+
+        // GeoJson input
+        doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());
+        doctemp = doctemp.replace(GEOJSONFEATURES2, this.getGeojson2());
+
         //Properties
         if (this.getProperties() != null) {
             doctemp = doctemp.replace(PROPERTIES, this.getProperties());

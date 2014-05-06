@@ -38,13 +38,14 @@ public class UserLayerDataService {
 
     private static final String USERLAYER_LAYER_PREFIX = "userlayer_";
     private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
+    private static final String USERLAYER_MAXFEATURES_COUNT = "userlayer.maxfeatures.count";
     private static final String KEY_DESC = "layer-desc";
     private static final String KEY_NAME = "layer-name";
     private static final String KEY_SOURCE = "layer-source";
     private static final String KEY_STYLE = "layer-style";
-    private static final int MAX_FEATURES = 2000;   //TODO: get max from wfs base layer configuration
 
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
+    final int userlayerMaxFeaturesCount = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, 2000);
 
     /**
      * @param gjsWorker geoJSON and featurecollection items
@@ -155,7 +156,7 @@ public class UserLayerDataService {
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
 
                 count++;
-                if (count > MAX_FEATURES) break;
+                if (count > userlayerMaxFeaturesCount) break;
 
             }
         } catch (Exception e) {

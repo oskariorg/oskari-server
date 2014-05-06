@@ -37,6 +37,7 @@ public class GetGeoPointDataService {
     public static final String LAYER_ID = "layerId";
     public static final String PRESENTATION_TYPE = "presentationType";
     public static final String CONTENT = "content";
+    public static final String GFI_CONTENT = "gfiContent";
 
     public static final String PRESENTATION_TYPE_JSON = "JSON";
     public static final String PRESENTATION_TYPE_TEXT = "TEXT";
@@ -72,14 +73,19 @@ public class GetGeoPointDataService {
                 final String transformedResult = transformResponse(xslt, gfiResponse);
                 respObj = JSONHelper.createJSONObject(transformedResult);
                 if(respObj != null) {
-                    JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
-                    JSONHelper.putValue(response,CONTENT, respObj);
+                    JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
+                    JSONHelper.putValue(response, CONTENT, respObj);
                 }
             }
             // use text content if respObj isn't present (transformed JSON not created)
             if(respObj == null) {
-                JSONHelper.putValue(response,PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
-                JSONHelper.putValue(response,CONTENT, gfiResponse);
+                JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
+                JSONHelper.putValue(response, CONTENT, gfiResponse);
+            }
+            // Add gfi content, it needs to be a separate field so we can mangle it as we like in the frontend
+            final String gfiContent = params.getLayer().getGfiContent();
+            if (gfiContent != null) {
+                JSONHelper.putValue(response, GFI_CONTENT, gfiContent);
             }
             return response;
         }

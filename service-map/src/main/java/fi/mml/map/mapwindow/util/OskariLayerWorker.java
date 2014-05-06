@@ -152,6 +152,10 @@ public class OskariLayerWorker {
     }
 
     public static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
+        // TODO: should loop sublayers as well if we want admin values for them:
+        // * localized names/subtitles (we dont need atm aince they are only shown to admin)
+        // * organizationId/inspireId is only relevant to parent layer
+        // * xslt might be something we want
 
         // name
         final JSONObject names = new JSONObject();

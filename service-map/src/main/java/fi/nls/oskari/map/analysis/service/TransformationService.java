@@ -25,7 +25,8 @@ import java.util.*;
 
 public class TransformationService {
 
-    private static final List<String> HIDDEN_FIELDS = Arrays.asList("analysis_id");
+    // "created" and "updated" added here to prevent them from appearing on the created analysis
+    private static final List<String> HIDDEN_FIELDS = Arrays.asList("analysis_id", "created", "updated");
     private static final String NUMERIC_FIELD_TYPE = "numeric";
 
     private static final Logger log = LogFactory
