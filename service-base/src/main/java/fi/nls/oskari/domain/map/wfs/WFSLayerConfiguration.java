@@ -1,13 +1,14 @@
 package fi.nls.oskari.domain.map.wfs;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.cache.JedisManager;
-
-import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 
 import javax.xml.namespace.QName;
 
@@ -19,57 +20,57 @@ import javax.xml.namespace.QName;
 public class WFSLayerConfiguration {
 	public final static String KEY = "WFSLayer_";
 
-    private final static String LAYER_ID = "layerId";
-    private final static String NAME_LOCALES = "nameLocales";
-    private final static String URL_PARAM = "URL";
-    private final static String USERNAME = "username";
-    private final static String PASSWORD = "password";
+    private static final double DEFAULT_TILE_BUFFER = 0.0d;
+    private static final String KEY_DEFAULT = "default";
 
-	private final static String LAYER_NAME = "layerName";
+    protected final static String LAYER_ID = "layerId";
+    protected final static String URL_PARAM = "URL";
+    protected final static String USERNAME = "username";
+    protected final static String PASSWORD = "password";
 
-    private final static String GML_GEOMETRY_PROPERTY = "GMLGeometryProperty";
-    private final static String SRS_NAME = "SRSName";
-    private final static String GML_VERSION = "GMLVersion";
-    private final static String GML2_SEPARATOR = "GML2Separator";
-    private final static String WFS_VERSION = "WFSVersion";
-    private final static String MAX_FEATURES = "maxFeatures";
-    private final static String FEATURE_NAMESPACE = "featureNamespace";
-    private final static String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
-    private static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
-    private final static String FEATURE_ELEMENT = "featureElement";
-    private final static String OUTPUT_FORMAT = "outputFormat";
+    protected final static String LAYER_NAME = "layerName";
 
-    private final static String FEATURE_TYPE = "featureType";
-    private final static String SELECTED_FEATURE_PARAMS = "selectedFeatureParams";
-    private final static String FEATURE_PARAMS_LOCALES = "featureParamsLocales";
-    private final static String GEOMETRY_TYPE = "geometryType";
-    private final static String GET_MAP_TILES = "getMapTiles";
-    private static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
-    private final static String GET_FEATURE_INFO = "getFeatureInfo";
-    private final static String TILE_REQUEST = "tileRequest";
-    private final static String TILE_BUFFER = "tileBuffer";
-    private final static String WMS_LAYER_ID = "WMSLayerId";
-    // for json, if needed private final static String WPS_PARAMS = "wps_params";
-    private final static String CUSTOM_PARSER = "customParser";
-    private final static String TEST_LOCATION = "testLocation";
-    private final static String TEST_ZOOM = "testZoom";
+    protected final static String GML_GEOMETRY_PROPERTY = "GMLGeometryProperty";
+    protected final static String SRS_NAME = "SRSName";
+    protected final static String GML_VERSION = "GMLVersion";
+    protected final static String GML2_SEPARATOR = "GML2Separator";
+    protected final static String WFS_VERSION = "WFSVersion";
+    protected final static String MAX_FEATURES = "maxFeatures";
+    protected final static String FEATURE_NAMESPACE = "featureNamespace";
+    protected final static String FEATURE_NAMESPACE_URI = "featureNamespaceURI";
+    protected static final String GEOMETRY_NAMESPACE_URI = "geometryNamespaceURI";
+    protected final static String FEATURE_ELEMENT = "featureElement";
+    protected final static String OUTPUT_FORMAT = "outputFormat";
 
-    private final static String MIN_SCALE = "minScale";
-    private final static String MAX_SCALE = "maxScale";
+    protected final static String FEATURE_TYPE = "featureType";
+    protected final static String SELECTED_FEATURE_PARAMS = "selectedFeatureParams";
+    protected final static String FEATURE_PARAMS_LOCALES = "featureParamsLocales";
+    protected final static String GEOMETRY_TYPE = "geometryType";
+    protected final static String GET_MAP_TILES = "getMapTiles";
+    protected static final String GET_HIGHLIGHT_IMAGE = "getHighlightImage";
+    protected final static String GET_FEATURE_INFO = "getFeatureInfo";
+    protected final static String TILE_REQUEST = "tileRequest";
+    protected final static String TILE_BUFFER = "tileBuffer";
+    protected final static String WMS_LAYER_ID = "WMSLayerId";
 
+    protected final static String CUSTOM_PARSER = "customParser";
 
-    private final static String TEMPLATE_NAME = "templateName";
-    private final static String TEMPLATE_DESCRIPTION = "templateDescription";
-    private final static String TEMPLATE_TYPE = "templateType";
-    private final static String REQUEST_TEMPLATE = "requestTemplate";
-    private final static String RESPONSE_TEMPLATE = "responseTemplate";
+    protected final static String MIN_SCALE = "minScale";
+    protected final static String MAX_SCALE = "maxScale";
 
-    private final static String SELECTION_SLD_STYLE = "selectionSLDStyle";
+    protected final static String TEMPLATE_NAME = "templateName";
+    protected final static String TEMPLATE_DESCRIPTION = "templateDescription";
+    protected final static String TEMPLATE_TYPE = "templateType";
+    protected final static String REQUEST_TEMPLATE = "requestTemplate";
+    protected final static String RESPONSE_TEMPLATE = "responseTemplate";
 
-    private final static String STYLES = "styles";
-    private final static String ID = "id";
-    private final static String NAME = "name";
-    private final static String SLD_STYLE = "SLDStyle";
+    protected final static String SELECTION_SLD_STYLE = "selectionSLDStyle";
+
+    protected final static String STYLES = "styles";
+    protected final static String ID = "id";
+    protected final static String NAME = "name";
+    protected final static String SLD_STYLE = "SLDStyle";
+
 
 	private String layerId;
 	private String nameLocales;
@@ -91,20 +92,18 @@ public class WFSLayerConfiguration {
 	private String featureElement;
     private String outputFormat;
 
-	private String featureType;
-	private String selectedFeatureParams; // if needed?
-	private String featureParamsLocales;
+	private JSONObject featureType;
+	private JSONObject selectedFeatureParams; // if needed?
+	private JSONObject featureParamsLocales;
 	private String geometryType; // 2D/3D
 	private boolean getMapTiles; // if tile images are drawn and send
     private boolean getHighlightImage; // if highlight image is drawn and send
 	private boolean getFeatureInfo; // if feature json is send
-    private boolean tileRequest;
-    private String tileBuffer;
+    private boolean tileRequest; // if tile requests are made (map request default)
+    private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
     private boolean customParser;
-    private String testLocation;
-    private int testZoom;
 
 	private double minScale;
 	private double maxScale;
@@ -118,7 +117,7 @@ public class WFSLayerConfiguration {
 
 	private String selectionSLDStyle;
 
-	private List<WFSSLDStyle> SLDStyles; // id, name, xml
+	private List<WFSSLDStyle> SLDStyles = new ArrayList<WFSSLDStyle>(); // id, name, xml
 
     /**
      * Constructs a QName for feature element.
@@ -208,10 +207,8 @@ public class WFSLayerConfiguration {
 		GMLVersion = gMLVersion;
 	}
 
-    public String isGML2Separator() {
-        if(GML2Separator)
-            return "true";
-        return "false";
+    public boolean isGML2Separator() {
+        return GML2Separator;
     }
 
     public void setGML2Separator(boolean GML2Separator) {
@@ -266,32 +263,89 @@ public class WFSLayerConfiguration {
 		this.featureElement = featureElement;
 	}
 
+    /**
+     * Gets output format
+     * @return output format
+     */
     public String getOutputFormat() { return outputFormat; }
 
     public void setOutputFormat(String outputFormat) { this.outputFormat = outputFormat; }
 
-    public String getFeatureType() {
+    public JSONObject getFeatureType() {
 		return featureType;
 	}
+    public void addFeatureType(String key, final String value) {
+        if(featureType == null) {
+            featureType = new JSONObject();
+        }
+        JSONHelper.putValue(featureType, key, value);
+    }
 
 	public void setFeatureType(String featureType) {
-		this.featureType = featureType;
+		this.featureType =  JSONHelper.createJSONObject(featureType);
 	}
 
-	public String getSelectedFeatureParams() {
+	public JSONObject getSelectedFeatureParams() {
 		return selectedFeatureParams;
 	}
 
 	public void setSelectedFeatureParams(String selectedFeatureParams) {
-		this.selectedFeatureParams = selectedFeatureParams;
+        this.selectedFeatureParams = JSONHelper.createJSONObject(selectedFeatureParams);
 	}
 
-	public String getFeatureParamsLocales() {
+    public void addSelectedFeatureParams(String key, List<String> paramNames) {
+        if(selectedFeatureParams == null) {
+            selectedFeatureParams = new JSONObject();
+        }
+        JSONHelper.putValue(selectedFeatureParams, key, new JSONArray(paramNames));
+    }
+
+    /**
+     * Tries to get selected feature params for given key. Defaults to DEFAULT_LOCALE if key has no
+     * selected params. If anything fails or feature params is not configured, returns empty list.
+     * @param key locale key like "en" or "fi"
+     * @return
+     */
+    public List<String> getSelectedFeatureParams(String key) {
+        if(getSelectedFeatureParams() == null) {
+            return Collections.emptyList();
+        }
+        JSONArray params = getSelectedFeatureParams().optJSONArray(key);
+        if(params == null) {
+            params = getSelectedFeatureParams().optJSONArray(KEY_DEFAULT);
+        }
+        if(params == null) {
+            return Collections.emptyList();
+        }
+        return JSONHelper.getArrayAsList(params);
+    }
+
+	public JSONObject getFeatureParamsLocales() {
 		return featureParamsLocales;
 	}
 
+    public List<String> getFeatureParamsLocales(String key) {
+        if(getFeatureParamsLocales() == null) {
+            return Collections.emptyList();
+        }
+        JSONArray params = getFeatureParamsLocales().optJSONArray(key);
+        if(params == null) {
+            params = getFeatureParamsLocales().optJSONArray(KEY_DEFAULT);
+        }
+        if(params == null) {
+            return Collections.emptyList();
+        }
+        return JSONHelper.getArrayAsList(params);
+    }
+
+    public void addFeatureParamsLocales(String key, List<String> paramNames) {
+        if(featureParamsLocales == null) {
+            featureParamsLocales = new JSONObject();
+        }
+        JSONHelper.putValue(featureParamsLocales, key, new JSONArray(paramNames));
+    }
 	public void setFeatureParamsLocales(String featureParamsLocales) {
-		this.featureParamsLocales = featureParamsLocales;
+		this.featureParamsLocales = JSONHelper.createJSONObject(featureParamsLocales);
 	}
 
 	public String getGeometryType() {
@@ -302,52 +356,68 @@ public class WFSLayerConfiguration {
 		this.geometryType = geometryType;
 	}
 
-	public String isGetMapTiles() {
-		if(getMapTiles)
-			return "true";
-		return "false";
+    /**
+     * Checks if should get map tiles
+     *
+     * @return <code>true</code> if should get map tiles; <code>false</code>
+     *         otherwise.
+     */
+	public boolean isGetMapTiles() {
+        return getMapTiles;
 	}
 
 	public void setGetMapTiles(boolean getMapTiles) {
 		this.getMapTiles = getMapTiles;
 	}
 
-    public String isGetHighlightImage() {
-        if(getHighlightImage)
-            return "true";
-        return "false";
+    public boolean isGetHighlightImage() {
+        return getHighlightImage;
     }
 
     public void setGetHighlightImage(boolean getHighlightImage) {
         this.getHighlightImage = getHighlightImage;
     }
 
-	public String isGetFeatureInfo() {
-		if(getFeatureInfo)
-			return "true";
-		return "false";
+	public boolean isGetFeatureInfo() {
+		return getFeatureInfo;
 	}
 
 	public void setGetFeatureInfo(boolean getFeatureInfo) {
 		this.getFeatureInfo = getFeatureInfo;
 	}
 
-    public String isTileRequest() {
-        if(tileRequest)
-            return "true";
-        return "false";
+    public boolean isTileRequest() {
+        return tileRequest;
     }
 
     public void setTileRequest(boolean tileRequest) {
         this.tileRequest = tileRequest;
     }
 
-    public String getTileBuffer() {
+    public JSONObject getTileBuffer() {
         return tileBuffer;
     }
 
+    public double getTileBuffer(final String key) {
+        return getTileBuffer(key, DEFAULT_TILE_BUFFER);
+    }
+
+    public double getTileBuffer(final String key, final double defaultValue) {
+        if(tileBuffer == null) {
+            return defaultValue;
+        }
+        return tileBuffer.optDouble(key, defaultValue);
+    }
+
+    public void addTileBuffer(String key, double value) {
+        if(tileBuffer == null) {
+            tileBuffer = new JSONObject();
+        }
+        JSONHelper.putValue(tileBuffer, key, value);
+    }
+
     public void setTileBuffer(String tileBuffer) {
-        this.tileBuffer = tileBuffer;
+        this.tileBuffer = JSONHelper.createJSONObject(tileBuffer);
     }
 
     public String getWMSLayerId() {
@@ -375,30 +445,28 @@ public class WFSLayerConfiguration {
         this.wps_params = wps_params;
     }
 
-    public String isCustomParser() {
-        if(customParser)
-            return "true";
-        return "false";
+    /**
+     * Checks if should be parsed with custom parser
+     *
+     * @return <code>true</code> if should;
+     *         <code>false</code> otherwise.
+     */
+    public boolean isCustomParser() {
+        return customParser;
     }
 
     public void setCustomParser(boolean customParser) {
         this.customParser = customParser;
     }
 
-    public String getTestLocation() {
-        return testLocation;
-    }
+    public String getCustomParserType() {
+        // FIXME, TODO: implement from db -> transport and remove isCustomParser()
+        throw new RuntimeException("Not implemented yet!");
+        // TransportService:
+        //  if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
 
-    public void setTestLocation(String testLocation) {
-        this.testLocation = testLocation;
-    }
-
-    public int getTestZoom() {
-        return testZoom;
-    }
-
-    public void setTestZoom(int testZoom) {
-        this.testZoom = testZoom;
+        // WFSMapLayerJob:
+        // if (layer.isCustomParser()) {
     }
 
     /**
@@ -516,8 +584,34 @@ public class WFSLayerConfiguration {
 	}
 
 	public List<WFSSLDStyle> getSLDStyles() {
+        if(SLDStyles == null) {
+            SLDStyles = new ArrayList<WFSSLDStyle>();
+        }
 		return SLDStyles;
 	}
+
+    public WFSSLDStyle getDefaultSLDStyle() {
+        return getSLDStyle(KEY_DEFAULT);
+    }
+
+    public WFSSLDStyle getSLDStyle(final String name) {
+        if(name == null) {
+            return getDefaultSLDStyle();
+        }
+        for(WFSSLDStyle style : getSLDStyles()) {
+            if(name.equals(style.getName())) {
+                return style;
+            }
+        }
+        return null;
+    }
+
+    public void addSLDStyle(WFSSLDStyle style) {
+        if(style == null) {
+            return;
+        }
+        getSLDStyles().add(style);
+    }
 
 	public void setSLDStyles(List<WFSSLDStyle> sLDStyles) {
 		SLDStyles = sLDStyles;
@@ -528,7 +622,7 @@ public class WFSLayerConfiguration {
 		JedisManager.setex(KEY + this.layerId, JedisManager.EXPIRY_TIME_DAY, getAsJSON()); // expire in 1 day
 	}
 
-	public void destroy(String layerId) {
+	public void destroy() {
 		JedisManager.del(KEY + this.layerId);
 	}
 
@@ -536,7 +630,6 @@ public class WFSLayerConfiguration {
 		final JSONObject root = new JSONObject();
 
 		JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
-		JSONHelper.putValue(root, NAME_LOCALES, JSONHelper.createJSONObject(this.getNameLocales()));
 		JSONHelper.putValue(root, URL_PARAM, this.getURL());
 		JSONHelper.putValue(root, USERNAME, this.getUsername());
 		JSONHelper.putValue(root, PASSWORD, this.getPassword());
@@ -555,24 +648,17 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, FEATURE_ELEMENT, this.getFeatureElement());
         JSONHelper.putValue(root, OUTPUT_FORMAT, this.getOutputFormat());
 
-		JSONHelper.putValue(root, FEATURE_TYPE, JSONHelper.createJSONObject(this.getFeatureType()));
-		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, JSONHelper.createJSONObject(this.getSelectedFeatureParams()));
-		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, JSONHelper.createJSONObject(this.getFeatureParamsLocales()));
+		JSONHelper.putValue(root, FEATURE_TYPE, this.getFeatureType());
+		JSONHelper.putValue(root, SELECTED_FEATURE_PARAMS, getSelectedFeatureParams());
+		JSONHelper.putValue(root, FEATURE_PARAMS_LOCALES, getFeatureParamsLocales());
 		JSONHelper.putValue(root, GEOMETRY_TYPE, this.getGeometryType());
 		JSONHelper.putValue(root, GET_MAP_TILES, this.isGetMapTiles());
         JSONHelper.putValue(root, GET_HIGHLIGHT_IMAGE, this.isGetHighlightImage());
 		JSONHelper.putValue(root, GET_FEATURE_INFO, this.isGetFeatureInfo());
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
-        JSONHelper.putValue(root, TILE_BUFFER, JSONHelper.createJSONObject(this.getTileBuffer()));
+        JSONHelper.putValue(root, TILE_BUFFER, getTileBuffer());
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
         JSONHelper.putValue(root, CUSTOM_PARSER, this.isCustomParser());
-        if( this.getTestLocation() != null ) {
-            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
-        } else {
-            JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray("[]"));
-        }
-        // JSONHelper.putValue(root, TEST_LOCATION, JSONHelper.createJSONArray(this.getTestLocation()));
-        JSONHelper.putValue(root, TEST_ZOOM, this.getTestZoom());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());

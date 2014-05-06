@@ -29,11 +29,9 @@ public class WFSFeatureTypeParserTest {
     
 	@Test
 	public void testParser() {
-        Map<String, String> inputFeatureTypes = new HashMap<String, String>();
         // * in the config marks the default geometry
         // should contain whole schema or at least the selectedFeatureParams (+ GEOMETRY)
-        inputFeatureTypes.put("default", "fi_nimi:String,fi_osoite:String,postinumero:String,*the_geom:Point");
-        layer.setFeatureType(inputFeatureTypes);
+        layer.addFeatureType("default", "fi_nimi:String,fi_osoite:String,postinumero:String,*the_geom:Point");
 
         WFSFeatureTypeParser featureTypeParser = new WFSFeatureTypeParser(layer.getFeatureType());
         

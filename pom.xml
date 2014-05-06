@@ -45,7 +45,6 @@
 		<fi.mml.capabilities.version>1.3.0</fi.mml.capabilities.version>
 		<fi.mml.wms.version>1.1.1</fi.mml.wms.version>
 		<fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
-		<gt-xsd-kml.version>9.3</gt-xsd-kml.version>
 		
 		<jetty.version>9.1.0.M0</jetty.version>
 		<postgresql.version>8.4-702.jdbc4</postgresql.version>
@@ -53,6 +52,7 @@
 		<xerces.version>2.10.0</xerces.version>
 		<xmlbeans.version>2.5.0</xmlbeans.version>
 		<geotools.version>10.2</geotools.version>
+        <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
 		<flexjson.version>2.0</flexjson.version>
 		<deegree.version>2</deegree.version>
 		<!-- Test deps versions -->
@@ -390,7 +390,8 @@
 			<dependency>
 			    <groupId>org.geotools.xsd</groupId>
 			    <artifactId>gt-xsd-kml</artifactId>
-				<version>${gt-xsd-kml.version}</version>
+                <version>${geotools.version}</version>
+				<!-- version>${gt-xsd-kml.version}</version -->
 			</dependency>
 			<dependency>
 				<groupId>org.deegree</groupId>
@@ -538,6 +539,14 @@
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
+        <repository>
+            <id>opengeo</id>
+            <name>OpenGeo Maven Repository</name>
+            <url>http://repo.opengeo.org/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 
 

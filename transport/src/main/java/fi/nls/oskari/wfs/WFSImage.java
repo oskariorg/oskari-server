@@ -12,6 +12,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.util.IOHelper;
@@ -96,9 +97,7 @@ public class WFSImage {
         } else {
             tileBufferKey = styleName;
         }
-        if(layer.getTileBuffer() != null && layer.getTileBuffer().containsKey(tileBufferKey)) {
-            bufferSize = layer.getTileBuffer().get(tileBufferKey);
-        }
+        bufferSize = layer.getTileBuffer(tileBufferKey, bufferSize);
         log.debug(tileBufferKey, "=", bufferSize);
 
         // TODO: possibility to change the custom style store key to sessionID (it is hard without connection to get client)
@@ -438,15 +437,17 @@ public class WFSImage {
      * @return style
      */
     private Style getSLDStyle(WFSLayerStore layer, String styleName) {
-        Style style = null;
         log.debug("Trying to get style with name:", styleName);
-        if(layer.getStyles().containsKey(styleName)) {
-            style = createSLDStyle(layer.getStyles().get(styleName).getSLDStyle());
-        }
-        else if(STYLE_HIGHLIGHT.equals(styleName)) {
-            style = createSLDStyle(layer.getSelectionSLDStyle());
-        } else if(layer.getStyles().containsKey(STYLE_DEFAULT)) {
-            style = createSLDStyle(layer.getStyles().get(STYLE_DEFAULT).getSLDStyle());
+        // try to find with name
+        Style style = createSLDStyle(layer.getSLDStyle(styleName));
+        if(style == null) {
+            // if not found, use selection style for highlight or try default
+            if(STYLE_HIGHLIGHT.equals(styleName)) {
+                style = createSLDStyle(layer.getSelectionSLDStyle());
+            }
+            else {
+                style = createSLDStyle(layer.getDefaultSLDStyle());
+            }
         }
 
         // if styles couldn't be parsed, use defaults
@@ -469,6 +470,12 @@ public class WFSImage {
         return style;
     }
 
+    private Style createSLDStyle(WFSSLDStyle style) {
+        if(style == null) {
+            return null;
+        }
+        return createSLDStyle(style.getSLDStyle());
+    }
 	/**
 	 * Parses SLD style from a String (XML)
 	 * 

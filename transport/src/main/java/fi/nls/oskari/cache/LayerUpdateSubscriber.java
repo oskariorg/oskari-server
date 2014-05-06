@@ -69,19 +69,21 @@ public class LayerUpdateSubscriber extends JedisSubscriber {
                 customParser = false;
                 if(layer.isCustomParser()) {
                     customParser = true;
-                    layer.setCustomParser(""); // don't use custom parser
+                    //layer.setCustomParser(""); // don't use custom parser
                 }
 
                 JSONObject root = new JSONObject();
                 JSONHelper.putValue(root, "id", layer.getLayerId());
 
                 // check that valid location information
+                /*
                 if(layer.getTestLocation().size() != 4) {
                     log.warn("Location bounds configuration failed", layer.getLayerId());
                     JSONHelper.putValue(root, "status", "fail - location problem");
                     JedisManager.publish(SCHEMA_CHANNEL, root.toString());
                     continue;
                 }
+                */
 
                 // set testing location
                 /*Location location = new Location();

@@ -97,7 +97,8 @@ public class WFSCommunicator {
 
 
             List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-            if(selectedProperties != null) {
+            if(selectedProperties != null && !selectedProperties.isEmpty()) {
+                // FIXME: Nooooooo... we should just return arraylist if we need it, instead of casting it from list here...
                 selectedProperties = (ArrayList<String>) ((ArrayList<String>) selectedProperties).clone();
             }
             if(!layer.isGetFeatureInfo()) {

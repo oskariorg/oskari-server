@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -16,6 +17,7 @@ import org.geotools.feature.type.AttributeDescriptorImpl;
 import org.geotools.feature.type.AttributeTypeImpl;
 import org.geotools.feature.type.GeometryDescriptorImpl;
 import org.geotools.feature.type.GeometryTypeImpl;
+import org.json.JSONObject;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -97,6 +99,10 @@ public class WFSFeatureTypeParser {
 	public WFSFeatureTypeParser(Map<String, String> typeSpecs) {
 		this.typeSpecs = typeSpecs;
 	}
+
+    public WFSFeatureTypeParser(JSONObject typeSpecs) {
+        this.typeSpecs = JSONHelper.getObjectAsMap(typeSpecs);
+    }
 
 	/**
 	 * Gets properties
