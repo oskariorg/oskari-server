@@ -1,6 +1,6 @@
 package fi.nls.oskari.elf.jetty;
 
-import fi.nls.oskari.elf.JettyLauncher;
+import fi.nls.oskari.jetty.JettyLauncher;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -20,7 +20,7 @@ public class JettyRunner {
     public static void main(String[] args) throws Exception {
         PropertyUtil.loadProperties("/oskari.properties");
         PropertyUtil.loadProperties("/oskari-ext.properties");
-        PropertyUtil.loadProperties("/elf.properties");
+        
         loadOverridePropertiesFromFile(System.getProperty("oskari.conf"));
 
         String username = fromSystemPropertiesOrPropertyUtil("db.username");
@@ -63,7 +63,7 @@ public class JettyRunner {
 
     private static void loadOverridePropertiesFromFile(final String filename) {
         if(filename == null) {
-            loadOverridePropertiesFromFile("./standalone.properties");
+            loadOverridePropertiesFromFile("./elf.properties");
             return;
         }
 
