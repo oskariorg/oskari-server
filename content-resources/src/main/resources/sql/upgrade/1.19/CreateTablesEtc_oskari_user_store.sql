@@ -69,9 +69,6 @@ BEGIN
 END;
 $$;
 
-
-ALTER FUNCTION public.procedure_user_layer_data_update() OWNER TO liferay;
-
 --
 -- TOC entry 1256 (class 1255 OID 479659)
 -- Name: procedure_user_layer_update(); Type: FUNCTION; Schema: public; Owner: liferay
@@ -92,8 +89,6 @@ BEGIN
 END;
 $$;
 
-
-ALTER FUNCTION public.procedure_user_layer_update() OWNER TO liferay;
 
 SET default_tablespace = '';
 
@@ -118,8 +113,6 @@ CREATE TABLE user_layer (
 );
 
 
-ALTER TABLE public.user_layer OWNER TO liferay;
-
 --
 -- TOC entry 188 (class 1259 OID 479704)
 -- Name: user_layer_data; Type: TABLE; Schema: public; Owner: liferay; Tablespace: 
@@ -136,9 +129,6 @@ CREATE TABLE user_layer_data (
     updated timestamp with time zone
 );
 
-
-ALTER TABLE public.user_layer_data OWNER TO liferay;
-
 --
 -- TOC entry 187 (class 1259 OID 479702)
 -- Name: user_layer_data_id_seq; Type: SEQUENCE; Schema: public; Owner: liferay
@@ -151,8 +141,6 @@ CREATE SEQUENCE user_layer_data_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE public.user_layer_data_id_seq OWNER TO liferay;
 
 --
 -- TOC entry 4098 (class 0 OID 0)
@@ -185,9 +173,6 @@ CREATE TABLE user_layer_style (
     border_linejoin character varying(256),
     border_dasharray character varying(256)
 );
-
-
-ALTER TABLE public.user_layer_style OWNER TO liferay;
 
 --
 -- TOC entry 189 (class 1259 OID 479719)
@@ -223,9 +208,6 @@ CREATE VIEW user_layer_data_style AS
     user_layer_style st
   WHERE ((ad.user_layer_id = a.id) AND (a.style_id = st.id));
 
-
-ALTER TABLE public.user_layer_data_style OWNER TO liferay;
-
 --
 -- TOC entry 185 (class 1259 OID 479684)
 -- Name: user_layer_id_seq; Type: SEQUENCE; Schema: public; Owner: liferay
@@ -238,8 +220,6 @@ CREATE SEQUENCE user_layer_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE public.user_layer_id_seq OWNER TO liferay;
 
 --
 -- TOC entry 4101 (class 0 OID 0)
@@ -262,8 +242,6 @@ CREATE SEQUENCE user_layer_style_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE public.user_layer_style_id_seq OWNER TO liferay;
 
 --
 -- TOC entry 4102 (class 0 OID 0)
@@ -290,8 +268,6 @@ CREATE VIEW vuser_layer_data AS
     user_layer_data.geometry
    FROM user_layer_data;
 
-
-ALTER TABLE public.vuser_layer_data OWNER TO liferay;
 
 --
 -- TOC entry 3959 (class 2604 OID 479689)
@@ -377,111 +353,3 @@ ALTER TABLE ONLY user_layer_data
 ALTER TABLE ONLY user_layer
     ADD CONSTRAINT user_layer_style_id_fkey FOREIGN KEY (style_id) REFERENCES user_layer_style(id);
 
-
---
--- TOC entry 4093 (class 0 OID 0)
--- Dependencies: 5
--- Name: public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- TOC entry 4096 (class 0 OID 0)
--- Dependencies: 186
--- Name: user_layer; Type: ACL; Schema: public; Owner: liferay
---
-
-REVOKE ALL ON TABLE user_layer FROM PUBLIC;
-REVOKE ALL ON TABLE user_layer FROM liferay;
-GRANT ALL ON TABLE user_layer TO liferay;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE user_layer TO omat_paikat;
-
-
---
--- TOC entry 4097 (class 0 OID 0)
--- Dependencies: 188
--- Name: user_layer_data; Type: ACL; Schema: public; Owner: liferay
---
-
-REVOKE ALL ON TABLE user_layer_data FROM PUBLIC;
-REVOKE ALL ON TABLE user_layer_data FROM liferay;
-GRANT ALL ON TABLE user_layer_data TO liferay;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE user_layer_data TO omat_paikat;
-
-
---
--- TOC entry 4099 (class 0 OID 0)
--- Dependencies: 184
--- Name: user_layer_style; Type: ACL; Schema: public; Owner: liferay
---
-
-REVOKE ALL ON TABLE user_layer_style FROM PUBLIC;
-REVOKE ALL ON TABLE user_layer_style FROM liferay;
-GRANT ALL ON TABLE user_layer_style TO liferay;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE user_layer_style TO omat_paikat;
-
-
---
--- TOC entry 4100 (class 0 OID 0)
--- Dependencies: 189
--- Name: user_layer_data_style; Type: ACL; Schema: public; Owner: liferay
---
-
-REVOKE ALL ON TABLE user_layer_data_style FROM PUBLIC;
-REVOKE ALL ON TABLE user_layer_data_style FROM liferay;
-GRANT ALL ON TABLE user_layer_data_style TO liferay;
-GRANT SELECT ON TABLE user_layer_data_style TO omat_paikat;
-
-
---
--- TOC entry 4103 (class 0 OID 0)
--- Dependencies: 190
--- Name: vuser_layer_data; Type: ACL; Schema: public; Owner: liferay
---
-
-REVOKE ALL ON TABLE vuser_layer_data FROM PUBLIC;
-REVOKE ALL ON TABLE vuser_layer_data FROM liferay;
-GRANT ALL ON TABLE vuser_layer_data TO liferay;
-GRANT SELECT ON TABLE vuser_layer_data TO omat_paikat;
-
-
--- Completed on 2014-03-20 15:00:59
-
---
--- PostgreSQL database dump complete
---
-
--- Create primary key table for GeoServer
-
-CREATE TABLE gt_pk_metadata_table
-(
-  table_schema character varying(32) NOT NULL,
-  table_name character varying(32) NOT NULL,
-  pk_column character varying(32) NOT NULL,
-  pk_column_idx integer,
-  pk_policy character varying(32),
-  pk_sequence character varying(64),
-  CONSTRAINT gt_pk_metadata_table_table_schema_table_name_pk_column_key UNIQUE (table_schema, table_name, pk_column)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE gt_pk_metadata_table
-  OWNER TO liferay;
-
-
-INSERT INTO gt_pk_metadata_table(
-            table_schema, table_name, pk_column, pk_column_idx, pk_policy, 
-            pk_sequence)
-    VALUES (
-    'public',
-    'vuser_layer_data',
-    'id',
-    null,
-    'assigned',
-    null);
