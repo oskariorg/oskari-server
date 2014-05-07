@@ -155,8 +155,8 @@
             <artifactId>oskari-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>feature-engine</artifactId>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-feature-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>

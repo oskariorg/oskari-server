@@ -140,8 +140,8 @@
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>fi.nls.oskari</groupId>
-				<artifactId>feature-engine</artifactId>
+				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-feature-engine</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
 
