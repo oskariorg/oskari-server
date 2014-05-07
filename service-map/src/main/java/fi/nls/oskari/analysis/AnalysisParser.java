@@ -88,6 +88,7 @@ public class AnalysisParser {
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
     private static final String JSON_KEY_FEATURES = "features";
     private static final String JSON_KEY_NAME = "name";
+    private static final String JSON_KEY_OPERATOR = "operator";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
@@ -369,6 +370,9 @@ public class AnalysisParser {
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
             this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
+
+            // Set mode intersect or contains
+            method.setIntersection_mode(JSONHelper.getStringFromJSON(params, JSON_KEY_OPERATOR, "intersect"));
 
             // WFS filter
 
