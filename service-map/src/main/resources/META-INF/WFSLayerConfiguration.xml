@@ -47,8 +47,8 @@
 		<result property="maxScale" column="maxscale"/>
 
         <result property="customParser" column="custom_parser"/>
-        <result property="testLocation" column="test_location"/>
-        <result property="testZoom" column="test_zoom"/>
+        <!-- result property="testLocation" column="test_location"/>
+        <result property="testZoom" column="test_zoom"/ -->
 		
 		<result property="templateName" column="t_name"/>
 		<result property="templateDescription" column="description"/>
