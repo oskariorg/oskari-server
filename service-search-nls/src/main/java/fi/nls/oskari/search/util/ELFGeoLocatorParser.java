@@ -52,9 +52,10 @@ public class ELFGeoLocatorParser {
      *
      * @param data ELF Geolocator response (fuzzySearch or GetFeature)
      * @param epsg coordinate ref system of target system (map)
+     * @param exonym  if true, all alternatives are returned
      * @return
      */
-    public ChannelSearchResult parse(String data, String epsg) {
+    public ChannelSearchResult parse(String data, String epsg, Boolean exonym) {
 
         ChannelSearchResult searchResultList = new ChannelSearchResult();
 

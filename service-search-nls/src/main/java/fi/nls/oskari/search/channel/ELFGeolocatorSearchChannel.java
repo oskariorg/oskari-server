@@ -13,7 +13,7 @@ import fi.nls.oskari.util.IOHelper;
 import java.net.URLEncoder;
 
 
-public class ELFExactAUSearchChannel implements SearchableChannel {
+public class ELFGeolocatorSearchChannel implements SearchableChannel {
 
     /**
      * logger
