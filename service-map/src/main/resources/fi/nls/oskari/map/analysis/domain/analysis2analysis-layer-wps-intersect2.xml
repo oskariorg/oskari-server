@@ -75,7 +75,7 @@
     <wps:Input>
       <ows:Identifier>intersectionMode</ows:Identifier>
       <wps:Data>
-        <wps:LiteralData>SECOND</wps:LiteralData>
+        <wps:LiteralData>{intersectionMode}</wps:LiteralData>
       </wps:Data>
     </wps:Input>
   </wps:DataInputs>

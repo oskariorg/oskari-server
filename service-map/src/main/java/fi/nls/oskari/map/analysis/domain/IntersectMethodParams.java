@@ -32,6 +32,8 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private final String FIELDB1 = "{fieldB1}";
     private final String SRSNAME2 = "{srsName2}";
     public final String GEOJSONFEATURES2 = "{geoJsonFeatures2}";
+    private final String INTERSECTIONMODE = "{intersectionMode}";
+    private final String INTERSECTIONMODE2 = "contains";
 
     private String href2 = "";
     private String xmlns2 = "";
@@ -43,6 +45,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private String properties2 = "";
     private String geojson2 = "";
     private String wps_reference_type2 = "";
+    private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
     public String getFieldA1() {
         return fieldA1;
@@ -120,6 +123,15 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         wps_reference_type2 = wpsReferenceType2;
     }
 
+    public String getIntersection_mode() {
+        if (intersection_mode.equals(INTERSECTIONMODE2)) return "SECOND_CONTAINS";
+        else return "SECOND";
+    }
+
+    public void setIntersection_mode(String intersection_mode) {
+        this.intersection_mode = intersection_mode;
+    }
+
     public String getGeojson2() {
         if(geojson2 == null) return "";
         return geojson2;
@@ -176,6 +188,9 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(FIELDA1, this.getFieldA1());
         doctemp = doctemp.replace(FIELDB1, this.getFieldB1());
         doctemp = doctemp.replace(SRSNAME2, this.getSrsName());
+
+        // Intersection mode
+        doctemp = doctemp.replace(INTERSECTIONMODE, this.getIntersection_mode());
 
         // GeoJson input
         doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());

@@ -74,7 +74,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
 
     public static enum IntersectionMode {
-        INTERSECTION, FIRST, SECOND
+        INTERSECTION, FIRST, SECOND, SECOND_CONTAINS
     }
 
     static final String ECKERT_IV_WKT = "PROJCS[\"World_Eckert_IV\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Eckert_IV\"],PARAMETER[\"Central_Meridian\",0.0],UNIT[\"Meter\",1.0]]";
@@ -86,7 +86,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             @DescribeParameter(name = "second feature collection", description = "Second feature collection") SimpleFeatureCollection secondFeatures,
             @DescribeParameter(name = "first attributes to retain", collectionType = String.class, min = 0, description = "List of the first feature collection attributes to output") List<String> firstAttributes,
             @DescribeParameter(name = "second attributes to retain", collectionType = String.class, min = 0, description = "List of the second feature collection attributes to output") List<String> sndAttributes,
-            @DescribeParameter(name = "intersectionMode", min = 0, description = "The operations to perform: set INTERSECTION if the geometry is the intersection, FIRST if the geometry is extracted by firstFeatures, SECOND if it is extracted by secondFeatures (DEFAULT=INTERSECTION)") IntersectionMode intersectionMode,
+            @DescribeParameter(name = "intersectionMode", min = 0, description = "The operations to perform: set INTERSECTION if the geometry is the intersection, FIRST if the geometry is extracted by firstFeatures, SECOND if it is extracted by secondFeatures, SECOND_CONTAINS like SECOND but contains instead of intersect (DEFAULT=INTERSECTION)") IntersectionMode intersectionMode,
             @DescribeParameter(name = "percentagesEnabled", min = 0, description = "Set it true to get the intersection percentage parameters, false  otherwise (DEFAULT=false)") Boolean percentagesEnabled,
             @DescribeParameter(name = "areasEnabled", min = 0, description = "Set it true to get the area attributes , false  otherwise (DEFAULT=false)") Boolean areasEnabled) {
         // assign defaults
@@ -313,6 +313,9 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             if (intersectionMode == IntersectionMode.SECOND) {
                 geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
             }
+            if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
+                geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
+            }
             if (intersectionMode == IntersectionMode.INTERSECTION) {
                 geomType = getIntersectionType(delegate, features);
             }
@@ -450,6 +453,9 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             if (intersectionMode == IntersectionMode.SECOND) {
                 geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
             }
+            if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
+                geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
+            }
             if (intersectionMode == IntersectionMode.INTERSECTION) {
                 geomType = getIntersectionType(firstFeatures, secondFeatures);
             }
@@ -484,8 +490,14 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                         Geometry currentGeom = (Geometry) attribute;
 
                         if (intersectedGeometries == null && !added) {
-                            intersectedGeometries = filteredCollection(currentGeom,
+                            if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
+                                 intersectedGeometries = filteredCollection2(currentGeom,
                                     subFeatureCollection);
+                            }
+                            else {
+                                intersectedGeometries = filteredCollection(currentGeom,
+                                    subFeatureCollection);
+                            }
                             iterator = intersectedGeometries.features();
                         }
                         try {
@@ -506,6 +518,8 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                                     } else if (intersectionMode == IntersectionMode.FIRST) {
                                         attribute = currentGeom;
                                     } else if (intersectionMode == IntersectionMode.SECOND) {
+                                        attribute = (Geometry) second.getDefaultGeometry();
+                                    } else if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
                                         attribute = (Geometry) second.getDefaultGeometry();
                                     }
                                     if (((Geometry) attribute).getNumGeometries() > 0) {
@@ -618,6 +632,19 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                     ff.literal(currentGeom));
             SimpleFeatureCollection subFeatureCollectionIntersection = this.subFeatureCollection
                     .subCollection(intersectFilter);
+            if (subFeatureCollectionIntersection.size() == 0) {
+                subFeatureCollectionIntersection = subFeatureCollection;
+            }
+            return subFeatureCollectionIntersection;
+        }
+
+        private SimpleFeatureCollection filteredCollection2(Geometry currentGeom,
+                                                           SimpleFeatureCollection subFeatureCollection) {
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+            Filter containsFilter = ff.within(ff.property(dataGeomName),
+                    ff.literal(currentGeom));
+            SimpleFeatureCollection subFeatureCollectionIntersection = this.subFeatureCollection
+                    .subCollection(containsFilter);
             if (subFeatureCollectionIntersection.size() == 0) {
                 subFeatureCollectionIntersection = subFeatureCollection;
             }
