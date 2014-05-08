@@ -1,0 +1,20 @@
+{
+    "setup" : [
+        "create-empty-db",
+        "register-bundles",
+        "postgres-add-myplaces",
+        "postgres-add-users",
+        "postgres-add-JAAS"
+    ],
+    
+    "views" : [
+        "asdi-view.json",
+        "publisher-template-view.json"
+    ],
+    "sql" : [
+        "populate-Inspire-themes.sql",
+        "asdi-basemap-wmslayer.sql"
+        
+         
+    ]
+}

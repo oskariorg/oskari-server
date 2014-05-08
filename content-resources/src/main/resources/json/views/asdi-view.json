@@ -1,0 +1,166 @@
+{
+    "name": "ASDI view",
+    "type": "DEFAULT",
+    "default": true,
+    "public": true,
+    "oskari": {
+        "application": "asdi_guest",
+        "page": "asdi",
+        "development_prefix": "/applications/asdi"
+    },
+    "bundles": [
+        {
+            "id": "openlayers-default-theme"
+        }, {
+            "id": "mapfull",
+            "config": {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins": [
+                    {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                        "config": {
+                            "ignoredLayerTypes": ["WFS"]
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config": {
+                            "backoffIncrement": 1000,
+                            "contextPath": "/transport",
+                            "disconnectTime": 30000,
+                            "lazy": true,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000,
+                            "port": ""
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+                        "config": {
+                            "location": {
+                                "left": "45px",
+                                "top": "110px"
+                            },
+                            "toolStyle": {
+                                "widthMinus": "22px",
+                                "val": "rounded-light",
+                                "heightMinus": "39px",
+                                "heightCenter": 12,
+                                "heightPlus": "38px",
+                                "widthPlus": "22px",
+                                "widthCursor": "17px",
+                                "widthCenter": "22px",
+                                "heightCursor": "18px"
+                            }
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
+                        "config": {
+                            "location": {
+                                "bottom": "auto",
+                                "left": "10px",
+                                "top": "10px"
+                            },
+                            "toolStyle": "rounded-light"
+                        }
+                    }, {
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
+                    }
+                ],
+                "layers": [],
+                "mapOptions": {
+	                "allOverlays": true,
+	                "units": "m",
+                	"numZoomLevels": 15,
+                	"maxResolution": "auto",
+                    "maxExtent": {
+                        "left": -60000000, 
+                        "bottom": -60000000, 
+                        "right": 60000000, 
+                        "top": 60000000
+                    },
+                    "srsName": "EPSG:3575"
+                },
+                "projectionDefs": {
+            		"EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+	            	"EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+    	        	"EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+        	    	"EPSG:3574": "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ",
+            	    "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                	"EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                	"EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
+            	}
+            },
+            "state": {
+                "east": "-1350000", 
+                "north": "-2517000",
+                "selectedLayers": [{"id": 888}],
+                "zoom": 4
+            }
+        }, {
+            "id": "divmanazer"
+        }, {
+            "id": "toolbar",
+            "config": {
+                "viewtools": {
+                    "print": false,
+                    "link": false
+                }
+            }
+        }, {
+            "id": "infobox"
+        }, {
+            "id": "statehandler"
+        }, {
+            "id": "search"
+        }, {
+            "id": "layerselector2"
+        }, {
+            "id": "layerselection2"
+        }, {
+            "id": "coordinatedisplay"
+        }, {
+            "id": "metadataflyout"
+        }, {
+            "id": "metadatacatalogue"
+        }, {
+            "id": "personaldata"
+        }, {
+            "id": "publisher"
+        }, {
+            "id": "maplegend"
+        }, {
+            "id": "userguide"
+        }, {
+            "id": "featuredata2"
+        }, {
+            "id": "myplaces2"
+        }, {
+            "id": "backendstatus"
+        }, {
+            "id": "printout",
+            "config" : {
+                "backendConfiguration" : {
+                    "formatProducers" : {
+                        "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
+                        "image/png" : "/imaging/service/thumbnail/maplink.png?"
+                    }, 
+                    "buttons": { }
+                }
+            }
+        }, {
+            "id": "postprocessor"
+        }
+    ]
+}

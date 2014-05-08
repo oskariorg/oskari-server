@@ -15,6 +15,23 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import java.io.IOException;
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.servlet.ServletHandler;
+
+
 public class JettyRunner { 
 
     public static void main(String[] args) throws Exception {
@@ -51,6 +68,11 @@ public class JettyRunner {
         
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] { main, geonetwork });
+        
+        /*main.addFilter(HelloPrintingFilter.class, "/*",
+                EnumSet.of(DispatcherType.REQUEST));*/
+        
+        
         server.setHandler(handlers);
         server.start();
         server.join();
@@ -87,4 +109,22 @@ public class JettyRunner {
             IOHelper.close(in);
         }
     }
+    
+    /*public static class HelloPrintingFilter implements Filter {
+        @Override
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+          System.out.println("hello from filter");
+          chain.doFilter (request, response);
+        }
+
+        @Override
+        public void init(FilterConfig arg0) throws ServletException {
+
+        }
+
+        @Override
+        public void destroy() {}
+      }
+    */
 }

@@ -86,7 +86,7 @@
     </div>
     <div id="toolbar">
     </div>
-   <div id="login">
+      <div id="login">
         <c:choose>
             <c:when test="${!empty loginState}">
                 <p class="error">Invalid password or username!!</p>
