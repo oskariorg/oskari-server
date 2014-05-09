@@ -163,7 +163,7 @@ public class ELFGeoLocatorParser {
                 // Loop names - multiply items, if exomym true
                 int size = names.size();
                 if (size > 0 && !exonym) size = 1;   // 1st one when exonym false
-                for (int k = 0; k < size - 1; k++) {
+                for (int k = 0; k < size; k++) {
                     SearchResultItem item = new SearchResultItem();
                     item.setTitle(names.get(k));
 
