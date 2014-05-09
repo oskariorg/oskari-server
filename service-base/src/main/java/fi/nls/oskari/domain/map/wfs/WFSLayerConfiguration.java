@@ -53,7 +53,7 @@ public class WFSLayerConfiguration {
     protected final static String TILE_BUFFER = "tileBuffer";
     protected final static String WMS_LAYER_ID = "WMSLayerId";
 
-    protected final static String CUSTOM_PARSER = "customParser";
+    protected final static String JOB_TYPE = "jobType";
 
     protected final static String MIN_SCALE = "minScale";
     protected final static String MAX_SCALE = "maxScale";
@@ -103,7 +103,7 @@ public class WFSLayerConfiguration {
     private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
-    private boolean customParser;
+    private String jobType;
 
 	private double minScale;
 	private double maxScale;
@@ -445,28 +445,12 @@ public class WFSLayerConfiguration {
         this.wps_params = wps_params;
     }
 
-    /**
-     * Checks if should be parsed with custom parser
-     *
-     * @return <code>true</code> if should;
-     *         <code>false</code> otherwise.
-     */
-    public boolean isCustomParser() {
-        return customParser;
+    public void setJobType(String type) {
+        this.jobType = type;
     }
 
-    public void setCustomParser(boolean customParser) {
-        this.customParser = customParser;
-    }
-
-    public String getCustomParserType() {
-        // FIXME, TODO: implement from db -> transport and remove isCustomParser()
-        throw new RuntimeException("Not implemented yet!");
-        // TransportService:
-        //  if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
-
-        // WFSMapLayerJob:
-        // if (layer.isCustomParser()) {
+    public String getJobType() {
+        return this.jobType;
     }
 
     /**
@@ -658,7 +642,7 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, TILE_REQUEST, this.isTileRequest());
         JSONHelper.putValue(root, TILE_BUFFER, getTileBuffer());
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
-        JSONHelper.putValue(root, CUSTOM_PARSER, this.isCustomParser());
+        JSONHelper.putValue(root, JOB_TYPE, this.getJobType());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());

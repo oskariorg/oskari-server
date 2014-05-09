@@ -127,16 +127,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     public FeatureCollection<SimpleFeatureType, SimpleFeature> response(
             WFSLayerStore layer, RequestResponse requestResponse) {
         BufferedReader response = ((WFSRequestResponse) requestResponse).getResponse();
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features;
+        FeatureCollection<SimpleFeatureType, SimpleFeature> features = WFSCommunicator.parseSimpleFeatures(response, layer);
 
-        if (layer.isCustomParser()) {
-            log.debug("Custom parser layer id: ", layer.getLayerId());
-            WFSParser parser = new WFSParser(response, layer);
-            features = parser.parse();
-        } else {
-            features = WFSCommunicator.parseSimpleFeatures(response, layer);
-        }
-        
         try {
             response.close();
         } catch (IOException e) {

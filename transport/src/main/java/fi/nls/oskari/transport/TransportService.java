@@ -794,8 +794,11 @@ public class TransportService extends AbstractService implements ResultProcessor
         
         WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
 
-        if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
+        if ("oskari-feature-engine".equals(layer.getJobType())) {
             return new FEMapLayerJob(service, type, store, layerId);
+        }
+        else if("oskari-custom-parser".equals(layer.getJobType())) {
+            new WFSCustomParserMapLayerJob(service, type, store, layerId);
         }
         return new WFSMapLayerJob(service, type, store, layerId);
     }
@@ -820,8 +823,12 @@ public class TransportService extends AbstractService implements ResultProcessor
         
         WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
 
-        if ("oskari-feature-engine".equals(layer.getCustomParserType()) ) {
+        if ("oskari-feature-engine".equals(layer.getJobType()) ) {
             return new FEMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+        }
+        else if("oskari-custom-parser".equals(layer.getJobType())) {
+            new WFSCustomParserMapLayerJob(service, type, store, layerId,
                     reqSendFeatures, reqSendImage, reqSendHighlight);
         }
         return new WFSMapLayerJob(service, type, store, layerId,

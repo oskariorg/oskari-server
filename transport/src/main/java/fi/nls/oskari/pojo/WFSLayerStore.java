@@ -36,11 +36,8 @@ public class WFSLayerStore extends WFSLayerConfiguration {
 
     private static final String ERROR = "error";
 
-    private static final String NAME_LOCALES = "nameLocales";
-    //private static final String JOB_TYPE = "jobType";
+    //private static final String NAME_LOCALES = "nameLocales";
     //private static final String REQUEST_IMPULSE = "requestImpulse";
-
-    // ylimääräinen kenttä wps_params parent luokassa ja muutamat map-jutskat myös
 
     // not in JSON
     private CoordinateReferenceSystem crs;
@@ -228,6 +225,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 return null;
             } else if (LAYER_ID.equals(fieldName)) {
                 store.setLayerId(parser.getText());
+                /*
             } else if (NAME_LOCALES.equals(fieldName)) {
                 // FIXME: do something sane with layer name or skip it from handling
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
@@ -253,6 +251,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                     }
                 }
                 //store.setNameLocales(nameLocales);
+                */
             } else if (URL_PARAM.equals(fieldName)) {
                 store.setURL(parser.getText());
             } else if (USERNAME.equals(fieldName)) {
@@ -344,8 +343,8 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 }
             } else if (WMS_LAYER_ID.equals(fieldName)) {
                 store.setWMSLayerId(parser.getText());
-            } else if (CUSTOM_PARSER.equals(fieldName)) {
-                store.setCustomParser(parser.getValueAsBoolean());
+            } else if (JOB_TYPE.equals(fieldName)) {
+                store.setJobType(parser.getText());
             }
             else if (MIN_SCALE.equals(fieldName)) {
                 store.setMinScale(parser.getValueAsDouble());
@@ -395,8 +394,6 @@ public class WFSLayerStore extends WFSLayerConfiguration {
             }
         }
         parser.close();
-
-
 
         return store;
     }
