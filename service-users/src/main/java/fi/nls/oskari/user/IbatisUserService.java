@@ -16,6 +16,10 @@ public class IbatisUserService extends BaseIbatisService<User> {
         return "Users";
     }
 
+    public User find(long id) {
+        return queryForObject(getNameSpace() + ".findById", id);
+    }
+
     /**
      * Returns null if doesn't match any user or username for the user that was found
      * @param username
@@ -37,4 +41,13 @@ public class IbatisUserService extends BaseIbatisService<User> {
         }
         return user;
     }
+
+    public void delete(long id) {
+        delete(getNameSpace() + ".deleteById", id);
+    }
+
+    public void updatePassword(long id, String password) {
+
+    }
+
 }
