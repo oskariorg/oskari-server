@@ -10,13 +10,20 @@
 
     <resultMap id="UsersResult" class="User">
         <result property="id" column="id" />
+        <result property="screenname" column="user_name" />
         <result property="firstname" column="first_name" />
         <result property="lastname" column="last_name" />
         <result property="uuid" column="uuid" />
     </resultMap>
 
     <select id="findByUserName" parameterClass="String" resultMap="UsersResult">
-        select id, first_name, last_name, uuid from oskari_users where user_name = #id#
+        select id, user_name, first_name, last_name, uuid from oskari_users where user_name = #id#
+    </select>
+
+    <select id="login" parameterClass="java.util.HashMap" resultClass="String">
+        select login
+        from oskari_jaas_users
+        where login = #username# AND password=#password#
     </select>
 
 </sqlMap>
