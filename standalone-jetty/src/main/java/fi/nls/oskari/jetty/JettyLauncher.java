@@ -148,6 +148,7 @@ public class JettyLauncher {
         securityHandler.setLoginService(loginService);
         // the last boolean param needs to be false on FormAuthenticator or
         // we'll lose everything that's been put to request on failed login (login form url/error msg on failed login)
+        // TODO: mapping OskariRequestFilter to mapServlet instead of path should fix this
         securityHandler.setAuthenticator(new FormAuthenticator("/", "/?loginState=failed", false));
         securityHandler.setRealmName("OskariRealm");
         return securityHandler;
