@@ -112,14 +112,10 @@
             </c:when>
         </c:choose>
         <c:set var="user" value="fi.nls.oskari.domain.User" />
+        <%-- when test="${!empty sessionScope[user]}" --%>
         <c:choose>
-<<<<<<< HEAD
-            <c:when test="${!empty sessionScope[user]}">
-                <a href="${ajaxUrl}action=logout">Logout</a>
-=======
             <c:when test="${!empty _logout_uri}">
                 <a href="${_logout_uri}">Logout</a>
->>>>>>> 9d6994d0e30c7c471a9d8b7f9b2738f5b390e0d1
             </c:when>
             <c:when test="${empty _logout_uri && !empty _login_uri}">
                 <form action='${_login_uri}' method="post" accept-charset="UTF-8">
