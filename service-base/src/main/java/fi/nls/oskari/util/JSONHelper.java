@@ -44,9 +44,12 @@ public class JSONHelper {
     }
 
     public static final JSONObject getJSONObject(final JSONObject content, String key) {
+        if(content == null) {
+            return null;
+        }
         try {
             return content.getJSONObject(key);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             log.warn("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }

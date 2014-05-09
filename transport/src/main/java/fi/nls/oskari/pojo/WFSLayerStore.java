@@ -36,9 +36,6 @@ public class WFSLayerStore extends WFSLayerConfiguration {
 
     private static final String ERROR = "error";
 
-    //private static final String NAME_LOCALES = "nameLocales";
-    //private static final String REQUEST_IMPULSE = "requestImpulse";
-
     // not in JSON
     private CoordinateReferenceSystem crs;
 
@@ -225,33 +222,8 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 return null;
             } else if (LAYER_ID.equals(fieldName)) {
                 store.setLayerId(parser.getText());
-                /*
-            } else if (NAME_LOCALES.equals(fieldName)) {
-                // FIXME: do something sane with layer name or skip it from handling
-                if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
-                    while (parser.nextToken() != JsonToken.END_OBJECT) {
-                        String localeName = parser.getCurrentName();
-                        Map locale = new HashMap<String, String>();
-                        parser.nextToken();
-                        if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
-                            while (parser.nextToken() != JsonToken.END_OBJECT) {
-                                final String valueName = parser.getCurrentName();
-                                if (NAME.equals(valueName)) {
-                                    locale.put(valueName, parser.getText());
-                                } else if ("subtitle".equals(valueName)) {
-                                    locale.put(valueName, parser.getText());
-                                } else {
-                                    throw new IllegalStateException(
-                                            "Unrecognized value in layers '"
-                                                    + valueName + "'!");
-                                }
-                            }
-                        }
-                        //nameLocales.put(localeName, locale);
-                    }
-                }
-                //store.setNameLocales(nameLocales);
-                */
+            } else if (LAYER_FRIENDLY_NAME.equals(fieldName)) {
+                // skip, this is just so we get the UI name in Redis for easier debugging
             } else if (URL_PARAM.equals(fieldName)) {
                 store.setURL(parser.getText());
             } else if (USERNAME.equals(fieldName)) {
@@ -389,8 +361,11 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                     }
                 }
             } else {
-                throw new IllegalStateException("Unrecognized field '"
-                        + fieldName + "'!");
+                log.warn("Unrecognized field while parsing layer JSON:", fieldName);
+                // exception is thrown since the parser state should be fixed here if we don't
+                // maybe calling parser.nextToken() might fix it but it seems not to be working
+                // if the field has JSON structure inside.
+                throw new IllegalStateException("Unrecognized field '" + fieldName + "'!");
             }
         }
         parser.close();

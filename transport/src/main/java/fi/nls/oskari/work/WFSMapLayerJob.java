@@ -725,7 +725,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     	fields.add("__centerX");
     	fields.add("__centerY");
 
-    	if(locales != null) {
+    	if(locales != null && !locales.isEmpty()) {
         	locales.add(0, "ID");	
         	locales.add("x");
         	locales.add("y");

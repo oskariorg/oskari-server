@@ -835,4 +835,7 @@ public class TransportService extends AbstractService implements ResultProcessor
                     reqSendFeatures, reqSendImage, reqSendHighlight);
     }
 
+    private static final String JOB_TYPE_FEATURE_ENGINE = "oskari-feature-engine";
+    private static final String JOB_TYPE_CUSTOM_PARSER = "oskari-custom-parser";
+
 }

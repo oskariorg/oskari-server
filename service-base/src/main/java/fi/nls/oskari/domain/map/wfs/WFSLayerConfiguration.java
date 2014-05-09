@@ -1,9 +1,9 @@
 package fi.nls.oskari.domain.map.wfs;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,6 +29,7 @@ public class WFSLayerConfiguration {
     protected final static String PASSWORD = "password";
 
     protected final static String LAYER_NAME = "layerName";
+    protected final static String LAYER_FRIENDLY_NAME = "uiName";
 
     protected final static String GML_GEOMETRY_PROPERTY = "GMLGeometryProperty";
     protected final static String SRS_NAME = "SRSName";
@@ -54,6 +55,7 @@ public class WFSLayerConfiguration {
     protected final static String WMS_LAYER_ID = "WMSLayerId";
 
     protected final static String JOB_TYPE = "jobType";
+    protected static final String REQUEST_IMPULSE = "requestImpulse";
 
     protected final static String MIN_SCALE = "minScale";
     protected final static String MAX_SCALE = "maxScale";
@@ -104,6 +106,7 @@ public class WFSLayerConfiguration {
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
     private String jobType;
+    private String requestImpulse;
 
 	private double minScale;
 	private double maxScale;
@@ -308,14 +311,14 @@ public class WFSLayerConfiguration {
      */
     public List<String> getSelectedFeatureParams(String key) {
         if(getSelectedFeatureParams() == null) {
-            return Collections.emptyList();
+            return new ArrayList<String>(0);
         }
         JSONArray params = getSelectedFeatureParams().optJSONArray(key);
         if(params == null) {
             params = getSelectedFeatureParams().optJSONArray(KEY_DEFAULT);
         }
         if(params == null) {
-            return Collections.emptyList();
+            return new ArrayList<String>(0);
         }
         return JSONHelper.getArrayAsList(params);
     }
@@ -326,14 +329,14 @@ public class WFSLayerConfiguration {
 
     public List<String> getFeatureParamsLocales(String key) {
         if(getFeatureParamsLocales() == null) {
-            return Collections.emptyList();
+            return new ArrayList<String>(0);
         }
         JSONArray params = getFeatureParamsLocales().optJSONArray(key);
         if(params == null) {
             params = getFeatureParamsLocales().optJSONArray(KEY_DEFAULT);
         }
         if(params == null) {
-            return Collections.emptyList();
+            return new ArrayList<String>(0);
         }
         return JSONHelper.getArrayAsList(params);
     }
@@ -451,6 +454,14 @@ public class WFSLayerConfiguration {
 
     public String getJobType() {
         return this.jobType;
+    }
+
+    public void setRequestImpulse(String param) {
+        this.requestImpulse = param;
+    }
+
+    public String getRequestImpulse() {
+        return this.requestImpulse;
     }
 
     /**
@@ -610,10 +621,19 @@ public class WFSLayerConfiguration {
 		JedisManager.del(KEY + this.layerId);
 	}
 
+    private String getLayerFriendlyName() {
+        final JSONObject loc = JSONHelper.createJSONObject(this.getNameLocales());
+        final JSONObject langName = JSONHelper.getJSONObject(loc, PropertyUtil.getDefaultLanguage());
+        return JSONHelper.getStringFromJSON(langName, "name", "");
+    }
+
 	public String getAsJSON() {
 		final JSONObject root = new JSONObject();
 
 		JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
+        // just for debugging so we see the layers UI name in redis
+        JSONHelper.putValue(root, LAYER_FRIENDLY_NAME, getLayerFriendlyName());
+
 		JSONHelper.putValue(root, URL_PARAM, this.getURL());
 		JSONHelper.putValue(root, USERNAME, this.getUsername());
 		JSONHelper.putValue(root, PASSWORD, this.getPassword());
@@ -643,6 +663,7 @@ public class WFSLayerConfiguration {
         JSONHelper.putValue(root, TILE_BUFFER, getTileBuffer());
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
         JSONHelper.putValue(root, JOB_TYPE, this.getJobType());
+        JSONHelper.putValue(root, REQUEST_IMPULSE, this.getRequestImpulse());
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());
