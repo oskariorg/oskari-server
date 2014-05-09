@@ -16,7 +16,7 @@ import java.util.Locale;
 /**
  * Get search result of ELF Geolocator request
  * <p/>
- * e.g. request oskari-map?action_route=GetGeolocatorSearchResult&lang=fi&epsg=EPSG:3035&term=Helsinki&filter=&fuzzy=true&exonym=false"
+ * e.g. request oskari-map?action_route=GetGeoLocatorSearchResult&lang=fi&epsg=EPSG:3035&term=Helsinki&filter=&fuzzy=true&exonym=false"
  */
 @OskariActionRoute("GetGeoLocatorSearchResult")
 public class GetGeoLocatorSearchResultHandler extends ActionHandler {
