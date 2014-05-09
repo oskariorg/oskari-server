@@ -119,7 +119,7 @@
 <!-- ############# /css ################# -->
 <nav id="maptools">
     <div id="logoarea">
-        <img src="/Oskari/resources/parcel/images/logo.png" alt="Maanmittauslaitos" width="150" height="68">
+        <img src="/Oskari/resources/parcel/images/logo.png" alt="Maanmittauslaitos" width="153" height="76">
     </div>
     <div id="loginbar">
     </div>
@@ -150,7 +150,8 @@
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}&';
     var viewId = '${viewId}';
-    var language = '${language}';
+    <%-- NOTE!!! HARDCODED LANGUAGE SINCE PARCEL BUNBLES ONLY HAS FINNISH LOCALIZATION --%>
+    var language = 'fi';
     var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>

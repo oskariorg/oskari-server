@@ -58,7 +58,7 @@ public class ActionParameters {
      */
     public User getUser() {
         if(user == null) {
-            user = new GuestUser();
+            user = GuestUser.getInstance();
         }
         return user;
     }

@@ -112,17 +112,17 @@
             </c:when>
         </c:choose>
         <c:choose>
-            <c:when test="${!empty user}">
-                <a href="${ajaxUrl}action=logout">Logout</a>
+            <c:when test="${!empty _logout_uri}">
+                <a href="${_logout_uri}">Logout</a>
             </c:when>
-            <c:otherwise>
-                <form action='j_security_check' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
+            <c:when test="${empty _logout_uri && !empty _login_uri}">
+                <form action='${_login_uri}' method="post" accept-charset="UTF-8">
+                    <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="Username" autofocus
                            required>
-                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
+                    <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="Password" required>
                     <input type="submit" id="submit" value="Log in">
                 </form>
-            </c:otherwise>
+            </c:when>
         </c:choose>
     </div>
 </nav>

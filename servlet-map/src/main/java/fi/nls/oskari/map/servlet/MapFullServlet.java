@@ -4,15 +4,12 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
-import fi.nls.oskari.db.DBHandler;
-import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -26,20 +23,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 /**
  * Example implementation for oskari-server endpoint.
+ * Assumes PropertyUtil has been populated in ContextInitializer!!
+ * Assumes that locale and logged in user has been set with ServletFilters.
+ *
+ * @see OskariContextInitializer
+ * @see OskariRequestFilter
+ * @see PrincipalAuthenticationFilter
  */
 public class MapFullServlet extends HttpServlet {
-
-    static {
-        // populate properties before initializing logger since logger implementation is
-        // configured in properties
-        PropertyUtil.loadProperties("/oskari.properties");
-        PropertyUtil.loadProperties("/oskari-ext.properties");
-    }
 
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
     private static final String KEY_REDIS_PORT = "redis.port";
@@ -72,11 +67,6 @@ public class MapFullServlet extends HttpServlet {
 
     @Override
     public void init() {
-
-        // create initial content
-        if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
-            DBHandler.createContentIfNotCreated();
-        }
 
         // init jedis
         JedisManager.connect(ConversionHelper.getInt(PropertyUtil
@@ -111,18 +101,6 @@ public class MapFullServlet extends HttpServlet {
         } else {
             // JSP
             try {
-                final String action = params.getHttpParam("action");
-                if ("failed".equals(request.getParameter("loginState"))) {
-                    params.getRequest().setAttribute("loginState", "failed");
-                }
-                if ("logout".equals(action)) {
-                    HttpSession session = params.getRequest().getSession();
-                    session.invalidate();
-                    log.debug("Logout");
-                    // redirect to oskari.map.url or / if not defined
-                    params.getResponse().sendRedirect(PropertyUtil.get("oskari.map.url", "/"));
-                    return;
-                }
                 final String viewJSP = setupRenderParameters(params);
                 if(viewJSP == null) {
                     // view not found
@@ -272,26 +250,11 @@ public class MapFullServlet extends HttpServlet {
         params.setRequest(request);
         params.setResponse(response);
 
-        // determine user locale
-        String lang = request.getParameter("lang");
-        if ((lang == null) || (lang.isEmpty())) {
-            params.setLocale(new Locale(PropertyUtil.getDefaultLanguage()));
-        } else {
-            params.setLocale(new Locale(lang));
-        }
-
-        final HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(User.class.getName());
-        if (user == null) {
-            try {
-                UserService service = UserService.getInstance();
-                user = service.getGuestUser();
-            }
-            catch (Exception ex) {
-                user = new GuestUser();
-            }
-        }
-        params.setUser(user);
+        // Request locale setup in OskariRequestFilter
+        params.setLocale(request.getLocale());
+        // User setup in PrincipalAuthenticationFilter
+        HttpSession session = request.getSession();
+        params.setUser((User) session.getAttribute(User.class.getName()));
         return params;
     }
 

@@ -9,38 +9,75 @@ import java.util.*;
  * Search criteria.
  */
 public class SearchCriteria implements Serializable {
-	private static final long serialVersionUID = -3217931790577562692L;
+    private static final long serialVersionUID = -3217931790577562692L;
 
-	private String locale = PropertyUtil.getDefaultLanguage();
+    private String locale = PropertyUtil.getDefaultLanguage();
 
     private final Map<String, Object> parameters = new HashMap<String, Object>();
 
-	/** our search string  */
-	private String searchString;
+    /**
+     * our search string
+     */
+    private String searchString;
 
-    /** output location SRS  */
+    /**
+     * target coordinate ref system
+     */
     private String srs;
-	
-	/** from */
-	private Date fromDate;
-	
-	/** from */
-	private Date toDate;
-	
-	/** How many results max */
-	private int maxResults;
-	
-	/** queried channels */
-	private List<String> channels;
-	
-	public SearchCriteria() {
-		channels = new ArrayList<String>();
-	}
-	
-	public void addParam(final String key, final Object value) {
-	    parameters.put(key, value);
-	}
-	
+
+    /**
+     * region name for to limit location search to certain area
+     */
+    private String region = "";
+
+    /**
+     * fuzzy search mode
+     */
+    private Boolean fuzzy = false;
+
+    /**
+     * alternative language results
+     */
+    private Boolean exonym = false;
+
+    /**
+     * longitude - reverse geocoding
+     */
+    private String lon = "";
+
+    /**
+     * latitude - reverse geocoding
+     */
+    private String lat = "";
+
+    /**
+     * from
+     */
+    private Date fromDate;
+
+    /**
+     * from
+     */
+    private Date toDate;
+
+    /**
+     * How many results max
+     */
+    private int maxResults;
+
+    /**
+     * queried channels
+     */
+    private List<String> channels;
+
+    public SearchCriteria() {
+        channels = new ArrayList<String>();
+    }
+
+    public void addParam(final String key, final Object value) {
+        parameters.put(key, value);
+    }
+
     public Object getParam(final String key) {
         return parameters.get(key);
     }
@@ -48,30 +85,31 @@ public class SearchCriteria implements Serializable {
     public Map<String, Object> getParams() {
         return Collections.unmodifiableMap(parameters);
     }
-	
-	/**
-	 * Returns true if search should be done using given channel
-	 * @param tested
-	 * @return
-	 */
-	public boolean containsChannel(String tested) {
-		for(String c: channels) {
-			if (c.equals(tested)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
-	public void addChannel(String channelId) {
-		channels.add(channelId);
-	}
-	
-	public String toString() {
-		return "SearchCriteria [searchString=" + searchString + ", fromDate=" + fromDate 
-		+ ", toDate=" + toDate + ", maxResults=" + maxResults + "]";
-	}
+    /**
+     * Returns true if search should be done using given channel
+     *
+     * @param tested
+     * @return
+     */
+    public boolean containsChannel(String tested) {
+        for (String c : channels) {
+            if (c.equals(tested)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addChannel(String channelId) {
+        channels.add(channelId);
+    }
+
+    public String toString() {
+        return "SearchCriteria [searchString=" + searchString + ", fromDate=" + fromDate
+                + ", toDate=" + toDate + ", maxResults=" + maxResults + "]";
+    }
 
     public String getSRS() {
         return srs;
@@ -81,51 +119,101 @@ public class SearchCriteria implements Serializable {
         this.srs = srs;
     }
 
-    public Date getFromDate() {
-		return fromDate;
-	}
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
-	public Date getToDate() {
-		return toDate;
-	}
-	public void setToDate(Date toDate) {
-		this.toDate = toDate;
-	}
-	public int getMaxResults() {
-		return maxResults;
-	}
-	public void setMaxResults(int maxResults) {
-		this.maxResults = maxResults;
-	}
-	public List<String> getChannels() {
-		return channels;
-	}
-	public void setChannels(List<String> channels) {
-		this.channels = channels;
-	}
+    public Boolean getFuzzy() {
+        return fuzzy;
+    }
 
-	public String getSearchString() {
-		return searchString;
-	}
+    public void setFuzzy(String fuzzy) {
+        if (fuzzy.equals("true")) this.fuzzy = true;
+        else this.fuzzy = false;
+    }
+
+    public Boolean getExonym() {
+        return exonym;
+    }
+
+    public void setExonym(String exonym) {
+        if (exonym.equals("true")) this.exonym = true;
+        else this.exonym = false;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    public List<String> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(List<String> channels) {
+        this.channels = channels;
+    }
+
+    public String getSearchString() {
+        return searchString;
+    }
+
     public String getSearchString1stUp() {
         return searchString.substring(0, 1).toUpperCase() + searchString.substring(1);
     }
 
-	public void setSearchString(String searchString) {
-		this.searchString = searchString;
-	}
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
 
-	public String getLocale() {
-        if(locale == null) {
+    public String getLocale() {
+        if (locale == null) {
             return PropertyUtil.getDefaultLanguage();
         }
-		return locale;
-	}
+        return locale;
+    }
 
-	public void setLocale(String locale) {
-		this.locale = locale;
-	}
-	
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
 }

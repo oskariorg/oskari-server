@@ -1,5 +1,35 @@
 # Release Notes
 
+## 1.21
+
+### service-base
+
+ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
+
+### webapp-map/standalone-jetty/servlet-map
+
+Many customizable operations have been moved out of the MapfullServlet code and into ServletFilters and ServletContextListener.
+
+Now uses OskariContextInitializer to setup the environment for the servlet-map:
+checks connection pools, populates properties and database connection on context initialization.
+See the server log for initialization messages.
+
+Now uses configurable OskariRequestFilter to setup the httpRequest for servlet:
+* locale (based on http-param/cookie)
+* login form url/fieldnames and logout url for logged in users
+* userprincipal (should be disabled by setting property oskari.request.handlePrincipal=false in oskari-ext.properties
+    if your servlet container handles user principal with JAAS (ldap or other authentication)
+
+JAASAuthenticationFilter is now PrincipalAuthenticationFilter.
+It handles login/logout functionality for users based on request.getUserPrincipal().
+
+### standalone-jetty
+
+Added request logging support. Tries to write them into logs directory and prints out a message if it doesn't exist.
+
+Removed src/main/webapp (JSPs) from under standalone-jetty. Build now uses the JSPs from under webapp-map so there's no need
+to copy/paste them on changes.
+
 ## 1.20
 
 ### service-users
