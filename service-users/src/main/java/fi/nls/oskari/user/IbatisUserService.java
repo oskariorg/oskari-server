@@ -14,6 +14,10 @@ public class IbatisUserService extends BaseIbatisService<User> {
         return "Users";
     }
 
+    public User find(long id) {
+        return queryForObject(getNameSpace() + ".findById", id);
+    }
+
     public User findByUserName(String username) {
         User user = queryForObject(getNameSpace() + ".findByUserName", username);
         List<Role> roleList = roleService.findByUserName(username);
@@ -22,4 +26,13 @@ public class IbatisUserService extends BaseIbatisService<User> {
         }
         return user;
     }
+
+    public void delete(long id) {
+        delete(getNameSpace() + ".deleteById", id);
+    }
+
+    public void updatePassword(long id, String password) {
+
+    }
+
 }

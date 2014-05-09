@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.21
+
+### control-admin
+
+Added new module for administration
+
+### control-admin/UsersHandler
+
+New handler for listing, adding, editing and removing users
+
 ## 1.20
 
 ### service-users
