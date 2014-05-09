@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.servlet;
 
+import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp.BasicDataSource;
 
@@ -27,7 +28,17 @@ public class OskariContextInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         try {
             // catch all so we don't get mysterious listener start errors
+            info("#########################################################");
+            info("Oskari-map context is being initialized");
             initializeOskariContext();
+
+            // create initial content if properties tells us to
+            if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
+                info("- checking for initial db content");
+                DBHandler.createContentIfNotCreated();
+            }
+            info("Oskari-map context initialization done");
+            info("#########################################################");
         }
         catch (Exception ex) {
             error("!!! Error initializing context for Oskari !!!");
@@ -40,8 +51,6 @@ public class OskariContextInitializer implements ServletContextListener {
      */
     private void initializeOskariContext() {
 
-        info("#########################################################");
-        info("Oskari-map context is being initialized");
         // populate properties
         info("- loading /oskari.properties");
         PropertyUtil.loadProperties("/oskari.properties");
@@ -63,8 +72,6 @@ public class OskariContextInitializer implements ServletContextListener {
             }
         }
         // TODO: possibly update database structure if we start to use http://flywaydb.org/ or similar (or maybe in another listener)
-        info("Oskari-map context initialization done");
-        info("#########################################################");
     }
 
     private boolean checkDataSource(final InitialContext ctx, final String prefix) {

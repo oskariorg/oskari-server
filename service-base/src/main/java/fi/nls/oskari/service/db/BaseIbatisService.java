@@ -113,8 +113,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
     public <F> List<F> queryForList(String sqlId, Object o) {
         try {
             client = getSqlMapClient();
-            List<F> results = client.queryForList(sqlId, o);
-            return results;
+            return (List<F>) client.queryForList(sqlId, o);
         } catch (Exception e) {
             throw new RuntimeException("Failed to query", e);
         }
@@ -148,9 +147,24 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
     @SuppressWarnings("unchecked")
     public E queryForObject(String sqlId, String objectIdentifier) {
         try {
+            return (E) queryForRawObject(sqlId, objectIdentifier);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to query", e);
+        }
+    }
+
+    public Object queryForRawObject(String sqlId, String objectIdentifier) {
+        try {
             client = getSqlMapClient();
-            E result = (E) client.queryForObject(sqlId, objectIdentifier);
-            return result;
+            return client.queryForObject(sqlId, objectIdentifier);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to query", e);
+        }
+    }
+    public Object queryForRawObject(String sqlId, Object o) {
+        try {
+            client = getSqlMapClient();
+            return client.queryForObject(sqlId, o);
         } catch (Exception e) {
             throw new RuntimeException("Failed to query", e);
         }
@@ -166,9 +180,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
     @SuppressWarnings("unchecked")
     public <F> F queryForObject(String sqlId, Object o) {
         try {
-            client = getSqlMapClient();
-            F result = (F) client.queryForObject(sqlId, o);
-            return result;
+            return (F) queryForRawObject(sqlId, o);
         } catch (Exception e) {
             throw new RuntimeException("Failed to query", e);
         }
