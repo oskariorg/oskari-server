@@ -172,7 +172,11 @@ public class ELFGeoLocatorParser {
                         item.setLocationTypeCode(types.get(k));
                     }
 
-                    if (loctypes.size() > 0) item.setLocationTypeCode(loctypes.get(0));
+                    if (loctypes.size() > 0)
+                    {
+                        item.setLocationTypeCode(loctypes.get(0));
+                        item.setType(loctypes.get(0));
+                    }
                     item.setVillage("");
                     item.setDescription("");
 

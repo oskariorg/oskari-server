@@ -41,6 +41,16 @@ public class SearchCriteria implements Serializable {
     private Boolean exonym = false;
 
     /**
+     * longitude - reverse geocoding
+     */
+    private String lon = "";
+
+    /**
+     * latitude - reverse geocoding
+     */
+    private String lat = "";
+
+    /**
      * from
      */
     private Date fromDate;
@@ -133,6 +143,22 @@ public class SearchCriteria implements Serializable {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
     public Date getFromDate() {
