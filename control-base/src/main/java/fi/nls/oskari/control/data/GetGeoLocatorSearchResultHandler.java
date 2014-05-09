@@ -61,11 +61,11 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
                 sc.setSRS(epsg);  // eg. EPSG:3067
 
                 sc.setLocale(locale.getLanguage());
-                sc.setRegion(params.getHttpParam(PARAM_REGION, ""));
-                sc.setFuzzy(params.getHttpParam(PARAM_FUZZY, "false"));
-                sc.setExonym(params.getHttpParam(PARAM_EXONYM, "false"));
-                sc.setLon(params.getHttpParam(PARAM_LON, ""));
-                sc.setLat(params.getHttpParam(PARAM_LAT, ""));
+                sc.addParam(PARAM_REGION, params.getHttpParam(PARAM_REGION, ""));
+                sc.addParam(PARAM_FUZZY, params.getHttpParam(PARAM_FUZZY, "false"));
+                sc.addParam(PARAM_EXONYM, params.getHttpParam(PARAM_EXONYM, "false"));
+                sc.addParam(PARAM_LON, params.getHttpParam(PARAM_LON, ""));
+                sc.addParam(PARAM_LAT, params.getHttpParam(PARAM_LAT, ""));
 
                 for (String channelId : channels) {
                     sc.addChannel(channelId);
