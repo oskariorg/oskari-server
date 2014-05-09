@@ -14,20 +14,25 @@ import java.util.Map;
  * TODO: this interface is still under development and new methods will propably be added when needed.
  */
 public abstract class UserService {
+
+    private static UserService instance = null;
     /**
      * Returns a concrete implementation of UserService. Class to be returned is defined with property "oskari.user.service".
      * @return
      * @throws ServiceException if class cannot be
      */
     public static UserService getInstance() throws ServiceException {
+        if(instance != null) {
+            return instance;
+        }
         final String className = PropertyUtil.getOptional("oskari.user.service");
         if(className == null) {
             throw new ServiceException("User service implementation not defined, add 'oskari.user.service' property with a value of fully qualified classname extending " + UserService.class.getCanonicalName());
         }
         try {
-            UserService service = (UserService)Class.forName(className).newInstance();
-            service.init();
-            return service;
+            instance = (UserService)Class.forName(className).newInstance();
+            instance.init();
+            return instance;
         } catch (Exception e) {
             throw new ServiceException("Error initializing UserService for classname: "+ className, e);
         }   

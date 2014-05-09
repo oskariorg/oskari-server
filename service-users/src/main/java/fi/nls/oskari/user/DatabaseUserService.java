@@ -2,8 +2,11 @@ package fi.nls.oskari.user;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +17,8 @@ public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
     private IbatisUserService userService = new IbatisUserService();
 
+    private static final Logger log = LogFactory.getLogger(DatabaseUserService.class);
+
     @Override
     public User getGuestUser() {
         User user = super.getGuestUser();
@@ -22,8 +27,19 @@ public class DatabaseUserService extends UserService {
     }
 
     @Override
-    public User login(String user, String pass) throws ServiceException {
-        throw new ServiceException("Unsupported!");
+    public User login(final String user, final String pass) throws ServiceException {
+        try {
+            final String hashedPass = "MD5:" + DigestUtils.md5Hex(pass);
+            final String username = userService.login(user, hashedPass);
+            log.debug("Tried to login user with:", user, "/", pass, "-> ", hashedPass, "- Got username:", username);
+            if(username == null) {
+                return null;
+            }
+            return getUser(username);
+        }
+        catch (Exception ex) {
+            throw new ServiceException("Unable to handle login", ex);
+        }
     }
 
     @Override

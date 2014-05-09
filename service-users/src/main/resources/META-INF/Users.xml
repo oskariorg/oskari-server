@@ -17,11 +17,17 @@
     </resultMap>
 
     <select id="findByUserId" parameterClass="Long" resultMap="UsersResult">
-        select id, first_name, last_name, screen_name, uuid from oskari_users where id = #id#
+        select id, first_name, last_name, user_name, uuid from oskari_users where id = #id#
     </select>
 
     <select id="findByUserName" parameterClass="String" resultMap="UsersResult">
-        select id, first_name, last_name, screen_name, uuid from oskari_users where user_name = #id#
+        select id, user_name, first_name, last_name, uuid from oskari_users where user_name = #id#
+    </select>
+
+    <select id="login" parameterClass="java.util.HashMap" resultClass="String">
+        select login
+        from oskari_jaas_users
+        where login = #username# AND password=#password#
     </select>
 
     <delete id="deleteById" parameterClass="Long">

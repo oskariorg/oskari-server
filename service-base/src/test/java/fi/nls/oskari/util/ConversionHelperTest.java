@@ -77,5 +77,11 @@ public class ConversionHelperTest {
         test = "test";
         result = ConversionHelper.getBoolean(test, false);
         assertTrue("Should get false", !result);
+
+        result = ConversionHelper.getBoolean(null, true);
+        assertTrue("Null should yield default value 'true'", result);
+
+        result = ConversionHelper.getBoolean(null, false);
+        assertTrue("Null should yield default value 'false'", !result);
     }
 }
