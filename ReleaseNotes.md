@@ -12,7 +12,7 @@ Many customizable operations have been moved out of the MapfullServlet code and 
 
 Now uses OskariContextInitializer to setup the environment for the servlet-map:
 checks connection pools, populates properties and database connection on context initialization.
-See the log for initialization messages.
+See the server log for initialization messages.
 
 Now uses configurable OskariRequestFilter to setup the httpRequest for servlet:
 * locale (based on http-param/cookie)
