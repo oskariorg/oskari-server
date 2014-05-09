@@ -38,12 +38,10 @@ public class PrincipalAuthenticationFilter implements Filter {
             logout(httpRequest);
             // redirect to auth.loggedout.page with fallbacks to oskari.map.url or / if not defined
             request.removeAttribute("_logout_uri");
-            // with dispatch we'll lose everything we've setup in request (login form url etc)
-            // TODO: make it configurable
+            // NOTE! with dispatch we'll lose everything we've setup in request (login form url etc)
+            // Ensure that OskariRequestFilter is run again if forwarding to map url
             final RequestDispatcher dispatch = httpRequest.getRequestDispatcher(loggedOutPage);
             dispatch.forward(request, response);
-
-            //((HttpServletResponse)response).sendRedirect(loggedOutPage);
             return;
         }
         // user already logged in - provide logout url in request attribute
