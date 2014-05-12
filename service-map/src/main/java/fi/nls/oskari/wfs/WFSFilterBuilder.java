@@ -41,10 +41,8 @@ public class WFSFilterBuilder {
     public static final String PROPERTY_TEMPLATE = "<wfs:PropertyName>{property}</wfs:PropertyName>";
     public static final String PROPERTY_PROPERTY = "{property}";
 
-    private static final Logger log = LogFactory
-            .getLogger(WFSFilterBuilder.class);
-    private static final FilterFactory2 ff = CommonFactoryFinder
-            .getFilterFactory2(null);
+    private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
+    private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
     /**
      * @param filter_js Analysis filter
