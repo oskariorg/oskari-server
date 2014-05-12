@@ -8,7 +8,8 @@
     ],   
     "bundles" : {
         "elf" : [
-        	"999-elf-lang-selector.sql"
+        	"999-elf-lang-selector.sql",
+            "999-elf-geolocator.sql"
         ]
     },
     
