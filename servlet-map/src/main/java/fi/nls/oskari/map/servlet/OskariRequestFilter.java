@@ -50,12 +50,22 @@ public class OskariRequestFilter implements Filter {
         param_password = PropertyUtil.get("auth.login.field.pass", param_password);
     }
 
+    public boolean isStaticFilePath(final String servletPath) {
+        return (servletPath != null && servletPath.startsWith("/Oskari"));
+    }
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        final OskariRequest req = new OskariRequest((HttpServletRequest) request);
+    public void doFilter(ServletRequest originalRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        final OskariRequest req = new OskariRequest((HttpServletRequest) originalRequest);
+        final String servletPath = req.getServletPath();
         // setup character encoding
         req.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
+        if(isStaticFilePath(servletPath)) {
+            log.debug("static:", servletPath);
+            chain.doFilter(req, response);
+            return;
+        }
         if(handleLocale) {
             handleLocale(req, (HttpServletResponse) response);
         }
@@ -64,7 +74,6 @@ public class OskariRequestFilter implements Filter {
             handleLoginForm(req);
         }
         if(handlePrincipal) {
-            final String servletPath = req.getServletPath();
             if(servletPath != null && servletPath.indexOf(loginUrl)  != -1) {
                 log.debug("Called login url:", loginUrl);
                 handlePrincipal(req);
@@ -72,7 +81,7 @@ public class OskariRequestFilter implements Filter {
         }
 
         // passing OskariRequest as req to chain
-        chain.doFilter(request, response);
+        chain.doFilter(req, response);
     }
 
     /**
@@ -81,7 +90,7 @@ public class OskariRequestFilter implements Filter {
      * @param req
      */
     public void handleLoginForm(OskariRequest req) {
-        log.debug("Handling login form with url:", loginUrl);
+        //log.debug("Handling login form with url:", loginUrl);
         req.setAttribute("_login_uri", loginUrl);
         req.setAttribute("_login_field_user", param_username);
         req.setAttribute("_login_field_pass", param_password);

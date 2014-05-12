@@ -184,8 +184,8 @@ public class JettyLauncher {
 
         // Bonus ... request logs.
         RequestLogHandler logHandler = new RequestLogHandler();
-        NCSARequestLog requestLog = new NCSARequestLog("./logs/jetty-yyyy_mm_dd.request.log");
-        requestLog.setRetainDays(90);
+        NCSARequestLog requestLog = new NCSARequestLog("./jetty-yyyy_mm_dd.request.log");
+        requestLog.setRetainDays(5);
         requestLog.setAppend(true);
         requestLog.setExtended(false);
         requestLog.setLogTimeZone("GMT");
