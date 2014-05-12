@@ -44,6 +44,8 @@ New custom-parser option for transport to handle complex services. Example groov
 
 ### transport (now servlet-transport and webapp-transport)
 
+Split into servlet and webapp packages to be more in line with map-packages. The deployable war-file is now located webapp-transport/target.
+
 fi/nls/oskari/transport/config.properties has been renamed transport.properties and some of the property keys have been renamed to match the ones used in oskari.properties:
 
 * serviceURL-> oskari.domain
@@ -59,8 +61,6 @@ Transport now initializes by reading properties files in this order:
 * transport.properties
 * oskari-ext.properties
 * transport-ext.properties
-
-Split in to servlet and webapp packages to be more in line with map-packages.
 
 Moved JobQueue/Job from transport into service-base. Added teardown() hook for Job.
 
