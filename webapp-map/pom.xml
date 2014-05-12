@@ -64,6 +64,13 @@
             </properties>
         </profile>
         <profile>
+            <id>elf-jetty-jaas</id>
+            <properties>
+                <env>elf-jetty-jaas</env>
+                <profile-filter>${basedir}/env/${env}/elf-filter.properties</profile-filter>
+            </properties>
+        </profile>
+        <profile>
             <id>tomcat</id>
             <properties>
                 <env>tomcat</env>
@@ -133,7 +140,7 @@
                     </httpConnector>
                     <webAppConfig>
                         <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
-                            <resourcesAsCSV>${basedir}/target/webapplication-${project.version},${basedir}/../..</resourcesAsCSV>
+                            <resourcesAsCSV>${basedir}/target/oskari-map,${basedir}/../..</resourcesAsCSV>
                         </baseResource>
                     </webAppConfig>
                 </configuration>

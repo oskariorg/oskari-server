@@ -77,7 +77,7 @@
 <nav id="maptools">
     <div id="logobar">
     </div>
-    <div id="loginbar">
+    <div id="langSelector">
     </div>
     <div id="menubar">
     </div>
@@ -85,21 +85,22 @@
     </div>
     <div id="toolbar">
     </div>
-    <div id="login">
+     <div id="login">
         <c:choose>
             <c:when test="${!empty loginState}">
                 <p class="error">Invalid password or username!!</p>
             </c:when>
         </c:choose>
+        <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
-            <c:when test="${!empty user}">
-                <a href="/ajax/?action=logout">Logout</a>
+            <c:when test="${!empty sessionScope[user]}">
+                <a href="${ajaxUrl}action=logout">Logout</a>
             </c:when>
             <c:otherwise>
-                <form action='${ajaxUrl}action=login&viewId=${viewId}' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="username" type="text" placeholder="Username" autofocus
+                <form action='j_security_check' method="post" accept-charset="UTF-8">
+                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
                            required>
-                    <input size="16" id="password" name="password" type="password" placeholder="Password" required>
+                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
                     <input type="submit" id="submit" value="Log in">
                 </form>
             </c:otherwise>

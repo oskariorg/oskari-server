@@ -77,7 +77,7 @@
 <nav id="maptools">
     <div id="logobar">
     </div>
-    <div id="loginbar">
+    <div id="langSelector">
     </div>
     <div id="menubar">
     </div>
@@ -85,7 +85,7 @@
     </div>
     <div id="toolbar">
     </div>
-    <div id="login">
+     <div id="login">
         <c:choose>
             <c:when test="${!empty loginState}">
                 <p class="error">Invalid password or username!!</p>

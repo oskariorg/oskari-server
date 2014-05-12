@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fi.nls.oskari</groupId>
+		<artifactId>oskari-parent</artifactId>
+        <version>1.21-SNAPSHOT</version>
+	</parent>
+    <groupId>fi.nls.oskari</groupId>
+    <artifactId>transport</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <transport.resourceDir>${basedir}/../servlet-transport/src/main/resources</transport.resourceDir>
+    </properties>
+
+    <build>
+    	<!-- This name is referenced in proxy forwards-->
+		<finalName>transport-0.0.1</finalName>
+        <filters>
+            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
+        </filters>
+        <resources>
+            <!-- Get the oskari.properties from servlet-map as baseline properties -->
+            <resource>
+                <directory>${basedir}/../servlet-map/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <!-- Get additional properties based on profile -->
+            <resource>
+                <directory>${basedir}/../servlet-transport/src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <!-- Get additional properties based on profile -->
+            <resource>
+                <directory>${transport.resourceDir}</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.8.v20121106</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webAppConfig>
+                        <contextPath>/transport</contextPath>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>2374</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                </configuration>
+            </plugin>
+        </plugins>
+	</build>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>transport-servlet</artifactId>
+        </dependency>
+    </dependencies>
+</project>
