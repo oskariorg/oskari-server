@@ -77,7 +77,7 @@
 <nav id="maptools">
     <div id="logobar">
     </div>
-    <div id="loginbar">
+    <div id="langSelector">
     </div>
     <div id="menubar">
     </div>

@@ -56,7 +56,7 @@ public class JettyRunner {
                         PropertyUtil.get("db.jndi.name", "jdbc/OskariPool"));
 
         /* ELF additional stuff */
-        WebAppContext geonetwork = new WebAppContext();
+        /*WebAppContext geonetwork = new WebAppContext();
         geonetwork.setServer(server);
         geonetwork.setContextPath("/geonetwork");
      
@@ -68,12 +68,13 @@ public class JettyRunner {
         
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] { main, geonetwork });
-        
+        */
         /*main.addFilter(HelloPrintingFilter.class, "/*",
                 EnumSet.of(DispatcherType.REQUEST));*/
         
         
-        server.setHandler(handlers);
+        //server.setHandler(handlers);
+        server.setHandler(main);
         server.start();
         server.join();
     }

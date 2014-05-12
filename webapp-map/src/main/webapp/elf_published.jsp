@@ -28,54 +28,14 @@
             href="/Oskari${path}/css/overwritten.css"/>
     <style type="text/css">
         @media screen {
-
-            #login {
-                margin-left: 5px;
-            }
-
-            #login input[type="text"], #login input[type="password"] {
-                width: 90%;
-                margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
-                background-repeat: no-repeat;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login input[type="submit"] {
-                width: 90%;
-                margin-bottom: 5px;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login p.error {
-                font-weight: bold;
-                color : red;
-                margin-bottom: 10px;
-            }
-
-            #login a {
-                color: #FFF;
-                padding: 5px;
-            }
+			div.contentMap { margin-left: 0px !important; }
+          
 
         }
     </style>
     <!-- ############# /css ################# -->
 </head>
 <body>
-
-<div id="logobar">
-</div>
 <div id="contentMap">
     <div id="mapdiv"></div>
 </div>

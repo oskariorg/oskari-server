@@ -64,6 +64,13 @@
             </properties>
         </profile>
         <profile>
+            <id>elf-jetty-jaas</id>
+            <properties>
+                <env>elf-jetty-jaas</env>
+                <profile-filter>${basedir}/env/${env}/elf-filter.properties</profile-filter>
+            </properties>
+        </profile>
+        <profile>
             <id>tomcat</id>
             <properties>
                 <env>tomcat</env>
