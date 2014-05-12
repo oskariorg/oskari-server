@@ -107,6 +107,12 @@
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-control-admin</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-map</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>

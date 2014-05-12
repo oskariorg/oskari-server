@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fi.nls.oskari</groupId>
+		<artifactId>oskari-parent</artifactId>
+        <version>1.21-SNAPSHOT</version>
+	</parent>
+    
+    <groupId>fi.nls.oskari.service</groupId>
+    <artifactId>oskari-control-admin</artifactId>
+    <packaging>jar</packaging>
+    <name>Control Service - Admin Actions</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-control</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- PowerMock can be used to mock static/private methods -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+</project>

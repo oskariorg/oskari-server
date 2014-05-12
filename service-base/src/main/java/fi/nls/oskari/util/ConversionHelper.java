@@ -89,13 +89,16 @@ public class ConversionHelper {
     }
 
     /**
-     * Parses double from String
+     * Parses boolean from String. Returns defaultValue if strToParse is null.
      *
      * @param strToParse
      * @param defaultValue
      * @return
      */
     public static final boolean getBoolean(final String strToParse, final boolean defaultValue) {
+        if(strToParse == null) {
+            return defaultValue;
+        }
         try {
             return Boolean.parseBoolean(strToParse);
         } catch (Exception ex) {
