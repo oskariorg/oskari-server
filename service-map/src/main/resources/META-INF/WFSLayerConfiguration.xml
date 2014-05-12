@@ -15,6 +15,7 @@
         <result property="username" column="username"/>
         <result property="password" column="password"/>
 
+        <result property="nameLocales" column="locale"/>
         <result property="layerName" column="layer_name"/>
       
         <result property="GMLGeometryProperty" column="gml_geometry_property"/>
