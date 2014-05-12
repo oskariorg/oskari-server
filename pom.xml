@@ -107,6 +107,12 @@
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
+				<artifactId>oskari-control-admin</artifactId>
+				<version>${fi.nls.oskari.service.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>fi.nls.oskari.service</groupId>
 				<artifactId>oskari-map</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
@@ -156,6 +162,12 @@
 				<groupId>fi.mml</groupId>
 				<artifactId>wms</artifactId>
 				<version>${fi.mml.wms.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>fi.nls.oskari</groupId>
+				<artifactId>standalone-jetty</artifactId>
+				<version>${fi.nls.oskari.version}</version>
 			</dependency>
 
 			<dependency>
@@ -572,6 +584,7 @@
         <module>servlet-map</module>
         <module>webapp-map</module>
         <module>standalone-jetty</module>
+        <module>elf-jetty</module>
     </modules>
 
 </project>

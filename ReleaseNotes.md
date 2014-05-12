@@ -2,6 +2,15 @@
 
 ## 1.21
 
+<<<<<<< HEAD
+### control-admin
+
+Added new module for administration
+
+### control-admin/UsersHandler
+
+New handler for listing, adding, editing and removing users
+=======
 ### service-base
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
@@ -29,6 +38,7 @@ Added request logging support. Tries to write them into logs directory and print
 
 Removed src/main/webapp (JSPs) from under standalone-jetty. Build now uses the JSPs from under webapp-map so there's no need
 to copy/paste them on changes.
+>>>>>>> 9d6994d0e30c7c471a9d8b7f9b2738f5b390e0d1
 
 ## 1.20
 

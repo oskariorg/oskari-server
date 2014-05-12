@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ELFLet Standalone - ${viewName} view</title>
+    <title>ELFLet Published - ${viewName} view</title>
     <meta charset="utf-8" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
@@ -74,39 +74,8 @@
 </head>
 <body>
 
-<nav id="maptools">
-    <div id="logobar">
-    </div>
-    <div id="loginbar">
-    </div>
-    <div id="menubar">
-    </div>
-    <div id="divider">
-    </div>
-    <div id="toolbar">
-    </div>
-     <div id="login">
-        <c:choose>
-            <c:when test="${!empty loginState}">
-                <p class="error">Invalid password or username!!</p>
-            </c:when>
-        </c:choose>
-        <c:set var="user" value="fi.nls.oskari.domain.User" />
-        <c:choose>
-            <c:when test="${!empty sessionScope[user]}">
-                <a href="${ajaxUrl}action=logout">Logout</a>
-            </c:when>
-            <c:otherwise>
-                <form action='j_security_check' method="post" accept-charset="UTF-8">
-                    <input size="16" id="username" name="j_username" type="text" placeholder="Username" autofocus
-                           required>
-                    <input size="16" id="password" name="j_password" type="password" placeholder="Password" required>
-                    <input type="submit" id="submit" value="Log in">
-                </form>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</nav>
+<div id="logobar">
+</div>
 <div id="contentMap">
     <div id="mapdiv"></div>
 </div>

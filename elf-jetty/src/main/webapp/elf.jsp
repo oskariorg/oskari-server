@@ -5,8 +5,9 @@
 <head>
     <title>ELFLet Standalone - ${viewName} view</title>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
+
 
     <!-- ############# css ################# -->
     <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,800,800italic,600italic,600" />
@@ -85,7 +86,7 @@
     </div>
     <div id="toolbar">
     </div>
-     <div id="login">
+      <div id="login">
         <c:choose>
             <c:when test="${!empty loginState}">
                 <p class="error">Invalid password or username!!</p>
