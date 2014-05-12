@@ -77,8 +77,6 @@
 <nav id="maptools">
     <div id="logobar">
     </div>
-    <div id="langSelector">
-    </div>
     <div id="menubar">
     </div>
     <div id="divider">
