@@ -309,7 +309,14 @@ public class ELFGeoLocatorParser {
 
             DirectPosition2D destDirectPosition2D = new DirectPosition2D();
 
-            srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lon), Double.valueOf(lat));
+            // Switch direction, if 1st coord is to the north
+            if ( sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
+                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
+                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lat), Double.valueOf(lon));
+            } else {
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lon), Double.valueOf(lat));
+            }
 
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
 
