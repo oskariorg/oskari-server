@@ -1,12 +1,12 @@
 {
-    "name": "ELF view",
+    "name": "ASDI view",
     "type": "DEFAULT",
     "default": true,
     "public": true,
     "oskari": {
-        "application": "elf_guest",
-        "page": "elf",
-        "development_prefix": "/applications/elf"
+        "application": "asdi_guest",
+        "page": "asdi",
+        "development_prefix": "/applications/asdi"
     },
     "bundles": [
         {
@@ -80,26 +80,33 @@
                 ],
                 "layers": [],
                 "mapOptions": {
-                    "resolutions": [1562.5, 781.25, 390.625, 156.25, 78.125, 39.0625],
+	                "allOverlays": true,
+	                "units": "m",
+                	"numZoomLevels": 15,
+                	"maxResolution": "auto",
                     "maxExtent": {
-                        "left": 2600000,
-                        "bottom": 1300000,
-                        "right": 6000000,
-                        "top": 5500000
+                        "left": -60000000, 
+                        "bottom": -60000000, 
+                        "right": 60000000, 
+                        "top": 60000000
                     },
-                    "srsName": "EPSG:3035"
+                    "srsName": "EPSG:3575"
                 },
                 "projectionDefs": {
-                    "EPSG:3035": "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs",
-                    "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs",
-                    "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-                }
+            		"EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+	            	"EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+    	        	"EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+        	    	"EPSG:3574": "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ",
+            	    "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                	"EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                	"EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
+            	}
             },
             "state": {
-                "east": "4310937.5",
-                "north": "3366406.25",
-                "selectedLayers": [{"id": 999}],
-                "zoom": 0
+                "east": "-1350000", 
+                "north": "-2517000",
+                "selectedLayers": [{"id": 888}],
+                "zoom": 4
             }
         }, {
             "id": "divmanazer"
@@ -128,23 +135,9 @@
         }, {
             "id": "metadatacatalogue"
         }, {
-            "id": "personaldata",
-            "config": {
-            	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
-            	}
-            }
+            "id": "personaldata"
         }, {
-            "id": "publisher",
-            "config": {
-            	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
-            	}
-            }
+            "id": "publisher"
         }, {
             "id": "maplegend"
         }, {
@@ -168,8 +161,6 @@
             }
         }, {
             "id": "postprocessor"
-        }, {
-        	"id": "elf-language-selector"
         }
     ]
 }

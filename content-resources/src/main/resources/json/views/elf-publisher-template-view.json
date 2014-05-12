@@ -1,0 +1,62 @@
+{
+    "name" : "Publisher template",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
+    "oskari": {
+        "application": "elf_published",
+        "page": "elf_published",
+        "development_prefix": "/applications/elf"
+    },
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
+        {
+            "id" : "mapfull",
+            "config" : {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                            "lazy" : true,
+                            "disconnectTime" : 30000,
+                            "backoffIncrement": 1000,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000
+                        }
+                    },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
+                ],
+                "layers": [
+                ],
+				"mapOptions": {
+                    "resolutions": [1562.5, 781.25, 390.625, 156.25, 78.125, 39.0625],
+                    "maxExtent": {
+                        "left": 2600000,
+                        "bottom": 1300000,
+                        "right": 6000000,
+                        "top": 5500000
+                    },
+                    "srsName": "EPSG:3035"
+                },
+                "projectionDefs": {
+                    "EPSG:3035": "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs",
+                    "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs",
+                    "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+                }                
+            },
+            "state": {
+                "east": "4310937.5",
+                "north": "3366406.25",
+                "selectedLayers": [{"id": 999}],
+                "zoom": 0
+            }
+        },
+        { "id" : "infobox" },
+        { "id" : "toolbar" }
+    ]
+}

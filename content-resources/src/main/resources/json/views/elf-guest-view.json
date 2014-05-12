@@ -5,7 +5,7 @@
     "public": true,
     "oskari": {
         "application": "elf_guest",
-        "page": "elf",
+        "page": "elf_guest",
         "development_prefix": "/applications/elf"
     },
     "bundles": [
@@ -128,23 +128,9 @@
         }, {
             "id": "metadatacatalogue"
         }, {
-            "id": "personaldata",
-            "config": {
-            	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
-            	}
-            }
+            "id": "personaldata"
         }, {
-            "id": "publisher",
-            "config": {
-            	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
-            	}
-            }
+            "id": "publisher"
         }, {
             "id": "maplegend"
         }, {
@@ -153,19 +139,6 @@
             "id": "featuredata2"
         }, {
             "id": "myplaces2"
-        }, {
-            "id": "backendstatus"
-        }, {
-            "id": "printout",
-            "config" : {
-                "backendConfiguration" : {
-                    "formatProducers" : {
-                        "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
-                        "image/png" : "/imaging/service/thumbnail/maplink.png?"
-                    }, 
-                    "buttons": { }
-                }
-            }
         }, {
             "id": "postprocessor"
         }, {

@@ -172,8 +172,7 @@ public class ELFGeoLocatorParser {
                         item.setLocationTypeCode(types.get(k));
                     }
 
-                    if (loctypes.size() > 0)
-                    {
+                    if (loctypes.size() > 0) {
                         item.setLocationTypeCode(loctypes.get(0));
                         item.setType(loctypes.get(0));
                     }
@@ -280,6 +279,62 @@ public class ELFGeoLocatorParser {
 
         }
         return values;
+
+    }
+
+    /**
+     * Transform point to  CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258")
+     *
+     * @param lon  longitude
+     * @param lat  latitude
+     * @param epsg source Crs
+     * @return
+     */
+    public String[] transformLonLat(String lon, String lat, String epsg) {
+        String[] lonlat = new String[2];
+
+        lonlat[0] = lon;
+        lonlat[1] = lat;
+        if (epsg.toUpperCase().equals("EPSG:4258")) return lonlat;
+
+        try {
+
+            CoordinateReferenceSystem sourceCrs = CRS.decode(epsg);
+            CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4258");
+
+
+            MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, true);
+
+            DirectPosition2D srcDirectPosition2D = null;
+
+            DirectPosition2D destDirectPosition2D = new DirectPosition2D();
+
+            // Switch direction, if 1st coord is to the north
+            if ( sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
+                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
+                    sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lat), Double.valueOf(lon));
+            } else {
+                srcDirectPosition2D = new DirectPosition2D(sourceCrs, Double.valueOf(lon), Double.valueOf(lat));
+            }
+
+            mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
+
+            lonlat[0] = String.valueOf(destDirectPosition2D.x);
+            lonlat[1] = String.valueOf(destDirectPosition2D.y);
+            // Switch direction, if 1st coord is to the north
+            if (targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
+                    targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
+                    targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
+                lonlat[0] = String.valueOf(destDirectPosition2D.y);
+                lonlat[1] = String.valueOf(destDirectPosition2D.x);
+            }
+            return lonlat;
+
+        } catch (Exception e) {
+            log.error(e, "geotools pox");
+            return null;
+        }
 
     }
 }
