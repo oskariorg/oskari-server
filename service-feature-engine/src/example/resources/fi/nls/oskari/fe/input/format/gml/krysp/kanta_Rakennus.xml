@@ -1,0 +1,2102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" 
+xmlns:kanta="http://www.paikkatietopalvelu.fi/gml/kantakartta" xmlns:ogc="http://www.opengis.net/ogc" 
+xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yht="http://www.paikkatietopalvelu.fi/gml/yhteiset" 
+numberOfFeatures="44" timeStamp="2014-02-27T16:27:38.805Z" 
+xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <gml:featureMembers>
+    <kanta:Rakennus gml:id="Rakennus.212261172">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-22T10:37:02</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>241464.615 6719335.242</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>241458.490 6719334.989</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-458-1-100-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Karhulantie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>43</yht:osoitenumero>
+      <yht:postinumero>20400</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212012411">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236602.462 6706317.463</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236597.536 6706317.136</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-30-3-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>2</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Tyttelikatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>6</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212009592">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>235936.718 6706589.261</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>235931.792 6706588.934</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-43-1-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>2</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Hannukkalankuja</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>4</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006465">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236648.082 6705955.614</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236643.156 6705955.287</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006484">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236667.526 6705919.446</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236662.600 6705919.119</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006493">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-10-01T08:05:47</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236677.041 6705942.275</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236672.115 6705941.948</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006497">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236700.902 6705941.728</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236695.976 6705941.401</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-4</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006521">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-19T08:01:51</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236726.228 6705909.649</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236721.302 6705909.322</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-5</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.212006535">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-10-01T08:05:47</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>236731.562 6705932.616</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>236726.636 6705932.289</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-153-14-7-6</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Sommelontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>23</yht:osoitenumero>
+      <yht:postinumero>20900</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.207999319">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-06-14T09:50:57</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>242653.605 6720636.825</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>242644.873 6720634.206</gml:pos>
+                <gml:pos>242639.789 6720647.602</gml:pos>
+                <gml:pos>242648.713 6720651.008</gml:pos>
+                <gml:pos>242655.849 6720632.316</gml:pos>
+                <gml:pos>242645.598 6720628.404</gml:pos>
+                <gml:pos>242643.607 6720633.715</gml:pos>
+                <gml:pos>242644.873 6720634.206</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-97-152-3-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>42.01</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Enkelikuja</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>6</yht:osoitenumero>
+      <yht:postinumero>20400</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+      <yht:pistesijainti>
+        <gml:Point>
+          <gml:pos>242644.957 6720649.103</gml:pos>
+        </gml:Point>
+      </yht:pistesijainti>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.207999214">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-06-14T09:50:57</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>238655.138 6702553.422</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>238649.013 6702553.168</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-407-1-642-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Hiidenkiukaantie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>30</yht:osoitenumero>
+      <yht:postinumero>20960</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.206089027">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-05-22T07:25:31</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>241775.691 6707418.952</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>241770.996 6707418.611</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>853-35-29-1-4</kanta:rakennustunnus>
+    <kanta:kottovuosi>2013-06-06</kanta:kottovuosi>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Munstenpellonkatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>9</yht:osoitenumero>
+      <yht:postinumero>20740</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.206086677">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-05-22T07:25:31</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>241778.313 6707433.140</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>241773.618 6707432.799</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>853-35-29-1-3</kanta:rakennustunnus>
+    <kanta:kottovuosi>2013-06-06</kanta:kottovuosi>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Munstenpellonkatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>9</yht:osoitenumero>
+      <yht:postinumero>20740</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.196182534">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-12-28T08:37:31</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>242163.753 6711274.763</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>242154.398 6711269.579</gml:pos>
+                <gml:pos>242154.692 6711280.480</gml:pos>
+                <gml:pos>242162.596 6711280.268</gml:pos>
+                <gml:pos>242162.595 6711280.214</gml:pos>
+                <gml:pos>242170.076 6711280.055</gml:pos>
+                <gml:pos>242169.876 6711273.932</gml:pos>
+                <gml:pos>242162.430 6711274.090</gml:pos>
+                <gml:pos>242162.302 6711269.358</gml:pos>
+                <gml:pos>242154.398 6711269.579</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-11-57-42-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>2</kanta:kerrosluku>
+    <kanta:korkeusasema>29.17</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Uudenpellonkatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>1</yht:osoitenumero>
+      <yht:postinumero>20540</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+      <yht:pistesijainti>
+        <gml:Point>
+          <gml:pos>242159.736 6711280.146</gml:pos>
+        </gml:Point>
+      </yht:pistesijainti>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Tammitie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>24</yht:osoitenumero>
+      <yht:postinumero>20540</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+      <yht:pistesijainti>
+        <gml:Point>
+          <gml:pos>242154.545 6711274.767</gml:pos>
+        </gml:Point>
+      </yht:pistesijainti>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.196182515">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-12-28T08:37:31</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>240938.458 6714257.972</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>240926.088 6714256.737</gml:pos>
+                <gml:pos>240938.535 6714263.809</gml:pos>
+                <gml:pos>240942.761 6714256.399</gml:pos>
+                <gml:pos>240930.278 6714249.302</gml:pos>
+                <gml:pos>240926.088 6714256.737</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-84-7-11-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>2</kanta:kerrosluku>
+    <kanta:korkeusasema>35.25</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Keihästie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>2</yht:osoitenumero>
+      <yht:postinumero>20360</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+      <yht:pistesijainti>
+        <gml:Point>
+          <gml:pos>240940.276 6714260.501</gml:pos>
+        </gml:Point>
+      </yht:pistesijainti>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Tuulismäentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>18</yht:osoitenumero>
+      <yht:postinumero>20360</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+      <yht:pistesijainti>
+        <gml:Point>
+          <gml:pos>240936.428 6714252.793</gml:pos>
+        </gml:Point>
+      </yht:pistesijainti>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.196106429">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-12-27T07:40:13</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>251230.162 6711151.059</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>251221.503 6711138.427</gml:pos>
+                <gml:pos>251222.397 6711155.052</gml:pos>
+                <gml:pos>251234.141 6711154.420</gml:pos>
+                <gml:pos>251233.801 6711148.098</gml:pos>
+                <gml:pos>251227.744 6711148.425</gml:pos>
+                <gml:pos>251227.190 6711138.123</gml:pos>
+                <gml:pos>251221.503 6711138.427</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-499-2-2-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Karhunojantie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>100</yht:osoitenumero>
+      <yht:postinumero>20660</yht:postinumero>
+      <yht:postitoimipaikannimi>LITTOINEN</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.188589656">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-04-05T07:23:50</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253753.214 6701790.788</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>253744.546 6701790.316</gml:pos>
+                <gml:pos>253748.952 6701793.353</gml:pos>
+                <gml:pos>253750.993 6701790.387</gml:pos>
+                <gml:pos>253747.943 6701788.474</gml:pos>
+                <gml:pos>253748.445 6701787.691</gml:pos>
+                <gml:pos>253746.952 6701786.826</gml:pos>
+                <gml:pos>253744.546 6701790.316</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-484-2-71-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Huhmarintie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>172</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.188300075">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-11-13T08:36:02</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>240542.562 6710681.316</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>240537.867 6710680.975</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-1-16-16-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>7</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Uudenmaankatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>20500</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830402">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254168.638 6706525.480</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254160.400 6706522.313</gml:pos>
+                <gml:pos>254159.365 6706528.621</gml:pos>
+                <gml:pos>254165.277 6706529.590</gml:pos>
+                <gml:pos>254166.313 6706523.282</gml:pos>
+                <gml:pos>254160.400 6706522.313</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-6</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830350">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254087.320 6706442.508</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254074.810 6706439.250</gml:pos>
+                <gml:pos>254082.669 6706449.428</gml:pos>
+                <gml:pos>254088.630 6706444.827</gml:pos>
+                <gml:pos>254080.772 6706434.648</gml:pos>
+                <gml:pos>254074.810 6706439.250</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-8</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829910">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254134.014 6706505.105</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254121.561 6706504.128</gml:pos>
+                <gml:pos>254130.560 6706510.708</gml:pos>
+                <gml:pos>254134.805 6706504.902</gml:pos>
+                <gml:pos>254125.807 6706498.321</gml:pos>
+                <gml:pos>254121.561 6706504.128</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830280">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254125.771 6706478.827</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254120.240 6706475.413</gml:pos>
+                <gml:pos>254117.416 6706479.896</gml:pos>
+                <gml:pos>254121.347 6706482.373</gml:pos>
+                <gml:pos>254124.171 6706477.889</gml:pos>
+                <gml:pos>254120.240 6706475.413</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-7</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830310">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254119.623 6706467.120</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254111.725 6706466.515</gml:pos>
+                <gml:pos>254115.625 6706469.920</gml:pos>
+                <gml:pos>254117.842 6706467.381</gml:pos>
+                <gml:pos>254113.942 6706463.975</gml:pos>
+                <gml:pos>254111.725 6706466.515</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-4</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>vapaa-ajan rakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830325">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254079.085 6706479.251</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254078.257 6706470.786</gml:pos>
+                <gml:pos>254067.685 6706479.451</gml:pos>
+                <gml:pos>254072.308 6706485.091</gml:pos>
+                <gml:pos>254082.880 6706476.426</gml:pos>
+                <gml:pos>254078.257 6706470.786</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-5</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184830330">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254092.638 6706460.507</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254079.347 6706459.501</gml:pos>
+                <gml:pos>254084.574 6706466.086</gml:pos>
+                <gml:pos>254097.552 6706455.786</gml:pos>
+                <gml:pos>254092.326 6706449.202</gml:pos>
+                <gml:pos>254079.347 6706459.501</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-89-11</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Yli-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>13</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829899">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254114.219 6706527.248</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254108.097 6706517.679</gml:pos>
+                <gml:pos>254105.335 6706533.212</gml:pos>
+                <gml:pos>254111.886 6706534.378</gml:pos>
+                <gml:pos>254114.648 6706518.843</gml:pos>
+                <gml:pos>254108.097 6706517.679</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-7</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829707">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254128.523 6706574.094</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254129.437 6706561.664</gml:pos>
+                <gml:pos>254118.913 6706577.158</gml:pos>
+                <gml:pos>254125.281 6706581.482</gml:pos>
+                <gml:pos>254135.805 6706565.989</gml:pos>
+                <gml:pos>254129.437 6706561.664</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-4</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829743">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254064.380 6706569.502</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254056.390 6706565.540</gml:pos>
+                <gml:pos>254057.818 6706572.462</gml:pos>
+                <gml:pos>254066.328 6706570.706</gml:pos>
+                <gml:pos>254064.899 6706563.784</gml:pos>
+                <gml:pos>254056.390 6706565.540</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-9</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829754">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253982.025 6706617.418</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>253977.413 6706610.829</gml:pos>
+                <gml:pos>253972.702 6706621.824</gml:pos>
+                <gml:pos>253980.784 6706625.288</gml:pos>
+                <gml:pos>253985.495 6706614.293</gml:pos>
+                <gml:pos>253977.413 6706610.829</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-19-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>1</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829874">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254011.220 6706610.810</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254003.674 6706607.510</gml:pos>
+                <gml:pos>254002.442 6706612.113</gml:pos>
+                <gml:pos>254007.558 6706613.482</gml:pos>
+                <gml:pos>254008.790 6706608.879</gml:pos>
+                <gml:pos>254003.674 6706607.510</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-19-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>1</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829669">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254129.735 6706636.312</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254127.573 6706614.862</gml:pos>
+                <gml:pos>254108.960 6706645.644</gml:pos>
+                <gml:pos>254116.705 6706650.325</gml:pos>
+                <gml:pos>254121.331 6706642.680</gml:pos>
+                <gml:pos>254131.584 6706648.880</gml:pos>
+                <gml:pos>254138.445 6706637.525</gml:pos>
+                <gml:pos>254128.069 6706631.251</gml:pos>
+                <gml:pos>254135.189 6706619.469</gml:pos>
+                <gml:pos>254127.573 6706614.862</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-12</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829680">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254157.143 6706620.488</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254151.147 6706598.668</gml:pos>
+                <gml:pos>254145.535 6706625.012</gml:pos>
+                <gml:pos>254154.279 6706626.871</gml:pos>
+                <gml:pos>254159.887 6706600.527</gml:pos>
+                <gml:pos>254151.147 6706598.668</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-8</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829701">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>254181.597 6706603.585</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>254172.176 6706600.705</gml:pos>
+                <gml:pos>254170.884 6706606.323</gml:pos>
+                <gml:pos>254182.254 6706608.939</gml:pos>
+                <gml:pos>254186.905 6706588.711</gml:pos>
+                <gml:pos>254175.527 6706586.093</gml:pos>
+                <gml:pos>254174.331 6706591.291</gml:pos>
+                <gml:pos>254170.230 6706590.348</gml:pos>
+                <gml:pos>254168.067 6706599.759</gml:pos>
+                <gml:pos>254172.176 6706600.705</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-497-1-92-5</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>maa- metsä- ja kalatalousrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Ali-Moisiontie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>12</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Heernummentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>242</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829413">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253948.917 6706745.613</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>253939.696 6706743.827</gml:pos>
+                <gml:pos>253941.531 6706748.375</gml:pos>
+                <gml:pos>253944.222 6706747.291</gml:pos>
+                <gml:pos>253947.734 6706756.028</gml:pos>
+                <gml:pos>253950.652 6706754.855</gml:pos>
+                <gml:pos>253947.141 6706746.117</gml:pos>
+                <gml:pos>253946.294 6706746.458</gml:pos>
+                <gml:pos>253944.466 6706741.908</gml:pos>
+                <gml:pos>253939.696 6706743.827</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-481-1-105-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Toivonlinnantie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>31</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184753625">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-21T08:13:55</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>243626.626 6709869.167</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>243622.162 6709868.812</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>keskeneräinen</kanta:tila>
+    <kanta:rakennustunnus>853-15-1-1-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>puu</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>1</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Talvitie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>29</yht:osoitenumero>
+      <yht:postinumero>20610</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+    <kanta:osoite>
+      <yht:kunta>Turku</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Pääskylänkatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>2</yht:osoitenumero>
+      <yht:postinumero>20610</yht:postinumero>
+      <yht:postitoimipaikannimi>TURKU</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.184829429">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2012-09-24T09:35:07</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253944.033 6706729.725</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>253933.268 6706728.334</gml:pos>
+                <gml:pos>253935.470 6706732.898</gml:pos>
+                <gml:pos>253940.257 6706730.583</gml:pos>
+                <gml:pos>253938.058 6706726.022</gml:pos>
+                <gml:pos>253933.268 6706728.334</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-481-1-105-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Toivonlinnantie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>31</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211140757">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2014-01-08T07:17:17</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>256498.372 6703019.124</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>256493.569 6703015.998</gml:pos>
+                <gml:pos>256489.765 6703020.187</gml:pos>
+                <gml:pos>256492.155 6703022.434</gml:pos>
+                <gml:pos>256496.020 6703018.246</gml:pos>
+                <gml:pos>256493.569 6703015.998</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-494-1-7-14</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>muu rakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Linnunpääntie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>130</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211140249">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253946.250 6708354.317</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:alue>
+          <gml:Polygon>
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:pos>253937.076 6708352.969</gml:pos>
+                <gml:pos>253938.615 6708355.102</gml:pos>
+                <gml:pos>253937.755 6708355.727</gml:pos>
+                <gml:pos>253940.278 6708359.214</gml:pos>
+                <gml:pos>253946.273 6708354.883</gml:pos>
+                <gml:pos>253943.747 6708351.384</gml:pos>
+                <gml:pos>253944.242 6708351.029</gml:pos>
+                <gml:pos>253943.251 6708349.652</gml:pos>
+                <gml:pos>253941.197 6708351.138</gml:pos>
+                <gml:pos>253939.548 6708348.860</gml:pos>
+                <gml:pos>253936.244 6708351.244</gml:pos>
+                <gml:pos>253936.340 6708351.379</gml:pos>
+                <gml:pos>253935.361 6708352.085</gml:pos>
+                <gml:pos>253936.369 6708353.484</gml:pos>
+                <gml:pos>253937.076 6708352.969</gml:pos>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </kanta:alue>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-458-2-55-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Hepojoentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>154</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211140266">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>253976.146 6708356.276</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>253971.220 6708355.949</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-458-2-55-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Hepojoentie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>154</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211139985">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>245913.982 6710293.378</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>245909.056 6710293.051</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-437-2-52-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Vyyhtikatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>3</yht:osoitenumero>
+      <yht:postinumero>20660</yht:postinumero>
+      <yht:postitoimipaikannimi>LITTOINEN</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211139992">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>245892.351 6710272.782</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>245887.425 6710272.455</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-437-2-52-4</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Vyyhtikatu</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>3</yht:osoitenumero>
+      <yht:postinumero>20660</yht:postinumero>
+      <yht:postitoimipaikannimi>LITTOINEN</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211139733">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>250720.717 6699800.620</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>250714.593 6699800.366</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-469-1-103-3</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>vapaa-ajan rakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Säkinperäntie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>54</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211139751">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>250759.808 6699752.266</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>250753.684 6699752.012</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-469-1-103-2</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>varastorakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Säkinperäntie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>54</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+    <kanta:Rakennus gml:id="Rakennus.211139758">
+    <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+    <kanta:luontitapa>digitointi</kanta:luontitapa>
+    <kanta:alkuPvm>2013-08-05T08:01:58</kanta:alkuPvm>
+    <kanta:labelit>
+      <kanta:Label>
+        <kanta:ilmentymaElementinNimi>rakennustunnus</kanta:ilmentymaElementinNimi>
+        <kanta:suunta uom="rad">1.5708</kanta:suunta>
+        <kanta:siirtymasijainti>
+          <gml:Point>
+            <gml:pos>250749.359 6699779.025</gml:pos>
+          </gml:Point>
+        </kanta:siirtymasijainti>
+      </kanta:Label>
+    </kanta:labelit>
+    <kanta:sijainnit>
+      <kanta:Sijainti>
+        <kanta:referenssipiste>
+          <gml:Point>
+            <gml:pos>250743.235 6699778.771</gml:pos>
+          </gml:Point>
+        </kanta:referenssipiste>
+      </kanta:Sijainti>
+    </kanta:sijainnit>
+    <kanta:tila>valmis</kanta:tila>
+    <kanta:rakennustunnus>202-469-1-103-1</kanta:rakennustunnus>
+    <kanta:rakennuksenKayttotarkoitus>asuinrakennus</kanta:rakennuksenKayttotarkoitus>
+    <kanta:julkisivumateriaali>muu materiaali</kanta:julkisivumateriaali>
+    <kanta:kerrosluku>0</kanta:kerrosluku>
+    <kanta:korkeusasema>0.0</kanta:korkeusasema>
+    <kanta:osoite>
+      <yht:kunta>Kaarina</yht:kunta>
+      <yht:osoitenimi>
+        <yht:teksti xml:lang="fi">Säkinperäntie</yht:teksti>
+      </yht:osoitenimi>
+      <yht:osoitenumero>54</yht:osoitenumero>
+      <yht:postinumero>21500</yht:postinumero>
+      <yht:postitoimipaikannimi>PIIKKIÖ</yht:postitoimipaikannimi>
+    </kanta:osoite>
+  </kanta:Rakennus>
+  </gml:featureMembers>
+</wfs:FeatureCollection>

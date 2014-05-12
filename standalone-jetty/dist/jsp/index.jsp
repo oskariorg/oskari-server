@@ -112,6 +112,7 @@
             </c:when>
         </c:choose>
         <c:set var="user" value="fi.nls.oskari.domain.User" />
+        <%-- when test="${!empty sessionScope[user]}" --%>
         <c:choose>
             <c:when test="${!empty _logout_uri}">
                 <a href="${_logout_uri}">Logout</a>

@@ -157,6 +157,12 @@
 				<version>${fi.nls.oskari.version}</version>
 			</dependency>
 
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>transport-servlet</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
 			<dependency>
 				<groupId>fi.mml</groupId>
 				<artifactId>capabilities</artifactId>

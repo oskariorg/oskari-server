@@ -16,7 +16,8 @@
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
     <module>service-feature-engine</module>
-    <module>transport</module>
+    <module>servlet-transport</module>
+    <module>webapp-transport</module>
     
   </modules>
 

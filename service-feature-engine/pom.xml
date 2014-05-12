@@ -12,7 +12,6 @@
     <name>Feature Engine Service</name>
 
 	<properties>
-		<skipTests>true</skipTests>
 		<titan.version>0.4.2</titan.version>
 		<groovy.version>2.2.2</groovy.version>
 		<commons-lang3.version>3.0</commons-lang3.version>
@@ -22,6 +21,18 @@
 		<jsonld-java.version>0.3</jsonld-java.version>
 	</properties>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/example/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -148,7 +159,5 @@
 			<artifactId>jsonld-java</artifactId>
 			<version>${jsonld-java.version}</version>
 		</dependency>
-		
-
 	</dependencies>
 </project>
