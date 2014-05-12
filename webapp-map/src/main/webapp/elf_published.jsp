@@ -28,7 +28,7 @@
             href="/Oskari${path}/css/overwritten.css"/>
     <style type="text/css">
         @media screen {
-			div.contentMap { margin-left: 0px !important; }
+			#contentMap { margin-left: 0px !important; }
           
 
         }
