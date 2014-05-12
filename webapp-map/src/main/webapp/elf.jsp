@@ -77,8 +77,6 @@
 <nav id="maptools">
     <div id="logobar">
     </div>
-    <div id="langSelector">
-    </div>
     <div id="menubar">
     </div>
     <div id="divider">
@@ -105,6 +103,8 @@
                 </form>
             </c:otherwise>
         </c:choose>
+    </div>
+    <div id="langSelector">
     </div>
 </nav>
 <div id="contentMap">
