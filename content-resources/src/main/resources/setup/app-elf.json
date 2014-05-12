@@ -14,7 +14,8 @@
     
     "views" : [
         "elf-view.json",
-        "publisher-template-view.json"
+        "elf-guest-view.json",
+        "elf-publisher-template-view.json",
     ],
     "sql" : [
         "populate-Inspire-themes.sql",

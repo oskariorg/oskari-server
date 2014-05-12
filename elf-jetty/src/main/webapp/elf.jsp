@@ -92,8 +92,9 @@
                 <p class="error">Invalid password or username!!</p>
             </c:when>
         </c:choose>
+        <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
-            <c:when test="${!empty user}">
+            <c:when test="${!empty sessionScope[user]}">
                 <a href="${ajaxUrl}action=logout">Logout</a>
             </c:when>
             <c:otherwise>
