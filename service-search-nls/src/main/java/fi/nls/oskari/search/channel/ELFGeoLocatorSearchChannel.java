@@ -95,7 +95,7 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));
             request = request.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
-        } else if (searchCriteria.getParam(PARAM_REGION).toString().equals("true")) {
+        } else if (searchCriteria.getParam(PARAM_FUZZY).toString().equals("true")) {
             // Fuzzy search
             buf.append(REQUEST_FUZZY_TEMPLATE.replace(KEY_LANG_HOLDER, lang3));
             buf.append(URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
