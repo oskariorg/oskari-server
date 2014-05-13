@@ -22,7 +22,7 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/portal.css"/>
-    <link
+    <!-- link
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
@@ -32,7 +32,7 @@
           
 
         }
-    </style>
+    </style-->
     <!-- ############# /css ################# -->
 </head>
 <body>
