@@ -93,8 +93,8 @@
         </c:choose>
         <c:set var="user" value="fi.nls.oskari.domain.User" />
         <c:choose>
-            <c:when test="${!empty sessionScope[user]}">
-                <a href="${ajaxUrl}action=logout">Logout</a>
+            <c:when test="${!empty _logout_uri}">
+                <a href="${_logout_uri}">Logout</a>
             </c:when>
             <c:otherwise>
                 <form action='j_security_check' method="post" accept-charset="UTF-8">
