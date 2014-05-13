@@ -15,7 +15,10 @@
     <module>service-control</module>
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
-    <module>transport</module>
+    <module>service-feature-engine</module>
+    <module>servlet-transport</module>
+    <module>webapp-transport</module>
+    
   </modules>
 
 </project>

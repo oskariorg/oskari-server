@@ -4,10 +4,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ProxyServiceConfig;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.wfs.WFSLayerConfiguration;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
