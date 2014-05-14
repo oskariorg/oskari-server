@@ -293,6 +293,14 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
         }
     }
 
+    public void update(String sqlId, Map<String, String> parameterMap) {
+        try {
+            getSqlMapClient().update(sqlId, parameterMap);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update", e);
+        }
+    }
+
     /**
      * Deletes object
      * 
