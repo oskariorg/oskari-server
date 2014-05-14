@@ -155,11 +155,22 @@ public abstract class UserService {
     /**
      * Set a user's password. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.
-     * @param id User id
+     * @param screenname User name
      * @param password User password
      * @throws ServiceException
      */
-    public void setUserPassword(long id, String password) throws ServiceException {
+    public void setUserPassword(String screenname, String password) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+
+    /**
+     * Updates a user's password. This method should be overridden in concrete implementation. The
+     * default implementation always throws an exception.
+     * @param screenname User name
+     * @param password User password
+     * @throws ServiceException
+     */
+    public void updateUserPassword(String screenname, String password) throws ServiceException {
         throw new ServiceException("Not implemented");
     }
 }

@@ -16,6 +16,34 @@
         <result property="uuid" column="uuid" />
     </resultMap>
 
+    <statement id="addUser" resultClass="Long"
+               parameterClass="User">
+        INSERT INTO oskari_users (
+            first_name,
+            last_name,
+            user_name
+        )
+        VALUES (
+            #firstname#,
+            #lastname#,
+            #screenname#
+        )
+        RETURNING id
+    </statement>
+
+    <statement id="updateUser" parameterClass="User">
+        update
+        oskari_users set
+        first_name = #firstname#,
+        last_name = #lastname#,
+        user_name = #screenname#
+        where id = #id#
+    </statement>
+
+    <select id="findAll" resultMap="UsersResult">
+        select id, first_name, last_name, user_name, uuid from oskari_users order by user_name
+    </select>
+
     <select id="findByUserId" parameterClass="Long" resultMap="UsersResult">
         select id, first_name, last_name, user_name, uuid from oskari_users where id = #id#
     </select>
@@ -29,6 +57,33 @@
         from oskari_jaas_users
         where login = #username# AND password=#password#
     </select>
+
+    <select id="getPassword" parameterClass="java.util.HashMap" resultClass="String">
+        select password
+        from oskari_jaas_users
+        where login = #username#
+    </select>
+
+    <statement id="insertPassword" parameterClass="java.util.HashMap">
+        INSERT INTO oskari_jaas_users (
+            password,
+            login
+        )
+        VALUES (
+            #password#,
+            #username#
+        )
+    </statement>
+
+    <update id="updatePassword" parameterClass="java.util.HashMap">
+        update oskari_jaas_users
+        set password = #password#
+        where login = #username#
+    </update>
+
+    <delete id="deletePassword" parameterClass="java.util.HashMap">
+        delete from oskari_jaas_users where login = #username#
+    </delete>
 
     <delete id="deleteById" parameterClass="Long">
         delete from oskari_users where id = #id#
