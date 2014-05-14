@@ -69,6 +69,13 @@
                 <env>elf-jetty-jaas</env>
                 <profile-filter>${basedir}/env/${env}/elf-filter.properties</profile-filter>
             </properties>
+            <dependencies>
+                <!-- Adding additional search channels to servlet build -->
+                <dependency>
+                    <groupId>fi.nls.oskari.service</groupId>
+                    <artifactId>oskari-search-nls</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>tomcat</id>
@@ -77,6 +84,8 @@
                 <profile-filter>${basedir}/env/${env}/tomcat-filter.properties</profile-filter>
             </properties>
         </profile>
+
+
         <!--
         Add a custom profile for your maven settings.xml or here to use your own filter properties instead of defaults:
         <profile>
@@ -132,7 +141,7 @@
                     <systemProperties>
                         <systemProperty>
                             <name>java.security.auth.login.config</name>
-                            <value>${basedir}/env/jetty-jaas/WEB-INF/jndi-login.conf</value>
+                            <value>${basedir}/target/oskari-map/WEB-INF/jndi-login.conf</value>
                         </systemProperty>
                     </systemProperties>
                     <httpConnector>
