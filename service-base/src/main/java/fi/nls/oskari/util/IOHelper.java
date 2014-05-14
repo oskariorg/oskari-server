@@ -40,7 +40,6 @@ public class IOHelper {
     static {
         CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
         READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
-        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
         trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
         trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
         MY_DOMAIN = PropertyUtil.get("oskari.domain", MY_DOMAIN);

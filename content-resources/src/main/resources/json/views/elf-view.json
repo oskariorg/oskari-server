@@ -128,9 +128,23 @@
         }, {
             "id": "metadatacatalogue"
         }, {
-            "id": "personaldata"
+            "id": "personaldata",
+            "config": {
+            	"publishedMapUrl": {
+            		"en" : "?lang=en&viewId=",
+            		"sv" : "?lang=sv&viewId=",
+            		"fi" : "?lang=fi&viewId="
+            	}
+            }
         }, {
-            "id": "publisher"
+            "id": "publisher",
+            "config": {
+            	"publishedMapUrl": {
+            		"en" : "?lang=en&viewId=",
+            		"sv" : "?lang=sv&viewId=",
+            		"fi" : "?lang=fi&viewId="
+            	}
+            }
         }, {
             "id": "maplegend"
         }, {
@@ -156,6 +170,8 @@
             "id": "postprocessor"
         }, {
         	"id": "elf-language-selector"
+        }, {
+            "id": "elf-geolocator"
         }
     ]
 }

@@ -19,7 +19,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.GetWFSDescribeFeature;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;

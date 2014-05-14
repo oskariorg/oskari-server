@@ -3,6 +3,7 @@
 -- EACH COMMENT _NEED_ TO END WITH A SEMICOLON OR OTHERWISE THE NEXT ACTUAL SQL IS NOT RUN!;
 -- ----------------------------------------------------------------------------------------;
 
+DROP TABLE IF EXISTS portti_stats_layer;
 DROP TABLE IF EXISTS portti_maplayer;
 DROP TABLE IF EXISTS portti_layerclass;
 DROP TABLE IF EXISTS oskari_permission;

@@ -2,7 +2,6 @@
 
 ## 1.21
 
-<<<<<<< HEAD
 ### control-admin
 
 Added new module for administration
@@ -10,7 +9,7 @@ Added new module for administration
 ### control-admin/UsersHandler
 
 New handler for listing, adding, editing and removing users
-=======
+
 ### service-base
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
@@ -38,7 +37,41 @@ Added request logging support. Tries to write them into logs directory and print
 
 Removed src/main/webapp (JSPs) from under standalone-jetty. Build now uses the JSPs from under webapp-map so there's no need
 to copy/paste them on changes.
->>>>>>> 9d6994d0e30c7c471a9d8b7f9b2738f5b390e0d1
+
+### service-feature-engine
+
+New custom-parser option for transport to handle complex services. Example groovy-scripts for handling some services.
+
+### transport (now servlet-transport and webapp-transport)
+
+Split into servlet and webapp packages to be more in line with map-packages. The deployable war-file is now located webapp-transport/target.
+
+fi/nls/oskari/transport/config.properties has been renamed transport.properties and some of the property keys have been renamed to match the ones used in oskari.properties:
+
+* serviceURL-> oskari.domain
+* serviceURLParam -> oskari.ajax.url.prefix
+* serviceURLSessionParam-> oskari.cookie.session
+* oskari.cookie.route is newly configurable, defaults to ROUTEID
+* serviceURLLiferayPath is now obsolete and any additional parameters for API url should now be added to oskari.ajax.url.prefix as on oskari.properties
+* redisHostname -> redis.hostname
+* redisPort -> redis.port
+
+Transport now initializes by reading properties files in this order:
+* oskari.properties
+* transport.properties
+* oskari-ext.properties
+* transport-ext.properties
+
+Moved JobQueue/Job from transport into service-base. Added teardown() hook for Job.
+
+Added ResultProcessor interface for transport. WFSLayerJobs don't need reference to TransportService anymore,
+but instance of ResultProcessor so they can be used elsewhere also. TransportService implements ResultProcessor by forwarding
+the messages to cometd.
+
+WFSLayerStore now extends WFSLayerConfiguration instead of copy-paste methods. Also cleaned wfs configuration a bit by removing
+ obsolete fields like testlocation/testzoom etc.
+
+Removed build profiles, custom resources for transport can now be given with maven property "transport.resourceDir" (via maven profile etc)
 
 ## 1.20
 

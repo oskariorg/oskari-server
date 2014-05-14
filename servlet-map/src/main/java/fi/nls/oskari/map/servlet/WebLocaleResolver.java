@@ -1,5 +1,7 @@
 package fi.nls.oskari.map.servlet;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.Cookie;
@@ -11,6 +13,7 @@ import java.util.Locale;
  * Resolves locale based on http param with state handled with cookie.
  */
 public class WebLocaleResolver {
+    private final static Logger log = LogFactory.getLogger(WebLocaleResolver.class);
     private String localeHttpParam = "lang";
     private String cookieName = "oskari.language";
 
@@ -28,37 +31,47 @@ public class WebLocaleResolver {
 
     public Locale resolveLocale(HttpServletRequest request, HttpServletResponse response) {
 
-        boolean haveCookie = false;
 
         // possible Query parameter always overrides cookie value
         String requestedLocale = request.getParameter(localeHttpParam);
-        if (requestedLocale == null) {
+        Cookie cookie = getCookie(request.getCookies());
+        log.debug("Language param:", requestedLocale);
+        if (requestedLocale == null && cookie != null) {
             // no parameter, check cookie
-            requestedLocale = getFromCookies(request.getCookies());
-            haveCookie = (requestedLocale != null);
+            requestedLocale = cookie.getValue();
+            log.debug("Cookie language:", requestedLocale);
         }
-
-        if (isSupported(requestedLocale)) {
-            if (!haveCookie) {
-                Cookie cookie = new Cookie(cookieName, requestedLocale);
-                cookie.setPath(request.getContextPath());
+        final boolean supportedLanguage = isSupported(requestedLocale);
+        if (supportedLanguage) {
+            if (cookie == null) {
+                cookie = new Cookie(cookieName, requestedLocale);
+                cookie.setPath("/"); // request.getContextPath()
                 cookie.setSecure(request.isSecure());
                 response.addCookie(cookie);
             }
-            return new Locale(requestedLocale);
+            else {
+                cookie.setValue(requestedLocale);
+            }
+            return getLocale(requestedLocale);
         }
 
         return defaultLocale;
     }
 
-    private String getFromCookies(Cookie[] cookies) {
+    private Locale getLocale(final String requestedLocale) {
+        final String[] split = requestedLocale.split("\\_");
+        // TODO: setup country if found
+        return new Locale(split[0]);
+    }
+
+    private Cookie getCookie(Cookie[] cookies) {
         if (cookies == null) {
             return null;
         }
 
         for (Cookie c : cookies) {
             if (cookieName.equals(c.getName())) {
-                return c.getValue();
+                return c;
             }
         }
         return null;
@@ -68,12 +81,16 @@ public class WebLocaleResolver {
         if(requestedLocale == null) {
             return false;
         }
+        String closeMatch = null;
         for (String supportedLocale : supportedLocales) {
             if (supportedLocale.equals(requestedLocale)) {
                 return true;
             }
+            if(supportedLocale.startsWith(requestedLocale)) {
+                closeMatch = supportedLocale;
+            }
         }
-        return false;
+        return (closeMatch != null);
     }
 
 }

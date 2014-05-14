@@ -6,16 +6,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class SchemaSubscriber extends JedisSubscriber {
     private final static Logger log = LogFactory.getLogger(SchemaSubscriber.class);
 
     public static final String CHANNEL = "schemaInfo";
 
-    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
+    //private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
 
     /**
      * Handles the received message if the channel is "schemaInfo"
@@ -55,7 +51,7 @@ public class SchemaSubscriber extends JedisSubscriber {
                 status = "fail - schema was not set";
             }
 
-            wfsService.updateSchemaInfo(id, schema, status);
+            //wfsService.updateSchemaInfo(id, schema, status);
         }
     }
 

@@ -64,10 +64,6 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
                 <directory>${basedir}/../webapp-map/src/main/webapp</directory>
                 <filtering>false</filtering>
             </resource>

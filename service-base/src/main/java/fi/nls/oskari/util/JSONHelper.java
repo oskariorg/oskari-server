@@ -44,9 +44,12 @@ public class JSONHelper {
     }
 
     public static final JSONObject getJSONObject(final JSONObject content, String key) {
+        if(content == null) {
+            return null;
+        }
         try {
             return content.getJSONObject(key);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             log.warn("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }
@@ -57,6 +60,39 @@ public class JSONHelper {
         } catch (JSONException e) {
             throw new IllegalArgumentException("Couldn't get JSONArray from " + content + " with key = " + key);
         }
+    }
+    public static final <T> Map<String, T> getObjectAsMap(final JSONObject obj) {
+        if(obj == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, T> map = new HashMap<String, T>();
+        Iterator it = obj.keys();
+        while(it.hasNext()) {
+            String key = (String)it.next();
+            try {
+                map.put(key, (T) obj.opt(key));
+            }
+            catch (Exception e) {
+                log.error("Couldn't convert JSONObject to Map:", e.getMessage());
+            }
+        }
+        return map;
+    }
+
+    public static final <T> List<T> getArrayAsList(final JSONArray array) {
+        if(array == null) {
+            return Collections.emptyList();
+        }
+        try {
+            List<T> list = new ArrayList<T>(array.length());
+            for(int i = 0; i < array.length(); ++i) {
+                list.add((T)array.opt(i));
+            }
+            return list;
+        } catch (Exception e) {
+            log.error("Couldn't convert JSONArray to List:", e.getMessage());
+        }
+        return Collections.emptyList();
     }
 
     public static JSONArray getEmptyIfNull(final JSONArray array) {
