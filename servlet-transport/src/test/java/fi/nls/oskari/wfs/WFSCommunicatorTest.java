@@ -43,7 +43,6 @@ public class WFSCommunicatorTest {
 
     @BeforeClass
     public static void setUp() {
-        System.setProperty("org.geotools.referencing.forceXY", "true");
         // use relaxed comparison settings
         XMLUnit.setIgnoreComments(true);
         XMLUnit.setIgnoreWhitespace(true);

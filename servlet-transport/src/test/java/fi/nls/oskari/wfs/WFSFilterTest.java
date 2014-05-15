@@ -45,7 +45,6 @@ public class WFSFilterTest {
 
     @Before
     public void setUp() {
-        System.setProperty("org.geotools.referencing.forceXY", "true");
 		try {
 			session = SessionStore.setJSON(sessionJSON);
 			layer = WFSLayerStore.setJSON(layerJSON);

@@ -46,6 +46,8 @@ New custom-parser option for transport to handle complex services. Example groov
 
 Split into servlet and webapp packages to be more in line with map-packages. The deployable war-file is now located webapp-transport/target.
 
+No longer sets system property for geotools (org.geotools.referencing.forceXY) so it's safe to use with other webapps in the same JVM.
+
 fi/nls/oskari/transport/config.properties has been renamed transport.properties and some of the property keys have been renamed to match the ones used in oskari.properties:
 
 * serviceURL-> oskari.domain
