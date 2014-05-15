@@ -2,6 +2,12 @@
 
 ## 1.21
 
+### database
+
+Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents
+
+Added keyword tables that are required by admin-layerselector when adding new layers
+
 ### control-admin
 
 Added new module for administration

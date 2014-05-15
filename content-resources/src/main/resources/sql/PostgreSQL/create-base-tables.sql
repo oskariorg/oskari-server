@@ -3,6 +3,9 @@
 -- EACH COMMENT _NEED_ TO END WITH A SEMICOLON OR OTHERWISE THE NEXT ACTUAL SQL IS NOT RUN!;
 -- ----------------------------------------------------------------------------------------;
 
+DROP TABLE IF EXISTS portti_layer_keywords;
+DROP TABLE IF EXISTS portti_keyword_association;
+DROP TABLE IF EXISTS portti_keywords;
 DROP TABLE IF EXISTS portti_stats_layer;
 DROP TABLE IF EXISTS portti_maplayer;
 DROP TABLE IF EXISTS portti_layerclass;
@@ -33,7 +36,7 @@ DROP TABLE IF EXISTS portti_terms_of_use_for_publishing;
 CREATE TABLE portti_capabilities_cache
 (
   layer_id serial NOT NULL,
-  data character varying(20000),
+  data text,
   updated timestamp DEFAULT CURRENT_TIMESTAMP,
   "WMSversion" character(10) NOT NULL,
   CONSTRAINT portti_capabilities_cache_pkey PRIMARY KEY (layer_id)
