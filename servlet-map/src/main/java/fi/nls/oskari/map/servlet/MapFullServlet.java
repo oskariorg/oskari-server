@@ -237,6 +237,22 @@ public class MapFullServlet extends HttpServlet {
     }
 
     /**
+     * Passes requests to doGet().
+     */
+    protected void doPut(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException {
+        doGet(request, response);
+    }
+
+    /**
+     * Passes requests to doGet().
+     */
+    protected void doDelete(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException {
+        doGet(request, response);
+    }
+
+    /**
      * Wraps request to ActionParameters object that is used by action routes.
      * Populates user information etc to the request.
      * @param request
