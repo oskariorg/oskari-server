@@ -11,8 +11,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.List;
 import java.util.Map;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
     private IbatisUserService userService = new IbatisUserService();
@@ -60,30 +58,44 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public List<User> getUsers() throws ServiceException {
+        log.info("getUsers");
         return userService.findAll();
     }
 
     @Override
     public User createUser(User user) throws ServiceException {
-        userService.insert(user);
-        return userService.findByUserName(user.getScreenname());
+        log.debug("createUser");
+        Long id = userService.addUser(user);
+        return userService.find(id);
     }
 
     @Override
     public User modifyUser(User user) throws ServiceException {
-        userService.update(user);
+        log.debug("modifyUser");
+        userService.updateUser(user);
         return userService.find(user.getId());
     }
 
     @Override
     public void deleteUser(long id) throws ServiceException {
-        userService.delete(id);
+        log.debug("deleteUser");
+        User user = userService.find(id);
+        if (user != null) {
+            userService.deletePassword(user.getScreenname());
+            userService.delete(id);
+        }
     }
 
     @Override
-    public void setUserPassword(long id, String password) throws ServiceException {
-        String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-        userService.updatePassword(id, hashed);
+    public void setUserPassword(String username, String password) throws ServiceException {
+        String hashed = "MD5:" + DigestUtils.md5Hex(password);
+        userService.setPassword(username, hashed);
+    }
+
+    @Override
+    public void updateUserPassword(String username, String password) throws ServiceException {
+        String hashed = "MD5:" + DigestUtils.md5Hex(password);
+        userService.updatePassword(username, hashed);
     }
 
 }

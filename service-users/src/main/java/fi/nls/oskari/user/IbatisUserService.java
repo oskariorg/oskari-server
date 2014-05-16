@@ -16,8 +16,16 @@ public class IbatisUserService extends BaseIbatisService<User> {
         return "Users";
     }
 
+    public Long addUser(User user) {
+        return queryForObject(getNameSpace() + ".addUser", user);
+    }
+
+    public void updateUser(User user) {
+        queryForObject(getNameSpace() + ".updateUser", user);
+    }
+
     public User find(long id) {
-        return queryForObject(getNameSpace() + ".findById", id);
+        return queryForObject(getNameSpace() + ".findByUserId", id);
     }
 
     /**
@@ -33,6 +41,12 @@ public class IbatisUserService extends BaseIbatisService<User> {
         return (String) queryForRawObject(getNameSpace() + ".login", params);
     }
 
+    public String getPassword(final String username) {
+        Map<String, String> params = new HashMap<String, String>(2);
+        params.put("username", username);
+        return (String) queryForRawObject(getNameSpace() + ".getPassword", params);
+    }
+
     public User findByUserName(String username) {
         User user = queryForObject(getNameSpace() + ".findByUserName", username);
         List<Role> roleList = roleService.findByUserName(username);
@@ -46,8 +60,24 @@ public class IbatisUserService extends BaseIbatisService<User> {
         delete(getNameSpace() + ".deleteById", id);
     }
 
-    public void updatePassword(long id, String password) {
+    public void setPassword(String username, String password) {
+        Map<String, String> params = new HashMap<String, String>(2);
+        params.put("username", username);
+        params.put("password", password);
+        queryForObject(getNameSpace() + ".insertPassword", params);
+    }
 
+    public void updatePassword(String username, String password) {
+        Map<String, String> params = new HashMap<String, String>(2);
+        params.put("username", username);
+        params.put("password", password);
+        update(getNameSpace() + ".updatePassword", params);
+    }
+
+    public void deletePassword(String username) {
+        Map<String, String> params = new HashMap<String, String>(2);
+        params.put("username", username);
+        delete(getNameSpace() + ".deletePassword", params);
     }
 
 }

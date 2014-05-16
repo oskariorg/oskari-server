@@ -1,5 +1,8 @@
 package fi.nls.oskari.control;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -7,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
  * @OskariActionRoute("handlerKey") to register them on runtime.
  */
 public abstract class RestActionHandler extends ActionHandler {
+
+    private Logger log = LogFactory.getLogger(RestActionHandler.class);
 
 	/**
 	 * Handler method for requests
@@ -16,6 +21,7 @@ public abstract class RestActionHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         preProcess(params);
         final HttpServletRequest req = params.getRequest();
+        log.debug("Method: " + req.getMethod());
         if("GET".equals(req.getMethod())) {
             handleGet(params);
         }

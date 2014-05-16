@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>service-control</artifactId>
+            <artifactId>oskari-control</artifactId>
         </dependency>
 
         <dependency>
@@ -36,6 +36,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
@@ -47,6 +48,7 @@
             <artifactId>powermock-module-junit4</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>

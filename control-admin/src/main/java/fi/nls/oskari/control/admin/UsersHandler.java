@@ -7,6 +7,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,22 +37,37 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        isAdmin(params);
+        log.info("handleGet");
+        final JSONObject response;
         long id = getId(params);
         try {
             if (id > -1) {
+                log.info("handleGet: has id");
                 User user = userService.getUser(id);
+                response = user2Json(user);
             } else {
+                log.info("handleGet: no id");
                 List<User> users = userService.getUsers();
+                log.info(users.size());
+                response = new JSONObject();
+                JSONArray arr = new JSONArray();
+                response.put("users", arr);
+                for (User user : users) {
+                    arr.put(user2Json(user));
+                }
             }
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
+        } catch (JSONException je) {
+            throw new ActionException(je.getMessage(), je);
         }
+        log.info(response);
+        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        isAdmin(params);
+        log.debug("handlePut");
         User user = new User();
         getUserParams(user, params);
         String password = params.getHttpParam(PARAM_PASSWORD);
@@ -56,27 +75,32 @@ public class UsersHandler extends RestActionHandler {
         try {
             if (user.getId() > -1) {
                 retUser = userService.modifyUser(user);
+                if (password != null) {
+                    userService.updateUserPassword(retUser.getScreenname(), password);
+                }
             } else {
                 if (password == null || password.length() == 0) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
                 retUser = userService.createUser(user);
+                userService.setUserPassword(retUser.getScreenname(), password);
             }
+
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        if (password != null) {
-            try {
-                userService.setUserPassword(retUser.getId(), password);
-            } catch (ServiceException se) {
-                throw new ActionException(se.getMessage(), se);
-            }
+        JSONObject response = null;
+        try {
+            response = user2Json(retUser);
+        } catch (JSONException je) {
+            throw new ActionException(je.getMessage(), je);
         }
+        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        isAdmin(params);
+        log.debug("handlePost");
         User user = new User();
         getUserParams(user, params);
         String password = params.getHttpParam(PARAM_PASSWORD);
@@ -86,15 +110,22 @@ public class UsersHandler extends RestActionHandler {
         User retUser = null;
         try {
             retUser = userService.createUser(user);
-            userService.setUserPassword(retUser.getId(), password);
+            userService.setUserPassword(retUser.getScreenname(), password);
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
+        JSONObject response = null;
+        try {
+            response = user2Json(retUser);
+        } catch (JSONException je) {
+            throw new ActionException(je.getMessage(), je);
+        }
+        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
-        isAdmin(params);
+        log.debug("handleDelete");
         long id = getId(params);
         if (id > -1) {
             try {
@@ -104,6 +135,13 @@ public class UsersHandler extends RestActionHandler {
             }
         } else {
             throw new ActionException("Parameter 'id' not found.");
+        }
+    }
+
+    @Override
+    public void preProcess(ActionParameters params) throws ActionException {
+        if (!params.getUser().isAdmin()) {
+            throw new ActionDeniedException("Admin only");
         }
     }
 
@@ -124,10 +162,13 @@ public class UsersHandler extends RestActionHandler {
         user.setScreenname(params.getRequiredParam(PARAM_SCREENNAME));
     }
 
-    private void isAdmin(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+    private JSONObject user2Json(User user) throws JSONException {
+        JSONObject uo = new JSONObject();
+        uo.put("id", user.getId());
+        uo.put("firstName", user.getFirstname());
+        uo.put("lastName", user.getLastname());
+        uo.put("user", user.getScreenname());
+        return uo;
     }
 
 }
