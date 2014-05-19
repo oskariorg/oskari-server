@@ -1,8 +1,10 @@
 package fi.nls.oskari.user;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +18,42 @@ public class IbatisRoleService extends BaseIbatisService<Role> {
     public List<Role> findByUserName(String username) {
         return queryForList(getNameSpace() + ".findByUserName", username);
     }
+    public List<Role> findByUserId(long userId) {
+        return queryForList(getNameSpace() + ".findByUserId", userId);
+    }
 
     public Role findGuestRole() {
         List<Role> guestRoles = queryForList(getNameSpace() + ".findGuestRoles");
         if(guestRoles.isEmpty()) return null;
         return guestRoles.get(0);
+    }
+
+    /**
+     * Same as linkRoleToUser except skips check if user has role already
+     * @param roleId
+     * @param userId
+     */
+    public void linkRoleToNewUser(long roleId, long userId) {
+
+        final Map<String, Long> params = new HashMap<String, Long>();
+        params.put("role_id", roleId);
+        params.put("user_id", userId);
+        try {
+            getSqlMapClient().insert(getNameSpace() + ".linkRoleToUser", params);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to insert", e);
+        }
+    }
+
+    public void linkRoleToUser(long roleId, long userId) {
+        final List<Role> userRoles = findByUserId(userId);
+        for(Role r : userRoles) {
+            if(r.getId() == roleId) {
+                // already linked
+                return;
+            }
+        }
+        linkRoleToNewUser(roleId, userId);
     }
 
     public Map<String, Role> getExternalRolesMapping(String type) {

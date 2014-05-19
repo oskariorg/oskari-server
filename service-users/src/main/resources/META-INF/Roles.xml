@@ -22,9 +22,40 @@
     </select>
 
     <select id="findByUserName" parameterClass="String" resultMap="RolesResult">
-        select r.id, r.name from oskari_roles r, oskari_role_oskari_user m
-            where r.id = m.role_id and m.user_name = #id#
+        select
+            r.id, r.name
+        from
+            oskari_roles r,
+            oskari_users u,
+            oskari_role_oskari_user m
+        where
+            r.id = m.role_id
+            and u.id = m.user_id
+            and u.user_name = #id#
     </select>
+
+    <select id="findByUserId" parameterClass="long" resultMap="RolesResult">
+        select
+            r.id, r.name
+        from
+            oskari_roles r,
+            oskari_role_oskari_user m
+        where
+            r.id = m.role_id
+            and m.user_id = #id#
+    </select>
+
+    <statement id="linkRoleToUser" parameterClass="java.util.HashMap">
+        INSERT INTO oskari_role_oskari_user (
+        role_id,
+        user_id
+        )
+        VALUES (
+        #role_id#,
+        #user_id#
+        )
+    </statement>
+
 
     <select id="findExternalRolesOfType" parameterClass="String" resultClass="java.util.HashMap">
         select r.id as id, r.name as name, m.name as ext

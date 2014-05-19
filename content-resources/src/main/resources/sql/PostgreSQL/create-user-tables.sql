@@ -24,12 +24,19 @@ CREATE TABLE oskari_roles (
 );
 
 -- maps Oskari roles to users;
-CREATE TABLE oskari_role_oskari_user (
+CREATE TABLE oskari_role_oskari_user
+(
   id serial NOT NULL,
-  user_name character varying(25) REFERENCES oskari_users(user_name),
-  role_id integer REFERENCES oskari_roles(id),
-  CONSTRAINT oskari_role_oskari_user_pkey PRIMARY KEY (id)
-);
+  role_id integer,
+  user_id bigint,
+  CONSTRAINT oskari_role_oskari_user_pkey PRIMARY KEY (id),
+  CONSTRAINT oskari_role_oskari_user_role_id_fkey FOREIGN KEY (role_id)
+  REFERENCES oskari_roles (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT oskari_role_oskari_user_user_id_fkey FOREIGN KEY (user_id)
+  REFERENCES oskari_users (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION
+)
 
 -- maps external role name to Oskari role;
 CREATE TABLE oskari_role_external_mapping (
