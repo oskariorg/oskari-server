@@ -19,6 +19,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.IntersectMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
@@ -50,7 +51,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private static final String PARAM_ANALYSE = "analyse";
-    private static final String PARAM_FILTER = "filter";
+    private static final String PARAM_FILTER1 = "filter1";
+    private static final String PARAM_FILTER2 = "filter2";
 
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
 
@@ -82,7 +84,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         // TODO: use params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING); instead
         final String analyse = params.getHttpParam(PARAM_ANALYSE);
-        if (analyse == null) {
+        JSONObject analyseJson = JSONHelper.createJSONObject(analyse);
+        if (analyseJson == null) {
             this.MyError(ERROR_ANALYSE_PARAMETER_MISSING, params, null);
             return;
         }
@@ -93,7 +96,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         }
 
         // filter conf data
-        final String filter = params.getHttpParam(PARAM_FILTER);
+        final String filter1 = params.getHttpParam(PARAM_FILTER1);
+        final String filter2 = params.getHttpParam(PARAM_FILTER2);
 
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
@@ -102,12 +106,13 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         // User
         String uuid = params.getUser().getUuid();
         try {
-            analysisLayer = analysisParser.parseAnalysisLayer(analyse, filter, baseUrl, uuid);
+            analysisLayer = analysisParser.parseAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
         } catch (ServiceException e) {
             this.MyError(ERROR_UNABLE_TO_PARSE_ANALYSE, params, e);
             return;
         }
         Analysis analysis = null;
+
 
         if (analysisLayer.getMethod().equals(LAYER_UNION)) {
             // no WPS for merge analysis
@@ -129,7 +134,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             }
 
             // Check, if any data in result set
-            if (featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
+            if (featureSet.isEmpty() || featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
                 this.MyError(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES, params, null);
                 return;
             }
@@ -139,7 +144,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
             }
 
-            // Add data to analysis db if NOT aggregate
+            // Add data to analysis db  - we must create still an union in aggregate case
             if (analysisLayer.getMethod().equals(AGGREGATE)) {
                 // No store to analysis db for aggregate - set results in to the
                 // response
@@ -149,7 +154,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         analysisLayer));
 
                 try {
-                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter, baseUrl);
+                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl);
                 } catch (ServiceException e) {
                     this.MyError(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, params, e);
                     return;
@@ -181,7 +186,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         analysisLayer.setNativeFields(analysis);
 
         // copy permissions from source layer to new analysis
-        final Resource sourceResource = getSourcePermission(analyse, params.getUser());
+        final Resource sourceResource = getSourcePermission(analyseJson, params.getUser());
         if(sourceResource != null) {
             final Resource analysisResource = new Resource();
             analysisResource.setType(AnalysisLayer.TYPE);
@@ -221,7 +226,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, analysisLayerJSON);
     }
 
-    private Resource getSourcePermission(final String analyseData, final User user) {
+    private Resource getSourcePermission(final JSONObject analyseData, final User user) {
         final String layerId = analysisParser.getSourceLayerId(analyseData);
         if(layerId == null) {
             return null;
@@ -300,4 +305,5 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         JSONHelper.putValue(errorResponse, "error", mes);
         ResponseHelper.writeResponse(params, errorResponse);
     }
+
 }
