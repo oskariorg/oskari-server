@@ -2,6 +2,12 @@
 
 ## 1.21
 
+### database
+
+Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents
+
+Added keyword tables that are required by admin-layerselector when adding new layers
+
 ### control-admin
 
 Added new module for administration
@@ -45,6 +51,8 @@ New custom-parser option for transport to handle complex services. Example groov
 ### transport (now servlet-transport and webapp-transport)
 
 Split into servlet and webapp packages to be more in line with map-packages. The deployable war-file is now located webapp-transport/target.
+
+No longer sets system property for geotools (org.geotools.referencing.forceXY) so it's safe to use with other webapps in the same JVM.
 
 fi/nls/oskari/transport/config.properties has been renamed transport.properties and some of the property keys have been renamed to match the ones used in oskari.properties:
 

@@ -23,6 +23,7 @@ import fi.nls.oskari.log.Logger;
  */
 public class Location {
 	private static final Logger log = LogFactory.getLogger(Location.class);
+
 	
 	private String srs;
 	private List<Double> bbox;
@@ -170,9 +171,21 @@ public class Location {
     @JsonIgnore
     public CoordinateReferenceSystem getCrs() {
         if(this.crs == null) {
-            this.getEnvelope();
+            this.crs = createCRSforSRS(this.getSrs());
         }
         return this.crs;
+    }
+
+    private CoordinateReferenceSystem createCRSforSRS(final String srs) {
+        try {
+            // we always want to use longitude first
+            return CRS.decode(srs, true);
+        } catch (FactoryException e) {
+            log.error(e, "CRS decoding on transform failed");
+        } catch (Exception e) {
+            log.error(e, "Creating envelope on transform failed");
+        }
+        return null;
     }
 
 	/**
@@ -196,20 +209,13 @@ public class Location {
 	@JsonIgnore
 	public ReferencedEnvelope getEnvelope() {
 		if(this.envelope == null) {
-			if(this.crs == null) {
-				try {
-					this.crs = CRS.decode(this.getSrs());
-				} catch (FactoryException e) {
-					log.error(e, "CRS decoding failed");
-				}
-			}
 
 			this.envelope = new ReferencedEnvelope(
 					this.getLeft(), // x1
 					this.getRight(), // x2
 					this.getBottom(), // y1
 					this.getTop(), // y2
-					this.crs
+					this.getCrs()
 			);
 		}
 		return this.envelope;
@@ -226,10 +232,7 @@ public class Location {
 	@JsonIgnore
 	public ReferencedEnvelope getTransformEnvelope(ReferencedEnvelope env, String target, boolean lenient) {
 		if(env == null) {
-			if(this.envelope == null) {
-				this.getEnvelope();
-			}
-            env = this.envelope;
+            env = getEnvelope();
             if(this.getSrs().equals(target)) {
                 return env;
             }
@@ -239,7 +242,7 @@ public class Location {
 		ReferencedEnvelope envelope = null;
 
 		try {
-			targetCRS = CRS.decode(target);
+			targetCRS = createCRSforSRS(target);
 			envelope = env.transform(targetCRS, lenient);
 		} catch (TransformException e) {
 			log.error(e, "Transforming failed");
@@ -251,6 +254,7 @@ public class Location {
 
 		return envelope;
 	}
+
 
 	/**
 	 * Transforms envelope to target CRS
@@ -275,14 +279,7 @@ public class Location {
      */
     @JsonIgnore
     public MathTransform getTransformForClient(String source, boolean lenient) {
-        CoordinateReferenceSystem sourceCRS = null;
-        try {
-            sourceCRS = CRS.decode(source);
-        } catch (Exception e) {
-            log.error(e, "Creating transform CRSs failed");
-        }
-
-        return getTransformForClient(sourceCRS, lenient);
+        return getTransformForClient(createCRSforSRS(source), lenient);
     }
 
     /**
@@ -296,11 +293,7 @@ public class Location {
      */
     @JsonIgnore
     public MathTransform getTransformForClient(CoordinateReferenceSystem source, boolean lenient) {
-        if(this.crs == null) {
-            this.getEnvelope();
-        }
-
-        return this.getTransform(source, this.crs, lenient);
+        return this.getTransform(source, getCrs(), lenient);
     }
 
     /**
@@ -314,14 +307,7 @@ public class Location {
      */
     @JsonIgnore
     public MathTransform getTransformForService(String target, boolean lenient) {
-        CoordinateReferenceSystem targetCRS = null;
-        try {
-            targetCRS = CRS.decode(target);
-        } catch (Exception e) {
-            log.error(e, "Creating transform CRSs failed");
-        }
-
-        return getTransformForService(targetCRS, lenient);
+        return getTransformForService(createCRSforSRS(target), lenient);
     }
 
     /**
@@ -335,11 +321,7 @@ public class Location {
      */
     @JsonIgnore
     public MathTransform getTransformForService(CoordinateReferenceSystem target, boolean lenient) {
-        if(this.crs == null) {
-            this.getEnvelope();
-        }
-
-        return getTransform(this.crs, target, lenient);
+        return getTransform(this.getCrs(), target, lenient);
     }
 
     /**
@@ -385,7 +367,7 @@ public class Location {
                 this.getRight() + width, // x2
                 this.getBottom() - height, // y1
                 this.getTop() + height, // y2
-                this.crs
+                this.getCrs()
         );
     }
 
@@ -401,10 +383,6 @@ public class Location {
         if(bbox.size() != 4) {
             log.error("Failed to create enlarged envelope because bbox was invalid");
             return;
-        }
-
-        if(this.crs == null) {
-            this.getEnvelope();
         }
 
         double width = bbox.get(2) - bbox.get(0);
@@ -430,16 +408,12 @@ public class Location {
             return null;
         }
 
-        if(this.crs == null) {
-            this.getEnvelope();
-        }
-
         return new ReferencedEnvelope(
                 this.getLeft() - width, // x1
                 this.getRight() + width, // x2
                 this.getBottom() - height, // y1
                 this.getTop() + height, // y2
-                this.crs);
+                this.getCrs());
     }
 
     /**

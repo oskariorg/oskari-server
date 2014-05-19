@@ -2,7 +2,7 @@
 <ogc:And>
     <ogc:BBOX>
         <ogc:PropertyName>geometry</ogc:PropertyName>
-        <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+        <gml:Envelope srsDimension="2" srsName="EPSG:3067">
             <gml:lowerCorner>425724.45809412 6695489.1337378</gml:lowerCorner>
             <gml:upperCorner>427451.45809412 6696484.1337378</gml:upperCorner>
         </gml:Envelope>
