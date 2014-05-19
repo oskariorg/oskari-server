@@ -69,6 +69,9 @@ public class DatabaseUserService extends UserService {
             user.setUuid(generateUuid());
         }
         Long id = userService.addUser(user);
+        for(Role r : user.getRoles()) {
+            roleService.linkRoleToNewUser(r.getId(), id);
+        }
         return userService.find(id);
     }
 
