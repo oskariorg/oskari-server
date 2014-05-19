@@ -26,4 +26,9 @@
             where r.id = m.role_id and m.user_name = #id#
     </select>
 
+    <select id="findExternalRolesOfType" parameterClass="String" resultClass="java.util.HashMap">
+        select r.id as id, r.name as name, m.name as ext
+        from oskari_roles r, oskari_role_external_mapping m
+        where m.roleid = r.id AND m.external_type=#type#
+    </select>
 </sqlMap>

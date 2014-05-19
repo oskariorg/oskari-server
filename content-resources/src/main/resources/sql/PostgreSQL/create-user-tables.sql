@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS oskari_role_oskari_user;
+DROP TABLE IF EXISTS oskari_role_external_mapping;
 DROP TABLE IF EXISTS oskari_roles;
 DROP TABLE IF EXISTS oskari_users;
 
+-- contains user information;
 CREATE TABLE oskari_users (
   id serial NOT NULL,
   user_name character varying(25) NOT NULL,
@@ -12,6 +14,7 @@ CREATE TABLE oskari_users (
   UNIQUE (user_name)
 );
 
+-- contains roles used in Oskari;
 CREATE TABLE oskari_roles (
   id serial NOT NULL,
   name character varying(25) NOT NULL,
@@ -20,9 +23,20 @@ CREATE TABLE oskari_roles (
   UNIQUE (name)
 );
 
+-- maps Oskari roles to users;
 CREATE TABLE oskari_role_oskari_user (
   id serial NOT NULL,
   user_name character varying(25) REFERENCES oskari_users(user_name),
   role_id integer REFERENCES oskari_roles(id),
   CONSTRAINT oskari_role_oskari_user_pkey PRIMARY KEY (id)
+);
+
+-- maps external role name to Oskari role;
+CREATE TABLE oskari_role_external_mapping (
+  roleid  bigint NOT NULL,
+  name character varying(50) NOT NULL,
+  external_type character varying(50) NOT NULL default '',
+  CONSTRAINT oskari_role_external_mapping_fkey FOREIGN KEY (roleid)
+  REFERENCES oskari_roles (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE CASCADE
 );

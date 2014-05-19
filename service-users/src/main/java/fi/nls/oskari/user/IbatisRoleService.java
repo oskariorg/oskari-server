@@ -3,7 +3,9 @@ package fi.nls.oskari.user;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IbatisRoleService extends BaseIbatisService<Role> {
     @Override
@@ -20,4 +22,30 @@ public class IbatisRoleService extends BaseIbatisService<Role> {
         if(guestRoles.isEmpty()) return null;
         return guestRoles.get(0);
     }
+
+    public Map<String, Role> getExternalRolesMapping(String type) {
+        if(type == null) {
+            type = "";
+        }
+        final List<Object> mappingList = queryForRawList(getNameSpace() + ".findExternalRolesOfType", type);
+        final Map<String, Role> mapping = new HashMap<String, Role>();
+        for(Object obj : mappingList) {
+            final Map<String, Object> result = (Map<String, Object>) obj;
+            final String externalName = (String) result.get("ext");
+            final Role role = new Role();
+            role.setId((Integer) result.get("id"));
+            role.setName((String) result.get("name"));
+            mapping.put(externalName, role);
+        }
+        if(mapping.isEmpty()) {
+            // fallback to Oskari roles if mappings not provided
+            List<Role> roles = findAll();
+            for(Role role: roles) {
+                mapping.put(role.getName(), role);
+            }
+        }
+        return mapping;
+    }
+
+
 }
