@@ -8,6 +8,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Common interface for managing users.
@@ -79,6 +80,26 @@ public abstract class UserService {
      */
     public abstract Role[] getRoles(Map<Object, Object> platformSpecificParams) throws ServiceException;
 
+
+    /**
+     * Generates UUID from unique user id
+     * @param uid string that identifies user
+     * @return uuid
+     */
+    public String generateUuid(String uid) {
+        if(uid == null) {
+            return generateUuid();
+        }
+        return UUID.nameUUIDFromBytes(uid.getBytes()).toString();
+    }
+
+    /**
+     * Generates random UUID
+     * @return uuid
+     */
+    public String generateUuid() {
+        return UUID.randomUUID().toString();
+    }
     /**
      * Returns all roles that exist in the system. Convenience method for calling getRoles(Map) with empty map
      * @return
