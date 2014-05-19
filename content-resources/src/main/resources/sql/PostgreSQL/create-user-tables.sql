@@ -36,7 +36,7 @@ CREATE TABLE oskari_role_oskari_user
   CONSTRAINT oskari_role_oskari_user_user_id_fkey FOREIGN KEY (user_id)
   REFERENCES oskari_users (id) MATCH SIMPLE
   ON UPDATE NO ACTION ON DELETE NO ACTION
-)
+);
 
 -- maps external role name to Oskari role;
 CREATE TABLE oskari_role_external_mapping (

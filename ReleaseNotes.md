@@ -4,9 +4,11 @@
 
 ### database
 
-Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents
+Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents.
 
-Added keyword tables that are required by admin-layerselector when adding new layers
+Added keyword tables that are required by admin-layerselector when adding new layers.
+
+Changed role mapping for users to be based on user id instead of username.
 
 ### control-admin
 
@@ -34,8 +36,12 @@ Now uses configurable OskariRequestFilter to setup the httpRequest for servlet:
 * userprincipal (should be disabled by setting property oskari.request.handlePrincipal=false in oskari-ext.properties
     if your servlet container handles user principal with JAAS (ldap or other authentication)
 
-JAASAuthenticationFilter is now PrincipalAuthenticationFilter.
-It handles login/logout functionality for users based on request.getUserPrincipal().
+JAASAuthenticationFilter is now PrincipalAuthenticationFilter:
+* handles login/logout functionality for users based on request.getUserPrincipal().
+* adds users to oskari database based on request.getUserPrincipal() and request.isUserInRole()
+* automatical user insertion can be disabled with property auth.add.missing.users=false
+* external role names can be mapped to Oskari role names with new table oskari_role_external_mapping with role_id
+    pointing to Oskari role and name having the value of the external role name
 
 ### standalone-jetty
 
