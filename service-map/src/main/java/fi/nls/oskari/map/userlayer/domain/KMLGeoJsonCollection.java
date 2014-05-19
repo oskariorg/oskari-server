@@ -51,19 +51,14 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             SimpleFeatureType featype = null;
 
             // Transform
-            // Google kml epsg:4326
-            //CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4326");
-            Hints hints = new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
-            CRSAuthorityFactory factory = ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG", hints);
-            CoordinateReferenceSystem sourceCrs = factory.createCoordinateReferenceSystem("EPSG:4326");
+            // Google kml epsg:4326  and longitude 1st
+            CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4326",true);
+
             // Oskari crs
-            // TODO: get crs from request  (oskari OL map crs)
-            CoordinateReferenceSystem target = CRS.decode(target_epsg);
+            //(oskari OL map crs)
+            CoordinateReferenceSystem target = CRS.decode(target_epsg, true);
+
             MathTransform transform = CRS.findMathTransform(sourceCrs, target, true);
-            // Switch direction, if 1st coord is to the north
-            // boolean switchxy =(sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
-            //       sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
-            //     sourceCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) ;
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
