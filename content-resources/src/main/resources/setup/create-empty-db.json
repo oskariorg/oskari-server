@@ -3,6 +3,7 @@
         "create-base-tables.sql",
         "create-wfs-tables.sql",
         "create-statistics-tables.sql",
+        "create-keyword-tables.sql",
         "create-user-tables.sql",
         "create-JAAS-user-tables.sql"
     ]

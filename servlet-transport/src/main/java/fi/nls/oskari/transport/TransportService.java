@@ -36,12 +36,6 @@ import fi.nls.oskari.work.fe.FEMapLayerJob;
  */
 public class TransportService extends AbstractService implements ResultProcessor {
     static {
-        // FIXME: Check where the axis should be flipped and fix the code instead of forcing with system property!
-        // Wanting to use (X,Y) order always (not flip when transforming for
-        // example from EPSG:3067 to EPSG:4326
-        // http://docs.geotools.org/latest/userguide/library/referencing/order.html
-        System.setProperty("org.geotools.referencing.forceXY", "true");
-
         // populate properties before initializing logger since logger
         // implementation is configured in properties
         PropertyUtil.loadProperties("/oskari.properties");
