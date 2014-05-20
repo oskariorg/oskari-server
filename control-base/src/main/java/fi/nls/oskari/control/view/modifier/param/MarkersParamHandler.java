@@ -64,9 +64,6 @@ public class MarkersParamHandler extends ParamHandler {
             if(marker != null) {
                 list.put(marker);
             }
-            else {
-                log.info("Failed to parse marker from:", str);
-            }
         }
         // setup plugin config if there were any markers
         if(list.length() > 0) {
@@ -90,14 +87,16 @@ public class MarkersParamHandler extends ParamHandler {
      * @return
      */
     private JSONObject getMarker(final String linkText) {
-        final String[] fields = linkText.split("\\" + FIELD_SEPARATOR);
+        final String[] fields = linkText.split("\\" + FIELD_SEPARATOR, -1);
         if(fields.length < 5 ) {
+            log.info("Failed to parse marker from string:", linkText, " (Field count was " + fields.length + ", expected >= 5)");
             log.debug(fields);
             return null;
         }
 
         final String[] coords = fields[3].split(COORD_SEPARATOR);
         if(coords.length != 2) {
+            log.info("Failed to parse marker from string:", linkText, "(Coords count was " + coords.length + ", expected 2)");
             return null;
         }
         // parse as doubles to be sure
