@@ -33,9 +33,8 @@ public class ConversionHelper {
      * @return string
      */
     public static final String getString(final String str, final String defaultValue) {
-        final String value = str;
-        if (value != null) {
-            return value;
+        if (str != null) {
+            return str;
         }
         return defaultValue;
     }

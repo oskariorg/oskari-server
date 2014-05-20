@@ -111,9 +111,13 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      */
     @SuppressWarnings("unchecked")
     public <F> List<F> queryForList(String sqlId, Object o) {
+        return (List<F>) queryForRawList(sqlId, o);
+    }
+
+    public List<Object> queryForRawList(String sqlId, Object o) {
         try {
             client = getSqlMapClient();
-            return (List<F>) client.queryForList(sqlId, o);
+            return client.queryForList(sqlId, o);
         } catch (Exception e) {
             throw new RuntimeException("Failed to query", e);
         }

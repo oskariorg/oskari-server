@@ -65,7 +65,13 @@ public class DatabaseUserService extends UserService {
     @Override
     public User createUser(User user) throws ServiceException {
         log.debug("createUser");
+        if(user.getUuid() == null || user.getUuid().isEmpty()) {
+            user.setUuid(generateUuid());
+        }
         Long id = userService.addUser(user);
+        for(Role r : user.getRoles()) {
+            roleService.linkRoleToNewUser(r.getId(), id);
+        }
         return userService.find(id);
     }
 
