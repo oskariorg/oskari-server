@@ -74,7 +74,8 @@ public class GetStatsTileHandler extends ActionHandler {
         // copy parameters
         final HttpServletRequest httpRequest = params.getRequest();
         final StringBuilder ajaxUrl = new StringBuilder(PropertyUtil.get("statistics.sld.server"));
-        ajaxUrl.append(PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL));
+        ajaxUrl.append(PropertyUtil.get("statistics.sld.server.path",
+                PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL)));
         ajaxUrl.append("&action_route=GetStatsLayerSLD");
         final String layerId = params.getHttpParam(PARAM_LAYER_ID);
         
