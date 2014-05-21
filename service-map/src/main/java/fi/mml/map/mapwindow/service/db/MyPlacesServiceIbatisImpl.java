@@ -34,7 +34,7 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
             MyPlacesServiceIbatisImpl.class);
 
     private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows")+":my_places_categories";
-    private static String MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("myplaces.client.wmsurl");
+    private static String MYPLACES_CLIENT_WMS_URL = PropertyUtil.getOptional("myplaces.client.wmsurl");
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
 
     private static final String MYPLACES_LAYERID_PREFIX = "myplaces_";
@@ -42,6 +42,14 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
     private final static LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
+    public MyPlacesServiceIbatisImpl() {
+        super();
+        // default 'myplaces.client.wmsurl' to ajax url for tiles if not configured
+        if(MYPLACES_CLIENT_WMS_URL == null) {
+            // action_route name points to fi.nls.oskari.control.myplaces.MyPlacesTileHandler
+            MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=MyPlacesTile";
+        }
+    }
     @Override
     protected String getNameSpace() {
         return "MyPlace";
