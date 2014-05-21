@@ -18,6 +18,16 @@ public class JSONHelper {
         putValue(object, key, value);
         return object;
     }
+    public static final JSONObject createJSONObject(final String key, final Object value) {
+        final JSONObject object = new JSONObject();
+        putValue(object, key, value);
+        return object;
+    }
+    public static final JSONObject createJSONObject(final String key, final JSONObject value) {
+        final JSONObject object = new JSONObject();
+        putValue(object, key, value);
+        return object;
+    }
 
     public static final JSONObject createJSONObject(final String key, final int value) {
         final JSONObject object = new JSONObject();
@@ -124,7 +134,18 @@ public class JSONHelper {
             return defaultValue;
         }
     }
-    
+
+
+    public static final boolean putValue(final JSONObject json, final String key, final Object value) {
+        try {
+            json.put(key, value);
+            return true;
+        } catch (Exception ignore) {
+            log.warn("Cant put", key, "value", value, "to json");
+        }
+        return false;
+    }
+
     public static final boolean putValue(final JSONObject json, final String key, final String value) {
         try {
             json.put(key, value);
