@@ -22,9 +22,9 @@ New handler for listing, adding, editing and removing users
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
 
-ConversionHelper now has decapitalize() methods for making strings start with lowercase letter.
+ConversionHelper has some additional helper methods.
 
-ConversionHelper now has isOnlyUpperCase() method for checking if string has only uppercase letters.
+XmlHelper has some additional helper methods.
 
 ### webapp-map/standalone-jetty/servlet-map
 
