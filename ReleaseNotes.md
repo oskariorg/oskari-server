@@ -22,6 +22,8 @@ New handler for listing, adding, editing and removing users
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
 
+ConversionHelper now has decapitalize() method for making strings start with lowercase letter.
+
 ### webapp-map/standalone-jetty/servlet-map
 
 Many customizable operations have been moved out of the MapfullServlet code and into ServletFilters and ServletContextListener.
