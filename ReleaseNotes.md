@@ -22,9 +22,7 @@ New handler for listing, adding, editing and removing users
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
 
-ConversionHelper has some additional helper methods.
-
-XmlHelper has some additional helper methods.
+ConversionHelper, XmlHelper and JSONHelper have some additional helper methods.
 
 ### webapp-map/standalone-jetty/servlet-map
 
