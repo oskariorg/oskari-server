@@ -25,6 +25,22 @@ public class ConversionHelper {
 
         return count;
     }
+
+    /**
+     * Makes the first letter of param to be lowercase while maintaining other parts as is.
+     * @param param
+     * @return null fo null, empty string for empty string, otherwise lowercase startLetter
+     */
+    public static String decapitalize(final String param) {
+        if(param == null || param.isEmpty()) {
+            return param;
+        }
+        final char c = Character.toLowerCase(param.charAt(0));
+        if(param.length() == 1) {
+            return "" + c;
+        }
+        return c + param.substring(1);
+    }
     /**
      * Returns a string that if its not null and default value if it is
      *

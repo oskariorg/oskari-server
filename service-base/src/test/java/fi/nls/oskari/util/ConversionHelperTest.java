@@ -21,6 +21,15 @@ public class ConversionHelperTest {
     }
 
     @Test
+    public void testDecapitalize() {
+        assertEquals("'M' should become 'm'", "m", ConversionHelper.decapitalize("M"));
+        assertEquals("'MOO' should become 'mOO'", "mOO", ConversionHelper.decapitalize("MOO"));
+
+        assertEquals("Empty string should stay empty", "", ConversionHelper.decapitalize(""));
+        assertEquals("<null> should stay <null>", null, ConversionHelper.decapitalize(null));
+    }
+
+    @Test
     public void testGetString() {
         String test = "test";
         String result = ConversionHelper.getString(test, "fail");
