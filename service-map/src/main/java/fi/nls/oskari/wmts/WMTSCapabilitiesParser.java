@@ -33,6 +33,7 @@ public class WMTSCapabilitiesParser {
             return null;
         }
         OMElement doc = XmlHelper.parseXML(xml);
+
         JSONObject obj = parseJSON(doc);
         JSONObject result = null;
         if(obj != null && obj.has("capabilities")) {
@@ -52,6 +53,11 @@ public class WMTSCapabilitiesParser {
         return result;
     }
 
+    /**
+     * Wraps given parameter object to a JSONArray if it isn't one already.
+     * @param obj
+     * @return
+     */
     private JSONArray setupArray(final Object obj) {
         if(obj instanceof JSONArray) {
             return (JSONArray) obj;
