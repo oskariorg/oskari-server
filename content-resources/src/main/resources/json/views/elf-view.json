@@ -76,7 +76,8 @@
                         }
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
-                    }
+                    },
+                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" }
                 ],
                 "layers": [],
                 "mapOptions": {
