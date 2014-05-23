@@ -937,7 +937,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         
         WFSSLDStyle sldStyle = null;
         for(WFSSLDStyle s : sldStyles ) {
-        	if ("oskari-feature-engine".equals(s.getId())) {
+        	if ("oskari-feature-engine".equals(s.getName())) {
                 log.info("[fe] SLD for  " + this.layerId + " FE style found");
                 sldStyle = s;
                 break;
