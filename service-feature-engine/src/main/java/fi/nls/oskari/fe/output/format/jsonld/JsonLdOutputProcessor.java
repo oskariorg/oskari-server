@@ -17,12 +17,15 @@ import com.github.jsonldjava.utils.JSONUtils;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.AbstractOutputProcessor;
+import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+
 /* PoC that builds JSON-LD output */
-public class JsonLdOutputProcessor extends AbstractOutputProcessor implements
+public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor implements
 		OutputProcessor {
 
 	protected final String OSKARI_SPATIAL = "http://oskari.org/spatial#";
@@ -98,8 +101,8 @@ public class JsonLdOutputProcessor extends AbstractOutputProcessor implements
 	public void begin() {
 	}
 
-	protected void debugPrint() throws JsonGenerationException, IOException {
-		final OutputStreamWriter w = new OutputStreamWriter(System.out, "UTF-8");
+	protected void debugPrint(OutputStream o) throws JsonGenerationException, IOException {
+		final OutputStreamWriter w = new OutputStreamWriter(o, "UTF-8");
 
 		{
 			JSONUtils.writePrettyPrint(w, RESULT);
@@ -148,7 +151,7 @@ public class JsonLdOutputProcessor extends AbstractOutputProcessor implements
 	}
 
 	public void end() throws IOException {
-		debugPrint();
+		debugPrint(outs);
 
 	}
 

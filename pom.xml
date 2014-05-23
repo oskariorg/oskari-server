@@ -410,7 +410,7 @@
 			    <artifactId>gt-xsd-kml</artifactId>
                 <version>${geotools.version}</version>
 				<!-- version>${gt-xsd-kml.version}</version -->
-			</dependency>
+			</dependency>			
 			<dependency>
 				<groupId>org.deegree</groupId>
 				<artifactId>deegree</artifactId>
