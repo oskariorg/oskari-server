@@ -45,6 +45,11 @@
 			<artifactId>staxmate</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-base</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -99,7 +104,16 @@
 			<artifactId>gt-render</artifactId>
             <version>${geotools.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-render</artifactId>
+            <version>${geotools.version}</version>
+		</dependency>
+			<dependency>
+			<groupId>org.geotools.xsd</groupId>
+			<artifactId>gt-xsd-sld</artifactId>
+            <version>${geotools.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-impl</artifactId>
