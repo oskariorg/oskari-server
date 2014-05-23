@@ -70,6 +70,11 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 
+
+/**
+ * @todo implement some asserts
+ *
+ */
 public class TestInspireGML {
 
 	final static Map<String, String> recipeNames = new HashMap<String, String>() {
