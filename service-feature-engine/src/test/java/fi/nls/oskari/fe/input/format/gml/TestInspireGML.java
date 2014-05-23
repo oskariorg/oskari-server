@@ -7,11 +7,12 @@ import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
+import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
-
+import fi.nls.oskari.fe.schema.XSDDatatype;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.stream.XMLStreamException;
-
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.styling.AbstractStyleVisitor;
 import org.geotools.styling.AnchorPoint;
 import org.geotools.styling.ChannelSelection;
@@ -70,10 +71,13 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.geometry.BoundingBox;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+
 
 /**
  * @todo implement some asserts
- *
+ * 
  */
 public class TestInspireGML {
 
@@ -159,6 +163,8 @@ public class TestInspireGML {
 
 	}
 
+	/* Let's not - JSON-LD a bit too slow atm */
+	/* 
 	@Test
 	public void test_CuzkCz_AU_WFS_GMLtoJSONLD() throws InstantiationException,
 			IllegalAccessException, IOException, XMLStreamException {
@@ -195,6 +201,7 @@ public class TestInspireGML {
 		}
 
 	}
+	*/
 
 	@Test
 	public void test_GeonorgeNo_GN_WFS_GMLtoPNG()
@@ -237,6 +244,8 @@ public class TestInspireGML {
 
 	}
 
+	/* Let's not - JSON-LD a bit too slow atm */
+	/*
 	@Test
 	public void test_GeonorgeNo_GN_WFS_GMLtoJSONLD()
 			throws InstantiationException, IllegalAccessException, IOException,
@@ -272,6 +281,123 @@ public class TestInspireGML {
 		} finally {
 			inp.close();
 		}
+
+	}
+	*/
+	
+	interface TestOutputProcessor extends OutputProcessor {
+
+		public int getFeatureCount();
+	}
+
+	@Test
+	public void test_GeonorgeNo_GN_WFS_Counts() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		TestOutputProcessor outputProcessor = new TestOutputProcessor() {
+			
+			public static final String NS =
+					"http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0#";
+
+			int featureCount = 0;
+
+			@Override
+			public void begin() throws IOException {
+
+			}
+
+			@Override
+			public void edge(Resource subject, Resource predicate,
+					Resource value) throws IOException {
+
+			}
+
+			@Override
+			public void end() throws IOException {
+
+			}
+
+			@Override
+			public void flush() throws IOException {
+
+			}
+
+			@Override
+			public void prefix(String prefix, String ns) throws IOException {
+
+			}
+
+			@Override
+			public void type(Resource type,
+					List<Pair<Resource, XSDDatatype>> simpleProperties,
+					List<Pair<Resource, Object>> linkProperties,
+					List<Pair<Resource, String>> geometryProperties)
+					throws IOException {
+				assertTrue(type
+						.getNs()
+						.equals(NS));
+
+			}
+
+			@Override
+			public void vertex(Resource iri, Resource type,
+					List<Pair<Resource, ?>> simpleProperties,
+					List<Pair<Resource, ?>> linkProperties) throws IOException {
+
+			}
+
+			@Override
+			public void vertex(Resource iri, Resource type,
+					List<Pair<Resource, ?>> simpleProperties,
+					List<Pair<Resource, ?>> linkProperties,
+					List<Pair<Resource, Geometry>> geometryProperties)
+					throws IOException {
+
+				assertTrue(iri
+						.getNs()
+						.equals(NS));
+				assertTrue(type
+						.getNs()
+						.equals(NS));
+
+				assertTrue(!geometryProperties.isEmpty());
+				assertTrue(geometryProperties.get(0).getValue() != null);
+				assertTrue(geometryProperties.get(0).getValue() instanceof Point);
+
+				featureCount++;
+
+			}
+
+			@Override
+			public int getFeatureCount() {
+				return featureCount;
+			}
+
+		};
+
+		InputStream inp = getClass().getResourceAsStream(
+				"/fi/nls/oskari/fe/input/format/gml/gn/services_geonorge_no_wfs_inspire-gn-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			GroovyParserRecipe recipe = recipeClazzes.get("gn").newInstance();
+			engine.setRecipe(recipe);
+
+			engine.setInputProcessor(inputProcessor);
+			engine.setOutputProcessor(outputProcessor);
+
+			engine.process();
+
+		} finally {
+			inp.close();
+		}
+
+		System.out.println(outputProcessor.getFeatureCount());
+		assertTrue(outputProcessor.getFeatureCount() == 44);
 
 	}
 
