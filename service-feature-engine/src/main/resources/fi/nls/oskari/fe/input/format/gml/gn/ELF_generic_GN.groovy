@@ -7,6 +7,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
     def input_ns = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0";
     def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+    def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
 
     def output_ns = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0#";
     def output_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0#"
@@ -19,18 +20,18 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                 //def output_props = properties();
 
                 input_Feat.readChildren().each { input_Feats ->
-
-                    switch (input_Feats.qn) {
-                        case I.GeographicalName.spelling:
-                            input_Feats.readDescendants(I.SpellingOfName.qn).each { featGNProps ->
-                                PARSER.SpellingOfName(featGNProps, output_ID, output_props, output_geoms);
-                            }
-                            break;
-                        default:
-                            input_Feats.readPrimitive(I.GeographicalName.props, output_props,
-                                    iri(output_gn_ns, input_Feats.qn.getLocalPart()));
-
-                    }
+					
+					switch (input_Feats.qn) {
+					case I.GeographicalName.spelling:
+						input_Feats.readDescendants(I.SpellingOfName.qn).each { featGNProps ->
+							PARSER.SpellingOfName(featGNProps, output_ID, output_props, output_geoms);
+						}
+						break;
+					default:
+                    	input_Feats.readPrimitive(I.GeographicalName.props, output_props,
+                            iri(output_gn_ns, input_Feats.qn.getLocalPart()));
+						
+					}						
                 }
 
                 /*output.vertex(output_ID, O.GeographicalName.qn,
@@ -52,6 +53,17 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                             input_Feats.readFirstChildGeometry(I.NamedPlace.geoms, output_geoms,
                                     O.Geom);
                             break;
+						case I.NamedPlace.inspireId:
+                            input_Feats.readDescendants(I.NamedPlace.Identifier).each { featIdentifierProps ->
+
+                                featIdentifierProps.readChildren().each { featIdProps ->
+                                    featIdProps.readPrimitive(
+                                            I.NamedPlace.IdentifierProps, output_props,
+                                            iri(output_ns, featIdProps.qn.getLocalPart())
+                                    )
+                                }
+                            }
+                            break;                            
                         case I.NamedPlace.name:
                             input_Feats.readDescendants(I.GeographicalName.qn).each { featGNProps ->
                                 PARSER.GeographicalName(featGNProps, output_ID, output_props, output_geoms);
@@ -70,23 +82,23 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                         output_props, EMPTY, output_geoms);
 
             },
-            "SpellingOfName" : { input_Feat, output_GeographicalName_ID, output_props, output_geoms ->
+			"SpellingOfName" : { input_Feat, output_GeographicalName_ID, output_props, output_geoms ->
+				
+				def output_ID = O.SpellingOfName.qn.unique();
+				//def output_props = properties();
 
-                def output_ID = O.SpellingOfName.qn.unique();
-                //def output_props = properties();
+				input_Feat.readChildren().each { input_Feats ->
+					
+					input_Feats.readPrimitive(I.SpellingOfName.props, output_props,
+							iri(output_gn_ns, input_Feats.qn.getLocalPart()));
+					
+				}
 
-                input_Feat.readChildren().each { input_Feats ->
-
-                    input_Feats.readPrimitive(I.SpellingOfName.props, output_props,
-                            iri(output_gn_ns, input_Feats.qn.getLocalPart()));
-
-                }
-
-                output.vertex(output_ID, O.SpellingOfName.qn,
-                        output_props, output_geoms);
-                /*output.edge(output_GeographicalName_ID, O.GeographicalName.spelling, output_ID);*/
-
-            }
+				output.vertex(output_ID, O.SpellingOfName.qn,
+						output_props, output_geoms);
+				/*output.edge(output_GeographicalName_ID, O.GeographicalName.spelling, output_ID);*/
+				
+			}
     ];
 
     def I = [
@@ -102,12 +114,20 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                     "name": qn(input_gn_ns, "name"),
                     "geoms": mapGeometryTypes("http://www.opengis.net/gml/3.2",
                             "Point"
+                    ),
+  					"inspireId": qn(input_ns, "inspireId"),                    
+                    "Identifier": qn(input_base_ns, "Identifier"),
+                    "IdentifierProps": mapPrimitiveTypes(XSDDatatype.XSDstring,
+                            input_base_ns,
+                            "localId",
+                            "namespace",
+                            "versionId"
                     )
 
             ],
             "GeographicalName": [
                     "qn": qn(input_ns, "GeographicalName"),
-                    "spelling": qn(input_gn_ns, "spelling"),
+					"spelling": qn(input_gn_ns, "spelling"),
                     "props": mapPrimitiveTypes(XSDDatatype.XSDstring,
                             input_gn_ns,
                             "language",
@@ -116,14 +136,14 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                             "referenceName"
                     )
             ],
-            "SpellingOfName": [
-                    "qn": qn(input_ns, "SpellingOfName"),
-                    "props": mapPrimitiveTypes(XSDDatatype.XSDstring,
-                            input_gn_ns,
-                            "text",
-                            "script"
-                    )
-            ]
+			"SpellingOfName": [
+				"qn": qn(input_ns, "SpellingOfName"),
+				"props": mapPrimitiveTypes(XSDDatatype.XSDstring,
+					input_gn_ns,
+					"text",
+					"script"
+				)
+			]
     ];
 
     /* Output */
@@ -137,12 +157,12 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
             ],
             "GeographicalName": [
                     "qn": iri(output_ns, "GeographicalName"),
-                    "spelling": iri(output_gn_ns, "spelling")
+					"spelling": iri(output_gn_ns, "spelling")
             ],
-            "SpellingOfName": [
-                    "qn": iri(output_ns, "SpellingOfName"),
-                    "text": iri(output_gn_ns, "text")
-            ]
+			"SpellingOfName": [
+					"qn": iri(output_ns, "SpellingOfName"),
+					"text": iri(output_gn_ns, "text")
+			]
     ];
 
 
@@ -150,51 +170,63 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 
         output.prefix("_ns", output_ns);
-
-        output.type(O.NamedPlace.qn,
-                simpleTypes(
-                        pair(
-                                iri(output_gn_ns,"beginLifespanVersion"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"endLifespanVersion"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"localType"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"language"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"sourceOfName"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"pronunciation"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"referenceName"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"text"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_gn_ns,"script"),
-                                XSDDatatype.XSDstring
-                        )
-
+        
+            output.type(O.NamedPlace.qn,
+			simpleTypes(
+				pair(
+					iri(output_ns, "localId"),
+                	XSDDatatype.XSDstring
                 ),
-                EMPTY,
-                geometryTypes(
-                        pair(O.Geom, "GEOMETRY" ) ) );
-
+                pair(
+                    iri(output_ns, "namespace"),
+					XSDDatatype.XSDstring
+                ),
+                pair(
+                    iri(output_ns, "versionId"),
+                	XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"beginLifespanVersion"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"endLifespanVersion"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"localType"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"language"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"sourceOfName"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"pronunciation"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"referenceName"),
+					XSDDatatype.XSDstring
+				),
+				pair(
+					iri(output_gn_ns,"text"),
+					XSDDatatype.XSDstring
+				),
+					pair(
+					iri(output_gn_ns,"script"),
+					XSDDatatype.XSDstring
+				)
+				
+			),
+			EMPTY, 
+			geometryTypes(
+				pair(O.Geom, "GEOMETRY" ) ) );		
+        
 
         /* Process */
         iter(input.root().descendantElementCursor(I.NamedPlace.qn)).each { input_Feat ->
