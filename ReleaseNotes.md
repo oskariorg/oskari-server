@@ -2,6 +2,17 @@
 
 ## 1.21
 
+### control-base
+
+GetWSCapabilitiesHandler now accepts type parameter and by default parses WMS capabilities as before, but with type 'wmtslayer' proxies the response XML to
+client as is. Also 'wmsurl'-parameter has been changed to 'url'.
+
+SaveLayerHandler now accepts WMTS-layers and has some changed parameters:
+* wmsName is now layerName
+* wmsUrl is now layerUrl
+
+SaveLayerHandler propably will see some changes for WMTS-layer in near future.
+
 ### database
 
 Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents.
