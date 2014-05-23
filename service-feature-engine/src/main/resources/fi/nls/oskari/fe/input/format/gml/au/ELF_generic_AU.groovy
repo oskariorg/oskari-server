@@ -105,22 +105,22 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
             },
             "SpellingOfName" : { input_Feat, output_GeographicalName_ID, output_props, output_geoms ->
+				
+				def output_ID = O.SpellingOfName.qn.unique();
+				//def output_props = properties();
 
-                def output_ID = O.SpellingOfName.qn.unique();
-                //def output_props = properties();
+				input_Feat.readChildren().each { input_Feats ->
+					
+					input_Feats.readPrimitive(I.SpellingOfName.props, output_props,
+							iri(output_gn_ns, input_Feats.qn.getLocalPart()));
+					
+				}
 
-                input_Feat.readChildren().each { input_Feats ->
-
-                    input_Feats.readPrimitive(I.SpellingOfName.props, output_props,
-                            iri(output_gn_ns, input_Feats.qn.getLocalPart()));
-
-                }
-
-                /*output.vertex(output_ID, O.SpellingOfName.qn,
-                        output_props, output_geoms);*/
-                /*output.edge(output_GeographicalName_ID, O.GeographicalName.spelling, output_ID);*/
-
-            }
+				/*output.vertex(output_ID, O.SpellingOfName.qn,
+						output_props, output_geoms);*/
+				/*output.edge(output_GeographicalName_ID, O.GeographicalName.spelling, output_ID);*/
+				
+			}
     ];
 
     def I = [
@@ -206,14 +206,6 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
         output.type(O.AdministrativeUnit.qn,
                 simpleTypes(
                         pair(
-                                iri(output_ns, "beginLifespanVersion"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_ns, "endLifespanVersion"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
                                 iri(output_ns, "localId"),
                                 XSDDatatype.XSDstring
                         ),
@@ -223,6 +215,14 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                         ),
                         pair(
                                 iri(output_ns, "versionId"),
+                                XSDDatatype.XSDstring
+                        ),
+                        pair(
+                                iri(output_ns, "beginLifespanVersion"),
+                                XSDDatatype.XSDstring
+                        ),
+                        pair(
+                                iri(output_ns, "endLifespanVersion"),
                                 XSDDatatype.XSDstring
                         ),
                         pair(
@@ -256,7 +256,7 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                         pair(
                                 iri(output_gn_ns, "text"),
                                 XSDDatatype.XSDstring
-                        ),
+                        ),                 
                         pair(
                                 iri(output_gn_ns, "script"),
                                 XSDDatatype.XSDstring
@@ -278,14 +278,14 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
         /* Process */
         def fcount = 0
-
-
+        
+        
         
         iter(input.root().descendantElementCursor(I.AdministrativeUnit.qn)).each { input_Feat ->
             PARSER.AdministrativeUnit(input_Feat);
             fcount++;
         }
-        
+		
 
     }
 
