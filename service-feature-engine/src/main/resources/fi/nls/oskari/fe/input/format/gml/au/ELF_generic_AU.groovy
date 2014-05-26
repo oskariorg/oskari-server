@@ -10,6 +10,7 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
     def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
     def input_base_ns = "urn:x-inspire:specification:gmlas:BaseTypes:3.2";
     def input_gmd_ns = "http://www.isotc211.org/2005/gmd";
+    def input_gml_ns = "http://www.opengis.net/gml/3.2";
 
     def output_ns = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0#";
     def output_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0#"
@@ -17,7 +18,8 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
     def PARSER = [
             "AdministrativeUnit": { input_Feat ->
 
-                def output_ID = O.AdministrativeUnit.qn.unique();
+                def gmlid = input_Feat.attr(input_gml_ns, "id");
+                def output_ID = O.AdministrativeUnit.qn.unique(gmlid);
                 def output_props = properties();
                 def output_geoms = geometries();
 
@@ -202,6 +204,7 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
         
 
         output.prefix("_ns", output_ns);
+        output.prefix("_gn", output_gn_ns);
 
         output.type(O.AdministrativeUnit.qn,
                 simpleTypes(

@@ -52,7 +52,7 @@ INSERT INTO portti_wfs_layer (
        '2.0.0', 5000, 
        'elf-lod1gn', 
        '', 
-       '{"default" : "default" : "*geom:Geometry,beginLifespanVersion:String,endLifespanVersion:String,localId:String,namespace:String,versionId:String,nationalLevel:String,nationalLevelName:String,country:String,name:String,sourceOfName:String,pronunciation:String,referenceName:String,text:String,script:String,NUTS:String,upperLevelUnit:String"}', 
+       '{"default" : "default" : "*geometry:Geometry,beginLifespanVersion:String,endLifespanVersion:String,localId:String,namespace:String,versionId:String,nationalLevel:String,nationalLevelName:String,country:String,name:String,sourceOfName:String,pronunciation:String,referenceName:String,text:String,script:String,NUTS:String,upperLevelUnit:String"}', 
        '{}', 
        '{}', 
        '2d', 

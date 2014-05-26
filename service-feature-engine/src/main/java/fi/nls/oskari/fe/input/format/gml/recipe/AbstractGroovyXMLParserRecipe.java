@@ -199,6 +199,14 @@ type
         public Object parseXlink() throws XMLStreamException {
             return crsr.getAttrValue(W3XLink.XMLNS_W3_ORG_1999_XLINK,W3XLink.title.toString()) ;
         }
+        
+        
+        public String attr( String localName) throws XMLStreamException {
+            return crsr.getAttrValue(localName);
+        }
+        public String attr( String ns, String localName) throws XMLStreamException {
+            return crsr.getAttrValue(ns, localName);
+        }
 
 	}
 

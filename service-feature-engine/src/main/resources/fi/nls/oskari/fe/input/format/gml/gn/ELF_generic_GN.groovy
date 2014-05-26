@@ -8,6 +8,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
     def input_ns = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0";
     def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
     def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
+    def input_gml_ns = "http://www.opengis.net/gml/3.2";
 
     def output_ns = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0#";
     def output_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0#"
@@ -41,7 +42,8 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
             },
             "NamedPlace": { input_Feat ->
 
-                def output_ID = O.NamedPlace.qn.unique();
+                def gmlid = input_Feat.attr(input_gml_ns, "id");
+                def output_ID = O.NamedPlace.qn.unique(gmlid);
                 def output_props = properties();
                 def output_geoms = geometries();
 
@@ -170,6 +172,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 
         output.prefix("_ns", output_ns);
+        output.prefix("_gn", output_gn_ns);
         
             output.type(O.NamedPlace.qn,
 			simpleTypes(
