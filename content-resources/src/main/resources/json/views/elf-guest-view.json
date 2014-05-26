@@ -35,6 +35,7 @@
                     }, {
                         "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
                         "config": {
+                        	"deferSetLocation": true,
                             "backoffIncrement": 1000,
                             "contextPath": "/transport",
                             "disconnectTime": 30000,
