@@ -98,6 +98,8 @@ public class JobQueue
                 } catch (Exception e) {
                     log.error("Exception while running job:", e.getMessage());
                     log.debug(e, "Here's the stacktrace");
+                    e.printStackTrace();
+                    
                 }
                 finally {
                     ((Job) r).teardown();

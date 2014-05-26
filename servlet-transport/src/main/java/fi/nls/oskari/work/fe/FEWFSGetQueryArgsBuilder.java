@@ -100,7 +100,7 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
 
         builder.setParameter("BBOX", coordsAsSpaceSeparatedString.toString());
 
-        System.err.println("BBOX " + coordsAsSpaceSeparatedString.toString());
+        //System.err.println("BBOX " + coordsAsSpaceSeparatedString.toString());
 
     }
 

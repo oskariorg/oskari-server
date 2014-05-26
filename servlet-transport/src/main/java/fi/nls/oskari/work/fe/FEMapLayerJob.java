@@ -113,7 +113,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             synchronized (gcl) {
                 try {
-                    log.info("[fe] recipe compiling " + recipePath + " / "
+                    log.debug("[fe] recipe compiling " + recipePath + " / "
                             + recipePath);
 
                     InputStreamReader reader = new InputStreamReader(
@@ -127,16 +127,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                     recipeClazzes.put(recipePath, recipeClazz);
 
-                    log.info("[fe] caching recipe " + recipePath);
+                    log.debug("[fe] caching recipe " + recipePath);
 
                 } catch (RuntimeException e) {
 
-                    log.info("[fe] recipe setup FAILURE");
+                    log.debug("[fe] recipe setup FAILURE");
                     e.printStackTrace(System.err);
 
                 } finally {
 
-                    log.info("[fe] recipe setup finalized");
+                    log.debug("[fe] recipe setup finalized");
 
                 }
             }
@@ -204,7 +204,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     protected static Style createSLDStyle(String sldFilename) {
 
-        log.info("[fe] Creating Style tryin 1.1.0 " + sldFilename);
+        log.debug("[fe] Creating Style tryin 1.1.0 " + sldFilename);
         try {
             final java.net.URL surl = FEMapLayerJob.class
                     .getResource(sldFilename);
@@ -237,7 +237,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         UserLayer layer = (UserLayer) sld.getStyledLayers()[i];
                         styles = layer.getUserStyles();
                     } else {
-                        log.info("[fe] --> "
+                        log.debug("[fe] --> "
                                 + sld.getStyledLayers()[i].getClass());
                     }
 
@@ -250,22 +250,22 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                                 if (s.featureTypeStyles().get(0)
                                         .featureTypeNames().size() > 0) {
-                                    log.info("[fe] --> RESETTING and USING "
+                                    log.debug("[fe] --> RESETTING and USING "
                                             + styles[j].getClass());
                                     s.featureTypeStyles().get(0)
                                             .featureTypeNames().clear();
                                 } else {
-                                    log.info("[fe] --> #1 USING "
+                                    log.debug("[fe] --> #1 USING "
                                             + styles[j].getClass());
                                 }
 
                                 return s;
                             } else if (!(s instanceof NamedStyle)) {
-                                log.info("[fe] --> #2 USING "
+                                log.debug("[fe] --> #2 USING "
                                         + styles[j].getClass());
                                 return s;
                             } else {
-                                log.info("[fe] --> ? " + s);
+                                log.debug("[fe] --> ? " + s);
                             }
 
                         }
@@ -273,10 +273,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 }
             } catch (Exception ex) {
-                log.info("[fe] SLD FALLBACK required " + ex);
+                log.debug("[fe] SLD FALLBACK required " + ex);
             }
 
-            log.info("[fe] -- FALLBACK Creating Style tryin 1.0.0 "
+            log.debug("[fe] -- FALLBACK Creating Style tryin 1.0.0 "
                     + sldFilename);
             /*
              * static protected Style createSLDStyle(InputStream xml) {
@@ -290,7 +290,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     .getResourceAsStream(sldFilename));
 
             Style style = SLD.styles(sld)[0];
-            log.info("[fe] - Using 1.0.0 Style " + style);
+            log.debug("[fe] - Using 1.0.0 Style " + style);
             return style;
 
         } catch (Exception ee) {
@@ -362,9 +362,9 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(),
                 session.getLocation().getSrs(), session.getLocation().getSrs());
 
-        log.info("[fe] Scale in:" + layer.getSRSName() + scale + "["
+        log.debug("[fe] Scale in:" + layer.getSRSName() + scale + "["
                 + layer.getMaxScale() + "," + layer.getMinScale() + "]");
-        log.info("[fe] Scale in:" + session.getLocation().getSrs() + scale
+        log.debug("[fe] Scale in:" + session.getLocation().getSrs() + scale
                 + "[" + maxScaleInMapSrs + "," + minScaleInMapSrs + "]");
         if (minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) {// min ==
                                                                      // biggest
@@ -411,7 +411,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             return requestResponse;
         }
 
-        log.info("[fe] request template " + requestTemplatePath
+        log.debug("[fe] request template " + requestTemplatePath
                 + " instantiated as " + backendRequestTemplate);
 
         final ArrayList<List<Object>> list = new ArrayList<List<Object>>();
@@ -428,7 +428,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             AxisDirection dir0 = crs.getCoordinateSystem().getAxis(0)
                     .getDirection();
-            log.info("[fe] SESSION CRS AXIS 0 " + dir0);
+            log.debug("[fe] SESSION CRS AXIS 0 " + dir0);
 
             final MathTransform transform = this.session.getLocation()
                     .getTransformForClient(this.layer.getCrs(), true);
@@ -466,7 +466,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                         responseCollections.put(type, fc);
 
-                        log.info("[fe] type: " + type + " / fc: { len: "
+                        log.debug("[fe] type: " + type + " / fc: { len: "
                                 + fc.size() + "}");
                     }
                 }
@@ -497,7 +497,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                         responseBuilders.put(type, sfb);
 
-                        log.info("[fe] creating featurebuilder for : " + type);
+                        log.debug("[fe] creating featurebuilder for : " + type);
                     }
                     return sfb;
                 }
@@ -509,7 +509,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     if (list == null) {
                         list = new LinkedList<SimpleFeature>();
                         responseFeatures.put(type, list);
-                        log.info("[fe] creating featureList for : " + type);
+                        log.debug("[fe] creating featureList for : " + type);
                     }
                     return list;
                 }
@@ -526,7 +526,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         throws IOException {
                     requestResponse.setFeatureIri(type);
 
-                    log.info("[fe] registering (generic) output type for "
+                    log.debug("[fe] registering (generic) output type for "
                             + type);
 
                     /*
@@ -629,7 +629,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             URL url = new URL(backendUrlInfo.url);
 
-            log.info("[fe] using URL " + url);
+            log.debug("[fe] using URL " + url);
 
             /* Backend Proxy */
             HttpHost backendProxy = null;
@@ -649,7 +649,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             /* Recipe */
             final GroovyParserRecipe recipe = getRecipe(recipePath);
 
-            log.info("[fe] using recipe " + recipe);
+            log.debug("[fe] using recipe " + recipe);
 
             /* Backend HTTP Response Handler */
             ResponseHandler<Boolean> backendResponseHandler = new ResponseHandler<Boolean>() {
@@ -662,25 +662,25 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                     StatusLine statusLine = response.getStatusLine();
 
-                    log.info("[fe] http status : " + statusLine);
+                    log.debug("[fe] http status : " + statusLine);
 
                     HttpEntity entity = response.getEntity();
                     if (statusLine.getStatusCode() >= 300) {
-                        log.info("[fe] throwing http exception for : "
+                        log.debug("[fe] throwing http exception for : "
                                 + statusLine);
                         throw new HttpResponseException(
                                 statusLine.getStatusCode(),
                                 statusLine.getReasonPhrase());
                     }
                     if (entity == null) {
-                        log.info("[fe] throwing client protocol exception no content");
+                        log.debug("[fe] throwing client protocol exception no content");
                         throw new ClientProtocolException(
                                 "Response contains no content");
                     }
 
                     ContentType contentType = ContentType.getOrDefault(entity);
                     Charset charset = contentType.getCharset();
-                    log.info("[fe] response contentType " + contentType
+                    log.debug("[fe] response contentType " + contentType
                             + ", charset: " + charset);
 
                     BufferedInputStream inp = new BufferedInputStream(
@@ -708,7 +708,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         succee = true;
 
                     } catch (XMLStreamException e) {
-                        log.info("[fe] response XML exception " + e);
+                        log.debug("[fe] response XML exception " + e);
                         e.printStackTrace(System.err);
                         throw new ClientProtocolException(
                                 "Response XMLStreamException " + e);
@@ -736,7 +736,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 StringEntity entity = new StringEntity(params.toString());
 
                 httppost.setEntity(entity);
-                log.info("[fe] HTTP POST " + httppost.getRequestLine());
+                log.debug("[fe] HTTP POST " + httppost.getRequestLine());
 
                 backendUriRequest = httppost;
 
@@ -751,7 +751,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         session, bounds, transform, crs);
 
                 HttpGet httpget = new HttpGet(builder.build());
-                log.info("[fe] HTTP GET " + httpget.getRequestLine());
+                log.debug("[fe] HTTP GET " + httpget.getRequestLine());
 
                 backendUriRequest = httpget;
 
@@ -769,7 +769,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 BasicHttpContext backendLocalContext = null;
                 if (backendCredentials != null) {
 
-                    log.info("[fe] using Credentials "
+                    log.debug("[fe] using Credentials "
                             + backendCredentials.getUserName() + " for " + url);
 
                     backendHttpClient.getCredentialsProvider().setCredentials(
@@ -790,7 +790,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 }
 
                 if (backendProxy != null) {
-                    log.info("[fe] setting proxy for " + url);
+                    log.debug("[fe] setting proxy for " + url);
                     backendHttpClient.getParams().setParameter(
                             ConnRoutePNames.DEFAULT_PROXY,
 
@@ -802,14 +802,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                                 backendLocalContext) : backendHttpClient
                         .execute(backendUriRequest, backendResponseHandler);
 
-                log.info("[fe] execute response " + succee + " for " + url);
+                log.debug("[fe] execute response " + succee + " for " + url);
 
             } finally {
                 // When HttpClient instance is no longer needed,
                 // shut down the connection manager to ensure
                 // immediate deallocation of all system resources
                 backendHttpClient.getConnectionManager().shutdown();
-                log.info("[fe] http shutdown for " + url);
+                log.debug("[fe] http shutdown for " + url);
             }
 
             /* TO-DO fix some error handling and user feedback */
@@ -836,7 +836,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         } catch (IllegalAccessException e1) {
             e1.printStackTrace();
         } finally {
-            log.info("[fe] end of process");
+            log.debug("[fe] end of process");
         }
 
         return requestResponse;
@@ -895,7 +895,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if (username == null || password == null) {
             return null;
         }
-        log.info("[fe] building credentials for " + this.layerId + " as "
+        log.debug("[fe] building credentials for " + this.layerId + " as "
                 + username);
         return new UsernamePasswordCredentials(username, password);
     }
@@ -910,16 +910,16 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         if (requestTemplatePath
                 .equals("oskari-feature-engine:QueryArgsBuilder_KTJkii_LEGACY")) {
-            log.info("[fe] using specific GET request template for "
+            log.debug("[fe] using specific GET request template for "
                     + this.layerId + " is " + requestTemplatePath);
             return new FERequestTemplate(new KTJRestQueryArgsBuilder());
         } else if (requestTemplatePath
                 .equals("oskari-feature-engine:QueryArgsBuilder_WFS_GET")) {
-            log.info("[fe] using GET WFS request template for " + this.layerId
+            log.debug("[fe] using GET WFS request template for " + this.layerId
                     + " is " + requestTemplatePath);
             return new FERequestTemplate(new FEWFSGetQueryArgsBuilder());
         } else {
-            log.info("[fe] using POST WFS request template for " + this.layerId
+            log.debug("[fe] using POST WFS request template for " + this.layerId
                     + " is " + requestTemplatePath);
             return new FERequestTemplate(requestTemplatePath);
         }
@@ -938,14 +938,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         WFSSLDStyle sldStyle = null;
         for(WFSSLDStyle s : sldStyles ) {
         	if ("oskari-feature-engine".equals(s.getName())) {
-                log.info("[fe] SLD for  " + this.layerId + " FE style found");
+                log.debug("[fe] SLD for  " + this.layerId + " FE style found");
                 sldStyle = s;
                 break;
             }
         }
 
         if (sldStyle == null) {
-            log.info("[fe] SLD for  " + this.layerId + " not found");
+            log.debug("[fe] SLD for  " + this.layerId + " not found");
             return null;
         }
 
@@ -954,15 +954,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         Style sld = templateSLD.get(sldPath);
 
         if (sld != null) {
-            log.info("[fe] using cached SLD for  " + this.layerId + " "
+            log.debug("[fe] using cached SLD for  " + this.layerId + " "
                     + sldPath);
             return sld;
         }
-        log.info("[fe] creating SLD for  " + this.layerId + " from " + sldPath);
+        log.debug("[fe] creating SLD for  " + this.layerId + " from " + sldPath);
 
         sld = createSLDStyle(sldPath);
         if (sld != null) {
-            log.info("[fe] created and cached SLD for  " + this.layerId + " "
+            log.debug("[fe] created and cached SLD for  " + this.layerId + " "
                     + sldPath);
             templateSLD.put(sldPath, sld);
         }
@@ -994,28 +994,30 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     /**
      * Process of the job
-     * <p/>
+     * 
      * Worker calls this when starts the job.
-     */
-    @Override
+     * 
+     * Duplicated to enable refactoring in the near future.
+     * 
+     */    
     public void run() {
         log.debug(PROCESS_STARTED + " " + getKey());
 
         if (!this.validateType()) {
-            log.debug("Not enough information to continue the task ("
+            log.debug("[fe] Not enough information to continue the task ("
                     + this.type + ")");
             return;
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("[fe] Cancelled");
             return;
         }
 
         this.layerPermission = getPermissions(layerId,
                 this.session.getSession(), this.session.getRoute());
         if (!this.layerPermission) {
-            log.debug("Session (" + this.session.getSession()
+            log.debug("[fe] Session (" + this.session.getSession()
                     + ") has no permissions for getting the layer ("
                     + this.layerId + ")");
             Map<String, Object> output = new HashMap<String, Object>();
@@ -1028,13 +1030,13 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("FE Cancelled");
             return;
         }
         this.layer = getLayerConfiguration(this.layerId,
                 this.session.getSession(), this.session.getRoute());
         if (this.layer == null) {
-            log.debug("Layer (" + this.layerId
+            log.debug("[fe] Layer (" + this.layerId
                     + ") configurations couldn't be fetched");
             Map<String, Object> output = new HashMap<String, Object>();
             output.put(OUTPUT_LAYER_ID, this.layerId);
@@ -1047,8 +1049,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         setResourceSending();
 
-        if (!validateMapScales()) {
-            log.debug("Map scale was not valid for layer " + this.layerId);
+        if (!validateMapScalesInFrontSrs()) {
+            log.debug("[fe] Map scale was not valid for layer " + this.layerId);
             return;
         }
 
@@ -1074,48 +1076,63 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("[fe] Cancelled");
             return;
         }
 
         if (this.type == Type.NORMAL) { // tiles for grid
             if (!this.layer.isTileRequest()) { // make single request
-                log.debug("MAKING SINGLE REQUEST");
+                log.debug("[fe] single request");
                 if (!this.normalHandlers(null, true)) {
-                    log.debug("!normalHandlers leaving");
+                    log.debug("[fe] !normalHandlers leaving");
                     return;
+                } else {
+                    log.debug("[fe] single request - continue");
                 }
             } else {
-                log.debug("MAKING TILED REQUESTS");
+                log.debug("[fe] MAKING TILED REQUESTS");
             }
 
             boolean first = true;
             int index = 0;
             for (List<Double> bounds : grid) {
 
-                log.debug("... " + bounds);
+                log.debug("[fe] ... " + bounds);
                 if (!goNext()) {
-                    log.debug("JOB cancelled - leaving");
+                    log.debug("[fe] JOB cancelled - leaving");
                     return;
                 }
 
                 if (this.layer.isTileRequest()) { // make a request per tile
-                    log.debug("MAKING TILE REQUEST " + bounds);
+                    log.debug("[fe] MAKING TILE REQUEST " + bounds);
                     if (!this.normalHandlers(bounds, first)) {
-                        log.debug("!normalHandlers continuing tiles");
+                        log.debug("FE !normalHandlers continuing tiles");
                         continue;
                     }
                 }
 
                 if (!goNext()) {
-                    log.debug("JOB cancelled - leaving");
+                    log.debug("[fe] JOB cancelled - leaving");
                     return;
                 }
 
-                if (this.sendImage && this.sessionLayer.isTile(bounds)) { // check
-                    // if
-                    // needed
-                    // tile
+                
+                boolean isThisTileNeeded = true;
+                
+                if( !this.sendImage ) {
+                	log.debug("[fe] !sendImage - not sending PNG");
+                	isThisTileNeeded = false;
+                }
+                
+                if( !this.sessionLayer.isTile(bounds) ) {
+                	log.debug("[fe] !layer.isTile - not sending PNG");
+                	isThisTileNeeded = false;
+                }
+                
+                if (isThisTileNeeded ) {//this.sendImage ) { // && this.sessionLayer.isTile(bounds)) { // check
+                                                                          // if
+                                                                          // needed
+                                                                          // tile
                     Double[] bbox = new Double[4];
                     for (int i = 0; i < bbox.length; i++) {
                         bbox[i] = bounds.get(i);
@@ -1156,7 +1173,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     this.sendWFSImage(url, bufferedImage, bbox, true,
                             isboundaryTile);
                 } else {
-                    log.debug("Tile not needed? " + bounds);
+                    log.debug("[fe] Tile not needed? " + bounds);
                 }
 
                 if (first) {
@@ -1175,7 +1192,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
             this.featuresHandler();
             if (!goNext()) {
-                log.debug("Cancelled");
+                log.debug("[fe] Cancelled");
                 return;
             }
 
@@ -1204,10 +1221,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             /* features */
 
             /*
-             * if (this.sendFeatures) { log.debug("... sending features");
+             * if (this.sendFeatures) { log.debug("FE ... sending features");
              * this.sendWFSFeatures(this.featureValuesList,
              * TransportService.CHANNEL_MAP_CLICK); } else {
-             * log.debug("NOT sending features"); }
+             * log.debug("FE NOT sending features"); }
              */
 
         } else if (this.type == Type.GEOJSON) {
@@ -1216,7 +1233,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
             this.featuresHandler();
             if (!goNext()) {
-                log.debug("Cancelled");
+                log.debug("[fe] Cancelled");
                 return;
             }
             if (this.sendFeatures) {
@@ -1224,10 +1241,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         TransportService.CHANNEL_FILTER);
             }
         } else {
-            log.debug("Type is not handled " + this.type);
+            log.debug("[fe] Type is not handled " + this.type);
         }
 
-        log.debug(PROCESS_ENDED + " " + getKey());
+        log.debug("[fe] " + PROCESS_ENDED + " " + getKey());
     }
 
     /**
@@ -1357,7 +1374,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if (!this.reqSendHighlight && this.sendHighlight)
             this.sendHighlight = false;
 
-        log.debug("send - features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
+        log.debug("send - features:"+ this.sendFeatures+ "/ image:"+ this.sendImage+ "/ highlight:"+ this.sendHighlight);
     }
 
     /**

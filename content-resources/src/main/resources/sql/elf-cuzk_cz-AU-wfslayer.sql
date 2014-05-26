@@ -16,12 +16,12 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Administrative units%')); 
          
          
--- add template model stuff 
+-- add template model stuff;
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
 	'oskari-feature-engine:QueryArgsBuilder_WFS_GET', 
-	'/fi/nls/oskari/fe/input/format/gml/inspire/au/ELF_generic_AU.groovy');          
+	'/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 

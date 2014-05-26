@@ -3,11 +3,11 @@
 INSERT INTO oskari_layergroup (id, locale) values (999, '{ fi:{name:"ELF"},sv:{name:"ELF"},en:{name:"ELF"}}');
 
 -- THIS IS AN EXAMPLE FOR ADDING WMTS LAYER ;
-INSERT INTO oskari_maplayer(id, type, name, groupId,
+INSERT INTO oskari_maplayer(type, name, groupId,
                             metadataId, url,
                             locale,
                             tile_matrix_set_id)
-  VALUES(999,'wmtslayer', 'elf_basemap', 999,
+  VALUES('wmtslayer', 'elf_basemap', 999,
          '', 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts',
          '{ fi:{name:"ELF taustakartta",subtitle:"(WMTS)"},sv:{name:"ELF Backgrundskarta",subtitle:"(WMTS)"},en:{name:"ELF Background map",subtitle:"(WMTS)"}}',
          'EPSG:3035');
@@ -396,12 +396,12 @@ UPDATE oskari_maplayer SET tile_matrix_set_data='{
         "href": "http://opencache.statkart.no/geowebcache/service/wmts?REQUEST=getcapabilities&VERSION=1.0.0"
     },
     "version": "1.0.0"
-}' WHERE type='wmtslayer' AND name='elf_basemap' AND url='http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts' AND id = 999;
+}' WHERE type='wmtslayer' AND name='elf_basemap' AND url='http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts' ;
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
                                    themeid)
-  VALUES(999,
+  VALUES((select max(id) from oskari_maplayer),
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Background maps%'));
 
 -- setup permissions for guest user;

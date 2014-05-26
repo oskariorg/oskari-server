@@ -16,12 +16,12 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Geographical names%')); 
          
          
--- add template model stuff 
+-- add template model stuff;
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
 	'ELF GN', 'ELF GN PoC', 'mah taip', 
 	'/fi/nls/oskari/fe/input/format/gml/inspire/gn/lantmateriet_wfs_template.xml', 
-	'/fi/nls/oskari/fe/input/format/gml/inspire/gn/ELF_generic_GN.groovy');          
+	'/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
