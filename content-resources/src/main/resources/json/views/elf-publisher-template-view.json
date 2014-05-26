@@ -55,7 +55,7 @@
             "state": {
                 "east": "4310937.5",
                 "north": "3366406.25",
-                "selectedLayers": [{"id": 999}],
+                "selectedLayers": [{"id": 2}],
                 "zoom": 0
             }
         },
