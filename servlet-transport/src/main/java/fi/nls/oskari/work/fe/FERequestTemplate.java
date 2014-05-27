@@ -169,7 +169,7 @@ public class FERequestTemplate {
 
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
-            env.expandBy(20);
+            env.expandBy(400);
             bbox = env.toBounds(layer.getCrs());
 
         } else if (type == WFSMapLayerJob.Type.HIGHLIGHT) {
@@ -178,7 +178,7 @@ public class FERequestTemplate {
 
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
-            env.expandBy(20);
+            env.expandBy(400);
             bbox = env.toBounds(layer.getCrs());
 
         } else if (bounds != null) {

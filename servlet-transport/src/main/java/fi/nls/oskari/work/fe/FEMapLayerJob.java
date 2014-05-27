@@ -1220,12 +1220,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             /* features */
 
-            /*
-             * if (this.sendFeatures) { log.debug("FE ... sending features");
-             * this.sendWFSFeatures(this.featureValuesList,
-             * TransportService.CHANNEL_MAP_CLICK); } else {
-             * log.debug("FE NOT sending features"); }
-             */
+            
+              if (this.sendFeatures) { 
+            	  log.debug("[fe] sending features for map click");
+              		this.sendWFSFeatures(this.featureValuesList,
+            		  TransportService.CHANNEL_MAP_CLICK); 
+              } else {
+            	  log.debug("[fe] NOT sending features for map click"); 
+              }
+             
 
         } else if (this.type == Type.GEOJSON) {
             if (!this.requestHandler(null)) {
