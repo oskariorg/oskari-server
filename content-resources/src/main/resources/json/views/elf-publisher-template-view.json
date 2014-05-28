@@ -20,11 +20,14 @@
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
                         "config" : {
-                            "lazy" : true,
-                            "disconnectTime" : 30000,
+                        	"deferSetLocation": true,
                             "backoffIncrement": 1000,
+                            "contextPath": "/transport",
+                            "disconnectTime": 30000,
+                            "lazy": true,
                             "maxBackoff": 60000,
-                            "maxNetworkDelay": 10000
+                            "maxNetworkDelay": 10000,
+                            "port": ""
                         }
                     },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
@@ -52,7 +55,7 @@
             "state": {
                 "east": "4310937.5",
                 "north": "3366406.25",
-                "selectedLayers": [{"id": 999}],
+                "selectedLayers": [{"id": 2}],
                 "zoom": 0
             }
         },

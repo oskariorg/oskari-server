@@ -34,17 +34,11 @@ public class VisualizationServiceTest {
 
     @Test
     public void testGetVisualization() throws Exception {
-        final StatsVisualization nullVis = service.getVisualization(
-                -1, -1, "classes", "layerName", "filterProperty", "vis");
-        assertNull("Visualization without layer id should be null", nullVis);
 
-
-        final StatsVisualization corruptedVis = service.getVisualization(
-                276, -1, "classes,id1|toomanyclasses|third_group", "layerName", "filterProperty", "choro:3groups|only2colors");
+        final StatsVisualization corruptedVis = service.getVisualization(-1, "classes,id1|toomanyclasses|third_group", "layerName", "filterProperty", "choro:3groups|only2colors");
         assertNull("Visualization with different amount of groups ans colors should be null", corruptedVis);
 
-        final StatsVisualization layerVis = service.getVisualization(
-                276, -1, "classes", "layerName", "filterProperty", "choro:color");
+        final StatsVisualization layerVis = service.getVisualization(-1, "classes", "layerName", "filterProperty", "choro:color");
         assertNotNull("Visualization with layer id should be null", layerVis);
     }
 

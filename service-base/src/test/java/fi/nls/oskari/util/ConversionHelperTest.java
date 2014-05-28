@@ -3,6 +3,7 @@ package fi.nls.oskari.util;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -18,6 +19,27 @@ public class ConversionHelperTest {
         assertEquals("'moo' should match 1 mo", 1, ConversionHelper.count("moo", "mo"));
         assertEquals("'moo' should not match 'kvaak", 0, ConversionHelper.count("moo", "kvaak"));
         assertEquals("'wild**cards*' should match 3 *", 3, ConversionHelper.count("wild**cards*", "*"));
+    }
+
+    @Test
+    public void testDecapitalize() {
+        assertEquals("'M' should become 'm'", "m", ConversionHelper.decapitalize("M"));
+        assertEquals("'HTTP' should become 'http'", "http", ConversionHelper.decapitalize("HTTP"));
+        assertEquals("'HTTP' should become 'hTTP' with second parameter false", "hTTP", ConversionHelper.decapitalize("HTTP", false));
+        assertEquals("'MyAssertion' should become 'myAssertion'", "myAssertion", ConversionHelper.decapitalize("MyAssertion"));
+
+        assertEquals("Empty string should stay empty", "", ConversionHelper.decapitalize(""));
+        assertEquals("<null> should stay <null>", null, ConversionHelper.decapitalize(null));
+    }
+
+    @Test
+    public void testIsOnlyUpperCase() {
+        assertTrue("'M' is uppercase only", ConversionHelper.isOnlyUpperCase("M"));
+        assertTrue("'MOO' is uppercase only", ConversionHelper.isOnlyUpperCase("MOO"));
+
+        assertFalse("'Moo' is NOT uppercase only", ConversionHelper.isOnlyUpperCase("Moo"));
+        assertFalse("<null> is NOT uppercase only", ConversionHelper.isOnlyUpperCase(null));
+
     }
 
     @Test

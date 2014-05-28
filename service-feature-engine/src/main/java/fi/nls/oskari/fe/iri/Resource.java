@@ -31,8 +31,11 @@ public class Resource implements Serializable {
     public static Resource iri(String ns, UUID uuid) {
         return new Resource(ns, uuid);
     }
+    
+   
 
-    private final UUID uuid;
+
+    private final String uuid;
 
     private final String ns;
 
@@ -57,12 +60,18 @@ public class Resource implements Serializable {
     public Resource(String ns, String localPart, UUID uuid) {
         this.ns = ns;
         this.localPart = localPart;
+        this.uuid = uuid.toString();
+        _tostring = __toString(null, null);
+    }
+    public Resource(String ns, String localPart, String uuid) {
+        this.ns = ns;
+        this.localPart = localPart;
         this.uuid = uuid;
         _tostring = __toString(null, null);
     }
 
     private Resource(String ns, UUID randomUUID) {
-        uuid = randomUUID;
+        uuid = randomUUID.toString();
         this.ns = ns;
         _tostring = __toString(null, null);
         localPart = null;
@@ -104,7 +113,7 @@ public class Resource implements Serializable {
         return ns;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
@@ -127,6 +136,10 @@ public class Resource implements Serializable {
 
     public Resource unique() {
         return new Resource(ns, localPart, UUID.randomUUID());
+    }
+    
+    public Resource unique(String keyPart) {
+        return new Resource(ns, localPart, keyPart);
     }
 
 }

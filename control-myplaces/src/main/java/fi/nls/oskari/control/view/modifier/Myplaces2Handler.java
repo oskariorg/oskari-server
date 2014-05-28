@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.view.modifier;
 
+import fi.mml.map.mapwindow.service.db.MyPlacesService;
+import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.log.LogFactory;
@@ -22,6 +24,8 @@ public class Myplaces2Handler extends BundleHandler {
     private static final String DEFAULT_XMLNS_NAMESPACE = "oskari";
     private static final String DEFAULT_XMLNS = "http://www.oskari.org";
 
+    private final static MyPlacesService service = new MyPlacesServiceIbatisImpl();
+
     @Override
     public void init() {
         super.init();
@@ -32,7 +36,7 @@ public class Myplaces2Handler extends BundleHandler {
         JSONHelper.putValue(CONFIG, "layerDefaults", layerDefaults);
 
         JSONHelper.putValue(CONFIG, "featureNS", PropertyUtil.get("myplaces.xmlns", DEFAULT_XMLNS));
-        JSONHelper.putValue(CONFIG, "wmsUrl", PropertyUtil.getOptional("myplaces.client.wmsurl"));
+        JSONHelper.putValue(CONFIG, "wmsUrl", service.getClientWMSUrl());
         DEFAULT_NAMES = JSONObject.getNames(CONFIG);
     }
 

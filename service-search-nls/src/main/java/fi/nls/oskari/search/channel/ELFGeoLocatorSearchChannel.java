@@ -76,7 +76,7 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
 
 
         StringBuffer buf = new StringBuffer(serviceURL);
-        if (!searchCriteria.getParam(PARAM_LON).toString().isEmpty() && !searchCriteria.getParam(PARAM_LAT).toString().isEmpty() ) {
+        if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
             // reverse geocoding
             // Transform lon,lat
             String[] lonlat = elfParser.transformLonLat(searchCriteria.getParam(PARAM_LON).toString(), searchCriteria.getParam(PARAM_LAT).toString(), searchCriteria.getSRS());
@@ -89,13 +89,13 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
             request = request.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
 
-        } else if (!searchCriteria.getParam(PARAM_REGION).toString().isEmpty()) {
+        } else if (hasParam(searchCriteria, PARAM_REGION)) {
             // Exact search limited to AU region - case sensitive - no fuzzy support
             String request = REQUEST_GETFEATUREAU_TEMPLATE.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
             request = request.replace(KEY_AU_HOLDER, URLEncoder.encode(searchCriteria.getParam(PARAM_REGION).toString(), "UTF-8"));
             request = request.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
-        } else if (searchCriteria.getParam(PARAM_FUZZY).toString().equals("true")) {
+        } else if (hasParam(searchCriteria, PARAM_FUZZY) && searchCriteria.getParam(PARAM_FUZZY).toString().equals("true")) {
             // Fuzzy search
             buf.append(REQUEST_FUZZY_TEMPLATE.replace(KEY_LANG_HOLDER, lang3));
             buf.append(URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
@@ -107,7 +107,17 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
 
 
         return IOHelper.getURL(buf.toString());
+    }
 
+    /**
+     * Check if criteria has named extra parameter and it's not empty
+     * @param sc
+     * @param param
+     * @return
+     */
+    private boolean hasParam(SearchCriteria sc, final String param) {
+        final Object obj = sc.getParam(param);
+        return obj != null && !obj.toString().isEmpty();
     }
 
     /**

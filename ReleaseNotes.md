@@ -2,6 +2,17 @@
 
 ## 1.21
 
+### control-base
+
+GetWSCapabilitiesHandler now accepts type parameter and by default parses WMS capabilities as before, but with type 'wmtslayer' proxies the response XML to
+client as is. Also 'wmsurl'-parameter has been changed to 'url'.
+
+SaveLayerHandler now accepts WMTS-layers and has some changed parameters:
+* wmsName is now layerName
+* wmsUrl is now layerUrl
+
+SaveLayerHandler propably will see some changes for WMTS-layer in near future.
+
 ### database
 
 Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents.
@@ -21,6 +32,8 @@ New handler for listing, adding, editing and removing users
 ### service-base
 
 ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
+
+ConversionHelper, XmlHelper and JSONHelper have some additional helper methods.
 
 ### webapp-map/standalone-jetty/servlet-map
 
@@ -86,6 +99,16 @@ WFSLayerStore now extends WFSLayerConfiguration instead of copy-paste methods. A
  obsolete fields like testlocation/testzoom etc.
 
 Removed build profiles, custom resources for transport can now be given with maven property "transport.resourceDir" (via maven profile etc)
+
+### servlet-transport (feature-engine) 
+
+WFS/feature-engine Fixed map click to return features to frontend. 
+WFS: 1st Attempt to use GeoTools forceXy for CRS only when drawing PNG result images.
+WFS/feature-engine Finished feature engine groovy script configuration from database.
+ELF: Included INSPIRE SLD resources to servlet-transport/src/main/resources.
+ELF: Included a PoC groovy scripts for AU and GN reading to servlet-transport/src/main/resources.
+ELF: Added database setup JSON and SQL scripts for 3 GN and 1 AU layer
+ELF: SLD, groovy and db setup script placement may change to some app specific resources module in the future. 
 
 ## 1.20
 
