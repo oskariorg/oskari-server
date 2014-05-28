@@ -100,6 +100,16 @@ WFSLayerStore now extends WFSLayerConfiguration instead of copy-paste methods. A
 
 Removed build profiles, custom resources for transport can now be given with maven property "transport.resourceDir" (via maven profile etc)
 
+### servlet-transport (feature-engine) 
+
+WFS/feature-engine Fixed map click to return features to frontend. 
+WFS: 1st Attempt to use GeoTools forceXy for CRS only when drawing PNG result images.
+WFS/feature-engine Finished feature engine groovy script configuration from database.
+ELF: Included INSPIRE SLD resources to servlet-transport/src/main/resources.
+ELF: Included a PoC groovy scripts for AU and GN reading to servlet-transport/src/main/resources.
+ELF: Added database setup JSON and SQL scripts for 3 GN and 1 AU layer
+ELF: SLD, groovy and db setup script placement may change to some app specific resources module in the future. 
+
 ## 1.20
 
 ### service-users
