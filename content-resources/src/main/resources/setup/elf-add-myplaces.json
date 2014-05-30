@@ -1,0 +1,8 @@
+{
+    "create" : [
+        "create-myplaces-tables.sql"
+    ],
+    "sql" : [
+        "elf-myplaces-wfs-baselayer.sql"
+    ]
+}

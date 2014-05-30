@@ -2,7 +2,7 @@
     "setup" : [
         "create-empty-db",
         "register-bundles",
-        "postgres-add-myplaces",
+        "elf-add-myplaces",
         "postgres-add-users",
         "postgres-add-JAAS"
     ],   
