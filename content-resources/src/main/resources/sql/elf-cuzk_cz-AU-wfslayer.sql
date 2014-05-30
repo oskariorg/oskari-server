@@ -57,7 +57,7 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-	'urn:ogc:def:crs:EPSG::3035', 
+	'urn:ogc:def:crs:EPSG::3857', 
 	'AdministrativeUnit', 'urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 

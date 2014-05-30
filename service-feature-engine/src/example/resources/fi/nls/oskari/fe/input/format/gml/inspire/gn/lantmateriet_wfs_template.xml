@@ -7,10 +7,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 
  http://schemas.opengis.net/wfs/2.0.0/wfs.xsd">
-	<wfs:Query typeNames="elf-lod1gn:NamedPlace" srsName="urn:ogc:def:crs:EPSG::3035">
+	<wfs:Query typeNames="elf-lod1gn:NamedPlace" srsName="urn:ogc:def:crs:EPSG::3857">
 		<fes:Filter>
 			<fes:BBOX>
-				<gml:Envelope srsName="urn:ogc:def:crs:EPSG::3035">
+				<gml:Envelope srsName="urn:ogc:def:crs:EPSG::3857">
 					<gml:lowerCorner>[LOWER_CORNER]</gml:lowerCorner>
 					<gml:upperCorner>[UPPER_CORNER]</gml:upperCorner>
 				</gml:Envelope>

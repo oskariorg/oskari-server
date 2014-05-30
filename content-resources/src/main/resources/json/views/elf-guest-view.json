@@ -81,19 +81,45 @@
                 ],
                 "layers": [],
                 "mapOptions": {
-                    "resolutions": [1562.5, 781.25, 390.625, 156.25, 78.125, 39.0625],
-                    "maxExtent": {
-                        "left": 2600000,
-                        "bottom": 1300000,
-                        "right": 6000000,
-                        "top": 5500000
-                    },
-                    "srsName": "EPSG:3035"
+                    "srsName": "EPSG:3857",
+                    "projection": "EPSG:3857",
+			        "displayProjection": "EPSG:4326",
+			        "resolutions": [
+ 19567.87923828125,
+ 9783.939619140625,
+ 4891.9698095703125,
+ 2445.9849047851562,
+ 1222.9924523925781,
+ 611.4962261962891,
+305.74811309814453,
+ 152.87405654907226,
+ 76.43702827453613,
+ 38.218514137268066,
+ 19.109257068634033,
+ 9.554628534317017,
+ 4.777314267158508,
+ 2.388657133579254,
+ 1.194328566789627,
+ 0.5971642833948135,
+ 0.29858214169740677,
+ 0.14929107084870338,
+ 0.07464553542435169			        
+			        ],			        
+        			"numZoomLevels": 19,
+        			        			"maxExtent": {
+                      "bottom": -20037508.34,
+					  "left": -20037508.34,
+					  "right": 20037508.34,
+					  "top": 20037508.34   
+                    }
+        			
                 },
                 "projectionDefs": {
                     "EPSG:3035": "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs",
                     "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs",
-                    "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+                    "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+                    "EPSG:3857": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs",
+                    "EPSG:900913": "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"                    
                 }
             },
             "state": {
