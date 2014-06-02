@@ -76,6 +76,11 @@
             <groupId>org.geotools.xsd</groupId>
             <artifactId>gt-xsd-kml</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

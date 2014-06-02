@@ -358,8 +358,8 @@ public class WFSImage {
         MapContent content = new MapContent();
         MapViewport viewport = new MapViewport();
 
-        CoordinateReferenceSystem crs = location.getCrs();
-        ReferencedEnvelope bounds = location.getEnvelope();
+        CoordinateReferenceSystem crs = location.getCrsForMap();
+        ReferencedEnvelope bounds = location.getEnvelopeForMap();
 
         Rectangle screenArea;
         if(isTile && bufferSize != 0.0d) {
@@ -367,8 +367,14 @@ public class WFSImage {
             double height = (location.getTop() - location.getBottom())/2 * bufferSize;
             bounds = location.createEnlargedEnvelope(width, height);
             screenArea = new Rectangle(0, 0, bufferedImageWidth, bufferedImageHeight);
+            
+            
+            log.debug(" Enlarged "+bounds+" "+screenArea+" in "+crs);
+            
         } else {
             screenArea = new Rectangle(0, 0, imageWidth, imageHeight); // image size
+            
+            log.debug(" Normal "+bounds+" "+screenArea+ " in "+crs);
         }
 
         viewport.setCoordinateReferenceSystem(crs);
@@ -436,7 +442,7 @@ public class WFSImage {
      * @param styleName
      * @return style
      */
-    private Style getSLDStyle(WFSLayerStore layer, String styleName) {
+    protected Style getSLDStyle(WFSLayerStore layer, String styleName) {
         log.debug("Trying to get style with name:", styleName);
         // try to find with name
         Style style = createSLDStyle(layer.getSLDStyle(styleName));

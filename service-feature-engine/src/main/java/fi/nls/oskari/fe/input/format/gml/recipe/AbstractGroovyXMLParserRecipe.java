@@ -29,6 +29,43 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 public abstract class AbstractGroovyXMLParserRecipe implements
 		GroovyParserRecipe {
 
+    public static enum W3XLink {
+        /*
+         * actuate
+[/~{http://www.w3.org/1999/xlink}actuate] [0..1]
+arcrole
+[/~{http://www.w3.org/1999/xlink}arcrole] [0..1]
+href
+[/~{http://www.w3.org/1999/xlink}href] [0..1]
+nilReason[0..1]
+owns[0..1]
+remoteSchema
+[/~{http://www.opengis.net/gml/3.2}remoteSchema] [0..1]
+role
+[/~{http://www.w3.org/1999/xlink}role] [0..1]
+show
+[/~{http://www.w3.org/1999/xlink}show] [0..1]
+title
+[/~{http://www.w3.org/1999/xlink}title] [0..1]
+type
+[/~{http://www.w3.org/1999/xlink}type] [0..1]
+         */
+
+        actuate,
+        arcrole,
+        href,
+        remoteSchema,
+        role,
+        show,
+        title,
+        type
+
+
+        ;
+
+        public static String XMLNS_W3_ORG_1999_XLINK = "http://www.w3.org/1999/xlink";
+    };
+
 	public class InputEvent {
 		SMEvent next;
 		SMInputCursor crsr;
@@ -137,6 +174,39 @@ public abstract class AbstractGroovyXMLParserRecipe implements
 				output.add(pair(rc, obj));
 			}
 		}
+
+        /**
+         * reads current as XLink to some
+         * TBD returns title for now
+         * @param output
+         * @throws XMLStreamException
+         */
+        public void readXlink( List<Pair<Resource, ?>> output, Resource rc) throws XMLStreamException {
+            Object obj = parseXlink();
+
+            if (obj != null) {
+                output.add(pair(rc, obj));
+            }
+        }
+
+
+
+        /**
+         * TBD returns title for now
+         * @return
+         * @throws XMLStreamException
+         */
+        public Object parseXlink() throws XMLStreamException {
+            return crsr.getAttrValue(W3XLink.XMLNS_W3_ORG_1999_XLINK,W3XLink.title.toString()) ;
+        }
+        
+        
+        public String attr( String localName) throws XMLStreamException {
+            return crsr.getAttrValue(localName);
+        }
+        public String attr( String ns, String localName) throws XMLStreamException {
+            return crsr.getAttrValue(ns, localName);
+        }
 
 	}
 

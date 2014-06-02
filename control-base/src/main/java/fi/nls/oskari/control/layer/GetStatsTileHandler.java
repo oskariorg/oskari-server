@@ -24,7 +24,6 @@ import java.net.URLEncoder;
 public class GetStatsTileHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsTileHandler.class);
-    final private static String PARAM_LAYER_ID = "LAYERID";
 
     private final VisualizationService service = new VisualizationServiceIbatisImpl();
 
@@ -74,17 +73,9 @@ public class GetStatsTileHandler extends ActionHandler {
         // copy parameters
         final HttpServletRequest httpRequest = params.getRequest();
         final StringBuilder ajaxUrl = new StringBuilder(PropertyUtil.get("statistics.sld.server"));
-        ajaxUrl.append(PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL));
+        ajaxUrl.append(PropertyUtil.get("statistics.sld.server.path",
+                PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL)));
         ajaxUrl.append("&action_route=GetStatsLayerSLD");
-        final String layerId = params.getHttpParam(PARAM_LAYER_ID);
-        
-        if(layerId == null) {
-            throw new ActionParamsException("Layer not specified: LAYERID-parameter missing");
-        }
-        ajaxUrl.append("&");
-        ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_LAYER_ID);
-        ajaxUrl.append("=");
-        ajaxUrl.append(layerId);
 
         StatsVisualization vis = getVisualization(params);
         if(vis == null) {
@@ -134,12 +125,9 @@ public class GetStatsTileHandler extends ActionHandler {
     }
 
     private StatsVisualization getVisualization(final ActionParameters params) {
-        final int statsLayerId = ConversionHelper.getInt(
-                params.getHttpParam(PARAM_LAYER_ID), -1);
         final int visId = ConversionHelper.getInt(
                 params.getHttpParam(PARAM_VISUALIZATION_ID), -1);
         return service.getVisualization(
-                statsLayerId, 
                 visId,
                 params.getHttpParam(PARAM_VISUALIZATION_CLASSES),
                 params.getHttpParam(PARAM_VISUALIZATION_NAME),

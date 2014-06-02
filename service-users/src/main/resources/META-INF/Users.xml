@@ -21,12 +21,14 @@
         INSERT INTO oskari_users (
             first_name,
             last_name,
-            user_name
+            user_name,
+            uuid
         )
         VALUES (
             #firstname#,
             #lastname#,
-            #screenname#
+            #screenname#,
+            #uuid#
         )
         RETURNING id
     </statement>

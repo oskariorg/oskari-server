@@ -79,12 +79,9 @@ public class GetStatsLayerSLDHandler extends ActionHandler {
      * @return Visualization parameters required to generate an SLD or empty/invalid StatsVisualization object if parameters were missing
      */
     private StatsVisualization getVisualization(final ActionParameters params) {
-        final int statsLayerId = ConversionHelper.getInt(
-                params.getHttpParam(PARAM_LAYER_ID), -1);
         final int visId = ConversionHelper.getInt(
                 params.getHttpParam(PARAM_VISUALIZATION_ID), -1);
         final StatsVisualization vis = service.getVisualization(
-                statsLayerId,
                 visId,
                 params.getHttpParam(PARAM_VISUALIZATION_CLASSES),
                 params.getHttpParam(PARAM_VISUALIZATION_NAME),

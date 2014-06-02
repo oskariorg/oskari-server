@@ -138,6 +138,7 @@
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
         </dependency>
         
         <dependency>

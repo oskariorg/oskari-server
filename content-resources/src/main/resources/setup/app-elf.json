@@ -2,7 +2,7 @@
     "setup" : [
         "create-empty-db",
         "register-bundles",
-        "postgres-add-myplaces",
+        "elf-add-myplaces",
         "postgres-add-users",
         "postgres-add-JAAS"
     ],   
@@ -20,8 +20,10 @@
     ],
     "sql" : [
         "populate-Inspire-themes.sql",
-        "elf-basemap-wmtslayer.sql"
-        
-         
+        "elf-basemap-wmtslayer.sql",
+        "elf-cuzk_cz-AU-wfslayer.sql",
+        "elf-nls_fi-GN-wfslayer.sql",
+        "elf-geonorge-GN-wfslayer.sql",
+        "elf-lantmateriet-GN-wfslayer.sql"
     ]
 }
