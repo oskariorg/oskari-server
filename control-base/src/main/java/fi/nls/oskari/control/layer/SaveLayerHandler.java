@@ -260,7 +260,7 @@ public class SaveLayerHandler extends ActionHandler {
         final String gfiContent = request.getParameter("gfiContent");
         if (gfiContent != null) {
             // TODO: some sanitation of content data
-            ml.setGfiContent(gfiContent);
+            ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent));
         }
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
