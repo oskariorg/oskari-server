@@ -33,7 +33,8 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private final String SRSNAME2 = "{srsName2}";
     public final String GEOJSONFEATURES2 = "{geoJsonFeatures2}";
     private final String INTERSECTIONMODE = "{intersectionMode}";
-    private final String INTERSECTIONMODE2 = "contains";
+    private final String INTERSECT_CONTAINS = "contains";
+    private final String INTERSECT_CLIP = "clip";
 
     private String href2 = "";
     private String xmlns2 = "";
@@ -124,7 +125,8 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     }
 
     public String getIntersection_mode() {
-        if (intersection_mode.equals(INTERSECTIONMODE2)) return "SECOND_CONTAINS";
+        if (intersection_mode.equals(INTERSECT_CONTAINS)) return "SECOND_CONTAINS";
+        else if (intersection_mode.equals(INTERSECT_CLIP)) return "SECOND_CLIP";
         else return "SECOND";
     }
 
