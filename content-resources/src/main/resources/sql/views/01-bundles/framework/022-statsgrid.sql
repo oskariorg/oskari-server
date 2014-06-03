@@ -23,3 +23,11 @@ UPDATE portti_bundle set startup = '{
     },
     "instanceProps": {}
 }' WHERE name = 'statsgrid';
+
+UPDATE portti_bundle set config = '{
+    "name": "StatsGrid",
+    "sandbox": "sandbox",
+    "stateful" : true,
+    "tileClazz": "Oskari.statistics.bundle.statsgrid.Tile",
+    "viewClazz": "Oskari.statistics.bundle.statsgrid.StatsView"
+}' WHERE name = 'statsgrid';

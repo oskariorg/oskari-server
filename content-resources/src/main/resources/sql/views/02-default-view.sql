@@ -171,6 +171,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
+    "mapOptions" : {"srsName":"EPSG:3067","maxExtent":{"bottom":6291456,"left":-548576,"right":1548576,"top":8388608},"resolutions":[2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25]},
     "plugins" : [
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
@@ -1018,6 +1019,9 @@ UPDATE portti_view_bundle_seq set startup = '{
         "Import-Bundle": {
             "analyse": {
                 "bundlePath": "/Oskari/packages/analysis/bundle/"
+            },
+            "geometryeditor": {
+                "bundlePath": "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance": [ ]

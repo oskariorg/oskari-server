@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
 	</parent>
     
     <groupId>fi.nls.oskari.service</groupId>
@@ -75,6 +75,11 @@
         <dependency>
             <groupId>org.geotools.xsd</groupId>
             <artifactId>gt-xsd-kml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

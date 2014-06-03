@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.nls.paikkatietoikkuna</groupId>
   <artifactId>transport</artifactId>
-  <version>1.20-SNAPSHOT</version>
+  <version>1.21</version>
   <packaging>pom</packaging>
 
   <name>Oskari Transport service aggregator</name>
@@ -15,7 +15,10 @@
     <module>service-control</module>
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
-    <module>transport</module>
+    <module>service-feature-engine</module>
+    <module>servlet-transport</module>
+    <module>webapp-transport</module>
+    
   </modules>
 
 </project>

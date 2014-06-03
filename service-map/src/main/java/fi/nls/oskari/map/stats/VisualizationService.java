@@ -45,17 +45,12 @@ public abstract class VisualizationService extends BaseIbatisService<StatsVisual
     public abstract List<StatsVisualization> findForLayerId(final int layerId);
 
     public StatsVisualization getVisualization(
-            final int statsLayerId,
             final int visId,
             final String classes,
             final String layerName,
             final String filterProperty,
             final String vis
     ) {
-        if (statsLayerId == -1) {
-            return null;
-        }
-
         if (visId != -1) {
             // got id -> find from DB
             return find(visId);

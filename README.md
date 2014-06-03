@@ -1,1 +1,1 @@
-Documentation: http://www.oskari.org/documentation/backend/basic-install
+Documentation: http://www.oskari.org/documentation/backend/overview

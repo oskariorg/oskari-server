@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>map-servlet</artifactId>
@@ -42,6 +42,12 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-control-myplaces</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-control-admin</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -53,6 +59,10 @@
 			<scope>provided</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>

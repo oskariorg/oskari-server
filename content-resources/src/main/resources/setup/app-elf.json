@@ -1,0 +1,29 @@
+{
+    "setup" : [
+        "create-empty-db",
+        "register-bundles",
+        "elf-add-myplaces",
+        "postgres-add-users",
+        "postgres-add-JAAS"
+    ],   
+    "bundles" : {
+        "elf" : [
+        	"999-elf-lang-selector.sql",
+            "999-elf-geolocator.sql"
+        ]
+    },
+    
+    "views" : [
+        "elf-view.json",
+        "elf-guest-view.json",
+        "elf-publisher-template-view.json",
+    ],
+    "sql" : [
+        "populate-Inspire-themes.sql",
+        "elf-basemap-wmtslayer.sql",
+        "elf-cuzk_cz-AU-wfslayer.sql",
+        "elf-nls_fi-GN-wfslayer.sql",
+        "elf-geonorge-GN-wfslayer.sql",
+        "elf-lantmateriet-GN-wfslayer.sql"
+    ]
+}

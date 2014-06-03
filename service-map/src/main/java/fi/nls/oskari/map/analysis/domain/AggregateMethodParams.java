@@ -52,7 +52,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         String doctemp = null;
         if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
             doctemp = this.getTemplate(this.analysisMethodTemplate2);
-        if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
             doctemp = this.getTemplate(this.analysisMethodTemplate3);
         else
             doctemp = this.getTemplate(this.analysisMethodTemplate);

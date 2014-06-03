@@ -25,6 +25,59 @@ public class ConversionHelper {
 
         return count;
     }
+
+
+    /**
+     * Makes the first letter of param to be lowercase while maintaining other parts as is.
+     * @param param
+     * @param allCapsStringToLowercase true to turn HTTP -> http, false to turn HTTP -> hTTP
+     * @return null fo null, empty string for empty string, otherwise lowercase startLetter
+     */
+    public static String decapitalize(String param, boolean allCapsStringToLowercase) {
+        if(param == null || param.isEmpty()) {
+            return param;
+        }
+        if(allCapsStringToLowercase && isOnlyUpperCase(param)) {
+            return param.toLowerCase();
+        }
+        final char c = Character.toLowerCase(param.charAt(0));
+        if(param.length() == 1) {
+            return "" + c;
+        }
+        return c + param.substring(1);
+
+    }
+
+    /**
+     * Makes the first letter of param to be lowercase while maintaining other parts as is.
+     * Converts param with only uppercase characters to lowercase as a whole.
+     * @param param
+     * @return Returns:
+     * - null for null
+     * - empty string for empty string
+     * - param with only uppercase LETTERS to lowercase letters
+     * - otherwise lowercase startLetter
+     */
+    public static String decapitalize(final String param) {
+        return decapitalize(param, true);
+    }
+
+    /**
+     * Checks parameter for lowercase letters and returns false if lowercase letters found or param was null.
+     * @param param
+     * @return true if param has only uppercase LETTERS
+     */
+    public static boolean isOnlyUpperCase(final String param) {
+        if(param == null) {
+            return false;
+        }
+        for (char c : param.toCharArray()) {
+            if (Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Returns a string that if its not null and default value if it is
      *
@@ -33,9 +86,8 @@ public class ConversionHelper {
      * @return string
      */
     public static final String getString(final String str, final String defaultValue) {
-        final String value = str;
-        if (value != null) {
-            return value;
+        if (str != null) {
+            return str;
         }
         return defaultValue;
     }
@@ -89,13 +141,16 @@ public class ConversionHelper {
     }
 
     /**
-     * Parses double from String
+     * Parses boolean from String. Returns defaultValue if strToParse is null.
      *
      * @param strToParse
      * @param defaultValue
      * @return
      */
     public static final boolean getBoolean(final String strToParse, final boolean defaultValue) {
+        if(strToParse == null) {
+            return defaultValue;
+        }
         try {
             return Boolean.parseBoolean(strToParse);
         } catch (Exception ex) {

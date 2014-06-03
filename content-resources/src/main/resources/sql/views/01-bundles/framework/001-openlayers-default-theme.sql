@@ -12,7 +12,7 @@ UPDATE portti_bundle set startup = '{
     "bundleinstancename" : "openlayers-default-theme",
     "metadata" : {
         "Import-Bundle" : {
-            "openlayers-single-full" : {
+            "openlayers-full-map" : {
                 "bundlePath" : "/Oskari/packages/openlayers/bundle/"
             },
             "openlayers-default-theme" : {

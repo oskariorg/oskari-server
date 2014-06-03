@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -64,8 +64,8 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <directory>${basedir}/../webapp-map/src/main/webapp</directory>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <plugins>
@@ -145,7 +145,7 @@
                       <outputDirectory>${basedir}/dist/jsp</outputDirectory>
                       <resources>
                         <resource>
-                            <directory>${basedir}/src/main/webapp</directory>
+                            <directory>${basedir}/../webapp-map/src/main/webapp</directory>
                         </resource>
                       </resources>
                     </configuration>

@@ -1,5 +1,115 @@
 # Release Notes
 
+## 1.21
+
+### control-base
+
+GetWSCapabilitiesHandler now accepts type parameter and by default parses WMS capabilities as before, but with type 'wmtslayer' proxies the response XML to
+client as is. Also 'wmsurl'-parameter has been changed to 'url'.
+
+SaveLayerHandler now accepts WMTS-layers and has some changed parameters:
+* wmsName is now layerName
+* wmsUrl is now layerUrl
+
+SaveLayerHandler propably will see some changes for WMTS-layer in near future.
+
+### database
+
+Changed capabilities cache table data size from 20000 characters to text to enable bigger capabilities documents.
+
+Added keyword tables that are required by admin-layerselector when adding new layers.
+
+Changed role mapping for users to be based on user id instead of username.
+
+### control-admin
+
+Added new module for administration
+
+### control-admin/UsersHandler
+
+New handler for listing, adding, editing and removing users
+
+### service-base
+
+ConversionHelper.getBoolean(null, true) now works correctly and returns the defaultValue instead of false with null parameter.
+
+ConversionHelper, XmlHelper and JSONHelper have some additional helper methods.
+
+### webapp-map/standalone-jetty/servlet-map
+
+Many customizable operations have been moved out of the MapfullServlet code and into ServletFilters and ServletContextListener.
+
+Now uses OskariContextInitializer to setup the environment for the servlet-map:
+checks connection pools, populates properties and database connection on context initialization.
+See the server log for initialization messages.
+
+Now uses configurable OskariRequestFilter to setup the httpRequest for servlet:
+* locale (based on http-param/cookie)
+* login form url/fieldnames and logout url for logged in users
+* userprincipal (should be disabled by setting property oskari.request.handlePrincipal=false in oskari-ext.properties
+    if your servlet container handles user principal with JAAS (ldap or other authentication)
+
+JAASAuthenticationFilter is now PrincipalAuthenticationFilter:
+* handles login/logout functionality for users based on request.getUserPrincipal().
+* adds users to oskari database based on request.getUserPrincipal() and request.isUserInRole()
+* automatical user insertion can be disabled with property auth.add.missing.users=false
+* external role names can be mapped to Oskari role names with new table oskari_role_external_mapping with role_id
+    pointing to Oskari role and name having the value of the external role name
+
+### standalone-jetty
+
+Added request logging support. Tries to write them into logs directory and prints out a message if it doesn't exist.
+
+Removed src/main/webapp (JSPs) from under standalone-jetty. Build now uses the JSPs from under webapp-map so there's no need
+to copy/paste them on changes.
+
+### service-feature-engine
+
+New custom-parser option for transport to handle complex services. Example groovy-scripts for handling some services.
+
+### transport (now servlet-transport and webapp-transport)
+
+Split into servlet and webapp packages to be more in line with map-packages. The deployable war-file is now located webapp-transport/target.
+
+No longer sets system property for geotools (org.geotools.referencing.forceXY) so it's safe to use with other webapps in the same JVM.
+
+fi/nls/oskari/transport/config.properties has been renamed transport.properties and some of the property keys have been renamed to match the ones used in oskari.properties:
+
+* serviceURL-> oskari.domain
+* serviceURLParam -> oskari.ajax.url.prefix
+* serviceURLSessionParam-> oskari.cookie.session
+* oskari.cookie.route is newly configurable, defaults to ROUTEID
+* serviceURLLiferayPath is now obsolete and any additional parameters for API url should now be added to oskari.ajax.url.prefix as on oskari.properties
+* redisHostname -> redis.hostname
+* redisPort -> redis.port
+
+Transport now initializes by reading properties files in this order:
+* oskari.properties
+* transport.properties
+* oskari-ext.properties
+* transport-ext.properties
+
+Moved JobQueue/Job from transport into service-base. Added teardown() hook for Job.
+
+Added ResultProcessor interface for transport. WFSLayerJobs don't need reference to TransportService anymore,
+but instance of ResultProcessor so they can be used elsewhere also. TransportService implements ResultProcessor by forwarding
+the messages to cometd.
+
+WFSLayerStore now extends WFSLayerConfiguration instead of copy-paste methods. Also cleaned wfs configuration a bit by removing
+ obsolete fields like testlocation/testzoom etc.
+
+Removed build profiles, custom resources for transport can now be given with maven property "transport.resourceDir" (via maven profile etc)
+
+### servlet-transport (feature-engine) 
+
+WFS/feature-engine Fixed map click to return features to frontend. 
+WFS: 1st Attempt to use GeoTools forceXy for CRS only when drawing PNG result images.
+WFS/feature-engine Finished feature engine groovy script configuration from database.
+ELF: Included INSPIRE SLD resources to servlet-transport/src/main/resources.
+ELF: Included a PoC groovy scripts for AU and GN reading to servlet-transport/src/main/resources.
+ELF: Added database setup JSON and SQL scripts for 3 GN and 1 AU layer
+ELF: SLD, groovy and db setup script placement may change to some app specific resources module in the future. 
+
 ## 1.20
 
 ### service-users
