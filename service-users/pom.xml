@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.21</version>
+        <version>1.22-SNAPSHOT</version>
     </parent>
 
     <groupId>fi.nls.oskari.service</groupId>
