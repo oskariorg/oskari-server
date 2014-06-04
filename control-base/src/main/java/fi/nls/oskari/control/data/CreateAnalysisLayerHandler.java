@@ -18,6 +18,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AggregateMethodParams;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.domain.IntersectMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
@@ -36,6 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @OskariActionRoute("CreateAnalysisLayer")
@@ -122,7 +125,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             // Generate WPS XML
             String featureSet;
             try {
-                featureSet = wpsService.requestFeatureSet(analysisLayer);
+                featureSet = this.requestFeatureSets(analysisLayer);
             } catch (ServiceException e) {
                 this.MyError(ERROR_UNABLE_TO_GET_WPS_FEATURES, params, e);
                 return;
@@ -305,5 +308,44 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         JSONHelper.putValue(errorResponse, "error", mes);
         ResponseHelper.writeResponse(params, errorResponse);
     }
+
+    /**
+     * Get GeoServer WPS execute responses
+     *
+     * @param analysisLayer analysis method parameters
+     * @return one or more Wps execute responses
+     * @throws ServiceException
+     */
+    private String requestFeatureSets(AnalysisLayer analysisLayer) throws ServiceException {
+
+        String featureSet = null;
+        if (analysisLayer.getMethod().equals(AGGREGATE)) {
+            StringBuilder sb = new StringBuilder();
+            // Loop aggregate attribute fields
+            // Temp save  aggregate function setup
+            List<String> aggre_funcs = ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).getAggreFunctions();
+            List<String> aggre_text_funcs = new ArrayList<String>();
+            aggre_text_funcs.add("Count");
+            for (String field : analysisLayer.getFields()) {
+                ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreField1(field);
+                if (analysisLayer.getFieldtypeMap().containsKey(field)) {
+                    if (analysisLayer.getFieldtypeMap().get(field).equals("numeric")) {
+                        ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_funcs);
+                    } else {
+                        ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
+                    }
+                }
+                sb.append("<fieldResult>");
+                sb.append("<field>" + field + "</field>");
+                sb.append(wpsService.requestFeatureSet(analysisLayer));
+                sb.append("</fieldResult>");
+            }
+            featureSet = sb.toString();
+        } else {
+            featureSet = wpsService.requestFeatureSet(analysisLayer);
+        }
+        return featureSet;
+    }
+
 
 }
