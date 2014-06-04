@@ -3,9 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ELFLet Guest - ${viewName} view</title>
+    <title>Artic SDI Guest - ${viewName} view</title>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script
+		src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.min.js"></script>
 
     <!-- ############# css ################# -->
@@ -28,50 +30,47 @@
             href="/Oskari${path}/css/overwritten.css"/>
     <style type="text/css">
         @media screen {
-
-            #login {
-                margin-left: 5px;
-            }
-
-            #login input[type="text"], #login input[type="password"] {
-                width: 90%;
-                margin-bottom: 5px;
-                background-image: url("/Oskari${path}/images/forms/input_shadow.png");
-                background-repeat: no-repeat;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login input[type="submit"] {
-                width: 90%;
-                margin-bottom: 5px;
-                padding-left: 5px;
-                padding-right: 5px;
-                border: 1px solid #B7B7B7;
-                border-radius: 4px 4px 4px 4px;
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-                color: #878787;
-                font: 13px/100% Arial,sans-serif;
-            }
-            #login p.error {
-                font-weight: bold;
-                color : red;
-                margin-bottom: 10px;
-            }
-
-            #login a {
-                color: #FFF;
-                padding: 5px;
-            }
-            
-             div.featuredataplugin.mapplugin {
-            	top: inherit !important;
-            	bottom: 30px !important;
-            }
+#login {
+		margin-left: 5px;
+	}
+	#login input[type="text"],#login input[type="password"] {
+		width: 90%;
+		margin-bottom: 5px;
+		background-image: url("/Oskari${path}/images/forms/input_shadow.png");
+		background-repeat: no-repeat;
+		padding-left: 5px;
+		padding-right: 5px;
+		border: 1px solid #B7B7B7;
+		border-radius: 4px 4px 4px 4px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+		color: #878787;
+		font: 13px/100% Arial, sans-serif;
+	}
+	#login input[type="submit"] {
+		width: 90%;
+		margin-bottom: 5px;
+		padding-left: 5px;
+		padding-right: 5px;
+		border: 1px solid #B7B7B7;
+		border-radius: 4px 4px 4px 4px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+		color: #878787;
+		font: 13px/100% Arial, sans-serif;
+	}
+	#login p.error {
+		font-weight: bold;
+		color: red;
+		margin-bottom: 10px;
+	}
+	#login a {
+		color: #FFF;
+		padding: 5px;
+	}
+	div.featuredataplugin.mapplugin {
+		top: inherit !important;
+		bottom: 30px !important;
+	}
+          
 
         }
     </style>

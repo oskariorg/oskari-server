@@ -22,17 +22,21 @@
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/portal.css"/>
-    <link
+    <!-- link
             rel="stylesheet"
             type="text/css"
             href="/Oskari${path}/css/overwritten.css"/>
     <style type="text/css">
         @media screen {
-			div.contentMap { margin-left: 0px !important; }
+			#contentMap { margin-left: 0px !important; }
           
+           div.featuredataplugin.mapplugin {
+            	top: inherit !important;
+            	bottom: 30px !important;
+            }
 
         }
-    </style>
+    </style-->
     <!-- ############# /css ################# -->
 </head>
 <body>
