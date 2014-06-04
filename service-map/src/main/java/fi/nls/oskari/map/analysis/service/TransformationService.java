@@ -220,7 +220,14 @@ public class TransformationService {
         return numericValue;
     }
 
-    public String addPropertiesTo1stFeature(String featureSet, String analysisLayer) throws ServiceException
+    /**
+     *
+     * @param featureSet      WPS union response
+     * @param aggregateResults   Aggregate results ([attribue1:{Count:xx,Sum=yy,..},..])
+     * @return
+     * @throws ServiceException
+     */
+    public String addPropertiesTo1stFeature(String featureSet, String aggregateResults) throws ServiceException
 
     {
 
@@ -238,7 +245,7 @@ public class TransformationService {
                 // we trust that featureMember only has one feature...
                 // find the child feature...
 
-                JSONObject js = new JSONObject(analysisLayer);
+                JSONObject js = new JSONObject(aggregateResults);
                 NodeList meh = featureMembers.item(i).getChildNodes();
                 Node feature = null;
                 for (int j = 0; j < meh.getLength(); j++) {
@@ -254,17 +261,10 @@ public class TransformationService {
                     String key = (String) keys.next();
                     if (js.get(key) instanceof JSONObject) {
                         JSONObject subjs = js.getJSONObject(key);
-                        Iterator<?> skeys = subjs.keys();
-                        while (skeys.hasNext()) {
-                            String skey = (String) skeys.next();
-                            Node elem = feature.getOwnerDocument().createElement("feature:" + skey);
-                            elem.setTextContent(subjs.get(skey).toString());
+
+                            Node elem = feature.getOwnerDocument().createElement("feature:" + key);
+                            elem.setTextContent(subjs.toString());
                             feature.appendChild(elem);
-                        }
-                    } else {
-                        Node elem = feature.getOwnerDocument().createElement("feature:" + key);
-                        elem.setTextContent(js.getString(key));
-                        feature.appendChild(elem);
 
                     }
                 }

@@ -399,7 +399,7 @@ public class AnalysisParser {
             String aggre_field = null;
             try {
 
-                aggre_field = json.getJSONObject(JSON_KEY_METHODPARAMS)
+          /*      aggre_field = json.getJSONObject(JSON_KEY_METHODPARAMS)
                         .optString(JSON_KEY_AGGRE_ATTRIBUTE);
                 if (analysisLayer.getInputType().equals(
                         ANALYSIS_INPUT_TYPE_GS_VECTOR))
@@ -410,7 +410,8 @@ public class AnalysisParser {
                                 .SwitchField2AnalysisField(aggre_field,
                                         analysisLayer.getInputAnalysisId());
                     }
-                }
+                } */
+                aggre_field = fields.get(0);
                 JSONArray aggre_func_in = json.getJSONObject(
                         JSON_KEY_METHODPARAMS).optJSONArray(JSON_KEY_FUNCTIONS);
                 List<String> aggre_funcs = new ArrayList<String>();
@@ -711,25 +712,49 @@ public class AnalysisParser {
      * @return JSON.toSting() eg. aggregate WPS results
      ************************************************************************/
     public String parseAggregateResults(String response,
-                                         AnalysisLayer analysisLayer) {
+                                        AnalysisLayer analysisLayer) {
 
         try {
 
             // convert xml/text String to JSON
 
             final JSONObject json = XML.toJSONObject(response); // all
-            // Add field name
-            final AggregateMethodParams aggreParams = (AggregateMethodParams) analysisLayer
-                    .getAnalysisMethodParams();
-            String fieldName = aggreParams.getAggreField1();
-            if(analysisLayer.getInputAnalysisId() != null)
-            {
-                fieldName = analysisDataService
-                        .SwitchField2OriginalField(fieldName,
-                                analysisLayer.getInputAnalysisId());
+            JSONObject aggreResult = new JSONObject();
+
+            // Loop aggregate fields
+            JSONArray results = json.optJSONArray("fieldResult");
+            if (results != null) {
+                for (int i = 0; i < results.length(); i++) {
+
+                    JSONObject result = results.optJSONObject(i);
+                    if (result != null) {
+                        String fieldName = result.optString("field");
+                        if (fieldName != null) {
+                            if (analysisLayer.getInputAnalysisId() != null) {
+                                fieldName = analysisDataService
+                                        .SwitchField2OriginalField(fieldName,
+                                                analysisLayer.getInputAnalysisId());
+                            }
+                            aggreResult.put(fieldName, result.optJSONObject("AggregationResults"));
+                        }
+                    }
+                }
+            } else {
+                JSONObject result = json.optJSONObject("fieldResult");
+                if (result != null) {
+                    String fieldName = result.optString("field");
+                    if (fieldName != null) {
+                        if (analysisLayer.getInputAnalysisId() != null) {
+                            fieldName = analysisDataService
+                                    .SwitchField2OriginalField(fieldName,
+                                            analysisLayer.getInputAnalysisId());
+                        }
+                        aggreResult.put(fieldName, result.optJSONObject("AggregationResults"));
+                    }
+                }
             }
-            json.put("fieldName", fieldName);
-            return json.toString();
+
+            return aggreResult.toString();
 
         } catch (JSONException e) {
             log.error(e, "XML to JSON failed", response);
