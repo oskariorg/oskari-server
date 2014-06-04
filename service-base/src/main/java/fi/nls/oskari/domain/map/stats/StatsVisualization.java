@@ -14,7 +14,6 @@ public class StatsVisualization {
     private Map<String, String> name = new HashMap<String, String>();
 
     private long id;
-    private int statsLayerId;
     private String nameJSON;
     private String visualization;
     private String classes;
@@ -63,14 +62,6 @@ public class StatsVisualization {
             return "undefined";
         }
         return value;
-    }
-
-    public int getStatsLayerId() {
-        return statsLayerId;
-    }
-
-    public void setStatsLayerId(int statsLayerId) {
-        this.statsLayerId = statsLayerId;
     }
 
     public void setNameJSON(String json) {

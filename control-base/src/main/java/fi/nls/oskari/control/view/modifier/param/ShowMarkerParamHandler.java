@@ -38,11 +38,10 @@ public class ShowMarkerParamHandler extends MarkersParamHandler {
                 return false;
             }
 
-            final JSONObject mapfullConf = getBundleConfig(params.getConfig(), BUNDLE_MAPFULL);
-            final JSONObject markersPlugin = getMarkersPlugin(mapfullConf);
-            final JSONArray existing = getMarkersFromPluginState(markersPlugin);
+            final JSONObject markersPluginState = getMarkersPluginState(mapfullState);
+            final JSONArray existing = getMarkersFromPluginState(markersPluginState);
             if(existing == null) {
-                log.info("Couldn't create markers array");
+                log.warn("Couldn't create markers array");
                 return false;
             }
             existing.put(centerMarker);

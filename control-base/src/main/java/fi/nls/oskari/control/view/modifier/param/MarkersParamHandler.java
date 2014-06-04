@@ -49,11 +49,12 @@ public class MarkersParamHandler extends ParamHandler {
     private static final String KEY_Y = "y";
 
     // for parsing mapfull config
-    private static final String MARKERSPLUGIN_ID = "Oskari.mapframework.mapmodule.MarkersPlugin";
+    private static final String MARKERSPLUGIN_ID = "MainMapModuleMarkersPlugin";
     private static final String KEY_PLUGINS = "plugins";
     private static final String KEY_ID = "id";
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
+        log.info("handleParam");
         if(params.getParamValue() == null) {
             return false;
         }
@@ -64,21 +65,20 @@ public class MarkersParamHandler extends ParamHandler {
             if(marker != null) {
                 list.put(marker);
             }
-            else {
-                log.info("Failed to parse marker from:", str);
-            }
         }
         // setup plugin config if there were any markers
         if(list.length() > 0) {
-            final JSONObject mapfullConf = getBundleConfig(params.getConfig(), BUNDLE_MAPFULL);
-            final JSONObject markersPlugin = getMarkersPlugin(mapfullConf);
-            final JSONArray existing = getMarkersFromPluginState(markersPlugin);
-            if(existing == null) {
-                log.info("Couldn't create markers array");
-                return false;
+            final JSONObject mapfullState = getBundleState(params.getConfig(), BUNDLE_MAPFULL);
+            final JSONObject markersPluginState = getMarkersPluginState(mapfullState);
+            // showMarker shouldn't be true if we have user markers
+            // so we can safely write over cookie state here...
+            final JSONArray markersArray = new JSONArray();
+            if (markersPluginState.has(KEY_MARKERS)) {
+                markersPluginState.remove(KEY_MARKERS);
             }
+            JSONHelper.putValue(markersPluginState, KEY_MARKERS, markersArray);
             for(int i = 0; i < list.length(); ++i) {
-                existing.put(list.optJSONObject(i));
+                markersArray.put(list.optJSONObject(i));
             }
         }
         return false;
@@ -90,14 +90,16 @@ public class MarkersParamHandler extends ParamHandler {
      * @return
      */
     private JSONObject getMarker(final String linkText) {
-        final String[] fields = linkText.split("\\" + FIELD_SEPARATOR);
+        final String[] fields = linkText.split("\\" + FIELD_SEPARATOR, -1);
         if(fields.length < 5 ) {
+            log.warn("Failed to parse marker from string:", linkText, " (Field count was " + fields.length + ", expected >= 5)");
             log.debug(fields);
             return null;
         }
 
         final String[] coords = fields[3].split(COORD_SEPARATOR);
         if(coords.length != 2) {
+            log.warn("Failed to parse marker from string:", linkText, "(Coords count was " + coords.length + ", expected 2)");
             return null;
         }
         // parse as doubles to be sure
@@ -148,36 +150,34 @@ public class MarkersParamHandler extends ParamHandler {
 
     /**
      * Find MarkersPlugin from mapfull config
-     * @param mapfullConf
+     * @param mapfullState mapfull bundle state
      * @return JSONObject for MarkersPlugin or null if not found
      */
-    protected JSONObject getMarkersPlugin(final JSONObject mapfullConf) {
-        final JSONArray plugins = mapfullConf.optJSONArray(KEY_PLUGINS);
-        for(int i = 0; i < plugins.length(); ++i) {
-            final JSONObject plugin = plugins.optJSONObject(i);
-            final String id = plugin.optString(KEY_ID);
-            if(MARKERSPLUGIN_ID.equals(id)) {
-                return plugin;
-            }
+    protected JSONObject getMarkersPluginState(final JSONObject mapfullState) {
+        JSONObject plugins = mapfullState.optJSONObject(KEY_PLUGINS);
+        JSONObject pluginState = null;
+        if (plugins != null) {
+            pluginState = plugins.optJSONObject(MARKERSPLUGIN_ID);
+        } else {
+            plugins = new JSONObject();
+            JSONHelper.putValue(mapfullState, KEY_PLUGINS, plugins);
         }
-        log.info("Tried to modify markers config but couldn't find plugin in view");
-        return null;
+        if (pluginState == null) {
+            pluginState = new JSONObject();
+            JSONHelper.putValue(pluginState, KEY_MARKERS, new JSONArray());
+            JSONHelper.putValue(plugins, MARKERSPLUGIN_ID, pluginState);
+        }
+        return pluginState;
     }
 
     /**
      * Find markers array from MarkersPlugin. Creating it if doesn't exist.
-     * @param plugin
+     * @param state Markers plugin state
      * @return JSONArray for adding markers or null if plugin was null
      */
-    protected JSONArray getMarkersFromPluginState(final JSONObject plugin) {
-        if(plugin == null) {
-            return null;
-        }
-        JSONObject state = plugin.optJSONObject(KEY_STATE);
+    protected JSONArray getMarkersFromPluginState(final JSONObject state) {
         if(state == null) {
-            // no existing config, create one
-            state = new JSONObject();
-            JSONHelper.putValue(plugin, KEY_STATE, state);
+            return null;
         }
         JSONArray existing = state.optJSONArray(KEY_MARKERS);
         if(existing == null) {

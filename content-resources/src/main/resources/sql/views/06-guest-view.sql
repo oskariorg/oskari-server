@@ -571,7 +571,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 -- update proper config for view
 UPDATE portti_view_bundle_seq set config = '{
-        "__name": "Personaldata",
+        "__name": "PersonalData",
         "title": {
             "en": "My data",
             "fi": "Omat tiedot",
@@ -627,6 +627,14 @@ UPDATE portti_view_bundle_seq set config = '{
                         "fi": "Lisää alue - Kirjaudu sisään käyttääksesi",
                         "sv": "Tillägg område - Logga in för att använda",
                         "en": "Add area - Log in to use"
+                    }
+                },
+                "import" : {
+                    "iconCls": "upload-material",
+                    "tooltip": {
+                        "fi": "Tuo oma aineisto - Kirjaudu sisään käyttääksesi",
+                        "sv": "Importera egen datamängd - Logga in för att använda",
+                        "en": "Import your own dataset - Log in to use"
                     }
                 }
             }
