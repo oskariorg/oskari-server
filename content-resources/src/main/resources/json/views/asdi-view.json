@@ -35,9 +35,15 @@
                 "plugins": [
                     {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
-                    },
-                    {
+                    }, {
                         "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                        "config": {
+                            "ignoredLayerTypes": ["WFS"]
+                        }
                     },
                     {
                         "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"

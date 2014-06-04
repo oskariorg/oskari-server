@@ -82,8 +82,8 @@
                 ],
                 "layers": [],
                 "mapOptions": {
-                    "srsName": "EPSG:900913",
-                    "projection": "EPSG:900913",
+                    "srsName": "EPSG:3857",
+                    "projection": "EPSG:3857",
 			        "displayProjection": "EPSG:4326",
 			        "resolutions": [
  19567.87923828125,
