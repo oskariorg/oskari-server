@@ -162,7 +162,11 @@
                 "viewtools": {
                     "print": false,
                     "link": false
-                }
+                },
+                "basictools": {
+					"measurearea": false,
+					"measureline": false
+				}
             }
         }, {
             "id": "infobox"
