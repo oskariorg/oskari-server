@@ -1,11 +1,11 @@
--- ELF GN geonorge.no - requires username, password
--- add map layer; 
+-- HY.Network.Default.sld;
+
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_geonorge', (SELECT MAX(id) FROM oskari_layergroup), 
-         120000, 1, 
-         'wfs', '{fi:{name:"ELF GN - geonorge.no", subtitle:""},sv:{name:"ELF GN - geonorge.no", subtitle:""},en:{name:"ELF GN - geonorge.no", subtitle:""}}');
+  VALUES('wfslayer', 'elf_HY_fgi_fi', (SELECT MAX(id) FROM oskari_layergroup), 
+         500000, 1, 
+         'wfs', '{fi:{name:"ELF HY - fgi.fi", subtitle:""},sv:{name:"ELF HY - fgi.fi", subtitle:""},en:{name:"ELF HY - fgi.fi", subtitle:""}}');
          
 
          
@@ -13,15 +13,15 @@ INSERT INTO oskari_maplayer(type, name, groupId,
 INSERT INTO oskari_maplayer_themes(maplayerid, 
                                    themeid) 
   VALUES((SELECT MAX(id) FROM oskari_maplayer), 
-         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Geographical names%')); 
+         (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Hydrography%')); 
          
          
--- add template model stuff; 
+-- add template model stuff;
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
-	'ELF GN', 'ELF GN PoC', 'mah taip', 
-	'/fi/nls/oskari/fe/input/format/gml/inspire/gn/geonorge_wfs_template.xml', 
-	'/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy');          
+	'ELF HY', 'ELF HY PoC', 'mah taip', 
+	'/fi/nls/oskari/fe/input/format/gml/inspire/hy/fgi_fi_WatercourseLink_wfs_template.xml', 
+	'/fi/nls/oskari/fe/input/format/gml/hy/ELF_generic_HY.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
@@ -46,19 +46,19 @@ INSERT INTO portti_wfs_layer (
     job_type, 
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
-      'ELF_GN_geonorge_no', 
-       'http://wfs.geonorge.no/skwms1/wfs.elf-lod1gn', null, null, 
+      'elf_HY_fgi_fi', 
+       'http://inspire-hy.fgi.fi/geoserver/wfs', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
        '', 
-       '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
+       '{"default" : "default" : "*geometry:Geometry,identifier,beginLifespanVersion:String,endLifespanVersion:String,localId:String,namespace:String,versionId:String,flowDirection:String,length:String,country:String,name:String,sourceOfName:String,pronunciation:String,referenceName:String,text:String,script:String"}', 
        '{}', 
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
 	'urn:ogc:def:crs:EPSG::3857', 
-	'NamedPlace', 'http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0', 
+	'WatercourseLink', 'http://www.locationframework.eu/schemas/HydroNetwork/MasterLoD1/1.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
 	'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 
@@ -66,7 +66,7 @@ INSERT INTO portti_wfs_layer (
 -- add wfs layer styles; 
 INSERT INTO portti_wfs_layer_style (name,sld_style) VALUES(
 	'oskari-feature-engine',
-	'/fi/nls/oskari/fe/output/style/inspire/gn/geonorge.xml'
+	'/fi/nls/oskari/fe/output/style/inspire/hy/fgi_fi_WatercourseLink.xml'
 );
 
 -- link wfs layer styles; 
@@ -76,7 +76,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
 	
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_gn_geonorge');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_HY_fgi_fi');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
@@ -107,4 +107,4 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
 
-		
+	
