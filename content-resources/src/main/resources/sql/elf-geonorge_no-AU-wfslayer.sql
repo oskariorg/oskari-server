@@ -1,11 +1,11 @@
--- ELF AU ign.fr - requires username, password
+-- ELF AU geonorge.no - requires username, password
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_ign_fr', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_AU_geonorge_no', (SELECT MAX(id) FROM oskari_layergroup), 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF AU - ign.fr", subtitle:""},sv:{name:"ELF AU - ign.fr", subtitle:""},en:{name:"ELF AU - ign.fr", subtitle:""}}');
+         'wfs', '{fi:{name:"ELF AU - geonorge.no", subtitle:""},sv:{name:"ELF AU - geonorge.no", subtitle:""},en:{name:"ELF AU - geonorge.no", subtitle:""}}');
          
 
          
@@ -20,7 +20,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
-	'/fi/nls/oskari/fe/input/format/gml/inspire/au/ign_fr_wfs_template.xml', 
+	'/fi/nls/oskari/fe/input/format/gml/inspire/au/geonorge_no_wfs_template.xml', 
 	'/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy');          
 
 -- add wfs specific layer data; 
@@ -46,8 +46,8 @@ INSERT INTO portti_wfs_layer (
     job_type, 
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
-      'ELF_AU_ign_fr', 
-       'http://wxs.ign.fr/6veobt10ttujyzlu605byvhv/inspire/wfs', null, null, 
+      'ELF_AU_geonorge_no', 
+       'http://services.geonorge.no/wfs/inspire-au-wfs.asp', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
@@ -76,7 +76,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
 	
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_AU_ign_fr');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_AU_geonorge_no');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;

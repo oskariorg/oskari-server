@@ -24,6 +24,8 @@
         "elf-cuzk_cz-AU-wfslayer.sql",
         "elf-nls_fi-GN-wfslayer.sql",
         "elf-geonorge-GN-wfslayer.sql",
-        "elf-lantmateriet-GN-wfslayer.sql"
+        "elf-lantmateriet-GN-wfslayer.sql",
+        "elf-fgi_fi-HY-WatercourseLink-wfslayer.sql",
+        "elf-geonorge-AU-wfslayer.sql"
     ]
 }

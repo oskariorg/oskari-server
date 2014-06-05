@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_AU_cuzk_cz', 
-       'http://services.cuzk.cz/wfs/inspire-au-wfs.asp', '', '', 
+       'http://services.cuzk.cz/wfs/inspire-au-wfs.asp', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
