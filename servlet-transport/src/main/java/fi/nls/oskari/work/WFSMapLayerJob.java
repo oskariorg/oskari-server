@@ -544,25 +544,29 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
                     // selected values
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-                    if(selectedProperties != null && selectedProperties.size() != 0) {
-                        for(String attr : selectedProperties) {
-                            if (this.layer.getLayerId().startsWith(UserLayerFilter.USERLAYER_PREFIX)) {
-                                Object prop = feature.getAttribute(attr);
-                                try {
-                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
-                                    values.add(propMap);
-                                } catch(Exception e) {
-                                    values.add(prop);
-                                }
-                            } else {
-                                values.add(feature.getAttribute(attr));
+                    if (selectedProperties != null && selectedProperties.size() != 0) {
+                        for (String attr : selectedProperties) {
+                            // Serve always object, if object
+                            Object prop = feature.getAttribute(attr);
+                            try {
+                                HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
+                                values.add(propMap);
+                            } catch (Exception e) {
+                                values.add(prop);
                             }
                         }
                     } else { // all values
-                        for(Property prop : this.features.features().next().getProperties()) {
+                        for (Property prop : this.features.features().next().getProperties()) {
                             String field = prop.getName().toString();
-                            if(!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
-                                values.add(feature.getAttribute(field));
+                            if (!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
+                                // Serve always object, if object
+                                Object attr = feature.getAttribute(field);
+                                try {
+                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(attr.toString(), HashMap.class);
+                                    values.add(propMap);
+                                } catch (Exception e) {
+                                    values.add(attr);
+                                }
                             }
                         }
                     }
