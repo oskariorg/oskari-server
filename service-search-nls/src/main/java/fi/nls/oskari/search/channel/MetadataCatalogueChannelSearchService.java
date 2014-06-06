@@ -5,12 +5,18 @@ import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.control.metadata.MetadataField;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ServiceFactory;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+
 import java.net.HttpURLConnection;
 import java.util.*;
 
@@ -50,6 +56,8 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
     private final MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
+    
+    private OskariLayerServiceIbatisImpl mapLayerService = (OskariLayerServiceIbatisImpl)ServiceFactory.getMapLayerService();
 
     public String getId() {
         return ID;
@@ -145,7 +153,9 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     }
 
     public ChannelSearchResult parseResults(final StAXOMBuilder builder, final String locale) {
+    	
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
+        log.debug("parseResults");
         try {
             final OMElement resultsWrapper = getResultsElement(builder);
             // resultsWrapper == null -> no search results
@@ -155,7 +165,26 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
                 final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
                 setupResultItemURLs(item, locale);
                 channelSearchResult.addItem(item);
+                final OskariLayer oskariLayer =  getOskariLayerWithUuid(item);
+                
+                if(oskariLayer != null){
+                	log.debug("Got oskariLayer");
+                    // Creating a new searchResultItem and inserting uuid, name, group name from map layer
+                	SearchResultItem newitem = new SearchResultItem();
+                	log.debug("name: " + oskariLayer.getName());
+                	newitem.setTitle(oskariLayer.getName());
+                	newitem.setResourceId(item.getUuId());
+                	if(oskariLayer.getGroup() != null){
+                    	log.debug("groupname: " + oskariLayer.getGroup().getName(locale));
+                    	newitem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, oskariLayer.getGroup().getName(locale));
+                	}else{
+                		log.debug("no group name");
+                    	newitem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, "");
+                	}
+                	channelSearchResult.addItem(newitem);
+                }
             }
+            
             final long end =  System.currentTimeMillis();
             log.debug("Parsing metadata results took", (end-start), "ms");
             channelSearchResult.setQueryFailed(false);
@@ -166,7 +195,19 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         }
         return channelSearchResult;
     }
-
+    
+    
+    private OskariLayer getOskariLayerWithUuid(SearchResultItem item){
+    	
+    	log.debug("in getOskariLayerWithUuid");
+    	if(item.getUuId() == null){
+    		return null;
+    	}else{
+        	return mapLayerService.findByuuid(item.getUuId());
+    	}
+    }
+    
+    
     private void setupResultItemURLs(final SearchResultItem item, final String locale) {
         final String uuid = item.getResourceId();
 
@@ -210,7 +251,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
 
         final long end =  System.currentTimeMillis();
 
-        final StAXOMBuilder stAXOMBuilder = new StAXOMBuilder(conn.getInputStream());
+        final StAXOMBuilder stAXOMBuilder = new StAXOMBuilder(IOHelper.debugResponse(conn.getInputStream()));
         log.debug("Querying metadata service took", (end-start), "ms");
         return stAXOMBuilder;
     }

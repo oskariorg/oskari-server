@@ -221,6 +221,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return null;
     }
 
+    
     public List<OskariLayer> find(final List<String> idList) {
         // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
         // ensure order stays the same
@@ -247,6 +248,21 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
             log.warn(e, "Exception when getting layer with id:", id);
         }
         log.warn("Couldn't find layer with id:", id);
+        return null;
+    }
+
+    public OskariLayer findByuuid(String uuid) {
+        try {
+            client = getSqlMapClient();
+            final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findByUuId", uuid));
+            if(layers != null && !layers.isEmpty()) {
+                // should we check for multiples? only should have one since sublayers are mapped in mapDataList()
+                return layers.get(0);
+            }
+        } catch (Exception e) {
+            log.warn(e, "Exception when getting layer with uuid:", uuid);
+        }
+        log.warn("Couldn't find layer with id:", uuid);
         return null;
     }
 

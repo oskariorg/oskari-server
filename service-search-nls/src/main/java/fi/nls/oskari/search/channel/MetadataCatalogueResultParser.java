@@ -4,11 +4,14 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.axiom.om.OMAttribute; 
 import org.jaxen.SimpleNamespaceContext;
 
 import javax.xml.namespace.QName;
+
 import java.util.*;
 
 /**
@@ -25,6 +28,7 @@ public class MetadataCatalogueResultParser {
     private AXIOMXPath XPATH_IDENTIFICATION_IMAGE = null;
     private AXIOMXPath XPATH_IDENTIFICATION_ORGANIZATION = null;
     private AXIOMXPath XPATH_IDENTIFICATION_BBOX = null;
+    private AXIOMXPath XPATH_IDENTIFICATION_UUID = null;
 
     private AXIOMXPath XPATH_DISTINFO = null;
 
@@ -79,6 +83,8 @@ setResourceNameSpace(serverURL)
         XPATH_FILEID = getXPath("./gmd:fileIdentifier/gco:CharacterString");
 
         XPATH_LOCALE_MAP = getXPath("./gmd:locale/gmd:PT_Locale");
+        
+        XPATH_IDENTIFICATION_UUID = getXPath("./srv:operatesOn");
 
         if(ISO3letterOskariLangMapping.isEmpty()) {
             final String[] languages = Locale.getISOLanguages();
@@ -109,7 +115,7 @@ setResourceNameSpace(serverURL)
             pathToLocalizedValue = getXPath("../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locales.get(locale) + "']");
         }
         final OMElement idNode = (OMElement) XPATH_IDENTIFICATION.selectSingleNode(elem);
-
+        
         final SearchResultItem item = new SearchResultItem();
         final OMElement titleNode = (OMElement) XPATH_IDENTIFICATION_TITLE.selectSingleNode(idNode);
         item.setTitle(getLocalizedContent(titleNode, pathToLocalizedValue));
@@ -119,15 +125,33 @@ setResourceNameSpace(serverURL)
         item.setContentURL(getLocalizedContent(imageNode, pathToLocalizedValue));
         final OMElement orgNode = (OMElement) XPATH_IDENTIFICATION_ORGANIZATION.selectSingleNode(idNode);
         item.addValue(MetadataField.RESULT_KEY_ORGANIZATION, getLocalizedContent(orgNode, pathToLocalizedValue));
-
         final OMElement bboxNode = (OMElement) XPATH_IDENTIFICATION_BBOX.selectSingleNode(idNode);
         setupBBox(item, bboxNode);
-
         final OMElement distInfoNode = (OMElement) XPATH_DISTINFO.selectSingleNode(elem);
         item.setGmdURL(getLocalizedContent(distInfoNode, pathToLocalizedValue));
         final OMElement uuidNode = (OMElement) XPATH_FILEID.selectSingleNode(elem);
-        item.setResourceId(getLocalizedContent(uuidNode, pathToLocalizedValue));
+        
+        // getting attribute uuid from operatesOn for later usage
+        final OMElement operatesOnNode = (OMElement) XPATH_IDENTIFICATION_UUID.selectSingleNode(idNode);
+        
+        if(operatesOnNode != null){
+            if(operatesOnNode.getAllAttributes() == null)
+            	log.debug("attributes == null");
 
+            Iterator i = operatesOnNode.getAllAttributes();
+            if(i.hasNext()){
+            	OMAttribute ao = (OMAttribute)i.next();
+            	log.debug("AO value: " + ao.getAttributeValue());
+            	item.setUuId(ao.getAttributeValue());
+            	
+            }
+        }
+     
+        
+        item.setContentURL(getLocalizedContent(imageNode, pathToLocalizedValue));
+        log.debug("getLocalizedContent :" + getLocalizedContent(imageNode, pathToLocalizedValue));
+        
+        item.setResourceId(getLocalizedContent(uuidNode, pathToLocalizedValue));
 
         return item;
     }
