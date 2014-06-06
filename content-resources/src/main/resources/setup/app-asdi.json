@@ -8,12 +8,12 @@
     ],
     
     "views" : [
-        "asdi-view.json",
-        "publisher-template-view.json"
+        "asdi-view.json"
     ],
     "sql" : [
         "populate-Inspire-themes.sql",
-        "asdi-basemap-wmslayer.sql"
+        "asdi-basemap-wmslayer.sql",
+        "asdi-poc-wmslayer.sql"
         
          
     ]

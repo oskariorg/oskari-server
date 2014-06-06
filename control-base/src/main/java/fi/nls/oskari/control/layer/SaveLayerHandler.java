@@ -40,8 +40,8 @@ public class SaveLayerHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARAM_LAYER_ID = "layer_id";
-    private static final String PARAM_WMS_NAME = "wmsName";
-    private static final String PARAM_WMS_URL = "wmsUrl";
+    private static final String PARAM_LAYER_NAME = "layerName";
+    private static final String PARAM_LAYER_URL = "layerUrl";
 
     private static final String LAYER_NAME_PREFIX = "name_";
     private static final String LAYER_TITLE_PREFIX = "title_";
@@ -164,7 +164,7 @@ public class SaveLayerHandler extends ActionHandler {
             throw new ActionParamsException("Version is required!");
         }
         // retrieve capabilities
-        final String wmsUrl = getWmsUrl(ml.getUrl());
+        final String url = getSingleLayerUrl(ml.getUrl());
         CapabilitiesCache cc = null;
         try {
             cc = capabilitiesService.find(ml.getId());
@@ -176,7 +176,7 @@ public class SaveLayerHandler extends ActionHandler {
             }
             cc.setVersion(version);
 
-            final String capabilitiesXML = GetWMSCapabilities.getResponse(wmsUrl);
+            final String capabilitiesXML = GetWMSCapabilities.getResponse(url);
             cc.setData(capabilitiesXML);
 
             // update cache by updating db
@@ -188,13 +188,13 @@ public class SaveLayerHandler extends ActionHandler {
             // flush cache, otherwise only db is updated but code retains the old cached version
             WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
-            log.info(ex, "Error updating capabilities: ", cc, "from URL:", wmsUrl);
+            log.info(ex, "Error updating capabilities: ", cc, "from URL:", url);
             return false;
         }
         return true;
     }
 
-    private String getWmsUrl(String wmsUrl) {
+    private String getSingleLayerUrl(String wmsUrl) {
         if(wmsUrl == null) {
             return null;
         }
@@ -243,8 +243,8 @@ public class SaveLayerHandler extends ActionHandler {
             return;
         }
 
-        ml.setName(params.getRequiredParam(PARAM_WMS_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_NAME));
-        final String url = validateUrl(params.getRequiredParam(PARAM_WMS_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_WMS_URL));
+        ml.setName(params.getRequiredParam(PARAM_LAYER_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_LAYER_NAME));
+        final String url = validateUrl(params.getRequiredParam(PARAM_LAYER_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_LAYER_URL));
         ml.setUrl(url);
 
         ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
@@ -257,28 +257,45 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setTileMatrixSetId(params.getHttpParam("tileMatrixSetId"));
         ml.setTileMatrixSetData(params.getHttpParam("tileMatrixSetData"));
 
+        final String gfiContent = request.getParameter("gfiContent");
+        if (gfiContent != null) {
+            // TODO: some sanitation of content data
+            ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent));
+        }
+
+        ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
+        ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
+
+        if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
+            handleWMSSpecific(params, ml);
+        }
+        else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
+            handleWMTSSpecific(params, ml);
+        }
+    }
+
+    private void handleWMSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+
+        HttpServletRequest request = params.getRequest();
         final String xslt = request.getParameter("xslt");
         if(xslt != null) {
             // TODO: some validation of XSLT data
             ml.setGfiXslt(xslt);
         }
-        final String gfiContent = request.getParameter("gfiContent");
-        if (gfiContent != null) {
-            // TODO: some sanitation of content data
-            ml.setGfiContent(gfiContent);
-        }
         ml.setGfiType(params.getHttpParam("gfiType", ml.getGfiType()));
+    }
 
-        ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
-        ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
+    private void handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+        ml.setTileMatrixSetId(params.getHttpParam("matrixSetId", ml.getTileMatrixSetId()));
+        ml.setTileMatrixSetData(params.getHttpParam("matrixSet", ml.getTileMatrixSetData()));
     }
 
     private String validateUrl(final String url) throws ActionParamsException {
         try {
             // check that it's a valid url by creating an URL object...
-            new URL(getWmsUrl(url));
+            new URL(getSingleLayerUrl(url));
         } catch (MalformedURLException e) {
-            throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_WMS_URL);
+            throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_LAYER_URL);
         }
         return url;
     }

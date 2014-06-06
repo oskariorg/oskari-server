@@ -13,6 +13,7 @@ import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.Tile;
 import fi.nls.oskari.pojo.WFSLayerStore;
 import fi.nls.oskari.transport.TransportService;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.work.OWSMapLayerJob;
@@ -51,9 +52,16 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.sld.SLDConfiguration;
+import org.geotools.styling.DefaultResourceLocator;
+import org.geotools.styling.NamedLayer;
+import org.geotools.styling.NamedStyle;
+import org.geotools.styling.ResourceLocator;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryImpl;
 import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.styling.UserLayer;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
@@ -65,8 +73,9 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.opengis.referencing.cs.AxisDirection;
 import org.xml.sax.SAXException;
-
+import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
@@ -91,34 +100,52 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      */
 
 
-    static GroovyClassLoader gcl = new GroovyClassLoader();
+	   static Map<String, Class<GroovyParserRecipe>> recipeClazzes = 
+               new ConcurrentHashMap<String, Class<GroovyParserRecipe>>();
 
-    static Map<String, Class<GroovyParserRecipe>> recipeClazzes =
-            new HashMap<String, Class<GroovyParserRecipe>>();
+    static GroovyClassLoader gcl = new GroovyClassLoader();
 
     static GroovyParserRecipe getRecipe(String recipePath)
             throws InstantiationException, IllegalAccessException {
 
         Class<GroovyParserRecipe> recipeClazz = recipeClazzes.get(recipePath);
+        if (recipeClazzes.get(recipePath) == null) {
 
-        if (recipeClazz == null) {
+            synchronized (gcl) {
+                try {
+                    log.debug("[fe] recipe compiling " + recipePath + " / "
+                            + recipePath);
 
-            InputStreamReader reader = new InputStreamReader(
-                    FEMapLayerJob.class.getResourceAsStream(recipePath));
+                    InputStreamReader reader = new InputStreamReader(
+                            FEMapLayerJob.class.getResourceAsStream(recipePath));
 
-            GroovyCodeSource codeSource = new GroovyCodeSource(reader,
-                    recipePath, ".");
+                    GroovyCodeSource codeSource = new GroovyCodeSource(reader,
+                            recipePath, ".");
 
-            recipeClazz = (Class<GroovyParserRecipe>) gcl
-                    .parseClass(codeSource, true);
+                    recipeClazz = (Class<GroovyParserRecipe>) gcl.parseClass(
+                            codeSource, true);
 
+                    recipeClazzes.put(recipePath, recipeClazz);
 
-            recipeClazzes.put(recipePath, recipeClazz);
+                    log.debug("[fe] caching recipe " + recipePath);
+
+                } catch (RuntimeException e) {
+
+                    log.debug("[fe] recipe setup FAILURE");
+                    e.printStackTrace(System.err);
+
+                } finally {
+
+                    log.debug("[fe] recipe setup finalized");
+
+                }
+            }
         }
 
         return recipeClazz.newInstance();
 
     }
+
 
     final ArrayList<String> selectedProperties = new ArrayList<String>();
 
@@ -139,9 +166,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     }
 
     protected WFSImage createHighlightImage() {
-        final String styleName = WFSImage.STYLE_HIGHLIGHT;
-        final Style style =
-                createSLDStyle(WFSImage.class.getResourceAsStream(WFSImage.DEFAULT_SLD)); // getClass() (non-static)
+
+        final Style style = getSLD();
 
         return new WFSImage(this.layer, this.session.getClient(),
                 WFSImage.STYLE_DEFAULT, Type.HIGHLIGHT.toString()) {
@@ -151,22 +177,128 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         };
     }
 
+    protected WFSImage createResponseImage() {
+
+        final Style style = getSLD();
+
+        return new WFSImage(this.layer, this.session.getClient(),
+                WFSImage.STYLE_DEFAULT, null) {
+
+            protected Style getSLDStyle(WFSLayerStore layer, String styleName) {
+                return style;
+            }
+
+        };
+    }
+
     /**
      * Parses SLD style from a String (XML)
      *
      * @param xml
      * @return sld
      */
-    static protected Style createSLDStyle(String xml) {
-        if (xml == null) {
-            log.info("Trying to create style from <null> String!");
-            return null;
+    /*
+     * SLD handling building and caching
+     */
+    final static Map<String, Style> templateSLD = new ConcurrentHashMap<String, Style>();
+
+    protected static Style createSLDStyle(String sldFilename) {
+
+        log.debug("[fe] Creating Style tryin 1.1.0 " + sldFilename);
+        try {
+            final java.net.URL surl = FEMapLayerJob.class
+                    .getResource(sldFilename);
+            org.geotools.sld.v1_1.SLDConfiguration configuration = new org.geotools.sld.v1_1.SLDConfiguration() {
+                protected void configureContext(
+                        org.picocontainer.MutablePicoContainer container) {
+                    container.registerComponentImplementation(
+                            StyleFactory.class, StyleFactoryImpl.class);
+
+                    DefaultResourceLocator locator = new DefaultResourceLocator();
+                    locator.setSourceUrl(surl);
+                    container.registerComponentInstance(ResourceLocator.class,
+                            locator);
+                };
+            };
+            Parser parser = new Parser(configuration);
+
+            StyledLayerDescriptor sld = null;
+
+            try {
+                sld = (StyledLayerDescriptor) parser.parse(surl.openStream());
+
+                for (int i = 0; i < sld.getStyledLayers().length; i++) {
+                    Style[] styles = null;
+
+                    if (sld.getStyledLayers()[i] instanceof NamedLayer) {
+                        NamedLayer layer = (NamedLayer) sld.getStyledLayers()[i];
+                        styles = layer.getStyles();
+                    } else if (sld.getStyledLayers()[i] instanceof UserLayer) {
+                        UserLayer layer = (UserLayer) sld.getStyledLayers()[i];
+                        styles = layer.getUserStyles();
+                    } else {
+                        log.debug("[fe] --> "
+                                + sld.getStyledLayers()[i].getClass());
+                    }
+
+                    if (styles != null) {
+                        for (int j = 0; j < styles.length; j++) {
+                            Style s = styles[j];
+
+                            if (s.featureTypeStyles() != null
+                                    && s.featureTypeStyles().size() > 0) {
+
+                                if (s.featureTypeStyles().get(0)
+                                        .featureTypeNames().size() > 0) {
+                                    log.debug("[fe] --> RESETTING and USING "
+                                            + styles[j].getClass());
+                                    s.featureTypeStyles().get(0)
+                                            .featureTypeNames().clear();
+                                } else {
+                                    log.debug("[fe] --> #1 USING "
+                                            + styles[j].getClass());
+                                }
+
+                                return s;
+                            } else if (!(s instanceof NamedStyle)) {
+                                log.debug("[fe] --> #2 USING "
+                                        + styles[j].getClass());
+                                return s;
+                            } else {
+                                log.debug("[fe] --> ? " + s);
+                            }
+
+                        }
+                    }
+
+                }
+            } catch (Exception ex) {
+                log.debug("[fe] SLD FALLBACK required " + ex);
+            }
+
+            log.debug("[fe] -- FALLBACK Creating Style tryin 1.0.0 "
+                    + sldFilename);
+            /*
+             * static protected Style createSLDStyle(InputStream xml) {
+             */
+            Configuration config = new SLDConfiguration();
+
+            parser = new Parser(config);
+            sld = null;
+
+            sld = (StyledLayerDescriptor) parser.parse(FEMapLayerJob.class
+                    .getResourceAsStream(sldFilename));
+
+            Style style = SLD.styles(sld)[0];
+            log.debug("[fe] - Using 1.0.0 Style " + style);
+            return style;
+
+        } catch (Exception ee) {
+            ee.printStackTrace(System.err);
+
         }
-        final Style style = createSLDStyle(new ByteArrayInputStream(xml.getBytes()));
-        if (style == null) {
-            log.warn("Couldn't create style from XML:", xml);
-        }
-        return style;
+
+        return null;
     }
 
     static protected Style createSLDStyle(InputStream xml) {
@@ -184,20 +316,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         return SLD.styles(sld)[0];
     }
 
-
-    protected WFSImage createResponseImage() {
-        final String styleName = WFSImage.STYLE_HIGHLIGHT;
-        final Style style = createSLDStyle(WFSImage.class.getResourceAsStream(WFSImage.DEFAULT_SLD)); // getClass() (non-static)
-
-        return new WFSImage(this.layer, this.session.getClient(),
-                WFSImage.STYLE_DEFAULT, null) {
-
-            protected Style getSLDStyle(WFSLayerStore layer, String styleName) {
-                return style;
-            }
-
-        };
-    }
 
     /**
      * Parses features values
@@ -232,45 +350,86 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 this.layer.getFeatureParamsLocales(this.session.getLanguage()));
     }
 
-    @Override
+    /**
+     * Check Scale in FRONT CRS 
+     * @return
+     */
+    boolean validateMapScalesInFrontSrs() {
+        double scale = this.session.getMapScales().get(
+                (int) this.session.getLocation().getZoom());
+        double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(),
+                session.getLocation().getSrs(), session.getLocation().getSrs());
+        double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(),
+                session.getLocation().getSrs(), session.getLocation().getSrs());
+
+        log.debug("[fe] Scale in:" + layer.getSRSName() + scale + "["
+                + layer.getMaxScale() + "," + layer.getMinScale() + "]");
+        log.debug("[fe] Scale in:" + session.getLocation().getSrs() + scale
+                + "[" + maxScaleInMapSrs + "," + minScaleInMapSrs + "]");
+        if (minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) {// min ==
+                                                                     // biggest
+                                                                     // value
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Builds the WFS request from template. 
+     * Issues HTTP request with WFS request 
+     * Processes WFS response with 'feature-engine' i.e Groovy scripts.
+     *     
+     */
     public RequestResponse request(final Type type, final WFSLayerStore layer,
-                                   final SessionStore session, final List<Double> bounds,
-                                   final MathTransform transformService) {
+            final SessionStore session, final List<Double> bounds,
+            final MathTransform transformService) {
 
-        final String layerUrl = layer.getURL(); // "krysp";
-        final String srsName = layer.getSRSName();
-        final String featureNs = layer.getFeatureNamespaceURI();
-        final String featureName = layer.getFeatureElement();
-        final String username = layer.getUsername();
-        final String password = layer.getPassword();
-        final String WFSver = layer.getWFSVersion();
-        final String geomProp = layer.getGMLGeometryProperty();
-        final String geomNs = layer.getGeometryNamespaceURI();
-        final FERequestTemplate backendRequestTemplate = new FERequestTemplate(layer.getRequestTemplate());
         final FERequestResponse requestResponse = new FERequestResponse();
-        //
 
-        final ArrayList<List<Object>> list = new ArrayList<List<Object>>();
-        this.featureValuesList = list;
-
-        final Map<Resource, SimpleFeatureCollection> responseCollections = new HashMap<Resource, SimpleFeatureCollection>();
-        final Map<Resource, SimpleFeatureBuilder> responseBuilders = new HashMap<Resource, SimpleFeatureBuilder>();
-        final Map<Resource, List<SimpleFeature>> responseFeatures = new HashMap<Resource, List<SimpleFeature>>();
-
-        if (!validateMapScales()) {
-            log.debug("Map scale was not valid for layer " + this.layerId);
+        if (!validateMapScalesInFrontSrs()) {
+            log.debug("[fe] Map scale was not valid for layer " + this.layerId);
 
             return requestResponse;
         }
+
+        final String urlTemplate = layer.getURL();
+        final String requestTemplatePath = layer.getRequestTemplate();
+        final String recipePath = layer.getResponseTemplate();
+        final String username = layer.getUsername();
+        final String password = layer.getPassword();
+        final String srsName = layer.getSRSName();
+        final String featureNs = layer.getFeatureNamespaceURI();
+        final String featureName = layer.getFeatureElement();
+
+        final String WFSver = layer.getWFSVersion();
+        final String geomProp = layer.getGMLGeometryProperty();
+        final String geomNs = layer.getGeometryNamespaceURI();
+
+        final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
 
         if (backendRequestTemplate == null) {
             return requestResponse;
         }
 
+        log.debug("[fe] request template " + requestTemplatePath
+                + " instantiated as " + backendRequestTemplate);
+
+        final ArrayList<List<Object>> list = new ArrayList<List<Object>>();
+        final Map<Resource, SimpleFeatureCollection> responseCollections = new HashMap<Resource, SimpleFeatureCollection>();
+        final Map<Resource, SimpleFeatureBuilder> responseBuilders = new HashMap<Resource, SimpleFeatureBuilder>();
+        final Map<Resource, List<SimpleFeature>> responseFeatures = new HashMap<Resource, List<SimpleFeature>>();
+
+        this.featureValuesList = list;
+
         try {
             /* CRS */
             final CoordinateReferenceSystem crs = CRS.decode(session
                     .getLocation().getSrs());
+
+            AxisDirection dir0 = crs.getCoordinateSystem().getAxis(0)
+                    .getDirection();
+            log.debug("[fe] SESSION CRS AXIS 0 " + dir0);
+
             final MathTransform transform = this.session.getLocation()
                     .getTransformForClient(this.layer.getCrs(), true);
 
@@ -293,17 +452,22 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 @Override
                 public void edge(Resource subject, Resource predicate,
-                                 Resource value) throws IOException {
+                        Resource value) throws IOException {
                 }
 
                 @Override
                 public void end() throws IOException {
+
                     for (Resource type : responseFeatures.keySet()) {
                         List<SimpleFeature> sfc = getAndSetListSimpleFeature(type);
 
                         SimpleFeatureCollection fc = DataUtilities
                                 .collection(sfc);
+
                         responseCollections.put(type, fc);
+
+                        log.debug("[fe] type: " + type + " / fc: { len: "
+                                + fc.size() + "}");
                     }
                 }
 
@@ -324,7 +488,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         // add a geometry property
 
                         ftb.setCRS(crs); // set crs first
-                        ftb.add("geom", Geometry.class, crs); // then add
+                        ftb.add("geometry", Geometry.class, crs); // then add
                         // geometry
 
                         SimpleFeatureType schema = ftb.buildFeatureType();
@@ -332,6 +496,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         sfb = new SimpleFeatureBuilder(schema);
 
                         responseBuilders.put(type, sfb);
+
+                        log.debug("[fe] creating featurebuilder for : " + type);
                     }
                     return sfb;
                 }
@@ -343,6 +509,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     if (list == null) {
                         list = new LinkedList<SimpleFeature>();
                         responseFeatures.put(type, list);
+                        log.debug("[fe] creating featureList for : " + type);
                     }
                     return list;
                 }
@@ -353,13 +520,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 @Override
                 public void type(Resource type,
-                                 List<Pair<Resource, XSDDatatype>> simpleProperties,
-                                 List<Pair<Resource, Object>> linkProperties,
-                                 List<Pair<Resource, String>> geometryProperties)
+                        List<Pair<Resource, XSDDatatype>> simpleProperties,
+                        List<Pair<Resource, Object>> linkProperties,
+                        List<Pair<Resource, String>> geometryProperties)
                         throws IOException {
                     requestResponse.setFeatureIri(type);
 
-                    log.debug("properties handler");
+                    log.debug("[fe] registering (generic) output type for "
+                            + type);
 
                     /*
                      * List<String> layerSelectedProperties = layer
@@ -371,7 +539,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                         selectedPropertiesIndex.put(prop.getKey(),
                                 selectedProperties.size());
-
+                        log.debug("SEETING KEYINDEX " + prop.getKey() + " as "
+                                + selectedProperties.size());
                         selectedProperties.add(prop.getKey().getLocalPart());
 
                     }
@@ -381,15 +550,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 }
 
                 public void vertex(final Resource iri, final Resource type,
-                                   final List<Pair<Resource, ?>> simpleProperties,
-                                   final List<Pair<Resource, ?>> linkProperties)
+                        final List<Pair<Resource, ?>> simpleProperties,
+                        final List<Pair<Resource, ?>> linkProperties)
                         throws IOException {
                 }
 
                 public void vertex(Resource iri, Resource type,
-                                   List<Pair<Resource, ?>> simpleProperties,
-                                   List<Pair<Resource, ?>> linkProperties,
-                                   List<Pair<Resource, Geometry>> geometryProperties)
+                        List<Pair<Resource, ?>> simpleProperties,
+                        List<Pair<Resource, ?>> linkProperties,
+                        List<Pair<Resource, Geometry>> geometryProperties)
                         throws IOException {
 
                     SimpleFeatureBuilder sfb = getAndSetFeatureBuilder(type);
@@ -421,6 +590,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                             .getLocalPart().equals(
                                     requestResponse.getFeatureIri()
                                             .getLocalPart()))) {
+                        log.debug("[fe] type mismatch for Transport regd "
+                                + requestResponse.getFeatureIri()
+                                + " vs added " + type
+                                + " -> properties discarded");
                         return;
                     }
 
@@ -436,7 +609,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                             Integer keyIndex = selectedPropertiesIndex.get(pair
                                     .getKey());
                             if (keyIndex == null) {
-
+                                /*
+                                 * log.debug("KEY INDEX FOR " + pair.getKey() +
+                                 * " not found");
+                                 */
                                 continue;
                             }
                             props.set(keyIndex, pair.getValue());
@@ -449,7 +625,11 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             };
 
             /* Backend HTTP URI info */
-            URL url = new URL(layerUrl);
+            FEUrl backendUrlInfo = getBackendURL(urlTemplate);
+
+            URL url = new URL(backendUrlInfo.url);
+
+            log.debug("[fe] using URL " + url);
 
             /* Backend Proxy */
             HttpHost backendProxy = null;
@@ -457,17 +637,19 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             if (System.getProperty("http.proxyHost") != null
                     && System.getProperty("http.proxyPort") != null) {
 
-
-                backendProxy = new HttpHost(
-                        System.getProperty("http.proxyHost"),
-                        Integer.valueOf(
-                                System.getProperty("http.proxyPort"), 10),
-                        "http");
-
+                if (backendUrlInfo.proxy) {
+                    backendProxy = new HttpHost(
+                            System.getProperty("http.proxyHost"),
+                            Integer.valueOf(
+                                    System.getProperty("http.proxyPort"), 10),
+                            "http");
+                }
             }
 
             /* Recipe */
-            final GroovyParserRecipe recipe = getRecipe(layer.getResponseTemplate());
+            final GroovyParserRecipe recipe = getRecipe(recipePath);
+
+            log.debug("[fe] using recipe " + recipe);
 
             /* Backend HTTP Response Handler */
             ResponseHandler<Boolean> backendResponseHandler = new ResponseHandler<Boolean>() {
@@ -479,19 +661,27 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     Boolean succee = false;
 
                     StatusLine statusLine = response.getStatusLine();
+
+                    log.debug("[fe] http status : " + statusLine);
+
                     HttpEntity entity = response.getEntity();
                     if (statusLine.getStatusCode() >= 300) {
+                        log.debug("[fe] throwing http exception for : "
+                                + statusLine);
                         throw new HttpResponseException(
                                 statusLine.getStatusCode(),
                                 statusLine.getReasonPhrase());
                     }
                     if (entity == null) {
+                        log.debug("[fe] throwing client protocol exception no content");
                         throw new ClientProtocolException(
                                 "Response contains no content");
                     }
 
                     ContentType contentType = ContentType.getOrDefault(entity);
                     Charset charset = contentType.getCharset();
+                    log.debug("[fe] response contentType " + contentType
+                            + ", charset: " + charset);
 
                     BufferedInputStream inp = new BufferedInputStream(
                             entity.getContent());
@@ -518,8 +708,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         succee = true;
 
                     } catch (XMLStreamException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        log.debug("[fe] response XML exception " + e);
+                        e.printStackTrace(System.err);
+                        throw new ClientProtocolException(
+                                "Response XMLStreamException " + e);
                     } finally {
                         if (inp != null) {
                             inp.close();
@@ -544,6 +736,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 StringEntity entity = new StringEntity(params.toString());
 
                 httppost.setEntity(entity);
+                log.debug("[fe] HTTP POST " + httppost.getRequestLine());
 
                 backendUriRequest = httppost;
 
@@ -558,6 +751,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         session, bounds, transform, crs);
 
                 HttpGet httpget = new HttpGet(builder.build());
+                log.debug("[fe] HTTP GET " + httpget.getRequestLine());
+
                 backendUriRequest = httpget;
 
             }
@@ -568,14 +763,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 HttpHost backendHttpHost = new HttpHost(url.getHost(),
                         url.getPort(), url.getProtocol());
 
-
-                UsernamePasswordCredentials backendCredentials = null;
-                if (username != null && password != null) {
-                    backendCredentials = new UsernamePasswordCredentials(username, password);
-                }
+                UsernamePasswordCredentials backendCredentials = getCredentials(
+                        username, password);
 
                 BasicHttpContext backendLocalContext = null;
                 if (backendCredentials != null) {
+
+                    log.debug("[fe] using Credentials "
+                            + backendCredentials.getUserName() + " for " + url);
+
                     backendHttpClient.getCredentialsProvider().setCredentials(
                             new AuthScope(backendHttpHost.getHostName(),
                                     backendHttpHost.getPort()),
@@ -594,6 +790,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 }
 
                 if (backendProxy != null) {
+                    log.debug("[fe] setting proxy for " + url);
                     backendHttpClient.getParams().setParameter(
                             ConnRoutePNames.DEFAULT_PROXY,
 
@@ -605,11 +802,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                                 backendLocalContext) : backendHttpClient
                         .execute(backendUriRequest, backendResponseHandler);
 
+                log.debug("[fe] execute response " + succee + " for " + url);
+
             } finally {
                 // When HttpClient instance is no longer needed,
                 // shut down the connection manager to ensure
                 // immediate deallocation of all system resources
                 backendHttpClient.getConnectionManager().shutdown();
+                log.debug("[fe] http shutdown for " + url);
             }
 
             /* TO-DO fix some error handling and user feedback */
@@ -636,10 +836,139 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         } catch (IllegalAccessException e1) {
             e1.printStackTrace();
         } finally {
-
+            log.debug("[fe] end of process");
         }
 
         return requestResponse;
+    }
+
+    /**
+     * builds the Backend URL and adds proxy from System properties  
+     * 
+     * @param urlTemplate
+     * @return
+     */
+    private FEUrl getBackendURL(String urlTemplate) {
+
+        String url = null;
+        boolean isProxy = false;
+
+        if (System.getProperty("http.proxyHost") != null
+                && System.getProperty("http.proxyPort") != null) {
+
+            if (urlTemplate.indexOf('|') != -1) {
+                url = urlTemplate.substring(0, urlTemplate.indexOf('|'));
+                isProxy = true;
+
+            } else {
+                url = urlTemplate;
+                isProxy = true;
+            }
+
+            if (url.charAt(0) == '!') {
+                url = url.substring(1);
+                isProxy = false;
+            }
+
+        } else {
+            if (urlTemplate.indexOf('|') != -1) {
+                url = urlTemplate.substring(urlTemplate.indexOf('|') + 1);
+                isProxy = false;
+            } else {
+                url = urlTemplate;
+                isProxy = false;
+            }
+        }
+
+        return new FEUrl(url, isProxy);
+
+    }
+
+    /**
+     * builds credentials for HTTP request
+     * @param username
+     * @param password
+     * @return
+     */
+    private UsernamePasswordCredentials getCredentials(String username,
+            String password) {
+        if (username == null || password == null) {
+            return null;
+        }
+        log.debug("[fe] building credentials for " + this.layerId + " as "
+                + username);
+        return new UsernamePasswordCredentials(username, password);
+    }
+
+    /**
+     * Builds Request Template 
+     * 
+     * @param requestTemplatePath
+     * @return
+     */
+    private FERequestTemplate getRequestTemplate(String requestTemplatePath) {
+
+        if (requestTemplatePath
+                .equals("oskari-feature-engine:QueryArgsBuilder_KTJkii_LEGACY")) {
+            log.debug("[fe] using specific GET request template for "
+                    + this.layerId + " is " + requestTemplatePath);
+            return new FERequestTemplate(new KTJRestQueryArgsBuilder());
+        } else if (requestTemplatePath
+                .equals("oskari-feature-engine:QueryArgsBuilder_WFS_GET")) {
+            log.debug("[fe] using GET WFS request template for " + this.layerId
+                    + " is " + requestTemplatePath);
+            return new FERequestTemplate(new FEWFSGetQueryArgsBuilder());
+        } else {
+            log.debug("[fe] using POST WFS request template for " + this.layerId
+                    + " is " + requestTemplatePath);
+            return new FERequestTemplate(requestTemplatePath);
+        }
+
+    }
+
+    
+    /** 
+     * Looks up (cached) SLD styling for WFS 
+     * @return
+     */
+    private Style getSLD() {
+
+        List<WFSSLDStyle> sldStyles = this.layer.getSLDStyles();
+        
+        WFSSLDStyle sldStyle = null;
+        for(WFSSLDStyle s : sldStyles ) {
+        	if ("oskari-feature-engine".equals(s.getName())) {
+                log.debug("[fe] SLD for  " + this.layerId + " FE style found");
+                sldStyle = s;
+                break;
+            }
+        }
+
+        if (sldStyle == null) {
+            log.debug("[fe] SLD for  " + this.layerId + " not found");
+            return null;
+        }
+
+        String sldPath = sldStyle.getSLDStyle();
+
+        Style sld = templateSLD.get(sldPath);
+
+        if (sld != null) {
+            log.debug("[fe] using cached SLD for  " + this.layerId + " "
+                    + sldPath);
+            return sld;
+        }
+        log.debug("[fe] creating SLD for  " + this.layerId + " from " + sldPath);
+
+        sld = createSLDStyle(sldPath);
+        if (sld != null) {
+            log.debug("[fe] created and cached SLD for  " + this.layerId + " "
+                    + sldPath);
+            templateSLD.put(sldPath, sld);
+        }
+
+        return sld;
+
     }
 
     @Override
@@ -665,28 +994,30 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     /**
      * Process of the job
-     * <p/>
+     * 
      * Worker calls this when starts the job.
-     */
-    @Override
+     * 
+     * Duplicated to enable refactoring in the near future.
+     * 
+     */    
     public void run() {
         log.debug(PROCESS_STARTED + " " + getKey());
 
         if (!this.validateType()) {
-            log.debug("Not enough information to continue the task ("
+            log.debug("[fe] Not enough information to continue the task ("
                     + this.type + ")");
             return;
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("[fe] Cancelled");
             return;
         }
 
         this.layerPermission = getPermissions(layerId,
                 this.session.getSession(), this.session.getRoute());
         if (!this.layerPermission) {
-            log.debug("Session (" + this.session.getSession()
+            log.debug("[fe] Session (" + this.session.getSession()
                     + ") has no permissions for getting the layer ("
                     + this.layerId + ")");
             Map<String, Object> output = new HashMap<String, Object>();
@@ -699,13 +1030,13 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("FE Cancelled");
             return;
         }
         this.layer = getLayerConfiguration(this.layerId,
                 this.session.getSession(), this.session.getRoute());
         if (this.layer == null) {
-            log.debug("Layer (" + this.layerId
+            log.debug("[fe] Layer (" + this.layerId
                     + ") configurations couldn't be fetched");
             Map<String, Object> output = new HashMap<String, Object>();
             output.put(OUTPUT_LAYER_ID, this.layerId);
@@ -718,8 +1049,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         setResourceSending();
 
-        if (!validateMapScales()) {
-            log.debug("Map scale was not valid for layer " + this.layerId);
+        if (!validateMapScalesInFrontSrs()) {
+            log.debug("[fe] Map scale was not valid for layer " + this.layerId);
             return;
         }
 
@@ -745,48 +1076,63 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         if (!goNext()) {
-            log.debug("Cancelled");
+            log.debug("[fe] Cancelled");
             return;
         }
 
         if (this.type == Type.NORMAL) { // tiles for grid
             if (!this.layer.isTileRequest()) { // make single request
-                log.debug("MAKING SINGLE REQUEST");
+                log.debug("[fe] single request");
                 if (!this.normalHandlers(null, true)) {
-                    log.debug("!normalHandlers leaving");
+                    log.debug("[fe] !normalHandlers leaving");
                     return;
+                } else {
+                    log.debug("[fe] single request - continue");
                 }
             } else {
-                log.debug("MAKING TILED REQUESTS");
+                log.debug("[fe] MAKING TILED REQUESTS");
             }
 
             boolean first = true;
             int index = 0;
             for (List<Double> bounds : grid) {
 
-                log.debug("... " + bounds);
+                log.debug("[fe] ... " + bounds);
                 if (!goNext()) {
-                    log.debug("JOB cancelled - leaving");
+                    log.debug("[fe] JOB cancelled - leaving");
                     return;
                 }
 
                 if (this.layer.isTileRequest()) { // make a request per tile
-                    log.debug("MAKING TILE REQUEST " + bounds);
+                    log.debug("[fe] MAKING TILE REQUEST " + bounds);
                     if (!this.normalHandlers(bounds, first)) {
-                        log.debug("!normalHandlers continuing tiles");
+                        log.debug("FE !normalHandlers continuing tiles");
                         continue;
                     }
                 }
 
                 if (!goNext()) {
-                    log.debug("JOB cancelled - leaving");
+                    log.debug("[fe] JOB cancelled - leaving");
                     return;
                 }
 
-                if (this.sendImage && this.sessionLayer.isTile(bounds)) { // check
-                    // if
-                    // needed
-                    // tile
+                
+                boolean isThisTileNeeded = true;
+                
+                if( !this.sendImage ) {
+                	log.debug("[fe] !sendImage - not sending PNG");
+                	isThisTileNeeded = false;
+                }
+                
+                if( !this.sessionLayer.isTile(bounds) ) {
+                	log.debug("[fe] !layer.isTile - not sending PNG");
+                	isThisTileNeeded = false;
+                }
+                
+                if (isThisTileNeeded ) {//this.sendImage ) { // && this.sessionLayer.isTile(bounds)) { // check
+                                                                          // if
+                                                                          // needed
+                                                                          // tile
                     Double[] bbox = new Double[4];
                     for (int i = 0; i < bbox.length; i++) {
                         bbox[i] = bounds.get(i);
@@ -827,7 +1173,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                     this.sendWFSImage(url, bufferedImage, bbox, true,
                             isboundaryTile);
                 } else {
-                    log.debug("Tile not needed? " + bounds);
+                    log.debug("[fe] Tile not needed? " + bounds);
                 }
 
                 if (first) {
@@ -846,7 +1192,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
             this.featuresHandler();
             if (!goNext()) {
-                log.debug("Cancelled");
+                log.debug("[fe] Cancelled");
                 return;
             }
 
@@ -874,12 +1220,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             /* features */
 
-            /*
-             * if (this.sendFeatures) { log.debug("... sending features");
-             * this.sendWFSFeatures(this.featureValuesList,
-             * TransportService.CHANNEL_MAP_CLICK); } else {
-             * log.debug("NOT sending features"); }
-             */
+            
+              if (this.sendFeatures) { 
+            	  log.debug("[fe] sending features for map click");
+              		this.sendWFSFeatures(this.featureValuesList,
+            		  TransportService.CHANNEL_MAP_CLICK); 
+              } else {
+            	  log.debug("[fe] NOT sending features for map click"); 
+              }
+             
 
         } else if (this.type == Type.GEOJSON) {
             if (!this.requestHandler(null)) {
@@ -887,7 +1236,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
             this.featuresHandler();
             if (!goNext()) {
-                log.debug("Cancelled");
+                log.debug("[fe] Cancelled");
                 return;
             }
             if (this.sendFeatures) {
@@ -895,10 +1244,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         TransportService.CHANNEL_FILTER);
             }
         } else {
-            log.debug("Type is not handled " + this.type);
+            log.debug("[fe] Type is not handled " + this.type);
         }
 
-        log.debug(PROCESS_ENDED + " " + getKey());
+        log.debug("[fe] " + PROCESS_ENDED + " " + getKey());
     }
 
     /**
@@ -1028,7 +1377,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if (!this.reqSendHighlight && this.sendHighlight)
             this.sendHighlight = false;
 
-        log.debug("send - features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
+        log.debug("send - features:"+ this.sendFeatures+ "/ image:"+ this.sendImage+ "/ highlight:"+ this.sendHighlight);
     }
 
     /**

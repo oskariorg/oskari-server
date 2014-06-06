@@ -74,7 +74,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
 
     public static enum IntersectionMode {
-        INTERSECTION, FIRST, SECOND, SECOND_CONTAINS
+        INTERSECTION, FIRST, SECOND, SECOND_CONTAINS, SECOND_CLIP
     }
 
     static final String ECKERT_IV_WKT = "PROJCS[\"World_Eckert_IV\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Eckert_IV\"],PARAMETER[\"Central_Meridian\",0.0],UNIT[\"Meter\",1.0]]";
@@ -86,7 +86,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             @DescribeParameter(name = "second feature collection", description = "Second feature collection") SimpleFeatureCollection secondFeatures,
             @DescribeParameter(name = "first attributes to retain", collectionType = String.class, min = 0, description = "List of the first feature collection attributes to output") List<String> firstAttributes,
             @DescribeParameter(name = "second attributes to retain", collectionType = String.class, min = 0, description = "List of the second feature collection attributes to output") List<String> sndAttributes,
-            @DescribeParameter(name = "intersectionMode", min = 0, description = "The operations to perform: set INTERSECTION if the geometry is the intersection, FIRST if the geometry is extracted by firstFeatures, SECOND if it is extracted by secondFeatures, SECOND_CONTAINS like SECOND but contains instead of intersect (DEFAULT=INTERSECTION)") IntersectionMode intersectionMode,
+            @DescribeParameter(name = "intersectionMode", min = 0, description = "The operations to perform: set INTERSECTION if the geometry is the intersection, FIRST if the geometry is extracted by firstFeatures, SECOND if it is extracted by secondFeatures, SECOND_CONTAINS like SECOND but contains instead of intersect, SECOND_CLIP like SECOND but clip geometries (DEFAULT=INTERSECTION)") IntersectionMode intersectionMode,
             @DescribeParameter(name = "percentagesEnabled", min = 0, description = "Set it true to get the intersection percentage parameters, false  otherwise (DEFAULT=false)") Boolean percentagesEnabled,
             @DescribeParameter(name = "areasEnabled", min = 0, description = "Set it true to get the area attributes , false  otherwise (DEFAULT=false)") Boolean areasEnabled) {
         // assign defaults
@@ -223,6 +223,29 @@ public class IntersectionFeatureCollection2 implements GSProcess {
         }
     }
 
+     static Geometry getIntersectionGeometry(Geometry first, CoordinateReferenceSystem firstCRS,
+                                      Geometry second, CoordinateReferenceSystem secondCRS) {
+        // basic checks
+        if (firstCRS == null || secondCRS == null)
+            throw new IllegalArgumentException("CRS cannot be set to null");
+        if (!Polygon.class.isAssignableFrom(first.getClass())
+                && !MultiPolygon.class.isAssignableFrom(first.getClass()))
+            throw new IllegalArgumentException("first geometry must be poligonal");
+        if (!Polygon.class.isAssignableFrom(second.getClass())
+                && !MultiPolygon.class.isAssignableFrom(second.getClass()))
+            throw new IllegalArgumentException("second geometry must be poligonal");
+        try {
+            Geometry firstTargetGeometry = reprojectAndDensify(first, firstCRS, null);
+            Geometry secondTargetGeometry = reprojectAndDensify(second, firstCRS, null);
+            Geometry clipGeometry = firstTargetGeometry.intersection(secondTargetGeometry);
+           
+            return clipGeometry;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     static Geometry reprojectAndDensify(Geometry first, CoordinateReferenceSystem sourceCRS,
                                         CoordinateReferenceSystem targetCRS) throws FactoryException, TransformException {
         if (targetCRS == null) {
@@ -314,6 +337,9 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
             }
             if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
+                geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
+            }
+            if (intersectionMode == IntersectionMode.SECOND_CLIP) {
                 geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
             }
             if (intersectionMode == IntersectionMode.INTERSECTION) {
@@ -456,6 +482,9 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
                 geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
             }
+             if (intersectionMode == IntersectionMode.SECOND_CLIP) {
+                geomType = secondFeatureCollectionSchema.getGeometryDescriptor();
+            }
             if (intersectionMode == IntersectionMode.INTERSECTION) {
                 geomType = getIntersectionType(firstFeatures, secondFeatures);
             }
@@ -521,8 +550,10 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                                         attribute = (Geometry) second.getDefaultGeometry();
                                     } else if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
                                         attribute = (Geometry) second.getDefaultGeometry();
+                                    } else if (intersectionMode == IntersectionMode.SECOND_CLIP) {
+                                        attribute = (Geometry) currentGeom.intersection((Geometry) second.getDefaultGeometry());
                                     }
-                                    if (((Geometry) attribute).getNumGeometries() > 0) {
+                                    if (attribute != null && ((Geometry) attribute).getNumGeometries() > 0) {
                                         fb.add(attribute);
                                         fb.set("INTERSECTION_ID", id++);
                                         // add the non geometric attributes

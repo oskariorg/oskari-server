@@ -3,7 +3,7 @@
    			"table1style": {
                 "width" : "15cm",
                 "height": "5cm",
-                "bottom": "20cm",
+                "bottom": "19.5cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -37,6 +37,12 @@
                         "height": "0.7cm",
                         "color" : "#000000",
                         "backgroundColor": "#c0d0e0"
+                    },
+                    "col3": {
+                        "width": "5cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#c0d0e0"
                     }
                 }
             },
@@ -44,10 +50,10 @@
                 "width" : "15cm",
                 "height": "1cm",
                 "bottom": "0cm",
-                "left": "10cm",
+                "left": "7cm",
                 "styles" : {
                     "col1": {
-                        "width": "8cm",
+                        "width": "5cm",
                         "height": "0.7cm",
                         "color" : "#000000",
                         "backgroundColor": "#c0d0e0"

@@ -8,11 +8,12 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.log.Logger;
+
 import java.net.URLEncoder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -74,6 +75,11 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         ChannelSearchResult searchResultList = new ChannelSearchResult();
+        
+        String srs = searchCriteria.getSRS();
+        if( srs == null ) {
+        	srs = "EPSG:3067";
+        }
 
         try {
             final JSONArray data = getData(searchCriteria);
@@ -97,7 +103,7 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
                 searchResultList.addItem(item);
                 try {
                     CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4326");
-                    CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:3067");
+                    CoordinateReferenceSystem targetCrs = CRS.decode(srs);
                     boolean lenient = false;
                     MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
                     double srcLon = Double.parseDouble(dataItem.getString("lon"));

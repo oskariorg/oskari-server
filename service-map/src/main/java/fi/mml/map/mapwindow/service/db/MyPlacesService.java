@@ -29,4 +29,6 @@ public interface MyPlacesService extends BaseService<MyPlaceCategory>{
     public Resource getResource(final long categoryId);
     public Resource getResource(final String myplacesLayerId);
 
+    public String getClientWMSUrl();
+
 }

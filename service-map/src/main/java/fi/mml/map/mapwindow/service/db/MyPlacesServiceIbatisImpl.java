@@ -47,9 +47,14 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
         // default 'myplaces.client.wmsurl' to ajax url for tiles if not configured
         if(MYPLACES_CLIENT_WMS_URL == null) {
             // action_route name points to fi.nls.oskari.control.myplaces.MyPlacesTileHandler
-            MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=MyPlacesTile";
+            MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=MyPlacesTile&myCat=";
         }
     }
+
+    public String getClientWMSUrl() {
+        return MYPLACES_CLIENT_WMS_URL;
+    }
+
     @Override
     protected String getNameSpace() {
         return "MyPlace";

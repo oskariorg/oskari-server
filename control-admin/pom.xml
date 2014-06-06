@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.21-SNAPSHOT</version>
+        <version>1.22-SNAPSHOT</version>
 	</parent>
     
     <groupId>fi.nls.oskari.service</groupId>
@@ -18,11 +18,6 @@
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
         </dependency>
 
         <dependency>

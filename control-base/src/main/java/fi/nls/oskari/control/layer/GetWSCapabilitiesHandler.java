@@ -2,8 +2,10 @@ package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.PropertyUtil;
@@ -20,7 +22,8 @@ import java.util.Iterator;
 public class GetWSCapabilitiesHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetWSCapabilitiesHandler.class);
-    private static final String PARM_WMSURL = "wmsurl";
+    private static final String PARM_URL = "url";
+    private static final String PARM_TYPE = "type";
 
     private String[] permittedRoles = new String[0];
 
@@ -32,15 +35,25 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final String wmsurl = params.getRequiredParam(PARM_WMSURL);
-
         if (!params.getUser().hasAnyRoleIn(permittedRoles)) {
-            throw new ActionDeniedException("Unauthorized user tried to get wmsservices");
+            throw new ActionDeniedException("Unauthorized user tried to proxy via capabilities");
         }
+        final String url = params.getRequiredParam(PARM_URL);
+        final String layerType = params.getHttpParam(PARM_TYPE, OskariLayer.TYPE_WMS);
+
+        log.debug("Trying to get capabilities for type:", layerType, "with url:", url);
         try {
-            // New method for parsing WMSCetGapabilites to Oskari layers structure
-            final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(wmsurl);
-            ResponseHelper.writeResponse(params, capabilities);
+            if(OskariLayer.TYPE_WMS.equals(layerType)) {
+                // New method for parsing WMSCetGapabilites to Oskari layers structure
+                final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url);
+                ResponseHelper.writeResponse(params, capabilities);
+            }
+            else if(OskariLayer.TYPE_WMTS.equals(layerType)) {
+                ResponseHelper.writeResponse(params, IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities"));
+            }
+            else {
+                throw new ActionParamsException("Couldn't determine operation based on parameters");
+            }
         } catch (Exception ee) {
             throw new ActionException("WMS Capabilities parsing failed: ", ee);
         }

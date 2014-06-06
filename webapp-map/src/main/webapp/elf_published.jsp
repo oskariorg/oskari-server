@@ -30,6 +30,10 @@
         @media screen {
 			#contentMap { margin-left: 0px !important; }
           
+           div.featuredataplugin.mapplugin {
+            	top: inherit !important;
+            	bottom: 30px !important;
+            }
 
         }
     </style-->

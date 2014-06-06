@@ -5,16 +5,16 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class LocationTest {
-	private static Location location;
-    private static List<Double> bbox;
+	private Location location;
+    private List<Double> bbox;
 	
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
 		location = new Location("EPSG:3067");
 		bbox = new ArrayList<Double>();
 		bbox.add(420893.0);
@@ -32,13 +32,16 @@ public class LocationTest {
 	}
 	
 	@Test
+	
 	public void testTransformEnvelope() {
 		// transformed envelope
+		/* changed test to match axis order in http://www.epsg-registry.org/ 4326 spec 1 North 2 East 
+		 * after removing forceXY assumption from Location */
 		ReferencedEnvelope transformed = location.getTransformEnvelope("EPSG:4326", true);
-        assertEquals("MinY is within acceptable range ", 64.71499289327947, transformed.getMinY(), 0.00001);
-        assertEquals("MinX is within acceptable range ", 25.3399808304302, transformed.getMinX(), 0.00001);
+        assertEquals("MinX is within acceptable range ", 64.71499289327947, transformed.getMinX(), 0.00001);
+        assertEquals("MinY is within acceptable range ", 25.3399808304302, transformed.getMinY(), 0.00001);
     }
-
+	
     @Test
     public void testScaledEnvelope() {
         ReferencedEnvelope scaled = location.getScaledEnvelope(1.0);
