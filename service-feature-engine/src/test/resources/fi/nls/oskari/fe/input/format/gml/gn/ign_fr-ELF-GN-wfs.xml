@@ -1,0 +1,234 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0 http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod1gn:NamedPlace&amp;NAMESPACES=xmlns(elf-lod1gn,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2FMasterLoD1%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T17:38:08Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="unknown" numberReturned="0">
+  <!--NOTE: numberReturned attribute should be 'unknown' as well, but this would not validate against the current version of the WFS 2.0 schema (change upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925.-->
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074008439">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:nil="true" nilReason="unpopulated"/>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074008439_GN_GEOMETRY'-->
+        <gml:MultiPoint gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074008439_GN_GEOMETRY" srsName="EPSG:900913">
+          <gml:pointMember>
+            <gml:Point gml:id="GEOMETRY_2078c680-274c-4770-b931-b59b2a2be433" srsName="EPSG:900913">
+              <gml:pos>784908.827 5421488.230</gml:pos>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>PAIHABIT0000000074008439</base:localId>
+          <base:namespace>FR_IGNF_BDUniGE_GeographicalNames_MET</base:namespace>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Lieux habités</gn:localType>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Populated places</gn:localType>
+      <gn:mostDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">2000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:mostDetailedViewingResolution>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="populatedPlace"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006062">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:nil="true" nilReason="unpopulated"/>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006062_GN_GEOMETRY'-->
+        <gml:MultiPoint gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006062_GN_GEOMETRY" srsName="EPSG:900913">
+          <gml:pointMember>
+            <gml:Point gml:id="GEOMETRY_fda88105-99a6-409b-8c75-8ca8852d6281" srsName="EPSG:900913">
+              <gml:pos>806713.203 5469101.646</gml:pos>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>PAIHABIT0000000074006062</base:localId>
+          <base:namespace>FR_IGNF_BDUniGE_GeographicalNames_MET</base:namespace>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Lieux habités</gn:localType>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Populated places</gn:localType>
+      <gn:mostDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">2000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:mostDetailedViewingResolution>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="populatedPlace"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074009234">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:nil="true" nilReason="unpopulated"/>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074009234_GN_GEOMETRY'-->
+        <gml:MultiPoint gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074009234_GN_GEOMETRY" srsName="EPSG:900913">
+          <gml:pointMember>
+            <gml:Point gml:id="GEOMETRY_dd11357d-cf01-46fd-ac75-6926ebec78f9" srsName="EPSG:900913">
+              <gml:pos>770793.390 5407819.912</gml:pos>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>PAIHABIT0000000074009234</base:localId>
+          <base:namespace>FR_IGNF_BDUniGE_GeographicalNames_MET</base:namespace>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Lieux habités</gn:localType>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Populated places</gn:localType>
+      <gn:mostDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">2000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:mostDetailedViewingResolution>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="populatedPlace"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074005521">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:nil="true" nilReason="unpopulated"/>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074005521_GN_GEOMETRY'-->
+        <gml:MultiPoint gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074005521_GN_GEOMETRY" srsName="EPSG:900913">
+          <gml:pointMember>
+            <gml:Point gml:id="GEOMETRY_b24d25b0-0ec4-4dd5-a7d1-a0d485c6ebc1" srsName="EPSG:900913">
+              <gml:pos>769130.470 5486053.699</gml:pos>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>PAIHABIT0000000074005521</base:localId>
+          <base:namespace>FR_IGNF_BDUniGE_GeographicalNames_MET</base:namespace>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Lieux habités</gn:localType>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Populated places</gn:localType>
+      <gn:mostDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">2000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:mostDetailedViewingResolution>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="populatedPlace"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006398">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xsi:nil="true" nilReason="unpopulated"/>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006398_GN_GEOMETRY'-->
+        <gml:MultiPoint gml:id="ELF-LOD1GN_NAMEDPLACE_PAIHABIT0000000074006398_GN_GEOMETRY" srsName="EPSG:900913">
+          <gml:pointMember>
+            <gml:Point gml:id="GEOMETRY_2c7fdaa3-8602-4191-af58-fa6f2a23f8d3" srsName="EPSG:900913">
+              <gml:pos>834303.226 5456261.568</gml:pos>
+            </gml:Point>
+          </gml:pointMember>
+        </gml:MultiPoint>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>PAIHABIT0000000074006398</base:localId>
+          <base:namespace>FR_IGNF_BDUniGE_GeographicalNames_MET</base:namespace>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Lieux habités</gn:localType>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Populated places</gn:localType>
+      <gn:mostDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" owns="false">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">2000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+        </gmd:MD_Resolution>
+      </gn:mostDetailedViewingResolution>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="populatedPlace"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+</wfs:FeatureCollection>

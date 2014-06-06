@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=hy-p:Watercourse&amp;NAMESPACES=xmlns(hy-p,urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0)"
+	xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T13:54:38Z"
+	xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="1"
+	numberReturned="1">
+	<wfs:boundedBy>
+		<gml:Envelope srsName="urn:ogc:def:crs:EPSG::3857">
+			<gml:lowerCorner>758150.001 8143189.577</gml:lowerCorner>
+			<gml:upperCorner>758363.444 8143374.449</gml:upperCorner>
+		</gml:Envelope>
+	</wfs:boundedBy>
+	<wfs:member>
+		<hy-p:Watercourse
+			xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"
+			gml:id="HY-P_WATERCOURSE_472706">
+			<hy-p:geographicalName xsi:nil="true"
+				nilReason="missing" />
+			<hy-p:hydroId xsi:nil="true" nilReason="missing" />
+			<hy-p:relatedHydroObject />
+			<hy-p:beginLifespanVersion>1972-07-01T00:00:00
+			</hy-p:beginLifespanVersion>
+			<hy-p:endLifespanVersion xsi:nil="true"
+				nilReason="missing" />
+			<hy-p:geometry>
+				<!--Inlined geometry 'HY-P_WATERCOURSE_472706_HY-P_GEOMETRY' -->
+				<gml:LineString gml:id="HY-P_WATERCOURSE_472706_HY-P_GEOMETRY"
+					srsName="urn:ogc:def:crs:EPSG::3857">
+					<gml:posList>758150.001 8143374.449 758184.265 8143334.851
+						758188.198 8143272.977 758218.898 8143223.594 758314.011
+						8143218.952 758328.928 8143210.084 758363.444 8143189.577</gml:posList>
+				</gml:LineString>
+			</hy-p:geometry>
+			<hy-p:inspireId>
+				<base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+					<base:localId>472706</base:localId>
+					<base:namespace>http://www.kartverket.no/kartografiseksjon/N50/so
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="missing" />
+				</base:Identifier>
+			</hy-p:inspireId>
+			<hy-p:levelOfDetail>
+				<gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+					<gmd:equivalentScale xmlns:gco="http://www.isotc211.org/2005/gco"
+						gco:nilReason="unknown">
+						<gmd:MD_RepresentativeFraction>
+							<gmd:denominator gco:nilReason="unknown" />
+						</gmd:MD_RepresentativeFraction>
+					</gmd:equivalentScale>
+				</gmd:MD_Resolution>
+			</hy-p:levelOfDetail>
+			<hy-p:origin xsi:nil="true" nilReason="missing" />
+			<hy-p:persistence xsi:nil="true" nilReason="missing" />
+			<hy-p:tidal xsi:nil="true" nilReason="unknown" />
+			<hy-p:bank xsi:nil="true" />
+			<hy-p:drainsBasin xsi:nil="true" />
+			<hy-p:neighbour xsi:nil="true" />
+			<hy-p:condition xsi:nil="true" nilReason="unknown" />
+			<hy-p:delineationKnown xsi:nil="true"
+				nilReason="unknown" />
+			<hy-p:length uom="urn:ogc:def:uom:EPSG::9001" xsi:nil="true"
+				nilReason="template" />
+			<hy-p:level xsi:nil="true" nilReason="missing" />
+			<hy-p:streamOrder xsi:nil="true" nilReason="unknown" />
+			<hy-p:width>
+				<hy-p:WidthRange>
+					<hy-p:lower uom="urn:ogc:def:uom:EPSG::9001">1</hy-p:lower>
+					<hy-p:upper uom="urn:ogc:def:uom:EPSG::9001">3</hy-p:upper>
+				</hy-p:WidthRange>
+			</hy-p:width>
+		</hy-p:Watercourse>
+	</wfs:member>
+</wfs:FeatureCollection>
