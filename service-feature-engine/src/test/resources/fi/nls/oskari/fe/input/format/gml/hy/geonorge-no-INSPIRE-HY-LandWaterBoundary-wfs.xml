@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=hy-p:LandWaterBoundary&amp;NAMESPACES=xmlns(hy-p,urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0)"
+	xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T14:02:26Z"
+	xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="1"
+	numberReturned="1">
+	<wfs:boundedBy>
+		<gml:Envelope srsName="urn:ogc:def:crs:EPSG::3857">
+			<gml:lowerCorner>1361402.113 9775013.232</gml:lowerCorner>
+			<gml:upperCorner>1361436.756 9775080.233</gml:upperCorner>
+		</gml:Envelope>
+	</wfs:boundedBy>
+	<wfs:member>
+		<hy-p:LandWaterBoundary
+			xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"
+			gml:id="HY-P_LANDWATERBOUNDARY_4831227">
+			<hy-p:beginLifespanVersion>2002-07-01T00:00:00
+			</hy-p:beginLifespanVersion>
+			<hy-p:endLifespanVersion xsi:nil="true"
+				nilReason="inapplicable" />
+			<hy-p:geometry>
+				<!--Inlined geometry 'HY-P_LANDWATERBOUNDARY_4831227_HY-P_GEOMETRY' -->
+				<gml:LineString gml:id="HY-P_LANDWATERBOUNDARY_4831227_HY-P_GEOMETRY"
+					srsName="urn:ogc:def:crs:EPSG::3857">
+					<gml:posList>1361412.947 9775079.481 1361402.113 9775041.077
+						1361403.053 9775033.553 1361421.611 9775013.232 1361424.074
+						9775014.752 1361434.898 9775039.580 1361436.756 9775055.377
+						1361435.203 9775075.695 1361432.110 9775077.967 1361420.066
+						9775080.233 1361412.947 9775079.481</gml:posList>
+				</gml:LineString>
+			</hy-p:geometry>
+			<hy-p:inspireId>
+				<base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+					<base:localId>4831227</base:localId>
+					<base:namespace>http://www.kartverket.no/kartografiseksjon/N50/so
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="inapplicable" />
+				</base:Identifier>
+			</hy-p:inspireId>
+			<hy-p:origin xsi:nil="true" nilReason="unknown" />
+			<hy-p:waterLevelCategory xsi:nil="true"
+				nilReason="unknown" />
+		</hy-p:LandWaterBoundary>
+	</wfs:member>
+</wfs:FeatureCollection>
