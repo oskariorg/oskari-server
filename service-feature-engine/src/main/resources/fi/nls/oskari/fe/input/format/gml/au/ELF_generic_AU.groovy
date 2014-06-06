@@ -6,6 +6,7 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 
 public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
+	def input_au_ns = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0";
     def input_ns = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
     def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
     def input_base_ns = "urn:x-inspire:specification:gmlas:BaseTypes:3.2";
@@ -127,7 +128,7 @@ public class ELF_generic_AU_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
     def I = [
             "AdministrativeUnit": [
-                    "qn": qn(input_ns, "AdministrativeUnit"),
+                    "qn": qn(input_au_ns, "AdministrativeUnit"),
                     "props": mapPrimitiveTypes(XSDDatatype.XSDstring,
                             input_ns,
                             "beginLifespanVersion",

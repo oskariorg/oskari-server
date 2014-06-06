@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_geonorge_no', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_AU_geonorge_no', 999, 
          500000, 1, 
          'wfs', '{fi:{name:"ELF AU - geonorge.no", subtitle:""},sv:{name:"ELF AU - geonorge.no", subtitle:""},en:{name:"ELF AU - geonorge.no", subtitle:""}}');
          
@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_AU_geonorge_no', 
-       'http://services.geonorge.no/wfs/inspire-au-wfs.asp', null, null, 
+       'http://wfs.geonorge.no/skwms1/wfs.elf-lod1au', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
@@ -58,7 +58,7 @@ INSERT INTO portti_wfs_layer (
        '2d', 
        NULL, true, true, false, NULL, 
 	'urn:ogc:def:crs:EPSG::3857', 
-	'AdministrativeUnit', 'urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0', 
+	'AdministrativeUnit', 'http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
 	'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 

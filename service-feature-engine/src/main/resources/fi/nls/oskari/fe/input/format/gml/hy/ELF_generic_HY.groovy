@@ -207,15 +207,15 @@ public class ELF_generic_HY_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                                 XSDDatatype.XSDstring
                         ),
                         pair(
-                                iri(output_ns, "nationalLevel"),
+                                iri(output_ns, "fictitious"),
                                 XSDDatatype.XSDstring
                         ),
                         pair(
-                                iri(output_ns, "nationalLevelName"),
+                                iri(output_ns, "flowDirection"),
                                 XSDDatatype.XSDstring
                         ),
                         pair(
-                                iri(output_ns, "country"),
+                                iri(output_ns, "length"),
                                 XSDDatatype.XSDstring
                         ),
                         pair(
@@ -240,14 +240,6 @@ public class ELF_generic_HY_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                         ),                 
                         pair(
                                 iri(output_gn_ns, "script"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_ns, "NUTS"),
-                                XSDDatatype.XSDstring
-                        ),
-                        pair(
-                                iri(output_ns, "upperLevelUnit"),
                                 XSDDatatype.XSDstring
                         )
 
