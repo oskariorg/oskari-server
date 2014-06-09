@@ -4,7 +4,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             minscale, maxscale, 
                             url, locale) 
   VALUES('wfslayer', 'elf_gn_ign_es', 999, 
-         120000, 1, 
+         100000, 1, 
          'wfs', '{fi:{name:"ELF GN - ign.es", subtitle:""},sv:{name:"ELF GN - ign.es", subtitle:""},en:{name:"ELF GN - ign.es", subtitle:""}}');
          
 

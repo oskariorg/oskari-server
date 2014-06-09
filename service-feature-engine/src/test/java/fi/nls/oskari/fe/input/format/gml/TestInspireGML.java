@@ -236,7 +236,7 @@ public class TestInspireGML {
 
 	}
 		
-		
+		/*
 		@Test
 	public void test_IgnFr_AU_WFS_GMLtoPNG() throws InstantiationException,
 			IllegalAccessException, IOException, XMLStreamException {
@@ -280,7 +280,8 @@ public class TestInspireGML {
 			inp.close();
 		}
 
-	}		
+	}
+	*/		
 	
 
 	/* Let's not - JSON-LD a bit too slow atm */
@@ -446,6 +447,90 @@ public class TestInspireGML {
 
 	}
 	
+
+	/*
+	@Test
+	public void test_IgnEs_AU_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857");
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/ig_es-INSPIRE-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("AU-INSPIRE-ign_es.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe =
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	*/
+	
+	/*
+	@Test
+	public void test_IgnEs_AU_WFS_GMLtoJSONLD() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new JsonLdOutputProcessor();
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/ig_es-INSPIRE-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+			FileOutputStream fouts = new FileOutputStream("AU-ign_es.json");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	*/
 	
 	@Test
 	public void test_IgnFr_GN_WFS_GMLtoPNG()
