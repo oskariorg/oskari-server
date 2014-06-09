@@ -64,6 +64,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         final JSONArray results = new JSONArray();
         final Query query = service.doSearch(sc);
         final ChannelSearchResult searchResult = query.findResult(MetadataCatalogueChannelSearchService.ID);
+        log.debug("done search... now creating a json objects");
         for(SearchResultItem item : searchResult.getSearchResultItems()) {
             final JSONObject node = JSONHelper.createJSONObject(KEY_RESULT_NAME, item.getTitle());
             JSONHelper.putValue(node, KEY_RESULT_ID, item.getResourceId());

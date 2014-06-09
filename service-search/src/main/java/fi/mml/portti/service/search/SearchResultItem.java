@@ -31,6 +31,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String mapURL;
 	private String zoomLevel;
 	private String trunkateDescription;
+	private String uuid;
 	private boolean downloadable = false;
 	private boolean downloadAllowed = false;
     private Map<String, Object> properties = new HashMap<String, Object>();
@@ -237,6 +238,12 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
+	}
+	public String getUuId() {
+		return uuid;
+	}
+	public void setUuId(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	/**

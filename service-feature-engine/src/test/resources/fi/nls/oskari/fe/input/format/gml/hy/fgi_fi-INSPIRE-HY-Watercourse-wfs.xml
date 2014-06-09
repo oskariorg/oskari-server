@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
+	xmlns:testi="testi.urli" xmlns:syke="www.fgi.fi"
+	xmlns:hy-p4="http://inspire.ec.europa.eu/schemas/hy-p/4.0rc1"
+	xmlns:base3="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
+	xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+	xmlns:cite="http://www.opengeospatial.net/cite"
+	xmlns:elf-lod1hn="http://www.locationframework.eu/schemas/HydroNetwork/MasterLoD1/1.0"
+	xmlns:mtjts="http://xml.nls.fi/XML/Namespace/Maastotietojarjestelma/SiirtotiedostonMalli/2011-02"
+	xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:elf-lod1hw="http://www.locationframework.eu/schemas/HydroWaters/MasterLoD1/1.0"
+	xmlns:hy-n="urn:x-inspire:specification:gmlas:HydroNetwork:3.0"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:lc="urn:x-inspire:specification:gmlas:LandCover:0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"
+	numberMatched="unknown" numberReturned="1" timeStamp="2014-06-06T15:07:55.574Z"
+	xsi:schemaLocation="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd">
+	<wfs:boundedBy>
+		<gml:Envelope>
+			<gml:lowerCorner>3372210.4234342407 9140479.25926588</gml:lowerCorner>
+			<gml:upperCorner>3372688.9905534093 9140839.522211242</gml:upperCorner>
+		</gml:Envelope>
+	</wfs:boundedBy>
+	<wfs:member>
+		<hy-p:Watercourse gml:id="joki10.0">
+			<gml:boundedBy>
+				<gml:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3857">
+					<gml:lowerCorner>3372210.4234342407 9140479.25926588</gml:lowerCorner>
+					<gml:upperCorner>3372688.9905534093 9140839.522211242</gml:upperCorner>
+				</gml:Envelope>
+			</gml:boundedBy>
+			<hy-p:beginLifespanVersion>2008-06-02T21:00:00Z</hy-p:beginLifespanVersion>
+			<hy-p:geometry>
+				<gml:MultiSurface gml:id="joki10.0.geometry"
+					srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3857">
+					<gml:surfaceMember>
+						<gml:Polygon gml:id="joki10.0.geometry.1"
+							srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing>
+									<gml:posList>3372651.0355106522 9140494.780444711
+										3372641.9660344427 9140479.25926588 3372635.3786895196
+										9140488.139181301 3372633.2205337943 9140499.213555202
+										3372628.832064942 9140505.872226438 3372622.273551472
+										9140521.391720684 3372626.7744908347 9140539.072605176
+										3372637.90360792 9140556.722289503 3372651.3057712093
+										9140587.638888087 3372647.037354345 9140620.849113425
+										3372642.670476464 9140631.933485791 3372631.641720646
+										9140636.407474235 3372613.863076392 9140614.362996176
+										3372611.5826879526 9140598.88619328 3372609.2207744806
+										9140565.705213208 3372602.5402470464 9140554.673384795
+										3372574.960189325 9140563.858601987 3372571.9321156996
+										9140582.633112146 3372577.7193833687 9140603.188607195
+										3372580.7516824836 9140623.153107451 3372578.3763084835
+										9140634.739293136 3372578.735178386 9140648.58112024
+										3372577.403777475 9140664.611443628 3372567.79874978
+										9140679.417593932 3372551.072609909 9140689.696270226
+										3372535.0737152626 9140687.811065247 3372518.097704309
+										9140677.058634968 3372502.672980864 9140673.522844102
+										3372476.6986161815 9140673.711938938 3372450.5109547884
+										9140688.83741801 3372437.0070673977 9140705.803720089
+										3372416.407558236 9140716.582438799 3372394.023176588
+										9140736.19122479 3372385.289915923 9140767.574393567
+										3372380.026629026 9140787.795310216 3372365.0180136375
+										9140799.750342416 3372314.170902911 9140794.975358915
+										3372303.132222359 9140797.236925222 3372292.084200113
+										9140797.28888375 3372263.8975000917 9140800.053581752
+										3372254.537406199 9140801.88559625 3372247.920647146
+										9140804.127953004 3372238.0211825436 9140806.089587767
+										3372233.8894777107 9140807.329522785 3372221.443101982
+										9140813.100301301 3372210.4234342407 9140819.78976456
+										3372221.5140583008 9140828.589350335 3372250.2904257746
+										9140839.522211242 3372283.3848047135 9140828.307330035
+										3372294.4446323365 9140830.469069863 3372343.0878788284
+										9140836.76391143 3372351.9150011023 9140834.460941246
+										3372365.1567865117 9140830.396288816 3372389.3928102665
+										9140814.629525563 3372395.9898384884 9140807.910294829
+										3372409.0971497577 9140774.625553943 3372422.2133222804
+										9140743.585984774 3372446.427291889 9140723.559741626
+										3372506.0577236675 9140716.648100145 3372521.5272785956
+										9140716.576314379 3372539.181886398 9140712.067218985
+										3372565.658877187 9140703.094037456 3372578.8460661406
+										9140687.545219935 3372594.1389148654 9140649.85904646
+										3372600.707146214 9140636.551046921 3372636.1428612666
+										9140654.090623638 3372660.427811204 9140649.552340647
+										3372671.4465681543 9140642.862361362 3372688.9905534093
+										9140614.01536235 3372688.909023691 9140596.315057687
+										3372677.779939557 9140578.6653466 3372664.4707962964
+										9140567.662637508 3372651.080480918 9140538.959743759
+										3372657.6463114177 9140525.652234808 3372666.4662006586
+										9140521.187853247 3372651.0355106522 9140494.780444711</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:surfaceMember>
+				</gml:MultiSurface>
+			</hy-p:geometry>
+			<hy-p:inspireId>
+				<base:Identifier>
+					<base:localId>joki10.0</base:localId>
+					<base:namespace>syke</base:namespace>
+				</base:Identifier>
+			</hy-p:inspireId>
+			<hy-p:origin xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:persistence xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:tidal xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:drainsBasin xlink:href="#null" xsi:nil="true"
+				nilReason="Unpopulated" />
+			<hy-p:delineationKnown>true</hy-p:delineationKnown>
+			<hy-p:length xsi:nil="true" nilReason="Unpopulated" uom="null" />
+			<hy-p:level xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:width>
+				<hy-p:WidthRange>
+					<hy-p:lower uom="m">0.0</hy-p:lower>
+					<hy-p:upper uom="m">5.0</hy-p:upper>
+				</hy-p:WidthRange>
+			</hy-p:width>
+		</hy-p:Watercourse>
+	</wfs:member>
+</wfs:FeatureCollection>

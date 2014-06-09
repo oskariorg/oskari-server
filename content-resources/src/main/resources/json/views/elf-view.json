@@ -22,9 +22,9 @@
                     }, {
                         "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
                     }, {
-                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
-                    }, {
                         "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
                     }, {
                         "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
                         "config": {
@@ -159,9 +159,14 @@
         }, {
             "id": "toolbar",
             "config": {
+            	"mapUrlPrefix": {
+            		"en" : "http://54.216.109.137/oskari-map/?lang=en&",
+            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&",
+            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&"
+            	},
                 "viewtools": {
                     "print": false,
-                    "link": false
+                    "link": true
                 },
                 "basictools": {
 					"measurearea": false,
@@ -173,7 +178,16 @@
         }, {
             "id": "statehandler"
         }, {
-            "id": "search"
+            "id": "search",
+            "config": {
+            	"disableDefault": true
+            }
+        },  {
+            "id": "elf-geolocator"
+        }, {
+            "id": "metadatacatalogue"
+        }, {
+            "id": "metadataflyout"
         }, {
             "id": "layerselector2"
         }, {
@@ -181,25 +195,21 @@
         }, {
             "id": "coordinatedisplay"
         }, {
-            "id": "metadataflyout"
-        }, {
-            "id": "metadatacatalogue"
-        }, {
             "id": "personaldata",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
+            		"en" : "http://54.216.109.137/oskari-map/?lang=en&viewId=",
+            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&viewId=",
+            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&viewId="
             	}
             }
         }, {
             "id": "publisher",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
+            		"en" : "http://54.216.109.137/oskari-map/?lang=en&viewId=",
+            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&viewId=",
+            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&viewId="
             	}
             }
         }, {
@@ -211,24 +221,9 @@
         }, {
             "id": "myplaces2"
         }, {
-            "id": "backendstatus"
-        }, {
-            "id": "printout",
-            "config" : {
-                "backendConfiguration" : {
-                    "formatProducers" : {
-                        "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
-                        "image/png" : "/imaging/service/thumbnail/maplink.png?"
-                    }, 
-                    "buttons": { }
-                }
-            }
-        }, {
             "id": "postprocessor"
         }, {
         	"id": "elf-language-selector"
-        }, {
-            "id": "elf-geolocator"
         }
     ]
 }
