@@ -109,8 +109,8 @@ public class INSPIRE_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML
                     "props": mapPrimitiveTypes(XSDDatatype.XSDstring,
                             input_gn_ns,
                             "beginLifespanVersion",
-                            "endLifespanVersion",
-                            "localType"
+                            "endLifespanVersion"
+                            
                     ),
                     "geometry": qn(input_gn_ns, "geometry"),
                     "name": qn(input_gn_ns, "name"),

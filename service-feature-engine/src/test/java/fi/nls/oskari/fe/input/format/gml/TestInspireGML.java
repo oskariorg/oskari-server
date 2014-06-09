@@ -249,7 +249,7 @@ public class TestInspireGML {
 				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeUnit.Default.xml");
 
 		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
-				"EPSG:3035", sldStyle);
+				"EPSG:3857", sldStyle);
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
@@ -365,7 +365,7 @@ public class TestInspireGML {
 
 	}
 	
-	/*
+	
 	@Test
 	public void test_IgnEs_GN_WFS_GMLtoPNG()
 			throws InstantiationException, IllegalAccessException, IOException,
@@ -375,7 +375,7 @@ public class TestInspireGML {
 
 		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
 		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
-				"EPSG:3035");
+				"EPSG:3857");
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
@@ -407,7 +407,45 @@ public class TestInspireGML {
 		}
 
 	}
-	*/
+	
+	@Test
+	public void test_IgnEs_GN_WFS_GMLtoJSONLD() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new JsonLdOutputProcessor();
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/gn/ign_es-INSPIRE-GN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+			FileOutputStream fouts = new FileOutputStream("GN-ign_es.json");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/INSPIRE_generic_GN.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	
 	
 	@Test
 	public void test_IgnFr_GN_WFS_GMLtoPNG()
@@ -418,7 +456,7 @@ public class TestInspireGML {
 
 		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
 		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
-				"EPSG:3035");
+				"EPSG:3857");
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
