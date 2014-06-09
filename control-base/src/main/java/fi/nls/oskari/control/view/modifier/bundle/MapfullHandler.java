@@ -12,11 +12,15 @@ import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
+import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,6 +66,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
+    private static final String PREFIX_USERLAYERS = "userlayer_";
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
@@ -69,6 +74,8 @@ public class MapfullHandler extends BundleHandler {
 
     private static final MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
+    private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
+    private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
 
@@ -158,6 +165,7 @@ public class MapfullHandler extends BundleHandler {
         final List<String> layerIdList = new ArrayList<String>();
         final List<Long> publishedMyPlaces = new ArrayList<Long>();
         final List<Long> publishedAnalysis = new ArrayList<Long>();
+        final List<Long> publishedUserLayers = new ArrayList<Long>();
 
         for (int i = 0; i < layersArray.length(); i++) {
             String layerId = null;
@@ -183,6 +191,14 @@ public class MapfullHandler extends BundleHandler {
                     } else {
                         log.warn("Found analysis layer in selected. Error parsing id with category id: ", layerId);
                     }
+                } else if (layerId.startsWith(PREFIX_USERLAYERS)) {
+                    final long userLayerId = ConversionHelper
+                            .getLong(layerId.substring(PREFIX_USERLAYERS.length()), -1);
+                    if (userLayerId != -1) {
+                        publishedUserLayers.add(userLayerId);
+                    } else {
+                        log.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
+                    }
                 } else {
                     // these should all be pointing at a layer in oskari_maplayer
                     layerIdList.add(layerId);
@@ -204,6 +220,7 @@ public class MapfullHandler extends BundleHandler {
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
+        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds);
         return prefetch;
     }
     private static void appendAnalysisLayers(final JSONArray layerList,
@@ -276,6 +293,40 @@ public class MapfullHandler extends BundleHandler {
                     mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
             if(myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
+            }
+        }
+    }
+
+    private static void appendUserLayers(final JSONArray layerList,
+                                         final List<Long> publishedUserLayers,
+                                         final User user,
+                                         final long viewID,
+                                         final Set<String> bundleIds) {
+        final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
+        for(Long id : publishedUserLayers) {
+            final UserLayer userLayer = userLayerService.getUserLayerById(id);
+
+            if (userLayer == null) {
+                log.warn("Unable to find published user layer with id", id);
+                continue;
+            }
+
+            if(userLayersBundlePresent && userLayer.isOwnedBy(user.getUuid())) {
+                // skip if it's an own layer and myplacesimport bundle is present ->
+                // will be loaded via aforementioned bundle
+                continue;
+            }
+
+            if (!userLayer.isPublished() && !userLayer.isOwnedBy(user.getUuid())) {
+                log.info("Found user layer in selected that is no longer published. ViewID:",
+                        viewID, "User layer id:", userLayer.getId());
+                // no longer published -> skip if isn't current users layer
+                continue;
+            }
+
+            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer);
+            if(json != null) {
+                layerList.put(json);
             }
         }
     }
