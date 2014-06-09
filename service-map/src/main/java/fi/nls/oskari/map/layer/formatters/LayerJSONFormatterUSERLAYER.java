@@ -49,7 +49,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
         JSONHelper.putValue(layerJson, "fields",JSONHelper.createJSONArrayJsonKeys(JSONHelper.createJSONObject(ulayer.getFields())));
         // user layer rendering url
-        JSONHelper.putValue(layerJson, "renderingUrl", userlayerRenderingUrl);
+        JSONHelper.putValue(layerJson, "url", userlayerRenderingUrl);
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
 
 
