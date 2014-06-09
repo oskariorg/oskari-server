@@ -49,7 +49,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
             else if(OskariLayer.TYPE_WMTS.equals(layerType)) {
                 WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
                 final String capabilities = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities");
-                JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities);
+                JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
                 JSONHelper.putValue(resultJSON, "xml", capabilities);
                 ResponseHelper.writeResponse(params, resultJSON);
             }
