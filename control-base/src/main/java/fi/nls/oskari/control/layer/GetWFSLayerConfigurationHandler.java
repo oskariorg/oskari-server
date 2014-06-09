@@ -3,7 +3,10 @@ package fi.nls.oskari.control.layer;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import org.json.JSONObject;
 
 import fi.nls.oskari.control.ActionException;
@@ -27,6 +30,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
+    private UserLayerDbService userLayerDbService = new UserLayerDbServiceIbatisImpl();
 
     private final static String ID = "id";
 
@@ -95,6 +99,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
                 log.warn("sid", sid);
                 // set id to original user layer id
                 lc.setLayerId(sid);
+                setAdditionalPublishedData(sid, lc);
             }
             if (lc == null) {
                 JSONHelper.putValue(root, ERROR, ERROR_NOT_FOUND);
@@ -147,5 +152,17 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         }
 
         return properties;
+    }
+
+    private void setAdditionalPublishedData(String sid, WFSLayerConfiguration lc) {
+        if (sid.indexOf(USERLAYER_PREFIX) > -1) {
+            final long userLayerId = ConversionHelper
+                    .getLong(sid.substring(USERLAYER_PREFIX.length()), -1);
+            UserLayer userLayer = userLayerDbService.getUserLayerById(userLayerId);
+            if (userLayer != null && userLayer.isPublished()) {
+                lc.setPublished(true);
+                lc.setUuid(userLayer.getUuid());
+            }
+        }
     }
 }

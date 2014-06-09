@@ -26,7 +26,7 @@ public class WMTSCapabilitiesParser {
 
     private Logger log = LogFactory.getLogger(WMTSCapabilitiesParser.class);
 
-    public JSONObject parseCapabilitiesToJSON(final String xml) throws Exception {
+    public JSONObject parseCapabilitiesToJSON(final String xml, final String url) throws Exception {
         if(xml == null) {
             return null;
         }
@@ -52,10 +52,14 @@ public class WMTSCapabilitiesParser {
         // start building result
         final JSONObject result = new JSONObject();
 
-        final JSONObject layersNode = new JSONObject();
+        final JSONArray layersNode = new JSONArray();
         JSONHelper.putValue(result, "layers", layersNode);
         for(WMTSCapabilitiesLayer layer : layers) {
-            JSONHelper.putValue(layersNode, layer.getId(), layer.getAsJSON());
+            JSONObject layerJson = layer.getAsJSON();
+            if(!layerJson.has("url")) {
+                JSONHelper.putValue(layerJson, "url", url);
+            }
+            layersNode.put(layerJson);
         }
 
         final JSONObject matrixNode = new JSONObject();

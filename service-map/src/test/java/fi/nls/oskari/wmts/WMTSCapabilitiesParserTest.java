@@ -29,13 +29,13 @@ public class WMTSCapabilitiesParserTest {
     @Test
     public void sami() throws Exception {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
-        log.debug(parser.parseCapabilitiesToJSON(capabilitiesInput_NLS));
+        log.debug(parser.parseCapabilitiesToJSON(capabilitiesInput_NLS, "http://oskari.testing.fi"));
     }
     @Test
     public void testParseCapabilitiesToJSON() throws Exception {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
 
-        final JSONObject parsed = parser.parseCapabilitiesToJSON(capabilitiesInput_NLS);
+        final JSONObject parsed = parser.parseCapabilitiesToJSON(capabilitiesInput_NLS, "http://oskari.testing.fi");
         final JSONObject expected = JSONHelper.createJSONObject(expectedJSON);
 
         final boolean blnID = JSONHelper.isEqual(parsed.optJSONObject("serviceIdentification"), expected.optJSONObject("serviceIdentification"));

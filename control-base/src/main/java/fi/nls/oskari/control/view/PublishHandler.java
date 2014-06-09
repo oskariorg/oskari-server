@@ -12,6 +12,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -21,6 +22,8 @@ import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
+import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
@@ -71,6 +74,7 @@ public class PublishHandler extends ActionHandler {
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
+    private static final String PREFIX_USERLAYER = "userlayer_";
     private static final String PREFIX_BASELAYER = "base_";
     private static final Set<String> CLASS_WHITELIST;
     static {
@@ -86,6 +90,7 @@ public class PublishHandler extends ActionHandler {
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
     private AnalysisDbService analysisService = null;
+    private UserLayerDbService userLayerService = null;
     private PermissionsService permissionsService = null;
     private BundleService bundleService = null;
     private OskariLayerService layerService = null;
@@ -104,6 +109,8 @@ public class PublishHandler extends ActionHandler {
     public void setAnalysisService(final AnalysisDbService service) {
     	analysisService = service;
     }
+
+    public void setUserLayerService(final UserLayerDbService service) { userLayerService = service; }
 
     public void setPermissionsService(final PermissionsService service) {
     	permissionsService = service;
@@ -125,6 +132,10 @@ public class PublishHandler extends ActionHandler {
 
         if (analysisService == null) {
             setAnalysisService(new AnalysisDbServiceIbatisImpl());
+        }
+
+        if (userLayerService == null) {
+            setUserLayerService(new UserLayerDbServiceIbatisImpl());
         }
 
         if (permissionsService == null) {
@@ -545,9 +556,13 @@ public class PublishHandler extends ActionHandler {
                     if (hasRightToPublishAnalysisLayer(layerId, user)) {
                         filteredList.put(layer);
                     }
-                }
-                // check publish right for normal layer
-                else if (hasRightToPublishLayer(layerId, user)) {
+                } else if (layerId.startsWith(PREFIX_USERLAYER)) {
+                    // check publish rights for user layer
+                    if (hasRightToPublishUserLayer(layerId, user)) {
+                        filteredList.put(layer);
+                    }
+                } else if (hasRightToPublishLayer(layerId, user)) {
+                    // check publish right for normal layer
                     filteredList.put(layer);
                 }
             }
@@ -604,6 +619,21 @@ public class PublishHandler extends ActionHandler {
             log.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
         }
         return hasPermission;
+    }
+
+    private boolean hasRightToPublishUserLayer(final String layerId, final User user) {
+        final long id = ConversionHelper.getLong(layerId.substring(PREFIX_USERLAYER.length()), -1);
+        if (id == -1) {
+            log.warn("Error parsing layerId:", layerId);
+            return false;
+        }
+        final UserLayer userLayer = userLayerService.getUserLayerById(id);
+        if (userLayer.isOwnedBy(user.getUuid())) {
+            userLayerService.updatePublisherName(id, user.getUuid(), user.getScreenname());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean hasRightToPublishLayer(final String layerId, final User user) {
