@@ -47,11 +47,12 @@ public class WebLocaleResolver {
                 cookie = new Cookie(cookieName, requestedLocale);
                 cookie.setPath("/"); // request.getContextPath()
                 cookie.setSecure(request.isSecure());
-                response.addCookie(cookie);
             }
             else {
                 cookie.setValue(requestedLocale);
             }
+            // add or update language-cookie value
+            response.addCookie(cookie);
             return getLocale(requestedLocale);
         }
 

@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.22
+
+### servlet-map/OskariRequestFilter
+
+Should now setup language correctly when an existing cookie is found.
+
 ## 1.21
 
 ### control-base
