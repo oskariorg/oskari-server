@@ -1,0 +1,2784 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gml:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=" http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0 http://wfs.geonorge.no/skwms1/wfs.elf-lod1gn?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=text%2Fxml%3B+subtype%3Dgml%2F3.2.1&amp;TYPENAME=elf-lod1gn:NamedPlace&amp;NAMESPACE=xmlns(elf-lod1gn=http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2FMasterLoD1%2F1.0)"
+	xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="WFS_RESPONSE">
+	<gml:boundedBy>
+		<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4258">
+			<gml:lowerCorner>58.089758 6.600475</gml:lowerCorner>
+			<gml:upperCorner>58.134950 7.319369</gml:upperCorner>
+		</gml:Envelope>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.540">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.540_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.540_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.131789 6.848122</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>540</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Lauvland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Lauland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.541">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.541_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.541_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.126967 6.851261</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>541</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Lauvlandsvatnet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Laulandstjønna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.542">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2000-08-07T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.542_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.542_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.132211 6.910081</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>542</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Halvøy i sjø</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Asperøyna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.543">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-18T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.543_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.543_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.132128 6.941842</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>543</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Gammel bosettingsplass</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Kjempe</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/administrativeUnit/administrativeUnit.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.544">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.544_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.544_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.134950 6.944667</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>544</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Måkevatnet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Måkevannet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.545">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.545_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.545_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.115569 6.603078</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>545</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Langåker</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.546">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-07-01T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.546_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.546_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.120736 6.600475</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>546</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Stave</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.547">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.547_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.547_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.120069 6.619014</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>547</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Slevedal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Slevdal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.548">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.548_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.548_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.114203 6.622150</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>548</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Velle</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.549">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.549_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.549_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118853 6.627008</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>549</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Hauge, vestre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Hauge vestre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.550">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.550_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.550_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.119703 6.642008</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>550</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Kalleberg</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.551">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.551_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.551_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118111 6.644861</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>551</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Frøyland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.552">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-07-01T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.552_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.552_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.114978 6.638856</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>552</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Langeland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.553">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.553_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.553_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.119100 6.679969</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>553</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Åmdal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Omdal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.554">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.554_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.554_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.121203 6.694042</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>554</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Halland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.555">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.555_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.555_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118853 6.693906</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>555</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Ås</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Snarefjellet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Snarefjell</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/landform.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.556">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.556_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.556_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.120417 6.708833</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>556</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Ås</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Skardsfjellet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/landform.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.557">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.557_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.557_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.117522 6.737361</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>557</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Straumslandstjørna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Straumslandstjønna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.558">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.558_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.558_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.123053 6.731606</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>558</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Monetjørna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Monetjønna</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.559">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.559_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.559_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118883 6.742194</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>559</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Ås</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Husafjellet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Straumslandshusefjell</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/landform.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.560">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.560_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.560_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.115322 6.741539</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>560</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Straumsland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.561">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-07-02T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.561_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.561_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.120192 6.776714</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>561</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Nørskår</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.562">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.562_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.562_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.117817 6.772469</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>562</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Heia</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.563">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.563_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.563_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.119514 6.785336</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>563</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Halland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.564">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.564_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.564_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118994 6.792092</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>564</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Snabbe</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.565">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.565_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.565_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.121953 6.798039</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>565</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Skittvatnet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Skidvann</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.566">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.566_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.566_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.123911 6.807803</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>566</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Midtvatnet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Midtvann</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.567">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.567_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.567_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.116683 6.813306</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>567</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Tjern</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Beiskevatnet</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Beiskevann</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.568">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.568_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.568_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.116544 6.829222</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>568</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Gammel bosettingsplass</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Solbjør</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Solbjørg</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/administrativeUnit/administrativeUnit.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.569">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.569_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.569_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.123119 6.848350</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>569</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Fulland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.570">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.570_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.570_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118189 6.895056</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>570</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Grabu</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Grobo</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.571">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.571_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.571_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118492 6.923953</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>571</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Dårøy</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Dåreid</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.572">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.572_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.572_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.121286 6.931903</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>572</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Gammel bosettingsplass</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Skåteland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Skodeland</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/administrativeUnit/administrativeUnit.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.573">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.573_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.573_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.118092 6.936150</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>573</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Haug</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Kvina</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/landform.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.574">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">1999-01-19T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.574_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.574_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.124294 6.885242</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>574</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Fjord</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Lyngdalsfjorden</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.575">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-06-29T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.575_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.575_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.116786 6.955575</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>575</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Vik i sjø</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Kolevollsbukta</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Kollevollbukta</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.576">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2000-08-16T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.576_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.576_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.120917 6.959061</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>576</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Holme i sjø</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/official.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Homseholman</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/hydrography.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.577">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2012-02-20T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.577_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.577_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.110592 6.630731</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>577</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Grend</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Råstad, øvre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Råstad øvre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.578">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-03-26T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.578_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.578_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.107692 6.625947</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>578</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Råstad, nedre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Råstad nedre</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.579">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2010-07-01T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.579_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.579_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.109361 6.640636</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>579</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Ore</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.1158">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.1158_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.1158_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.096083 7.287439</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>1158</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Giskedal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Geiskedal</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.1159">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.1159_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.1159_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.092025 7.285903</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>1159</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Brandsnes</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.1160">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.1160_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.1160_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.089758 7.291269</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>1160</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Livoll</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+	<gml:featureMember>
+		<elf-lod1gn:NamedPlace
+			xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+			gml:id="navneenhet.1161">
+			<gn:beginLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2006-09-28T00:00:00</gn:beginLifespanVersion>
+			<gn:endLifespanVersion
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xsi:nil="true" nilReason="unknown" />
+			<gn:geometry
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<!--Inlined geometry 'navneenhet.1161_GN_GEOMETRY' -->
+				<gml:Point gml:id="navneenhet.1161_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::4258">
+					<gml:pos>58.096450 7.319369</gml:pos>
+				</gml:Point>
+			</gn:geometry>
+			<gn:inspireId
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>1161</base:localId>
+					<base:namespace>http://data.kartverket.no/stedsnavn
+					</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unknown" />
+				</base:Identifier>
+			</gn:inspireId>
+			<gn:localType
+				xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Bruk (gardsbruk)</gn:localType>
+			<gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+				<elf-lod1gn:GeographicalName>
+					<gn:language>nor</gn:language>
+					<gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml" />
+					<gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml" />
+					<gn:sourceOfName>Norwegian Central Place Name Register - SSR
+					</gn:sourceOfName>
+					<gn:pronunciation xsi:nil="true" nilReason="unknown" />
+					<gn:spelling>
+						<elf-lod1gn:SpellingOfName>
+							<gn:text>Valle</gn:text>
+							<gn:script>Latn</gn:script>
+							<gn:transliterationScheme xsi:nil="true"
+								nilReason="unknown" />
+						</elf-lod1gn:SpellingOfName>
+					</gn:spelling>
+					<elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+				</elf-lod1gn:GeographicalName>
+			</gn:name>
+			<gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/building/building.en.xml" />
+		</elf-lod1gn:NamedPlace>
+	</gml:featureMember>
+</gml:FeatureCollection>

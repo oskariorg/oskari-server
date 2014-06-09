@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_geonorge', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_gn_geonorge', 999, 
          120000, 1, 
          'wfs', '{fi:{name:"ELF GN - geonorge.no", subtitle:""},sv:{name:"ELF GN - geonorge.no", subtitle:""},en:{name:"ELF GN - geonorge.no", subtitle:""}}');
          
@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_GN_geonorge_no', 
-       'http://wfs.geonorge.no/skwms1/wfs.elf-lod1gn', '', '', 
+       'http://wfs.geonorge.no/skwms1/wfs.elf-lod1gn', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 

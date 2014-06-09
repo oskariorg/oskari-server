@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0 http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod0ad:Address&amp;NAMESPACES=xmlns(elf-lod0ad,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FAddresses%2FMasterLoD0%2F1.0)"
+	xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T15:33:19Z"
+	xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="unknown"
+	numberReturned="0">
+	<!--NOTE: numberReturned attribute should be 'unknown' as well, but this 
+		would not validate against the current version of the WFS 2.0 schema (change 
+		upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925. -->
+	<wfs:member>
+		<elf-lod0ad:Address
+			xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0"
+			gml:id="ELF-LOD0AD_ADDRESS_ADRNIVX_0000000261413625">
+			<ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+				<base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+					<base:localId>ADRNIVX_0000000261413625</base:localId>
+					<base:namespace>FR_IGNF_BDUniGE_Addresses_MET</base:namespace>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:alternativeIdentifier
+				xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true"
+				nilReason="withheld" />
+			<ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+				<ad:GeographicPosition>
+					<ad:geometry owns="false">
+						<gml:MultiPoint
+							gml:id="ELF-LOD0AD_ADDRESS_ADRNIVX_0000000261413625_AD_POSITION_0"
+							srsName="urn:ogc:def:crs:EPSG::3857">
+							<gml:pointMember>
+								<gml:Point gml:id="GEOMETRY_cc367031-6132-4b34-a35b-d7e3457d57b5"
+									srsName="urn:ogc:def:crs:EPSG::3857">
+									<gml:pos>844804.166 5446398.300</gml:pos>
+								</gml:Point>
+							</gml:pointMember>
+						</gml:MultiPoint>
+					</ad:geometry>
+					<ad:specification xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="parcel" />
+					<ad:method xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="fromFeature" />
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:status xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="current" />
+			<ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>B</ad:designator>
+							<ad:type xmlns:xlink="http://www.w3.org/1999/xlink"
+								xlink:href="addressNumber" />
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="siteLevel" />
+					<ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink"
+						xlink:href="http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADDRESSAREANAME_06163_LUBAIRA#AD_ADDRESSAREANAME_06163_LUBAIRA" />
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xsi:nil="true" nilReason="unpopulated" />
+			<ad:beginLifespanVersion
+				xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true"
+				nilReason="unpopulated" />
+			<ad:parcel xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xsi:nil="true" />
+			<ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_codeINSEE_FR#AD_ADMINUNITNAME_codeINSEE_FR" />
+			<ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_codeINSEE_06163#AD_ADMINUNITNAME_codeINSEE_06163" />
+			<ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADDRESSAREANAME_06163_LUBAIRA#AD_ADDRESSAREANAME_06163_LUBAIRA" />
+			<ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xlink:href="http://wxs.ign.fr/deegree/services/wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_codepostal_06430#AD_POSTALDESCRIPTOR_codepostal_06430" />
+			<ad:parentAddress xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" />
+		</elf-lod0ad:Address>
+	</wfs:member>
+</wfs:FeatureCollection>

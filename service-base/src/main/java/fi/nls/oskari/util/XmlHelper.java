@@ -7,6 +7,8 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.jaxen.SimpleNamespaceContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -131,6 +133,17 @@ public class XmlHelper {
 
     public static String getAttributeValue(final OMElement elem, final String attrLocalName) {
         return getAttributesAsMap(elem).get(attrLocalName);
+    }
+
+    public static AXIOMXPath buildXPath(final String str, final SimpleNamespaceContext ctx) {
+        try {
+            AXIOMXPath xpath = new AXIOMXPath(str);
+            xpath.setNamespaceContext(ctx);
+            return xpath;
+        } catch (Exception ex) {
+            log.error(ex, "Error creating xpath:", str);
+        }
+        return null;
     }
 
 }

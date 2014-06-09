@@ -115,7 +115,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                     "geometry": qn(input_gn_ns, "geometry"),
                     "name": qn(input_gn_ns, "name"),
                     "geoms": mapGeometryTypes("http://www.opengis.net/gml/3.2",
-                            "Point"
+                            "Point","MultiPoint"
                     ),
   					"inspireId": qn(input_ns, "inspireId"),                    
                     "Identifier": qn(input_base_ns, "Identifier"),

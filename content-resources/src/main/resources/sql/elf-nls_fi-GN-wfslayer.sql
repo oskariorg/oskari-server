@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_nlsfi', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_gn_nlsfi', 999, 
          120000, 1, 
          'wfs', '{fi:{name:"ELF GN - nls.fi", subtitle:""},sv:{name:"ELF GN - nls.fi", subtitle:""},en:{name:"ELF GN - nls.fi", subtitle:""}}');
          
@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_GN_nls_fi', 
-       '!http://visukarttake01.nls.fi:8080/elf-wfs/services/elf-lod1gn|http://195.156.69.59/elf-wfs/services/elf-lod1gn', '', '', 
+       '!http://visukarttake01.nls.fi:8080/elf-wfs/services/elf-lod1gn|http://195.156.69.59/elf-wfs/services/elf-lod1gn', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
