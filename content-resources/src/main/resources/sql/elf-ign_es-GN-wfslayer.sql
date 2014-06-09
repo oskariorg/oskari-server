@@ -4,7 +4,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             minscale, maxscale, 
                             url, locale) 
   VALUES('wfslayer', 'elf_gn_ign_es', 999, 
-         120000, 1, 
+         100000, 1, 
          'wfs', '{fi:{name:"ELF GN - ign.es", subtitle:""},sv:{name:"ELF GN - ign.es", subtitle:""},en:{name:"ELF GN - ign.es", subtitle:""}}');
          
 
@@ -21,7 +21,7 @@ INSERT INTO portti_wfs_template_model(name, description, type, request_template,
 VALUES (
 	'ELF GN', 'ELF GN PoC', 'mah taip', 
 	'/fi/nls/oskari/fe/input/format/gml/inspire/gn/ign_es_wfs_template.xml', 
-	'/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy');          
+	'/fi/nls/oskari/fe/input/format/gml/gn/INSPIRE_generic_GN.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
