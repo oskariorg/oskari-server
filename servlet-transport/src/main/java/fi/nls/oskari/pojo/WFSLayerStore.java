@@ -324,6 +324,12 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 store.setMaxScale(parser.getValueAsDouble());
             }
 
+            else if (IS_PUBLISHED.equals(fieldName)) {
+                store.setPublished(parser.getValueAsBoolean());
+            } else if (UUID.equals(fieldName)) {
+                store.setUuid(parser.getText());
+            }
+
             else if (TEMPLATE_NAME.equals(fieldName)) {
                 store.setTemplateName(parser.getText());
             } else if (TEMPLATE_DESCRIPTION.equals(fieldName)) {

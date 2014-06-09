@@ -60,6 +60,9 @@ public class WFSLayerConfiguration {
     protected final static String MIN_SCALE = "minScale";
     protected final static String MAX_SCALE = "maxScale";
 
+    protected final static String IS_PUBLISHED = "isPublished";
+    protected final static String UUID = "uuid";
+
     protected final static String TEMPLATE_NAME = "templateName";
     protected final static String TEMPLATE_DESCRIPTION = "templateDescription";
     protected final static String TEMPLATE_TYPE = "templateType";
@@ -110,6 +113,9 @@ public class WFSLayerConfiguration {
 
 	private double minScale;
 	private double maxScale;
+
+    private boolean isPublished = false;
+    private String uuid;
 
 	// Template Model
 	private String templateName;
@@ -500,6 +506,21 @@ public class WFSLayerConfiguration {
 		this.maxScale = maxScale;
 	}
 
+    public boolean isPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(boolean isPublished) {
+        this.isPublished = isPublished;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
     /**
 	 * Gets template name
 	 *
@@ -667,6 +688,9 @@ public class WFSLayerConfiguration {
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());
+
+        JSONHelper.putValue(root, IS_PUBLISHED, this.isPublished());
+        JSONHelper.putValue(root, UUID, this.getUuid());
 
 		JSONHelper.putValue(root, TEMPLATE_NAME, this.getTemplateName());
 		JSONHelper.putValue(root, TEMPLATE_DESCRIPTION, this.getTemplateDescription());

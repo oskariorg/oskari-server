@@ -29,6 +29,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
     public static final String BUNDLE_ANALYSE = "analyse";
     public static final String BUNDLE_DIVMANAZER = "divmanazer";
+    public static final String BUNDLE_MYPLACESIMPORT = "myplacesimport";
 
     public void init() {
 
