@@ -269,6 +269,8 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         for (Pair<Resource, Geometry> geomPair : geometryProperties) {
             Geometry geom = geomPair.getValue();
 
+            System.out.println("+ "+geom.toString());
+            
             sfb.add(geom);
 
             SimpleFeature f = sfb.buildFeature(iri.toString());

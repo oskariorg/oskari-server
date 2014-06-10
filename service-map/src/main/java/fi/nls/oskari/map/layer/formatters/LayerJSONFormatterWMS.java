@@ -129,14 +129,18 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      * @return JSONObject containing the most preferred supported format
      */
     private static JSONObject getFormatsJSON(WebMapService wms) {
+        final Set<String> formats = new HashSet<String>(Arrays.asList(wms.getFormats()));
+        return getFormatsJSON(formats);
+    }
+
+    public static JSONObject getFormatsJSON(final Set<String> formats) {
         final JSONObject formatJSON = new JSONObject();
         final JSONArray available = new JSONArray();
         JSONHelper.putValue(formatJSON, "available", available);
-        if(wms == null) {
+        if(formats == null) {
             return formatJSON;
         }
         // simple but inefficient...
-        final Set<String> formats =  new HashSet<String>(Arrays.asList(wms.getFormats()));
         // We support the following formats. Formats are presented
         // in order of preference.
         // 'application/vnd.ogc.se_xml' == GML

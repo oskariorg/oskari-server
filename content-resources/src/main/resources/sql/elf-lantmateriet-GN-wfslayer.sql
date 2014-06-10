@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_lantmateriet', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_gn_lantmateriet', 999, 
          120000, 1, 
          'wfs', '{fi:{name:"ELF GN - lantmateriet.se", subtitle:""},sv:{name:"ELF GN - lantmateriet.se", subtitle:""},en:{name:"ELF GN - lantmateriet.se", subtitle:""}}');
          

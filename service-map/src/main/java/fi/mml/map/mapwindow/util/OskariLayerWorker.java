@@ -211,6 +211,14 @@ public class OskariLayerWorker {
         return permission;
     }
 
+    public static JSONObject getAllowedPermissions() {
+        final JSONObject permissions = new JSONObject();
+        JSONHelper.putValue(permissions, "edit", true);
+        JSONHelper.putValue(permissions, "publish", PUBLICATION_PERMISSION_OK);
+
+        return permissions;
+    }
+
     private static String getPermissionType(final boolean isPublished) {
         if (isPublished) {
             return Permissions.PERMISSION_TYPE_VIEW_PUBLISHED;

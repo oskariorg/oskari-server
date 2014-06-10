@@ -5,11 +5,9 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.*;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
-import fi.nls.oskari.util.GetWMSCapabilities;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,7 +47,11 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 ResponseHelper.writeResponse(params, capabilities);
             }
             else if(OskariLayer.TYPE_WMTS.equals(layerType)) {
-                ResponseHelper.writeResponse(params, IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities"));
+                WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
+                final String capabilities = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities");
+                JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
+                JSONHelper.putValue(resultJSON, "xml", capabilities);
+                ResponseHelper.writeResponse(params, resultJSON);
             }
             else {
                 throw new ActionParamsException("Couldn't determine operation based on parameters");

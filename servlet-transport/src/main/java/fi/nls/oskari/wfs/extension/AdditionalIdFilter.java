@@ -13,6 +13,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.operation.MathTransform;
 
+import javax.mail.Session;
 import java.util.List;
 
 public class AdditionalIdFilter extends WFSFilter {
@@ -66,7 +67,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initCoordinateFilter(coordinate);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
+            Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
         } else if(type == WFSMapLayerJob.Type.GEOJSON) {
@@ -76,7 +77,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initGeoJSONFilter(geoJSONFilter);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
+            Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
         } else if(type == WFSMapLayerJob.Type.NORMAL) {
@@ -91,7 +92,7 @@ public class AdditionalIdFilter extends WFSFilter {
             filter = super.initEnlargedBBOXFilter(location, layer);
 
             // Analysis id
-            Filter idFilter = initIdFilter(layer.getLayerId(), session.getUuid());
+            Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
         } else {
@@ -121,5 +122,21 @@ public class AdditionalIdFilter extends WFSFilter {
         Filter uidFilter = ff.equal(ff.property(layerUidField), ff.literal(uid), false);
         return ff.and(idFilter, uidFilter);
 
+    }
+
+    /**
+     * Uses the stored layer's creator's uuid if the layer is published and the uuid is available.
+     * Otherwise uses the uuid from the session.
+     *
+     * @param layer
+     * @param session
+     * @return id and uuid filter of type 'AND'
+     */
+    private Filter initIdFilter(final WFSLayerStore layer, final SessionStore session) {
+        if (layer.isPublished() && layer.getUuid() != null) {
+            return initIdFilter(layer.getLayerId(), layer.getUuid());
+        } else {
+            return initIdFilter(layer.getLayerId(), session.getUuid());
+        }
     }
 }

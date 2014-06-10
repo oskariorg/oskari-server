@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_cuzk_cz', (SELECT MAX(id) FROM oskari_layergroup), 
+  VALUES('wfslayer', 'elf_AU_cuzk_cz', 999, 
          500000, 1, 
          'wfs', '{fi:{name:"ELF AU - cuzk.cz", subtitle:""},sv:{name:"ELF AU - cuzk.cz", subtitle:""},en:{name:"ELF AU - cuzk.cz", subtitle:""}}');
          
@@ -21,7 +21,7 @@ INSERT INTO portti_wfs_template_model(name, description, type, request_template,
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
 	'oskari-feature-engine:QueryArgsBuilder_WFS_GET', 
-	'/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy');          
+	'/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_AU_cuzk_cz', 
-       'http://services.cuzk.cz/wfs/inspire-au-wfs.asp', '', '', 
+       'http://services.cuzk.cz/wfs/inspire-au-wfs.asp', null, null, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 

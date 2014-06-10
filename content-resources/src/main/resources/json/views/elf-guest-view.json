@@ -24,6 +24,8 @@
                     }, {
                         "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
                     }, {
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                    }, {
                         "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
                         "config": {
                             "ignoredLayerTypes": ["WFS"]
@@ -133,25 +135,36 @@
             "config": {
                 "viewtools": {
                     "print": false,
-                    "link": false
-                }
+                    "link": true
+                },
+                "mapUrlPrefix": {
+            		"en" : "http://54.216.109.137/oskari-map/?lang=en&",
+            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&",
+            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&"
+            	}
+                
             }
         }, {
             "id": "infobox"
         }, {
             "id": "statehandler"
         }, {
-            "id": "search"
+            "id": "search",
+            "config": {
+            	"disableDefault": true
+            }
+        }, {
+            "id": "elf-geolocator"
+        }, {
+            "id": "metadatacatalogue"
+        }, {
+            "id": "metadataflyout"
         }, {
             "id": "layerselector2"
         }, {
             "id": "layerselection2"
         }, {
             "id": "coordinatedisplay"
-        }, {
-            "id": "metadataflyout"
-        }, {
-            "id": "metadatacatalogue"
         }, {
             "id": "personaldata"
         }, {
@@ -168,8 +181,6 @@
             "id": "postprocessor"
         }, {
         	"id": "elf-language-selector"
-        }, {
-            "id": "elf-geolocator"
         }
     ]
 }

@@ -73,6 +73,7 @@ import org.opengis.geometry.BoundingBox;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.MultiPoint;
 
 
 /**
@@ -81,30 +82,11 @@ import com.vividsolutions.jts.geom.Point;
  */
 public class TestInspireGML {
 
-	final static Map<String, String> recipeNames = new HashMap<String, String>() {
-		/**
-         *
-         */
-		private static final long serialVersionUID = -8424681181879387940L;
-
-		{
-			put("gn",
-					"/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy");
-			put("au",
-					"/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy");
-		}
-	};
-
 	static GroovyClassLoader gcl = new GroovyClassLoader();
 
-	Map<String, Class<GroovyParserRecipe>> recipeClazzes = new HashMap<String, Class<GroovyParserRecipe>>();
-
-	@Before
 	@SuppressWarnings("unchecked")
-	public void setUp() {
+	public Class<GroovyParserRecipe> setupGroovyScript(final String recipePath) {
 
-		for (String recipeKey : recipeNames.keySet()) {
-			String recipePath = recipeNames.get(recipeKey);
 			InputStreamReader reader = new InputStreamReader(
 					TestInspireGML.class.getResourceAsStream(recipePath));
 
@@ -114,9 +96,9 @@ public class TestInspireGML {
 			Class<GroovyParserRecipe> recipeClazz = (Class<GroovyParserRecipe>) gcl
 					.parseClass(codeSource, true);
 
-			recipeClazzes.put(recipeKey, recipeClazz);
-		}
-
+			return recipeClazz;
+	
+			
 	}
 
 	@Test
@@ -135,17 +117,18 @@ public class TestInspireGML {
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
-						"/fi/nls/oskari/fe/input/format/gml/au/services_cuzk_cz_wfs_inspire-au-wfs.xml");
+						"/fi/nls/oskari/fe/input/format/gml/au/cuzk_cz-wfs-ELF-AU-wfs.xml");
 
 		try {
 			inputProcessor.setInput(inp);
 
-			FileOutputStream fouts = new FileOutputStream("AU.png");
+			FileOutputStream fouts = new FileOutputStream("AU-cuzk_cz.png");
 			try {
 				outputProcessor.setOutput(fouts);
 
-				GroovyParserRecipe recipe = recipeClazzes.get("au")
-						.newInstance();
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy").
+						newInstance();
 				engine.setRecipe(recipe);
 
 				engine.setInputProcessor(inputProcessor);
@@ -162,6 +145,144 @@ public class TestInspireGML {
 		}
 
 	}
+	
+	@Test
+	public void test_GeonorgeNo_AU_WFS_GMLtoPNG() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+		Style sldStyle = MapContentOutputProcessor
+				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeUnit.Default.xml");
+
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3035", sldStyle);
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/geonorge_no-ELF-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("AU-geonorge_no.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	
+		@Test
+	public void test_LantmaterietSe_AU_WFS_GMLtoPNG() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+		Style sldStyle = MapContentOutputProcessor
+				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeUnit.Default.xml");
+
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3035", sldStyle);
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/lantmateriet_se-ELF-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("AU-lantmateriet_se.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+		
+		/*
+		@Test
+	public void test_IgnFr_AU_WFS_GMLtoPNG() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+		Style sldStyle = MapContentOutputProcessor
+				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/AU.AdministrativeUnit.Default.xml");
+
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857", sldStyle);
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/ign_fr-ELF-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("AU-ign_fr.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	*/		
+	
 
 	/* Let's not - JSON-LD a bit too slow atm */
 	/* 
@@ -176,7 +297,7 @@ public class TestInspireGML {
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
-						"/fi/nls/oskari/fe/input/format/gml/au/services_cuzk_cz_wfs_inspire-au-wfs.xml");
+						"/fi/nls/oskari/fe/input/format/gml/au/cuzk_cz-wfs-ELF-AU-wfs.xml.xml");
 
 		try {
 			inputProcessor.setInput(inp);
@@ -184,7 +305,7 @@ public class TestInspireGML {
 			try {
 				outputProcessor.setOutput(fouts);
 
-				GroovyParserRecipe recipe = recipeClazzes.get("au")
+				GroovyParserRecipe recipe = setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy")
 						.newInstance();
 				engine.setRecipe(recipe);
 
@@ -216,17 +337,226 @@ public class TestInspireGML {
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
-						"/fi/nls/oskari/fe/input/format/gml/gn/services_geonorge_no_wfs_inspire-gn-wfs.xml");
+						"/fi/nls/oskari/fe/input/format/gml/gn/geonorge_no-ELF-GN-wfs.xml");
 
 		try {
 			inputProcessor.setInput(inp);
 
-			FileOutputStream fouts = new FileOutputStream("GN.png");
+			FileOutputStream fouts = new FileOutputStream("GN-geonorge_no.png");
 			try {
 				outputProcessor.setOutput(fouts);
 
-				GroovyParserRecipe recipe = recipeClazzes.get("gn")
-						.newInstance();
+				GroovyParserRecipe recipe =
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	
+	
+	@Test
+	public void test_IgnEs_GN_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857");
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/gn/ign_es-INSPIRE-GN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("GN-INSPIRE-ign_es.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe =
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/INSPIRE_generic_GN.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	
+	@Test
+	public void test_IgnEs_GN_WFS_GMLtoJSONLD() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new JsonLdOutputProcessor();
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/gn/ign_es-INSPIRE-GN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+			FileOutputStream fouts = new FileOutputStream("GN-ign_es.json");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/INSPIRE_generic_GN.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	
+
+	/*
+	@Test
+	public void test_IgnEs_AU_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857");
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/ig_es-INSPIRE-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("AU-INSPIRE-ign_es.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe =
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	*/
+	
+	/*
+	@Test
+	public void test_IgnEs_AU_WFS_GMLtoJSONLD() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new JsonLdOutputProcessor();
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/au/ig_es-INSPIRE-AU-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+			FileOutputStream fouts = new FileOutputStream("AU-ign_es.json");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/au/INSPIRE_generic_AU.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+	*/
+	
+	@Test
+	public void test_IgnFr_GN_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857");
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/gn/ign_fr-ELF-GN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("GN-ELF-ign_fr.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe =
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy").
+						newInstance();
 				engine.setRecipe(recipe);
 
 				engine.setInputProcessor(inputProcessor);
@@ -258,7 +588,7 @@ public class TestInspireGML {
 
 		InputStream inp = getClass()
 				.getResourceAsStream(
-						"/fi/nls/oskari/fe/input/format/gml/gn/services_geonorge_no_wfs_inspire-gn-wfs.xml");
+						"/fi/nls/oskari/fe/input/format/gml/gn/geonorge_no-ELF-GN-wfs.xml");
 
 		try {
 			inputProcessor.setInput(inp);
@@ -266,7 +596,7 @@ public class TestInspireGML {
 			try {
 				outputProcessor.setOutput(fouts);
 
-				GroovyParserRecipe recipe = recipeClazzes.get("gn")
+				GroovyParserRecipe recipe = setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy").
 						.newInstance();
 				engine.setRecipe(recipe);
 
@@ -379,12 +709,14 @@ public class TestInspireGML {
 		};
 
 		InputStream inp = getClass().getResourceAsStream(
-				"/fi/nls/oskari/fe/input/format/gml/gn/services_geonorge_no_wfs_inspire-gn-wfs.xml");
+				"/fi/nls/oskari/fe/input/format/gml/gn/geonorge_no-ELF-GN-wfs.xml");
 
 		try {
 			inputProcessor.setInput(inp);
 
-			GroovyParserRecipe recipe = recipeClazzes.get("gn").newInstance();
+			GroovyParserRecipe recipe = 
+					setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy").
+					newInstance();
 			engine.setRecipe(recipe);
 
 			engine.setInputProcessor(inputProcessor);
@@ -398,6 +730,169 @@ public class TestInspireGML {
 
 		System.out.println(outputProcessor.getFeatureCount());
 		assertTrue(outputProcessor.getFeatureCount() == 44);
+
+	}
+	
+	@Test
+	public void test_IgnFr_GN_WFS_Counts() throws InstantiationException,
+			IllegalAccessException, IOException, XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		TestOutputProcessor outputProcessor = new TestOutputProcessor() {
+			
+			public static final String NS =
+					"http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0#";
+
+			int featureCount = 0;
+
+			@Override
+			public void begin() throws IOException {
+
+			}
+
+			@Override
+			public void edge(Resource subject, Resource predicate,
+					Resource value) throws IOException {
+
+			}
+
+			@Override
+			public void end() throws IOException {
+
+			}
+
+			@Override
+			public void flush() throws IOException {
+
+			}
+
+			@Override
+			public void prefix(String prefix, String ns) throws IOException {
+
+			}
+
+			@Override
+			public void type(Resource type,
+					List<Pair<Resource, XSDDatatype>> simpleProperties,
+					List<Pair<Resource, Object>> linkProperties,
+					List<Pair<Resource, String>> geometryProperties)
+					throws IOException {
+				assertTrue(type
+						.getNs()
+						.equals(NS));
+
+			}
+
+			@Override
+			public void vertex(Resource iri, Resource type,
+					List<Pair<Resource, ?>> simpleProperties,
+					List<Pair<Resource, ?>> linkProperties) throws IOException {
+
+			}
+
+			@Override
+			public void vertex(Resource iri, Resource type,
+					List<Pair<Resource, ?>> simpleProperties,
+					List<Pair<Resource, ?>> linkProperties,
+					List<Pair<Resource, Geometry>> geometryProperties)
+					throws IOException {
+
+				assertTrue(iri
+						.getNs()
+						.equals(NS));
+				assertTrue(type
+						.getNs()
+						.equals(NS));
+
+				assertTrue(!geometryProperties.isEmpty());
+				assertTrue(geometryProperties.get(0).getValue() != null);
+				assertTrue(geometryProperties.get(0).getValue() instanceof MultiPoint || 
+						(geometryProperties.get(0).getValue() instanceof Point));
+				
+				
+				featureCount++;
+
+			}
+
+			@Override
+			public int getFeatureCount() {
+				return featureCount;
+			}
+
+		};
+
+		InputStream inp = getClass().getResourceAsStream(
+				"/fi/nls/oskari/fe/input/format/gml/gn/ign_fr-ELF-GN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			GroovyParserRecipe recipe = 
+					setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy").
+					newInstance();
+			engine.setRecipe(recipe);
+
+			engine.setInputProcessor(inputProcessor);
+			engine.setOutputProcessor(outputProcessor);
+
+			engine.process();
+
+		} finally {
+			inp.close();
+		}
+
+		System.out.println(outputProcessor.getFeatureCount());
+		assertTrue(outputProcessor.getFeatureCount() == 5);
+
+	}
+	
+	
+	@Test
+	public void test_FgiFi_HY_WatercourseLink_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+
+		Style sldStyle = MapContentOutputProcessor
+				.createSLDStyle("/fi/nls/oskari/fe/output/style/inspire/hy/fgi_fi_WatercourseLink.xml");
+
+		
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3857", sldStyle );
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/hy/fgi_fi_wfs_ELF-HY-WatercourseLink-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("HY-fgi_fi-WatercourseLink.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = 
+						setupGroovyScript("/fi/nls/oskari/fe/input/format/gml/hy/ELF_generic_HY.groovy").
+						newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
 
 	}
 

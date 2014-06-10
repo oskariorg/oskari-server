@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class UserLayer {
-
+    public static final String TYPE = "userlayer";
     private long id;
     private String uuid;
     private String layer_name;
@@ -78,6 +78,10 @@ public class UserLayer {
 
     public void setStyle_id(long style_id) {
         this.style_id = style_id;
+    }
+
+    public boolean isPublished() {
+        return getPublisher_name() != null;
     }
 
     public boolean isOwnedBy(final String uuid) {
