@@ -164,25 +164,20 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             while(results.hasNext()) {
                 final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
                 setupResultItemURLs(item, locale);
-                channelSearchResult.addItem(item);
-                final OskariLayer oskariLayer =  getOskariLayerWithUuid(item);
                 
-                if(oskariLayer != null){
-                	log.debug("Got oskariLayer");
-                    // Creating a new searchResultItem and inserting uuid, name, group name from map layer
-                	SearchResultItem newitem = new SearchResultItem();
-                	log.debug("name: " + oskariLayer.getName());
-                	newitem.setTitle(oskariLayer.getName());
-                	newitem.setResourceId(item.getUuId());
-                	if(oskariLayer.getGroup() != null){
-                    	log.debug("groupname: " + oskariLayer.getGroup().getName(locale));
-                    	newitem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, oskariLayer.getGroup().getName(locale));
-                	}else{
-                		log.debug("no group name");
-                    	newitem.addValue(MetadataField.RESULT_KEY_ORGANIZATION, "");
+                
+                final List<OskariLayer> oskariLayers =  getOskariLayerWithUuid(item);
+                
+                if(oskariLayers != null && !oskariLayers.isEmpty()){
+                	log.debug("Got oskariLayers");
+                	
+                	for(OskariLayer oskariLayer : oskariLayers){
+                		log.debug("METAID: " + oskariLayer.getMetadataId());
+                		item.addUuId(oskariLayer.getMetadataId());
                 	}
-                	channelSearchResult.addItem(newitem);
                 }
+                
+                channelSearchResult.addItem(item);
             }
             
             final long end =  System.currentTimeMillis();
@@ -197,13 +192,13 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     }
     
     
-    private OskariLayer getOskariLayerWithUuid(SearchResultItem item){
+    private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
     	
     	log.debug("in getOskariLayerWithUuid");
-    	if(item.getUuId() == null){
+    	if(item.getUuId() == null || item.getUuId().isEmpty()){
     		return null;
     	}else{
-        	return mapLayerService.findByuuid(item.getUuId());
+        	return mapLayerService.findByuuid(item.getUuId().get(0));
     	}
     }
     

@@ -251,13 +251,13 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return null;
     }
 
-    public OskariLayer findByuuid(String uuid) {
+    public List<OskariLayer> findByuuid(String uuid) {
         try {
             client = getSqlMapClient();
             final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findByUuId", uuid));
             if(layers != null && !layers.isEmpty()) {
                 // should we check for multiples? only should have one since sublayers are mapped in mapDataList()
-                return layers.get(0);
+                return layers;
             }
         } catch (Exception e) {
             log.warn(e, "Exception when getting layer with uuid:", uuid);
