@@ -1,0 +1,1 @@
+﻿ALTER TABLE my_places ALTER COLUMN updated DROP NOT NULL;
