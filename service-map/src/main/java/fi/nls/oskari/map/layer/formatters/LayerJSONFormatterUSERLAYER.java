@@ -22,9 +22,8 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
     private static final String USERLAYER_RENDERING_URL = "userlayer.rendering.url";
     private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
 
-    final String userlayerRenderingUrl = PropertyUtil.get(USERLAYER_RENDERING_URL);
+    final String userlayerRenderingUrl = PropertyUtil.getOptional(USERLAYER_RENDERING_URL);
     final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
-
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
 
@@ -48,13 +47,11 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "description",ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source",ulayer.getLayer_source());
         JSONHelper.putValue(layerJson, "fields",JSONHelper.createJSONArrayJsonKeys(JSONHelper.createJSONObject(ulayer.getFields())));
-        // user layer rendering url
-        JSONHelper.putValue(layerJson, "url", userlayerRenderingUrl);
+        // user layer rendering url - override DB url if property is defined
+        if(userlayerRenderingUrl != null) {
+            JSONHelper.putValue(layerJson, "url", userlayerRenderingUrl);
+        }
         JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
-
-
-
-
         return layerJson;
     }
 

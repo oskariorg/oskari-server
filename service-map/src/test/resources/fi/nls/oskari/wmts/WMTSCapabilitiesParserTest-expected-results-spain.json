@@ -1,0 +1,1653 @@
+{"layers": [
+    {
+        "title": "Todas las capas IGNBase/EPSG:4326 (SRS: EPSG:4326)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "EPSG:4326",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:4326",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Todas las capas IGNBase/EPSG:4258 (SRS: EPSG:4258)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "EPSG:4258",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:4258",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Todas las capas IGNBase/InspireCRS84Quad (SRS: http://www.opengis.net/def/crs/OGC/1.3/CRS84)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "InspireCRS84Quad",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "InspireCRS84Quad",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Todas las capas IGNBase/EPSG:25828 (SRS: EPSG:25828)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "EPSG:25828",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:25828",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Todas las capas IGNBase/GoogleMapsCompatible (SRS: EPSG:3857)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "GoogleMapsCompatible",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "GoogleMapsCompatible",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Todas las capas IGNBase/EPSG:25830 (SRS: EPSG:25830)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "Todas las capas IGNBase",
+        "tileMatrixSetId": "EPSG:25830",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseTodo",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:25830",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "IGNBase para ortoimagen/EPSG:4326 (SRS: EPSG:4326)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "EPSG:4326",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:4326",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "IGNBase para ortoimagen/EPSG:4258 (SRS: EPSG:4258)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "EPSG:4258",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:4258",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "IGNBase para ortoimagen/InspireCRS84Quad (SRS: http://www.opengis.net/def/crs/OGC/1.3/CRS84)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "InspireCRS84Quad",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "InspireCRS84Quad",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "IGNBase para ortoimagen/EPSG:25828 (SRS: EPSG:25828)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "EPSG:25828",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:25828",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "IGNBase para ortoimagen/GoogleMapsCompatible (SRS: EPSG:3857)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "GoogleMapsCompatible",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "GoogleMapsCompatible",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "IGNBase para ortoimagen/EPSG:25830 (SRS: EPSG:25830)",
+        "TileMatrixSetLinks": {
+            "EPSG:4326": [],
+            "EPSG:4258": [],
+            "InspireCRS84Quad": [],
+            "EPSG:25828": [],
+            "GoogleMapsCompatible": [],
+            "EPSG:25830": []
+        },
+        "style": "default",
+        "name": "IGNBase para ortoimagen",
+        "tileMatrixSetId": "EPSG:25830",
+        "styles": [
+            {
+                "title": "default",
+                "name": "default"
+            }
+        ],
+        "layerName": "IGNBaseOrto",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "EPSG:25830",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    }
+], "matrixSets": {
+    "EPSG:4326": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 8530.918335399136
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 4265.459167699568
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 2132.729583849784
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 524288,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:18",
+                "matrixHeight": 262144,
+                "scaleDenominator": 1066.364791924892
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1048576,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:19",
+                "matrixHeight": 524288,
+                "scaleDenominator": 533.182395962446
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 17061.83667079827
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.795411320143589E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 34123.67334159654
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:1",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.3977056600717944E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:2",
+                "matrixHeight": 4,
+                "scaleDenominator": 6.988528300358972E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 68247.34668319309
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:3",
+                "matrixHeight": 8,
+                "scaleDenominator": 3.494264150179486E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 136494.69336638617
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 272989.38673277234
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:8",
+                "matrixHeight": 256,
+                "scaleDenominator": 1091957.5469310894
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:9",
+                "matrixHeight": 512,
+                "scaleDenominator": 545978.7734655447
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:4",
+                "matrixHeight": 16,
+                "scaleDenominator": 1.747132075089743E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:5",
+                "matrixHeight": 32,
+                "scaleDenominator": 8735660.375448715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:6",
+                "matrixHeight": 64,
+                "scaleDenominator": 4367830.1877243575
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:7",
+                "matrixHeight": 128,
+                "scaleDenominator": 2183915.0938621787
+            }
+        ],
+        "projection": "EPSG:4326",
+        "identifier": "EPSG:4326"
+    },
+    "EPSG:4258": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1048576,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "19",
+                "matrixHeight": 524288,
+                "scaleDenominator": 533.1823959440429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 2132.729583855685
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 524288,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "18",
+                "matrixHeight": 262144,
+                "scaleDenominator": 1066.3647919278426
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 8530.918335399138
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 4265.459167699567
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 34123.67334159654
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 17061.83667079827
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 136494.693366387
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 68247.34668319309
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "3",
+                "matrixHeight": 8,
+                "scaleDenominator": 3.494264150179486E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "2",
+                "matrixHeight": 4,
+                "scaleDenominator": 6.988528300358972E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "1",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.3977056600717944E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 272989.38673277234
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.795411320143589E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "7",
+                "matrixHeight": 128,
+                "scaleDenominator": 2183915.0938621787
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "6",
+                "matrixHeight": 64,
+                "scaleDenominator": 4367830.1877243575
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "5",
+                "matrixHeight": 32,
+                "scaleDenominator": 8735660.375448715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "4",
+                "matrixHeight": 16,
+                "scaleDenominator": 1.747132075089743E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "9",
+                "matrixHeight": 512,
+                "scaleDenominator": 545978.7734655447
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "8",
+                "matrixHeight": 256,
+                "scaleDenominator": 1091957.5469310894
+            }
+        ],
+        "projection": "EPSG:4258",
+        "identifier": "EPSG:4258"
+    },
+    "InspireCRS84Quad": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 2132.72958384978
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 8530.91833539913
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 4265.45916769956
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 34123.6733415964
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 17061.8366707982
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 136494.693366386
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 68247.346683193
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "3",
+                "matrixHeight": 8,
+                "scaleDenominator": 3.49426415017948E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "2",
+                "matrixHeight": 4,
+                "scaleDenominator": 6.98852830035897E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "1",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.39770566007179E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 272989.386732772
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.79541132014358E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "7",
+                "matrixHeight": 128,
+                "scaleDenominator": 2183915.09386217
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "6",
+                "matrixHeight": 64,
+                "scaleDenominator": 4367830.18772435
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "5",
+                "matrixHeight": 32,
+                "scaleDenominator": 8735660.37544871
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "4",
+                "matrixHeight": 16,
+                "scaleDenominator": 1.74713207508974E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "9",
+                "matrixHeight": 512,
+                "scaleDenominator": 545978.773465544
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -180,
+                    "lat": 90
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "8",
+                "matrixHeight": 256,
+                "scaleDenominator": 1091957.54693108
+            }
+        ],
+        "projection": "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+        "identifier": "InspireCRS84Quad"
+    },
+    "EPSG:25828": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3255861
+                },
+                "matrixWidth": 25,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "10",
+                "matrixHeight": 10,
+                "scaleDenominator": 272989.3867857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3244242
+                },
+                "matrixWidth": 774,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "15",
+                "matrixHeight": 301,
+                "scaleDenominator": 8530.918337053572
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3243937
+                },
+                "matrixWidth": 1548,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "16",
+                "matrixHeight": 601,
+                "scaleDenominator": 4265.459168526786
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3246077
+                },
+                "matrixWidth": 194,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "13",
+                "matrixHeight": 76,
+                "scaleDenominator": 34123.67334821429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3244854
+                },
+                "matrixWidth": 387,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "14",
+                "matrixHeight": 151,
+                "scaleDenominator": 17061.836674107144
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3246077
+                },
+                "matrixWidth": 49,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "11",
+                "matrixHeight": 19,
+                "scaleDenominator": 136494.69339285715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 189142,
+                    "lat": 3246077
+                },
+                "matrixWidth": 97,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "12",
+                "matrixHeight": 38,
+                "scaleDenominator": 68247.34669642858
+            }
+        ],
+        "projection": "EPSG:25828",
+        "identifier": "EPSG:25828"
+    },
+    "GoogleMapsCompatible": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 524288,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "19",
+                "matrixHeight": 524288,
+                "scaleDenominator": 1066.3647917764465
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 4265.459167105786
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "18",
+                "matrixHeight": 262144,
+                "scaleDenominator": 2132.729583552893
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 17061.836668423217
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 8530.918334211608
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 68247.34667369287
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 34123.67333684646
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 272989.3866947718
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 136494.69334738574
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "3",
+                "matrixHeight": 8,
+                "scaleDenominator": 6.988528299386144E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1048576,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "20",
+                "matrixHeight": 1048576,
+                "scaleDenominator": 533.1823958882233
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "2",
+                "matrixHeight": 4,
+                "scaleDenominator": 1.3977056598772323E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "1",
+                "matrixHeight": 2,
+                "scaleDenominator": 2.7954113197544646E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 545978.7733895429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "0",
+                "matrixHeight": 1,
+                "scaleDenominator": 5.590822639508929E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "7",
+                "matrixHeight": 128,
+                "scaleDenominator": 4367830.187116321
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "6",
+                "matrixHeight": 64,
+                "scaleDenominator": 8735660.37423268
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "5",
+                "matrixHeight": 32,
+                "scaleDenominator": 1.7471320748465393E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "4",
+                "matrixHeight": 16,
+                "scaleDenominator": 3.4942641496930785E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "9",
+                "matrixHeight": 512,
+                "scaleDenominator": 1091957.5467790859
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "8",
+                "matrixHeight": 256,
+                "scaleDenominator": 2183915.093558175
+            }
+        ],
+        "projection": "EPSG:3857",
+        "identifier": "GoogleMapsCompatible"
+    },
+    "EPSG:25830": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903144
+                },
+                "matrixWidth": 58641,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "19",
+                "matrixHeight": 47451,
+                "scaleDenominator": 533.182396071298
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903144
+                },
+                "matrixWidth": 14661,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "17",
+                "matrixHeight": 11863,
+                "scaleDenominator": 2132.7295842851913
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903144
+                },
+                "matrixWidth": 29321,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "18",
+                "matrixHeight": 23726,
+                "scaleDenominator": 1066.364792142596
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903297
+                },
+                "matrixWidth": 3665,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "15",
+                "matrixHeight": 2966,
+                "scaleDenominator": 8530.918337140765
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903297
+                },
+                "matrixWidth": 7331,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "16",
+                "matrixHeight": 5932,
+                "scaleDenominator": 4265.459168570383
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4904520
+                },
+                "matrixWidth": 917,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "13",
+                "matrixHeight": 742,
+                "scaleDenominator": 34123.67334856306
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4903297
+                },
+                "matrixWidth": 1833,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "14",
+                "matrixHeight": 1483,
+                "scaleDenominator": 17061.83667428153
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4909412
+                },
+                "matrixWidth": 230,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "11",
+                "matrixHeight": 186,
+                "scaleDenominator": 136494.69339425224
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4904520
+                },
+                "matrixWidth": 459,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "12",
+                "matrixHeight": 371,
+                "scaleDenominator": 68247.34669712612
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 5594287
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "3",
+                "matrixHeight": 1,
+                "scaleDenominator": 3.4942641508928575E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 8098976
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "2",
+                "matrixHeight": 1,
+                "scaleDenominator": 6.988528301785715E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 1.3108353E7
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "1",
+                "matrixHeight": 1,
+                "scaleDenominator": 1.397705660357143E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4909412
+                },
+                "matrixWidth": 115,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "10",
+                "matrixHeight": 93,
+                "scaleDenominator": 272989.3867885045
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 2.3127107E7
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.795411320714286E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4968115
+                },
+                "matrixWidth": 15,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "7",
+                "matrixHeight": 12,
+                "scaleDenominator": 2183915.094308036
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4968115
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "6",
+                "matrixHeight": 6,
+                "scaleDenominator": 4367830.188616072
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4968115
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "5",
+                "matrixHeight": 3,
+                "scaleDenominator": 8735660.377232144
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 5594287
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "4",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.7471320754464287E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4928979
+                },
+                "matrixWidth": 58,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "9",
+                "matrixHeight": 47,
+                "scaleDenominator": 545978.773577009
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -1099673.71,
+                    "lat": 4968115
+                },
+                "matrixWidth": 29,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "8",
+                "matrixHeight": 24,
+                "scaleDenominator": 1091957.547154018
+            }
+        ],
+        "projection": "EPSG:25830",
+        "identifier": "EPSG:25830"
+    }
+}}

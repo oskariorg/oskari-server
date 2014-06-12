@@ -175,9 +175,15 @@ public class SaveLayerHandler extends ActionHandler {
                 isNew = true;
             }
             cc.setVersion(version);
-
-            final String capabilitiesXML = GetWMSCapabilities.getResponse(url);
-            cc.setData(capabilitiesXML);
+            if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
+                final String capabilitiesXML = GetWMSCapabilities.getResponse(url);
+                cc.setData(capabilitiesXML);
+            }
+            else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
+                // TODO: maybe it a bit more elegant solution
+                final String capabilitiesXML = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities");
+                cc.setData(capabilitiesXML);
+            }
 
             // update cache by updating db
             if (isNew) {
