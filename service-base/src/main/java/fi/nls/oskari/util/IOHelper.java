@@ -9,6 +9,7 @@ import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
@@ -645,5 +646,50 @@ public class IOHelper {
                 }
             };
         return TRUSTED_VERIFIER;
+    }
+
+    /**
+     * Adds parameters to given base URL. URLEncodes parameter values.
+     * Note that
+     * @param url
+     * @param params
+     * @return constructed url including additional parameters
+     */
+    public static String constructUrl(final String url, Map<String, String> params) {
+        if(params == null) {
+            return url;
+        }
+        if(params.isEmpty()) {
+            return url;
+        }
+        final StringBuilder urlBuilder = new StringBuilder(url);
+
+        if(!url.contains("?")) {
+            urlBuilder.append("?");
+        }
+        else {
+            final char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
+            if((lastChar != '&' && lastChar != '?')) {
+                urlBuilder.append("&");
+            }
+        }
+
+        for(Map.Entry<String,String> entry : params.entrySet()) {
+            final String value = entry.getValue();
+            if(entry.getValue() == null) {
+                continue;
+            }
+            urlBuilder.append(entry.getKey());
+            urlBuilder.append("=");
+            try {
+                urlBuilder.append(URLEncoder.encode(value, DEFAULT_CHARSET));
+            } catch (UnsupportedEncodingException e) {
+                log.error(e, "Couldn't encode value - using raw input", value);
+                urlBuilder.append(value);
+            }
+            urlBuilder.append("&");
+        }
+        // drop last character ('?' or '&')
+        return urlBuilder.substring(0, urlBuilder.length()-1);
     }
 }
