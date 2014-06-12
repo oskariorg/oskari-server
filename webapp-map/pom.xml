@@ -91,6 +91,19 @@
                 </dependency>
             </dependencies>
         </profile>
+         <profile>
+            <id>kvp</id>
+            <properties>
+                <env>jetty</env>
+            </properties>
+            <dependencies>
+                <!-- Adding additional search channels to servlet build -->
+                <dependency>
+                    <groupId>fi.nls.oskari.service</groupId>
+                    <artifactId>oskari-search-nls</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>tomcat</id>
             <properties>
