@@ -50,5 +50,11 @@
         <servlet-name>mapFullServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <resource-ref>
+        <description>Primary database</description>
+        <res-ref-name>${db.jndi.name}</res-ref-name>
+        <res-type>${db.jndi.type}</res-type>
+        <res-auth>${db.jndi.auth}</res-auth>
+    </resource-ref>
 
 </webapp>

@@ -95,7 +95,6 @@
             <id>kvp</id>
             <properties>
                 <env>jetty-kvp</env>
-                <profile-filter>${basedir}/env/${env}/kvp-filter.properties</profile-filter>
             </properties>
             <dependencies>
                 <!-- Adding additional search channels to servlet build -->
