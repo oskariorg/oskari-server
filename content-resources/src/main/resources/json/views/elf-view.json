@@ -22,9 +22,9 @@
                     }, {
                         "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
                     }, {
-                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
-                    }, {
                         "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                    }, {
+                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
                     }, {
                         "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
                         "config": {
@@ -78,7 +78,22 @@
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
                     },
-                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" }
+                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" },
+                    {
+                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+                    	"config":{
+                    		"termsUrl":{
+                    			"fi":"http://www.elfproject.eu/content/terms-service",
+                    			"sv":"http://www.elfproject.eu/content/terms-service",
+                    			"en":"http://www.elfproject.eu/content/terms-service"
+                    		},
+                    		"mapUrlPrefix":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		}
+                    	}
+                    }
                 ],
                 "layers": [],
                 "mapOptions": {
@@ -159,14 +174,9 @@
         }, {
             "id": "toolbar",
             "config": {
-            	"mapUrlPrefix": {
-            		"en" : "http://54.216.109.137/oskari-map/?lang=en&",
-            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&",
-            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&"
-            	},
                 "viewtools": {
                     "print": false,
-                    "link": true
+                    "link": false
                 },
                 "basictools": {
 					"measurearea": false,
@@ -178,16 +188,7 @@
         }, {
             "id": "statehandler"
         }, {
-            "id": "search",
-            "config": {
-            	"disableDefault": true
-            }
-        },  {
-            "id": "elf-geolocator"
-        }, {
-            "id": "metadatacatalogue"
-        }, {
-            "id": "metadataflyout"
+            "id": "search"
         }, {
             "id": "layerselector2"
         }, {
@@ -195,21 +196,25 @@
         }, {
             "id": "coordinatedisplay"
         }, {
+            "id": "metadataflyout"
+        }, {
+            "id": "metadatacatalogue"
+        }, {
             "id": "personaldata",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "http://54.216.109.137/oskari-map/?lang=en&viewId=",
-            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&viewId=",
-            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&viewId="
+            		"en" : "?lang=en&viewId=",
+            		"sv" : "?lang=sv&viewId=",
+            		"fi" : "?lang=fi&viewId="
             	}
             }
         }, {
             "id": "publisher",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "http://54.216.109.137/oskari-map/?lang=en&viewId=",
-            		"sv" : "http://54.216.109.137/oskari-map/?lang=sv&viewId=",
-            		"fi" : "http://54.216.109.137/oskari-map/?lang=fi&viewId="
+            		"en" : "?lang=en&viewId=",
+            		"sv" : "?lang=sv&viewId=",
+            		"fi" : "?lang=fi&viewId="
             	}
             }
         }, {
@@ -221,9 +226,24 @@
         }, {
             "id": "myplaces2"
         }, {
+            "id": "backendstatus"
+        }, {
+            "id": "printout",
+            "config" : {
+                "backendConfiguration" : {
+                    "formatProducers" : {
+                        "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
+                        "image/png" : "/imaging/service/thumbnail/maplink.png?"
+                    }, 
+                    "buttons": { }
+                }
+            }
+        }, {
             "id": "postprocessor"
         }, {
         	"id": "elf-language-selector"
+        }, {
+            "id": "elf-geolocator"
         }
     ]
 }

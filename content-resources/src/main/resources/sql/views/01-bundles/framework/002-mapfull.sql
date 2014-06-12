@@ -63,6 +63,9 @@ update portti_bundle set startup='{
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "mapuserlayers" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
             "mapanalysis" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },

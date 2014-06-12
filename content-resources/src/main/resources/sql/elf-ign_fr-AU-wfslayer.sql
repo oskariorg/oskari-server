@@ -3,7 +3,7 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_ign_fr', 999, 
+  VALUES('wfslayer', 'elf_AU_ign_fr', (SELECT MAX(id) FROM oskari_layergroup), 
          500000, 1, 
          'wfs', '{fi:{name:"ELF AU - ign.fr", subtitle:""},sv:{name:"ELF AU - ign.fr", subtitle:""},en:{name:"ELF AU - ign.fr", subtitle:""}}');
          
@@ -20,7 +20,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
 	'ELF AU', 'ELF AU PoC', 'mah taip', 
-	'oskari-feature-engine:QueryArgsBuilder_WFS_GET', 
+	'/fi/nls/oskari/fe/input/format/gml/inspire/au/ign_fr_wfs_template.xml', 
 	'/fi/nls/oskari/fe/input/format/gml/au/ELF_generic_AU.groovy');          
 
 -- add wfs specific layer data; 
@@ -47,7 +47,7 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_AU_ign_fr', 
-       'http://wxs.ign.fr/6veobt10ttujyzlu605byvhv/inspire/wfs', null, null, 
+       'http://wxs.ign.fr/6veobt10ttujyzlu605byvhv/inspire/wfs', '', '', 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
        'elf-lod1gn', 
@@ -57,7 +57,7 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-	'EPSG:900913', 
+	'urn:ogc:def:crs:EPSG::3857', 
 	'AdministrativeUnit', 'urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
@@ -93,6 +93,11 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
+
+-- give publish permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '2');
+
 
 -- give publish permission for the resource to ROLE 3 (admin);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values

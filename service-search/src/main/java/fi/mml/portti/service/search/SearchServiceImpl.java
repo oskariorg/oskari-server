@@ -105,8 +105,8 @@ public class SearchServiceImpl implements SearchService {
 
         long fullQueryStartTime = System.currentTimeMillis();
         
-        //printsc(searchCriteria);
-        //printAvailableChannels();
+        printsc(searchCriteria);
+        printAvailableChannels();
 
         Query query = new Query();
         query.setSearchCriteria(searchCriteria);

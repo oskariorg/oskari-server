@@ -14,7 +14,6 @@ INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Korkeus"}, "sv"
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maanpeite"}, "sv": { "name" : "Landtäcke"},"en": { "name" : "Land cover"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Ortoilmakuvat"}, "sv": { "name" : "Ortofoto"},"en": { "name" : "Orthoimagery"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Geologia"}, "sv": { "name" : "Geologi"},"en": { "name" : "Geology"}}');
-INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Korkeus"}, "sv": { "name" : "Höjd"},"en": { "name" : "Elevation"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Tilastoyksiköt"}, "sv": { "name" : "Statistiska enheter"},"en": { "name" : "Statistical units"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Rakennukset"}, "sv": { "name" : "Byggnader"},"en": { "name" : "Buildings"}}');
 INSERT INTO portti_inspiretheme (locale) values ('{"fi":{"name":"Maaperä"}, "sv": { "name" : "Mark"},"en": { "name" : "Soil"}}');

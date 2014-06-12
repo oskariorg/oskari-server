@@ -1027,6 +1027,11 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
 
+-- give publish permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '2');
+
+
 -- give publish permission for the resource to ROLE 3 (admin);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '3');

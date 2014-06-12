@@ -132,7 +132,7 @@ setResourceNameSpace(serverURL)
             if(i.hasNext()){
             	OMAttribute ao = (OMAttribute)i.next();
             	log.debug("AO value: " + ao.getAttributeValue());
-            	item.setUuId(ao.getAttributeValue());
+            	item.addUuId(ao.getAttributeValue());
             	
             }
         }

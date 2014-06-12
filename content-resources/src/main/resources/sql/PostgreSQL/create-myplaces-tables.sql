@@ -36,7 +36,7 @@ CREATE TABLE my_places
   name character varying(256) NOT NULL,
   attention_text text,
   created timestamp with time zone NOT NULL,
-  updated timestamp with time zone NOT NULL,
+  updated timestamp with time zone,
   geometry geometry NOT NULL,
   place_desc text,
   link text,

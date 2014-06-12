@@ -107,7 +107,7 @@ public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor impleme
 		{
 			JSONUtils.writePrettyPrint(w, RESULT);
 
-			w.write("-------------\n");
+			/*w.write("-------------\n");
 			w.write("Generating Turtle Report\n");
 			final JsonLdOptions options = new JsonLdOptions("") {
 				{
@@ -128,6 +128,7 @@ public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor impleme
 			w.write('\n');
 			;
 			w.write("Generated Turtle Report\n");
+			*/
 		}
 
 		w.flush();

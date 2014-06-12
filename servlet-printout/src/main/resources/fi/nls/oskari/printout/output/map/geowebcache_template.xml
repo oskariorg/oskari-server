@@ -167,7 +167,8 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 				<double>4.0</double>
 				<double>2.0</double>
 				<double>1.0</double>
-				<double>0.5</double>				
+				<double>0.5</double>	
+				<double>0.25</double>			
 			</resolutions>
 			<metersPerUnit>1.0</metersPerUnit>
 			<pixelSize>2.8E-4</pixelSize>
@@ -186,7 +187,8 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 				<string>JHS180:11</string>
 				<string>JHS180:12</string>
 				<string>JHS180:13</string>
-				<string>JHS180:14</string>				
+				<string>JHS180:14</string>	
+				<string>JHS180:15</string>			
 			</scaleNames>
 			<tileHeight>256</tileHeight>
 			<tileWidth>256</tileWidth>

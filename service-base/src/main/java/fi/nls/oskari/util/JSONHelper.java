@@ -154,6 +154,17 @@ public class JSONHelper {
         }
         return false;
     }
+    
+    
+    public static final boolean put(final JSONObject json, final String key, final JSONArray value){
+        try {
+            json.put(key, value);
+            return true;
+        } catch (Exception ignore) {
+            log.warn("Cant put", key, "value", value, "to json");
+        }
+        return false;
+    }
 
     public static final Boolean putValue(final JSONObject json, final String key, final boolean value) {
         try {

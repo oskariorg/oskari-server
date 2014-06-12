@@ -30,7 +30,8 @@
         "elf-fgi_fi-HY-WatercourseLink-wfslayer.sql",
         "elf-ign_fr-AU-wfslayer.sql",
         "elf-ign_fr-GN-wfslayer.sql",
- 		"elf-ign_es-GN-wfslayer.sql"       
+ 		"elf-ign_es-GN-wfslayer.sql",
+ 		"elf-ign_es-wmslayers.sql"       
         
         
         
