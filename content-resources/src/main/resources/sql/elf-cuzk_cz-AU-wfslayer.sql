@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_cuzk_cz', 999, 
+  VALUES('wfslayer', 'elf_AU_cuzk_cz', 903, 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF AU - cuzk.cz", subtitle:""},sv:{name:"ELF AU - cuzk.cz", subtitle:""},en:{name:"ELF AU - cuzk.cz", subtitle:""}}');
+         'wfs', '{fi:{name:"AU Administrative Units - cuzk.cz", subtitle:""},sv:{name:"AU Administrative Units  - cuzk.cz", subtitle:""},en:{name:"AU Administrative Units - cuzk.cz", subtitle:""}}');
          
 
          
