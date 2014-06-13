@@ -204,6 +204,15 @@ public class SearchUtil {
 		return villageCache.containsValue(village);
 	}
 	
+	public static Map getVillages() {
+		final long currentTime = System.currentTimeMillis(); 
+		if (villageLastUpdate == 0 || currentTime <  villageLastUpdate + reloadInterval) {
+			updateVillageCache();
+			villageLastUpdate = currentTime;
+		}
+		return villageCache;
+	}
+	
 	public static String getNameRegisterUrl() throws Exception {
 		return PropertyUtil.get(NAME_REGISTER_URL_PROPERTY);
 	}

@@ -93,6 +93,8 @@ public class IOHelper {
          * there's no more data to read. We use the StringWriter class to
          * produce the string.
          */
+    	log.debug("Käydään hakemssa tauhka palvelimelta");
+    	
         if (is == null) {
             return "";
         }
@@ -312,6 +314,7 @@ public class IOHelper {
      */
     public static String getURL(final String pUrl,
                                 final Map<String, String> headers, final String charset) throws IOException {
+    	log.debug("Calls given URL with given http headers and returns the response interpreted with given charset as String");
         final HttpURLConnection con = getConnection(pUrl);
         return getURL(con, headers, charset);
     }
@@ -326,6 +329,7 @@ public class IOHelper {
      */
     public static String getURL(final HttpURLConnection con,
                                 final Map<String, String> headers, final String charset) throws IOException {
+    	log.debug("Writes the given http headers to the connection and returns the response interpreted with given charset as String");
         try {
             writeHeaders(con, headers);
             return IOHelper.readString(con.getInputStream(), charset);

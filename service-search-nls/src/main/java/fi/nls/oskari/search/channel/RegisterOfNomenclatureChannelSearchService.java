@@ -43,10 +43,13 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
 
         ChannelSearchResult searchResultList = new ChannelSearchResult();
+        log.debug("doSearch");
 
         try {
             final String url = getWFSUrl(searchCriteria.getSearchString());
             final String data = IOHelper.getURL(url);
+            
+            log.debug("data: " + data);
 
             final String currentLocaleCode =  getLocaleCode(searchCriteria.getLocale());
             final FeatureCollectionDocument fDoc =  FeatureCollectionDocument.Factory.parse(data);
@@ -105,7 +108,9 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
                 item.setLocationTypeCode(paikkatyyppiKoodi);
                 item.setType(getType(searchCriteria.getLocale(), paikkatyyppiKoodi));
                 item.setLocationName(SearchUtil.getLocationType(paikkatyyppiKoodi+"_"+ currentLocaleCode));
+                log.debug("kuntaKoodi _ currentLocaleCode " + kuntaKoodi+"_"+ currentLocaleCode);
                 item.setVillage(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
+                log.debug("item.getVillage: " + item.getVillage());
                 item.setLon(lonLat[0]);
                 item.setLat(lonLat[1]);
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
