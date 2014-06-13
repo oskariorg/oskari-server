@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_nlsfi', 999, 
+  VALUES('wfslayer', 'elf_gn_nlsfi', 905, 
          120000, 1, 
-         'wfs', '{fi:{name:"ELF GN - nls.fi", subtitle:""},sv:{name:"ELF GN - nls.fi", subtitle:""},en:{name:"ELF GN - nls.fi", subtitle:""}}');
+         'wfs', '{fi:{name:"GN Geographical Names - nls.fi", subtitle:""},sv:{name:"GN Geographical Names - nls.fi", subtitle:""},en:{name:"GN Geographical Names - nls.fi", subtitle:""}}');
          
 
          

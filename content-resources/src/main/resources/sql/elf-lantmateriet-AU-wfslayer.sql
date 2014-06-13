@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_lantmateriet_se', 999, 
+  VALUES('wfslayer', 'elf_AU_lantmateriet_se', 904, 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF AU - lantmateriet.se", subtitle:""},sv:{name:"ELF AU - lantmateriet.se", subtitle:""},en:{name:"ELF AU - lantmateriet.se", subtitle:""}}');
+         'wfs', '{fi:{name:"AU Administrative Units - lm.se", subtitle:""},sv:{name:"AU Administrative Units - lm.se", subtitle:""},en:{name:"AU Administrative Units - lm.se", subtitle:""}}');
          
 
          

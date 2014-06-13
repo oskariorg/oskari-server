@@ -20,6 +20,7 @@
     ],
     "sql" : [
         "populate-Inspire-themes.sql",
+        "elf-organisations.sql",
         "elf-basemap-wmtslayer.sql",
         "elf-cuzk_cz-AU-wfslayer.sql",
         "elf-nls_fi-GN-wfslayer.sql",
