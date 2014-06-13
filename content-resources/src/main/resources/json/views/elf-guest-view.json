@@ -138,10 +138,10 @@
                 }
             },
             "state": {
-                "east": "4310937.5",
-                "north": "3366406.25",
+                "east": "1105975.3936768",
+                "north": "7766082.7034508",
                 "selectedLayers": [{"id": 2}],
-                "zoom": 0
+                "zoom": 1
             }
         }, {
             "id": "divmanazer"
