@@ -67,6 +67,11 @@
                 color: #FFF;
                 padding: 5px;
             }
+            
+             div.featuredataplugin.mapplugin {
+            	top: inherit !important;
+            	bottom: 30px !important;
+            }
 
         }
     </style>

@@ -4,11 +4,12 @@ import fi.nls.oskari.search.channel.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Constructor;
-
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -103,10 +104,12 @@ public class SearchServiceImpl implements SearchService {
         }
 
         long fullQueryStartTime = System.currentTimeMillis();
+        
+        printsc(searchCriteria);
+        printAvailableChannels();
 
         Query query = new Query();
         query.setSearchCriteria(searchCriteria);
-        //availableChannels.keySet()
         for (String channel : searchCriteria.getChannels()) {
             if (availableChannels.containsKey(channel)) {
                 long timeStart = System.currentTimeMillis();
@@ -143,6 +146,13 @@ public class SearchServiceImpl implements SearchService {
             SearchCriteria searchCriteria, SearchableChannel actualChannel) {
         try {
             ChannelSearchResult result = actualChannel.doSearch(searchCriteria);
+            
+            List<SearchResultItem> items = result.getSearchResultItems();
+            
+            for(java.util.Iterator<SearchResultItem> iterator =  items.iterator() ; iterator.hasNext() ; ){
+            	log.debug("title from searc results: " + iterator.next().getTitle());
+            }
+            
             return result;
         } catch (Exception e) {
             log.error(e, "Search query to", actualChannel.getId(),
@@ -180,5 +190,60 @@ public class SearchServiceImpl implements SearchService {
         }
         // TODO: return immutable map
         return availableChannels;
+    }
+    
+    private void printsc(SearchCriteria searchCriteria){
+    	
+    	
+    	log.debug("printing SearchCriteria");
+    	
+    	try{
+	        log.debug("SearchString: " + searchCriteria.getSearchString());
+    		
+    		if(searchCriteria.getFromDate() == null){
+    			log.debug("from date = null");
+    		}else{
+    	        log.debug("Datefrom: " + searchCriteria.getFromDate().toString());
+    		}
+    	
+    		if(searchCriteria.getToDate() == null){
+    			log.debug("from to = null");
+    		}else{
+        		log.debug("Dateto: " + searchCriteria.getToDate().toString());
+    		}
+    		
+	        for (String cha : searchCriteria.getChannels()){
+	        	log.debug("channel for searching: " + cha);
+	        }
+	        
+	        log.debug("printing parameters");
+	        java.util.Collection<String> set = searchCriteria.getParams().keySet();
+	
+	        for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
+	            log.debug("parm key: " + (String) iterator.next());
+	
+	        }        
+    	}catch(Exception e){
+    		log.debug("sc error");
+    		e.printStackTrace();
+    	}
+   	
+    	log.debug("/printing SearchCriteria");
+    }
+    
+    private void printAvailableChannels(){
+    	
+    	log.debug("printing AvailableChannels");
+    	
+    	try{
+	        java.util.Collection<String> set = availableChannels.keySet();
+	
+	        for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
+	            log.debug("channel key: " + (String) iterator.next());
+	
+	        }
+    	}catch(Exception e){
+    		log.debug("a error");
+    	}
     }
 }

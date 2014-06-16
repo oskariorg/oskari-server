@@ -78,11 +78,26 @@
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
                     },
-                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" }
+                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" },
+                    {
+                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+                    	"config":{
+                    		"termsUrl":{
+                    			"fi":"http://www.elfproject.eu/content/terms-service",
+                    			"sv":"http://www.elfproject.eu/content/terms-service",
+                    			"en":"http://www.elfproject.eu/content/terms-service"
+                    		},
+                    		"mapUrlPrefix":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		}
+                    	}
+                    }
                 ],
                 "layers": [],
                 "mapOptions": {
-                            "srsName": "EPSG:3857",
+                    "srsName": "EPSG:3857",
                     "projection": "EPSG:3857",
 			        "displayProjection": "EPSG:4326",
 			        "resolutions": [
@@ -162,7 +177,11 @@
                 "viewtools": {
                     "print": false,
                     "link": false
-                }
+                },
+                "basictools": {
+					"measurearea": false,
+					"measureline": false
+				}
             }
         }, {
             "id": "infobox"

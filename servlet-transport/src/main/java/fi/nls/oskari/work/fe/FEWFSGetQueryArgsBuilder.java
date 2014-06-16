@@ -23,11 +23,27 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
     public void buildParams(URIBuilder builder, Type type, WFSLayerStore layer,
             SessionStore session, List<Double> bounds, MathTransform transform,
             CoordinateReferenceSystem crs) {
+    	
+    	
+    	String typenames = layer.getFeatureElement();
+    	if( layer.getFeatureNamespace() != null ) {
+    		typenames = layer.getFeatureNamespace() + ":"+layer.getFeatureElement();
+    		
+    		if( layer.getFeatureNamespaceURI() != null ) {
+    			builder.setParameter("NAMESPACE",
+    				"xmlns("+layer.getFeatureNamespace()+"="+
+    						layer.getFeatureNamespaceURI()
+    					+")");
+    		}
+    	}
+    	
+    	
+    	
 
         builder.setParameter("SERVICE", "WFS");
         builder.setParameter("REQUEST", "GetFeature");
         builder.setParameter("VERSION", "2.0.0");
-        builder.setParameter("TYPENAMES", layer.getFeatureElement());
+        builder.setParameter("TYPENAMES", typenames);
 
         builder.setParameter("srsName", layer.getSRSName());
 

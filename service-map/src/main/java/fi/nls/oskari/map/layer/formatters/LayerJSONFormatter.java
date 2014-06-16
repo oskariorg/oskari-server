@@ -89,6 +89,10 @@ public class LayerJSONFormatter {
             // for easier proxy routing on ssl hosts, maps all urls with prefix and a simplified url
             // so tiles can be fetched from same host from browsers p.o.v. and the actual url
             // is proxied with a proxy for example: /proxythis/<actual wmsurl>
+            JSONHelper.putValue(layerJson, "url", layer.getUrl(isSecure));
+            JSONHelper.putValue(layerJson, "layerName", layer.getName());
+            // TODO: wmsUrl and wmsName are deprecated, use url and layerName instead.
+            // Adding them here so frontend doesn't break.
             JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "wmsName", layer.getName());
         }

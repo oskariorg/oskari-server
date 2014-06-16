@@ -1,7 +1,9 @@
 package fi.mml.portti.service.search;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +33,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String mapURL;
 	private String zoomLevel;
 	private String trunkateDescription;
+	private List<String> uuid;
 	private boolean downloadable = false;
 	private boolean downloadAllowed = false;
     private Map<String, Object> properties = new HashMap<String, Object>();
@@ -237,6 +240,18 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
+	}
+	public List<String> getUuId() {
+		return uuid;
+	}
+	public void setUuId(List uuid) {
+		this.uuid = uuid;
+	}
+	public void addUuId(String uuid) {
+		if(this.uuid == null){
+			this.uuid = new ArrayList();
+		}
+		this.uuid.add(uuid);
 	}
 	
 	/**

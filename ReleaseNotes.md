@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.22
+
+### servlet-map/OskariRequestFilter
+
+Should now setup language correctly when an existing cookie is found.
+
+### control-base/service-map
+
+GetWSCapabilities action route now supports WMTS-layers for parsing capabilities in a JSON structure similar to WMS-layers.
+
+SaveLayer action route now support WMTS layers.
+
+### service-base
+
+IOHelper now has a constructUrl(baseUrl, paramsMap) method that can be used to create URLs safely with URL-encoded param values.
+
 ## 1.21
 
 ### control-base

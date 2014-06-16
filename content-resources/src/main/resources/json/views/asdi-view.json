@@ -5,48 +5,91 @@
     "public": true,
     "oskari": {
         "application": "asdi_guest",
-        "page": "asdi",
+        "page": "asdi_guest",
         "development_prefix": "/applications/asdi"
     },
     "bundles": [
         {
             "id": "openlayers-default-theme"
-        }, {
-            "id": "mapfull",
-            "config": {
+        },
+        {
+            "id" : "mapfull",
+            "startup" : {
+                "title" : "Map",
+                "fi" : "mapfull",
+                "sv" : "mapfull",
+                "en" : "mapfull",
+                "bundlename" : "mapfull",
+                "bundleinstancename" : "mapfull",
+                "metadata" : {
+                    "Import-Bundle" : {
+                        "core-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "domain" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapmodule-plugin" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwmts" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "oskariui" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapfull" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        }
+                    },
+                    "Require-Bundle-Instance" : []
+                },
+                "instanceProps" : {}
+            },
+            "config" : {
                 "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
                 "imageLocation": "/Oskari/resources",
-                "plugins": [
-                    {
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.mapmodule.ControlsPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.mapmodule.GetInfoPlugin",
-                        "config": {
-                            "ignoredLayerTypes": ["WFS"]
-                        }
-                    }, {
-                        "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
-                        "config": {
-                            "backoffIncrement": 1000,
-                            "contextPath": "/transport",
-                            "disconnectTime": 30000,
-                            "lazy": true,
-                            "maxBackoff": 60000,
-                            "maxNetworkDelay": 10000,
-                            "port": ""
-                        }
-                    }, {
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
-                    }, {
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
                         "config": {
                             "location": {
                                 "left": "45px",
@@ -64,7 +107,8 @@
                                 "heightCursor": "18px"
                             }
                         }
-                    }, {
+                    },
+                    {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
                         "config": {
                             "location": {
@@ -74,43 +118,180 @@
                             },
                             "toolStyle": "rounded-light"
                         }
-                    }, {
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
                     }
                 ],
-                "layers": [],
                 "mapOptions": {
-	                "allOverlays": true,
-	                "units": "m",
-                	"numZoomLevels": 15,
-                	"maxResolution": "auto",
+                    "allOverlays": true,
+                    "units": "m",
+                    "numZoomLevels": 15,
+                    "maxResolution": "auto",
+                    "resolutions": [160642.5702811245, 80321.28514056225, 40160.642570281125, 20080.321285140562, 10040.160642570281, 5020.080321285141, 2510.0401606425703, 1255.0200803212851, 627.5100401606426, 313.7550200803213, 156.87751004016064, 78.43875502008032, 39.21937751004016, 19.60968875502008, 9.80484437751004],
                     "maxExtent": {
-                        "left": -60000000, 
-                        "bottom": -60000000, 
-                        "right": 60000000, 
+                        "left": -60000000,
+                        "bottom": -60000000,
+                        "right": 60000000,
                         "top": 60000000
                     },
                     "srsName": "EPSG:3575"
                 },
                 "projectionDefs": {
-            		"EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-	            	"EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-    	        	"EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-        	    	"EPSG:3574": "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ",
-            	    "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-                	"EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-                	"EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
-            	}
+                    "EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3574": "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ",
+                    "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
+                },
+                "layers": [                    
+                    {
+                        "id": 891,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Norway",
+                        "orgName": "Norway",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://wms.geonorge.no/skwms1/wms.arctic2",
+                        "wmsName": "Arctic_2",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 892,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Sweden",
+                        "orgName": "Sweden",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://arcticsdi.lm.se:80/geoserver/asdi/ows",
+                        "wmsName": "ArcticSDI_SE",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 893,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Finland",
+                        "orgName": "Finland",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://karttatiili.fi/dataset/asdi/service/wms",
+                        "wmsName": "asdi:asdi",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 901,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Alaska",
+                        "orgName": "Alaska",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://54.225.77.204/geoserver/wms",
+                        "wmsName": "ArcticSDI_US",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 902,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Canada",
+                        "orgName": "Canada",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://maps.geogratis.gc.ca/wms/arcticsdi_en",
+                        "wmsName": "Arctic-SDI",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 903,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Faroe Islands",
+                        "orgName": "Faroe Islands",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://kortforsyningen.kms.dk/asdi_beta",
+                        "wmsName": "ArcticSDI_FO",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 904,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Greenland",
+                        "orgName": "Greenland",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://kortforsyningen.kms.dk/asdi_gr_beta",
+                        "wmsName": "ArcticSDI_GR",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 905,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Iceland",
+                        "orgName": "Iceland",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://gis.lmi.is/arcgis/services/annad/articSDI/MapServer/WMSServer",
+                        "wmsName": "WoodForests,BuiltupAreas,AgriculturalAreas,UnclassifiedAreas,SoilSurfaceRegions,MoorsHeathlands,GlacierSnowfields,Hillshade,GlacierContours,TerrainContours,WatercourseLines,Waterbodies,WatercourseAreas,Sea,Coastline,Wetlands,RegionalRoads,MainRoads,FerryCrossings,RunwayLines,Airports,Heliports,ProtectedSites,SubNationalBoundaries,NationalBoundaries,GeographicalNames,f50,l50,p50,f100,l100,p100,f250,l250,p250,f500,p500",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 906,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Svalbard",
+                        "orgName": "Svalbard",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://willem3.npolar.no/arcgis/services/inspire1/NP_TopoSvalbard_ArcticSDI/MapServer/WMSServer",
+                        "wmsName": "UnclassifiedAreas,GlacierSnowfields,Hillshade,Waterbodies,Sea,Coastline,GlacierContours,TerrainContours,LocalRoads,AerodromeAreas,Heliports,Airports,PopulatedPlaces,Hydrography,DefaultPlacenames",
+                        "options": {
+                            "singleTile": true
+                        }
+                    },
+                    {
+                        "id": 907,
+                        "type": "wmslayer",
+                        "opacity": 100,
+                        "name": "Arctic SDI - Jan Mayen",
+                        "orgName": "Jan Mayen",
+                        "inspire": "Arctic SDI",
+                        "wmsUrl": "http://willem3.npolar.no/ArcGIS/services/inspire1/NP_TopoJanMayen_ArcticSDI/MapServer/WMSServer?",
+                        "wmsName": "UnclassifiedAreas,GlacierSnowfields,Hillshade.tif,Waterbodies,Sea,Coastline,GlacierContours,TerrainContours,LocalRoads,AerodromeAreas,Airports,PopulatedPlaces,Hydrography,DefaultPlacenames",
+                        "options": {
+                            "singleTile": true
+                        }
+                    }
+                ]
             },
             "state": {
-                "east": "-1350000", 
-                "north": "-2517000",
-                "selectedLayers": [{"id": 888}],
+                "east": "443457.67154688",
+                "north": "-2267797.1603393",
+                "selectedLayers": [
+                    {
+                        "id": 888
+                    }
+                    
+                ],
                 "zoom": 4
             }
-        }, {
+        },
+        {
             "id": "divmanazer"
-        }, {
+        },
+        {
             "id": "toolbar",
             "config": {
                 "viewtools": {
@@ -118,48 +299,32 @@
                     "link": false
                 }
             }
-        }, {
+        },
+        {
             "id": "infobox"
-        }, {
+        },
+        {
             "id": "statehandler"
-        }, {
+        }, 
+        {
             "id": "search"
-        }, {
+        },
+        {
             "id": "layerselector2"
-        }, {
+        },
+        {
             "id": "layerselection2"
-        }, {
+        },
+        {
             "id": "coordinatedisplay"
-        }, {
+        },
+        {
             "id": "metadataflyout"
-        }, {
+        },
+        {
             "id": "metadatacatalogue"
-        }, {
-            "id": "personaldata"
-        }, {
-            "id": "publisher"
-        }, {
-            "id": "maplegend"
-        }, {
-            "id": "userguide"
-        }, {
-            "id": "featuredata2"
-        }, {
-            "id": "myplaces2"
-        }, {
-            "id": "backendstatus"
-        }, {
-            "id": "printout",
-            "config" : {
-                "backendConfiguration" : {
-                    "formatProducers" : {
-                        "application/pdf" : "/imaging/service/thumbnail/maplink.pdf?",
-                        "image/png" : "/imaging/service/thumbnail/maplink.png?"
-                    }, 
-                    "buttons": { }
-                }
-            }
-        }, {
+        },     
+        {
             "id": "postprocessor"
         }
     ]

@@ -1,0 +1,730 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:GeographicalNames:3.0 http://www.ign.es/wfs-inspire/ngbe?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=gn:NamedPlace&amp;NAMESPACE=xmlns(gn=urn%3Ax-inspire%3Aspecification%3Agmlas%3AGeographicalNames%3A3.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T17:12:34Z" 
+xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="20" numberReturned="20">
+  <wfs:boundedBy>
+    <gml:Envelope srsName="urn:ogc:def:crs:EPSG::3857">
+      <gml:lowerCorner>-525227.769 4460476.724</gml:lowerCorner>
+      <gml:upperCorner>-238870.844 4482335.042</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2374576">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2374576</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2374576_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2374576_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-525227.769 4475404.583</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2374576</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Lagar de San José</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2375270">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2375270</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2375270_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2375270_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-509573.538 4468759.607</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2375270</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo Nuevo</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2375463">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2375463</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2375463_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2375463_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-503064.386 4472251.905</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2375463</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Polígono Industrial los Santos</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2375509">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2375509</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2375509_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2375509_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-494591.737 4473896.247</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2375509</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo de la Pavona</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2375716">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2375716</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2375716_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2375716_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-500679.516 4482164.406</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2375716</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Camino y vía pecuaria</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Vereda del Camino de los Metedores</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>transportNetwork</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2376017">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2376017</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2376017_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2376017_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-501895.757 4467865.464</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2376017</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Fábrica de los Yesares</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2376693">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2376693</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2376693_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2376693_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-465695.124 4478839.430</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2376693</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Casería de la Huerta</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2377092">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2377092</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2377092_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2377092_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-439013.658 4476580.572</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2377092</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Casería de Oria</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2377753">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2377753</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2377753_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2377753_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-446270.006 4470914.548</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2377753</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo de Blas Pareja</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2378808">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2378808</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2378808_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2378808_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-415369.029 4466281.728</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2378808</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Curso natural de agua</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Barranco de Constanza</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>hydrography</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2378873">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2378873</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2378873_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2378873_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-403967.986 4467422.717</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2378873</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Majada del Cortijo Blanco</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2379345">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2379345</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2379345_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2379345_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-358601.701 4478421.453</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2379345</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Camino y vía pecuaria</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Camino de los Moriscos</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>transportNetwork</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2380180">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2380180</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2380180_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2380180_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-335738.615 4472388.191</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2380180</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cueva de Ventana</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2380962">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2380962</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2380962_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2380962_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-306196.547 4478506.900</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2380962</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo Faro Chico</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2381103">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2381103</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2381103_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2381103_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-314220.745 4482335.042</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2381103</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Construcción/instalación abierta</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Puente de los Aljibes</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2381445">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2381445</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2381445_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2381445_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-304871.600 4460978.744</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2381445</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>El Cortijo</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2382116">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2382116</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2382116_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2382116_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-261421.513 4480680.864</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2382116</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Montaña</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cerro Ortega</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>unknown</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2382123">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2382123</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2382123_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2382123_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-258860.015 4482079.237</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2382123</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Curso natural de agua</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Barranco de Benito</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>hydrography</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2382528">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2382528</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2382528_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2382528_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-244700.487 4460476.724</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2382528</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo del Palomar</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <gn:NamedPlace xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" gml:id="ES.IGN.NGBE.2382727">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">2382727</gml:identifier>
+      <gn:beginLifespanVersion>2013-10-15T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry>
+        <!--Inlined geometry 'ES.IGN.NGBE.2382727_GN_GEOMETRY'-->
+        <gml:Point gml:id="ES.IGN.NGBE.2382727_GN_GEOMETRY" srsName="urn:ogc:def:crs:EPSG::3857">
+          <gml:pos>-238870.844 4478447.230</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>2382727</base:localId>
+          <base:namespace>ES.IGN.NGBE</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:localType>
+        <gmd:LocalisedCharacterString xmlns:gmd="http://www.isotc211.org/2005/gmd" locale="es-ES">Edificación</gmd:LocalisedCharacterString>
+      </gn:localType>
+      <gn:name>
+        <gn:GeographicalName>
+          <gn:nativeness>endonym</gn:nativeness>
+          <gn:sourceOfName>BTN25</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unknown"/>
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>Cortijo de Mira</gn:text>
+              <gn:script>Latn</gn:script>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </gn:name>
+      <gn:type>building</gn:type>
+    </gn:NamedPlace>
+  </wfs:member>
+</wfs:FeatureCollection>

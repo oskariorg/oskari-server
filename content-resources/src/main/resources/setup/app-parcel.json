@@ -44,9 +44,13 @@
     "sql" : [
         "populate-Inspire-themes.sql",
         "nlsfi-background-map-wmtslayer.sql",
+        "example-permissions.sql",
         "nlsfi-orthophoto-map-wmtslayer.sql",
+        "example-permissions.sql",
         "nlsfi-topographic-map-wmtslayer.sql",
+        "example-permissions.sql",
         "nlsfi-cadastre-boundaries-map-wmtslayer.sql",
+        "example-permissions.sql",
         "nlsfi-cadastre-unit-ids-map-wmtslayer.sql",
         "example-permissions.sql"
    ]

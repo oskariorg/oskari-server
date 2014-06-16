@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs/2.0"
+	xmlns:testi="testi.urli" xmlns:syke="www.fgi.fi"
+	xmlns:hy-p4="http://inspire.ec.europa.eu/schemas/hy-p/4.0rc1"
+	xmlns:base3="http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
+	xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
+	xmlns:cite="http://www.opengeospatial.net/cite"
+	xmlns:elf-lod1hn="http://www.locationframework.eu/schemas/HydroNetwork/MasterLoD1/1.0"
+	xmlns:mtjts="http://xml.nls.fi/XML/Namespace/Maastotietojarjestelma/SiirtotiedostonMalli/2011-02"
+	xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:elf-lod1hw="http://www.locationframework.eu/schemas/HydroWaters/MasterLoD1/1.0"
+	xmlns:hy-n="urn:x-inspire:specification:gmlas:HydroNetwork:3.0"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:lc="urn:x-inspire:specification:gmlas:LandCover:0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"
+	numberMatched="unknown" numberReturned="1" timeStamp="2014-06-06T15:08:49.906Z"
+	xsi:schemaLocation="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd">
+	<wfs:boundedBy>
+		<gml:Envelope>
+			<gml:lowerCorner>2410852.430010376 9174125.447134295</gml:lowerCorner>
+			<gml:upperCorner>2410929.222428009 9174165.626701228</gml:upperCorner>
+		</gml:Envelope>
+	</wfs:boundedBy>
+	<wfs:member>
+		<hy-p:StandingWater gml:id="jarvi10.2005062000009">
+			<gml:identifier>http://inspire-hy.fgi.fi/so/hy/StandingWater/jarvi10.2005062000009</gml:identifier>
+			<gml:boundedBy>
+				<gml:Envelope srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3857">
+					<gml:lowerCorner>2410852.430010376 9174125.447134295</gml:lowerCorner>
+					<gml:upperCorner>2410929.222428009 9174165.626701228</gml:upperCorner>
+				</gml:Envelope>
+			</gml:boundedBy>
+			<hy-p:beginLifespanVersion>2008-08-12T21:00:00Z</hy-p:beginLifespanVersion>
+			<hy-p:geometry>
+				<gml:MultiSurface gml:id="jarvi10.2005062000009.geometry"
+					srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3857">
+					<gml:surfaceMember>
+						<gml:Polygon gml:id="jarvi10.2005062000009.geometry.1"
+							srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing>
+									<gml:posList>2410913.7553125764 9174125.447134295
+										2410894.4457554184 9174125.685646862 2410877.31017048
+										9174128.352243738 2410861.535057257 9174142.05205424
+										2410852.430010376 9174149.533209927 2410855.645782436
+										9174161.77106086 2410869.132135955 9174161.60703315
+										2410888.1389502855 9174161.372012991 2410902.903787076
+										9174165.486396056 2410916.700699358 9174165.626701228
+										2410923.298999321 9174153.570285086 2410929.222428009
+										9174136.615124697 2410922.3862854964 9174129.331223117
+										2410913.7553125764 9174125.447134295</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:surfaceMember>
+				</gml:MultiSurface>
+			</hy-p:geometry>
+			<hy-p:inspireId>
+				<base:Identifier>
+					<base:localId>jarvi10.2005062000009</base:localId>
+					<base:namespace>syke</base:namespace>
+				</base:Identifier>
+			</hy-p:inspireId>
+			<hy-p:origin xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:persistence xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:tidal xsi:nil="true" nilReason="Unpopulated" />
+			<hy-p:drainsBasin xlink:href="#null" xsi:nil="true"
+				nilReason="Unpopulated" />
+			<hy-p:elevation xsi:nil="true" nilReason="Unpopulated"
+				uom="null" />
+			<hy-p:meanDepth xsi:nil="true" nilReason="Unpopulated"
+				uom="null" />
+			<hy-p:surfaceArea uom="ha">0.05</hy-p:surfaceArea>
+		</hy-p:StandingWater>
+	</wfs:member>
+</wfs:FeatureCollection>
