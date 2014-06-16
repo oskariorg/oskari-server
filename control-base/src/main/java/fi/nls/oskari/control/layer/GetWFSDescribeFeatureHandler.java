@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +16,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.GetWFSDescribeFeature;
-import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
@@ -44,6 +41,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     private static final String KEY_NAME = "name";
     private static final String KEY_TYPE = "type";
     private static final String KEY_PROPERTYTYPES = "propertyTypes";
+    private static final String WPS_PARAMS = "wps_params";
     public static final String ANALYSIS_PREFIX = "analysis_";
     public static final String MYPLACES_PREFIX = "myplaces_";
     private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
@@ -126,6 +124,9 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
                 // Simple type match (string or numeric)
                 fea_properties = populatePropertiesSimple(layer_id,
                         rawfea_properties);
+
+                // Add WPS params
+                JSONHelper.putValue(fea_properties, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
 
                 // IF NEEDED for exact wfs feature type
                 //final JSONObject fea_properties = populateProperties(layer_id,
