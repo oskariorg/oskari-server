@@ -4,8 +4,10 @@
 
 ### webapp-map
 
-Added external folder and moved jaas related files there.
+Added external folder and moved jetty-jaas.xml, and jndi-login.conf files there.
+Therefore these files need to be manually modified to match the system configuration. These files are unnecessary inside the war package and therefore removed.
 Added jetty9-jaas profile to address jetty version related differences.
+Added jetty9-ldap-jaas profile to address jetty version related differences.
 
 ## 1.22
 
