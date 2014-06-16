@@ -193,6 +193,15 @@
         {
             "id": "metadatacatalogue"
         },     
+        { "id" : "publisher" ,
+            "config" : {
+                "publishedMapUrl": {
+                    "en": "localhost/?viewId=",
+                    "fi": "localhost/?viewId=",
+                    "sv": "localhost/?viewId="
+                }
+            }
+        },
         {
             "id": "postprocessor"
         }
