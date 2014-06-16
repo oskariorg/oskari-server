@@ -64,6 +64,12 @@
             </properties>
         </profile>
         <profile>
+            <id>jetty9-jaas</id>
+            <properties>
+                <env>jetty9-jaas</env>
+            </properties>
+        </profile>
+        <profile>
             <id>elf-jetty-jaas</id>
             <properties>
                 <env>elf-jetty-jaas</env>
