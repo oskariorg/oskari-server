@@ -1,0 +1,2359 @@
+{"layers": [
+    {
+        "title": "Tampere kantakartta TM35/JHS (SRS: urn:ogc:def:crs:EPSG::3067)",
+        "TileMatrixSetLinks": {
+            "JHS": [],
+            "Custom_JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere kantakartta TM35",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_meta_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "JHS",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere kantakartta TM35/Custom_JHS (SRS: urn:ogc:def:crs:EPSG::3067)",
+        "TileMatrixSetLinks": {
+            "JHS": [],
+            "Custom_JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere kantakartta TM35",
+        "tileMatrixSetId": "Custom_JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_meta_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "additionalId": "Custom_JHS",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere tonttijaot TM35",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere tonttijaot TM35",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_tonttijaot_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva Länsi (2012) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva Länsi (2012) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik2012_kanta_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere tonttijaot GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere tonttijaot GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_tonttijaot_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Tampere kaavat TM35",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere kaavat TM35",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_kaavat_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere opaskartta GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere opaskartta GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_okartta_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (2006) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (2006) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik06_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (2012) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (2012) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik2012_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (1966) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (1966) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik66_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere virastokartta GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere virastokartta GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_vkartta_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "value": "text/html",
+            "available": ["text/html", "text/plain", "application/vnd.ogc.gml"]
+        },
+        "isQueryable": true
+    },
+    {
+        "title": "Tampere kantakartta GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere kantakartta GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_meta_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (1956) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (1956) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik56_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere kaavat GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere kaavat GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_kaavat_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere opaskartta TM35",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere opaskartta TM35",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_okartta_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (1995) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (1995) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik95_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (1946) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (1946) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik46_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere virastokartta TM35",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere virastokartta TM35",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_vkartta_tm35",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    },
+    {
+        "title": "Tampere ilmakuva (2011) GK24",
+        "TileMatrixSetLinks": {
+            "JHS": []
+        },
+        "style": "raster",
+        "name": "Tampere ilmakuva (2011) GK24",
+        "tileMatrixSetId": "JHS",
+        "styles": [
+            {
+                "title": "raster",
+                "name": "raster"
+            }
+        ],
+        "layerName": "tampere:tampere_ik2011_gk24",
+        "type": "wmtslayer",
+        "url": "http://oskari.testing.fi",
+        "formats": {
+            "available": []
+        },
+        "isQueryable": false
+    }
+], "matrixSets": {
+    "EPSG:4326": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 8530.918335399136
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 4265.459167699568
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 2132.729583849784
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 524288,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:18",
+                "matrixHeight": 262144,
+                "scaleDenominator": 1066.364791924892
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1048576,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:19",
+                "matrixHeight": 524288,
+                "scaleDenominator": 533.182395962446
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 17061.83667079827
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.795411320143589E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 34123.67334159654
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:1",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.3977056600717944E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4194304,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:21",
+                "matrixHeight": 2097152,
+                "scaleDenominator": 133.2955989906115
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:2",
+                "matrixHeight": 4,
+                "scaleDenominator": 6.988528300358972E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 68247.34668319309
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2097152,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:20",
+                "matrixHeight": 1048576,
+                "scaleDenominator": 266.591197981223
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:3",
+                "matrixHeight": 8,
+                "scaleDenominator": 3.494264150179486E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 136494.69336638617
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 272989.38673277234
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:8",
+                "matrixHeight": 256,
+                "scaleDenominator": 1091957.5469310894
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:9",
+                "matrixHeight": 512,
+                "scaleDenominator": 545978.7734655447
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:4",
+                "matrixHeight": 16,
+                "scaleDenominator": 1.747132075089743E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:5",
+                "matrixHeight": 32,
+                "scaleDenominator": 8735660.375448715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:6",
+                "matrixHeight": 64,
+                "scaleDenominator": 4367830.1877243575
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:4326:7",
+                "matrixHeight": 128,
+                "scaleDenominator": 2183915.0938621787
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::4326",
+        "identifier": "EPSG:4326"
+    },
+    "GlobalCRS84Scale": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1118165,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:18",
+                "matrixHeight": 559083,
+                "scaleDenominator": 500
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2236330,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:19",
+                "matrixHeight": 1118165,
+                "scaleDenominator": 250
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 55909,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:14",
+                "matrixHeight": 27955,
+                "scaleDenominator": 10000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 111817,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:15",
+                "matrixHeight": 55909,
+                "scaleDenominator": 5000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 223633,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:16",
+                "matrixHeight": 111817,
+                "scaleDenominator": 2500
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 559083,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:17",
+                "matrixHeight": 279542,
+                "scaleDenominator": 1000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 3,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:1",
+                "matrixHeight": 2,
+                "scaleDenominator": 2.5E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 6,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:2",
+                "matrixHeight": 3,
+                "scaleDenominator": 1.0E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 12,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:3",
+                "matrixHeight": 6,
+                "scaleDenominator": 5.0E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 23,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:4",
+                "matrixHeight": 12,
+                "scaleDenominator": 2.5E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 5.0E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1119,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:9",
+                "matrixHeight": 560,
+                "scaleDenominator": 500000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 5591,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:11",
+                "matrixHeight": 2796,
+                "scaleDenominator": 100000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2237,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:10",
+                "matrixHeight": 1119,
+                "scaleDenominator": 250000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 22364,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:13",
+                "matrixHeight": 11182,
+                "scaleDenominator": 25000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 11182,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:12",
+                "matrixHeight": 5591,
+                "scaleDenominator": 50000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 5590823,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:20",
+                "matrixHeight": 2795412,
+                "scaleDenominator": 100
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 56,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:5",
+                "matrixHeight": 28,
+                "scaleDenominator": 1.0E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 112,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:6",
+                "matrixHeight": 56,
+                "scaleDenominator": 5000000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 224,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:7",
+                "matrixHeight": 112,
+                "scaleDenominator": 2500000
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 560,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Scale:8",
+                "matrixHeight": 280,
+                "scaleDenominator": 1000000
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::4326",
+        "identifier": "GlobalCRS84Scale"
+    },
+    "GoogleCRS84Quad": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:15",
+                "matrixHeight": 16384,
+                "scaleDenominator": 17061.83667079827
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:16",
+                "matrixHeight": 32768,
+                "scaleDenominator": 8530.918335399136
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:17",
+                "matrixHeight": 65536,
+                "scaleDenominator": 4265.459167699568
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:18",
+                "matrixHeight": 131072,
+                "scaleDenominator": 2132.729583849784
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:1",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.795411320143589E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 5.590822640287178E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:3",
+                "matrixHeight": 4,
+                "scaleDenominator": 6.988528300358972E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:2",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.397705660071794E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:5",
+                "matrixHeight": 16,
+                "scaleDenominator": 1.747132075089743E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:4",
+                "matrixHeight": 8,
+                "scaleDenominator": 3.494264150179486E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:7",
+                "matrixHeight": 64,
+                "scaleDenominator": 4367830.187724357
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:10",
+                "matrixHeight": 512,
+                "scaleDenominator": 545978.7734655447
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:6",
+                "matrixHeight": 32,
+                "scaleDenominator": 8735660.375448715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:9",
+                "matrixHeight": 256,
+                "scaleDenominator": 1091957.546931089
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:12",
+                "matrixHeight": 2048,
+                "scaleDenominator": 136494.6933663862
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:8",
+                "matrixHeight": 128,
+                "scaleDenominator": 2183915.093862179
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:11",
+                "matrixHeight": 1024,
+                "scaleDenominator": 272989.3867327723
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:14",
+                "matrixHeight": 8192,
+                "scaleDenominator": 34123.67334159654
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GoogleCRS84Quad:13",
+                "matrixHeight": 4096,
+                "scaleDenominator": 68247.34668319309
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::4326",
+        "identifier": "GoogleCRS84Quad"
+    },
+    "JHS": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 11111,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JSH:15",
+                "matrixHeight": 19075,
+                "scaleDenominator": 892.8571428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 695,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:11",
+                "matrixHeight": 1193,
+                "scaleDenominator": 14285.714285714286
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 348,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:10",
+                "matrixHeight": 597,
+                "scaleDenominator": 28571.428571428572
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 2778,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:13",
+                "matrixHeight": 4769,
+                "scaleDenominator": 3571.4285714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 1389,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:12",
+                "matrixHeight": 2385,
+                "scaleDenominator": 7142.857142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 5556,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:14",
+                "matrixHeight": 9538,
+                "scaleDenominator": 1785.7142857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 174,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:9",
+                "matrixHeight": 299,
+                "scaleDenominator": 57142.857142857145
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 22,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:6",
+                "matrixHeight": 38,
+                "scaleDenominator": 457142.85714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 11,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:5",
+                "matrixHeight": 19,
+                "scaleDenominator": 914285.7142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 87,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:8",
+                "matrixHeight": 150,
+                "scaleDenominator": 114285.71428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 44,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:7",
+                "matrixHeight": 75,
+                "scaleDenominator": 228571.42857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:1",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.462857142857143E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:2",
+                "matrixHeight": 3,
+                "scaleDenominator": 7314285.714285715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 3,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:3",
+                "matrixHeight": 5,
+                "scaleDenominator": 3657142.8571428573
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 6,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:4",
+                "matrixHeight": 10,
+                "scaleDenominator": 1828571.4285714286
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795411.870622758
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.925714285714286E7
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::3067",
+        "identifier": "JHS"
+    },
+    "JHS_GK24": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7640815
+                },
+                "matrixWidth": 878,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JSH_GK24:15",
+                "matrixHeight": 15766,
+                "scaleDenominator": 892.8571428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7641455
+                },
+                "matrixWidth": 28,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:10",
+                "matrixHeight": 493,
+                "scaleDenominator": 28571.428571428572
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7640943
+                },
+                "matrixWidth": 110,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:12",
+                "matrixHeight": 1971,
+                "scaleDenominator": 7142.857142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7641455
+                },
+                "matrixWidth": 55,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:11",
+                "matrixHeight": 986,
+                "scaleDenominator": 14285.714285714286
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7640815
+                },
+                "matrixWidth": 439,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:14",
+                "matrixHeight": 7883,
+                "scaleDenominator": 1785.7142857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7640943
+                },
+                "matrixWidth": 220,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:13",
+                "matrixHeight": 3942,
+                "scaleDenominator": 3571.4285714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7647599
+                },
+                "matrixWidth": 7,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:8",
+                "matrixHeight": 124,
+                "scaleDenominator": 114285.71428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7643503
+                },
+                "matrixWidth": 14,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:9",
+                "matrixHeight": 247,
+                "scaleDenominator": 57142.857142857145
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7647599
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:6",
+                "matrixHeight": 31,
+                "scaleDenominator": 457142.85714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7647599
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:7",
+                "matrixHeight": 62,
+                "scaleDenominator": 228571.42857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7680367
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:4",
+                "matrixHeight": 8,
+                "scaleDenominator": 1828571.4285714286
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7680367
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:5",
+                "matrixHeight": 16,
+                "scaleDenominator": 914285.7142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7680367
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:2",
+                "matrixHeight": 2,
+                "scaleDenominator": 7314285.714285715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7680367
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:3",
+                "matrixHeight": 4,
+                "scaleDenominator": 3657142.8571428573
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 8728943
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 2.925714285714286E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 2.4471931948019154E7,
+                    "lat": 7680367
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "JHS_GK24:1",
+                "matrixHeight": 1,
+                "scaleDenominator": 1.462857142857143E7
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::3878",
+        "identifier": "JHS_GK24"
+    },
+    "EPSG:900913": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1048576,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:20",
+                "matrixHeight": 1048576,
+                "scaleDenominator": 533.1823958882264
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 2097152,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:21",
+                "matrixHeight": 2097152,
+                "scaleDenominator": 266.5911979441132
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 4194304,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:22",
+                "matrixHeight": 4194304,
+                "scaleDenominator": 133.2955989720566
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 8388608,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:23",
+                "matrixHeight": 8388608,
+                "scaleDenominator": 66.6477994860283
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 16777216,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:24",
+                "matrixHeight": 16777216,
+                "scaleDenominator": 33.32389974301415
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 512,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:9",
+                "matrixHeight": 512,
+                "scaleDenominator": 1091957.5467790877
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 32,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:5",
+                "matrixHeight": 32,
+                "scaleDenominator": 1.7471320748465404E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 64,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:6",
+                "matrixHeight": 64,
+                "scaleDenominator": 8735660.374232702
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 128,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:7",
+                "matrixHeight": 128,
+                "scaleDenominator": 4367830.187116351
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 256,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:8",
+                "matrixHeight": 256,
+                "scaleDenominator": 2183915.0935581755
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:1",
+                "matrixHeight": 2,
+                "scaleDenominator": 2.7954113197544646E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 32768,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:15",
+                "matrixHeight": 32768,
+                "scaleDenominator": 17061.836668423246
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 4,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:2",
+                "matrixHeight": 4,
+                "scaleDenominator": 1.3977056598772323E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 16384,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:14",
+                "matrixHeight": 16384,
+                "scaleDenominator": 34123.67333684649
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 8,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:3",
+                "matrixHeight": 8,
+                "scaleDenominator": 6.988528299386162E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 131072,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:17",
+                "matrixHeight": 131072,
+                "scaleDenominator": 4265.4591671058115
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 16,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:4",
+                "matrixHeight": 16,
+                "scaleDenominator": 3.494264149693081E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 65536,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:16",
+                "matrixHeight": 65536,
+                "scaleDenominator": 8530.918334211623
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 524288,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:19",
+                "matrixHeight": 524288,
+                "scaleDenominator": 1066.3647917764529
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 262144,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:18",
+                "matrixHeight": 262144,
+                "scaleDenominator": 2132.7295835529058
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 5.590822639508929E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1073741824,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:30",
+                "matrixHeight": 1073741824,
+                "scaleDenominator": 0.5206859334845961
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 4096,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:12",
+                "matrixHeight": 4096,
+                "scaleDenominator": 136494.69334738597
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 8192,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:13",
+                "matrixHeight": 8192,
+                "scaleDenominator": 68247.34667369298
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 1024,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:10",
+                "matrixHeight": 1024,
+                "scaleDenominator": 545978.7733895439
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 2048,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:11",
+                "matrixHeight": 2048,
+                "scaleDenominator": 272989.38669477194
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 536870912,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:29",
+                "matrixHeight": 536870912,
+                "scaleDenominator": 1.0413718669691923
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 268435456,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:28",
+                "matrixHeight": 268435456,
+                "scaleDenominator": 2.0827437339383845
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 134217728,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:27",
+                "matrixHeight": 134217728,
+                "scaleDenominator": 4.165487467876769
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 67108864,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:26",
+                "matrixHeight": 67108864,
+                "scaleDenominator": 8.330974935753538
+            },
+            {
+                "topLeftCorner": {
+                    "lon": -2.003750834E7,
+                    "lat": 2.0037508E7
+                },
+                "matrixWidth": 33554432,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "EPSG:900913:25",
+                "matrixHeight": 33554432,
+                "scaleDenominator": 16.661949871507076
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::900913",
+        "identifier": "EPSG:900913"
+    },
+    "Custom_JHS": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7803436
+                },
+                "matrixWidth": 87,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:6",
+                "matrixHeight": 150,
+                "scaleDenominator": 114285.71428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7803436
+                },
+                "matrixWidth": 44,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:5",
+                "matrixHeight": 75,
+                "scaleDenominator": 228571.42857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7819820
+                },
+                "matrixWidth": 22,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:4",
+                "matrixHeight": 38,
+                "scaleDenominator": 457142.85714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795756
+                },
+                "matrixWidth": 1389,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:10",
+                "matrixHeight": 2385,
+                "scaleDenominator": 7142.857142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7819820
+                },
+                "matrixWidth": 11,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:3",
+                "matrixHeight": 19,
+                "scaleDenominator": 914285.7142857143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795500
+                },
+                "matrixWidth": 2778,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:11",
+                "matrixHeight": 4769,
+                "scaleDenominator": 3571.4285714285716
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795500
+                },
+                "matrixWidth": 5556,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:12",
+                "matrixHeight": 9538,
+                "scaleDenominator": 1785.7142857142858
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7795436
+                },
+                "matrixWidth": 11111,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:13",
+                "matrixHeight": 19075,
+                "scaleDenominator": 892.8571428571429
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7796268
+                },
+                "matrixWidth": 695,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:9",
+                "matrixHeight": 1193,
+                "scaleDenominator": 14285.714285714286
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7797292
+                },
+                "matrixWidth": 348,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:8",
+                "matrixHeight": 597,
+                "scaleDenominator": 28571.428571428572
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7799340
+                },
+                "matrixWidth": 174,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:7",
+                "matrixHeight": 299,
+                "scaleDenominator": 57142.857142857145
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 8147500
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:0",
+                "matrixHeight": 3,
+                "scaleDenominator": 7314285.714285715
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7885356
+                },
+                "matrixWidth": 3,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:1",
+                "matrixHeight": 5,
+                "scaleDenominator": 3657142.8571428573
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 50199.48138252203,
+                    "lat": 7885356
+                },
+                "matrixWidth": 6,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "Custom_JHS:2",
+                "matrixHeight": 10,
+                "scaleDenominator": 1828571.4285714286
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::3067",
+        "identifier": "Custom_JHS"
+    },
+    "GlobalCRS84Pixel": {
+        "matrixIds": [
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 168750,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:16",
+                "matrixHeight": 84375,
+                "scaleDenominator": 3313.080083133142
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 43,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:6",
+                "matrixHeight": 22,
+                "scaleDenominator": 1.325232033253257E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 506250,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:17",
+                "matrixHeight": 253125,
+                "scaleDenominator": 1104.3600277110472
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 17,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:5",
+                "matrixHeight": 9,
+                "scaleDenominator": 3.3130800831331424E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 16875,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:14",
+                "matrixHeight": 8438,
+                "scaleDenominator": 33130.80083133143
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 169,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:8",
+                "matrixHeight": 85,
+                "scaleDenominator": 3313080.0831331424
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 50625,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:15",
+                "matrixHeight": 25313,
+                "scaleDenominator": 11043.600277110474
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 85,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:7",
+                "matrixHeight": 43,
+                "scaleDenominator": 6626160.166266285
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 3,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:2",
+                "matrixHeight": 2,
+                "scaleDenominator": 1.9878480498798856E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 5063,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:12",
+                "matrixHeight": 2532,
+                "scaleDenominator": 110436.00277110476
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 10125,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:13",
+                "matrixHeight": 5063,
+                "scaleDenominator": 55218.00138555238
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 2,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:1",
+                "matrixHeight": 1,
+                "scaleDenominator": 3.975696099759771E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 9,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:4",
+                "matrixHeight": 5,
+                "scaleDenominator": 6.626160166266285E7
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1013,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:10",
+                "matrixHeight": 507,
+                "scaleDenominator": 552180.0138555238
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 5,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:3",
+                "matrixHeight": 3,
+                "scaleDenominator": 1.325232033253257E8
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1688,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:11",
+                "matrixHeight": 844,
+                "scaleDenominator": 331308.00831331423
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 338,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:9",
+                "matrixHeight": 169,
+                "scaleDenominator": 1656540.0415665712
+            },
+            {
+                "topLeftCorner": {
+                    "lon": 90,
+                    "lat": -180
+                },
+                "matrixWidth": 1,
+                "tileHeight": 256,
+                "tileWidth": 256,
+                "identifier": "GlobalCRS84Pixel:0",
+                "matrixHeight": 1,
+                "scaleDenominator": 7.951392199519542E8
+            }
+        ],
+        "projection": "urn:ogc:def:crs:EPSG::4326",
+        "identifier": "GlobalCRS84Pixel"
+    }
+}} 

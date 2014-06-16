@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_geonorge_no', 999, 
+  VALUES('wfslayer', 'elf_AU_geonorge_no', 902, 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF AU - geonorge.no", subtitle:""},sv:{name:"ELF AU - geonorge.no", subtitle:""},en:{name:"ELF AU - geonorge.no", subtitle:""}}');
+         'wfs', '{fi:{name:"AU Administrative Units - geonorge.no", subtitle:""},sv:{name:"AU Administrative Units - geonorge.no", subtitle:""},en:{name:"AU Administrative Units - geonorge.no", subtitle:""}}');
          
 
          
@@ -94,6 +94,11 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
 
+-- give publish permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '2');
+
+
 -- give publish permission for the resource to ROLE 3 (admin);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '3');
@@ -106,5 +111,8 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 	

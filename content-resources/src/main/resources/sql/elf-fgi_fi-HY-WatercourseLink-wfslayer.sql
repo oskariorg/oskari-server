@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_HY_fgi_fi', 999, 
+  VALUES('wfslayer', 'elf_HY_fgi_fi', 906, 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF HY - fgi.fi", subtitle:""},sv:{name:"ELF HY - fgi.fi", subtitle:""},en:{name:"ELF HY - fgi.fi", subtitle:""}}');
+         'wfs', '{fi:{name:"HY Hydrography - fgi.fi", subtitle:""},sv:{name:"HY Hydrography - fgi.fi", subtitle:""},en:{name:"HY Hydrography - fgi.fi", subtitle:""}}');
          
 
          
@@ -94,6 +94,10 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_LAYER', '2');
 
+-- give publish permission for the resource to ROLE 2 (user);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '2');
+
 -- give publish permission for the resource to ROLE 3 (admin);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'PUBLISH', '3');
@@ -101,6 +105,10 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '10110');
+
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values

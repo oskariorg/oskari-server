@@ -3,7 +3,6 @@ package fi.nls.oskari.wmts.domain;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSStyle;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -119,7 +118,7 @@ public class WMTSCapabilitiesLayer {
 
         // TODO: setup min/maxscale based on tilematrix?
 
-        JSONHelper.putValue(obj, "layerName", getId()); // or wmtsname?
+        JSONHelper.putValue(obj, "layerName", getId());
         JSONHelper.putValue(obj, "title", getTitle());
         JSONHelper.putValue(obj, "style", getDefaultStyle());
 
@@ -139,7 +138,12 @@ public class WMTSCapabilitiesLayer {
         for(String matrixSet : getLinks().keySet()) {
             JSONArray limits = new JSONArray();
             JSONHelper.putValue(jsonMatrixLinks, matrixSet, limits);
+            // works fine for single link, but has challenges on multiple
+            // tileMatrixSetId is handled in WMTSCapabilitiesParser for multiple links
+            JSONHelper.putValue(obj, "tileMatrixSetId", matrixSet);
+
             // TODO: setup limits
+            // limits are not used for now so skipping
             /*
             for(TileMatrixLimits l : getLimits(matrixSet)) {
 

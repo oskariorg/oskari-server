@@ -11,7 +11,9 @@ import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Get WMS capabilites and return JSON
@@ -46,15 +48,23 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url);
                 ResponseHelper.writeResponse(params, capabilities);
             }
-            else if(OskariLayer.TYPE_WMTS.equals(layerType)) {
-                WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
-                final String capabilities = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities");
-                JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
-                JSONHelper.putValue(resultJSON, "xml", capabilities);
-                ResponseHelper.writeResponse(params, resultJSON);
-            }
             else {
-                throw new ActionParamsException("Couldn't determine operation based on parameters");
+                if (OskariLayer.TYPE_WMTS.equals(layerType)) {
+                    WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
+
+                    // setup capabilities URL
+                    Map<String, String> capabilitiesParams = new HashMap<String, String>();
+                    capabilitiesParams.put("service", "WMTS");
+                    capabilitiesParams.put("request", "GetCapabilities");
+                    final String capabilitiesUrl = IOHelper.constructUrl(url, capabilitiesParams);
+
+                    final String capabilities = IOHelper.getURL(capabilitiesUrl);
+                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
+                    JSONHelper.putValue(resultJSON, "xml", capabilities);
+                    ResponseHelper.writeResponse(params, resultJSON);
+                } else {
+                    throw new ActionParamsException("Couldn't determine operation based on parameters");
+                }
             }
         } catch (Exception ee) {
             throw new ActionException("WMS Capabilities parsing failed: ", ee);

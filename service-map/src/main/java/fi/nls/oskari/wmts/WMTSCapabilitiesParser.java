@@ -5,6 +5,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
+import fi.nls.oskari.wmts.domain.TileMatrixLimits;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.apache.axiom.om.OMElement;
@@ -17,10 +18,11 @@ import org.json.XML;
 import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * NOTE!!! Initial scripblings for WMTS capabilities parsing. Not used anywhere and might change without notice!!
+ * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.
  */
 public class WMTSCapabilitiesParser {
 
@@ -55,11 +57,27 @@ public class WMTSCapabilitiesParser {
         final JSONArray layersNode = new JSONArray();
         JSONHelper.putValue(result, "layers", layersNode);
         for(WMTSCapabilitiesLayer layer : layers) {
-            JSONObject layerJson = layer.getAsJSON();
-            if(!layerJson.has("url")) {
-                JSONHelper.putValue(layerJson, "url", url);
+            final Map<String, Set<TileMatrixLimits>> links = layer.getLinks();
+            if(links.size() == 1) {
+                JSONObject layerJson = layer.getAsJSON();
+                if(!layerJson.has("url")) {
+                    JSONHelper.putValue(layerJson, "url", url);
+                }
+                layersNode.put(layerJson);
             }
-            layersNode.put(layerJson);
+            else if(links.size() > 1) {
+                for(String link : links.keySet()) {
+                    JSONObject layerJson = layer.getAsJSON();
+                    JSONHelper.putValue(layerJson, "title", layer.getTitle() + "/" + link + " (SRS: " + getMatrixCRS(link, tileMatrixSets) + ")");
+                    JSONHelper.putValue(layerJson, "tileMatrixSetId", link);
+                    JSONHelper.putValue(layerJson, "additionalId", link);
+
+                    if(!layerJson.has("url")) {
+                        JSONHelper.putValue(layerJson, "url", url);
+                    }
+                    layersNode.put(layerJson);
+                }
+            }
         }
 
         final JSONObject matrixNode = new JSONObject();
@@ -69,6 +87,15 @@ public class WMTSCapabilitiesParser {
         }
 
         return result;
+    }
+
+    private String getMatrixCRS(final String id, final Set<TileMatrixSet> tileMatrixSets) {
+        for(TileMatrixSet matrix : tileMatrixSets) {
+            if(matrix.getId().equals(id)) {
+                return matrix.getCrs();
+            }
+        }
+        return "CRS N/A";
     }
 
 }
