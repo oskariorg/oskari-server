@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.23
+
+### webapp-map
+
+Added external folder and moved jaas related files there.
+Added jetty9-jaas profile to address jetty version related differences.
+
 ## 1.22
 
 ### servlet-map/OskariRequestFilter
