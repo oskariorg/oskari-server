@@ -1139,9 +1139,9 @@ UPDATE portti_view_bundle_seq set startup = '{
 
 -- add bundle to view
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
-       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+       VALUES ([VIEW_ID],
         (SELECT id FROM portti_bundle WHERE name = 'routesearch'), 
-        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]),
         '{}','{}', '{}');
 
 -- update proper startup for view
@@ -1162,4 +1162,10 @@ UPDATE portti_view_bundle_seq set startup = '{
     },
     "instanceProps": {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'routesearch') 
-    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+    AND  view_id=[VIEW_ID];
+
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "flyoutClazz": "Oskari.mapframework.bundle.routesearch.Flyout"
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'routesearch')
+         AND  view_id=[VIEW_ID];
