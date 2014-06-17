@@ -112,4 +112,7 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 	

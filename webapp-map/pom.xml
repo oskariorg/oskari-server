@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.22-SNAPSHOT</version>
+        <version>1.23-SNAPSHOT</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -61,6 +61,12 @@
             <id>jetty-jaas</id>
             <properties>
                 <env>jetty-jaas</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>jetty9-jaas</id>
+            <properties>
+                <env>jetty9-jaas</env>
             </properties>
         </profile>
         <profile>

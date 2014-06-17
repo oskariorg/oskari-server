@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_AU_cuzk_cz', 999, 
+  VALUES('wfslayer', 'elf_AU_cuzk_cz', 903, 
          500000, 1, 
-         'wfs', '{fi:{name:"ELF AU - cuzk.cz", subtitle:""},sv:{name:"ELF AU - cuzk.cz", subtitle:""},en:{name:"ELF AU - cuzk.cz", subtitle:""}}');
+         'wfs', '{fi:{name:"AU Administrative Units - cuzk.cz", subtitle:""},sv:{name:"AU Administrative Units  - cuzk.cz", subtitle:""},en:{name:"AU Administrative Units - cuzk.cz", subtitle:""}}');
          
 
          
@@ -105,6 +105,10 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '10110');
+
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values

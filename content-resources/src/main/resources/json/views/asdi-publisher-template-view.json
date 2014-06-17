@@ -1,0 +1,157 @@
+{
+    "name" : "Publisher template",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
+    "oskari": {
+        "application": "asdi_published",
+        "page": "published",
+        "development_prefix": "/applications/asdi"
+    },
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
+        {
+            "id" : "mapfull",
+            "startup" : {
+                "title" : "Map",
+                "fi" : "mapfull",
+                "sv" : "mapfull",
+                "en" : "mapfull",
+                "bundlename" : "mapfull",
+                "bundleinstancename" : "mapfull",
+                "metadata" : {
+                    "Import-Bundle" : {
+                        "core-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "core-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "sandbox-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "event-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "request-map-layer" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-base" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "service-map" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "domain" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapmodule-plugin" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapwmts" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "oskariui" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        },
+                        "mapfull" : {
+                            "bundlePath" : "/Oskari/packages/framework/bundle/"
+                        }
+                    },
+                    "Require-Bundle-Instance" : []
+                },
+                "instanceProps" : {}
+            },
+            "config" : {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                        	"deferSetLocation": true,
+                            "backoffIncrement": 1000,
+                            "contextPath": "/transport",
+                            "disconnectTime": 30000,
+                            "lazy": true,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000,
+                            "port": ""
+                        }
+                    },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+                    {
+                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+                    	"config":{
+                    		"termsUrl":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		},
+                    		"mapUrlPrefix":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		}
+                    	}
+                    }
+                ],
+                "layers": [
+                ],
+                "mapOptions": {
+                    "allOverlays": true,
+                    "units": "m",
+                    "numZoomLevels": 15,
+                    "maxResolution": "auto",
+                    "resolutions": [160642.5702811245, 80321.28514056225, 40160.642570281125, 20080.321285140562, 10040.160642570281, 5020.080321285141, 2510.0401606425703, 1255.0200803212851, 627.5100401606426, 313.7550200803213, 156.87751004016064, 78.43875502008032, 39.21937751004016, 19.60968875502008, 9.80484437751004],
+                    "maxExtent": {
+                        "left": -60000000,
+                        "bottom": -60000000,
+                        "right": 60000000,
+                        "top": 60000000
+                    },
+                    "srsName": "EPSG:3575"
+                },
+                "projectionDefs": {
+                    "EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3574": "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ",
+                    "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+                    "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
+                }
+            },
+            "state": {
+                "east": "443457.67154688",
+                "north": "-2267797.1603393",
+                "selectedLayers": [
+                    {
+                        "id": 888
+                    }
+                    
+                ],
+                "zoom": 4
+            }
+        },
+        { "id" : "infobox" },
+        { "id" : "toolbar" }
+    ]
+}

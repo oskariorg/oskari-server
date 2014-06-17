@@ -15,6 +15,8 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-aggregate.xml";
     private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-aggregate.xml";
     private final String functionsTemplate = "<wps:Input><ows:Identifier>function</ows:Identifier><wps:Data><wps:LiteralData>{functions}</wps:LiteralData></wps:Data></wps:Input>";
+    private static final String  NO_DATA_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsNotEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsNotEqualTo></ogc:And></ogc:And></ogc:Filter>";
+    private static final String  NO_DATACOUNT_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:And></ogc:And></ogc:Filter>";
 
     // xml template paths {}
     private final String AGGREFIELD1 = "{aggreField1}";
@@ -23,6 +25,8 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     private final String AGGREFUNCTIONS = "{aggreFunctions}";
 
     private String aggreField1 = "";
+    private String noDataValue = null;
+    private boolean doNoDataCount = false;
     private List<String> aggreFunctions = null;
 
     public String getAggreField1() {
@@ -33,12 +37,28 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         this.aggreField1 = aggreField1;
     }
 
+    public String getNoDataValue() {
+        return noDataValue;
+    }
+
+    public void setNoDataValue(String noDataValue) {
+        this.noDataValue = noDataValue;
+    }
+
     public List<String> getAggreFunctions() {
         return aggreFunctions;
     }
 
     public void setAggreFunctions(List<String> aggreFunctions) {
         this.aggreFunctions = aggreFunctions;
+    }
+
+    public boolean isDoNoDataCount() {
+        return doNoDataCount;
+    }
+
+    public void setDoNoDataCount(boolean doNoDataCount) {
+        this.doNoDataCount = doNoDataCount;
     }
 
     public Document getWPSXML() throws XPathExpressionException, IOException,
@@ -84,6 +104,19 @@ public class AggregateMethodParams extends AnalysisMethodParams {
             wfsfilter = fbbox;
         }
 
+        if (this.getNoDataValue() != null) {
+            if(isDoNoDataCount()){
+            // No data count filter  - use WPS count aggregate method
+            // and calculate the count of no data value items
+                wfsfilter = this.appendNoDataCountFilter(wfsfilter);
+            } else {
+            // Append no_data filter
+            wfsfilter = this.appendNoDataFilter(wfsfilter);
+            }
+        }
+
+        String nodataFilter = "";
+
         doctemp = doctemp.replace(FILTER, wfsfilter);
 
         Document doc = this.getDocument2(doctemp);
@@ -101,6 +134,18 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         }
 
         return aggre_functions;
+    }
+    private String appendNoDataFilter(String wfsfilter){
+        String nodatafilter = NO_DATA_FILTER_TEMPLATE.replace("{propertyName}", this.getAggreField1());
+        nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+        wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>",nodatafilter);
+        return wfsfilter;
+    }
+    private String appendNoDataCountFilter(String wfsfilter){
+        String nodatafilter = NO_DATACOUNT_FILTER_TEMPLATE.replace("{propertyName}", this.getAggreField1());
+        nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+        wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>",nodatafilter);
+        return wfsfilter;
     }
 
 }

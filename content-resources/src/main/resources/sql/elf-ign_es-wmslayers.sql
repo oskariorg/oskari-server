@@ -7,10 +7,10 @@ INSERT INTO oskari_maplayer(type, name, groupId,
 							minscale, maxscale,
                             url,
                             locale)
-  VALUES('wmslayer', 'GN.GeographicalNames', 999,
+  VALUES('wmslayer', 'GN.GeographicalNames', 901,
   		 300000,1,
          'http://www.ign.es/wms-inspire/ign-base',
-         '{ fi:{name:"Paikannimet - ign.es",subtitle:""},sv:{name:"Geografiska namn - ign.es",subtitle:""},en:{name:"Geographical Names - ign.es",subtitle:""}}');
+         '{ fi:{name:"GN Geographical Names - ign.es",subtitle:""},sv:{name:"GN Geographical Names - ign.es",subtitle:""},en:{name:"GN Geographical Names - ign.es",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -50,6 +50,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 
 -- HY ;
@@ -96,6 +99,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 
 -- TN ;
@@ -107,7 +113,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
   VALUES('wmslayer', 'TN.TransportNetwork', 999,
   		 300000,1,
          'http://www.ign.es/wms-inspire/ign-base',
-         '{ fi:{name:"Liikenneverkot - ign.es",subtitle:""},sv:{name:"Trafiknät - ign.es",subtitle:""},en:{name:"Transport networks - ign.es",subtitle:""}}');
+         '{ fi:{name:"TN Transport Networks - ign.es",subtitle:""},sv:{name:"TN Transport Networks - ign.es",subtitle:""},en:{name:"TN Transport Networks - ign.es",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -143,6 +149,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 
 
@@ -156,7 +165,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
   VALUES('wmslayer', 'AU.AdministrativeBoundary', 999,
   		 300000,1,
          'http://www.ign.es/wms-inspire/unidades-administrativas',
-         '{ fi:{name:"AU.AdministrativeBoundary - ign.es",subtitle:""},sv:{name:"AU.AdministrativeBoundary - ign.es",subtitle:""},en:{name:"AU.AdministrativeBoundary - ign.es",subtitle:""}}');
+         '{ fi:{name:"AU Administrative Boundaries - ign.es",subtitle:""},sv:{name:"AU Administrative Boundaries - ign.es",subtitle:""},en:{name:"AU Administrative Boundaries - ign.es",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -193,6 +202,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 -- AU ;
 
@@ -203,7 +215,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
   VALUES('wmslayer', 'AU.AdministrativeUnit', 999,
   		 300000,1,
          'http://www.ign.es/wms-inspire/unidades-administrativas',
-         '{ fi:{name:"AU.AdministrativeUnit - ign.es",subtitle:""},sv:{name:"AU.AdministrativeUnit - ign.es",subtitle:""},en:{name:"AU.AdministrativeUnit - ign.es",subtitle:""}}');
+         '{ fi:{name:"AU Administrative Units - ign.es",subtitle:""},sv:{name:"AU Administrative Units - ign.es",subtitle:""},en:{name:"AU Administrative Units - ign.es",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -239,6 +251,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 -- AU ;
 
@@ -249,7 +264,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
   VALUES('wmslayer', 'AU.NUTSRegion', 999,
   		 300000,1,
          'http://www.ign.es/wms-inspire/unidades-administrativas',
-         '{ fi:{name:"AU.NUTSRegion - ign.es",subtitle:""},sv:{name:"AU.NUTSRegion - ign.es",subtitle:""},en:{name:"AU.NUTSRegion - ign.es",subtitle:""}}');
+         '{ fi:{name:"AU NUTS Region - ign.es",subtitle:""},sv:{name:"AU NUTS Region - ign.es",subtitle:""},en:{name:"AU NUTSRegion - ign.es",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -284,6 +299,9 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 
 -- EL ;
@@ -295,7 +313,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
   VALUES('wmslayer', 'EL.GridCoverage', 999,
   		 300000,1,
          'http://www.ign.es/wms-inspire/mdt',
-         '{ fi:{name:"EL.GridCoverage - ign.es",subtitle:""},sv:{name:"EL.GridCoverage - ign.es",subtitle:""},en:{name:"EL.GridCoverage - ign.es",subtitle:""}}');
+         '{ fi:{name:"EL Elevation - ign.es",subtitle:""},sv:{name:"EL Elevation - ign.es",subtitle:""},en:{name:"EL Elevation - ign.es",subtitle:""}}');
          
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
@@ -326,6 +344,10 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 -- give view_published_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '10110');
+
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');
 
 -- give view_published_layer permission for the resource to ROLE 2 (user);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values

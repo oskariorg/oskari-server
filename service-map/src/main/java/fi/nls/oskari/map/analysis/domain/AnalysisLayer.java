@@ -43,6 +43,7 @@ public class AnalysisLayer {
     private long wpsLayerId = 0;
     private AnalysisMethodParams analysisMethodParams;
     private String filter;
+    private boolean nodataCount = false;
     private List<Long> mergeAnalysisIds;
     private List<String> mergeAnalysisLayers;
 
@@ -136,6 +137,14 @@ public class AnalysisLayer {
 
     public void setMaxScale(Double double1) {
         this.maxScale = double1;
+    }
+
+    public boolean isNodataCount() {
+        return nodataCount;
+    }
+
+    public void setNodataCount(boolean nodataCount) {
+        this.nodataCount = nodataCount;
     }
 
     public List<String> getFields() {

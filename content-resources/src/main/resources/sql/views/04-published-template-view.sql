@@ -148,6 +148,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapwmts" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "mapuserlayers" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
             "oskariui" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
@@ -203,7 +206,8 @@ UPDATE portti_view_bundle_seq set config = '{
         }
        },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
-       { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" }
+       { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
+       { "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
       ],
       "layers": [
       ],

@@ -143,138 +143,7 @@
                     "EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                     "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
                 },
-                "layers": [                    
-                    {
-                        "id": 891,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Norway",
-                        "orgName": "Norway",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://wms.geonorge.no/skwms1/wms.arctic2",
-                        "wmsName": "Arctic_2",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 892,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Sweden",
-                        "orgName": "Sweden",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://arcticsdi.lm.se:80/geoserver/asdi/ows",
-                        "wmsName": "ArcticSDI_SE",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 893,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Finland",
-                        "orgName": "Finland",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://karttatiili.fi/dataset/asdi/service/wms",
-                        "wmsName": "asdi:asdi",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 901,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Alaska",
-                        "orgName": "Alaska",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://54.225.77.204/geoserver/wms",
-                        "wmsName": "ArcticSDI_US",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 902,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Canada",
-                        "orgName": "Canada",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://maps.geogratis.gc.ca/wms/arcticsdi_en",
-                        "wmsName": "Arctic-SDI",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 903,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Faroe Islands",
-                        "orgName": "Faroe Islands",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://kortforsyningen.kms.dk/asdi_beta",
-                        "wmsName": "ArcticSDI_FO",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 904,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Greenland",
-                        "orgName": "Greenland",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://kortforsyningen.kms.dk/asdi_gr_beta",
-                        "wmsName": "ArcticSDI_GR",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 905,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Iceland",
-                        "orgName": "Iceland",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://gis.lmi.is/arcgis/services/annad/articSDI/MapServer/WMSServer",
-                        "wmsName": "WoodForests,BuiltupAreas,AgriculturalAreas,UnclassifiedAreas,SoilSurfaceRegions,MoorsHeathlands,GlacierSnowfields,Hillshade,GlacierContours,TerrainContours,WatercourseLines,Waterbodies,WatercourseAreas,Sea,Coastline,Wetlands,RegionalRoads,MainRoads,FerryCrossings,RunwayLines,Airports,Heliports,ProtectedSites,SubNationalBoundaries,NationalBoundaries,GeographicalNames,f50,l50,p50,f100,l100,p100,f250,l250,p250,f500,p500",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 906,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Svalbard",
-                        "orgName": "Svalbard",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://willem3.npolar.no/arcgis/services/inspire1/NP_TopoSvalbard_ArcticSDI/MapServer/WMSServer",
-                        "wmsName": "UnclassifiedAreas,GlacierSnowfields,Hillshade,Waterbodies,Sea,Coastline,GlacierContours,TerrainContours,LocalRoads,AerodromeAreas,Heliports,Airports,PopulatedPlaces,Hydrography,DefaultPlacenames",
-                        "options": {
-                            "singleTile": true
-                        }
-                    },
-                    {
-                        "id": 907,
-                        "type": "wmslayer",
-                        "opacity": 100,
-                        "name": "Arctic SDI - Jan Mayen",
-                        "orgName": "Jan Mayen",
-                        "inspire": "Arctic SDI",
-                        "wmsUrl": "http://willem3.npolar.no/ArcGIS/services/inspire1/NP_TopoJanMayen_ArcticSDI/MapServer/WMSServer?",
-                        "wmsName": "UnclassifiedAreas,GlacierSnowfields,Hillshade.tif,Waterbodies,Sea,Coastline,GlacierContours,TerrainContours,LocalRoads,AerodromeAreas,Airports,PopulatedPlaces,Hydrography,DefaultPlacenames",
-                        "options": {
-                            "singleTile": true
-                        }
-                    }
-                ]
+                "layers": []
             },
             "state": {
                 "east": "443457.67154688",
@@ -324,6 +193,15 @@
         {
             "id": "metadatacatalogue"
         },     
+        { "id" : "publisher" ,
+            "config" : {
+                "publishedMapUrl": {
+                    "en": "[replace with current url]/?viewId=",
+                    "fi": "[replace with current url]/?viewId=",
+                    "sv": "[replace with current url]/?viewId="
+                }
+            }
+        },
         {
             "id": "postprocessor"
         }
