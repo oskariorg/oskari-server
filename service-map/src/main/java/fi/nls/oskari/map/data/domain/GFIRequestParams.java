@@ -18,11 +18,11 @@ public class GFIRequestParams {
     private String width;
     private String height;
     private String currentStyle;
+    private String srsName;
 
     private static final String WMS_GFI_BASE_PARAMS = "REQUEST=GetFeatureInfo"
             + "&EXCEPTIONS=application/vnd.ogc.se_xml" + "&VERSION=1.1.1"
-            + "&FEATURE_COUNT=10" + "&FORMAT=image/png" + "&SERVICE=WMS"
-            + "&SRS=EPSG:3067";
+            + "&FEATURE_COUNT=10" + "&FORMAT=image/png" + "&SERVICE=WMS";
 
     public OskariLayer getLayer() {
         return layer;
@@ -110,6 +110,14 @@ public class GFIRequestParams {
         this.currentStyle = currentStyle;
     }
 
+    public String getSRSName() {
+        return srsName;
+    }
+
+    public void setSRSName(String srsName) {
+        this.srsName = srsName;
+    }
+
     public String getGFIUrl() {
         return getBaseQueryURL() + getAsQueryString();
     }
@@ -129,7 +137,7 @@ public class GFIRequestParams {
         }
 
 
-        return WMS_GFI_BASE_PARAMS + "&BBOX=" + getBbox() + "&X=" + getX()
+        return WMS_GFI_BASE_PARAMS + "&SRS=" + getSRSName() + "&BBOX=" + getBbox() + "&X=" + getX()
                 + "&Y=" + getY() + "&INFO_FORMAT=" + infoFormat
                 + "&QUERY_LAYERS=" + wmsName + "&WIDTH="
                 + getWidth() + "&HEIGHT=" + getHeight() + "&STYLES="
