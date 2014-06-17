@@ -196,9 +196,9 @@
         { "id" : "publisher" ,
             "config" : {
                 "publishedMapUrl": {
-                    "en": "localhost/?viewId=",
-                    "fi": "localhost/?viewId=",
-                    "sv": "localhost/?viewId="
+                    "en": "[replace with current url]/?viewId=",
+                    "fi": "[replace with current url]/?viewId=",
+                    "sv": "[replace with current url]/?viewId="
                 }
             }
         },
