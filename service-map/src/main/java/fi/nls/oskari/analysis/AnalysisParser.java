@@ -78,6 +78,7 @@ public class AnalysisParser {
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
     private static final String LAYER_UNION = "layer_union";
+    private static final String FUNC_NODATACOUNT = "NoDataCnt";
 
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LAYERID = "layerId";
@@ -89,6 +90,8 @@ public class AnalysisParser {
     private static final String JSON_KEY_FEATURES = "features";
     private static final String JSON_KEY_NAME = "name";
     private static final String JSON_KEY_OPERATOR = "operator";
+    private static final String JSON_KEY_DISTANCE = "distance";
+    private static final String JSON_KEY_NO_DATA = "no_data";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
@@ -397,6 +400,7 @@ public class AnalysisParser {
 
             // aggregate fields
             String aggre_field = null;
+            analysisLayer.setNodataCount(false);
             try {
 
           /*      aggre_field = json.getJSONObject(JSON_KEY_METHODPARAMS)
@@ -421,7 +425,11 @@ public class AnalysisParser {
                 } else {
                     try {
                         for (int i = 0; i < aggre_func_in.length(); i++) {
-                            aggre_funcs.add(aggre_func_in.getString(i));
+                            if(aggre_func_in.getString(i).equals(FUNC_NODATACOUNT)){
+                                // Don't put NóDataCount to WPS aggregate, it is not in WPS
+                                analysisLayer.setNodataCount(true);
+                            }
+                            else aggre_funcs.add(aggre_func_in.getString(i));
                         }
                     } catch (JSONException e) {
                         throw new ServiceException(
@@ -516,7 +524,7 @@ public class AnalysisParser {
             method.setX_upper(bbox.optString("right"));
             method.setY_upper(bbox.optString("top"));
 
-            method.setDistance(params.optString("distance"));
+            method.setDistance(params.optString(JSON_KEY_DISTANCE));
             method.setGeojson(geojson);
 
         } catch (JSONException e) {
@@ -562,6 +570,16 @@ public class AnalysisParser {
 
             method.setGeom(lc.getGMLGeometryProperty());
             method.setGeojson(geojson);
+            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+
+            Object no_data = params.opt(JSON_KEY_NO_DATA);
+            if(no_data != null){
+                try {
+                    method.setNoDataValue(no_data.toString());
+                }
+                catch (Exception e){
+                }
+            }
 
             JSONObject bbox = null;
 
@@ -729,13 +747,23 @@ public class AnalysisParser {
                     JSONObject result = results.optJSONObject(i);
                     if (result != null) {
                         String fieldName = result.optString("field");
+
                         if (fieldName != null) {
                             if (analysisLayer.getInputAnalysisId() != null) {
                                 fieldName = analysisDataService
                                         .SwitchField2OriginalField(fieldName,
                                                 analysisLayer.getInputAnalysisId());
                             }
-                            aggreResult.put(fieldName, result.optJSONObject("AggregationResults"));
+                            JSONObject aggreresult = result.optJSONObject("AggregationResults");
+                            // If NoDataCount, append it to result
+                            String noDataCount = result.optString("fieldNoDataCount", null);
+
+                            if (noDataCount != null) {
+                                aggreresult.put(FUNC_NODATACOUNT, this.getNoDataCount(noDataCount));
+
+                            }
+
+                            aggreResult.put(fieldName, aggreresult);
                         }
                     }
                 }
@@ -749,6 +777,8 @@ public class AnalysisParser {
                                     .SwitchField2OriginalField(fieldName,
                                             analysisLayer.getInputAnalysisId());
                         }
+                        // Special localisation for Aggregate result
+                        //JSONObject locale_result = localeResult(result.optJSONObject("AggregationResults"), analysisLayer);
                         aggreResult.put(fieldName, result.optJSONObject("AggregationResults"));
                     }
                 }
@@ -1257,4 +1287,17 @@ public class AnalysisParser {
         return splitted[0];
     }
 
+    /**
+     * Get Count value
+     * @param noDataCount  ({"AggregationResults":{"Count":10}})
+     * @return  Count value
+     */
+    private int getNoDataCount(final String noDataCount) {
+
+        JSONObject countresu = JSONHelper.createJSONObject(noDataCount);
+        if(countresu == null) return 0;
+        JSONObject result = countresu.optJSONObject("AggregationResults");
+        if(result != null) return  result.optInt("Count",0);
+        return 0;
+    }
 }
