@@ -24,7 +24,9 @@ public class StateHandlerHandler extends BundleHandler {
         if (config == null) {
             return false;
         }
-        JSONHelper.putValue(config, SESSION_LENGTH, sessionLengthInMinutes);
+        if (!params.getUser().isGuest()) {
+            JSONHelper.putValue(config, SESSION_LENGTH, sessionLengthInMinutes);
+        }
         return false;
     }
 }
