@@ -6,15 +6,14 @@
         "postgres-add-users",
         "postgres-add-JAAS"
     ],
-    
     "views" : [
-        "asdi-view.json"
+        "asdi-view.json",
+        "asdi-publisher-template-view.json"
     ],
     "sql" : [
         "populate-Inspire-themes.sql",
+        "populate-asdi-group.sql",
         "asdi-basemap-wmslayer.sql",
         "asdi-poc-wmslayer.sql"
-        
-         
     ]
 }

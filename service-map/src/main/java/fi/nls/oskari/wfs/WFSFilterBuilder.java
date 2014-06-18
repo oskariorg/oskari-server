@@ -77,9 +77,14 @@ public class WFSFilterBuilder {
         if (!filter_js.has(KEY_FILTERS) && !filter_js.has(KEY_FEATUREIDS)) {
             return null;
         }
+
         JSONArray jsArray = new JSONArray();
 
         try {
+            if (!filter_js.has(KEY_FILTERS) && filter_js.has(KEY_FEATUREIDS)) {
+                if(filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) return null;
+            }
+
             if (filter_js.has(KEY_FILTERS)) {
                 // Get feature ID filter input
                 jsArray = filter_js.getJSONArray(KEY_FILTERS);

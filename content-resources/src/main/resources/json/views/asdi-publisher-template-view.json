@@ -1,17 +1,15 @@
 {
-    "name": "ASDI view",
-    "type": "DEFAULT",
-    "default": true,
-    "public": true,
+    "name" : "Publisher template",
+    "type" : "PUBLISH",
+    "default" : false,
+    "public" : false,
     "oskari": {
-        "application": "asdi_guest",
-        "page": "asdi_guest",
+        "application": "asdi_published",
+        "page": "published",
         "development_prefix": "/applications/asdi"
     },
-    "bundles": [
-        {
-            "id": "openlayers-default-theme"
-        },
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
         {
             "id" : "mapfull",
             "startup" : {
@@ -85,40 +83,37 @@
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
-                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
-                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar",
-                        "config": {
-                            "location": {
-                                "left": "45px",
-                                "top": "110px"
-                            },
-                            "toolStyle": {
-                                "widthMinus": "22px",
-                                "val": "rounded-light",
-                                "heightMinus": "39px",
-                                "heightCenter": 12,
-                                "heightPlus": "38px",
-                                "widthPlus": "22px",
-                                "widthCursor": "17px",
-                                "widthCenter": "22px",
-                                "heightCursor": "18px"
-                            }
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
+                        "config" : {
+                        	"deferSetLocation": true,
+                            "backoffIncrement": 1000,
+                            "contextPath": "/transport",
+                            "disconnectTime": 30000,
+                            "lazy": true,
+                            "maxBackoff": 60000,
+                            "maxNetworkDelay": 10000,
+                            "port": ""
                         }
                     },
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
                     {
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons",
-                        "config": {
-                            "location": {
-                                "bottom": "auto",
-                                "left": "10px",
-                                "top": "10px"
-                            },
-                            "toolStyle": "rounded-light"
-                        }
+                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+                    	"config":{
+                    		"termsUrl":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		},
+                    		"mapUrlPrefix":{
+                    			"fi":"?",
+                    			"sv":"?",
+                    			"en":"?"
+                    		}
+                    	}
                     }
+                ],
+                "layers": [
                 ],
                 "mapOptions": {
                     "allOverlays": true,
@@ -142,8 +137,7 @@
                     "EPSG:3575": "+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                     "EPSG:3576": "+proj=laea +lat_0=90 +lon_0=90 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                     "EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"
-                },
-                "layers": []
+                }
             },
             "state": {
                 "east": "443457.67154688",
@@ -157,53 +151,7 @@
                 "zoom": 4
             }
         },
-        {
-            "id": "divmanazer"
-        },
-        {
-            "id": "toolbar",
-            "config": {
-                "viewtools": {
-                    "print": false,
-                    "link": false
-                }
-            }
-        },
-        {
-            "id": "infobox"
-        },
-        {
-            "id": "statehandler"
-        }, 
-        {
-            "id": "search"
-        },
-        {
-            "id": "layerselector2"
-        },
-        {
-            "id": "layerselection2"
-        },
-        {
-            "id": "coordinatedisplay"
-        },
-        {
-            "id": "metadataflyout"
-        },
-        {
-            "id": "metadatacatalogue"
-        },     
-        { "id" : "publisher" ,
-            "config" : {
-                "publishedMapUrl": {
-                    "en": "[replace with current url]/?viewId=",
-                    "fi": "[replace with current url]/?viewId=",
-                    "sv": "[replace with current url]/?viewId="
-                }
-            }
-        },
-        {
-            "id": "postprocessor"
-        }
+        { "id" : "infobox" },
+        { "id" : "toolbar" }
     ]
 }

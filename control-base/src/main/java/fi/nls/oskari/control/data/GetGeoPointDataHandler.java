@@ -40,6 +40,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
     private static final String PARAM_STYLES = "styles";
     private static final String PARAM_ZOOM = "zoom";
     private static final String PARAM_GEOJSON = "geojson";
+    private static final String PARAM_SRSNAME = "srs";
 
 	@Override
     public void handleAction(final ActionParameters params) throws ActionException {
@@ -96,6 +97,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 			    gfiParams.setX(params.getHttpParam(PARAM_X));
 			    gfiParams.setY(params.getHttpParam(PARAM_Y));
 			    gfiParams.setZoom(zoom);
+                gfiParams.setSRSName(params.getHttpParam(PARAM_SRSNAME, "EPSG:3067"));
 			    
 			    final JSONObject response = geoPointService.getWMSFeatureInfo(gfiParams);
                 if(response != null) {

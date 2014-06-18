@@ -1,13 +1,10 @@
 
--- Layer Group;
-INSERT INTO oskari_layergroup (id,locale) values (893,'{ fi:{name:"ASDI"},sv:{name:"ASDI"},en:{name:"ASDI"}}');
-
 -- Map Layers;
-INSERT INTO oskari_maplayer(id, type, name, groupId,
+INSERT INTO oskari_maplayer(type, name, groupId,
                             url,
                             options,
                             locale)
-  VALUES(893,'wmslayer', 'asdi:asdi', 893,
+  VALUES('wmslayer', 'asdi:asdi', (select id from oskari_layergroup where locale like '%ASDI%' union select max(id) from oskari_layergroup limit 1),
          'http://karttatiili.fi/dataset/asdi/service/wms',
          '{"singleTile":true}',
          '{ fi:{name:"Arctic SDI Finland",subtitle:""},sv:{name:"Arctic SDI Finland",subtitle:""},en:{name:"Arctic SDI Finland",subtitle:""}}');
@@ -15,7 +12,7 @@ INSERT INTO oskari_maplayer(id, type, name, groupId,
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
                                    themeid)
-  VALUES(893,
+  VALUES((SELECT MAX(id) FROM oskari_maplayer),
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Others%'));
 
 -- add layer as resource for mapping permissions;
