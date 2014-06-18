@@ -78,6 +78,7 @@ public class AnalysisParser {
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
     private static final String LAYER_UNION = "layer_union";
+    private static final String ZONESECTOR = "areas_and_sectors";
     private static final String FUNC_NODATACOUNT = "NoDataCnt";
 
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
@@ -91,6 +92,9 @@ public class AnalysisParser {
     private static final String JSON_KEY_NAME = "name";
     private static final String JSON_KEY_OPERATOR = "operator";
     private static final String JSON_KEY_DISTANCE = "distance";
+    private static final String JSON_KEY_AREADISTANCE = "areaDistance";
+    private static final String JSON_KEY_AREACOUNT = "areaCount";
+    private static final String JSON_KEY_SECTORCOUNT = "sectorCount";
     private static final String JSON_KEY_NO_DATA = "no_data";
 
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
@@ -284,7 +288,7 @@ public class AnalysisParser {
         }
         //------------------ BUFFER -----------------------
         else if (BUFFER.equals(analysisMethod)) {
-            // when analysisMethod == vec:BufferFeatureCollection
+            // when WPS method is vec:BufferFeatureCollection
 
             // Set params for WPS execute
 
@@ -304,8 +308,32 @@ public class AnalysisParser {
                             .parseProperties(analysisLayer.getFields(), lc
                                     .getFeatureNamespace(), lc
                                     .getGMLGeometryProperty()));
-            //------------------ INTERSECT -----------------------
-        } else if (INTERSECT.equals(analysisMethod)) {
+        }
+        //------------------ ZONESECTOR ------------------------------------------
+        else if (ZONESECTOR.equals(analysisMethod)) {
+            // when WPS method is gs:ZoneSectorFeatureCollection
+
+            // Set params for WPS execute
+
+            ZoneSectorMethodParams method = this.parseZoneSectorParams(lc, json, geojson,
+                    baseUrl);
+
+            method.setWps_reference_type(analysisLayer.getInputType());
+            analysisLayer.setAnalysisMethodParams(method);
+
+            // WFS filter
+            analysisLayer.getAnalysisMethodParams().setFilter(
+                    this.parseFilter(lc, filter1, analysisLayer
+                            .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
+            // WFS Query properties
+            analysisLayer.getAnalysisMethodParams().setProperties(
+                    this
+                            .parseProperties(analysisLayer.getFields(), lc
+                                    .getFeatureNamespace(), lc
+                                    .getGMLGeometryProperty()));
+        }
+        //------------------ INTERSECT -----------------------
+        else if (INTERSECT.equals(analysisMethod)) {
             JSONObject params;
             try {
                 params = json.getJSONObject(JSON_KEY_METHODPARAMS);
@@ -313,7 +341,7 @@ public class AnalysisParser {
                 throw new ServiceException("Method parameters missing.");
             }
 
-            final String geojson2 = prepareGeoJsonFeatures(params, json.optString(JSON_KEY_NAME,"feature"));
+            final String geojson2 = prepareGeoJsonFeatures(params, json.optString(JSON_KEY_NAME, "feature"));
 
             WFSLayerConfiguration lc2 = null;
             int id2 = 0;
@@ -326,20 +354,16 @@ public class AnalysisParser {
                     // eg. analyse_216_340
                     id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
 
-                }else if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+                } else if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                     // Myplaces is input
                     id2 = ConversionHelper.getInt(myplacesBaseLayerId, 0);
-                }
-                else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
-                // user data layer is input
+                } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+                    // user data layer is input
                     id2 = ConversionHelper.getInt(userlayerBaseLayerId, 0);
-                }
-                else if (geojson2 != null && !geojson2.isEmpty() ) {
-                        // GeoJson is input - use analysis base layer metadata
+                } else if (geojson2 != null && !geojson2.isEmpty()) {
+                    // GeoJson is input - use analysis base layer metadata
                     id2 = ConversionHelper.getInt(analysisBaseLayerId, 0);
-                }
-
-                else {
+                } else {
                     // Wfs layer id
                     id2 = ConversionHelper.getInt(sid, -1);
                 }
@@ -380,12 +404,10 @@ public class AnalysisParser {
             if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
                 method.setFilter2(this.parseFilter(lc2, filter2, null, this
                         .getAnalysisInputId(params), null));
-            }
-            else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+            } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setFilter2(this.parseFilter(lc2, filter2, null, null, this
                         .getAnalysisInputId(params)));
-            }
-            else {
+            } else {
                 method.setFilter2(this.parseFilter(lc2, filter2, this
                         .getAnalysisInputId(params), null, null));
             }
@@ -525,6 +547,58 @@ public class AnalysisParser {
             method.setY_upper(bbox.optString("top"));
 
             method.setDistance(params.optString(JSON_KEY_DISTANCE));
+            method.setGeojson(geojson);
+
+        } catch (JSONException e) {
+            throw new ServiceException("Method parameters missing.");
+        }
+
+        return method;
+    }
+    /**
+     * Parses ZONESECTOR method parameters for WPS execute xml variables
+     *
+     * @param lc
+     *            WFS layer configuration
+     * @param json
+     *            Method parameters and layer info from the front
+     * @param baseUrl
+     *            Url for Geoserver WPS reference input (input
+     *            FeatureCollection)
+     * @return ZoneSectorMethodParams parameters for WPS execution
+     ************************************************************************/
+    private ZoneSectorMethodParams parseZoneSectorParams(WFSLayerConfiguration lc,
+                                                 JSONObject json, String geojson, String baseUrl) throws ServiceException {
+        final ZoneSectorMethodParams method = new ZoneSectorMethodParams();
+        method.setMethod(ZONESECTOR);
+        //
+        try {
+            method.setLayer_id(ConversionHelper.getInt(lc.getLayerId(), 0));
+            method.setServiceUrl(lc.getURL());
+            baseUrl = baseUrl.replace("&", "&amp;");
+            method.setHref(baseUrl + String.valueOf(lc.getLayerId()));
+            method.setTypeName(lc.getFeatureNamespace() + ":"
+                    + lc.getFeatureElement());
+            method.setMaxFeatures(String.valueOf(lc.getMaxFeatures()));
+            method.setSrsName(lc.getSRSName());
+            method.setOutputFormat(DEFAULT_OUTPUT_FORMAT);
+            method.setVersion(lc.getWFSVersion());
+            method.setXmlns("xmlns:" + lc.getFeatureNamespace() + "=\""
+                    + lc.getFeatureNamespaceURI() + "\"");
+
+            method.setGeom(lc.getGMLGeometryProperty());
+
+            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+            final JSONObject bbox = json.getJSONObject("bbox");
+            method.setX_lower(bbox.optString("left"));
+            method.setY_lower(bbox.optString("bottom"));
+            method.setX_upper(bbox.optString("right"));
+            method.setY_upper(bbox.optString("top"));
+
+            method.setDistance(params.optString(JSON_KEY_AREADISTANCE));
+            method.setZone_count(params.optString(JSON_KEY_AREACOUNT));
+            method.setSector_count(params.optString(JSON_KEY_SECTORCOUNT));
+
             method.setGeojson(geojson);
 
         } catch (JSONException e) {
