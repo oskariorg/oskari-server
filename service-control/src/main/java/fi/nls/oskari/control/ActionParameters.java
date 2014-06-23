@@ -99,6 +99,23 @@ public class ActionParameters {
     /**
      * Returns a cleaned up (think XSS) value for the requested parameter
      * @param key parameter name
+     * @return cleaned up value for the parameter as int
+     * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as int
+     */
+    public int getRequiredParamInt(final String key) throws ActionParamsException {
+        final String errMsg = "Required parameter '" + key + "' missing!";
+        final String val = getRequiredParam(key, errMsg);
+
+        try {
+            return Integer.parseInt(val);
+        } catch (Exception e) {
+            throw new ActionParamsException(errMsg);
+        }
+    }
+
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
      * @return cleaned up value for the parameter
      * @throws ActionParamsException if parameter is not found or is empty
      */
