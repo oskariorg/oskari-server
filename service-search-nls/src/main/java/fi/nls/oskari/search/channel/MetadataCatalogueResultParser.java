@@ -5,6 +5,7 @@ import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.XmlHelper;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axiom.om.OMAttribute; 
@@ -97,6 +98,7 @@ setResourceNameSpace(serverURL)
         }
     }
 
+    
     public SearchResultItem parseResult(final OMElement elem, final String locale) throws Exception {
         //final String locale = "fi";
         final Map<String, String> locales = getLocaleMap(elem);
@@ -121,22 +123,23 @@ setResourceNameSpace(serverURL)
         item.setGmdURL(getLocalizedContent(distInfoNode, pathToLocalizedValue));
         final OMElement uuidNode = (OMElement) XPATH_FILEID.selectSingleNode(elem);
         
-        // getting attribute uuid from operatesOn for later usage
-        final OMElement operatesOnNode = (OMElement) XPATH_IDENTIFICATION_UUID.selectSingleNode(idNode);
+        final List<OMElement> operatesOnNodes = XPATH_IDENTIFICATION_UUID.selectNodes(idNode);
         
-        if(operatesOnNode != null){
-            if(operatesOnNode.getAllAttributes() == null)
-            	log.debug("attributes == null");
+        
+        for(OMElement operatesOnNode  : operatesOnNodes){
+            if(operatesOnNode != null){
+                if(operatesOnNode.getAllAttributes() == null)
+                	log.debug("attributes == null");
 
-            Iterator i = operatesOnNode.getAllAttributes();
-            if(i.hasNext()){
-            	OMAttribute ao = (OMAttribute)i.next();
-            	log.debug("AO value: " + ao.getAttributeValue());
-            	item.addUuId(ao.getAttributeValue());
-            	
+                Iterator<OMAttribute> i = operatesOnNode.getAllAttributes();
+                if(i.hasNext()){
+                	OMAttribute ao = (OMAttribute)i.next();
+                	log.debug("AO value: " + ao.getAttributeValue());
+                	item.addUuId(ao.getAttributeValue());
+                	
+                }
             }
         }
-     
         
         item.setContentURL(getLocalizedContent(imageNode, pathToLocalizedValue));
         log.debug("getLocalizedContent :" + getLocalizedContent(imageNode, pathToLocalizedValue));
@@ -144,8 +147,7 @@ setResourceNameSpace(serverURL)
         item.setResourceId(getLocalizedContent(uuidNode, pathToLocalizedValue));
 
         return item;
-    }
-
+    }    
 
     /**
      * Parses bbox element for coordinate tags if available:
