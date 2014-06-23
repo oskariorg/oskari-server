@@ -239,10 +239,10 @@ UPDATE portti_view_bundle_seq set config = '{
 
 -- update proper state for view
 UPDATE portti_view_bundle_seq set state = '{
-    "east": "517620",
-    "north": "6874042",
+    "east": "520000",
+    "north": "7250000",
     "selectedLayers": [{"id": "base_35"}],
-    "zoom": 1
+    "zoom": 0
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
