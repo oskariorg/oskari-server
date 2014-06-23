@@ -94,7 +94,6 @@ public class IOHelper {
          * there's no more data to read. We use the StringWriter class to
          * produce the string.
          */
-    	log.debug("Käydään hakemssa tauhka palvelimelta");
     	
         if (is == null) {
             return "";
