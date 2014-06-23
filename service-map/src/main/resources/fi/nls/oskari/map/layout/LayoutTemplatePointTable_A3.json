@@ -1,9 +1,9 @@
 {"printout": {
      	"styles": {     		
    			"table1style": {
-                "width" : "15cm",
+                "width" : "27cm",
                 "height": "5cm",
-                "bottom": "19.5cm",
+                "bottom": "33.5cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -21,9 +21,9 @@
                 }
             },
             "table2style": {
-                "width" : "15cm",
+                "width" : "27cm",
                 "height": "3cm",
-                "bottom": "24cm",
+                "bottom": "38.5cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -47,7 +47,7 @@
                 }
             },
             "table3style": {
-                "width" : "15cm",
+                "width" : "27cm",
                 "height": "1cm",
                 "bottom": "0cm",
                 "left": "7cm",

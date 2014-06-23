@@ -1,10 +1,10 @@
 {"printout": {
      	"styles": {     		
    			"table1style": {
-                "width" : "15cm",
-                "height": "5cm",
-                "bottom": "19.5cm",
-                "left": "1cm",
+                "width" : "7.5cm",
+                "height": "29cm",
+                "bottom": "30.5cm",
+                "left": "33.5cm",
                 "styles" : {
                     "col1": {
                         "width": "1cm",
@@ -21,10 +21,10 @@
                 }
             },
             "table2style": {
-                "width" : "15cm",
+                "width" : "7.5cm",
                 "height": "3cm",
-                "bottom": "24cm",
-                "left": "1cm",
+                "bottom": "25.5cm",
+                "left": "33.5cm",
                 "styles" : {
                     "col1": {
                         "width": "1cm",
@@ -47,7 +47,7 @@
                 }
             },
             "table3style": {
-                "width" : "15cm",
+                "width" : "32cm",
                 "height": "1cm",
                 "bottom": "0cm",
                 "left": "7cm",

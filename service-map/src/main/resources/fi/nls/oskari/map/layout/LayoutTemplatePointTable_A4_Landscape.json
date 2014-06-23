@@ -1,10 +1,10 @@
 {"printout": {
      	"styles": {     		
    			"table1style": {
-                "width" : "15cm",
-                "height": "5cm",
-                "bottom": "19.5cm",
-                "left": "1cm",
+                "width" : "8.2cm",
+                "height": "16cm",
+                "bottom": "1.5cm",
+                "left": "20.5cm",
                 "styles" : {
                     "col1": {
                         "width": "1cm",
@@ -21,10 +21,10 @@
                 }
             },
             "table2style": {
-                "width" : "15cm",
+                "width" : "8.2cm",
                 "height": "3cm",
-                "bottom": "24cm",
-                "left": "1cm",
+                "bottom": "17.5cm",
+                "left": "20.5cm",
                 "styles" : {
                     "col1": {
                         "width": "1cm",
