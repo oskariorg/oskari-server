@@ -19,7 +19,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
 
 /**
- * CRUD for Inspire themes.
+ * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
  */
 @OskariActionRoute("InspireThemes")
 public class InspireThemesHandler extends RestActionHandler {
