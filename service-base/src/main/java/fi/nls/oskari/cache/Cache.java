@@ -63,6 +63,12 @@ public class Cache<T> {
         return value;
     }
 
+    public T remove(final String name) {
+        flush(false);
+        T value = items.remove(name);
+        return value;
+    }
+
     public boolean put(final String name, final T item) {
         flush(false);
         boolean overflowing = false;
