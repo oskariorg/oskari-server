@@ -63,7 +63,7 @@
         where id = ?
     </update>
     
-    <delete id="delete" parameterClass="long">
+    <delete id="delete" parameterClass="int">
         delete from portti_inspiretheme where id = #id#
     </delete>
 
