@@ -11,7 +11,7 @@ Added jetty9-ldap-jaas profile to address jetty version related differences.
 
 ### service-base
 
-Added remove(name) method to Cache
+Added remove(name), getSize(), getKeys() methods to fi.nls.oskari.cache.Cache
 
 ## 1.22
 

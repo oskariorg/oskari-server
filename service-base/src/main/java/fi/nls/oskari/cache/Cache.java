@@ -3,6 +3,7 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -40,6 +41,22 @@ public class Cache<T> {
 
     public long getExpiration() {
         return expiration;
+    }
+
+    /**
+     * Returns number of cached items
+     * @return
+     */
+    public long getSize() {
+        return items.size();
+    }
+
+    /**
+     * Returns keys for cached items
+     * @return
+     */
+    public Set<String> getKeys() {
+        return items.keySet();
     }
 
     /**
@@ -87,7 +104,7 @@ public class Cache<T> {
         final long now = System.currentTimeMillis();
         if(force || (lastFlush + expiration < now)) {
             // flushCache
-            log.debug("Flushing cache! Forced: ", force);
+            log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
             lastFlush = now;
             return true;
