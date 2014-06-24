@@ -9,6 +9,10 @@ Therefore these files need to be manually modified to match the system configura
 Added jetty9-jaas profile to address jetty version related differences.
 Added jetty9-ldap-jaas profile to address jetty version related differences.
 
+### service-base
+
+Added remove(name) method to Cache
+
 ## 1.22
 
 ### servlet-map/OskariRequestFilter
