@@ -9,20 +9,7 @@ import java.util.Map;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.FeatureLayer;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Fill;
-import org.geotools.styling.Font;
-import org.geotools.styling.Graphic;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.Mark;
-import org.geotools.styling.PointPlacement;
-import org.geotools.styling.Rule;
-import org.geotools.styling.Stroke;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.Symbolizer;
-import org.geotools.styling.TextSymbolizer;
+import org.geotools.styling.*;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryType;
@@ -486,6 +473,9 @@ public class DirectFeatureLayer extends FeatureLayer {
 			TextSymbolizer symbolizer = sb.createTextSymbolizer(
 					sb.createFill(fontColor), fonts, null, labelFunc,
 					pointPlacement, null);
+            // polygon labels are always display
+            symbolizer.getOptions().put(symbolizer.GOODNESS_OF_FIT_KEY, "0.00");
+
 			symbolizer
 					.setGeometry(createGeometryAccessor(styleMapDefaultStyle));
 
