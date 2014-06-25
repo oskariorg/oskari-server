@@ -13,6 +13,11 @@ Added jetty9-ldap-jaas profile to address jetty version related differences.
 
 Added remove(name), getSize(), getKeys() methods to fi.nls.oskari.cache.Cache
 
+### service-control / RestActionHandler
+
+The basehandler for Rest-type requests now checks for header 'X-HTTP-Method-Override' in request and prefers it over request method when determining
+which method to forward execution to.
+
 ## 1.22
 
 ### servlet-map/OskariRequestFilter
