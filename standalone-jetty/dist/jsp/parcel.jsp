@@ -150,8 +150,7 @@
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}&';
     var viewId = '${viewId}';
-    <%-- NOTE!!! HARDCODED LANGUAGE SINCE PARCEL BUNBLES ONLY HAS FINNISH LOCALIZATION --%>
-    var language = 'fi';
+    var language = '${language}';
     var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
@@ -184,7 +183,7 @@
             src="/Oskari${path}/oskari_lang_all.js">
     </script>
     <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_${themeDisplay.locale.language}.js">
+            src="/Oskari${path}/oskari_lang_${language}.js">
     </script>
 </c:if>
 
