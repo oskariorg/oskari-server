@@ -2,7 +2,7 @@
      	"styles": {     		
    			"table1style": {
                 "width" : "8.2cm",
-                "height": "14.5cm",
+                "height": "13.5cm",
                 "bottom": "1.5cm",
                 "left": "20.5cm",
                 "styles" : {
@@ -23,7 +23,7 @@
             "table2style": {
                 "width" : "8.2cm",
                 "height": "3cm",
-                "bottom": "15.5cm",
+                "bottom": "14.5cm",
                 "left": "20.5cm",
                 "styles" : {
                     "col1": {
