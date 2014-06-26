@@ -10,10 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * Ignored since this hangs on sonar-machine and don't have time to fix it.
- */
-@Ignore
 public class CachingSchemaLocatorTest {
 	private static CachingSchemaLocator locator;
 	

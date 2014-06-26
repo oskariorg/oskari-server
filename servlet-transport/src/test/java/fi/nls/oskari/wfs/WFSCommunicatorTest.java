@@ -49,6 +49,7 @@ public class WFSCommunicatorTest {
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
         XMLUnit.setIgnoreAttributeOrder(true);
 
+        assumeTrue(TestHelper.redisAvailable());
 		JedisManager.connect(10, "localhost", 6379);
 
         Properties properties = new Properties();
@@ -87,6 +88,7 @@ public class WFSCommunicatorTest {
 	public void testBounds() throws Exception {
         // check that we have http connectivity (correct proxy settings etc)
         assumeTrue(TestHelper.canDoHttp());
+        assumeTrue(TestHelper.redisAvailable());
 
 		String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
         Diff xmlDiff = new Diff(boundsResult, payload);
