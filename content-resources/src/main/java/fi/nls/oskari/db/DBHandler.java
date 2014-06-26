@@ -86,7 +86,7 @@ public class DBHandler {
         } catch (Exception e) {
         }
 
-        final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
+        final String url = PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb");
         try {
             final Properties connectionProps = new Properties();
             final String user = PropertyUtil.getOptional("db.username");
@@ -250,7 +250,7 @@ public class DBHandler {
             PreparedStatement preparedStatement = conn.prepareStatement(insertViewSQL);
             preparedStatement.setString(1, view.getString("name"));
             preparedStatement.setString(2, view.getString("type"));
-            preparedStatement.setBoolean(3, view.getBoolean("default"));
+            preparedStatement.setBoolean(3, view.optBoolean("default"));
             preparedStatement.setLong(4, supplementId);
             final JSONObject oskari = JSONHelper.getJSONObject(view, "oskari");
             preparedStatement.setString(5, oskari.getString("application"));
