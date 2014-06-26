@@ -2,6 +2,7 @@ package fi.nls.oskari.cache;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Generic cache factory for Oskari.
@@ -45,6 +46,14 @@ public class CacheManager {
         cache.setName(name);
         cacheStore.put(name, cache);
         return cache;
+    }
+
+    /**
+     * Returns names of registered caches
+     * @return
+     */
+    public Set<String> getCacheNames() {
+        return cacheStore.keySet();
     }
 
     /**

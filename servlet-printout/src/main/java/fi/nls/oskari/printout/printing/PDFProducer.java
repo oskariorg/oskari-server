@@ -207,20 +207,23 @@ public class PDFProducer {
 			PDPage page = null;
 			if (useTemplate) {
 				/* let's assume we have a template page for each page */
-				return (PDPage) doc.getDocumentCatalog().getAllPages()
+				page =  (PDPage) doc.getDocumentCatalog().getAllPages()
 						.get(pageCounter.nextPage());
+
+
 			} else {
 				page = new PDPage();
 				page.setMediaBox(rect);
 				page.setTrimBox(rect);
 				page.setBleedBox(rect);
-				if (degrees != -1) {
-					page.setRotation(degrees);
-				}
+
 				doc.addPage(page);
 				pageCounter.nextPage();
 
 			}
+            if (degrees != -1) {
+                page.setRotation(degrees);
+            }
 			return page;
 
 		}

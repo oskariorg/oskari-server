@@ -3,7 +3,7 @@
    			"table1style": {
                 "width" : "27cm",
                 "height": "5cm",
-                "bottom": "33.5cm",
+                "bottom": "28.5cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -23,7 +23,7 @@
             "table2style": {
                 "width" : "27cm",
                 "height": "3cm",
-                "bottom": "38.5cm",
+                "bottom": "33.5cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -50,7 +50,7 @@
                 "width" : "27cm",
                 "height": "1cm",
                 "bottom": "0cm",
-                "left": "7cm",
+                "left": "15cm",
                 "styles" : {
                     "col1": {
                         "width": "5cm",

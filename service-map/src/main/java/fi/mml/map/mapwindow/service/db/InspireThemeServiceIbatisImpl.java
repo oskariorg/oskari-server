@@ -1,6 +1,8 @@
 package fi.mml.map.mapwindow.service.db;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -18,11 +20,10 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
 
     private Logger log = LogFactory.getLogger(InspireThemeServiceIbatisImpl.class);
 
-    // FIXME: use some caching lib for this, and clear cache on update/delete etc
     // key is theme id
-    final private static Map<Integer, InspireTheme> ID_CACHE = new HashMap<Integer, InspireTheme>();
+    final private static Cache<InspireTheme> ID_CACHE = CacheManager.getCache("InspireTheme");
     // key is layer id
-    final private static Map<Integer, List<Integer>> LINK_CACHE = new HashMap<Integer, List<Integer>>();
+    final private static Cache<List<Integer>> LINK_CACHE = CacheManager.getCache("InspireThemeLinks");
 
 	@Override
 	protected String getNameSpace() {
@@ -30,7 +31,8 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
 	}
 
     public List<InspireTheme> findByMaplayerId(final int layerId) {
-        final List<Integer> links = LINK_CACHE.get(layerId);
+
+        final List<Integer> links = LINK_CACHE.get("" + layerId);
         if(links == null) {
             // FIXME: very crude way to populate cache
             findLayerMappings();
@@ -39,15 +41,26 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         }
         final List<InspireTheme> list = new ArrayList<InspireTheme>();
         for(Integer id : links) {
-            list.add(ID_CACHE.get(id));
+            list.add(find(id));
         }
         return list;
     }
 
+    @Override
+    public InspireTheme find(int id) {
+        InspireTheme theme = ID_CACHE.get("" + id);
+        if(theme == null) {
+            theme = super.find(id);
+            ID_CACHE.put("" + theme.getId(), theme);
+        }
+        return theme;
+    }
+
     public List<InspireTheme> findAll() {
         final List<InspireTheme> groups = super.findAll();
+        ID_CACHE.flush(true);
         for(InspireTheme group : groups) {
-            ID_CACHE.put(group.getId(), group);
+            ID_CACHE.put("" + group.getId(), group);
         }
         return groups;
     }
@@ -55,7 +68,7 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     private void findLayerMappings() {
         // setup link cache
         final List<Map<String,Object>> mappings = queryForListMap(getNameSpace() + ".findByMaplayerMappings");
-        LINK_CACHE.clear();
+        LINK_CACHE.flush(true);
         for(Map<String,Object> result : mappings) {
             if(result.get("themeid") == null) {
                 // this will make the keys case insensitive (needed for hsqldb compatibility...)
@@ -72,13 +85,23 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     public void delete(int id) {
         super.delete(id);
         // update caches
-        ID_CACHE.remove(id);
+        ID_CACHE.remove("" + id);
         findLayerMappings();
     }
 
+    public List<Integer> findMaplayersByTheme(int id) {
+        return queryForList(getNameSpace() + ".findMaplayersByTheme", id);
+    }
+
     public void update(final InspireTheme theme) {
-        ID_CACHE.put(theme.getId(), theme);
+        ID_CACHE.put("" + theme.getId(), theme);
         super.update(theme);
+    }
+    public int insert(final InspireTheme theme) {
+        final int id = super.insert(theme);
+        theme.setId(id);
+        ID_CACHE.put("" + theme.getId(), theme);
+        return id;
     }
 
     public synchronized void updateLayerThemes(final long maplayerId, final Collection<InspireTheme> themes) {
@@ -99,7 +122,7 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
             log.debug("Inserting");
             for(InspireTheme theme : themes) {
                 params.put("themeId", theme.getId());
-                client.insert(getNameSpace() + ".linThemeToLayer", params);
+                client.insert(getNameSpace() + ".linkThemeToLayer", params);
                 themeLayers.add(theme.getId());
             }
             log.debug("Linked");
@@ -126,10 +149,10 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     }
 
     private List<Integer> getLinkCache(int maplayerid) {
-        List<Integer> themeLayers = LINK_CACHE.get(maplayerid);
+        List<Integer> themeLayers = LINK_CACHE.get("" + maplayerid);
         if(themeLayers == null) {
             themeLayers = new ArrayList<Integer>();
-            LINK_CACHE.put(maplayerid, themeLayers);
+            LINK_CACHE.put("" + maplayerid, themeLayers);
         }
         return themeLayers;
     }

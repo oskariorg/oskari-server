@@ -3,6 +3,7 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -43,6 +44,22 @@ public class Cache<T> {
     }
 
     /**
+     * Returns number of cached items
+     * @return
+     */
+    public long getSize() {
+        return items.size();
+    }
+
+    /**
+     * Returns keys for cached items
+     * @return
+     */
+    public Set<String> getKeys() {
+        return items.keySet();
+    }
+
+    /**
      * Time to hold items in cache. Defaults to 30 minutes.
      * @param expiration in milliseconds
      */
@@ -60,6 +77,12 @@ public class Cache<T> {
         if(value == null) {
             log.debug("Cache", getName(), "miss for name", name);
         }
+        return value;
+    }
+
+    public T remove(final String name) {
+        flush(false);
+        T value = items.remove(name);
         return value;
     }
 
@@ -81,7 +104,7 @@ public class Cache<T> {
         final long now = System.currentTimeMillis();
         if(force || (lastFlush + expiration < now)) {
             // flushCache
-            log.debug("Flushing cache! Forced: ", force);
+            log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
             lastFlush = now;
             return true;
