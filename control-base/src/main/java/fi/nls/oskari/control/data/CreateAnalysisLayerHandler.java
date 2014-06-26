@@ -324,6 +324,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private String requestFeatureSets(AnalysisLayer analysisLayer) throws ServiceException {
 
         String featureSet = null;
+        Boolean doRequest = true;
         if (analysisLayer.getMethod().equals(AGGREGATE)) {
             StringBuilder sb = new StringBuilder();
             // Loop aggregate attribute fields
@@ -336,19 +337,24 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 if (analysisLayer.getFieldtypeMap().containsKey(field)) {
                     if (analysisLayer.getFieldtypeMap().get(field).equals("numeric")) {
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_funcs);
+                        if (aggre_funcs.size() == 0) doRequest = false;
                     } else {
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
+                        doRequest = true;
                     }
                 }
                 sb.append("<fieldResult>");
                 sb.append("<field>" + field + "</field>");
-                sb.append(wpsService.requestFeatureSet(analysisLayer));
-                if(analysisLayer.isNodataCount()){
+                if (doRequest) sb.append(wpsService.requestFeatureSet(analysisLayer));
+                if (analysisLayer.isNodataCount()) {
                     // Special aggregate process for NoDataCount - use count method with specific filter
                     ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
                     ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setDoNoDataCount(true);
                     sb.append("<fieldNoDataCount>");
-                    sb.append(wpsService.requestFeatureSet(analysisLayer));
+                    String nodataresponse = wpsService.requestFeatureSet(analysisLayer);
+                    // Wps wps input features fails, if no nodata feature fields (exception) --> skip
+                    // Could be another wps exception as well
+                    if (nodataresponse.indexOf("ows:Exception") == -1) sb.append(nodataresponse);
                     sb.append("</fieldNoDataCount>");
                     ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setDoNoDataCount(false);
                 }

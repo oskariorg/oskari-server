@@ -833,11 +833,11 @@ public class AnalysisParser {
                             String noDataCount = result.optString("fieldNoDataCount", null);
 
                             if (noDataCount != null) {
+                                if(aggreresult == null) aggreresult = new JSONObject();
                                 aggreresult.put(FUNC_NODATACOUNT, this.getNoDataCount(noDataCount));
-
                             }
 
-                            aggreResult.put(fieldName, aggreresult);
+                            if(aggreresult != null) aggreResult.put(fieldName, aggreresult);
                         }
                     }
                 }
