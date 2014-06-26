@@ -43,6 +43,10 @@
     <select id="findByMaplayerMappings" resultClass="java.util.HashMap">
         select themeid, maplayerid from oskari_maplayer_themes
     </select>
+
+    <select id="findMaplayersByTheme" resultClass="int" parameterClass="int">
+        select maplayerid from oskari_maplayer_themes where themeid =  = #id#
+    </select>
     
     <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
         insert into portti_inspiretheme (locale)

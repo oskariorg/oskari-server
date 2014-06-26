@@ -21,17 +21,24 @@ public abstract class RestActionHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         preProcess(params);
         final HttpServletRequest req = params.getRequest();
-        log.debug("Method: " + req.getMethod());
-        if("GET".equals(req.getMethod())) {
+        String method = req.getMethod();
+        log.debug("Method:", method);
+        final String overrideHeader = req.getHeader("X-HTTP-Method-Override");
+        log.debug("Override header:", overrideHeader);
+        if(overrideHeader != null) {
+            method = overrideHeader;
+        }
+
+        if("GET".equals(method)) {
             handleGet(params);
         }
-        else if("PUT".equals(req.getMethod())) {
+        else if("PUT".equals(method)) {
             handlePut(params);
         }
-        else if("POST".equals(req.getMethod())) {
+        else if("POST".equals(method)) {
             handlePost(params);
         }
-        else if("DELETE".equals(req.getMethod())) {
+        else if("DELETE".equals(method)) {
             handleDelete(params);
         }
     }

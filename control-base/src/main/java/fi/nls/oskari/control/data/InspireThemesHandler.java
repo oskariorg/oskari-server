@@ -100,6 +100,11 @@ public class InspireThemesHandler extends RestActionHandler {
         checkForAdminPermission(params);
         final int id = params.getRequiredParamInt(PARAM_ID);
         final InspireTheme theme = inspireThemeService.find(id);
+        final List<Integer> maplayerIds = inspireThemeService.findMaplayersByTheme(id);
+        if(!maplayerIds.isEmpty()) {
+            // theme with maplayers under it can't be removed
+            throw new ActionParamsException("Maplayers linked to theme");
+        }
         inspireThemeService.delete(id);
         ResponseHelper.writeResponse(params, theme.getAsJSON());
     }

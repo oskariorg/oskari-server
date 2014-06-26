@@ -89,6 +89,10 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         findLayerMappings();
     }
 
+    public List<Integer> findMaplayersByTheme(int id) {
+        return queryForList(getNameSpace() + ".findMaplayersByTheme", id);
+    }
+
     public void update(final InspireTheme theme) {
         ID_CACHE.put("" + theme.getId(), theme);
         super.update(theme);
