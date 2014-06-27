@@ -22,6 +22,8 @@ which method to forward execution to.
 
 InspireThemeService now has findMaplayersByTheme(themeId) method
 
+OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
+
 ### control-base
 
 New action handler 'InspireThemes' implements a Rest type approach for managing inspire themes: insert/update/delete/listing.

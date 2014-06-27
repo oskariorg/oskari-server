@@ -199,6 +199,14 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return layers;
     }
 
+    public List<OskariLayer> findByUrlAndName(final String url, final String name) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("url", url);
+        params.put("name", name);
+        final List<OskariLayer> layers =  mapDataList(queryForList(getNameSpace() + ".findByUrlAndName", params));
+        return layers;
+    }
+
     public OskariLayer find(final String idStr) {
         final int id = ConversionHelper.getInt(idStr, -1);
         if(id != -1) {
@@ -206,8 +214,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         }
         // try to find with external id
         try {
-            client = getSqlMapClient();
-            final Map<String, Object> result = (Map<String, Object>) client.queryForObject(getNameSpace() + ".findByExternalId", idStr);
+            final Map<String, Object> result = (Map<String, Object>) getSqlMapClient().queryForList(getNameSpace() + ".findByExternalId", idStr);
             final OskariLayer layer = mapData(result);
             if(layer.isCollection()) {
                 final List<OskariLayer> sublayers = findByParentId(layer.getId());
