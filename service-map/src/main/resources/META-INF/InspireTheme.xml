@@ -45,7 +45,7 @@
     </select>
 
     <select id="findMaplayersByTheme" resultClass="int" parameterClass="int">
-        select maplayerid from oskari_maplayer_themes where themeid =  = #id#
+        select maplayerid from oskari_maplayer_themes where themeid = #id#
     </select>
     
     <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">

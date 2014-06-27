@@ -274,6 +274,56 @@
         AND l.parentId = -1
 
     </select>
+
+    <select id="findByUrlAndName"
+            parameterClass="java.util.HashMap"
+            resultClass="java.util.HashMap">
+
+
+        SELECT
+        l.id,
+        l.parentId,
+        l.externalId,
+        l.type,
+        l.base_map,
+        l.groupId,
+
+        l.name,
+        l.url,
+        l.locale,
+
+        l.opacity,
+        l.style,
+        l.minscale,
+        l.maxscale,
+
+        l.legend_image,
+        l.metadataId,
+
+        l.tile_matrix_set_id,
+        l.tile_matrix_set_data,
+        l.params,
+        l.options,
+
+        l.gfi_xslt,
+        l.gfi_type,
+        l.gfi_content,
+        l.realtime,
+        l.refresh_rate,
+        m.geom,
+
+        l.created,
+        l.updated
+
+        FROM
+        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
+        ON  m.maplayerid = l.id
+        WHERE
+        l.name = #name#
+        AND  l.url = #url#
+        AND l.parentId = -1
+
+    </select>
         
 <select id="findAll"
         resultClass="java.util.HashMap">

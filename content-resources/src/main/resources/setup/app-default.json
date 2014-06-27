@@ -4,7 +4,8 @@
         "register-bundles",
         "postgres-add-myplaces",
         "postgres-add-users",
-        "postgres-add-JAAS"
+        "postgres-add-JAAS",
+        "populate-inspire-themes"
     ],
     "views" : [
         "default-view.json",
@@ -12,9 +13,6 @@
         "publisher-template-view.json"
     ],
     "sql" : [
-        "populate-Inspire-themes.sql",
-        "example-layers.sql",
-        "example-permissions.sql",
         "example-wfslayer.sql",
         "example-permissions.sql"
     ]

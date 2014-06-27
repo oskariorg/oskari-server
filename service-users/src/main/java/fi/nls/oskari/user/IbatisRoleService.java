@@ -1,10 +1,8 @@
 package fi.nls.oskari.user;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +52,16 @@ public class IbatisRoleService extends BaseIbatisService<Role> {
             }
         }
         linkRoleToNewUser(roleId, userId);
+    }
+
+    public Role findRoleByName(final String name) {
+        final List<Role> userRoles = findAll();
+        for(Role r : userRoles) {
+            if(r.getName().equals(name)) {
+                return r;
+            }
+        }
+        return null;
     }
 
     public Map<String, Role> getExternalRolesMapping(String type) {

@@ -103,7 +103,7 @@ public class InspireThemesHandler extends RestActionHandler {
         final List<Integer> maplayerIds = inspireThemeService.findMaplayersByTheme(id);
         if(!maplayerIds.isEmpty()) {
             // theme with maplayers under it can't be removed
-            throw new ActionParamsException("Maplayers linked to theme");
+            throw new ActionParamsException("Maplayers linked to theme", JSONHelper.createJSONObject("code", "not_empty"));
         }
         inspireThemeService.delete(id);
         ResponseHelper.writeResponse(params, theme.getAsJSON());

@@ -1,10 +1,13 @@
 package fi.nls.oskari.wfs;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.utils.TestHelper;
 import org.eclipse.xsd.XSDSchema;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CachingSchemaLocatorTest {
@@ -12,12 +15,15 @@ public class CachingSchemaLocatorTest {
 	
     @BeforeClass
     public static void setUp() {
+
+        assumeTrue(TestHelper.redisAvailable());
 		JedisManager.connect(10, "localhost", 6379);
 		locator = new CachingSchemaLocator("", "");
     }
     
 	@Test
 	public void testHttp() {
+        assumeTrue(TestHelper.redisAvailable());
 		// TODO: find http url
 		String namespaceURI = ""; // http
 		String schemaLocation = "";
@@ -27,6 +33,7 @@ public class CachingSchemaLocatorTest {
 	
 	@Test
 	public void testHttps() {
+        assumeTrue(TestHelper.redisAvailable());
 		// TODO: https
 		String namespaceURI = ""; // https
 		String schemaLocation = "";
@@ -36,6 +43,7 @@ public class CachingSchemaLocatorTest {
 	
 	@Test
 	public void test() {
+        assumeTrue(TestHelper.redisAvailable());
 		// broken
 		String namespaceURI = ""; 
 		String schemaLocation = "";

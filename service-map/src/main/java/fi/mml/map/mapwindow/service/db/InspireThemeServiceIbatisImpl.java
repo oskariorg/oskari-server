@@ -46,6 +46,24 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         return list;
     }
 
+    /**
+     * Returns first theme (searched in arbitratry order) that has any part
+     * of the theme name in any language(!) matching the given name-parameter.
+     * Use carefully and preferrably with long parameter name.
+     * FIXME: Quick and dirty
+     * @param name
+     * @return matching theme or null if no match
+     */
+    public InspireTheme findByName(final String name) {
+        final List<InspireTheme> themes = findAll();
+        for(InspireTheme theme : themes) {
+            if(theme.getLocale().toString().indexOf(name) > -1) {
+                return theme;
+            }
+        }
+        return null;
+    }
+
     @Override
     public InspireTheme find(int id) {
         InspireTheme theme = ID_CACHE.get("" + id);
