@@ -63,3 +63,12 @@ Views can be added without running whole setup-files. Add a postgres sample view
     mvn clean install exec:java -Doskari.addview=postgres-sample-view.json
 
 The view JSON is parsed and added as view to the db as it would have been if it had been referenced in a setup-file.
+
+# Adding a layer
+
+Layers can be added without running whole setup-files. Add a sample layer with the following command:
+
+    mvn clean install exec:java -Doskari.addlayer=arcgis-background-map-fi.json
+
+The layer JSON is parsed and added as layer to the db as it would have been if it had been referenced in a setup/view-file.
+Referenced files have base dir src/main/resources/json/layers.

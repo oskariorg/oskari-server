@@ -2,6 +2,16 @@
 
 ## 1.23
 
+### content-resources
+
+DBHandler can now insert layers described in JSON format (under src/main/resources/json/layers). The support is minimal at the moment but will improve.
+
+DBHandler can now process "selectedLayers" property in view.json. The property should be an array with layer.json file references that will be inserted
+to the database if (or matching layer in DB will be used if such exists with same url and name). The views mapfull-bundle will have these layers automatically
+mapped in it's selected layers.
+
+DBHandler has been split to some helper classes for inserting views and layers.
+
 ### service-users
 
 IbatisRoleService now has findRoleByName(name) method
