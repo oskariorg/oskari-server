@@ -2,6 +2,10 @@
 
 ## 1.23
 
+### service-users
+
+IbatisRoleService now has findRoleByName(name) method
+
 ### webapp-map
 
 Added external folder and moved jetty-jaas.xml, and jndi-login.conf files there.
