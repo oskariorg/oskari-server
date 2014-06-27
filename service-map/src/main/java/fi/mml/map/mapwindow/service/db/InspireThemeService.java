@@ -16,4 +16,5 @@ public interface InspireThemeService extends BaseService<InspireTheme> {
     public List<InspireTheme> findByMaplayerId(final int layerId);
     public void updateLayerThemes(final long maplayerId, final Collection<InspireTheme> themes);
     public List<Integer> findMaplayersByTheme(int id);
+    public InspireTheme findByName(final String name);
 }

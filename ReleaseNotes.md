@@ -22,6 +22,9 @@ which method to forward execution to.
 
 InspireThemeService now has findMaplayersByTheme(themeId) method
 
+InspireThemeService and LayerGroupService now have findByName(name) method that is used to map themes/layergroups for layer
+when automatically inserted. The implementation is not solid enough to be used otherwise.
+
 OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
 
 ### control-base
