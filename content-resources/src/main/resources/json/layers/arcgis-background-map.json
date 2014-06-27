@@ -1,6 +1,0 @@
-{
-    "type":"arcgislayer",
-    "url":"http://aineistot.esri.fi/arcgis/rest/services/Taustakartat/Taustakartta/MapServer",
-    "layerName":"N/A",
-    "name":"Arcgis test"
-}
