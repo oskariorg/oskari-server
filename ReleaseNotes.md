@@ -27,6 +27,8 @@ when automatically inserted. The implementation is not solid enough to be used o
 
 OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
 
+LayerJSONFormatter has initial (and minimal) implementation for parsing JSON to an OskariLayer object.
+
 ### control-base
 
 New action handler 'InspireThemes' implements a Rest type approach for managing inspire themes: insert/update/delete/listing.
