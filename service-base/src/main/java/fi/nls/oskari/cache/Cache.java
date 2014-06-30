@@ -45,6 +45,10 @@ public class Cache<T> {
         this.limit = limit;
     }
 
+    /**
+     * Time between flushes to keep cached values
+     * @return
+     */
     public long getExpiration() {
         return expiration;
     }
