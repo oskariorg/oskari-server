@@ -86,12 +86,6 @@
 				<artifactId>oskari-control</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
   			</dependency>
-			
-			<dependency>
-				<groupId>fi.nls.oskari.service</groupId>
-				<artifactId>oskari-control-wfs</artifactId>
-				<version>${fi.nls.oskari.service.version}</version>
-			</dependency>
 
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
@@ -142,7 +136,7 @@
 			</dependency>
 			<dependency>
 				<groupId>fi.nls.oskari.service</groupId>
-				<artifactId>oskari-OGC</artifactId>
+				<artifactId>oskari-wfs</artifactId>
 				<version>${fi.nls.oskari.service.version}</version>
 			</dependency>
 			<dependency>
@@ -590,6 +584,7 @@
         <module>service-users</module>
         <module>service-permissions</module>
         <module>service-map</module>
+        <module>service-wfs</module>
 
         <module>service-search</module>
         <module>service-search-nls</module>
