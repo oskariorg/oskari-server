@@ -19,6 +19,12 @@ public class Cache<T> {
     private long lastFlush = System.currentTimeMillis();
     private String name;
 
+    private boolean cacheMissDebugEnabled = false;
+
+    public void setCacheMissDebugEnabled(boolean enabled) {
+        cacheMissDebugEnabled = enabled;
+    }
+
     public String getName() {
         return name;
     }
@@ -74,7 +80,8 @@ public class Cache<T> {
     public T get(final String name) {
         flush(false);
         T value = items.get(name);
-        if(value == null) {
+
+        if(cacheMissDebugEnabled && value == null) {
             log.debug("Cache", getName(), "miss for name", name);
         }
         return value;
@@ -88,6 +95,10 @@ public class Cache<T> {
 
     public boolean put(final String name, final T item) {
         flush(false);
+        if(item == null) {
+            // can't save null value
+            return false;
+        }
         boolean overflowing = false;
         if(items.size() >= limit) {
             // limit reached - remove oldest object
