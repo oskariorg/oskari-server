@@ -11,6 +11,36 @@
 
 	<name>Oskari parent POM</name>
     <description>Contains common properties and managed dependencies for the Oskari modules.</description>
+    <url>https://github.com/nls-oskari/oskari-server</url>
+
+    <organization>
+        <name>National Land Survey of Finland</name>
+        <url>http://www.nls.fi</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+        <license>
+            <name>European Union Public Licence (EUPL v.1.1)</name>
+            <url>https://joinup.ec.europa.eu/software/page/eupl/licence-eupl</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <url>https://github.com/nls-oskari/oskari-server/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/nls-oskari/oskari-server</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
