@@ -21,9 +21,9 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     private Logger log = LogFactory.getLogger(InspireThemeServiceIbatisImpl.class);
 
     // key is theme id
-    final private static Cache<InspireTheme> ID_CACHE = CacheManager.getCache("InspireTheme");
+    final private static Cache<InspireTheme> ID_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName());
     // key is layer id
-    final private static Cache<List<Integer>> LINK_CACHE = CacheManager.getCache("InspireThemeLinks");
+    final private static Cache<List<Integer>> LINK_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName() + "Links");
 
 	@Override
 	protected String getNameSpace() {
