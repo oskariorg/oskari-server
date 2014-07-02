@@ -177,7 +177,7 @@ public class GetGtWFSCapabilities {
      * @param urlin
      * @return
      */
-    private static String getUrl(String urlin, String version) {
+    public static String getUrl(String urlin, String version) {
 
         if (urlin.isEmpty())
             return "";

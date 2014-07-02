@@ -52,7 +52,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                 }
             }
         } catch (Exception e) {
-          log.debug("Failed to query wfs styles via SQL client");
+          log.warn("Failed to query wfs styles via SQL client");
         }
         return arr;
     }
