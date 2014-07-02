@@ -5,7 +5,7 @@
         "postgres-add-myplaces",
         "postgres-add-users",
         "postgres-add-JAAS",
-        "populate-inspire-themes"
+        "populate-inspire-themes-and-groups"
     ],
     "views" : [
         "default-view.json",
