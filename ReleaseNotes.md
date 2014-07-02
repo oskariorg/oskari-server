@@ -2,6 +2,10 @@
 
 ## 1.23
 
+### control-admin
+
+New action handler 'Cache' for admin users to check the status of caching.
+
 ### content-resources
 
 DBHandler can now insert layers described in JSON format (under src/main/resources/json/layers). The support is minimal at the moment but will improve.

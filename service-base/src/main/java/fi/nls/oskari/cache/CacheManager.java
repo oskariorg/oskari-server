@@ -52,7 +52,7 @@ public class CacheManager {
      * Returns names of registered caches
      * @return
      */
-    public Set<String> getCacheNames() {
+    public static Set<String> getCacheNames() {
         return cacheStore.keySet();
     }
 
