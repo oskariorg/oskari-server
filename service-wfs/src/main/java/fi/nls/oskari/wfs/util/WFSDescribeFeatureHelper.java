@@ -38,6 +38,8 @@ public class WFSDescribeFeatureHelper {
     private static final String KEY_NAME = "name";
     private static final String KEY_TYPE = "type";
 
+    private final static String ENCODE_ATTRIBUTE = "encoding=\"";
+
     private static final List<String> NUMERIC_FIELD_TYPES = Arrays.asList("double",
             "byte",
             "decimal",
@@ -54,44 +56,46 @@ public class WFSDescribeFeatureHelper {
             "unsignedShort",
             "unsignedByte"
     );
+
     /**
-     * Parses DescribeFeatureType url request
-     *
-     * @param lc WFS layer configuration
-     * @return
+     *  Parses DescribeFeatureType url request for WFS request
+     * @param url  Wfs service Url
+     * @param version  Wfs service version
+     * @param xmlns  Feature type namespace
+     * @param featureTypeName  Feature type name
+     * @return Wfs request url
+     * e.g. http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
      */
-    public static String parseDescribeFeatureUrl(WFSLayerConfiguration lc) {
-        // http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
-        String url = lc.getURL();
+    public static String parseDescribeFeatureUrl(String url, String version, String xmlns, String featureTypeName) {
+
         // check params
         if (url.indexOf("?") == -1) {
             url = url + "?";
             if (url.toLowerCase().indexOf("service=") == -1)
                 url = url + "service=WFS";
             if (url.toLowerCase().indexOf("version=") == -1)
-                url = url + "&version=" + lc.getWFSVersion();
+                url = url + "&version=" + version;
             if (url.toLowerCase().indexOf("describefeaturetype") == -1)
                 url = url + "&request=DescribeFeatureType";
             if (url.toLowerCase().indexOf("typename") == -1)
-                url = url + "&TYPENAME=" + lc.getFeatureNamespace() + ":"
-                        + lc.getFeatureElement();
+                url = url + "&TYPENAME=" + xmlns + ":"
+                        + featureTypeName;
         } else {
             if (url.toLowerCase().indexOf("service=") == -1)
                 url = url + "&service=WFS";
             if (url.toLowerCase().indexOf("version=") == -1)
-                url = url + "&version=" + lc.getWFSVersion();
+                url = url + "&version=" + version;
             if (url.toLowerCase().indexOf("describefeaturetype") == -1)
                 url = url + "&request=DescribeFeatureType";
             if (url.toLowerCase().indexOf("typename") == -1)
-                url = url + "&TYPENAME=" + lc.getFeatureNamespace() + ":"
-                        + lc.getFeatureElement();
+                url = url + "&TYPENAME=" + xmlns + ":"
+                        + featureTypeName;
 
         }
 
         return url;
     }
 
-    final static String ENCODE_ATTRIBUTE = "encoding=\"";
 
     public static String getResponse(final String url, final String userName,
                                      final String password) throws ServiceException {
@@ -146,11 +150,18 @@ public class WFSDescribeFeatureHelper {
         return encodedResponse;
     }
 
-    public static JSONObject parseFeatureProperties(String response)
+    /**
+     * Xml  to JSONObject
+     * @param xml
+     * @return
+     * @throws ServiceException
+     */
+
+    public static JSONObject xml2JSON(String xml)
             throws ServiceException {
         try {
             // convert xml String to JSON
-            return XML.toJSONObject(response);
+            return XML.toJSONObject(xml);
 
         } catch (Exception e) {
             throw new ServiceException("XML to JSON failed", e);
@@ -158,26 +169,24 @@ public class WFSDescribeFeatureHelper {
     }
 
     /**
+     * Check is WFS property (field) type is numeric
      * @param wfsTypeValue
      * @return true, if numeric
      */
     private static boolean isNumericField(String wfsTypeValue) {
         boolean numericValue = false;
         String typeval = stripNamespace(wfsTypeValue);
-        if (isNumericType(typeval)) {
+        if (NUMERIC_FIELD_TYPES.contains(typeval)) {
             numericValue = true;
         }
         return numericValue;
     }
+
     /**
-     *
-     * @param fieldType
+     * Strip namspace out of featureTypeName, if exists
+     * @param tag featureTypeName
      * @return
      */
-    private static boolean isNumericType(String fieldType)
-    {
-        return NUMERIC_FIELD_TYPES.contains(fieldType);
-    }
     private static String stripNamespace(final String tag) {
 
         String splitted[] = tag.split(":");
@@ -187,9 +196,15 @@ public class WFSDescribeFeatureHelper {
         return splitted[0];
     }
     /**
-     * Get property types (native fields) of analysis layer
+     * **** Use only for analysis layer
      *
-     * @param sid
+     * Get property types (native fields) of analysis layer
+     * Analysis layer/feature has fixed field names for any kind of feature data
+     * t1,t2,t3,t4,... are for text type fields
+     * n1,n2,n3,n4, ... are for numeric fields
+     * There is in each analysis a field mapping to original feature type fields
+     *
+     * @param sid  Analysis layer id
      * @return analysis property names and types"
      */
     public static JSONObject getAnalysisFeaturePropertyTypes(String sid) {
@@ -213,20 +228,25 @@ public class WFSDescribeFeatureHelper {
         return js_out;
     }
     /**
+     * Pick up property names and types out of DescribeFeatureType response
+     * works with WFS version 1.0.0 and 1.1.0
+     *
      * @param layer_id
      *            WFS layer id in Oskari DB
      * @param js
-     *            raw DescribeFeatureType response
-     * @return JSONObject property names and WFS types
+     *            full DescribeFeatureType response
+     * @return JSONObject WFS feature property names and WFS types
      */
-    private JSONObject populateProperties(String layer_id, JSONObject js) {
+    private JSONObject getWFSFeaturePropertyTypes(String layer_id, JSONObject js) {
         JSONObject js_out = new JSONObject();
         JSONObject js_props_out = new JSONObject();
         try {
             if (js == null)
                 return null;
-            // Find name type sequence xsd:complexType or xsd:sequence
-            JSONObject js_raw = this.findXsdElement(js);
+            // Find recursively name type sequence xsd:complexType or xsd:sequence
+            // This is parent json for KEY_NAMEs (feature property name)
+            // 'parent' json is not in fixed position (branch) in response json
+            JSONObject js_raw = this.digXsdElement(js);
             JSONArray props_js = js_raw.getJSONArray(KEY_ELEMENT);
             // loop Array
             for (int i = 0; i < props_js.length(); i++) {
@@ -248,20 +268,23 @@ public class WFSDescribeFeatureHelper {
 
     }
     /**
+     * Pick up property names and harmonized types (text or numeric) out of DescribeFeatureType response
+     * works with WFS version 1.0.0 and 1.1.0
      * @param layer_id
      *            WFS layer id in Oskari DB
      * @param js
-     *            raw DescribeFeatureType response
+     *            raw WFS DescribeFeatureType response
      * @return JSONObject property names and types (string or numeric)
      */
-    public static JSONObject populatePropertiesSimple(String layer_id, JSONObject js) {
+    public static JSONObject getFeatureTypesTextOrNumeric(String layer_id, JSONObject js) {
         JSONObject js_out = new JSONObject();
         JSONObject js_props_out = new JSONObject();
         try {
             if (js == null)
                 return null;
-            // Find name type sequence xsd:complexType or xsd:sequence
-            JSONObject js_raw = findXsdElement(js);
+            // Find recursively name type sequence xsd:complexType or xsd:sequence
+            // This is parent json for KEY_NAMEs (feature property name)
+            JSONObject js_raw = digXsdElement(js);
             JSONArray props_js = js_raw.getJSONArray(KEY_ELEMENT);
             // loop Array
             for (int i = 0; i < props_js.length(); i++) {
@@ -285,20 +308,21 @@ public class WFSDescribeFeatureHelper {
     }
 
     /**
-     * Find 'name' 'type' sequence under xsd:complexType or xsd:sequence
-     * @param js
+     * Find 'name' 'type' sequence under xsd:complexType or xsd:sequence recursively
+     * Target could be under JSONArray or JSONObject set
+     * @param js JSON
      * @return
      */
-    private static JSONObject findXsdElement(JSONObject js) {
-        JSONObject js_raw = findsubJson(KEY_SEQUENCE, js);
+    private static JSONObject digXsdElement(JSONObject js) {
+        JSONObject js_raw = findChildJson(KEY_SEQUENCE, js);
         try {
             if (js_raw == null) {
-                JSONArray js_rawa = findsubJsonArray(KEY_COMPLEXTYPE, js);
+                JSONArray js_rawa = findChildJsonArray(KEY_COMPLEXTYPE, js);
                 if (js_rawa != null) {
                     for (int i = 0; i < js_rawa.length(); i++) {
                         if (js_rawa.get(i) instanceof JSONObject) {
                             JSONObject js_sub = js_rawa.getJSONObject(i);
-                            js_raw = findsubJson(KEY_SEQUENCE, js_sub);
+                            js_raw = findChildJson(KEY_SEQUENCE, js_sub);
                         }
                     }
 
@@ -312,8 +336,13 @@ public class WFSDescribeFeatureHelper {
 
     }
 
-
-    private static JSONObject findsubJson(String mykey, JSONObject js) {
+    /**
+     * Find 1st JSONObject for search in JSONObject
+     * @param mykey  key to find
+     * @param js json to search
+     * @return  json object of search key
+     */
+    private static JSONObject findChildJson(String mykey, JSONObject js) {
         try {
             if (js == null)
                 return null;
@@ -326,7 +355,7 @@ public class WFSDescribeFeatureHelper {
                     if (mykey.toUpperCase().equals(key.toUpperCase())) {
                         return jssub;
                     } else {
-                        JSONObject jssub2 = findsubJson(mykey, jssub);
+                        JSONObject jssub2 = findChildJson(mykey, jssub);
                         if (jssub2 != null)
                             return jssub2;
                     }
@@ -339,8 +368,14 @@ public class WFSDescribeFeatureHelper {
         return null;
 
     }
+    /**
+     * Find 1st JSONArray for search key in JSONObject
+     * @param mykey  key to find
+     * @param js json to search
+     * @return  json object of search key
+     */
 
-    private static JSONArray findsubJsonArray(String mykey, JSONObject js) {
+    private static JSONArray findChildJsonArray(String mykey, JSONObject js) {
         try {
             if (js == null)
                 return null;
@@ -356,7 +391,7 @@ public class WFSDescribeFeatureHelper {
 
                 } else if (js.get(key) instanceof JSONObject) {
                     JSONObject jssubb = js.getJSONObject(key);
-                    JSONArray jssub2 = findsubJsonArray(mykey, jssubb);
+                    JSONArray jssub2 = findChildJsonArray(mykey, jssubb);
                     if (jssub2 != null)
                         return jssub2;
                 }

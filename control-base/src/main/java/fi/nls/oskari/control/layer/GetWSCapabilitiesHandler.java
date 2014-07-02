@@ -8,6 +8,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +25,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(GetWSCapabilitiesHandler.class);
     private static final String PARM_URL = "url";
     private static final String PARM_TYPE = "type";
+    private static final String PARM_VERSION = "version";
 
     private String[] permittedRoles = new String[0];
 
@@ -40,6 +42,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         }
         final String url = params.getRequiredParam(PARM_URL);
         final String layerType = params.getHttpParam(PARM_TYPE, OskariLayer.TYPE_WMS);
+        final String version = params.getHttpParam(PARM_VERSION, "");
 
         log.debug("Trying to get capabilities for type:", layerType, "with url:", url);
         try {
@@ -62,7 +65,13 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                     JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
                     JSONHelper.putValue(resultJSON, "xml", capabilities);
                     ResponseHelper.writeResponse(params, resultJSON);
-                } else {
+                }
+                else if(OskariLayer.TYPE_WFS.equals(layerType)) {
+                    // New method for parsing WFSCetGapabilites to Oskari layers structure
+                    final JSONObject capabilities = GetGtWFSCapabilities.getWFSCapabilities(url, version);
+                    ResponseHelper.writeResponse(params, capabilities);
+                }
+                else {
                     throw new ActionParamsException("Couldn't determine operation based on parameters");
                 }
             }
