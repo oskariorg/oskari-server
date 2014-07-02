@@ -591,6 +591,19 @@
         </repository>
 	</repositories>
 
+    <!-- For uploading artifacts to oskari.org repository -->
+    <distributionManagement>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
   <pluginRepositories>
     <pluginRepository>
