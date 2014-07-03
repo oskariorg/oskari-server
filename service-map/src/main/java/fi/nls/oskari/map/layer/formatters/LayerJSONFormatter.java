@@ -1,8 +1,14 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.mml.map.mapwindow.service.db.InspireThemeService;
+import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.nls.oskari.domain.map.InspireTheme;
+import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.LayerGroupService;
+import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,6 +25,8 @@ import java.util.Map;
  */
 public class LayerJSONFormatter {
 
+    private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
+    private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
     private static Map<String, LayerJSONFormatter> typeMapping = new HashMap<String, LayerJSONFormatter>();
@@ -176,5 +184,53 @@ public class LayerJSONFormatter {
             return null;
         }
         return metadataId;
+    }
+/*
+    "type":"arcgislayer",
+    "url":"http://aineistot.esri.fi/arcgis/rest/services/Taustakartat/Taustakartta/MapServer",
+    "name":"Taustakartta",
+    "organization": "Demo",
+    "inspiretheme": "Demo",
+    "locale": {
+        "fi": {
+            "name": "Arcgis test"
+        },
+        "en": {
+            "name": "Arcgis test"
+        }
+    }
+ */
+
+    /**
+     * Minimal implementation for parsing layer in json format.
+     * @param json
+     * @return
+     */
+    public OskariLayer parseLayer(final JSONObject json) {
+        OskariLayer layer = new OskariLayer();
+        layer.setType(json.optString("type"));
+        layer.setUrl(json.optString("url"));
+        layer.setName(json.optString("name"));
+        layer.setLocale(json.optJSONObject("locale"));
+        // setup theme
+        final String themeName = json.optString("inspiretheme");
+        final InspireTheme theme = inspireThemeService.findByName(themeName);
+        if(theme == null) {
+            log.warn("Didn't find match for theme:", themeName);
+        }
+        else {
+            layer.addInspireTheme(theme);
+        }
+        // setup data producer/layergroup
+        final String orgName = json.optString("organization");
+        final LayerGroup group = groupService.findByName(orgName);
+        if(group == null) {
+            log.warn("Didn't find match for layergroup:", orgName);
+        }
+        else {
+            layer.addGroup(group);
+        }
+
+        return layer;
     }
 }

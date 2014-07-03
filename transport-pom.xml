@@ -13,6 +13,7 @@
   <modules>
     <module>service-base</module>
     <module>service-control</module>
+    <module>service-wfs</module>
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
     <module>service-feature-engine</module>

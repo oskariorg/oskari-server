@@ -2,6 +2,52 @@
 
 ## 1.23
 
+### Maven repository @ oskari.org
+
+Precompiled versions of code is now available. Only 1.23-SNAPSHOT currently available, but versions start to pile up on releases.
+
+Add these to your pom.xml to use the pre-compiled Maven-artifacts today:
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+            <version>1.23-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>oskari_org_snapshot</id>
+            <name>Oskari.org snapshot repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+oskari_org_snapshot is only needed if using SNAPSHOT-versions (github develop branch version)
+
+### control-admin
+
+New action handler 'Cache' for admin users to check the status of caching.
+
+### content-resources
+
+DBHandler can now insert layers described in JSON format (under src/main/resources/json/layers). The support is minimal at the moment but will improve.
+
+DBHandler can now process "selectedLayers" property in view.json. The property should be an array with layer.json file references that will be inserted
+to the database if (or matching layer in DB will be used if such exists with same url and name). The views mapfull-bundle will have these layers automatically
+mapped in it's selected layers.
+
+DBHandler has been split to some helper classes for inserting views and layers.
+
+### service-users
+
+IbatisRoleService now has findRoleByName(name) method
+
 ### webapp-map
 
 Added external folder and moved jetty-jaas.xml, and jndi-login.conf files there.
@@ -21,6 +67,13 @@ which method to forward execution to.
 ### service-map
 
 InspireThemeService now has findMaplayersByTheme(themeId) method
+
+InspireThemeService and LayerGroupService now have findByName(name) method that is used to map themes/layergroups for layer
+when automatically inserted. The implementation is not solid enough to be used otherwise.
+
+OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
+
+LayerJSONFormatter has initial (and minimal) implementation for parsing JSON to an OskariLayer object.
 
 ### control-base
 

@@ -21,9 +21,9 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     private Logger log = LogFactory.getLogger(InspireThemeServiceIbatisImpl.class);
 
     // key is theme id
-    final private static Cache<InspireTheme> ID_CACHE = CacheManager.getCache("InspireTheme");
+    final private static Cache<InspireTheme> ID_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName());
     // key is layer id
-    final private static Cache<List<Integer>> LINK_CACHE = CacheManager.getCache("InspireThemeLinks");
+    final private static Cache<List<Integer>> LINK_CACHE = CacheManager.getCache(InspireThemeServiceIbatisImpl.class.getName() + "Links");
 
 	@Override
 	protected String getNameSpace() {
@@ -44,6 +44,24 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
             list.add(find(id));
         }
         return list;
+    }
+
+    /**
+     * Returns first theme (searched in arbitratry order) that has any part
+     * of the theme name in any language(!) matching the given name-parameter.
+     * Use carefully and preferrably with long parameter name.
+     * FIXME: Quick and dirty
+     * @param name
+     * @return matching theme or null if no match
+     */
+    public InspireTheme findByName(final String name) {
+        final List<InspireTheme> themes = findAll();
+        for(InspireTheme theme : themes) {
+            if(theme.getLocale().toString().indexOf(name) > -1) {
+                return theme;
+            }
+        }
+        return null;
     }
 
     @Override
