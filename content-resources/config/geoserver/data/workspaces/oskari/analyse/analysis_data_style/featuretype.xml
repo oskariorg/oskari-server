@@ -1,0 +1,43 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--47d91406:1470f9cef51:-7ff9</id>
+  <name>analysis_data_style</name>
+  <nativeName>analysis_data_style</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl-5040a49e:12704d4341f:-7f76</id>
+  </namespace>
+  <title>analysis_data_style</title>
+  <keywords>
+    <string>features</string>
+    <string>analysis_data_style</string>
+  </keywords>
+  <srs>EPSG:3067</srs>
+  <nativeBoundingBox>
+    <minx>60000.0</minx>
+    <maxx>800000.0</maxx>
+    <miny>6400000.0</miny>
+    <maxy>7900000.0</maxy>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>14.937094417451737</minx>
+    <maxx>35.28664113889201</maxx>
+    <miny>57.5276098664486</miny>
+    <maxy>71.19680585432528</maxy>
+    <crs>GEOGCS[&quot;WGS84(DD)&quot;, &#xd;
+  DATUM[&quot;WGS84&quot;, &#xd;
+    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd;
+  PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd;
+  UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd;
+  AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd;
+  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <metadata>
+    <entry key="cachingEnabled">false</entry>
+  </metadata>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--47d91406:1470f9cef51:-8000</id>
+  </store>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+</featureType>

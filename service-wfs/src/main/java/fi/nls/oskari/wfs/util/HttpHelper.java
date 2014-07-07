@@ -1,4 +1,4 @@
-package fi.nls.oskari.utils;
+package fi.nls.oskari.wfs.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

@@ -12,11 +12,9 @@ import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geotools.xml.Schemas;
 
-import redis.clients.jedis.Jedis;
-
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.utils.HttpHelper;
-import fi.nls.oskari.utils.XMLHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.wfs.util.XMLHelper;
 
 /**
  * XSD Schema loader with caching for Geotools' XML parser

@@ -1,10 +1,8 @@
-package fi.nls.oskari.pojo;
+package fi.nls.oskari.wfs.pojo;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -19,6 +17,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -35,6 +34,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
     private static final Logger log = LogFactory.getLogger(WFSLayerStore.class);
 
     private static final String ERROR = "error";
+    public static ObjectMapper mapper = new ObjectMapper();
 
     // not in JSON
     private CoordinateReferenceSystem crs;
@@ -185,7 +185,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
     @JsonIgnore
     public String getAsJSON() {
         try {
-            return TransportService.mapper.writeValueAsString(this);
+            return mapper.writeValueAsString(this);
         } catch (JsonGenerationException e) {
             log.error(e, "JSON Generation failed");
         } catch (JsonMappingException e) {
