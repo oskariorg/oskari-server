@@ -2,6 +2,7 @@ package fi.nls.oskari.wfs;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
@@ -14,11 +15,15 @@ import org.geotools.data.DataStore;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.Name;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,7 +46,7 @@ public class GetGtWFSCapabilities {
      * Get all WFS layers (featuretypes) data in JSON
      * * @param rurl WFS service url
      *
-     * @return
+     * @return json of wfslayer json array
      * @throws fi.nls.oskari.service.ServiceException
      *
      */
@@ -63,6 +68,48 @@ public class GetGtWFSCapabilities {
             throw new ServiceException("Couldn't read/get wfs capabilities response from url." , ex);
         }
     }
+
+    /**
+     * Get all WFS layers (featuretypes) data in JSON
+     * @param rurl WFS service url
+     * @param version WFS service version
+     * @return json of wfslayer json array
+
+     *
+     */
+    public static Map<String, Object> getGtDataStoreCapabilities(final String rurl, final String version, String user, String pw) {
+
+        Map<String, Object> capabilities = new HashMap<String, Object>();
+        try {
+
+            Map connectionParameters = new HashMap();
+            connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL" , getUrl(rurl, version));
+            connectionParameters.put("WFSDataStoreFactory:TIMEOUT" , 30000);
+            if(user != null && !user.isEmpty()) {
+                connectionParameters.put("WFSDataStoreFactory:USERNAME" , user);
+                connectionParameters.put("WFSDataStoreFactory:PASSWORD" , pw);
+            }
+
+            //  connection
+            DataStore data = DataStoreFinder.getDataStore(connectionParameters);
+
+            WFSDataStore wfsds = null;
+            if (data instanceof WFSDataStore) wfsds = (WFSDataStore) data;
+            if(wfsds != null){
+                capabilities.put("status", "OK");
+                capabilities.put("WFSDataStore", wfsds);
+            }
+            else {
+                capabilities.put("status", "FAILED");
+                capabilities.put("exception", "Not instance of WFSDataStore");
+            }
+        } catch (Exception ex) {
+            capabilities.put("status", "FAILED");
+            capabilities.put("exception", ex.getMessage());
+        }
+        return capabilities;
+    }
+
 
     /**
      * Parse layer (group- or wmslayer)
@@ -170,6 +217,66 @@ public class GetGtWFSCapabilities {
             return new JSONObject();
         }
     }
+
+    /**
+     * WMS layer data to json
+     *
+     * @param data     geotools wfs DataStore
+     * @param typeName
+     * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
+     * @throws fi.nls.oskari.service.ServiceException
+     *
+     */
+    public static WFSLayerConfiguration  layerToWfsLayerConfiguration(WFSDataStore data, String typeName, String rurl, String user, String pw) {
+
+        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
+        lc.setDefaults();
+
+
+        lc.setURL(rurl);
+        lc.setUsername(user);
+        lc.setPassword(pw);
+
+        lc.setLayerName(typeName);
+
+
+        try {
+            SimpleFeatureType schema = data.getSchema(typeName);
+
+            String [] nameParts = schema.getName().getLocalPart().split(schema.getName().getSeparator());
+            String xmlns = "";
+            String name = nameParts[0];
+            if(nameParts.length > 1){
+                xmlns = nameParts[0];
+                name = nameParts[1];
+            }
+
+            lc.setLayerId("layer_" + name);
+
+            // Geometry property
+            String geomName = schema.getGeometryDescriptor().getName().getLocalPart();
+            int isrs = CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true);
+
+
+            lc.setGMLGeometryProperty(geomName);
+            lc.setSRSName("EPSG:"+Integer.toString(isrs));
+
+            //lc.setGMLVersion();
+            lc.setWFSVersion(data.getInfo().getVersion());
+            //lc.setMaxFeatures(data.getMaxFeatures());
+            lc.setFeatureNamespace(xmlns);
+            lc.setFeatureNamespaceURI(schema.getName().getNamespaceURI());
+
+            lc.setFeatureElement(name);
+
+            return lc;
+        } catch (Exception ex) {
+            log.warn("Couldn't get wfs feature source data" , ex);
+            return null;
+        }
+
+    }
+
 
     /**
      * Finalise WMS service url for GetCapabilities request

@@ -16,7 +16,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonMappingException;
 
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;

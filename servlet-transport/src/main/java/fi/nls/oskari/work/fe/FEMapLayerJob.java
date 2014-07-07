@@ -11,7 +11,7 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.Tile;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.wfs.WFSFilter;

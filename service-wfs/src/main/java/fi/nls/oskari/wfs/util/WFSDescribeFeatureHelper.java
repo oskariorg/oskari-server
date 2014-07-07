@@ -96,7 +96,29 @@ public class WFSDescribeFeatureHelper {
         return url;
     }
 
+    public static String getGetFeatureUrl(String url, String version, String xmlns, String featureTypeName, String maxfea) {
 
+        // check params
+        if (url.indexOf("?") == -1) {
+            url = url + "?";
+            if (url.toLowerCase().indexOf("service=") == -1)
+                url = url + "service=WFS";
+        } else {
+            if (url.toLowerCase().indexOf("service=") == -1)
+                url = url + "&service=WFS";
+        }
+        if (url.toLowerCase().indexOf("version=") == -1)
+            url = url + "&version=" + version;
+        if (url.toLowerCase().indexOf("getfeature") == -1)
+            url = url + "&request=GetFeature";
+        if (url.toLowerCase().indexOf("typename") == -1)
+            url = url + "&TYPENAME=" + xmlns + ":"
+                    + featureTypeName;
+        if (url.toLowerCase().indexOf("maxfeatures") == -1)
+            url = url + "&maxFeatures=" + maxfea;
+
+        return url;
+    }
     public static String getResponse(final String url, final String userName,
                                      final String password) throws ServiceException {
         try {
@@ -237,7 +259,7 @@ public class WFSDescribeFeatureHelper {
      *            full DescribeFeatureType response
      * @return JSONObject WFS feature property names and WFS types
      */
-    private JSONObject getWFSFeaturePropertyTypes(String layer_id, JSONObject js) {
+    public static JSONObject getWFSFeaturePropertyTypes(String layer_id, JSONObject js) {
         JSONObject js_out = new JSONObject();
         JSONObject js_props_out = new JSONObject();
         try {
@@ -246,7 +268,7 @@ public class WFSDescribeFeatureHelper {
             // Find recursively name type sequence xsd:complexType or xsd:sequence
             // This is parent json for KEY_NAMEs (feature property name)
             // 'parent' json is not in fixed position (branch) in response json
-            JSONObject js_raw = this.digXsdElement(js);
+            JSONObject js_raw = digXsdElement(js);
             JSONArray props_js = js_raw.getJSONArray(KEY_ELEMENT);
             // loop Array
             for (int i = 0; i < props_js.length(); i++) {
@@ -266,6 +288,22 @@ public class WFSDescribeFeatureHelper {
         }
         return js_out;
 
+    }
+
+    /**
+     * Pick up property names and types out of DescribeFeatureType response
+     * works with WFS version 1.0.0 and 1.1.0
+     * WFSlayerconfiguration ala Oskari
+     * @param lc WFSlayerconfiguration ala Oskari
+     * @param layer_id
+     * @return
+     * @throws ServiceException
+     */
+    public static JSONObject getWFSFeaturePropertyTypes(WFSLayerConfiguration lc, String layer_id) throws ServiceException {
+        final String wfsurl = parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
+        final String response = getResponse(wfsurl, lc.getUsername(), lc.getPassword());
+        JSONObject props = WFSDescribeFeatureHelper.xml2JSON(response);
+        return getWFSFeaturePropertyTypes(layer_id, props);
     }
     /**
      * Pick up property names and harmonized types (text or numeric) out of DescribeFeatureType response
@@ -305,6 +343,22 @@ public class WFSDescribeFeatureHelper {
         }
         return js_out;
 
+    }
+
+    /**
+     * Pick up property names and harmonized types (text or numeric) out of DescribeFeatureType response
+     * works with WFS version 1.0.0 and 1.1.0
+     * WFSlayerconfiguration ala Oskari
+     * @param lc WFSlayerconfiguration ala Oskari
+     * @param layer_id
+     * @return
+     * @throws ServiceException
+     */
+    public static JSONObject getFeatureTypesTextOrNumeric(WFSLayerConfiguration lc, String layer_id) throws ServiceException {
+        final String wfsurl = parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
+        final String response = getResponse(wfsurl, lc.getUsername(), lc.getPassword());
+        JSONObject props = WFSDescribeFeatureHelper.xml2JSON(response);
+        return getFeatureTypesTextOrNumeric(layer_id, props);
     }
 
     /**

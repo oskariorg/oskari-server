@@ -7,7 +7,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.OWSMapLayerJob;
 
 public interface FEQueryArgsBuilder {

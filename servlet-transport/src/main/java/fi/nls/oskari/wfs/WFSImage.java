@@ -16,6 +16,7 @@ import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.apache.commons.codec.binary.Base64;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -38,7 +39,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.Tile;
-import fi.nls.oskari.pojo.WFSLayerStore;
 
 /**
  * Image drawing for WFS layers 

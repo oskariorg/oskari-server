@@ -49,14 +49,11 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
         JSONObject response = new JSONObject();
 
         if (id != -1) {
-            // Get WFS url in wfs layer configuration
+            // Get wfs layer configuration ala Oskari
             WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
             if (lc != null) {
-                final String wfsurl = WFSDescribeFeatureHelper.parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
-                JSONObject props = getRawDescribeFeatureType(wfsurl, lc.getUsername(), lc.getPassword());
-                // Simple type match (string or numeric)
-                response = WFSDescribeFeatureHelper.getFeatureTypesTextOrNumeric(layer_id, props);
-
+                // Get wfs feature property names  (gml properties excluded)
+                response = getFeatureTypesTextOrNumeric(lc, layer_id);
                 // Add WPS params
                 JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
             }
@@ -84,17 +81,15 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
 
     /**
      * Request WFS DescribeFeatureType response (xml)
-     * @param url  DescribeFeatureType Url
+     * @param lc  WFSlayerconfiguration ala Oskari
      *             e.g. http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
-     * @param user
-     * @param pass
-     * @return  Raw JSON object  (auto conversion of xml to JSON)
+     * @param layer_id for keying response
+     * @return  JSON object  (feature property names and text/numeric typing of property)
      * @throws ActionException
      */
-    private JSONObject getRawDescribeFeatureType(final String url, final String user, final String pass) throws ActionException {
+    private JSONObject getFeatureTypesTextOrNumeric(WFSLayerConfiguration lc, String layer_id) throws ActionException {
         try {
-            final String response = WFSDescribeFeatureHelper.getResponse(url, user, pass);
-            return WFSDescribeFeatureHelper.xml2JSON(response);
+            return WFSDescribeFeatureHelper.getFeatureTypesTextOrNumeric(lc, layer_id);
         } catch (ServiceException ex) {
             throw new ActionException("Error getting properties", ex);
         }

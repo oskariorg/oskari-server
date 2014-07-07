@@ -3,10 +3,8 @@ package fi.nls.oskari.pojo;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Map;
 
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONObject;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.junit.Test;
 
 public class WFSLayerStoreTest {

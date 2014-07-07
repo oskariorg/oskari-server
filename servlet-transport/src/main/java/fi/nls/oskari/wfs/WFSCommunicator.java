@@ -7,6 +7,7 @@ import java.util.Map;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
@@ -21,8 +22,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.XMLHelper;
+import fi.nls.oskari.wfs.util.XMLHelper;
 import org.opengis.referencing.operation.MathTransform;
 
 /**

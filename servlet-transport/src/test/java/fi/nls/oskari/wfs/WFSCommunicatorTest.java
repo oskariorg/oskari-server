@@ -14,6 +14,7 @@ import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.test.util.ResourceHelper;
 import org.custommonkey.xmlunit.Diff;
@@ -26,8 +27,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.HttpHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
 
 public class WFSCommunicatorTest {
 	private static SessionStore session;

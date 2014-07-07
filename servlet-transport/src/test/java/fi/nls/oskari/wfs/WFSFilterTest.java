@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -17,8 +18,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.XMLHelper;
+import fi.nls.oskari.wfs.util.XMLHelper;
 
 @Ignore
 public class WFSFilterTest {

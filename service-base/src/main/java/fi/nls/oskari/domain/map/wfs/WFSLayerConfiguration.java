@@ -714,6 +714,28 @@ public class WFSLayerConfiguration {
 		return root.toString();
 	}
 
+    public void setDefaults() {
+        this.setSRSName("EPSG:3067");
+        this.setGMLVersion("3.1.1");
+        this.setGML2Separator(false);
+        this.setWFSVersion("1.1.0");
+        this.setMaxFeatures(2000);
+        this.setGeometryNamespaceURI("");
+        this.setOutputFormat("");
+        this.setFeatureType("{}");
+        this.setSelectedFeatureParams("{}");
+        this.setFeatureParamsLocales("{}");
+        this.setGeometryType("2d");
+        this.setGetMapTiles(true);
+        this.setGetHighlightImage(true);
+        this.setGetFeatureInfo(true);
+        this.setTileRequest(false);
+        this.setTileBuffer("{}");
+        this.setMinScale(1500000d);
+        this.setMaxScale(1d);
+        this.setPublished(false);
+    }
+
 	public static String getCache(String layerId) {
 		return JedisManager.get(KEY + layerId);
 	}
