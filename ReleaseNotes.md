@@ -2,6 +2,34 @@
 
 ## 1.23
 
+### Maven repository @ oskari.org
+
+Precompiled versions of code is now available. Only 1.23-SNAPSHOT currently available, but versions start to pile up on releases.
+
+Add these to your pom.xml to use the pre-compiled Maven-artifacts today:
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+            <version>1.23-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>oskari_org_snapshot</id>
+            <name>Oskari.org snapshot repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+oskari_org_snapshot is only needed if using SNAPSHOT-versions (github develop branch version)
+
 ### control-admin
 
 New action handler 'Cache' for admin users to check the status of caching.

@@ -81,14 +81,14 @@ public class LayerHelper {
                 log.warn("Couldn't find matching role in DB:", roleName, "- Skipping!");
                 continue;
             }
-            final Permission permission = new Permission();
-            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId("" + role.getId());
             final JSONArray permissionTypes = permissions.optJSONArray(roleName);
             if(permissionTypes == null) {
                 continue;
             }
             for (int i = 0; i < permissionTypes.length(); ++i) {
+                final Permission permission = new Permission();
+                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                permission.setExternalId("" + role.getId());
                 final String type = permissionTypes.optString(i);
                 permission.setType(type);
                 res.addPermission(permission);

@@ -15,6 +15,6 @@
     "role_permissions": {
         "Guest" : ["VIEW_LAYER"],
         "User" : ["VIEW_LAYER"],
-        "Administrator" : ["VIEW_LAYER"]
+        "Admin" : ["VIEW_LAYER"]
     }
 }
