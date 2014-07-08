@@ -49,7 +49,8 @@ public class AnalysisHelper {
     private static final String ANALYSIS_INSPIRE = ""; // managed in front
 
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
-    private static final String ANALYSIS_RENDERING_URL = PropertyUtil.get("analysis.rendering.url");
+    private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional("analysis.rendering.url");
+    private static final String ANALYSIS_RENDERING_URL = getAnalysisTileUrl();
     private static final String ANALYSIS_RENDERING_ELEMENT = PropertyUtil.get("analysis.rendering.element");
 
     private static final Logger log = LogFactory.getLogger(AnalysisHelper.class);
@@ -212,5 +213,13 @@ public class AnalysisHelper {
             log.debug("Unable to get analysis field layer json", ex);
         }
         return fm;
+    }
+
+    private static String getAnalysisTileUrl() {
+        if (PROPERTY_RENDERING_URL == null) {
+            // action_route name points to fi.nls.oskari.control.layer.AnalysisTileHandler
+            return PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=AnalysisTile&wpsLayerId=";
+        }
+        return PROPERTY_RENDERING_URL + "&wpsLayerId=";
     }
 }
