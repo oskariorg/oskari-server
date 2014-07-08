@@ -25,7 +25,7 @@ CREATE TABLE analysis (
     col8 character varying(64),
     col10 character varying(64),
     select_to_data text,
-    created timestamp with time zone NOT NULL,
+    created timestamp with time zone,
     updated timestamp with time zone,
     col9 character varying(64),
     publisher_name character varying(256),
@@ -57,7 +57,7 @@ CREATE TABLE analysis_data (
     d3 date,
     d4 date,
     geometry geometry NOT NULL,
-    created timestamp with time zone NOT NULL,
+    created timestamp with time zone,
     updated timestamp with time zone,
     CONSTRAINT analysis_data_pkey PRIMARY KEY (id)
 );
