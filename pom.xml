@@ -131,6 +131,12 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-control-statistics</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -651,6 +657,7 @@
         <module>control-example</module>
         <module>control-myplaces</module>
         <module>control-admin</module>
+        <module>control-statistics</module>
         <module>content-resources</module>
 
         <module>servlet-map</module>
