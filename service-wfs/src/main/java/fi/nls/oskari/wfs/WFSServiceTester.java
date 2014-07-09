@@ -57,34 +57,34 @@ public class WFSServiceTester {
         Locale l = new Locale("fi");
         Date dte = Calendar.getInstance(l).getTime();
 
-
+        final String url = System.getProperty("wfs.service.url");
 
         report.append("++++++++++++++++++++++++++++++++++++++++++++++++ WFS Test START - " + dte.toString() + "\n");
 
         // Get args
-        if(args == null || args.length == 0)
+        if(url == null)
         {
             info("incorrect parameters ");
-            info("use - mvn  exec:java -Dexec.args='http://geo.stat.fi:8080/geoserver/wfs <user> <pw>' ");
+            info("use - mvn  exec:java -Dwfs.service.url=http://geo.stat.fi:8080/geoserver/wfs [wfs.service.user= wfs.service.pw= wfs.service.epsg=] ");
             System.exit(1);
         }
 
         // WFS service url e.g. http://geo.stat.fi:8080/geoserver/wfs
-        final String url = args[0];
-        String user = "";
-        String pw = "";
-        if(args.length > 1) user = args[1];
-        if(args.length > 2) pw = args[2];
 
 
-        setProxy();
+
+        final String user = System.getProperty("wfs.service.user");
+        final String pw = System.getProperty("wfs.service.pw");
+        final String epsg = System.getProperty("wfs.service.epsg");
+
+        setProxy();  // IDEA global proxy setup does'n work - you could use alternatively VM options in idea run / edit configuration
 
         info("Service url: " + url);
 
         for (String version : versions) {
             // Test version by version
             info("WFS test - version: " + version + ":::: START <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
-            TestWfs(url, version, user, pw);
+            TestWfs(url, version, user, pw, epsg);
             info("WFS test - version: " + version + ":::: END >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
 
         }
@@ -97,9 +97,14 @@ public class WFSServiceTester {
 
     /**
      * Test Wfs operations as version based
-     * * @param serviceUrl  Wfs service url
+     * If epsg is not defined by the user, then the wfs service default epsg is used
+     * @param serviceUrl  Wfs service url
+     * @param version  Wfs service version
+     * @param user  credentials for the wfs service
+     * @param pw
+     * @param epsg  spatial referenece system code - default epsg is used, if null
      */
-    public static void TestWfs(String serviceUrl, String version, String user, String pw) {
+    public static void TestWfs(String serviceUrl, String version, String user, String pw, String epsg) {
 
         info("WFS version test  (GetCapabilities http request) <<<< HTTP GETCAPABILITIES -------");
 
@@ -118,8 +123,8 @@ public class WFSServiceTester {
             TestWfsDescribeFeatureTypes(capa, serviceUrl, version, user, pw);
             info("----------------------------------------------------------------------------- >>>>");
 
-            info("WFS DescribeFeature test  (Http request ) <<<< GETFEATURE ----------");
-            TestWfsGetFeatures(capa, serviceUrl, version, user, pw);
+            info("WFS GetFeature test  (Http request, Transport, Geotools ) <<<< GETFEATURE ----------");
+            TestWfsGetFeatures(capa, serviceUrl, version, user, pw, epsg);
             info("----------------------------------------------------------------------------- >>>>");
         }
 
@@ -139,16 +144,16 @@ public class WFSServiceTester {
         try {
             final String response = IOHelper.getURL(url, user, pw);
             if (response == null) {
-                info("WFS GetCapabilities request FAILED - version " + version);
+                info("WFS Http GetCapabilities request FAILED - version " + version);
             } else if (response.toUpperCase().indexOf(EXCEPTION_REPORT) > -1) {
-                info("WFS GetCapabilities request FAILED - version: " + version);
+                info("WFS Http GetCapabilities request FAILED - version: " + version);
                 info("Exception report: " + response);
             }
             else {
-                info("WFS GetCapabilities request OK - version " + version);
+                info("WFS Http GetCapabilities request OK - version " + version);
             }
         } catch (Exception ex) {
-            info("WFS GetCapabilities request FAILED - version " + version);
+            info("WFS Http GetCapabilities request FAILED - version " + version);
         }
 
 
@@ -217,18 +222,18 @@ public class WFSServiceTester {
         try {
             response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
             if (response == null) {
-                info("WFS DescribeFeatureType request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " "+ lc.getSRSName());
+                info("WFS DescribeFeatureType request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default "+ lc.getSRSName());
             } else {
-                info("WFS DescribeFeatureType request OK - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " "+ lc.getSRSName());
+                info("WFS DescribeFeatureType request OK - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default "+ lc.getSRSName());
             }
         } catch (Exception ex) {
-            info("WFS GetCapabilities request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " "+ lc.getSRSName());
+            info("WFS GetCapabilities request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default  "+ lc.getSRSName());
         }
         return response;
 
     }
 
-    public static void TestWfsGetFeatures( Map<String, Object> capa, String serviceUrl, String version, String user, String pw) {
+    public static void TestWfsGetFeatures( Map<String, Object> capa, String serviceUrl, String version, String user, String pw, String epsg) {
 
         if (capa == null)  return;
         if (!capa.containsKey("WFSDataStore")) return;
@@ -241,18 +246,23 @@ public class WFSServiceTester {
             int count = 0;
 
 
-
             // Loop feature types
             for (String typeName : typeNames) {
-                count++;
-                WFSLayerConfiguration lc =   GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user,  pw);
-                // test http GET GetFeature
-                final  String response = TestGETWfsGetFeature(lc, version, count);
-                // Test Transport parser
-                double [] refPoint = TestTransportParser(lc, response, getWFSPropertieslikeOskari(wfsds, typeName));
-                // test GeoTools Bbox filter
-                if(refPoint[0] > 0d) TestGtBBOXFilter(wfsds, typeName, lc, refPoint);
-                // test http POST GetFeature BBOX  query
+                try {
+                    count++;
+                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
+                    if(epsg != null) lc.setSRSName(epsg);   // test request epsg entered by the user
+                    // test http GET GetFeature
+                    final String response = TestGETWfsGetFeature(lc, version, count);
+                    // Test Transport parser
+                    double[] refPoint = TestTransportParser(lc, response, getWFSPropertieslikeOskari(wfsds, typeName));
+                    // test GeoTools Bbox filter
+                    if (refPoint[0] > 0d) TestGtBBOXFilter(wfsds, typeName, lc, refPoint);
+                    // test http POST GetFeature BBOX  query
+                } catch (Exception ex2) {
+
+                }
+
             }
 
         } catch (Exception ex) {
@@ -277,7 +287,7 @@ public class WFSServiceTester {
                 int ind = response.indexOf("featureMember");
                 ind = (ind > -1) ? ind : 0;
 
-                info("WFS http GET GetFeature request OK - version " + version + " - response... " + response.substring(ind,ind + 80));
+                info("WFS http GET GetFeature request OK - version " + version + " - response... " + response.substring(ind,ind + 160));
             }
         } catch (Exception ex) {
             info("WFS http GET GetFeature request FAILED - version " + version);
@@ -305,7 +315,7 @@ public class WFSServiceTester {
             else {
                 info("Transport WFSParser  OK - version " + lc.getWFSVersion() +  " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " "+ lc.getSRSName());
                 refPoint = features.getBounds().getLowerCorner().getCoordinate();
-                info(" Features corner: " + "1st: " + Double.toString(refPoint[0])+ "2nd: " + Double.toString(refPoint[1]));
+                info(" Features corner: " + "1st: " + Double.toString(refPoint[0])+ " 2nd: " + Double.toString(refPoint[1]));
 
             }
         } catch (Exception ex) {
@@ -323,7 +333,13 @@ public class WFSServiceTester {
 
 
             String geomName = lc.getGMLGeometryProperty();
-            ReferencedEnvelope bbox = new ReferencedEnvelope( refPoint[0], refPoint[1], refPoint[0] + 100d, refPoint[1] + 100d, schema.getCoordinateReferenceSystem() );
+            double delta = 50d;  // unit m
+            // if geographical coordinates
+            if(refPoint[0] > -181d && refPoint[0] < 181d){
+                delta = 0.005d;
+            }
+
+            ReferencedEnvelope bbox = new ReferencedEnvelope( refPoint[0]-delta, refPoint[1]-delta, refPoint[0] + delta, refPoint[1] + delta, schema.getCoordinateReferenceSystem() );
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
             Object polygon = JTS.toGeometry(bbox);
             Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
@@ -334,7 +350,7 @@ public class WFSServiceTester {
 
 
             if (features == null || features.isEmpty()) {
-                info("GeoTools BBOX GetFeature parser FAILED - version " + lc.getWFSVersion());
+                info("GeoTools BBOX GetFeature parser FAILED or IS EMPTY - version " + lc.getWFSVersion());
             }
             else {
                 info("GeoTools BBOX GetFeature parser OK- version " + lc.getWFSVersion() +  " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " "+ lc.getSRSName());
@@ -396,7 +412,7 @@ public class WFSServiceTester {
     public static void info(final Object ... args) {
 
         log.info(args);
-        report.append(log.getString(args) + "\n");
+        report.append("    "+log.getString(args)+"\n");
 
     }
 
