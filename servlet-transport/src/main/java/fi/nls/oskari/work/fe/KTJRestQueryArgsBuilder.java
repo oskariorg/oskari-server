@@ -12,7 +12,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.OWSMapLayerJob.Type;
 import fi.nls.oskari.work.WFSMapLayerJob;
 

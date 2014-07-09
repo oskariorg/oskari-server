@@ -8,12 +8,12 @@ import java.io.StringReader;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.geotools.xml.Parser;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fi.nls.oskari.pojo.WFSLayerStore;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

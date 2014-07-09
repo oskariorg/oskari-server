@@ -68,5 +68,9 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-map</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-users</artifactId>
+        </dependency>
     </dependencies>
 </project>

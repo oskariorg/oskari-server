@@ -14,6 +14,7 @@ import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.test.util.ResourceHelper;
 import org.custommonkey.xmlunit.Diff;
@@ -26,8 +27,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.HttpHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
 
 public class WFSCommunicatorTest {
 	private static SessionStore session;
@@ -49,6 +49,7 @@ public class WFSCommunicatorTest {
         XMLUnit.setIgnoreDiffBetweenTextAndCDATA(true);
         XMLUnit.setIgnoreAttributeOrder(true);
 
+        assumeTrue(TestHelper.redisAvailable());
 		JedisManager.connect(10, "localhost", 6379);
 
         Properties properties = new Properties();
@@ -87,6 +88,7 @@ public class WFSCommunicatorTest {
 	public void testBounds() throws Exception {
         // check that we have http connectivity (correct proxy settings etc)
         assumeTrue(TestHelper.canDoHttp());
+        assumeTrue(TestHelper.redisAvailable());
 
 		String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
         Diff xmlDiff = new Diff(boundsResult, payload);

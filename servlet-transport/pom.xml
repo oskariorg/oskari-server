@@ -135,6 +135,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-feature-engine</artifactId>
         </dependency>
+         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-wfs</artifactId>
+        </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>

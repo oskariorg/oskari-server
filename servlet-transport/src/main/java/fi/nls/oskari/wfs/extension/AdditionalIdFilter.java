@@ -6,14 +6,13 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.operation.MathTransform;
 
-import javax.mail.Session;
 import java.util.List;
 
 public class AdditionalIdFilter extends WFSFilter {

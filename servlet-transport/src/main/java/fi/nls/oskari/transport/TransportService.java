@@ -11,8 +11,9 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.utils.HttpHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.*;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
@@ -45,7 +46,7 @@ public class TransportService extends AbstractService implements ResultProcessor
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
 
-    public static ObjectMapper mapper = new ObjectMapper();
+    //public static ObjectMapper mapper = new ObjectMapper();
 
 	// params
 	public static final String PARAM_ID = "id"; // skipped param - coming from cometd

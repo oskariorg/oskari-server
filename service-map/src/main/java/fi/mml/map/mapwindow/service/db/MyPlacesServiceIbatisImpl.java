@@ -220,7 +220,9 @@ public class MyPlacesServiceIbatisImpl extends BaseIbatisService<MyPlaceCategory
         layer.setName(lang, mpLayer.getCategory_name());
         layer.setTitle(lang, mpLayer.getPublisher_name());
         layer.setOpacity(50);
-        layer.setOptions(JSONHelper.createJSONObject("singleTile", true));
+        JSONObject options = JSONHelper.createJSONObject("singleTile", true);
+        JSONHelper.putValue(options, "transitionEffect", JSONObject.NULL);
+        layer.setOptions(options);
 
         // if useDirectURL -> geoserver URL
         if(useDirectURL) {

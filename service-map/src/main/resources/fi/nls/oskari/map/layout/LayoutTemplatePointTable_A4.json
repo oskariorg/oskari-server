@@ -2,8 +2,8 @@
      	"styles": {     		
    			"table1style": {
                 "width" : "15cm",
-                "height": "5cm",
-                "bottom": "20.5cm",
+                "height": "4.5cm",
+                "bottom": "19cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {
@@ -23,7 +23,7 @@
             "table2style": {
                 "width" : "15cm",
                 "height": "3cm",
-                "bottom": "25.5cm",
+                "bottom": "24cm",
                 "left": "1cm",
                 "styles" : {
                     "col1": {

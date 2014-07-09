@@ -15,6 +15,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.wfs.WFSFeatureTypeParser;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -39,8 +41,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.XMLHelper;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.XMLHelper;
     
 public class WFSParser {
     private static final Logger log = LogFactory.getLogger(WFSParser.class);

@@ -19,7 +19,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
 
 /**
- * CRUD for Inspire themes.
+ * CRUD for Inspire themes. Get is callable by anyone, other methods require admin user.
  */
 @OskariActionRoute("InspireThemes")
 public class InspireThemesHandler extends RestActionHandler {
@@ -100,6 +100,11 @@ public class InspireThemesHandler extends RestActionHandler {
         checkForAdminPermission(params);
         final int id = params.getRequiredParamInt(PARAM_ID);
         final InspireTheme theme = inspireThemeService.find(id);
+        final List<Integer> maplayerIds = inspireThemeService.findMaplayersByTheme(id);
+        if(!maplayerIds.isEmpty()) {
+            // theme with maplayers under it can't be removed
+            throw new ActionParamsException("Maplayers linked to theme", JSONHelper.createJSONObject("code", "not_empty"));
+        }
         inspireThemeService.delete(id);
         ResponseHelper.writeResponse(params, theme.getAsJSON());
     }

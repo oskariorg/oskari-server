@@ -42,13 +42,17 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
      * @param layer layer of which styles will be retrieved
      */
     private JSONArray getStyles(final OskariLayer layer) {
-        List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
         JSONArray arr = new JSONArray();
-        for (WFSSLDStyle style : styleList) {
-            JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
-            if(obj.length() > 0) {
-                arr.put(obj);
+        try {
+            List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
+            for (WFSSLDStyle style : styleList) {
+                JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
+                if (obj.length() > 0) {
+                    arr.put(obj);
+                }
             }
+        } catch (Exception e) {
+          log.warn("Failed to query wfs styles via SQL client");
         }
         return arr;
     }

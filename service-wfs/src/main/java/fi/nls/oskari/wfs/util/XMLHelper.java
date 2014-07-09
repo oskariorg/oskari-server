@@ -1,4 +1,4 @@
-package fi.nls.oskari.utils;
+package fi.nls.oskari.wfs.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

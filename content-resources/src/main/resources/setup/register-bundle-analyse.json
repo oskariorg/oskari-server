@@ -1,0 +1,8 @@
+{
+    "bundles" : {
+        "analysis" : [
+            "001-analyse.sql"
+           
+        ]
+    }
+}

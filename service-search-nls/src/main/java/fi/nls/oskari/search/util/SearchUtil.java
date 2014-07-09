@@ -520,9 +520,9 @@ public class SearchUtil {
         try {
 
 			final URL locationTypeUrl = getLocationTypeUrl();
-            log.warn("locationtypeURL: ",locationTypeUrl );
+            log.debug("locationtypeURL: ",locationTypeUrl );
 			InputStreamReader isr = new InputStreamReader(locationTypeUrl.openStream(), "UTF-8");
-            log.error("locationtype Response: ",isr);
+
             
             BufferedReader reader = new BufferedReader(isr);
             StringBuilder readXML = new StringBuilder();

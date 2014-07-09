@@ -20,9 +20,9 @@ import fi.nls.oskari.pojo.Layer;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.Units;
 import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.utils.HttpHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
 
 /**

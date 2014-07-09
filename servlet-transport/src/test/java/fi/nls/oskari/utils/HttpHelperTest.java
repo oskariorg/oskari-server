@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 
+import fi.nls.oskari.wfs.util.HttpHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

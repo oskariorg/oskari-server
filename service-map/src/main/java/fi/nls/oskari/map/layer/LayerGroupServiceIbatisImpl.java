@@ -64,6 +64,24 @@ public class LayerGroupServiceIbatisImpl extends BaseIbatisService<LayerGroup> i
         return group;
     }
 
+    /**
+     * Returns first group (searched in arbitratry order) that has any part
+     * of the group name in any language(!) matching the given name-parameter.
+     * Use carefully and preferrably with long parameter name.
+     * FIXME: Quick and dirty
+     * @param name
+     * @return matching group or null if no match
+     */
+    public LayerGroup findByName(final String name) {
+        final List<LayerGroup> groups = findAll();
+        for(LayerGroup group : groups) {
+            if(group.getLocale().toString().indexOf(name) > -1) {
+                return group;
+            }
+        }
+        return null;
+    }
+
     public List<LayerGroup> findAll() {
         final List<LayerGroup> groups = super.findAll();
         for(LayerGroup group : groups) {

@@ -833,11 +833,11 @@ public class AnalysisParser {
                             String noDataCount = result.optString("fieldNoDataCount", null);
 
                             if (noDataCount != null) {
+                                if(aggreresult == null) aggreresult = new JSONObject();
                                 aggreresult.put(FUNC_NODATACOUNT, this.getNoDataCount(noDataCount));
-
                             }
 
-                            aggreResult.put(fieldName, aggreresult);
+                            if(aggreresult != null) aggreResult.put(fieldName, aggreresult);
                         }
                     }
                 }
@@ -853,7 +853,16 @@ public class AnalysisParser {
                         }
                         // Special localisation for Aggregate result
                         //JSONObject locale_result = localeResult(result.optJSONObject("AggregationResults"), analysisLayer);
-                        aggreResult.put(fieldName, result.optJSONObject("AggregationResults"));
+                        JSONObject aggreresult = result.optJSONObject("AggregationResults");
+                        // If NoDataCount, append it to result
+                        String noDataCount = result.optString("fieldNoDataCount", null);
+
+                        if (noDataCount != null) {
+                            if(aggreresult == null) aggreresult = new JSONObject();
+                            aggreresult.put(FUNC_NODATACOUNT, this.getNoDataCount(noDataCount));
+                        }
+
+                        if(aggreresult != null) aggreResult.put(fieldName, aggreresult);
                     }
                 }
             }

@@ -12,6 +12,7 @@ import java.util.List;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.utils.TestHelper;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.WKTReader2;
 import org.junit.BeforeClass;
@@ -23,7 +24,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
 
 public class WFSImageTest {
 	private static SessionStore session;

@@ -23,19 +23,11 @@
         <parameter property="id" />
     </parameterMap>
 
-    <cacheModel type="LRU" id="theme-cache" readOnly="true" serialize="false">
-        <flushInterval hours="24"/>
-        <flushOnExecute  statement="InspireTheme.insert"/>
-        <flushOnExecute  statement="InspireTheme.update"/>
-        <flushOnExecute  statement="InspireTheme.delete"/>
-        <property name="CacheSize" value="200"/>
-    </cacheModel>
-
     <select id="maxId" resultClass="int">
         select max(id) from portti_inspiretheme
     </select>
 
-    <select id="find" parameterClass="int" resultMap="InspireThemeResult" cacheModel="theme-cache">
+    <select id="find" parameterClass="int" resultMap="InspireThemeResult">
         select id, locale from portti_inspiretheme where id = #id#
     </select>
 
@@ -51,6 +43,10 @@
     <select id="findByMaplayerMappings" resultClass="java.util.HashMap">
         select themeid, maplayerid from oskari_maplayer_themes
     </select>
+
+    <select id="findMaplayersByTheme" resultClass="int" parameterClass="int">
+        select maplayerid from oskari_maplayer_themes where themeid = #id#
+    </select>
     
     <statement id="insert" parameterMap="InspireThemeInsertParameter" resultClass="int">
         insert into portti_inspiretheme (locale)
@@ -63,7 +59,7 @@
         where id = ?
     </update>
     
-    <delete id="delete" parameterClass="long">
+    <delete id="delete" parameterClass="int">
         delete from portti_inspiretheme where id = #id#
     </delete>
 
@@ -71,7 +67,7 @@
         DELETE FROM oskari_maplayer_themes WHERE maplayerid = #id#;
     </delete>
 
-    <statement id="linThemeToLayer" parameterClass="java.util.HashMap">
+    <statement id="linkThemeToLayer" parameterClass="java.util.HashMap">
         insert into oskari_maplayer_themes (maplayerid, themeid) values (#layerId#, #themeId#)
     </statement>
 
