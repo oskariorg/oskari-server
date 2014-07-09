@@ -11,4 +11,5 @@ public class Constants {
 
     public static final String PARAM_ID = "id";
     public static final String PARAM_DATASOURCE = "datasource";
+    public static final String PARAM_OPTIONS = "options";
 }
