@@ -25,6 +25,7 @@ public class StatisticalIndicatorsHandler extends ActionHandler {
 
         // TODO: load indicators based on datasource, add abstraction and
         // transforming of result so client gets the same response format always
+        // indicator regions should match statslayers (see Stati
         ResponseHelper.writeResponse(params, getDummyIndicators());
     }
 
