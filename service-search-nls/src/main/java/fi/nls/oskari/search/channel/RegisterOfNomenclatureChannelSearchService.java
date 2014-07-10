@@ -59,10 +59,10 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
 	        queryParser.parse();
 	        log.debug(queryParser.toString());
         
-	        if(queryParser.getVillageName() != null && queryParser.getStreetName() != null){
-	    	        villageName = queryParser.getVillageName();
-	    	        searchString = queryParser.getStreetName();
-	    	        villageFound = hasVillage(villageName);
+	        if(queryParser.getVillageName() != null && queryParser.getStreetName() != null && !queryParser.getStreetName().equals("")){
+        		villageName = queryParser.getVillageName();
+    	        searchString = queryParser.getStreetName();
+    	        villageFound = hasVillage(villageName);
 	        }else{
 	        	searchVillages = false;
 	        }
@@ -145,7 +145,6 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
                 	//log.debug("verrataan: " + villageName + "-" + SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
                 	if(villageName.equals(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode))){
                         searchResultList.addItem(item);
-                		
                 	}
                 }else{
                 	searchResultList.addItem(item);
