@@ -44,7 +44,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,opacity,
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
                                    themeid)
-  VALUES((SELECT MAX(id) FROM oskari_maplayer),
+  VALUES((SELECT id FROM oskari_maplayer where name='@LAYER_NAME'),
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%$INSPIRE_THEME%'));
 
 -- add wfs specific layer data;
