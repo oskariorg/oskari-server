@@ -46,7 +46,7 @@ public class TransportService extends AbstractService implements ResultProcessor
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
 
-    //public static ObjectMapper mapper = new ObjectMapper();
+    public static ObjectMapper mapper = new ObjectMapper();
 
 	// params
 	public static final String PARAM_ID = "id"; // skipped param - coming from cometd
