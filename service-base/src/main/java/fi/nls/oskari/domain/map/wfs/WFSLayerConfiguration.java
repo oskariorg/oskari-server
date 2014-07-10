@@ -731,7 +731,7 @@ public class WFSLayerConfiguration {
         this.setGetFeatureInfo(true);
         this.setTileRequest(false);
         this.setTileBuffer("{}");
-        this.setMinScale(1500000d);
+        this.setMinScale(15000000d);
         this.setMaxScale(1d);
         this.setPublished(false);
     }

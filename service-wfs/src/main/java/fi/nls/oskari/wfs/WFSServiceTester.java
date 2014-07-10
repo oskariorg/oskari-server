@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.WFSDescribeFeatureHelper;
 
+import org.apache.commons.io.IOUtils;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -41,7 +42,11 @@ public class WFSServiceTester {
     private final static String  PROP_PROXYHOST = "http.proxyHost";
     private final static String  PROP_PROXYPORT = "http.proxyPort";
     private final static String  PROP_NONPROXYHOSTS = "http.nonproxyHosts";
+    private final static String  PROP_WFS_SQL_INSERT_TEMPLATE = "template_WFS_layer_insert.sql";
+    private final static String  WRITE_TEMPLATE_PATH = "wfs.sql.write.path";
     private final static String  EXCEPTION_REPORT = "EXCEPTIONREPORT";
+    private final static String LAYER_GROUP = System.getProperty("oskari.layer.group");
+    private final static String INSPIRE_THEME = System.getProperty("oskari.inspire.theme");
 
     private final static String[] versions =  {"1.0.0", "1.1.0", "2.0.0"};
     private static StringBuilder report = new StringBuilder();
@@ -252,6 +257,8 @@ public class WFSServiceTester {
                     count++;
                     WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     if(epsg != null) lc.setSRSName(epsg);   // test request epsg entered by the user
+                    // Write wfs layer insert scripts (sql) - only for Wfs version 1.1.0
+                    writeWFSSqlInsertScript(lc);
                     // test http GET GetFeature
                     final String response = TestGETWfsGetFeature(lc, version, count);
                     // Test Transport parser
@@ -409,14 +416,112 @@ public class WFSServiceTester {
         if(PropertyUtil.get(PROP_NONPROXYHOSTS) != null ) systemProperties.setProperty(PROP_NONPROXYHOSTS,PropertyUtil.get(PROP_NONPROXYHOSTS));
     }
 
+    public static void writeWFSSqlInsertScript(WFSLayerConfiguration lc) {
+
+
+        if (PropertyUtil.get(PROP_WFS_SQL_INSERT_TEMPLATE) != null && lc.getWFSVersion().equals("1.1.0")) {
+
+            // Read template
+            String sqlTemplate = null;
+
+                try {
+                    sqlTemplate = getTemplate(PROP_WFS_SQL_INSERT_TEMPLATE);
+                } catch (IOException e) {
+                    info("WFS insert sql template close FAILED " + " --  template file: " + PROP_WFS_SQL_INSERT_TEMPLATE);
+                }
+
+
+
+            // Replace properties in template
+            /*
+            -- $WFS_URL  wfs service url (e.g. http://geo.stat.fi:8080/geoserver/ows)
+            -- $LAYER_GROUP administrative layer group (e.g. Tilastokeskus)
+            -- $LAYER_NAME
+            -- $OPACITY   (0 -100)
+            -- $MIN_SCALE (smallest scale e.g. 1500000  -- means !:1500000)
+            -- $MAX_SCALE (largest scale e.g. 1 --> means 1:1)
+            -- $LAYER_NAME_FI
+            -- $LAYER_NAME_SV
+            -- $LAYER_NAME_EN
+            -- $INSPIRE_THEME  inspire theme  (e.g. Tilastointiyksiköt)
+            -- $GEOMETRY_PROPERTY  WFS feature default geometry property name (e.g. the_geom)
+            -- $GML_VERSION  e.g. 3.1.1
+            -- $WFS_VERSION  e.g. 1.1.0
+            -- $MAXFEATURES maximum allowed count of features to select in one request - e.g. 20000
+            -- $NAMESPACE_PREFIX  namespace prefix for $FEATURE_ELEMENT  ( e.g. vaestoruutu)
+            -- $EPSG  spatial reference system code (e.g. EPSG:3067)
+            -- $FEATURE_ELEMENT  name of featuretype
+            -- $NAMESPACE_URI namespace uri of $FEATURE_ELEMENT
+             */
+            String inspireTheme = "Inspire Theme";
+            if(INSPIRE_THEME != null) inspireTheme= INSPIRE_THEME;
+            String layerGroup = "Layer Group";
+            if(LAYER_GROUP != null) layerGroup= LAYER_GROUP;
+            if (sqlTemplate != null) {
+            sqlTemplate = sqlTemplate.replace("$WFS_URL", lc.getURL());
+            sqlTemplate = sqlTemplate.replace("$LAYER_NAME", lc.getLayerName().replace(":","_"));
+            sqlTemplate = sqlTemplate.replace("$LAYER_GROUP", layerGroup);
+            sqlTemplate = sqlTemplate.replace("$OPACITY", "80");
+            sqlTemplate = sqlTemplate.replace("$MIN_SCALE", Double.toString(lc.getMinScale()));
+            sqlTemplate = sqlTemplate.replace("$MAX_SCALE", Double.toString(lc.getMaxScale()));
+
+            sqlTemplate = sqlTemplate.replace("$FI_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
+            sqlTemplate = sqlTemplate.replace("$SV_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
+            sqlTemplate = sqlTemplate.replace("$EN_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
+            sqlTemplate = sqlTemplate.replace("$INSPIRE_THEME", inspireTheme);
+            sqlTemplate = sqlTemplate.replace("$GEOMETRY_PROPERTY", lc.getGMLGeometryProperty());
+            sqlTemplate = sqlTemplate.replace("$GML_VERSION", lc.getGMLVersion());
+            sqlTemplate = sqlTemplate.replace("$WFS_VERSION", lc.getWFSVersion());
+            sqlTemplate = sqlTemplate.replace("$MAXFEATURES", Integer.toString(lc.getMaxFeatures()));
+            sqlTemplate = sqlTemplate.replace("$NAMESPACE_PREFIX", lc.getFeatureNamespace());
+            sqlTemplate = sqlTemplate.replace("$EPSG", lc.getSRSName());
+            sqlTemplate = sqlTemplate.replace("$FEATURE_ELEMENT", lc.getFeatureElement());
+            sqlTemplate = sqlTemplate.replace("$NAMESPACE_URI", lc.getFeatureNamespaceURI());
+
+            // write into file
+            BufferedWriter writer = null;
+            String filename = "";
+            try {
+                String filePath = "";
+                if (PropertyUtil.get(WRITE_TEMPLATE_PATH) != null) {
+                    filePath = PropertyUtil.get(WRITE_TEMPLATE_PATH);
+                }
+                else {
+                    filePath = System.getProperty("java.io.tmpdir");
+                }
+                filename = filePath+lc.getFeatureElement()+".sql";
+                writer = new BufferedWriter(new FileWriter(filename));
+                writer.write(sqlTemplate);
+
+            } catch (IOException e) {
+            } finally {
+                try {
+                    if (writer != null)
+                        writer.close();
+                    info("WFS insert sql script written " + " -- sql file: " + filename);
+                } catch (IOException e) {
+                }
+            }
+            }
+        }
+    }
     public static void info(final Object ... args) {
 
         log.info(args);
-        report.append("    "+log.getString(args)+"\n");
+        report.append("    " + log.getString(args) + "\n");
 
     }
 
+    protected static String getTemplate(String templatePath)
+            throws  IOException {
+        String template = "";
 
+        InputStream inp =  WFSServiceTester.class.getClassLoader().getResourceAsStream(templatePath);
+        template = new Scanner(inp).useDelimiter("\\A").next();
+        inp.close();
+
+        return template;
+    }
 
 }
 
