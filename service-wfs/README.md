@@ -12,13 +12,22 @@ Test properties can be modified in /oskari-server/service-wfs/src/main/resources
     http.proxyPort=800
     http.nonProxyHosts="*.nls.fi|127.0.0.1|*.paikkatietoikkuna.fi
 
+    # for wfs layer insert script writer (no sql script generation, when property in undefined)
+    # template is under resource path
+    wfs.sql.insert.layer.template=template_WFS_layer_insert.sql (sql template file for sql script)
+    wfs.sql.write.path=C://Omat/sql/    (write path for generated sql-files, java.io.tmpdir is used, if not defined)
+
+
 
 ## VM options for command line or for Idea run
 
-    * wfs.service.url  WFS service url e.g. `http://geo.stat.fi:8080/geoserver/wfs`
+    * wfs.service.url  WFS service url e.g. `-Dwfs.service.url=http://geo.stat.fi:8080/geoserver/wfs`
     * wfs.service.user WFS service credentials
     * wfs.service.pw
-    * wfs.service.epsg  Spatial reference system code  e.g. "EPSG:3067" (if not defined, default service epsg is in use)
+    * wfs.service.epsg  Spatial reference system code  e.g. "-Dwfs.service.epsg=EPSG:3067" (if not defined, default service epsg is in use)
+
+    * oskari.layer.group Layer group name e.g. Tilastokeskus  (only used, when wfs.sql.insert.layer.template is defined)
+    * oskari.inspire.theme  Inspire theme  e.g. Tilastoyksiköt
 
 ## Run
 
@@ -45,6 +54,12 @@ Test properties can be modified in /oskari-server/service-wfs/src/main/resources
        if Test 4. is OK, then there are Transport WFS parser test and Geotools BBOX GetFeature test
        5. Transport WFS parser test
        6. Geotools BBOX GetFeature test
+
+## Sql scripts generator
+
+    * Program writes sql script files for each featuretype during tests when wfs.sql.insert.layer.template is not null (only version 1.1.0)    
+    * output path is defined by wfs.sql.write.path property
+    * use VM options e.g. -Dwfs.service.url=http://geo.stat.fi:8080/geoserver/wfs -Doskari.layer.group=Tilastokeskus -Doskari.inspire.theme=Tilastoyksiköt for oskari layer group and inspiretheme
 
 ## Results
 
