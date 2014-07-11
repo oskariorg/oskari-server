@@ -23,9 +23,10 @@ public class StatisticalIndicatorsHandler extends ActionHandler {
 
         final int datasource = params.getRequiredParamInt(PARAM_DATASOURCE);
 
-        // TODO: load indicators based on datasource, add abstraction and
-        // transforming of result so client gets the same response format always
-        // indicator regions should match statslayers (see Stati
+        // TODO: load indicators based on datasource, add abstraction and transforming
+        // for result so client always gets the response in same format
+        // indicator regions should match statslayers
+        // (see StatisticalIndicatorRegionCategories/StatisticalIndicatorRegions action route)
         ResponseHelper.writeResponse(params, getDummyIndicators());
     }
 
