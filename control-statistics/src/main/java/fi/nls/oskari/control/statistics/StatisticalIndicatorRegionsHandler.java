@@ -27,8 +27,16 @@ public class StatisticalIndicatorRegionsHandler extends ActionHandler {
         JSONArray response = new JSONArray();
         // these regions(features) should match regions referenced by indicators
         // id == layer.region_id (doesn't exist yet)
-        response.put(JSONHelper.createJSONObject("{ \"id\" : \"091\", \"locale\" : { \"fi\" : \"Helsinki\"}}"));
-        response.put(JSONHelper.createJSONObject("{ \"id\" : \"837\", \"locale\" : { \"fi\" : \"Tampere\"}}"));
+        if(categoryId == 1) {
+            // "layerId" : something_something, // 'oskari:kunnat2013'
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"091\", \"locale\" : { \"fi\" : \"Helsinki\"}}"));
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"837\", \"locale\" : { \"fi\" : \"Tampere\"}}"));
+        }
+        else if( categoryId == 2) {
+            // "layerId" : something_else, // 'oskari:seutukunta'
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"011\", \"locale\" : { \"fi\" : \"Helsingin seutukunta\"}}"));
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"064\", \"locale\" : { \"fi\" : \"Tampereen seutukunta\"}}"));
+        }
 
 /*
 From SotkaNet:
