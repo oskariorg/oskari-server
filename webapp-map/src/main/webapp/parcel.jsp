@@ -45,6 +45,8 @@
                 vertical-align: bottom;
                 margin-bottom: 8px;
                 margin-top: 20px;
+                font-size: 12px;
+                line-height: 12.6px;
             }
             #loginbar a {
                 color: #FFDE00;
