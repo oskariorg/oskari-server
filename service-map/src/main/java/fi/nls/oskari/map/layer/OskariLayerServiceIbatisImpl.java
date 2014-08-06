@@ -214,8 +214,8 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         }
         // try to find with external id
         try {
-            final Map<String, Object> result = (Map<String, Object>) getSqlMapClient().queryForList(getNameSpace() + ".findByExternalId", idStr);
-            final OskariLayer layer = mapData(result);
+            final List<Map<String, Object>> lresults = (List<Map<String, Object>>) getSqlMapClient().queryForList(getNameSpace() + ".findByExternalId", idStr);
+            final OskariLayer layer = mapData(lresults.get(0));
             if(layer.isCollection()) {
                 final List<OskariLayer> sublayers = findByParentId(layer.getId());
                 log.debug("FindByParent returned", sublayers.size(), "sublayers for parent id:", layer.getId());
