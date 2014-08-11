@@ -55,7 +55,8 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
             return new JSONArray();
         }
         StringBuffer buf = new StringBuffer(serviceURL);
-        buf.append("?format=json&addressdetails=1");
+        if(serviceURL.indexOf("?") > 0)buf.append("&format=json&addressdetails=1");
+        else buf.append("?format=json&addressdetails=1");
         // buf.append("&countrycodes=fi");
         buf.append("&accept-language=");
         buf.append(searchCriteria.getLocale());
