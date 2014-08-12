@@ -295,7 +295,11 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
 
     public long getDefaultViewId() {
-        return getDefaultViewId(ViewTypes.DEFAULT);
+        // property overrides db default, no particular reason for this
+        if(defaultViewProperty == -1) {
+            defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
+        }
+        return defaultViewProperty;
     }
 
     /**
@@ -323,15 +327,20 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                 }
             }
         }
-
-        // property overrides db default, no particular reason for this
-        if(defaultViewProperty != -1) {
-            return defaultViewProperty;
-        }
-        // global default view property not defined, check db
         log.debug("No properties based default views matched user", user, ". Defaulting to DB.");
-        defaultViewProperty = getDefaultViewId(ViewTypes.DEFAULT);
-        return defaultViewProperty;
+        return getDefaultViewId();
+    }
+
+    /**
+     * Returns default view id for given role name
+     * @param roleName
+     * @return
+     */
+    public long getDefaultViewIdForRole(final String roleName) {
+        if(defaultViewIds.containsKey(roleName)) {
+            return defaultViewIds.get(roleName);
+        }
+        return getDefaultViewId();
     }
 
     public long getDefaultViewId(String type) {
