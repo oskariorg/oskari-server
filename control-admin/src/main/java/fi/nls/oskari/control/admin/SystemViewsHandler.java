@@ -1,20 +1,23 @@
 package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.map.view.Bundle;
+import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.user.IbatisRoleService;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.util.Date;
 import java.util.List;
@@ -66,6 +69,58 @@ public class SystemViewsHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
+    /**
+     * Loads view with id and modifies mapfull state using these parameters:
+     * - id = view id
+     * - east, north, selectedLayers, srs, zoom = mapfull state variables
+     * - force = if true update even if selectedLayers have layers that Guest users don't have permission for
+     * @param params
+     * @throws ActionException
+     */
+    @Override
+    public void handlePost(final ActionParameters params) throws ActionException {
+        final int id = params.getRequiredParamInt(PARAM_ID);
+        final View view = viewService.getViewWithConf(id);
+        if(view == null) {
+            throw new ActionParamsException("Invalid view id " + id);
+        }
+        final Bundle mapfull = view.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
+        if(mapfull == null) {
+            throw new ActionParamsException("View (" + id + ") doesn't include bundle: " + ViewModifier.BUNDLE_MAPFULL);
+        }
+
+        final JSONObject state = mapfull.getStateJSON();
+        setupLocation(params, state);
+
+        final JSONArray layers = JSONHelper.createJSONArray(params.getRequiredParam("selectedLayers"));
+        final boolean ignoreLayerPermissionCheck = "true".equalsIgnoreCase(params.getHttpParam("force", "false"));
+
+        try {
+            viewService.updateBundleSettingsForView(view.getId(), mapfull);
+        } catch (ViewException ex) {
+            throw new ActionException("Error updating view settings", ex);
+        }
+
+        ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("success", "true"));
+    }
+
+    private void setupLocation(final ActionParameters params, final JSONObject state) throws ActionException {
+        final String srs = params.getRequiredParam("srs");
+        if(state.optString("srs").equalsIgnoreCase(srs)) {
+            // TODO: projection conversion if SRS is different
+            throw new ActionParamsException("Views have different projections, not implemented yet");
+        }
+
+        final double north = ConversionHelper.getDouble(params.getRequiredParam("north"), -1);
+        if(north != -1) {
+            JSONHelper.putValue(state, "north", north);
+        }
+        final double east = ConversionHelper.getDouble(params.getRequiredParam("east"), -1);
+        if(east != -1) {
+            JSONHelper.putValue(state, "east", east);
+        }
+        JSONHelper.putValue(state, "zoom", params.getRequiredParamInt("zoom"));
+    }
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
