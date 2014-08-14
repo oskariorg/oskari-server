@@ -18,9 +18,6 @@ import java.util.Locale;
 @OskariViewModifier("address")
 public class AddressParamHandler extends ParamHandler {
 
-    private static final String KEY_EAST = "east";
-    private static final String KEY_NORTH = "north";
-
     private static final Logger log = LogFactory.getLogger(AddressParamHandler.class);
     //private static final String PARAM_ADDRESS = "address";
     private static SearchService searchService = new SearchServiceImpl();

@@ -24,10 +24,6 @@ public class NationalCadastralRefParamHandler extends ParamHandler {
 
     private static SearchService searchService = new SearchServiceImpl();
     private static final Logger log = LogFactory.getLogger(NationalCadastralRefParamHandler.class);
-    //private static final String PARM__NATIONAL_CADASTRAL_REFERENCE = "nationalCadastralReference";
-    private static final String KEY_EAST = "east";
-    private static final String KEY_NORTH = "north";
-
     
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {

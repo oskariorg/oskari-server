@@ -16,9 +16,6 @@ public class ShowMarkerParamHandler extends MarkersParamHandler {
 
     private static final Logger log = LogFactory.getLogger(ShowMarkerParamHandler.class);
 
-    private static final String KEY_NORTH = "north";
-    private static final String KEY_EAST = "east";
-
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {
             return false;
