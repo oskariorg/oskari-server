@@ -56,4 +56,6 @@ public interface ViewService extends BaseService<Object> {
 
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
 
+    public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException;
+
 }

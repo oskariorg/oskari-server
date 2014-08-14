@@ -293,6 +293,27 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         queryForObject("View.add-bundle", bundle);
     }
 
+    public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("view_id", viewId);
+        params.put("bundle_id", bundle.getBundleId());
+
+        params.put("seqno", bundle.getSeqNo());
+        params.put("startup", bundle.getStartup());
+        params.put("config", bundle.getConfig());
+        params.put("state", bundle.getState());
+        params.put("bundleinstance", bundle.getBundleinstance());
+
+        try {
+            final int numUpdated = getSqlMapClient().update("View.update-bundle-settings-in-view", params);
+            if(numUpdated == 0) {
+                // not updated, bundle not found
+                throw new ViewException("Failed to update - bundle not found in view?");
+            }
+        } catch (Exception e) {
+            throw new ViewException("Failed to update", e);
+        }
+    }
 
     public long getDefaultViewId() {
         // property overrides db default, no particular reason for this
