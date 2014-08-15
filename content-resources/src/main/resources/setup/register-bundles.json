@@ -28,7 +28,8 @@
             "026-promote.sql",
             "027-publishedgrid.sql",
             "028-featuredata2.sql",
-            "029-admin-layerrights.sql"
+            "029-admin-layerrights.sql",
+            "033-admin-users.sql"
         ],
         "integration" : [
             "001-admin-layerselector.sql"
