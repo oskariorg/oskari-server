@@ -34,6 +34,9 @@ oskari_org_snapshot is only needed if using SNAPSHOT-versions (github develop br
 
 New action handler 'Cache' for admin users to check the status of caching.
 
+New action handler 'SystemViews' can be asked to list configured default views (returns global and role-based) and update location/maplayers of given view.
+Used by generic admin bundles default views functionality.
+
 ### content-resources
 
 DBHandler can now insert layers described in JSON format (under src/main/resources/json/layers). The support is minimal at the moment but will improve.

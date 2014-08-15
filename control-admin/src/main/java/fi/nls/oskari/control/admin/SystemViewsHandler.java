@@ -19,7 +19,6 @@ import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.user.IbatisRoleService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -38,7 +37,6 @@ public class SystemViewsHandler extends RestActionHandler {
 
     private Logger log = LogFactory.getLogger(SystemViewsHandler.class);
     private static ViewService viewService;
-    private static IbatisRoleService roleService;
     private static OskariLayerService layerService;
     private static PermissionsService permissionsService;
 
@@ -46,7 +44,6 @@ public class SystemViewsHandler extends RestActionHandler {
 
     public void init() {
         viewService = new ViewServiceIbatisImpl();
-        roleService = new IbatisRoleService();
 
         layerService = ServiceFactory.getMapLayerService();
         permissionsService = ServiceFactory.getPermissionsService();
@@ -69,7 +66,12 @@ public class SystemViewsHandler extends RestActionHandler {
         final long globalDefaultViewId = viewService.getDefaultViewId();
         JSONHelper.putValue(response, "viewId", globalDefaultViewId);
 
-        final List<Role> roles = roleService.findAll();
+        final Role[] roles;
+        try {
+            roles = UserService.getInstance().getRoles();
+        } catch (ServiceException e) {
+            throw new ActionException("Couldn't get roles listing", e);
+        }
         for (Role role : roles) {
             final JSONObject json = new JSONObject();
             JSONHelper.putValue(json, PARAM_ID, role.getId());
