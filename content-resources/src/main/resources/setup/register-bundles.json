@@ -36,6 +36,9 @@
         "catalogue" : [
             "metadataflyout.sql",
             "metadatacatalogue.sql"
+        ],
+        "admin" : [
+            "admin.sql"
         ]
     }
 }
