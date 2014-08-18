@@ -12,9 +12,6 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 public class CoordinateParamHandler extends ParamHandler {
 
     private static final Logger log = LogFactory.getLogger(CoordinateParamHandler.class);
-    //private static final String PARAM_COORD = "coord";
-    private static final String KEY_EAST = "east";
-    private static final String KEY_NORTH = "north";
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {

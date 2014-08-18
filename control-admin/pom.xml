@@ -15,9 +15,15 @@
     <name>Control Service - Admin Actions</name>
 
     <dependencies>
+
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-users</artifactId>
         </dependency>
 
         <dependency>
