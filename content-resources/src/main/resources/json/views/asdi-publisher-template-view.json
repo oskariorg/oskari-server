@@ -153,6 +153,7 @@
             }
         },
         { "id" : "infobox" },
+        { "id" : "publishedstatehandler" },
         { "id" : "toolbar",
             "config" : {
                 "basictools": {
