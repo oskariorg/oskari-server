@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static fi.nls.oskari.control.statistics.util.Constants.*;
@@ -29,15 +30,15 @@ public class StatisticalIndicatorValuesHandler extends ActionHandler {
 
         ResponseHelper.writeResponse(params, getDummyValues("" + indicatorId, options));
     }
-    private JSONObject getDummyValues(String indicatorId, JSONObject options) throws ActionException {
+    private JSONArray getDummyValues(String indicatorId, JSONObject options) throws ActionException {
 
         final SotkaRequest req = SotkaRequest.getInstance("data");
         req.setGender(options.optString("sex"));
-        req.setVersion("1.1");
+        req.setVersion("1.0");
         req.setIndicator(indicatorId);
         req.setYears(new String[]{options.optString("year")});
         final String data = req.getData();
-        return JSONHelper.createJSONObject(data);
+        return JSONHelper.createJSONArray(data);
     }
 
 }
