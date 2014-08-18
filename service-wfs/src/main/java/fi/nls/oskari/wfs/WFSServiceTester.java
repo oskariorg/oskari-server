@@ -258,7 +258,8 @@ public class WFSServiceTester {
                     WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     if(epsg != null) lc.setSRSName(epsg);   // test request epsg entered by the user
                     // Write wfs layer insert scripts (sql) - only for Wfs version 1.1.0
-                    writeWFSSqlInsertScript(lc);
+                    String title = wfsds.getFeatureTypeTitle(typeName);
+                    writeWFSSqlInsertScript(lc, title);
                     // test http GET GetFeature
                     final String response = TestGETWfsGetFeature(lc, version, count);
                     // Test Transport parser
@@ -416,7 +417,7 @@ public class WFSServiceTester {
         if(PropertyUtil.get(PROP_NONPROXYHOSTS) != null ) systemProperties.setProperty(PROP_NONPROXYHOSTS,PropertyUtil.get(PROP_NONPROXYHOSTS));
     }
 
-    public static void writeWFSSqlInsertScript(WFSLayerConfiguration lc) {
+    public static void writeWFSSqlInsertScript(WFSLayerConfiguration lc, String layerTitle) {
 
 
         if (PropertyUtil.get(PROP_WFS_SQL_INSERT_TEMPLATE) != null && lc.getWFSVersion().equals("1.1.0")) {
@@ -468,6 +469,9 @@ public class WFSServiceTester {
             sqlTemplate = sqlTemplate.replace("$FI_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
             sqlTemplate = sqlTemplate.replace("$SV_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
             sqlTemplate = sqlTemplate.replace("$EN_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
+            sqlTemplate = sqlTemplate.replace("$FI_LAYER_TITLE", layerTitle);
+            sqlTemplate = sqlTemplate.replace("$SV_LAYER_TITLE", layerTitle);
+            sqlTemplate = sqlTemplate.replace("$EN_LAYER_TITLE", layerTitle);
             sqlTemplate = sqlTemplate.replace("$INSPIRE_THEME", inspireTheme);
             sqlTemplate = sqlTemplate.replace("$GEOMETRY_PROPERTY", lc.getGMLGeometryProperty());
             sqlTemplate = sqlTemplate.replace("$GML_VERSION", lc.getGMLVersion());

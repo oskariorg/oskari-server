@@ -52,6 +52,8 @@ public abstract class AnalysisMethodParams {
     private String href = "";
     private int layer_id = 0;
     private String serviceUrl = "";
+    private String serviceUser = "";
+    private String servicePw = "";
 
     private String maxFeatures = "";
     private String outputFormat = "";
@@ -68,6 +70,7 @@ public abstract class AnalysisMethodParams {
     private String x_upper = "";
     private String y_upper = "";
     private String geojson = "";
+    private String responsePrefix = "feature";
 
     public String getMethod() {
         return method;
@@ -111,6 +114,22 @@ public abstract class AnalysisMethodParams {
 
     public void setServiceUrl(String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    public String getServiceUser() {
+        return serviceUser;
+    }
+
+    public void setServiceUser(String serviceUser) {
+        this.serviceUser = serviceUser;
+    }
+
+    public String getServicePw() {
+        return servicePw;
+    }
+
+    public void setServicePw(String servicePw) {
+        this.servicePw = servicePw;
     }
 
     public String getMaxFeatures() {
@@ -233,6 +252,18 @@ public abstract class AnalysisMethodParams {
 
     public void setGeojson(String geojson) {
         this.geojson = geojson;
+    }
+
+    /**
+     * prefix of featuretypes in wps response or in other unknown feature case (e.g. geojson gml encode)
+     * @return
+     */
+    public String getResponsePrefix() {
+        return responsePrefix;
+    }
+
+    public void setResponsePrefix(String responsePrefix) {
+        this.responsePrefix = responsePrefix;
     }
 
     protected XPath getXPath() {

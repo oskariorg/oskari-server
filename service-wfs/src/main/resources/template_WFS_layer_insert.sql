@@ -14,6 +14,9 @@
 -- FI_LAYER_NAME
 -- SV_LAYER_NAME
 -- EN_LAYER_NAME
+-- FI_LAYER_TITLE
+-- SV_LAYER_TITLE
+-- EN_LAYER_TITLE
 -- INSPIRE_THEME  inspire theme  (e.g. Tilastointiyksiköt)
 -- GEOMETRY_PROPERTY  WFS feature default geometry property name (e.g. the_geom)
 -- GML_VERSION  e.g. 3.1.1
@@ -39,7 +42,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,opacity,
                             url, locale)
   VALUES('wfslayer', '$LAYER_NAME', (SELECT id FROM oskari_layergroup WHERE locale LIKE '%$LAYER_GROUP%'),
          $OPACITY, $MIN_SCALE, $MAX_SCALE,
-         'wfs', '{ fi:{name:"$FI_LAYER_NAME",subtitle:""},sv:{name:"$SV_LAYER_NAME",subtitle:""},en:{name:"$EN_LAYER_NAME",subtitle:""}}');
+         'wfs', '{ fi:{name:"$FI_LAYER_TITLE",subtitle:""},sv:{name:"$SV_LAYER_TITLE",subtitle:""},en:{name:"$EN_LAYER_TITLE",subtitle:""}}');
 
 -- link to inspire theme;
 INSERT INTO oskari_maplayer_themes(maplayerid,
