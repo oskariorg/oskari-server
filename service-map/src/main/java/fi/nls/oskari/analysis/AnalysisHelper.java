@@ -42,6 +42,7 @@ public class AnalysisHelper {
     private static final String JSKEY_WPSURL = "wpsUrl";
     private static final String JSKEY_WPSNAME = "wpsName";
     private static final String JSKEY_RESULT = "result";
+    private static final String JSKEY_OVERRIDE_SLD = "override_sld";
 
     private static final String LAYER_PREFIX = "analysis_";
 
@@ -133,8 +134,9 @@ public class AnalysisHelper {
             json.put(JSKEY_WPSNAME, ANALYSIS_RENDERING_ELEMENT);
             json.put(JSKEY_WPSLAYERID, wpsid);
             json.put(JSKEY_RESULT, "");
-
-            if (analyse_js.has(JSKEY_BBOX)) {
+            if (analyse_js.has(JSKEY_OVERRIDE_SLD))json.put(JSKEY_OVERRIDE_SLD, analyse_js.optString(JSKEY_OVERRIDE_SLD));
+            //
+                if (analyse_js.has(JSKEY_BBOX)) {
                 JSONObject bbox = JSONHelper.getJSONObject(analyse_js, JSKEY_BBOX);
                 try {
                     String bottom = Double.toString(bbox.getDouble(JSKEY_BOTTOM));

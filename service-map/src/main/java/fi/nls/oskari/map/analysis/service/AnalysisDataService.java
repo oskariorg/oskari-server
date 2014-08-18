@@ -65,6 +65,7 @@ public class AnalysisDataService {
             analysis.setName(analysislayer.getName());
             analysis.setStyle_id(style.getId());
             analysis.setUuid(user.getUuid());
+            if(analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty()) analysis.setOverride_SLD(analysislayer.getOverride_sld());
             log.debug("Adding analysis row", analysis);
             analysisService.insertAnalysisRow(analysis);
 
@@ -83,7 +84,7 @@ public class AnalysisDataService {
             // and remove the fields parameter from call
             List<String> fields = new ArrayList<String>();
             final String wfst = transformationService.wpsFeatureCollectionToWfst(featureset, analysis.getUuid(),
-                    analysis.getId(), fields, analysislayer.getFieldtypeMap(), geometryProperty);
+                    analysis.getId(), fields, analysislayer.getFieldtypeMap(), geometryProperty, params.getResponsePrefix());
             log.debug("Produced WFS-T:\n" + wfst);
 
             final String response = IOHelper.httpRequestAction(wfsURL, wfst,

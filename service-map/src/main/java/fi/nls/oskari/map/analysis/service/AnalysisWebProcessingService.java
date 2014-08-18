@@ -1,16 +1,29 @@
 package fi.nls.oskari.map.analysis.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.util.Iterator;
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
+import fi.nls.oskari.util.JSONHelper;
+import org.deegree.model.feature.schema.FeatureType;
+import org.geotools.GML;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.xml.xsi.XSISimpleTypes;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
 
 import fi.nls.oskari.log.Logger;
@@ -26,6 +39,10 @@ public class AnalysisWebProcessingService {
             AnalysisWebProcessingService.class);
 
     private static final String GEOSERVER_WPS_URL = "geoserver.wps.url";
+    private static final String GEOJSON_LAYER2 = "layer2";
+    private static final String GEOJSON_GEOMETRY = "geometry";
+    private static final String GEOJSON_PROPERTIES = "properties";
+    private static final String DELTA_FIELD_NAME = "muutos_AB";
 
     /**
      * Get WPS results as wfs FeatureCollection
@@ -99,5 +116,176 @@ public class AnalysisWebProcessingService {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    public String requestWFS2FeatureSet(final AnalysisLayer analysisLayer) throws ServiceException {
+        String featureSet = null;
+        try {
+            // 1) Get Analysis Specific WFS 2.0 GetFeature XML
+            final DifferenceMethodParams methodParams = (DifferenceMethodParams) analysisLayer
+                    .getAnalysisMethodParams();
+            // Geojson response
+            final String rawFeatureSet = this.requestWFS2(methodParams.getServiceUrl(), methodParams.getWFSXML2(), methodParams.getServiceUser(), methodParams.getServicePw());
+            // Loop geojson features and process property difference values
+            featureSet = processDifferenceValueFS(methodParams.getFieldA1(), methodParams.getFieldB1(), methodParams.getNoDataValue(), rawFeatureSet);
+        } catch (Exception e) {
+            throw new ServiceException("request GetFeature failed due to wfs 2.0 request build", e);
+        }
+        return featureSet;
+    }
+
+    public String requestWFS2(final String wfsUrl, final String request_data, final String user, final String pw) throws ServiceException {
+        String response = null;
+        try {
+            // GetFeature response
+            response = IOHelper.httpRequestAction(wfsUrl, request_data,user, pw, null, null, "application/json");
+
+        } catch (Exception e) {
+            throw new ServiceException("request GetFeature failed due to", e);
+        }
+        return response;
+    }
+
+    public String processDifferenceValueFS(String fieldA1, String fieldB1, String nodata, String rawJson) {
+
+
+        String featureSet = null;
+        FeatureCollection fc = null;
+        double dnodata = Double.NaN;
+        try {
+            if (nodata != null) dnodata = Double.parseDouble(nodata);
+        } catch (Exception e) {
+            log.debug("Unable to parse nodata value in difference analyse",
+                    e);
+
+        }
+
+        try {
+            final JSONObject geoJson = JSONHelper.createJSONObject(rawJson);
+            FeatureJSON fjs = new FeatureJSON();
+            JSONArray newfeas = new JSONArray();
+
+            JSONArray geofeas = geoJson.getJSONArray("features");
+
+            // Loop json features and fix to user_layer_data structure
+            for (int i = 0; i < geofeas.length(); i++) {
+
+                JSONObject geofea = geofeas.optJSONObject(i);
+                if (geofea == null) continue;
+                if (!geofea.has(GEOJSON_GEOMETRY)) continue;
+                if (!geofea.has(GEOJSON_PROPERTIES)) continue;
+                JSONObject properties = geofea.getJSONObject(GEOJSON_PROPERTIES);
+                if (!properties.has(fieldA1)) continue;
+                // layer2 is alias name of joined feature to feature
+                if (!properties.has(GEOJSON_LAYER2)) continue;
+                final Object valueA = properties.get(fieldA1);
+                final String layer2fea = properties.optString(GEOJSON_LAYER2);
+                double delta = this.findValueDifference(valueA, layer2fea, fieldB1, dnodata);
+                double valueB =  valueToDouble(valueA) - delta;
+                JSONObject newproperties = new JSONObject();
+                newproperties.put(fieldA1+"_B", valueB);
+                newproperties.put(fieldA1+"_A", valueA);
+                newproperties.put(DELTA_FIELD_NAME, delta);
+                geofea.remove(GEOJSON_PROPERTIES);
+                geofea.put(GEOJSON_PROPERTIES, newproperties);
+                newfeas.put(geofea);
+
+            }
+            // update geojson
+            geoJson.remove("features");
+            geoJson.put("features", newfeas);
+
+            // to FeatureCollection
+            String tempjs = JSONHelper.getStringFromJSON(geoJson, null);
+            fc = fjs.readFeatureCollection(new ByteArrayInputStream(
+                    tempjs.getBytes("utf-8")));
+            SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
+
+            org.geotools.xml.Configuration configuration = new org.geotools.gml3.GMLConfiguration();
+            org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(configuration);
+
+            //output stream to serialize to
+            OutputStream xml = new ByteArrayOutputStream();
+            //GML encode = new GML(GML.Version.GML3); //doesn't work
+            //QName qname = new QName("feature", "http://www.oskari.org");
+
+
+            try {
+
+                //encode.setNamespace("feature", "http://www.oskari.org");
+                //encode.setNamespace("geotools", "http://geotools.org");
+                //encode.encode(xml, (SimpleFeatureCollection) fc);
+                Object test = org.geotools.gml3.GML._FeatureCollection;
+                encoder.encode(fc, org.geotools.gml3.GML._FeatureCollection, xml);
+                //encoder.encode(fc, qname, xml);
+                xml.close();
+                featureSet = xml.toString();
+
+            } catch (IOException e) {
+                log.debug("GML encoding failed");
+            }
+
+        } catch (Exception e) {
+            log.debug("Unable to process value differences",
+                    e);
+            return null;
+        }
+
+        return featureSet;
+    }
+
+    /**
+     * Computes delta value of feature A field fieldA1 and feature B fieldB1
+     *
+     * @param valueA1 feature A field value of fieldA1
+     * @param fea2    feature B
+     * @param fieldB1 field name of feature B
+     * @param nodata  no data value, which is skipped in delta value computation (return value is 0d)
+     * @return
+     */
+    private double findValueDifference(Object valueA1, String fea2, String fieldB1, double nodata) {
+        double delta = 0d;
+        double dA1 = 0d;
+        double dB1 = 0d;
+
+        try {
+            dA1 = valueToDouble(valueA1);
+            String atemp = fea2.substring(fea2.indexOf("["), fea2.length() - 1);
+            String[] attributes = atemp.split(",");
+            for (String attribute : attributes) {
+                String[] parts = attribute.split("[:<=]+");
+                if (parts.length > 1) {
+                    if (parts[1].trim().equals(fieldB1)) {
+                        dB1 = Double.parseDouble(parts[parts.length - 1]);
+                    }
+                }
+            }
+            delta = dA1 - dB1;
+            if (!Double.isNaN(nodata) && (dA1 == nodata || dB1 == nodata)) delta = 0;
+
+        } catch (Exception e) {
+            log.debug("delta value computation failed");
+        }
+        return delta;
+    }
+
+    private double valueToDouble(Object valueA1) {
+        double dA1 = 0d;
+
+        try {
+            if (valueA1 instanceof String) {
+                String temp = String.valueOf(valueA1);
+                dA1 = Double.parseDouble(temp);
+            }
+            if (valueA1 instanceof Integer) {
+                dA1 = ((Integer) valueA1).doubleValue();
+            } else {
+
+                dA1 = (Double) valueA1;
+            }
+        } catch (Exception e) {
+
+        }
+        return dA1;
     }
 }
