@@ -152,6 +152,25 @@
             }
         },
         { "id" : "infobox" },
-        { "id" : "toolbar" }
+        { "id" : "toolbar",
+            "config" : {
+                "basictools": {
+                    "measurearea": false,
+                    "measureline": false,
+                    "select": false,
+                    "zoombox": false
+
+                },
+                "history": {
+                    "history_back": false,
+                    "history_forward": false,
+                    "reset": false
+                },
+                "viewtools": {
+                    "link": false,
+                    "print": false
+                }
+            }
+        }
     ]
 }
