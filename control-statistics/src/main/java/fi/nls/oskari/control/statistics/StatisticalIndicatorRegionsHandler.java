@@ -6,9 +6,16 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static fi.nls.oskari.control.statistics.util.Constants.PARAM_ID;
 
@@ -27,15 +34,28 @@ public class StatisticalIndicatorRegionsHandler extends ActionHandler {
         JSONArray response = new JSONArray();
         // these regions(features) should match regions referenced by indicators
         // id == layer.region_id (doesn't exist yet)
+
+        Map<String, JSONObject> regions = null;
+        // TODO: save these in oskariLayer of type statslayer, categoryId =~ layerId
         if(categoryId == 1) {
-            // "layerId" : something_something, // 'oskari:kunnat2013'
-            response.put(JSONHelper.createJSONObject("{ \"id\" : \"091\", \"locale\" : { \"fi\" : \"Helsinki\"}}"));
-            response.put(JSONHelper.createJSONObject("{ \"id\" : \"837\", \"locale\" : { \"fi\" : \"Tampere\"}}"));
+            regions = getRegions("oskari:kunnat2013", "kuntakoodi", "kuntanimi");
         }
         else if( categoryId == 2) {
-            // "layerId" : something_else, // 'oskari:seutukunta'
-            response.put(JSONHelper.createJSONObject("{ \"id\" : \"011\", \"locale\" : { \"fi\" : \"Helsingin seutukunta\"}}"));
-            response.put(JSONHelper.createJSONObject("{ \"id\" : \"064\", \"locale\" : { \"fi\" : \"Tampereen seutukunta\"}}"));
+            regions = getRegions("oskari:seutukunta", "seutukuntanro", "seutukunta");
+        }
+        else if( categoryId == 3) {
+            regions = getRegions("oskari:sairaanhoitopiiri", "sairaanhoitopiirinro", "sairaanhoitopiiri");
+        }
+        if(regions != null) {
+            /*
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"091\", \"locale\" : { \"fi\" : \"Helsinki\"}}"));
+            response.put(JSONHelper.createJSONObject("{ \"id\" : \"837\", \"locale\" : { \"fi\" : \"Tampere\"}}"));
+            */
+            for(Map.Entry<String, JSONObject> entry : regions.entrySet()) {
+                final JSONObject region = JSONHelper.createJSONObject("id", entry.getKey());
+                JSONHelper.putValue(region, "locale", entry.getValue());
+                response.put(region);
+            }
         }
 
 /*
@@ -53,4 +73,28 @@ From SotkaNet:
         ResponseHelper.writeResponse(params, response);
     }
 
+    private Map<String, JSONObject> getRegions(final String layerName, final String idProp, final String localeProp) {
+        final Map<String,JSONObject> result = new HashMap<String, JSONObject>();
+        try {
+            final String response = IOHelper.getURL(buildUrl(layerName, idProp, localeProp));
+            final JSONObject parsed = JSONHelper.createJSONObject(response);
+            final JSONArray features = JSONHelper.getJSONArray(parsed, "features");
+            for(int i = 0; i < features.length(); ++i) {
+                final JSONObject feat = features.optJSONObject(i);
+                final JSONObject props = feat.optJSONObject("properties");
+                result.put(props.optString(idProp), JSONHelper.createJSONObject("fi", props.optString(localeProp)));
+            }
+        } catch (IOException e) {
+            log.error(e, "Error getting response from server");
+        }
+        return result;
+    }
+
+    private String buildUrl(final String layerName, final String idProp, final String localeProp) {
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put("propertyName", idProp + "," + localeProp);
+        params.put("typeName", layerName);
+        final String baseUrl = PropertyUtil.get("statistics.geoserver.GetFeature.url");
+        return IOHelper.constructUrl(baseUrl, params);
+    }
 }
