@@ -22,8 +22,6 @@ import org.json.JSONObject;
 @OskariActionRoute("StatisticalDatasources")
 public class StatisticalDatasourcesHandler extends ActionHandler {
     private final static Logger log = LogFactory.getLogger(StatisticalDatasourcesHandler.class);
-
-	private static final Logger log = LogFactory.getLogger(TestDataSource.class);
 	
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
@@ -51,20 +49,6 @@ public class StatisticalDatasourcesHandler extends ActionHandler {
     	return null;
     }
     
-    
-    /*
-    {
-        "id": 1,
-        "locale": {
-            "fi": "SotkaNet"
-        },
-        "indicatorParams": [{
-            "name": "year"
-        }, {
-            "name": "sex"
-        }]
-    }
-     */
     private JSONObject createDummyDS() {
         JSONObject ds = new JSONObject();
         JSONHelper.putValue(ds, "id", 1);
