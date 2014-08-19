@@ -56,6 +56,12 @@ public interface ViewService extends BaseService<Object> {
 
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
 
+    /**
+     * Updates bundle settings for single bundle in given view.
+     * @param viewId
+     * @param bundle
+     * @throws ViewException if bundle is not part of the view or update failed.
+     */
     public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException;
 
 }

@@ -30,6 +30,7 @@
         <result property="col9" column="col9" />
         <result property="col10" column="col10" />
         <result property="select_to_data" column="select_to_data" />
+        <result property="override_sld" column="override_sld" />
 
     </resultMap>
 
@@ -53,7 +54,8 @@
         col8,
         col9,
         col10,
-        select_to_data
+        select_to_data,
+        override_sld
 
         from
         analysis
@@ -79,7 +81,8 @@
         col8,
         col9,
         col10,
-        select_to_data
+        select_to_data,
+        override_sld
 
         from
         analysis
@@ -107,7 +110,8 @@
         col8,
         col9,
         col10,
-        select_to_data
+        select_to_data,
+        override_sld
 
         from
         analysis
@@ -141,7 +145,8 @@
         col8,
         col9,
         col10,
-        select_to_data )
+        select_to_data,
+        override_sld)
         VALUES ( #uuid#,
         #name#,
         #layer_id#,
@@ -157,7 +162,8 @@
         #col8#,
         #col9#,
         #col10#,
-        #select_to_data# )
+        #select_to_data#,
+        #override_sld#)
         RETURNING
         id
     </statement>

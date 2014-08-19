@@ -12,6 +12,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.layout.OskariLayoutWorker;
 import fi.nls.oskari.service.ProxyService;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.view.modifier.ViewModifier;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -43,14 +44,9 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String PARM_SAVE = "saveFile";
     private static final String PARM_TABLETEMPLATE = "tableTemplate";
 
-    private static final String KEY_EAST = "east";
-    private static final String KEY_NORTH = "north";
-    private static final String KEY_ZOOM = "zoom";
-    private static final String KEY_SELECTEDLAYERS = "selectedLayers";
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_MAPLINK = "maplink";
     private static final String KEY_PRINTOUT = "printout";
-    private static final String KEY_STATE = "state";
     private static final String KEY_LAYER_ID = "id";
     // Tiles json param keys
     private static final String KEY_TILES = "tiles";
@@ -210,14 +206,14 @@ public class GetPreviewHandler extends ActionHandler {
                                 "Coordinates not set: "
                                         + params.getHttpParam(PARM_COORD));
                     }
-                    jsonstatedata.put(KEY_EAST, east);
-                    jsonstatedata.put(KEY_NORTH, north);
+                    jsonstatedata.put(ViewModifier.KEY_EAST, east);
+                    jsonstatedata.put(ViewModifier.KEY_NORTH, north);
                 } catch (Exception ex) {
                     throw new ActionException(
                             "Could not set coordinates from URL param.", ex);
                 }
             }
-            jsonstatedata.put(KEY_ZOOM, ConversionHelper.getInt(params
+            jsonstatedata.put(ViewModifier.KEY_ZOOM, ConversionHelper.getInt(params
                     .getHttpParam(PARM_ZOOMLEVEL), 10));
 
             final String[] layers = params.getHttpParam(PARM_MAPLAYERS).split(
@@ -253,8 +249,8 @@ public class GetPreviewHandler extends ActionHandler {
                 }
 
             }
-            jsonstatedata.put(KEY_SELECTEDLAYERS, selectedlayers);
-            jsonprint.put(KEY_STATE, jsonstatedata);
+            jsonstatedata.put(ViewModifier.KEY_SELECTEDLAYERS, selectedlayers);
+            jsonprint.put(ViewModifier.KEY_STATE, jsonstatedata);
 
             // printservice uses direct urls to myplaces instead of servletfilter/actionroute proxy
             final boolean useDirectURLForMyplaces = true;

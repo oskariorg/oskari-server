@@ -11,3 +11,12 @@
 5. Restart GeoServer.
 
 6. Load the GeoServer Web Administration Interface. If the extension was loaded properly, you should see "gs:OskariPointStacker" entry for WPS in the Service Capabilities (accessible from the rightmost column of the screen). If you don’t see this entry, check the logs for errors.
+
+## New admin bundles
+
+Run bundle registrations (you can check if they already exist in portti_bundle table) under content-resources/src/main/resources/sql/views/01-bundles/:
+
+* admin/admin.sql
+* framework/033-admin-users.sql
+
+to register new admin bundles as they are now part of the default configuration for admin bundles.

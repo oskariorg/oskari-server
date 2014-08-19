@@ -130,6 +130,7 @@
                     "srsName": "EPSG:3575"
                 },
                 "projectionDefs": {
+                    "EPSG:4326": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
                     "EPSG:3571": "+proj=laea +lat_0=90 +lon_0=180 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                     "EPSG:3572": "+proj=laea +lat_0=90 +lon_0=-150 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
                     "EPSG:3573": "+proj=laea +lat_0=90 +lon_0=-100 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
@@ -152,6 +153,26 @@
             }
         },
         { "id" : "infobox" },
-        { "id" : "toolbar" }
+        { "id" : "publishedstatehandler" },
+        { "id" : "toolbar",
+            "config" : {
+                "basictools": {
+                    "measurearea": false,
+                    "measureline": false,
+                    "select": false,
+                    "zoombox": false
+
+                },
+                "history": {
+                    "history_back": false,
+                    "history_forward": false,
+                    "reset": false
+                },
+                "viewtools": {
+                    "link": false,
+                    "print": false
+                }
+            }
+        }
     ]
 }

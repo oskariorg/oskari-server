@@ -68,6 +68,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
     private static final String LAYER_UNION = "layer_union";
+    private static final String DIFFERENCE = "difference";
 
     private static final String ERROR_ANALYSE_PARAMETER_MISSING = "Analyse_parameter_missing";
     private static final String ERROR_UNABLE_TO_PARSE_ANALYSE = "Unable_to_parse_analysis";
@@ -362,6 +363,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             }
 
             featureSet = sb.toString();
+        }
+        else if (analysisLayer.getMethod().equals(DIFFERENCE)) {
+            // Get feature set via WFS 2.0 GetFeature
+            featureSet = wpsService.requestWFS2FeatureSet(analysisLayer);
+
         } else {
             featureSet = wpsService.requestFeatureSet(analysisLayer);
         }
