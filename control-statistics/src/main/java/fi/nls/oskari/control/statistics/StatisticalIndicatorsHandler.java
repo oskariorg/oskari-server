@@ -21,7 +21,6 @@ import static fi.nls.oskari.control.statistics.util.Constants.*;
 public class StatisticalIndicatorsHandler extends ActionHandler {
     private final static Logger log = LogFactory.getLogger(StatisticalIndicatorsHandler.class);
 
-    private final static Logger log = LogFactory.getLogger(TestStatisticalIndicators.class);
 	private static final String PARAM_DATASOURCE = "datasource";
 	private static final String INDICATORS = "indicators";
 	// add data sources here:
