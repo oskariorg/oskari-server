@@ -23,7 +23,7 @@ public class SotkaRegionParser {
 	private static final String URL = "http://www.sotkanet.fi/rest/1.1/regions";
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
-	private static final String CATEGORY_FIELD = "category";
+	public static final String CATEGORY_FIELD = "category";
 	private static final String REGION_CATEGORY = "KUNTA";
 	private ObjectMapper mapper;
 	
@@ -31,6 +31,7 @@ public class SotkaRegionParser {
 
 	private Map<String, Integer> regionsByCode;
 	private Map<Integer, String> regionsById;
+    private Map<Integer, Map<String,Object>> regionsObjectsById;
 
 	/**
 	 * Inits parser and maps and triggers parsing
@@ -39,6 +40,7 @@ public class SotkaRegionParser {
 		mapper = new ObjectMapper();
 		regionsByCode = new HashMap<String, Integer>();
 		regionsById = new HashMap<Integer, String>();
+        regionsObjectsById = new HashMap<Integer, Map<String,Object>>();
 		
 		try {
 			getData();
@@ -68,6 +70,15 @@ public class SotkaRegionParser {
     		return regionsByCode.get(code);
     	return -1;
     }
+
+    /**
+     * Gets id from the HashMap
+     * @param id
+     * @return if in map returns the region data else null
+     */
+    public Map<String,Object> getRegionById(int id) {
+        return regionsObjectsById.get(id);
+    }
     
     /**
      * Makes HTTP get request and parses the responses JSON into HashMaps.
@@ -83,6 +94,7 @@ public class SotkaRegionParser {
 		parser.nextToken();
 		while(parser.nextToken() == JsonToken.START_OBJECT) {
 			region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
+            regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
 	        if(region.containsKey(CATEGORY_FIELD)) {
 	        	if(REGION_CATEGORY.equals(region.get(CATEGORY_FIELD))) {
 					regionsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
