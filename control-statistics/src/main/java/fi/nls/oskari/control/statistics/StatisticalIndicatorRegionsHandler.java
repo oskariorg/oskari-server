@@ -52,7 +52,11 @@ public class StatisticalIndicatorRegionsHandler extends ActionHandler {
             response.put(JSONHelper.createJSONObject("{ \"id\" : \"837\", \"locale\" : { \"fi\" : \"Tampere\"}}"));
             */
             for(Map.Entry<String, JSONObject> entry : regions.entrySet()) {
-                final JSONObject region = JSONHelper.createJSONObject("id", entry.getKey());
+                // TODO: id's should be prefixed with region category (or something) since
+                //      regions in different categories share code-values
+                final JSONObject region = JSONHelper.createJSONObject("id", categoryId + "__" + entry.getKey());
+                JSONHelper.putValue(region, "category", categoryId);
+                JSONHelper.putValue(region, "regionId", entry.getKey());
                 JSONHelper.putValue(region, "locale", entry.getValue());
                 response.put(region);
             }

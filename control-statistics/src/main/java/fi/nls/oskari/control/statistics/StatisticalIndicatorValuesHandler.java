@@ -14,6 +14,8 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import static fi.nls.oskari.control.statistics.util.Constants.*;
 
 /**
@@ -52,9 +54,26 @@ public class StatisticalIndicatorValuesHandler extends ActionHandler {
         for(int i = 0; i < values.length(); ++i) {
             JSONObject obj = values.optJSONObject(i);
             // override region codes to match geoserver material
-            final String code = sotkaParser.getCode(obj.optInt("region"));
+            Map<String, Object> region = sotkaParser.getRegionById(obj.optInt("region"));
+
+            // TODO: region should be prefixed with region category - see StatisticalIndicatorRegionsHandler
+            // TODO: categoryId == layerId where given region can be presented
+            // for now it's harcoded 1=kunta, 2=seutukunta, 3= sairaanhoitopiiri
+            // should map sotka region type to it
+            int categoryId = 1;
+            final String category = (String)region.get(SotkaRegionParser.CATEGORY_FIELD);
+            if("KUNTA".equals(category)) {
+                categoryId = 1;
+            }
+            else if("SEUTUKUNTA".equals(category)) {
+                categoryId = 2;
+            }
+            else if("SAIRAANHOITOPIIRI".equals(category)) {
+                categoryId = 3;
+            }
+            final String code = (String) region.get("code"); //sotkaParser.getCode(obj.optInt("region"));
             if(code != null) {
-                JSONHelper.putValue(obj, "region", code);
+                JSONHelper.putValue(obj, "region", categoryId + "__" + code);
             }
         }
         return values;
