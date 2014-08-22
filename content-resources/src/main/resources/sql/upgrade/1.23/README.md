@@ -1,6 +1,6 @@
 ## My Places visualizations
 
-1. Replace my_places_categories table as done in the last SQL command of the file content-resources/src/main/resources/sql/PostgreSQL/create-myplaces-tables.sql.
+1. Replace my_places_categories view as done in the last SQL command of the file content-resources/src/main/resources/sql/PostgreSQL/create-myplaces-tables.sql. Reference: https://github.com/nls-oskari/oskari-server/commit/795756897fda5e17d8759922f89dbd0907185cf7
 
 2. Update GeoServer style file MyPlacesDefaultStyle.sld from content-resources/src/main/resources/sld/myplaces/. It is probably best to copy the style file manually to the /data/styles directory of GeoServer instead of a web interface because some web browsers might regard it as too large.
 
