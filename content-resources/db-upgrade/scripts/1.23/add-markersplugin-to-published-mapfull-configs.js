@@ -7,9 +7,9 @@ module.exports = function(client) {
         var query = client.query(
             'SELECT' +
             '  view_id,' +
-            '  config' +
+            '  config ' +
             'FROM' +
-            '  portti_view_bundle_seq' +
+            '  portti_view_bundle_seq ' +
             'WHERE' +
             '  view_id IN (SELECT id FROM portti_view WHERE type=\'PUBLISHED\') AND' +
             '  bundle_id = (SELECT id FROM portti_bundle WHERE name=\'mapfull\')' +
