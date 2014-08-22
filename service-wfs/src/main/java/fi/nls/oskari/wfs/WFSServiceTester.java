@@ -47,6 +47,7 @@ public class WFSServiceTester {
     private final static String  EXCEPTION_REPORT = "EXCEPTIONREPORT";
     private final static String LAYER_GROUP = System.getProperty("oskari.layer.group");
     private final static String INSPIRE_THEME = System.getProperty("oskari.inspire.theme");
+    private final static String WPS_PARAMS = System.getProperty("oskari.wps_params");
 
     private final static String[] versions =  {"1.0.0", "1.1.0", "2.0.0"};
     private static StringBuilder report = new StringBuilder();
@@ -453,11 +454,14 @@ public class WFSServiceTester {
             -- $EPSG  spatial reference system code (e.g. EPSG:3067)
             -- $FEATURE_ELEMENT  name of featuretype
             -- $NAMESPACE_URI namespace uri of $FEATURE_ELEMENT
+            -- WPS_PARAMS if no data values must be handled json string format  e.g.{"no_data":-1}
              */
             String inspireTheme = "Inspire Theme";
             if(INSPIRE_THEME != null) inspireTheme= INSPIRE_THEME;
             String layerGroup = "Layer Group";
             if(LAYER_GROUP != null) layerGroup= LAYER_GROUP;
+            String wps_params = "{}";
+            if(WPS_PARAMS != null) wps_params= WPS_PARAMS;
             if (sqlTemplate != null) {
             sqlTemplate = sqlTemplate.replace("$WFS_URL", lc.getURL());
             sqlTemplate = sqlTemplate.replace("$LAYER_NAME", lc.getLayerName().replace(":","_"));
@@ -481,6 +485,7 @@ public class WFSServiceTester {
             sqlTemplate = sqlTemplate.replace("$EPSG", lc.getSRSName());
             sqlTemplate = sqlTemplate.replace("$FEATURE_ELEMENT", lc.getFeatureElement());
             sqlTemplate = sqlTemplate.replace("$NAMESPACE_URI", lc.getFeatureNamespaceURI());
+                sqlTemplate = sqlTemplate.replace("$WPS_PARAMS", wps_params);
 
             // write into file
             BufferedWriter writer = null;
