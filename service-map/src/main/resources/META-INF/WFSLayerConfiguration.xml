@@ -122,7 +122,7 @@
 		LEFT OUTER JOIN portti_wfs_template_model m ON m.id = l.wfs_template_model_id
 		WHERE l.maplayer_id = #id#
     </select>
-    
+
     <select id="findStylesForLayer" parameterClass="int" resultMap="WFSSLDStyle">
     	SELECT
   			s.id as sid,
@@ -135,4 +135,21 @@
 		WHERE l.maplayer_id = #id#
     </select>
 
+    <!-- TODO: verify these works as OskariLayer refactoring effort is ongoing
+    <statement id="insertSLDStyle" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+        insert into portti_wfs_layer_style (
+        name,
+        sld_style)
+        values (#name#,#sld_style#)
+        returning id
+    </statement>
+
+    <statement id="updateSLDStyle" parameterClass="java.util.Map" >
+        UPDATE portti_wfs_layer_style
+        SET
+        name = #name#,
+        sld_style = #sld_style#
+        WHERE id = #id#
+    </statement>
+    -->
 </sqlMap>
