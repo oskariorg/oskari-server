@@ -3,8 +3,8 @@
         "create-empty-db",
         "register-bundles",
         "postgres-add-myplaces",
-        "postgres-add-users",
-        "postgres-add-JAAS"
+        "asdi-add-users",
+        "asdi-add-JAAS"
     ],
     "views" : [
         "asdi-view.json",
@@ -13,7 +13,7 @@
     "sql" : [
         "populate-Inspire-themes.sql",
         "populate-asdi-group.sql",
-        "asdi-basemap-wmslayer.sql",
+        "asdi-basemap-wmtslayer.sql",
         "asdi-poc-wmslayer.sql"
     ]
 }

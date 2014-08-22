@@ -6,13 +6,16 @@
     "inspiretheme": "Others",
     "locale": {
         "fi": {
-            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
         },
         "sv": {
-            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
         },
         "en": {
-            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
         }
     },
     "role_permissions": {
