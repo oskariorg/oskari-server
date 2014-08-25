@@ -28,6 +28,7 @@ public class StatisticalIndicatorRegionCategoriesHandler extends ActionHandler {
         JSONArray response = new JSONArray();
         response.put(JSONHelper.createJSONObject("{ \"id\" : 1, \"locale\" : { \"fi\" : \"Kunta\", \"en\" : \"Municipality\"}}"));
         response.put(JSONHelper.createJSONObject("{ \"id\" : 2, \"locale\" : { \"fi\" : \"Seutukunta\", \"en\" : \"Seutukunta\"}}"));
+        response.put(JSONHelper.createJSONObject("{ \"id\" : 3, \"locale\" : { \"fi\" : \"Sairaanhoitopiiri\", \"en\" : \"Sairaanhoitopiiri\"}}"));
 
         //statslayers should have properties like:
         // * region_id = kuntakoodi

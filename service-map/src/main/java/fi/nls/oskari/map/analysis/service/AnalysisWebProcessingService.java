@@ -2,9 +2,7 @@ package fi.nls.oskari.map.analysis.service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.util.Iterator;
 
-import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -13,16 +11,14 @@ import javax.xml.transform.stream.StreamResult;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
 import fi.nls.oskari.util.JSONHelper;
-import org.deegree.model.feature.schema.FeatureType;
-import org.geotools.GML;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.DefaultFeatureCollection;
+
+
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.xml.xsi.XSISimpleTypes;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
+
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
 
@@ -118,6 +114,13 @@ public class AnalysisWebProcessingService {
         }
     }
 
+    /**
+     * Request feature collection via WFS 2.0.0 GetFeature post
+     * @param analysisLayer input data for GetFeature post xml
+     * @return feature collection of delta values of predefined properties of two feature collections
+     * @throws ServiceException
+     */
+
     public String requestWFS2FeatureSet(final AnalysisLayer analysisLayer) throws ServiceException {
         String featureSet = null;
         try {
@@ -134,6 +137,15 @@ public class AnalysisWebProcessingService {
         return featureSet;
     }
 
+    /**
+     * Post request to  WFS service or any
+     * @param wfsUrl  request url
+     * @param request_data  post data  (e.g. GetFeature xml)
+     * @param user  username
+     * @param pw
+     * @return response in geojson format  (e.g. featureCollection )
+     * @throws ServiceException
+     */
     public String requestWFS2(final String wfsUrl, final String request_data, final String user, final String pw) throws ServiceException {
         String response = null;
         try {
@@ -146,6 +158,17 @@ public class AnalysisWebProcessingService {
         return response;
     }
 
+    /**
+     *  Build new feature collection with delta values
+     *  1. Loop WFS 2.0.0 response geojson (join of two feature collections)
+     *  2. process new geojson with delta values (fieldA1 - fieldB1)
+     *  3. encode geojson to gml feature collection (xml)
+     * @param fieldA1  field name of 1st feature collection
+     * @param fieldB1  field name of 2nd feature collection
+     * @param nodata  No data value; if fieldA1 value is nodata value, then delta is 0
+     * @param rawJson WFS 2.0.0 response geojson
+     * @return gml feature collection (xml)
+     */
     public String processDifferenceValueFS(String fieldA1, String fieldB1, String nodata, String rawJson) {
 
 
@@ -206,15 +229,12 @@ public class AnalysisWebProcessingService {
 
             //output stream to serialize to
             OutputStream xml = new ByteArrayOutputStream();
-            //GML encode = new GML(GML.Version.GML3); //doesn't work
-            //QName qname = new QName("feature", "http://www.oskari.org");
+
 
 
             try {
 
-                //encode.setNamespace("feature", "http://www.oskari.org");
-                //encode.setNamespace("geotools", "http://geotools.org");
-                //encode.encode(xml, (SimpleFeatureCollection) fc);
+
                 Object test = org.geotools.gml3.GML._FeatureCollection;
                 encoder.encode(fc, org.geotools.gml3.GML._FeatureCollection, xml);
                 //encoder.encode(fc, qname, xml);
@@ -238,7 +258,7 @@ public class AnalysisWebProcessingService {
      * Computes delta value of feature A field fieldA1 and feature B fieldB1
      *
      * @param valueA1 feature A field value of fieldA1
-     * @param fea2    feature B
+     * @param fea2    feature B in unstructured nonstandard format
      * @param fieldB1 field name of feature B
      * @param nodata  no data value, which is skipped in delta value computation (return value is 0d)
      * @return
