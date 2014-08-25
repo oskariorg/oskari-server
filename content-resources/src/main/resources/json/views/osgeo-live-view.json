@@ -48,8 +48,8 @@
                 }
             },
             "state" : {
-                "east": 0,
-                "north": 0,
+                "east": 1,
+                "north": 1,
                 "selectedLayers": [],
                 "zoom": 1
             }
