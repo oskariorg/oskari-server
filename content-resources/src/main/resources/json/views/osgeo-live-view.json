@@ -36,19 +36,19 @@
                 ],
                 "layers": [],
                 "mapOptions": {
-                    "units": "m",
+                    "units": "degrees",
                     "maxExtent": {
-                        "left": 393588,
-                        "bottom": 5.208e+06,
-                        "right": 495770,
-                        "top": 5.30537e+06
+                        "left": -180,
+                        "bottom": -90,
+                        "right": 180,
+                        "top": 90
                     },
                     "srsName": "EPSG:4326"
                 }
             },
             "state" : {
-                "east": 450000,
-                "north": 5.26e+06,
+                "east": 0,
+                "north": 0,
                 "selectedLayers": [],
                 "zoom": 1
             }

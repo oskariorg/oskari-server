@@ -4,6 +4,9 @@
     "name":"HYP_50M_SR_W,ne_10m_lakes,ne_10m_rivers_lake_centerline",
     "organization": "Demo layers",
     "inspiretheme": "Others",
+    "params" : {
+        "MAP" : "/usr/local/share/qgis/QGIS-NaturalEarth-Example.qgs"
+    },
     "locale": {
         "fi": {
             "name": "OSGeo-live demolayer"
