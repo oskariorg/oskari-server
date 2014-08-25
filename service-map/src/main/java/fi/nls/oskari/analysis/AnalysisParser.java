@@ -103,6 +103,7 @@ public class AnalysisParser {
     final String analysisBaseLayerId = PropertyUtil.get(ANALYSIS_BASELAYER_ID);
     final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
+    // FIXME: If analysisRenderingUrl is not set -> default to ajaxUrl + "&action_route=AnalysisTile&wpsLayerId="
     final String analysisRenderingUrl = PropertyUtil.get(ANALYSIS_RENDERING_URL);
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
