@@ -1,31 +1,9 @@
 
 
--- template to add WFS layer definition to oskari
--- User WFSServiceTester.java to fill this template automaticly
--- 
--- Elements available $WFS_URL?service=WFS&version=1.1.0&request=GetCapabilities
--- add map layer;
--- WFS_URL  wfs service url (e.g. http://geo.stat.fi:8080/geoserver/ows)
--- LAYER_GROUP administrative layer group (e.g. Tilastokeskus)
--- LAYER_NAME
--- OPACITY   (0 -100)
--- MIN_SCALE (smallest scale e.g. 1500000  -- means !:1500000)
--- MAX_SCALE (largest scale e.g. 1 --> means 1:1)
--- FI_LAYER_NAME
--- SV_LAYER_NAME
--- EN_LAYER_NAME
--- FI_LAYER_TITLE
--- SV_LAYER_TITLE
--- EN_LAYER_TITLE
--- INSPIRE_THEME  inspire theme  (e.g. Tilastointiyksiköt)
--- GEOMETRY_PROPERTY  WFS feature default geometry property name (e.g. the_geom)
--- GML_VERSION  e.g. 3.1.1
--- WFS_VERSION  e.g. 1.1.0
--- MAXFEATURES maximum allowed count of features to select in one request - e.g. 20000
--- NAMESPACE_PREFIX  namespace prefix for $FEATURE_ELEMENT  ( e.g. vaestoruutu) 
--- EPSG  spatial reference system code (e.g. EPSG:3067)
--- FEATURE_ELEMENT  name of featuretype
--- NAMESPACE_URI namespace uri of $FEATURE_ELEMENT
+-- script to add WFS layer definition to oskari
+-- User WFSServiceTester.java to create this script. It uses sql template and
+-- fill items found in wfs GetCapabilities request
+--
 
 
 -- DO this first, if admistrative layers group is not yet available
@@ -59,5 +37,5 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
     VALUES ( (select distinct id from oskari_maplayer where name = '$LAYER_NAME'),
       '$LAYER_NAME',
        '$WFS_URL', '', '', '$GEOMETRY_PROPERTY', '$GML_VERSION', false, '$WFS_VERSION', $MAXFEATURES, '$NAMESPACE_PREFIX', NULL, '', 
-       '{}', '{}', '{}', '2d', NULL, true, true, false, NULL, '$EPSG', '$FEATURE_ELEMENT', '$NAMESPACE_URI', '', true, '{}', '{}');
+       '{}', '{}', '{}', '2d', NULL, true, true, false, NULL, '$EPSG', '$FEATURE_ELEMENT', '$NAMESPACE_URI', '', true, '$WPS_PARAMS', '{}');
 
