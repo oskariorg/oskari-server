@@ -52,6 +52,7 @@ public class GetStatsTileHandler extends ActionHandler {
             throws ActionException {
 
     	
+    	// TODO: If else in below is just for development use. Replase it, to use statistics.sld.server parameter
     	String makePostRequest = PropertyUtil.get("statistics.sld.server");
     	if(makePostRequest != null){
     		log.debug("got statistics.sld.server parameter");
@@ -62,7 +63,6 @@ public class GetStatsTileHandler extends ActionHandler {
     	
     	if(params.getHttpParam("new") != null){
     		String url = "http://dev.paikkatietoikkuna.fi/geoserver/wms?";
-    		log.debug("in new method 3334");
     		
     		getSLD(params);
     		
@@ -75,11 +75,6 @@ public class GetStatsTileHandler extends ActionHandler {
         		byte[] presponse = IOHelper.readBytes(con);
         		
 	            log.debug("presponse legth: " + presponse.length);
-	            //String s = new String(presponse);
-	            //log.debug("s: " + s);
-        		//log.debug("presponse: " + presponse.toString());
-	            // read the image tile
-	
 	            final HttpServletResponse response = params.getResponse();
 	            response.setContentType("image/png");
 	            response.getOutputStream().write(presponse, 0, presponse.length);
@@ -94,7 +89,6 @@ public class GetStatsTileHandler extends ActionHandler {
     		printParameters(params);
 	        final HttpURLConnection con = getConnection(params);
 	        try {
-	        	log.debug("ssss");
 	            // we should post complete GetMap XML with the custom SLD to geoserver so it doesn't need to fetch it again
 	            // Check: http://geo-solutions.blogspot.fi/2012/04/dynamic-wms-styling-with-geoserver-sld.html
 	            con.setRequestMethod("GET");
@@ -108,10 +102,6 @@ public class GetStatsTileHandler extends ActionHandler {
 	
 	            // read the image tile
 	            final byte[] presponse = IOHelper.readBytes(con.getInputStream());
-	            log.debug("11presponse legth: " + presponse.length);
-	            //String s = new String(presponse);
-	            //log.debug("xxxs: " + s);
-	            
 	
 	            final HttpServletResponse response = params.getResponse();
 	            response.setContentType("image/png");
@@ -133,27 +123,19 @@ public class GetStatsTileHandler extends ActionHandler {
     private HttpURLConnection getConnection(final ActionParameters params)
             throws ActionException {
 
-    	log.debug("otetaan yhteyksia");
         // copy parameters
         final HttpServletRequest httpRequest = params.getRequest();
         final StringBuilder ajaxUrl = new StringBuilder(PropertyUtil.get("statistics.sld.server"));
         
-    	log.debug("properteista haettu: " + ajaxUrl.toString());
-        
         ajaxUrl.append(PropertyUtil.get("statistics.sld.server.path",
                 PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL)));
         
-        log.debug("properteista haettu2: " + ajaxUrl.toString());
-        
         ajaxUrl.append("&action_route=GetStatsLayerSLD");
         
-        log.debug("muuten vaan lisatty: " + ajaxUrl.toString());
-
         StatsVisualization vis = getVisualization(params);
         if(vis == null) {
             log.info("Visualization couldn't be generated - parameters/db data missing", params);
         } else {
-        	log.debug("rakennellaan urli ite");
             // using prefetched values so we don't need to get them from db again on SLD action
             ajaxUrl.append("&");
             ajaxUrl.append(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME);
@@ -187,7 +169,6 @@ public class GetStatsTileHandler extends ActionHandler {
             queryString.append("=");
             queryString.append(params.getHttpParam(keyStr));
         }
-        log.debug("naa on tullu requestissa: " + queryString.toString());
         try {
             final String url = PropertyUtil.get("statistics.geoserver.wms.url") + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
             log.debug("Getting stats tile from url:", url);
@@ -249,15 +230,9 @@ public class GetStatsTileHandler extends ActionHandler {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 	 
-			log.debug("1");
-			
 			// root elements
 			Document doc = docBuilder.newDocument();
 			getMapElement = doc.createElement("ogc:GetMap");
-			
-//			Attr xmlns_attr = doc.createAttribute("xmlns");
-//			xmlns_attr.setValue("http://www.opengis.net/sld");
-//			getMapElement.setAttributeNode(xmlns_attr);
 			
 			Attr xmlns_ogc_attr = doc.createAttribute("xmlns:ogc");
 			xmlns_ogc_attr.setValue("http://www.opengis.net/ows");
@@ -312,11 +287,11 @@ public class GetStatsTileHandler extends ActionHandler {
 			boundingBox.appendChild(gml_coord);
 			
 			Element gml_x = doc.createElement("gml:x");
-			gml_x.appendChild(doc.createTextNode("265000"));
+			gml_x.appendChild(doc.createTextNode("-2132672"));
 			gml_coord.appendChild(gml_x);
 			
 			Element gml_y = doc.createElement("gml:y");
-			gml_y.appendChild(doc.createTextNode("6624132"));
+			gml_y.appendChild(doc.createTextNode("5721680"));
 			gml_coord.appendChild(gml_y);
 			
 			
@@ -324,11 +299,11 @@ public class GetStatsTileHandler extends ActionHandler {
 			boundingBox.appendChild(gml_coord2);
 			
 			Element gml_x2 = doc.createElement("gml:x");
-			gml_x2.appendChild(doc.createTextNode("365000"));
+			gml_x2.appendChild(doc.createTextNode("3172672"));
 			gml_coord2.appendChild(gml_x2);
 			
 			Element gml_y2 = doc.createElement("gml:y");
-			gml_y2.appendChild(doc.createTextNode("6875604"));
+			gml_y2.appendChild(doc.createTextNode("8778320"));
 			gml_coord2.appendChild(gml_y2);
 			
 			
@@ -343,11 +318,11 @@ public class GetStatsTileHandler extends ActionHandler {
 			output.appendChild(size);
 			
 			Element width = doc.createElement("Width");
-			width.appendChild(doc.createTextNode("550"));
+			width.appendChild(doc.createTextNode("2590"));
 			size.appendChild(width);
 			
 			Element height = doc.createElement("height");
-			height.appendChild(doc.createTextNode("250"));
+			height.appendChild(doc.createTextNode("1492"));
 			size.appendChild(height);
 			
 	        final Transformer transformer = TransformerFactory.newInstance()
@@ -375,7 +350,6 @@ public class GetStatsTileHandler extends ActionHandler {
         final String PARAM_MODE = "mode";
         final String MODE_XML = "XML";
     	
-    	
     	printParameters(params);
 
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params
@@ -385,6 +359,7 @@ public class GetStatsTileHandler extends ActionHandler {
                 "").toUpperCase());
 
         final StatsVisualization vis = getVisualization(params);
+        
         if (vis == null) {
             throw new ActionParamsException(
                     "Couldn't get requested visualization");
@@ -396,7 +371,6 @@ public class GetStatsTileHandler extends ActionHandler {
             if (modeXML) {
                 return xml.toString();
             } else {
-//                return service.transform(xml, service.getDefaultXSLT());
             	String xmlString = service.transform(xml, service.getDefaultXSLT());
             	log.debug("xmlString: " + xmlString);
             	return xmlString;
