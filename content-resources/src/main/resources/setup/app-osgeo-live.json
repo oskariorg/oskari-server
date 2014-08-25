@@ -1,0 +1,14 @@
+{
+    "setup" : [
+        "create-empty-db",
+        "register-bundles",
+        "postgres-add-myplaces",
+        "postgres-add-users",
+        "postgres-add-JAAS",
+        "populate-inspire-themes-and-groups"
+    ],
+    "views" : [
+        "osgeo-live-view.json",
+        "publisher-template-view.json"
+    ]
+}

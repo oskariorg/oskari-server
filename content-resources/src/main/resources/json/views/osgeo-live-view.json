@@ -1,0 +1,75 @@
+{
+    "name" : "OSGeo-live view",
+    "type" : "DEFAULT",
+    "default" : true,
+    "public" : true,
+    "oskari" : {
+        "application" : "servlet",
+        "page" : "index",
+        "development_prefix" : "/applications/sample"
+    },
+    "selectedLayers" : [
+        "wmslayer-osgeolive-demo.json"
+    ],
+    "bundles" : [
+        { "id" : "openlayers-default-theme" },
+        {
+            "id" : "mapfull",
+            "config" : {
+                "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+                "imageLocation": "/Oskari/resources",
+                "plugins" : [
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
+                      "config" : {
+                        "ignoredLayerTypes" : ["WFS"]
+                    }},
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
+                ],
+                "layers": [],
+                "mapOptions": {
+                    "units": "m",
+                    "maxExtent": {
+                        "left": 393588,
+                        "bottom": 5.208e+06,
+                        "right": 495770,
+                        "top": 5.30537e+06
+                    },
+                    "srsName": "EPSG:4326"
+                }
+            },
+            "state" : {
+                "east": 450000,
+                "north": 5.26e+06,
+                "selectedLayers": [],
+                "zoom": 1
+            }
+        },
+        { "id" : "divmanazer" },
+        {
+            "id" : "toolbar",
+            "config" : {
+                "viewtools": {
+                    "print" : false,
+                    "link" : false
+                }
+            }
+        },
+        { "id" : "infobox" },
+        { "id" : "statehandler" },
+        { "id" : "search" },
+        { "id" : "layerselector2" },
+        { "id" : "layerselection2" },
+        { "id" : "coordinatedisplay" },
+        { "id" : "metadataflyout" },
+        { "id" : "featuredata2" }
+    ]
+}
