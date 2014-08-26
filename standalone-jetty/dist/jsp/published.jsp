@@ -5,7 +5,7 @@
 <head>
     <title>Standalone servlet - ${viewName} view</title>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js">
+    <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script>
 
     <!-- ############# css ################# -->
