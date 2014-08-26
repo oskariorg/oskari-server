@@ -57,6 +57,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String gfiContent;
     private String geometry;
 
+    private String username;
+    private String password;
+
     private Date created = null;
     private Date updated = null;
 
@@ -369,4 +372,21 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             this.refreshRate = refreshRate;
         }
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }

@@ -172,6 +172,10 @@ public class OskariLayerWorker {
         final JSONObject adminData = JSONHelper.createJSONObject("xslt", layer.getGfiXslt());
         JSONHelper.putValue(layerJson, "admin", adminData);
 
+        JSONHelper.putValue(adminData, "username", layer.getUsername());
+        JSONHelper.putValue(adminData, "password", layer.getPassword());
+        JSONHelper.putValue(adminData, "url", layer.getUrl());
+
         // for mapping under categories
         JSONHelper.putValue(adminData, "organizationId", layer.getGroupId());
         if(layer.getInspireTheme() != null) {

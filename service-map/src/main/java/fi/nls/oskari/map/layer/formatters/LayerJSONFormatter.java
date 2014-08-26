@@ -9,10 +9,13 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import fi.nls.oskari.util.PropertyUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,7 @@ public class LayerJSONFormatter {
 
     private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
     private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
+    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
     private static Map<String, LayerJSONFormatter> typeMapping = new HashMap<String, LayerJSONFormatter>();
@@ -103,6 +107,12 @@ public class LayerJSONFormatter {
             // Adding them here so frontend doesn't break.
             JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "wmsName", layer.getName());
+            if ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) {
+                Map<String, String> urlParams = new HashMap<String, String>();
+                urlParams.put("action_route", "GetLayerTile");
+                urlParams.put("id", Integer.toString(layer.getId()));
+                JSONHelper.putValue(layerJson, "url", IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL),urlParams));
+            }
         }
 
         //log.debug("name", layer.getName(lang));
