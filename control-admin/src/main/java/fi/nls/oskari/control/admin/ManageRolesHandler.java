@@ -1,5 +1,9 @@
 package fi.nls.oskari.control.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -18,6 +22,7 @@ public class ManageRolesHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(ManageRolesHandler.class);
     final private static String INSERT = "insert";
     final private static String DELETE = "delete";
+    final private static String GETROLES = "getRoles";
     final private static String ADD = "add"; 
     
     @Override
@@ -29,7 +34,11 @@ public class ManageRolesHandler extends ActionHandler {
         String id = params.getHttpParam("id");
     	String roleId = params.getHttpParam("roleid");
     	String action = params.getHttpParam("action");
+    	if(action == null)
+    		throw new ActionException("action parameter was null");
+    	
     	String test = params.getHttpParam("test");
+    	final JSONObject response = new JSONObject();
         try{
         	if(test != null){
 	        	if(action.equals(INSERT)){
@@ -44,20 +53,40 @@ public class ManageRolesHandler extends ActionHandler {
 	        	}else{
 	        		// TODO: give error message
 	        	}
-        	}
+        	}else{
+        		if(action.equals(INSERT)){
+	        		log.debug("inserting a role");
+	                JSONHelper.putValue(response, "id", 2);
+	                JSONHelper.putValue(response, "name", "User");
+	        	}else if(action.equals(DELETE)){
+	        		log.debug("deleting a role");
+	                JSONHelper.putValue(response, "id", 1);
+	                JSONHelper.putValue(response, "name", "Guest");
+	        	}else if(action.equals(GETROLES)){
+	        		log.debug("getting roles");
+	                
+	                List<String> valueList = new ArrayList<String>();
+	                valueList.add("Guest");
+	                valueList.add("User");
+	                valueList.add("Pekka");
+	                final JSONArray roleValues = new JSONArray(valueList);
+	                JSONHelper.put(response, "rolelist", roleValues);
+	        		
+	        	}else{
+	        		// TODO: give error message
+	        	}
+           }
         	
-          final JSONObject response = new JSONObject();
-          JSONHelper.putValue(response, "id", 2);
-          JSONHelper.putValue(response, "name", "User");
         	
           ResponseHelper.writeResponse(params, response);
        	
         }catch(Exception e){
         	e.printStackTrace();
-        	throw new ActionException("douh!");
+        	throw new ActionException("error in ManageRoles");
         }
 
     }
     
 
+    
 }
