@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -180,4 +181,25 @@ public class StandaloneUserService extends UserService {
         }
         return user;
     }
+    
+
+//    
+//    @Override
+//    public String insertRole(String roleId, String userID) throws ServiceException {
+//    	return null;
+//    }
+//    
+//    
+//    @Override
+//    public String deleteRole(String roleId, String userID) throws ServiceException {
+//    	return null;
+//    }
+//
+//    
+//    @Override
+//    public String modifyRole(String roleId, String userID) throws ServiceException {
+//    	return null;
+//    }    
+//    
+    
 }

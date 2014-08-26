@@ -6,6 +6,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.PropertyUtil;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
@@ -17,6 +19,34 @@ public class DatabaseUserService extends UserService {
 
     private static final Logger log = LogFactory.getLogger(DatabaseUserService.class);
 
+    
+    
+    
+    private static DatabaseUserService instance = null;
+    /**
+     * Returns a concrete implementation of UserService. Class to be returned is defined with property "oskari.user.service".
+     * @return
+     * @throws ServiceException if class cannot be
+     */
+    public static DatabaseUserService getInstance() throws ServiceException {
+        if(instance != null) {
+            return instance;
+        }
+//        final String className = PropertyUtil.getOptional("oskari.user.service");
+//        if(className == null) {
+//            throw new ServiceException("User service implementation not defined, add 'oskari.user.service' property with a value of fully qualified classname extending " + UserService.class.getCanonicalName());
+//        }
+        try {
+            instance = (DatabaseUserService)Class.forName("fi.nls.oskari.user.DatabaseUserService").newInstance();
+            instance.init();
+            return instance;
+        } catch (Exception e) {
+            throw new ServiceException("Error initializing UserService for classname: "+ "DatabaseUserService", e);
+        }   
+    }    
+    
+    
+    
     @Override
     public User getGuestUser() {
         User user = super.getGuestUser();
@@ -104,4 +134,22 @@ public class DatabaseUserService extends UserService {
         userService.updatePassword(username, hashed);
     }
 
+    
+    @Override
+    public String insertRole(String roleId, String userID) throws ServiceException {
+    	return null;
+    }
+    
+    
+    @Override
+    public String deleteRole(String roleId, String userID) throws ServiceException {
+    	return null;
+    }
+
+    
+    @Override
+    public String modifyRole(String roleId, String userID) throws ServiceException {
+    	return null;
+    }
+    
 }
