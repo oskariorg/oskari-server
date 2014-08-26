@@ -226,9 +226,10 @@ public class LayerJSONFormatter {
         layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
         layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
         layer.setTileMatrixSetId(json.optString("tile_matrix_set_id", layer.getTileMatrixSetId()));
-        layer.setTileMatrixSetData(json.optString("tile_matrix_set_data", layer.getTileMatrixSetData()));
-        final JSONObject params = json.optJSONObject("params");
-        final JSONObject options = json.optJSONObject("options");
+        final JSONObject tilematrix = json.optJSONObject("tile_matrix_set_data");
+        if(tilematrix != null) {
+            layer.setTileMatrixSetData(tilematrix.toString());
+        }
         layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
         layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
         layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));
@@ -238,11 +239,13 @@ public class LayerJSONFormatter {
         // omit permissions, these are handled by LayerHelper
 
         // handle params, check for null to avoid overwriting empty JS Object Literal
+        final JSONObject params = json.optJSONObject("params");
         if (params != null) {
             layer.setParams(params);
         }
 
         // handle options, check for null to avoid overwriting empty JS Object Literal
+        final JSONObject options = json.optJSONObject("options");
         if (options != null) {
             layer.setOptions(options);
         }
