@@ -61,10 +61,6 @@
 		color: red;
 		margin-bottom: 10px;
 	}
-	#login a {
-		color: #FFF;
-		padding: 5px;
-	}
         }
     </style>
     <!-- ############# /css ################# -->

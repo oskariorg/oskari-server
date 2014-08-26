@@ -27,7 +27,8 @@ Test properties can be modified in /oskari-server/service-wfs/src/main/resources
     * wfs.service.epsg  Spatial reference system code  e.g. "-Dwfs.service.epsg=EPSG:3067" (if not defined, default service epsg is in use)
 
     * oskari.layer.group Layer group name e.g. Tilastokeskus  (only used, when wfs.sql.insert.layer.template is defined)
-    * oskari.inspire.theme  Inspire theme  e.g. Tilastoyksiköt
+    * oskari.inspire.theme  Inspire theme  e.g. Tilastoyksiköt (only used, when wfs.sql.insert.layer.template is defined)
+    * oskari.wps_params    e.g. {"no_data":-1} (only used, when wfs.sql.insert.layer.template is defined)
 
 ## Run
 

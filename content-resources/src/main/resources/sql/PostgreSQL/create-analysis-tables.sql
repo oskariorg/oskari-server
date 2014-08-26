@@ -29,6 +29,7 @@ CREATE TABLE analysis (
     updated timestamp with time zone,
     col9 character varying(64),
     publisher_name character varying(256),
+    override_sld character varying(256),
     CONSTRAINT analysis_pkey PRIMARY KEY (id)
 );
 
@@ -82,13 +83,14 @@ CREATE TABLE analysis_style (
     CONSTRAINT analysis_style_pkey PRIMARY KEY (id)
 );
 
-CREATE VIEW analysis_data_style AS
+CREATE OR REPLACE VIEW analysis_data_style AS 
  SELECT ad.id, 
     ad.uuid, 
     ad.analysis_id, 
     a.name, 
     a.publisher_name, 
     ad.t1, 
+    ad.n1, 
     ad.created, 
     ad.updated, 
     ad.geometry, 
@@ -109,7 +111,7 @@ CREATE VIEW analysis_data_style AS
    FROM analysis_data ad, 
     analysis a, 
     analysis_style st
-  WHERE ((ad.analysis_id = a.id) AND (a.style_id = st.id));
+  WHERE ad.analysis_id = a.id AND a.style_id = st.id;
 
   ALTER TABLE ONLY analysis_data
     ADD CONSTRAINT analysis_data_analysis_fkey FOREIGN KEY (analysis_id) REFERENCES analysis(id) ON DELETE CASCADE;

@@ -72,6 +72,38 @@ public abstract class UserService {
      */
     public abstract User login(String user, String pass) throws ServiceException;
 
+    
+    /**
+     * Inserts role to a user
+     * @param roleId String
+     * @return something
+     * @throws ServiceException if anything goes wrong internally.
+     */
+    public String insertRole(String roleId, String userID) throws ServiceException{
+    	throw new ServiceException("Not Implemented Yet");
+    }
+    
+    
+    /**
+     * Deletes role from a user
+     * @param roleId String
+     * @return something
+     * @throws ServiceException if anything goes wrong internally.
+     */
+    public String deleteRole(String roleId, String userID) throws ServiceException{
+    	throw new ServiceException("Not Implemented Yet");
+    }
+    
+    /**
+     * Modifies a users role
+     * @param roleId String
+     * @return something
+     * @throws ServiceException if anything goes wrong internally.
+     */
+    public String modifyRole(String roleId, String userID) throws ServiceException{
+    	throw new ServiceException("Not Implemented Yet");
+    }
+    
     /**
      * Returns all roles that exist in the system
      * @param platformSpecificParams optional platform specific parameters needed to get/filter roles. If implementation doesnt need any an empty map can be used.

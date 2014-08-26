@@ -14,8 +14,6 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 public class ZoomParamHandler extends ParamHandler {
 
     private static final Logger log = LogFactory.getLogger(ZoomParamHandler.class);
-    private static final String PARAM_ZOOM = "zoomLevel";
-    private static final String KEY_ZOOM = "zoom";
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {

@@ -1,5 +1,9 @@
 package fi.nls.oskari.control.sotka;
 
+import java.util.Enumeration;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -39,6 +43,8 @@ public class GetSotkaDataHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(GetSotkaDataHandler.class);
 
     private static final String PARM_ACTION = "action";
+    
+    private static final String SOTKA_DATASOURCE = "sotka_datasource";
 
     private static final String PARM_VERSION = "version";
     private static final String PARM_INDICATOR = "indicator";
@@ -52,6 +58,9 @@ public class GetSotkaDataHandler extends ActionHandler {
     public void handleAction(final ActionParameters params) throws ActionException {
         final SotkaRequest request = getRequest(params);
         final String data = request.getData();
+        
+        //log.debug("lahetetaan takaisin");
+        //log.debug("DATA: " + data);
 
         final HttpServletResponse response = params.getResponse();
         response.addHeader(HEADER_CONTENT_TYPE, VALUE_CONTENT_TYPE_JSON);
@@ -62,6 +71,9 @@ public class GetSotkaDataHandler extends ActionHandler {
     private SotkaRequest getRequest(final ActionParameters params) throws ActionException {
 
         // Sotkanet action must be in params
+    	printParameters(params.getRequest());
+    	
+    	
         final SotkaRequest req = SotkaRequest.getInstance(params.getRequiredParam(PARM_ACTION));
         req.setGender(params.getHttpParam(PARM_GENDERS, ""));
         req.setVersion(params.getHttpParam(PARM_VERSION, "1.1"));
@@ -69,4 +81,24 @@ public class GetSotkaDataHandler extends ActionHandler {
         req.setYears(params.getRequest().getParameterValues(PARM_YEARS));
         return req;
     }
+
+    
+    private void printParameters(HttpServletRequest request){
+    	Enumeration paramNames = request.getParameterNames();
+    	
+    	while( paramNames.hasMoreElements() ){
+    		String paramName = (String)paramNames.nextElement();
+    		
+    		log.debug("paramName : " + paramName);
+    		
+    		String[] paramValues = request.getParameterValues(paramName);
+    		
+    		if(paramValues != null){
+    			for(String paramValue : paramValues){
+    				log.debug("paramValue : " + paramValue);
+    			}
+    		}
+    	}
+    	
+    }	    
 }

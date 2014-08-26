@@ -151,15 +151,12 @@ public class DBHandler {
             log.error(e, "Error creating db content!");
         }
     }
-    private static void createContent(Connection conn, final String dbname) {
+    private static void createContent(Connection conn, final String dbname) throws IOException{
         final String setup = ConversionHelper.getString(System.getProperty("oskari.setup"), "app-default");
         createContent(conn, dbname, setup);
     }
 
-    private static void createContent(Connection conn, final String dbname, final String setupFile) {
-
-        try {
-
+    private static void createContent(Connection conn, final String dbname, final String setupFile) throws IOException{
             String propertySetupFile = "/setup/" + setupFile;
             if(!setupFile.toLowerCase().endsWith(".json")) {
                 // accept setup file without file extension
@@ -173,6 +170,12 @@ public class DBHandler {
 
             log.info("/ Initializing DB");
             final JSONObject setup = JSONHelper.createJSONObject(setupJSON);
+            createContent(conn, dbname, setup);
+
+    }
+    private static void createContent(Connection conn, final String dbname, final JSONObject setup) throws IOException{
+
+        try {
             if(setup.has("create")) {
                 log.info("/- running create scripts:");
                 final JSONArray createScripts = setup.getJSONArray("create");
@@ -188,9 +191,17 @@ public class DBHandler {
                 log.info("/- running recursive setups:");
                 final JSONArray setupFiles = setup.getJSONArray("setup");
                 for(int i = 0; i < setupFiles.length(); ++i) {
-                    final String setupFileName = setupFiles.getString(i);
-                    System.out.println("/-  " + setupFileName);
-                    createContent(conn, dbname, setupFileName);
+                    final Object tmp = setupFiles.get(i);
+                    if (tmp instanceof JSONObject) {
+                        final JSONObject setupObj = (JSONObject) tmp;
+                        System.out.println("/-  as inline JSON");
+                        createContent(conn, dbname, setupObj);
+                    }
+                    else {
+                        final String setupFileName = (String) tmp;
+                        System.out.println("/-  " + setupFileName);
+                        createContent(conn, dbname, setupFileName);
+                    }
                 }
                 log.info("/- recursive setups complete");
             }

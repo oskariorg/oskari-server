@@ -12,6 +12,7 @@ import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -216,28 +217,63 @@ public class LayerJSONFormatter {
      * @param json
      * @return
      */
-    public OskariLayer parseLayer(final JSONObject json) {
+    public OskariLayer parseLayer (final JSONObject json) throws JSONException {
         OskariLayer layer = new OskariLayer();
-        layer.setType(json.optString("type"));
-        layer.setUrl(json.optString("url"));
-        layer.setName(json.optString("name"));
-        layer.setLocale(json.optJSONObject("locale"));
-        // setup theme
-        final String themeName = json.optString("inspiretheme");
-        final InspireTheme theme = inspireThemeService.findByName(themeName);
-        if(theme == null) {
-            log.warn("Didn't find match for theme:", themeName);
+
+        // read mandatory values, an JSONException is thrown if these are missing
+        layer.setType(json.getString("type"));
+        layer.setUrl(json.getString("url"));
+        layer.setName(json.getString("name"));
+        final String orgName = json.getString("organization");
+        final String themeName = json.getString("inspiretheme");
+        layer.setLocale(json.getJSONObject("locale"));
+
+        // read optional values
+        layer.setBaseMap(json.optBoolean("base_map", layer.isBaseMap()));
+        layer.setOpacity(json.optInt("opacity", layer.getOpacity()));
+        layer.setStyle(json.optString("style", layer.getStyle()));
+        layer.setMinScale(json.optDouble("minscale", layer.getMinScale()));
+        layer.setMaxScale(json.optDouble("maxscale", layer.getMaxScale()));
+        layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
+        layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
+        layer.setTileMatrixSetId(json.optString("tile_matrix_set_id", layer.getTileMatrixSetId()));
+        final JSONObject tilematrix = json.optJSONObject("tile_matrix_set_data");
+        if(tilematrix != null) {
+            layer.setTileMatrixSetData(tilematrix.toString());
         }
-        else {
+        layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
+        layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
+        layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));
+        layer.setGeometry(json.optString("geometry", layer.getGeometry()));
+        layer.setRealtime(json.optBoolean("realtime", layer.getRealtime()));
+        layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
+        // omit permissions, these are handled by LayerHelper
+
+        // handle params, check for null to avoid overwriting empty JS Object Literal
+        final JSONObject params = json.optJSONObject("params");
+        if (params != null) {
+            layer.setParams(params);
+        }
+
+        // handle options, check for null to avoid overwriting empty JS Object Literal
+        final JSONObject options = json.optJSONObject("options");
+        if (options != null) {
+            layer.setOptions(options);
+        }
+
+        // handle inspiretheme
+        final InspireTheme theme = inspireThemeService.findByName(themeName);
+        if (theme == null) {
+            log.warn("Didn't find match for theme:", themeName);
+        } else {
             layer.addInspireTheme(theme);
         }
+
         // setup data producer/layergroup
-        final String orgName = json.optString("organization");
         final LayerGroup group = groupService.findByName(orgName);
         if(group == null) {
             log.warn("Didn't find match for layergroup:", orgName);
-        }
-        else {
+        } else {
             layer.addGroup(group);
         }
 

@@ -206,6 +206,7 @@ UPDATE portti_view_bundle_seq set config = '{
         }
        },
        { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
        { "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
       ],

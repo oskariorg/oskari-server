@@ -1,0 +1,6 @@
+<wfs:GetFeature handle="GeoTools 10.2 WFS DataStore" count="{maxFeatures}" outputFormat="application/json" resultType="results" service="WFS" version="2.0.0" srsName="{srsName}" {xmlns} xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ogc="http://ww.opengis.org/ogc/2.0" xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gm1/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 
+http://schemas.opengis.net/wfs/2.0/wfs.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ows="http://www.opengis.net/ows">
+    <wfs:Query srsName="{srsName}" typeNames="{typenames}" aliases="layer1 layer2" xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+    {filter}
+    </wfs:Query>
+</wfs:GetFeature>

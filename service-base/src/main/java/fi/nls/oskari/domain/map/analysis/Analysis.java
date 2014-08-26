@@ -24,6 +24,7 @@ public class Analysis {
     private String col9;
     private String col10;
     private String select_to_data;
+    private String override_sld;
     private long old_id;
 
     public boolean isOwnedBy(final String uuid) {
@@ -175,6 +176,14 @@ public class Analysis {
 
     public void setSelect_to_data(String selectToData) {
         select_to_data = selectToData;
+    }
+
+    public String getOverride_sld() {
+        return override_sld;
+    }
+
+    public void setOverride_SLD(String override_sld) {
+        this.override_sld = override_sld;
     }
 
     public void setCols(List<String> fields) {

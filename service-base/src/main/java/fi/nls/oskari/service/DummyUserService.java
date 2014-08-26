@@ -46,4 +46,24 @@ public class DummyUserService extends UserService {
     public User getUser(String username) throws ServiceException {
         return login(username, null);
     }
+//    
+//  
+//  @Override
+//  public String insertRole(String roleId, String userID) throws ServiceException {
+//  	return null;
+//  }
+//  
+//  
+//  @Override
+//  public String deleteRole(String roleId, String userID) throws ServiceException {
+//  	return null;
+//  }
+//
+//  
+//  @Override
+//  public String modifyRole(String roleId, String userID) throws ServiceException {
+//  	return null;
+//  }    
+//  
+      
 }

@@ -1,0 +1,77 @@
+{
+    "type":"wmslayer",
+    "url":"http://avaa.tdata.fi/geoserver/osm_finland/wms",
+    "name":"osm_finland:osm-finland",
+    "organization": "Demo layers",
+    "inspiretheme": "Others",
+    "locale": {
+        "fi": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
+        },
+        "sv": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
+        },
+        "en": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN",
+            "subtitle": "(WMS)"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "Admin" : ["PUBLISH"]
+    }
+}
+
+/*
+wms layer_definition_json:
+{
+    // Mandatory fields
+    "type": "wmslayer", // layer type
+    "name": "osm_finland:osm-finland", // Unique layer name
+    "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts", // WMTS service url
+    "organization": "Demo layers" // organization is queried using LIKE to recieve an id to oskari_layergroup table
+                                     // (SELECT id FROM oskari_layergroup WHERE locale LIKE '%Demo layers%')
+    "inspiretheme": "Background maps", // official inspire theme names
+    // (SELECT id FROM portti_inspiretheme WHERE nameen='%Background maps%');
+    "locale": {
+        "fi": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        },
+        "sv": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        },
+        "en": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        }
+    },
+
+    // Optional fields
+    "username": "", //  credentials for WMS service
+    "password": "",
+    "opacity": 100, // map layer opacity 0 - 100 - default 100
+    "parentid": -1, // parentId is used for grouping layers
+    "base_map": false, // true for basemaps, and false for all others
+    "params": { "format": "image/png" } // parameters for OpenLayers
+    "options": { "singleTile: true"} // options for OpenLayers
+    "style": "", // SLD
+    "legend_image": "", // legend image url
+    "metadataid": "", // metadata metadataresourceuuid e.g. e3159665-4564-4351-8f1b-7e4a1d0b54dc
+    for service e.g.http: //www.paikkatietohakemisto.fi/catalogue/ui/metadata.html?lang=fi&metadataresourceuuid=e3159665-4564-4351-8f1b-7e4a1d0b54dc
+    "gfi_type": "", // data mime type
+    "gfi_xslt": "", // gfi xslt to be used
+    "realtime": false, // true for realtime layers, false for static
+    "refresh_rate": 0, // refresh rate in seconds
+
+    "minscale": 300000, // whole skandinavia fits to 15 000 000 smallest scale 1:15000000 in practise
+    "maxscale": 1, // largest sclale 1:1  ( scale values should be checked)
+
+    "role_permissions": { // Roles are case-sensitive role names in Oskari
+        "Guest": ["VIEW_LAYER", "VIEW_PUBLISHED"], // permission types are "VIEW_PUBLISHED", "VIEW_LAYER", "PUBLISH", and "EDIT_LAYER"
+        "User": ["VIEW_LAYER", "PUBLISH", "VIEW_PUBLISHED"],
+        "Admin": ["PUBLISH"]
+    }
+}
+*/

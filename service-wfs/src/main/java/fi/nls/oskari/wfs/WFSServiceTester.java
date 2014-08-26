@@ -47,6 +47,7 @@ public class WFSServiceTester {
     private final static String  EXCEPTION_REPORT = "EXCEPTIONREPORT";
     private final static String LAYER_GROUP = System.getProperty("oskari.layer.group");
     private final static String INSPIRE_THEME = System.getProperty("oskari.inspire.theme");
+    private final static String WPS_PARAMS = System.getProperty("oskari.wps_params");
 
     private final static String[] versions =  {"1.0.0", "1.1.0", "2.0.0"};
     private static StringBuilder report = new StringBuilder();
@@ -258,7 +259,8 @@ public class WFSServiceTester {
                     WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     if(epsg != null) lc.setSRSName(epsg);   // test request epsg entered by the user
                     // Write wfs layer insert scripts (sql) - only for Wfs version 1.1.0
-                    writeWFSSqlInsertScript(lc);
+                    String title = wfsds.getFeatureTypeTitle(typeName);
+                    writeWFSSqlInsertScript(lc, title);
                     // test http GET GetFeature
                     final String response = TestGETWfsGetFeature(lc, version, count);
                     // Test Transport parser
@@ -416,7 +418,7 @@ public class WFSServiceTester {
         if(PropertyUtil.get(PROP_NONPROXYHOSTS) != null ) systemProperties.setProperty(PROP_NONPROXYHOSTS,PropertyUtil.get(PROP_NONPROXYHOSTS));
     }
 
-    public static void writeWFSSqlInsertScript(WFSLayerConfiguration lc) {
+    public static void writeWFSSqlInsertScript(WFSLayerConfiguration lc, String layerTitle) {
 
 
         if (PropertyUtil.get(PROP_WFS_SQL_INSERT_TEMPLATE) != null && lc.getWFSVersion().equals("1.1.0")) {
@@ -452,11 +454,14 @@ public class WFSServiceTester {
             -- $EPSG  spatial reference system code (e.g. EPSG:3067)
             -- $FEATURE_ELEMENT  name of featuretype
             -- $NAMESPACE_URI namespace uri of $FEATURE_ELEMENT
+            -- WPS_PARAMS if no data values must be handled json string format  e.g.{"no_data":-1}
              */
             String inspireTheme = "Inspire Theme";
             if(INSPIRE_THEME != null) inspireTheme= INSPIRE_THEME;
             String layerGroup = "Layer Group";
             if(LAYER_GROUP != null) layerGroup= LAYER_GROUP;
+            String wps_params = "{}";
+            if(WPS_PARAMS != null) wps_params= WPS_PARAMS;
             if (sqlTemplate != null) {
             sqlTemplate = sqlTemplate.replace("$WFS_URL", lc.getURL());
             sqlTemplate = sqlTemplate.replace("$LAYER_NAME", lc.getLayerName().replace(":","_"));
@@ -468,6 +473,9 @@ public class WFSServiceTester {
             sqlTemplate = sqlTemplate.replace("$FI_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
             sqlTemplate = sqlTemplate.replace("$SV_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
             sqlTemplate = sqlTemplate.replace("$EN_LAYER_NAME", lc.getFeatureElement().substring(0,1).toUpperCase()+lc.getFeatureElement().substring(1));
+            sqlTemplate = sqlTemplate.replace("$FI_LAYER_TITLE", layerTitle);
+            sqlTemplate = sqlTemplate.replace("$SV_LAYER_TITLE", layerTitle);
+            sqlTemplate = sqlTemplate.replace("$EN_LAYER_TITLE", layerTitle);
             sqlTemplate = sqlTemplate.replace("$INSPIRE_THEME", inspireTheme);
             sqlTemplate = sqlTemplate.replace("$GEOMETRY_PROPERTY", lc.getGMLGeometryProperty());
             sqlTemplate = sqlTemplate.replace("$GML_VERSION", lc.getGMLVersion());
@@ -477,6 +485,7 @@ public class WFSServiceTester {
             sqlTemplate = sqlTemplate.replace("$EPSG", lc.getSRSName());
             sqlTemplate = sqlTemplate.replace("$FEATURE_ELEMENT", lc.getFeatureElement());
             sqlTemplate = sqlTemplate.replace("$NAMESPACE_URI", lc.getFeatureNamespaceURI());
+                sqlTemplate = sqlTemplate.replace("$WPS_PARAMS", wps_params);
 
             // write into file
             BufferedWriter writer = null;

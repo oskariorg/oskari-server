@@ -7,6 +7,7 @@ import fi.nls.oskari.service.ServiceException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -44,38 +45,54 @@ public class TransformationService {
 
 
     public String wpsFeatureCollectionToWfst(final  String wps , String uuid, long analysis_id,
-            List<String> fields, Map<String,String> fieldTypes, String geometryProperty)
+            List<String> fields, Map<String,String> fieldTypes, String geometryProperty, String ns_prefix)
             throws ServiceException {
 
         final Document wpsDoc = createDoc(wps);
         StringBuilder sb = new StringBuilder(WFSTTEMPLATESTART);
         List<String> cols = new ArrayList<String>();
         List<String> geomcols = new ArrayList<String>();
-        geomcols.add("feature:" + geometryProperty);
-        geomcols.add("feature:geometry");
+        geomcols.add(ns_prefix+":" + geometryProperty);
+        geomcols.add(ns_prefix+":geometry");  //  default geometry
 
         String geomcol = "";
+        Boolean members_case = false;
 
-        // iterate through wpsDoc's gml:featureMember elements
+        // iterate through wpsDoc's gml:featureMember elements or gml:featureMembers
         // NodeList featureMembers =
         // wpsDoc.getDocumentElement().getChildNodes();
         NodeList featureMembers = wpsDoc
                 .getElementsByTagName("gml:featureMember");
+        if (featureMembers.getLength() == 0) {
+            featureMembers = wpsDoc
+                    .getElementsByTagName("gml:featureMembers");
+            if (featureMembers.getLength() > 0) members_case = true;
+        }
+        if(members_case){
+            // select features as featureMembers
+            featureMembers = wpsDoc.getElementsByTagName( featureMembers.item(0).getFirstChild().getNodeName());
+        }
         for (int i = 0; i < featureMembers.getLength(); i++) {
-            // we're only interested in featureMembers...
+            // we're only interested in featureMembers... or features
             if (!"gml:featureMember".equals(featureMembers.item(i)
-                    .getNodeName())) {
+                    .getNodeName()) &&  !members_case ) {
                 continue;
             }
-            // get features, i.e. all child elements in feature namespace
-            // we trust that featureMember only has one feature...
-            // find the child feature...
+
             NodeList meh = featureMembers.item(i).getChildNodes();
             NodeList features = null;
-            for (int j = 0; j < meh.getLength(); j++) {
-                if (meh.item(j).getNodeName().indexOf("feature:") == 0) {
-                    features = meh.item(j).getChildNodes();
-                    break;
+            if (members_case) {
+                // gml:featureMembers case - all features under one element
+                features = meh;
+            } else {
+                // get features, i.e. all child elements in feature namespace
+                // we trust that featureMember only has one feature...
+                // find the child feature...
+                for (int j = 0; j < meh.getLength(); j++) {
+                    if (meh.item(j).getNodeName().indexOf(ns_prefix + ":") == 0) {
+                        features = meh.item(j).getChildNodes();
+                        break;
+                    }
                 }
             }
             Node geometry = null;
@@ -91,7 +108,7 @@ public class TransformationService {
                     // geometry, store aside for now
                     geomcol = feature.getNodeName();
                     geometry = feature;
-                } else if (feature.getNodeName().indexOf("feature:") == 0) {
+                } else if (feature.getNodeName().indexOf(ns_prefix+":") == 0) {
                     // only parse 8 first text ( numeric results invalid behavior later use only text)
                     //TODO: fix management of Date dateTime types later
                     // (excluding geometry)
@@ -123,32 +140,9 @@ public class TransformationService {
                         }
                     }
                 }
-            }
-            // build wfs:Insert element
-            sb.append(WFSTINSERTSTART);
-            // add geometry node
-            sb.append(nodeToString(geometry).replace(geomcol,
-                    "feature:geometry"));
-            // add text feature nodes (1-based)
-            for (int j = 0; j < textFeatures.size(); j++) {
-                sb
-                        .append("         <feature:t" + (j + 1) + ">"
-                                + textFeatures.get(j) + "</feature:t" + (j + 1)
-                                + ">\n");
-            }
-            // add numeric feature nodes (1-based)
-            for (int j = 0; j < numericFeatures.size(); j++) {
-                sb.append("         <feature:n" + (j + 1) + ">"
-                        + numericFeatures.get(j) + "</feature:n" + (j + 1)
-                        + ">\n");
-            }
 
-            sb.append("         <feature:analysis_id>"
-                    + Long.toString(analysis_id) + "</feature:analysis_id>\n");
-
-            sb.append("         <feature:uuid>" + uuid + "</feature:uuid>\n");
-
-            sb.append(WFSTINSERTEND);
+            }
+            buildWfsInsertElement(sb, geometry, geomcol, textFeatures, numericFeatures, uuid, analysis_id );
         }
         sb.append(WFSTTEMPLATEEND);
         return sb.toString();
@@ -294,5 +288,33 @@ public class TransformationService {
            // ex.printStackTrace();
             return null;
         }
+    }
+    public void buildWfsInsertElement(StringBuilder sb, Node geometry, String geomcol, List<String> textFeatures, List<Double> numericFeatures, String uuid, long analysis_id ) throws ServiceException
+    {
+    // build wfs:Insert element
+    sb.append(WFSTINSERTSTART);
+    // add geometry node
+    sb.append(nodeToString(geometry).replace(geomcol,
+                                             "feature:geometry"));
+    // add text feature nodes (1-based)
+    for (int j = 0; j < textFeatures.size(); j++) {
+        sb
+                .append("         <feature:t" + (j + 1) + ">"
+                        + textFeatures.get(j) + "</feature:t" + (j + 1)
+                        + ">\n");
+    }
+    // add numeric feature nodes (1-based)
+    for (int j = 0; j < numericFeatures.size(); j++) {
+        sb.append("         <feature:n" + (j + 1) + ">"
+                + numericFeatures.get(j) + "</feature:n" + (j + 1)
+                + ">\n");
+    }
+
+    sb.append("         <feature:analysis_id>"
+            + Long.toString(analysis_id) + "</feature:analysis_id>\n");
+
+    sb.append("         <feature:uuid>" + uuid + "</feature:uuid>\n");
+
+    sb.append(WFSTINSERTEND);
     }
 }

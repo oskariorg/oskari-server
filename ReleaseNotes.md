@@ -2,6 +2,14 @@
 
 ## 1.23
 
+### New admin bundles
+
+Check that you have these registered in portti_bundle database-table or check the upgrade 1.23 README.md for details.
+The bundles are now part of the default configuration for admin user:
+
+* admin/admin: will be used as generic admin bundle in the future and at this time allows to manage default views location and layers
+* framework/admin-users: for managing users
+
 ### Maven repository @ oskari.org
 
 Precompiled versions of code is now available. Only 1.23-SNAPSHOT currently available, but versions start to pile up on releases.
@@ -33,6 +41,9 @@ oskari_org_snapshot is only needed if using SNAPSHOT-versions (github develop br
 ### control-admin
 
 New action handler 'Cache' for admin users to check the status of caching.
+
+New action handler 'SystemViews' can be asked to list configured default views (returns global and role-based) and update location/maplayers of given view.
+Used by generic admin bundles default views functionality.
 
 ### content-resources
 
@@ -74,6 +85,8 @@ when automatically inserted. The implementation is not solid enough to be used o
 OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
 
 LayerJSONFormatter has initial (and minimal) implementation for parsing JSON to an OskariLayer object.
+
+ViewService now has a method to update config/state/startup of single bundle in a given view.
 
 ### control-base
 
