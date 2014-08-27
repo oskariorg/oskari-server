@@ -6,7 +6,11 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Convenience methods for handling http requests.
@@ -83,4 +87,16 @@ public class RequestHelper {
         return "";
     }
 
+    public static Map<String, String> parsePrefixedParamsMap(final HttpServletRequest request, final String paramNamePrefix) {
+        final Map<String, String> result = new HashMap<String, String>();
+        final int prefixLength = paramNamePrefix.length();
+        final Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            final String nextName = paramNames.nextElement();
+            if (nextName.indexOf(paramNamePrefix) == 0) {
+                result.put(nextName.substring(prefixLength), request.getParameter(nextName));
+            }
+        }
+        return result;
+    }
 }

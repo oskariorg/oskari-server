@@ -37,6 +37,13 @@ public interface ViewService extends BaseService<Object> {
     public long getDefaultViewId();
 
     /**
+     * Returns default view id for given role name
+     * @param roleName
+     * @return
+     */
+    public long getDefaultViewIdForRole(final String roleName);
+
+    /**
      * Returns default view id for the user.
      * @param user
      * @return view id
@@ -48,5 +55,13 @@ public interface ViewService extends BaseService<Object> {
     public void updatePublishedView(View view, JSONObject json) throws ViewException;
 
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
+
+    /**
+     * Updates bundle settings for single bundle in given view.
+     * @param viewId
+     * @param bundle
+     * @throws ViewException if bundle is not part of the view or update failed.
+     */
+    public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException;
 
 }

@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import java.util.Enumeration;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -12,6 +14,7 @@ import fi.nls.oskari.map.stats.VisualizationService;
 import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+
 import org.apache.axiom.om.OMElement;
 
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +49,8 @@ public class GetStatsLayerSLDHandler extends ActionHandler {
 
     private String getSLD(final ActionParameters params)
             throws ActionException {
+    	
+    	printParameters(params);
 
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params
                 .getLocale().getLanguage());
@@ -65,12 +70,30 @@ public class GetStatsLayerSLDHandler extends ActionHandler {
             if (modeXML) {
                 return xml.toString();
             } else {
-                return service.transform(xml, service.getDefaultXSLT());
+//                return service.transform(xml, service.getDefaultXSLT());
+            	String xmlString = service.transform(xml, service.getDefaultXSLT());
+            	
+            	return xmlString;
             }
         } catch (Exception e) {
             throw new ActionException("Unable to create SLD", e);
         }
     }
+    
+    private void printParameters(ActionParameters params){
+    	Enumeration e = params.getRequest().getParameterNames();
+    	
+    	log.debug("print keys");
+    	while(e.hasMoreElements()){
+    		String key = (String)e.nextElement();
+    		log.debug("Key: " +key);
+    		String[] values = params.getRequest().getParameterValues(key);
+    		
+    		for(String value : values){
+    			log.debug("  value: " + value);
+    		}
+    	}
+    }    
 
     /**
      * Constructs visualization parameters from request parameters

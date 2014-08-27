@@ -30,6 +30,7 @@
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
                 ],
                 "layers": [

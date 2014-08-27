@@ -1,8 +1,7 @@
 package fi.nls.oskari.work;
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.wfs.WFSCommunicator;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSParser;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;

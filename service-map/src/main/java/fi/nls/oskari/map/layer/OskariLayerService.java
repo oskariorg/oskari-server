@@ -15,4 +15,5 @@ import java.util.List;
 public interface OskariLayerService extends BaseService<OskariLayer> {
 
     public List<OskariLayer> find(final List<String> idList);
+    public List<OskariLayer> findByUrlAndName(final String url, final String name);
 }

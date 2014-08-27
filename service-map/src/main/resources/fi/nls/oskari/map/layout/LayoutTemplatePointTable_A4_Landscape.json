@@ -1,0 +1,102 @@
+{"printout": {
+     	"styles": {     		
+   			"table1style": {
+                "width" : "8.2cm",
+                "height": "13.5cm",
+                "bottom": "1.5cm",
+                "left": "20.5cm",
+                "styles" : {
+                    "col1": {
+                        "width": "1cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#B9D3EE"
+                    },
+                    "col2": {
+                        "width": "5cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#B9D3EE"
+                    }
+                }
+            },
+            "table2style": {
+                "width" : "8.2cm",
+                "height": "3cm",
+                "bottom": "14.5cm",
+                "left": "20.5cm",
+                "styles" : {
+                    "col1": {
+                        "width": "1cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#c0d0e0"
+                    },
+                    "col2": {
+                        "width": "5cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#c0d0e0"
+                    },
+                    "col3": {
+                        "width": "5cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#c0d0e0"
+                    }
+                }
+            },
+            "table3style": {
+                "width" : "15cm",
+                "height": "1cm",
+                "bottom": "0cm",
+                "left": "7cm",
+                "styles" : {
+                    "col1": {
+                        "width": "5cm",
+                        "height": "0.7cm",
+                        "color" : "#000000",
+                        "backgroundColor": "#c0d0e0"
+                    }
+                }
+            }
+     	},
+     	"content": {
+     		"table1" : {
+     			"type" : "table",
+     			"style": "table1style",
+     			"cols" : [
+     				{ "id": "col1" },
+     				{ "id": "col2" }
+     			],
+     			"rows" : [
+     			]
+     			
+     		},
+            "table2" : {
+                "type" : "table",
+                "style": "table2style",
+                "cols" : [
+                    { "id": "col1" },
+                    { "id": "col2" }
+                ],
+                "rows" : [
+                ]
+
+            },
+            "table3" : {
+                "type" : "table",
+                "style": "table3style",
+                "cols" : [
+                    { "id": "col1" }
+                ],
+                "rows" : [
+                ]
+
+            }
+     		
+     	
+     	}
+     
+     }
+}

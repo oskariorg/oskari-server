@@ -1,0 +1,15 @@
+<layer>
+  <name>analysis_data</name>
+  <id>LayerInfoImpl--47d91406:1470f9cef51:-7ffa</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-5040a49e:12704d4341f:-7f68</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--47d91406:1470f9cef51:-7ffb</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

@@ -3,15 +3,14 @@ package fi.nls.oskari.wfs;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.wfs.WFSFeatureTypeParser;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import fi.nls.oskari.pojo.WFSLayerStore;
 
 public class WFSFeatureTypeParserTest {
 	private static WFSLayerStore layer;

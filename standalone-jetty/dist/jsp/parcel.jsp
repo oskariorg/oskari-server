@@ -45,6 +45,8 @@
                 vertical-align: bottom;
                 margin-bottom: 8px;
                 margin-top: 20px;
+                font-size: 12px;
+                line-height: 12.6px;
             }
             #loginbar a {
                 color: #FFDE00;
@@ -150,8 +152,7 @@
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}&';
     var viewId = '${viewId}';
-    <%-- NOTE!!! HARDCODED LANGUAGE SINCE PARCEL BUNBLES ONLY HAS FINNISH LOCALIZATION --%>
-    var language = 'fi';
+    var language = '${language}';
     var preloaded = ${preloaded};
     var controlParams = ${controlParams};
 </script>
@@ -184,7 +185,7 @@
             src="/Oskari${path}/oskari_lang_all.js">
     </script>
     <script type="text/javascript"
-            src="/Oskari${path}/oskari_lang_${themeDisplay.locale.language}.js">
+            src="/Oskari${path}/oskari_lang_${language}.js">
     </script>
 </c:if>
 

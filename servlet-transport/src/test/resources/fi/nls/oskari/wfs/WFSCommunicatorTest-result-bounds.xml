@@ -6,7 +6,7 @@
         <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
             <ogc:BBOX>
                 <ogc:PropertyName>the_geom</ogc:PropertyName>
-                <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+                <gml:Envelope srsDimension="2" srsName="EPSG:3067">
                     <gml:lowerCorner>385800.0 6690267.0</gml:lowerCorner>
                     <gml:upperCorner>397380.0 6697397.0</gml:upperCorner>
                 </gml:Envelope>

@@ -55,7 +55,8 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
             return new JSONArray();
         }
         StringBuffer buf = new StringBuffer(serviceURL);
-        buf.append("?format=json&addressdetails=1");
+        if(serviceURL.indexOf("?") > 0)buf.append("&format=json&addressdetails=1");
+        else buf.append("?format=json&addressdetails=1");
         // buf.append("&countrycodes=fi");
         buf.append("&accept-language=");
         buf.append(searchCriteria.getLocale());
@@ -65,7 +66,9 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
         }
         buf.append("&q=");
         buf.append(URLEncoder.encode(searchCriteria.getSearchString(),"UTF-8"));
-        return JSONHelper.createJSONArray(IOHelper.getURL(buf.toString()));
+        String data = IOHelper.getURL(buf.toString());
+        log.debug("DATA: " + data);
+        return JSONHelper.createJSONArray(data);
     }
 
     /**
@@ -126,6 +129,7 @@ public class OpenStreetMapSearchChannel implements SearchableChannel {
                     item.setLat("");
                     item.setContentURL("");
                 }
+                log.debug("ITEM: " + item.toString());
             }
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");

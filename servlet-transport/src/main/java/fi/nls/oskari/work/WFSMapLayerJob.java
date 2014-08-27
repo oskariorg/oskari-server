@@ -1,13 +1,10 @@
 package fi.nls.oskari.work;
 
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.utils.HttpHelper;
-import fi.nls.oskari.wfs.WFSCommunicator;
-import fi.nls.oskari.wfs.WFSFilter;
-import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.WFSParser;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.wfs.*;
 
-import fi.nls.oskari.wfs.extension.UserLayerFilter;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;

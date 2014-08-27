@@ -35,7 +35,6 @@
     <Set name="securityHandler">
         <New class="org.eclipse.jetty.security.ConstraintSecurityHandler">
             <Set name="loginService">
-                <!-- For jetty 9 remove the .plus. from JAASLoginService -->
                 <New class="org.eclipse.jetty.plus.jaas.JAASLoginService">
                     <Set name="name">OskariRealm</Set>
                     <Set name="loginModuleName">oskariLoginModule</Set>

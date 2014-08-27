@@ -1,0 +1,20 @@
+{
+    "type":"arcgislayer",
+    "url":"http://aineistot.esri.fi/arcgis/rest/services/Taustakartat/Taustakartta/MapServer",
+    "name":"Taustakartta",
+    "organization": "Demo",
+    "inspiretheme": "Demo",
+    "locale": {
+        "fi": {
+            "name": "Arcgis test"
+        },
+        "en": {
+            "name": "Arcgis test"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER"],
+        "User" : ["VIEW_LAYER"],
+        "Admin" : ["VIEW_LAYER"]
+    }
+}

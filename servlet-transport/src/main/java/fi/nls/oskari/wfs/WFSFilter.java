@@ -8,7 +8,7 @@ import fi.nls.oskari.pojo.Location;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geojson.geom.GeometryJSON;

@@ -58,11 +58,17 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String PARAM_FILTER2 = "filter2";
 
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
+    private static final String JSON_KEY_METHODPARAMS = "methodParams";
+    private static final String JSON_KEY_LOCALES = "locales";
+    private static final String JSON_KEY_FUNCTIONS = "functions";
+    private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
+    private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
 
     private static final String INTERSECT = "intersect";
     private static final String AGGREGATE = "aggregate";
     private static final String UNION = "union";
     private static final String LAYER_UNION = "layer_union";
+    private static final String DIFFERENCE = "difference";
 
     private static final String ERROR_ANALYSE_PARAMETER_MISSING = "Analyse_parameter_missing";
     private static final String ERROR_UNABLE_TO_PARSE_ANALYSE = "Unable_to_parse_analysis";
@@ -153,8 +159,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 // response
                 //Save analysis results - use union of input data
                 analysisLayer.setWpsLayerId(-1);
-                analysisLayer.setResult(analysisParser.parseAggregateResults(featureSet,
-                        analysisLayer));
+                analysisLayer.setResult(this.localiseAggregateResult(analysisParser.parseAggregateResults(featureSet,
+                        analysisLayer), analyseJson));
 
                 try {
                     analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl);
@@ -319,6 +325,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private String requestFeatureSets(AnalysisLayer analysisLayer) throws ServiceException {
 
         String featureSet = null;
+        Boolean doRequest = true;
         if (analysisLayer.getMethod().equals(AGGREGATE)) {
             StringBuilder sb = new StringBuilder();
             // Loop aggregate attribute fields
@@ -331,21 +338,69 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 if (analysisLayer.getFieldtypeMap().containsKey(field)) {
                     if (analysisLayer.getFieldtypeMap().get(field).equals("numeric")) {
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_funcs);
+                        if (aggre_funcs.size() == 0) doRequest = false;
                     } else {
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
+                        doRequest = true;
                     }
                 }
                 sb.append("<fieldResult>");
                 sb.append("<field>" + field + "</field>");
-                sb.append(wpsService.requestFeatureSet(analysisLayer));
+                if (doRequest) sb.append(wpsService.requestFeatureSet(analysisLayer));
+                if (analysisLayer.isNodataCount()) {
+                    // Special aggregate process for NoDataCount - use count method with specific filter
+                    ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
+                    ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setDoNoDataCount(true);
+                    sb.append("<fieldNoDataCount>");
+                    String nodataresponse = wpsService.requestFeatureSet(analysisLayer);
+                    // Wps wps input features fails, if no nodata feature fields (exception) --> skip
+                    // Could be another wps exception as well
+                    if (nodataresponse.indexOf("ows:Exception") == -1) sb.append(nodataresponse);
+                    sb.append("</fieldNoDataCount>");
+                    ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setDoNoDataCount(false);
+                }
                 sb.append("</fieldResult>");
             }
+
             featureSet = sb.toString();
+        }
+        else if (analysisLayer.getMethod().equals(DIFFERENCE)) {
+            // Get feature set via WFS 2.0 GetFeature
+            featureSet = wpsService.requestWFS2FeatureSet(analysisLayer);
+
         } else {
             featureSet = wpsService.requestFeatureSet(analysisLayer);
         }
         return featureSet;
     }
 
+    /**
+     * Pure localisation of aggregate result function names
+     * @param result
+     * @param analysejs
+     * @return localised result text
+     */
+    private String localiseAggregateResult(String result, JSONObject analysejs) {
+
+        try {
+            JSONArray locales = analysejs.getJSONObject(JSON_KEY_METHODPARAMS)
+                    .optJSONArray(JSON_KEY_LOCALES);
+            JSONArray aggre_funcs = analysejs.getJSONObject(
+                    JSON_KEY_METHODPARAMS).optJSONArray(JSON_KEY_FUNCTIONS);
+            if (locales != null && aggre_funcs.length() == locales.length()) {
+                for (int i = 0; i < locales.length(); i++) {
+                    String funcName = aggre_funcs.getString(i);
+                    // Plääh WPS funcnames are not equal to result names
+                    if(funcName.equals(AGGREGATE_STDDEV_WPS_IN)) funcName = AGGREGATE_STDDEV_WPS_OUT;
+                    result = result.replace(funcName,locales.getString(i));
+
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Aggregate result localisation failed ", e);
+
+        }
+        return result;
+    }
 
 }

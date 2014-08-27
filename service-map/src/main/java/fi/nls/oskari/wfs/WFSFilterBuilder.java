@@ -77,9 +77,14 @@ public class WFSFilterBuilder {
         if (!filter_js.has(KEY_FILTERS) && !filter_js.has(KEY_FEATUREIDS)) {
             return null;
         }
+
         JSONArray jsArray = new JSONArray();
 
         try {
+            if (!filter_js.has(KEY_FILTERS) && filter_js.has(KEY_FEATUREIDS)) {
+                if(filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) return null;
+            }
+
             if (filter_js.has(KEY_FILTERS)) {
                 // Get feature ID filter input
                 jsArray = filter_js.getJSONArray(KEY_FILTERS);
@@ -156,6 +161,10 @@ public class WFSFilterBuilder {
             if (ids != null) {
                 all = ids;
             }
+            // If there is only one feature to be selected, then other filters must be ignored
+            // Geotools skips id filter, if many overlapping filters
+
+            if(all != null && isOneIdFilter(filter_js)) return getFilterAsString(all);
 
             if (andConditions.size() > 0) {
                 all = appendFilter(all, ff.and(andConditions));
@@ -314,6 +323,22 @@ public class WFSFilterBuilder {
 
     }
 
+    /**
+     * Check, if only one featureId filter
+     *
+     * @param filter_js
+     * @return true; only one featureId filter
+     * @throws JSONException
+     */
+    private static boolean isOneIdFilter(final JSONObject filter_js)
+            throws JSONException {
+        if (filter_js.has(KEY_FEATUREIDS)) {
+            // Get feature ID filter input
+            final JSONArray jsIdArray = filter_js.getJSONArray(KEY_FEATUREIDS);
+            if (jsIdArray.length() == 1) return true;
+        }
+        return false;
+    }
     public static String parseProperties(List<String> props, String ns, String geom_prop) {
         String query = "";
         for (String prop : props) {

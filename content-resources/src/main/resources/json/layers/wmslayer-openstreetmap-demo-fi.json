@@ -1,0 +1,23 @@
+{
+    "type":"wmslayer",
+    "url":"http://avaa.tdata.fi/geoserver/osm_finland/wms",
+    "name":"osm_finland:osm-finland",
+    "organization": "Demo layers",
+    "inspiretheme": "Others",
+    "locale": {
+        "fi": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        },
+        "sv": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        },
+        "en": {
+            "name": "OpenStreetMap WMS ETRS-TM35FIN"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "Admin" : ["PUBLISH"]
+    }
+}

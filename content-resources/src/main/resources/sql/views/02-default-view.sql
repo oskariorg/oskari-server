@@ -158,6 +158,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             },
             "mapuserlayers" : {
               "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "routesearch" : {
+              "bundlePath" : "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance" : []
@@ -236,10 +239,10 @@ UPDATE portti_view_bundle_seq set config = '{
 
 -- update proper state for view
 UPDATE portti_view_bundle_seq set state = '{
-    "east": "517620",
-    "north": "6874042",
+    "east": "520000",
+    "north": "7250000",
     "selectedLayers": [{"id": "base_35"}],
-    "zoom": 1
+    "zoom": 0
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'mapfull') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
 
@@ -1060,3 +1063,40 @@ UPDATE portti_view_bundle_seq set startup = '{
         "instanceProps" : {}
     }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'metadatacatalogue') 
     AND view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
+--------------------------------------------
+-- 24. Route Search
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
+       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+        (SELECT id FROM portti_bundle WHERE name = 'routesearch'), 
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
+        '{}','{}', '{}');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+    "title": "Route Search",
+    "bundleinstancename": "routesearch",
+    "fi": "Reittihaku",
+    "sv": "Ruttsök",
+    "en": "Route Search",
+    "bundlename": "routesearch",
+    "metadata": {
+        "Import-Bundle": {
+            "routesearch": {
+                "bundlePath": "/Oskari/packages/framework/bundle/"
+            }
+        },
+        "Require-Bundle-Instance": [ ]
+    },
+    "instanceProps": {}
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'routesearch') 
+    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
+-- update proper config for view
+UPDATE portti_view_bundle_seq set config = '{
+    "flyoutClazz": "Oskari.mapframework.bundle.routesearch.Flyout"
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'routesearch')
+         AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');

@@ -1,13 +1,7 @@
 package fi.nls.oskari.db;
 
-import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.BundleService;
-import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
-import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -47,8 +41,13 @@ public class DBHandler {
         log = LogFactory.getLogger(DBHandler.class);
 
         final String addView = System.getProperty("oskari.addview");
+        final String addLayer = System.getProperty("oskari.addlayer");
         if(addView != null) {
-            insertView(getConnection(), addView);
+            ViewHelper.insertView(getConnection(), addView);
+        }
+        else if(addLayer != null) {
+            final int id = LayerHelper.setupLayer(addLayer);
+            log.debug("Added layer with id:", id);
         }
         else {
             // initialize db with demo data if tables are not present
@@ -86,7 +85,7 @@ public class DBHandler {
         } catch (Exception e) {
         }
 
-        final String url = PropertyUtil.get("url", "jdbc:postgresql://localhost:5432/oskaridb");
+        final String url = PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb");
         try {
             final Properties connectionProps = new Properties();
             final String user = PropertyUtil.getOptional("db.username");
@@ -214,7 +213,7 @@ public class DBHandler {
                 final JSONArray viewsListing = setup.getJSONArray("views");
                 for(int i = 0; i < viewsListing.length(); ++i) {
                     final String viewConfFile = viewsListing.getString(i);
-                    insertView(conn, viewConfFile);
+                    ViewHelper.insertView(conn, viewConfFile);
                 }
             }
 
@@ -233,68 +232,6 @@ public class DBHandler {
         }
     }
 
-    private static long insertView(Connection conn, final String viewfile) throws IOException, SQLException {
-        log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(DBHandler.class.getResourceAsStream("/json/views/" + viewfile));
-        JSONObject view = JSONHelper.createJSONObject(json);
-        log.debug(view);
-        try {
-            final String creator = view.optString("creator");
-            executeSingleSql(conn, "INSERT INTO portti_view_supplement (is_public, creator) VALUES (" + view.getBoolean("public") +
-                    "," + ConversionHelper.getLong(creator, -1) + " )");
-            Map<String, String> supplementResult = selectSql(conn, "SELECT max(id) as id FROM portti_view_supplement");
-            final long supplementId = ConversionHelper.getLong(supplementResult.get("id"), -1);
-
-            final String insertViewSQL = "INSERT INTO portti_view (name, type, is_default, supplement_id, application, page, application_dev_prefix) " +
-                    "VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(insertViewSQL);
-            preparedStatement.setString(1, view.getString("name"));
-            preparedStatement.setString(2, view.getString("type"));
-            preparedStatement.setBoolean(3, view.getBoolean("default"));
-            preparedStatement.setLong(4, supplementId);
-            final JSONObject oskari = JSONHelper.getJSONObject(view, "oskari");
-            preparedStatement.setString(5, oskari.getString("application"));
-            preparedStatement.setString(6, oskari.getString("page"));
-            preparedStatement.setString(7, oskari.getString("development_prefix"));
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-
-            Map<String, String> viewResult = selectSql(conn, "SELECT max(id) as id FROM portti_view");
-            final long viewId = ConversionHelper.getLong(viewResult.get("id"), -1);
-
-            final ViewService viewService = new ViewServiceIbatisImpl();
-            final BundleService bundleService = new BundleServiceIbatisImpl();
-            final View viewObj = viewService.getViewWithConf(viewId);
-            final JSONArray bundles = view.getJSONArray("bundles");
-            for (int i = 0; i < bundles.length(); ++i) {
-                final JSONObject bJSON = bundles.getJSONObject(i);
-                final Bundle bundle = bundleService.getBundleTemplateByName(bJSON.getString("id"));
-                if(bundle == null) {
-                    throw new Exception("Bundle not registered - id:" + bJSON.getString("id"));
-                }
-                if (bJSON.has("instance")) {
-                    bundle.setBundleinstance(bJSON.getString("instance"));
-                }
-                if (bJSON.has("startup")) {
-                    bundle.setStartup(bJSON.getJSONObject("startup").toString());
-                }
-                if (bJSON.has("config")) {
-                    bundle.setConfig(bJSON.getJSONObject("config").toString());
-                }
-                if (bJSON.has("state")) {
-                    bundle.setState(bJSON.getJSONObject("state").toString());
-                }
-                // set up seq number
-                viewObj.addBundle(bundle);
-                viewService.addBundleForView(viewId, bundle);
-            }
-            log.info("Added view from file: " + viewfile + "/viewId is:" + viewId);
-            return viewId;
-        } catch (Exception ex) {
-            log.error(ex, "Unable to insert view! ");
-        }
-        return -1;
-    }
 
 
     private static void registerBundle(Connection conn, final String namespace, final String bundlefile) throws IOException, SQLException {
@@ -324,7 +261,7 @@ public class DBHandler {
     }
 
 
-    private static void executeSingleSql(Connection conn, final String sql) throws IOException, SQLException {
+    public static void executeSingleSql(Connection conn, final String sql) throws IOException, SQLException {
         final Statement stmt = conn.createStatement();
         if (sql.indexOf("--") < 0) {
             stmt.execute(sql);
@@ -335,7 +272,7 @@ public class DBHandler {
         stmt.close();
     }
 
-    private static Map<String, String> selectSql(Connection conn, final String query) throws IOException, SQLException {
+    public static Map<String, String> selectSql(Connection conn, final String query) throws IOException, SQLException {
         final Map<String, String> result = new HashMap<String, String>();
         final Statement stmt = conn.createStatement();
 

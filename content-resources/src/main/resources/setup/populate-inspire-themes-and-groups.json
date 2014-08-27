@@ -1,0 +1,6 @@
+{
+    "sql": [
+        "populate-Inspire-themes.sql",
+        "example-layergroups.sql"
+    ]
+}

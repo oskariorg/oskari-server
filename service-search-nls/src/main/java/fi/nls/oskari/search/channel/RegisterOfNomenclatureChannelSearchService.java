@@ -7,14 +7,17 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.util.QueryParser;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
+
 import org.apache.xmlbeans.XmlObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
 import java.net.URLEncoder;
+import java.util.Map;
 
 public class RegisterOfNomenclatureChannelSearchService implements SearchableChannel{
     /** logger */
@@ -42,12 +45,37 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
 
+    	
+    	boolean villageFound = false;
+    	boolean searchVillages = true;
+    	String villageName = null;
+    	
         ChannelSearchResult searchResultList = new ChannelSearchResult();
+        
+        String searchString = searchCriteria.getSearchString();
+        
+        QueryParser queryParser = new QueryParser(searchString);
+        try{
+	        queryParser.parse();
+	        log.debug(queryParser.toString());
+        
+	        if(queryParser.getVillageName() != null && queryParser.getStreetName() != null && !queryParser.getStreetName().equals("")){
+        		villageName = queryParser.getVillageName();
+    	        searchString = queryParser.getStreetName();
+    	        villageFound = hasVillage(villageName);
+	        }else{
+	        	searchVillages = false;
+	        }
+        
+	    }catch(Exception e){
+	    	log.warn("Address parser failed");
+	    }
+        
 
         try {
-            final String url = getWFSUrl(searchCriteria.getSearchString());
+        	final String url = getWFSUrl(searchString);
             final String data = IOHelper.getURL(url);
-
+            
             final String currentLocaleCode =  getLocaleCode(searchCriteria.getLocale());
             final FeatureCollectionDocument fDoc =  FeatureCollectionDocument.Factory.parse(data);
             final FeaturePropertyType[] fMembersArray = fDoc.getFeatureCollection().getFeatureMemberArray();
@@ -105,12 +133,22 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
                 item.setLocationTypeCode(paikkatyyppiKoodi);
                 item.setType(getType(searchCriteria.getLocale(), paikkatyyppiKoodi));
                 item.setLocationName(SearchUtil.getLocationType(paikkatyyppiKoodi+"_"+ currentLocaleCode));
+                log.debug("kuntaKoodi _ currentLocaleCode " + kuntaKoodi+"_"+ currentLocaleCode);
                 item.setVillage(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
+                log.debug("item.getVillage: " + item.getVillage());
                 item.setLon(lonLat[0]);
                 item.setLat(lonLat[1]);
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
                 item.setZoomLevel(SearchUtil.getZoomLevel(paikkatyyppiKoodi));
-                searchResultList.addItem(item);
+                
+                if(villageFound && searchVillages){
+                	//log.debug("verrataan: " + villageName + "-" + SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
+                	if(villageName.equals(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode))){
+                        searchResultList.addItem(item);
+                	}
+                }else{
+                	searchResultList.addItem(item);
+                }
 
             }
 
@@ -129,6 +167,16 @@ public class RegisterOfNomenclatureChannelSearchService implements SearchableCha
         return Jsoup.clean(type, Whitelist.none());
     }
 
+    
+    private boolean hasVillage(String village){
+    	 
+    	log.debug("hasVillage: " + village);
+    	Map<String, String> villagesMap = SearchUtil.getVillages();
+    	
+    	return villagesMap.containsKey(village);
+
+    }
+    
     /**
      * Returns the searchcriterial String. 
      *

@@ -3,9 +3,9 @@
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_geonorge', 999, 
+  VALUES('wfslayer', 'elf_gn_geonorge', 902, 
          120000, 1, 
-         'wfs', '{fi:{name:"ELF GN - geonorge.no", subtitle:""},sv:{name:"ELF GN - geonorge.no", subtitle:""},en:{name:"ELF GN - geonorge.no", subtitle:""}}');
+         'wfs', '{fi:{name:"GN Geographical Names - geonorge.no", subtitle:""},sv:{name:"GN Geographical Names - geonorge.no", subtitle:""},en:{name:"GN Geographical Names - geonorge.no", subtitle:""}}');
          
 
          
@@ -112,4 +112,6 @@ INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, ext
 ((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '2');
 
 
-		
+-- give view_published_layer permission for the resource to ROLE 10110 (guest);
+INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
+((SELECT MAX(id) FROM oskari_resource), 'ROLE', 'VIEW_PUBLISHED', '1');

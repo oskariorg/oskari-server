@@ -144,6 +144,8 @@ public class SearchServiceImpl implements SearchService {
      */
     private ChannelSearchResult handleChannelSearch(
             SearchCriteria searchCriteria, SearchableChannel actualChannel) {
+    	log.debug("handleChannelSearch");
+    	
         try {
             ChannelSearchResult result = actualChannel.doSearch(searchCriteria);
             

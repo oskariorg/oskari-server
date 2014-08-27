@@ -19,8 +19,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.XMLHelper;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.XMLHelper;
 
 public class AnalysisFilterTest {
     private SessionStore session;

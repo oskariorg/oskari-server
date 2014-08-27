@@ -65,7 +65,8 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
      * @throws Exception
      */
     private String getData(SearchCriteria searchCriteria) throws Exception {
-        if (serviceURL == null) {
+        log.debug("getData");
+    	if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
@@ -105,7 +106,7 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
             buf.append(request.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8")));
         }
 
-
+        log.debug("/getData");
         return IOHelper.getURL(buf.toString());
     }
 
@@ -128,10 +129,12 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
+        	log.debug("doSearch");
             String data = getData(searchCriteria);
 
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
+            log.debug("DATA: " + data);
 
             return elfParser.parse(data, searchCriteria.getSRS(), searchCriteria.getParam(PARAM_EXONYM).toString().equals("true"));
 

@@ -13,4 +13,5 @@ import fi.nls.oskari.service.db.BaseService;
  */
 public interface LayerGroupService extends BaseService<LayerGroup> {
     public boolean hasPermissionToUpdate(final User user, final int layerId);
+    public LayerGroup findByName(final String name);
 }

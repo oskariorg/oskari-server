@@ -6,11 +6,10 @@ import static org.junit.Assume.assumeTrue;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fi.nls.oskari.utils.TestHelper;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.junit.BeforeClass;
@@ -21,8 +20,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSLayerStore;
-import fi.nls.oskari.utils.HttpHelper;
+import fi.nls.oskari.wfs.util.HttpHelper;
 
 public class WFSParserTest {
 	private static SessionStore session;

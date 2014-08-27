@@ -3,6 +3,7 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -17,6 +18,12 @@ public class Cache<T> {
     private long expiration = 30 * 60 * 1000;
     private long lastFlush = System.currentTimeMillis();
     private String name;
+
+    private boolean cacheMissDebugEnabled = false;
+
+    public void setCacheMissDebugEnabled(boolean enabled) {
+        cacheMissDebugEnabled = enabled;
+    }
 
     public String getName() {
         return name;
@@ -38,8 +45,28 @@ public class Cache<T> {
         this.limit = limit;
     }
 
+    /**
+     * Time between flushes to keep cached values
+     * @return
+     */
     public long getExpiration() {
         return expiration;
+    }
+
+    /**
+     * Returns number of cached items
+     * @return
+     */
+    public long getSize() {
+        return items.size();
+    }
+
+    /**
+     * Returns keys for cached items
+     * @return
+     */
+    public Set<String> getKeys() {
+        return items.keySet();
     }
 
     /**
@@ -57,14 +84,25 @@ public class Cache<T> {
     public T get(final String name) {
         flush(false);
         T value = items.get(name);
-        if(value == null) {
+
+        if(cacheMissDebugEnabled && value == null) {
             log.debug("Cache", getName(), "miss for name", name);
         }
         return value;
     }
 
+    public T remove(final String name) {
+        flush(false);
+        T value = items.remove(name);
+        return value;
+    }
+
     public boolean put(final String name, final T item) {
         flush(false);
+        if(item == null) {
+            // can't save null value
+            return false;
+        }
         boolean overflowing = false;
         if(items.size() >= limit) {
             // limit reached - remove oldest object
@@ -81,7 +119,7 @@ public class Cache<T> {
         final long now = System.currentTimeMillis();
         if(force || (lastFlush + expiration < now)) {
             // flushCache
-            log.debug("Flushing cache! Forced: ", force);
+            log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
             lastFlush = now;
             return true;

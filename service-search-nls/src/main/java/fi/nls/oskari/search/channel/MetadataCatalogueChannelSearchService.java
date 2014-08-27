@@ -152,6 +152,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return channelSearchResult;
     }
 
+    
     public ChannelSearchResult parseResults(final StAXOMBuilder builder, final String locale) {
     	
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
@@ -191,7 +192,6 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         return channelSearchResult;
     }
     
-    
     private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
     	
     	log.debug("in getOskariLayerWithUuid");
@@ -220,6 +220,7 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
         }
         item.setResourceNameSpace(getServerURL());
     }
+
 
     private OMElement getResultsElement(final StAXOMBuilder builder) {
         final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");

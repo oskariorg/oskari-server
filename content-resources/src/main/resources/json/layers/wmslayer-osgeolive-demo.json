@@ -1,0 +1,26 @@
+{
+    "type":"wmslayer",
+    "url":"http://localhost/cgi-bin/qgis_mapserv.fcgi",
+    "name":"HYP_50M_SR_W,ne_10m_lakes,ne_10m_rivers_lake_centerline",
+    "organization": "Demo layers",
+    "inspiretheme": "Others",
+    "params" : {
+        "MAP" : "/usr/local/share/qgis/QGIS-NaturalEarth-Example.qgs"
+    },
+    "locale": {
+        "fi": {
+            "name": "OSGeo-live demolayer"
+        },
+        "sv": {
+            "name": "OSGeo-live demolayer"
+        },
+        "en": {
+            "name": "OSGeo-live demolayer"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "Admin" : ["PUBLISH"]
+    }
+}

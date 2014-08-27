@@ -4,6 +4,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.MapBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +36,7 @@ public class JSONActionRouteTest {
     private StringWriter response = new StringWriter();
     private User guestUser = new GuestUser();
     private User loggedInUser = null;
+    private User adminUser = null;
 
     @Before
     public void jsonActionRouteSetUp() throws Exception {
@@ -237,5 +239,17 @@ public class JSONActionRouteTest {
             loggedInUser.setUuid("my uuid is secrets");
         }
         return loggedInUser;
+    }
+    public User getAdminUser() {
+        if(adminUser == null) {
+            adminUser = mock(User.class);
+            // mock as admin
+            doReturn(true).when(adminUser).isAdmin();
+        }
+        return adminUser;
+    }
+
+    public MapBuilder buildParams() {
+        return MapBuilder.build();
     }
 }

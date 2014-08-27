@@ -216,17 +216,16 @@
       DELETE FROM portti_view_bundle_seq WHERE view_id = #id#
     </statement>
 
-
-    <statement id="delete-bundle-by-user"
-               parameterClass="java.lang.Long">
-      DELETE FROM portti_view_bundle_seq
-            WHERE view_id IN ( 
-                SELECT v.id FROM portti_view v, portti_view_supplement s
-                 WHERE s.creator = #userId#
-                   AND v.supplement_id = s.id
-              )
-    </statement>
-    
+    <update id="update-bundle-settings-in-view"
+            parameterClass="java.util.Map">
+        UPDATE portti_view_bundle_seq SET
+            seqno = #seqno#,
+            startup = #startup#,
+            config = #config#,
+            state = #state#,
+            bundleinstance = #bundleinstance#
+        WHERE view_id = #view_id# AND bundle_id = #bundle_id#
+    </update>
     
     <update id="update" 
         parameterClass="View">
@@ -239,14 +238,6 @@
            page = #page#,
            application_dev_prefix = #developmentPath#
         WHERE id = #id#
-    </update>
-    
-	<update id="update-bundle"
-            parameterClass="Bundle">
-      UPDATE portti_view_bundle_seq SET
-	      bundle_id = #bundleId#,
-	      seqno = #seqNo#
-      WHERE view_id = #viewId#
     </update>
 
 </sqlMap>

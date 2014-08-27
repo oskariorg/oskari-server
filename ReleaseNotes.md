@@ -1,5 +1,97 @@
 # Release Notes
 
+## 1.23
+
+### New admin bundles
+
+Check that you have these registered in portti_bundle database-table or check the upgrade 1.23 README.md for details.
+The bundles are now part of the default configuration for admin user:
+
+* admin/admin: will be used as generic admin bundle in the future and at this time allows to manage default views location and layers
+* framework/admin-users: for managing users
+
+### Maven repository @ oskari.org
+
+Precompiled versions of code is now available. Only 1.23-SNAPSHOT currently available, but versions start to pile up on releases.
+
+Add these to your pom.xml to use the pre-compiled Maven-artifacts today:
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>map-servlet</artifactId>
+            <version>1.23-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>oskari_org_snapshot</id>
+            <name>Oskari.org snapshot repository</name>
+            <url>http://oskari.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+oskari_org_snapshot is only needed if using SNAPSHOT-versions (github develop branch version)
+
+### control-admin
+
+New action handler 'Cache' for admin users to check the status of caching.
+
+New action handler 'SystemViews' can be asked to list configured default views (returns global and role-based) and update location/maplayers of given view.
+Used by generic admin bundles default views functionality.
+
+### content-resources
+
+DBHandler can now insert layers described in JSON format (under src/main/resources/json/layers). The support is minimal at the moment but will improve.
+
+DBHandler can now process "selectedLayers" property in view.json. The property should be an array with layer.json file references that will be inserted
+to the database if (or matching layer in DB will be used if such exists with same url and name). The views mapfull-bundle will have these layers automatically
+mapped in it's selected layers.
+
+DBHandler has been split to some helper classes for inserting views and layers.
+
+### service-users
+
+IbatisRoleService now has findRoleByName(name) method
+
+### webapp-map
+
+Added external folder and moved jetty-jaas.xml, and jndi-login.conf files there.
+Therefore these files need to be manually modified to match the system configuration. These files are unnecessary inside the war package and therefore removed.
+Added jetty9-jaas profile to address jetty version related differences.
+Added jetty9-ldap-jaas profile to address jetty version related differences.
+
+### service-base
+
+Added remove(name), getSize(), getKeys() methods to fi.nls.oskari.cache.Cache
+
+### service-control / RestActionHandler
+
+The basehandler for Rest-type requests now checks for header 'X-HTTP-Method-Override' in request and prefers it over request method when determining
+which method to forward execution to.
+
+### service-map
+
+InspireThemeService now has findMaplayersByTheme(themeId) method
+
+InspireThemeService and LayerGroupService now have findByName(name) method that is used to map themes/layergroups for layer
+when automatically inserted. The implementation is not solid enough to be used otherwise.
+
+OskariLayerService now has findByUrlAndName(url, name) method that returns layers matching given url and name
+
+LayerJSONFormatter has initial (and minimal) implementation for parsing JSON to an OskariLayer object.
+
+ViewService now has a method to update config/state/startup of single bundle in a given view.
+
+### control-base
+
+New action handler 'InspireThemes' implements a Rest type approach for managing inspire themes: insert/update/delete/listing.
+
 ## 1.22
 
 ### servlet-map/OskariRequestFilter

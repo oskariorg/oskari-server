@@ -3,6 +3,7 @@ package fi.nls.oskari.wfs;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
