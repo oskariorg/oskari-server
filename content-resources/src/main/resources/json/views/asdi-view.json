@@ -8,6 +8,9 @@
         "page": "asdi_guest",
         "development_prefix": "/applications/asdi"
     },
+    "selectedLayers" : [
+        "asdi-basemap-wmtslayer.json"
+    ],
     "bundles": [
         {
             "id": "openlayers-default-theme"
@@ -149,12 +152,7 @@
             "state": {
                 "east": "232614.2980529",
                 "north": "-380246.95953608",
-                "selectedLayers": [
-                    {
-                        "id": 2
-                    }
-                    
-                ],
+                "selectedLayers": [],
                 "zoom": 1
             }
         },
