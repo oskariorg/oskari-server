@@ -136,19 +136,30 @@ public class DatabaseUserService extends UserService {
 
     
     @Override
-    public String insertRole(String roleId, String userID) throws ServiceException {
-    	return null;
+    public Role insertRole(String roleName) throws ServiceException {
+    	log.debug("insertRole");
+    	Role role = new Role();
+    	log.debug("insertRole1");
+    	role.setName(roleName);
+    	log.debug("insertRole2");
+    	long id = roleService.insert(new Role());
+    	log.debug("insertRole3");
+    	role.setId(id);
+    	log.debug("insertRole4");
+    	return role;
     }
     
     
     @Override
-    public String deleteRole(String roleId, String userID) throws ServiceException {
+    public String deleteRole(int roleId) throws ServiceException {
+    	log.debug("deleteRole");
+    	roleService.delete(roleId);
     	return null;
     }
-
-    
+   
     @Override
     public String modifyRole(String roleId, String userID) throws ServiceException {
+    	log.debug("modifyRole");
     	return null;
     }
     

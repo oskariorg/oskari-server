@@ -79,7 +79,7 @@ public abstract class UserService {
      * @return something
      * @throws ServiceException if anything goes wrong internally.
      */
-    public String insertRole(String roleId, String userID) throws ServiceException{
+    public Role insertRole(String roleId) throws ServiceException{
     	throw new ServiceException("Not Implemented Yet");
     }
     
@@ -90,7 +90,7 @@ public abstract class UserService {
      * @return something
      * @throws ServiceException if anything goes wrong internally.
      */
-    public String deleteRole(String roleId, String userID) throws ServiceException{
+    public String deleteRole(int roleId) throws ServiceException{
     	throw new ServiceException("Not Implemented Yet");
     }
     
@@ -140,6 +140,8 @@ public abstract class UserService {
     public Role[] getRoles() throws ServiceException {
         return getRoles(Collections.emptyMap());
     }
+    
+    
 
     /**
      * Return the user by username. This method should be overridden in concrete implementation. The
