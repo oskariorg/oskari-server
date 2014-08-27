@@ -180,7 +180,8 @@ public class ManageRolesHandler extends RestActionHandler {
         for(Role role : roles){
             log.debug("id:name: " + role.getId() + " : " + role.getName());
         	tmp = new JSONObject();
-        	JSONHelper.putValue(tmp, role.getId()+"", role.getName());
+        	JSONHelper.putValue(tmp, "id", role.getId()+"");
+        	JSONHelper.putValue(tmp, "name", role.getName());
         	valueList.add(tmp);
         }
         
