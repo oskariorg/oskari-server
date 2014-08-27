@@ -15,8 +15,5 @@
     "views" : [
         "asdi-view.json",
         "asdi-publisher-template-view.json"
-    ],
-    "sql" : [
-        "asdi-poc-wmslayer.sql"
     ]
 }
