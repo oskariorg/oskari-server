@@ -13,6 +13,9 @@
   <modules>
     <module>service-base</module>
     <module>service-control</module>
+    <module>service-search</module>
+    <module>service-permissions</module>
+    <module>service-map</module>
     <module>service-wfs</module>
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
