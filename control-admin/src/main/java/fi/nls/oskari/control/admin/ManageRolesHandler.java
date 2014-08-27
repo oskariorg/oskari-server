@@ -50,50 +50,15 @@ public class ManageRolesHandler extends RestActionHandler {
         }
     }    
     
-//    @Override
-//    public void handleAction(ActionParameters params) throws ActionException {
-//
-//    }
-
-    
-//    @Override
-//    public void handleGet(ActionParameters params) throws ActionException {
-//        log.info("handleGet");
-//        final JSONObject response;
-//        long id = getId(params);
-//        
-//
-//        try {
-//            final UserService userService = UserService.getInstance();
-//            if (id > -1) {
-//                log.info("handleGet: has id");
-//                User user = userService.getUser(id);
-//                response = user2Json(user);
-//            } else {
-//                log.info("handleGet: no id");
-//                List<User> users = userService.getUsers();
-//                log.info(users.size());
-//                response = new JSONObject();
-//                JSONArray arr = new JSONArray();
-//                response.put("users", arr);
-//                for (User user : users) {
-//                    arr.put(user2Json(user));
-//                }
-//            }
-//        } catch (ServiceException se) {
-//            throw new ActionException(se.getMessage(), se);
-//        } catch (JSONException je) {
-//            throw new ActionException(je.getMessage(), je);
-//        }
-//        log.info(response);
-//        ResponseHelper.writeResponse(params, response);
-//    }
     
     
     // TOTEUTETTU
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         log.info("handleGet");
+        
+        if(params.getHttpParam("test") != null)
+        	preProcess(params);
 
         Role[] roles = null;
         try {
@@ -114,8 +79,11 @@ public class ManageRolesHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         log.debug("handlePut");
-        preProcess(params);
+        if(params.getHttpParam("test") != null)
+        	preProcess(params);
+
         String roleName = params.getHttpParam(ROLE_NAME);
+        log.debug("roleName: " + roleName);
 
         Role role = null;
         try {
@@ -138,7 +106,9 @@ public class ManageRolesHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         log.debug("handleDelete");
-        preProcess(params);
+        if(params.getHttpParam("test") != null)
+        	preProcess(params);
+
         String roleId = params.getHttpParam(ROLE_ID);
         int id = getId(params);
         if (id > -1) {
@@ -155,9 +125,9 @@ public class ManageRolesHandler extends RestActionHandler {
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
     	log.debug("Manage Roles preproses");
-//        if (!params.getUser().isAdmin()) {
-//            throw new ActionDeniedException("Admin only");
-//        }
+        if (!params.getUser().isAdmin()) {
+            throw new ActionDeniedException("Admin only");
+        }
     }
     
     
@@ -180,15 +150,11 @@ public class ManageRolesHandler extends RestActionHandler {
         for(Role role : roles){
             log.debug("id:name: " + role.getId() + " : " + role.getName());
         	tmp = new JSONObject();
-        	JSONHelper.putValue(tmp, "id", role.getId()+"");
+        	JSONHelper.putValue(tmp, "id", role.getId());
         	JSONHelper.putValue(tmp, "name", role.getName());
         	valueList.add(tmp);
         }
-        
-        log.debug("ee");
         final JSONArray roleValues = new JSONArray(valueList);
-        log.debug("ee");
-        
         
         JSONHelper.put(response, "rolelist", roleValues);
         
@@ -198,97 +164,89 @@ public class ManageRolesHandler extends RestActionHandler {
     private JSONObject role2Json(Role role) throws JSONException {
         JSONObject ro = new JSONObject();
         ro.put("id", role.getId());
-        ro.put("rolename", role.getName());
+        ro.put("name", role.getName());
         return ro;
     }    
     
-    private void old(ActionParameters params) throws ActionException {
-        
-        log.debug("Managing roles:");
-        
-        String id = params.getHttpParam("id");
-    	String roleId = params.getHttpParam("roleid");
-    	String action = params.getHttpParam("action");
-    	if(action == null)
-    		throw new ActionException("action parameter was null");
-    	
-    	String test = params.getHttpParam("test");
-    	final JSONObject response = new JSONObject();
-        try{
-        	
-        	Role[] roles = UserService.getInstance().getRoles();
-        	
-        	log.debug("www1");
-        	for(Role role: roles){
-        		log.debug("role: " + role.getName());
-        	}
-        	log.debug("www");
-        	
-        	
-        	DatabaseUserService.getInstance().insertRole("roleID");
-        	
-        	if(test != null){
-	        	if(action.equals(INSERT)){
-	        		log.debug("inserting a role db");
-	        		DatabaseUserService.getInstance().insertRole(roleId);
-	        	}else if(action.equals(DELETE)){
-	        		log.debug("deleting a role db");
-	        		//DatabaseUserService.getInstance().deleteRole(roleId, id);
-	        	}else if(action.equals(ADD)){
-	        		log.debug("adding a role db");
-	        		//DatabaseUserService.getInstance().insertRole(roleId, id);
-	        	}else{
-	        		// TODO: give error message
-	        	}
-        	}else{
-        		if(action.equals(INSERT)){
-	        		log.debug("inserting a role");
-	                JSONHelper.putValue(response, "id", 2);
-	                JSONHelper.putValue(response, "name", "User");
-	        	}else if(action.equals(DELETE)){
-	        		log.debug("deleting a role");
-	                JSONHelper.putValue(response, "id", 1);
-	                JSONHelper.putValue(response, "name", "Guest");
-	        	}else if(action.equals(GETROLES)){
-	        		log.debug("getting roles");
-	                
-	                List<JSONObject> valueList = new ArrayList<JSONObject>();
-	                final JSONObject pekka = new JSONObject();
-	                JSONHelper.putValue(pekka, "1", "User");
-	                valueList.add(pekka);
-	                
-	                final JSONObject ville = new JSONObject();
-	                JSONHelper.putValue(ville, "2", "Guest");
-	                valueList.add(ville);
-	                
-	                final JSONObject matti = new JSONObject();
-	                JSONHelper.putValue(matti, "3", "Admin");
-	                valueList.add(matti);
-	                
-	                final JSONArray roleValues = new JSONArray(valueList);
-	                JSONHelper.put(response, "rolelist", roleValues);
-	        		
-	        	}else{
-	        		// TODO: give error message
-	        	}
-           }
-        	
-        	
-          ResponseHelper.writeResponse(params, response);
-       	
-        }catch(Exception e){
-        	e.printStackTrace();
-        	throw new ActionException("error in ManageRoles");
-        }    	
-    }
+//    private void old(ActionParameters params) throws ActionException {
+//        
+//        log.debug("Managing roles:");
+//        
+//        String id = params.getHttpParam("id");
+//    	String roleId = params.getHttpParam("roleid");
+//    	String action = params.getHttpParam("action");
+//    	if(action == null)
+//    		throw new ActionException("action parameter was null");
+//    	
+//    	String test = params.getHttpParam("test");
+//    	final JSONObject response = new JSONObject();
+//        try{
+//        	
+//        	Role[] roles = UserService.getInstance().getRoles();
+//        	
+//        	log.debug("www1");
+//        	for(Role role: roles){
+//        		log.debug("role: " + role.getName());
+//        	}
+//        	log.debug("www");
+//        	
+//        	
+//        	DatabaseUserService.getInstance().insertRole("roleID");
+//        	
+//        	if(test != null){
+//	        	if(action.equals(INSERT)){
+//	        		log.debug("inserting a role db");
+//	        		DatabaseUserService.getInstance().insertRole(roleId);
+//	        	}else if(action.equals(DELETE)){
+//	        		log.debug("deleting a role db");
+//	        		//DatabaseUserService.getInstance().deleteRole(roleId, id);
+//	        	}else if(action.equals(ADD)){
+//	        		log.debug("adding a role db");
+//	        		//DatabaseUserService.getInstance().insertRole(roleId, id);
+//	        	}else{
+//	        		// TODO: give error message
+//	        	}
+//        	}else{
+//        		if(action.equals(INSERT)){
+//	        		log.debug("inserting a role");
+//	                JSONHelper.putValue(response, "id", 2);
+//	                JSONHelper.putValue(response, "name", "User");
+//	        	}else if(action.equals(DELETE)){
+//	        		log.debug("deleting a role");
+//	                JSONHelper.putValue(response, "id", 1);
+//	                JSONHelper.putValue(response, "name", "Guest");
+//	        	}else if(action.equals(GETROLES)){
+//	        		log.debug("getting roles");
+//	                
+//	                List<JSONObject> valueList = new ArrayList<JSONObject>();
+//	                final JSONObject pekka = new JSONObject();
+//	                JSONHelper.putValue(pekka, "1", "User");
+//	                valueList.add(pekka);
+//	                
+//	                final JSONObject ville = new JSONObject();
+//	                JSONHelper.putValue(ville, "2", "Guest");
+//	                valueList.add(ville);
+//	                
+//	                final JSONObject matti = new JSONObject();
+//	                JSONHelper.putValue(matti, "3", "Admin");
+//	                valueList.add(matti);
+//	                
+//	                final JSONArray roleValues = new JSONArray(valueList);
+//	                JSONHelper.put(response, "rolelist", roleValues);
+//	        		
+//	        	}else{
+//	        		// TODO: give error message
+//	        	}
+//           }
+//        	
+//        	
+//          ResponseHelper.writeResponse(params, response);
+//       	
+//        }catch(Exception e){
+//        	e.printStackTrace();
+//        	throw new ActionException("error in ManageRoles");
+//        }    	
+//    }
     
-    private JSONObject user2Json(User user) throws JSONException {
-        JSONObject uo = new JSONObject();
-        uo.put("id", user.getId());
-        uo.put("firstName", user.getFirstname());
-        uo.put("lastName", user.getLastname());
-        uo.put("user", user.getScreenname());
-        return uo;
-    }
-    
+  
 }

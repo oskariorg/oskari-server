@@ -139,13 +139,10 @@ public class DatabaseUserService extends UserService {
     public Role insertRole(String roleName) throws ServiceException {
     	log.debug("insertRole");
     	Role role = new Role();
-    	log.debug("insertRole1");
     	role.setName(roleName);
-    	log.debug("insertRole2");
-    	long id = roleService.insert(new Role());
-    	log.debug("insertRole3");
+    	log.debug("rolename: " + role.getName());
+    	long id = roleService.insert(role);
     	role.setId(id);
-    	log.debug("insertRole4");
     	return role;
     }
     
