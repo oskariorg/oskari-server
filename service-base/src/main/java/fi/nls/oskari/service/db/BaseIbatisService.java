@@ -404,5 +404,10 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
     public void delete(Map<String, String> parameterMap) {
         delete(getNameSpace() + ".delete", parameterMap);
     }
+    
+    
+    public void deleteUsersRoles(long userId){
+    	delete(getNameSpace() + ".deleteUsersRoles", userId);
+    }
 
 }

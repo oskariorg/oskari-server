@@ -207,6 +207,10 @@ public abstract class UserService {
         throw new ServiceException("Not implemented");
     }
 
+    public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }      
+    
     /**
      * Delete a user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.

@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -86,15 +87,19 @@ public class UsersHandler extends RestActionHandler {
     }
 
     @Override
-    public void handlePut(ActionParameters params) throws ActionException {
-        log.debug("handlePut");
+    public void handlePost(ActionParameters params) throws ActionException {
+        log.debug("handlePost");
         User user = new User();
         getUserParams(user, params);
+        String[] roles = params.getRequest().getParameterValues("roles");
         String password = params.getHttpParam(PARAM_PASSWORD);
         User retUser = null;
         try {
             if (user.getId() > -1) {
-                retUser = userService.modifyUser(user);
+                //retUser = userService.modifyUser(user);
+            	log.debug("roles size: " + roles.length);
+            	retUser = userService.modifyUserwithRoles(user, roles);
+            	log.debug("done modyfing user");
                 if (password != null) {
                     userService.updateUserPassword(retUser.getScreenname(), password);
                 }
@@ -119,8 +124,8 @@ public class UsersHandler extends RestActionHandler {
     }
 
     @Override
-    public void handlePost(ActionParameters params) throws ActionException {
-        log.debug("handlePost");
+    public void handlePut(ActionParameters params) throws ActionException {
+        log.debug("handlePut");
         User user = new User();
         getUserParams(user, params);
         String password = params.getHttpParam(PARAM_PASSWORD);

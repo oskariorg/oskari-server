@@ -134,6 +134,26 @@ public class DatabaseUserService extends UserService {
     }
 
     @Override
+    public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
+        log.debug("modifyUser");
+        userService.updateUser(user);
+        
+        if(roleIds != null){
+        	log.debug("starting to delte roles from a user");
+            roleService.deleteUsersRoles(user.getId());
+            log.debug("users roles deleted");
+            for(String roleId : roleIds){
+            	log.debug("roleId: " + roleId + " userId: " + user.getId());
+                roleService.linkRoleToUser(Long.valueOf(roleId), user.getId());
+            }
+        }else{
+        	log.debug("roleIds == null");
+        }
+        
+        return userService.find(user.getId());
+    }    
+    
+    @Override
     public void deleteUser(long id) throws ServiceException {
         log.debug("deleteUser");
         User user = userService.find(id);
