@@ -10,8 +10,11 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
@@ -90,6 +93,24 @@ public class DatabaseUserService extends UserService {
     public List<User> getUsers() throws ServiceException {
         log.info("getUsers");
         return userService.findAll();
+    }
+
+    @Override
+    public List<User> getUsersWithRoles() throws ServiceException {
+        log.info("getUsersWithRoles");
+        List<User> users = userService.findAll();
+        
+        List<User> newUserList = new ArrayList<User>();
+        
+        for(User user : users){
+        	log.debug("userid: " + user.getId());
+        	List<Role> roles = roleService.findByUserId(user.getId());
+        	Set<Role> hashsetRoles = new HashSet<Role>(roles);
+        	user.setRoles(hashsetRoles);
+        	newUserList.add(user);
+        }
+        
+        return newUserList;
     }
 
     @Override

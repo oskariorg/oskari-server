@@ -2,17 +2,21 @@ package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Set;
 
 @OskariActionRoute("Users")
 public class UsersHandler extends RestActionHandler {
@@ -48,11 +52,27 @@ public class UsersHandler extends RestActionHandler {
             } else {
                 log.info("handleGet: no id");
                 List<User> users = userService.getUsers();
-                log.info(users.size());
+                
+                log.info("found: " + users.size() + "users");
                 response = new JSONObject();
                 JSONArray arr = new JSONArray();
                 response.put("users", arr);
-                for (User user : users) {
+                
+                
+                List<User> newUsers = userService.getUsersWithRoles();
+                
+                for (User user : newUsers) {
+                	Set<Role> roles = user.getRoles();
+                	
+//                	if(roles != null){
+//                		for(Role role : roles){
+//                			log.debug(role.getId());
+//                			log.debug(role.getName());
+//                		}
+//                	}else{
+//                		log.debug("roles == null");
+//                	}
+//                	
                     arr.put(user2Json(user));
                 }
             }
@@ -168,6 +188,13 @@ public class UsersHandler extends RestActionHandler {
         uo.put("firstName", user.getFirstname());
         uo.put("lastName", user.getLastname());
         uo.put("user", user.getScreenname());
+        
+        JSONArray rolesArray = new JSONArray();
+        for(Role role : user.getRoles()){
+        	rolesArray.put(role.getId());
+        }
+        JSONHelper.put(uo, "roles", rolesArray);
+        
         return uo;
     }
 
