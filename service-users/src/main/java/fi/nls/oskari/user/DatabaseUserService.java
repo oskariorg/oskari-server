@@ -125,6 +125,28 @@ public class DatabaseUserService extends UserService {
         }
         return userService.find(id);
     }
+    
+    
+    @Override
+    public User createUser(User user, String[] roleIds) throws ServiceException {
+        log.debug("createUser #######################");
+        if(user.getUuid() == null || user.getUuid().isEmpty()) {
+            user.setUuid(generateUuid());
+        }
+        Long id = userService.addUser(user);
+//        for(Role r : user.getRoles()) {
+//            roleService.linkRoleToNewUser(r.getId(), id);
+//        }
+        
+        for(String roleId : roleIds){
+        	log.debug("roleId: " + roleId + " userId: " + id);
+            roleService.linkRoleToUser(Long.valueOf(roleId), id);
+        }    
+        
+        return userService.find(id);
+    }
+    
+    
 
     @Override
     public User modifyUser(User user) throws ServiceException {

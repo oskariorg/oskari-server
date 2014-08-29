@@ -196,6 +196,11 @@ public abstract class UserService {
         throw new ServiceException("Not implemented");
     }
 
+    
+    public User createUser(User user, String[] roleIds) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+    
     /**
      * Modify a user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.

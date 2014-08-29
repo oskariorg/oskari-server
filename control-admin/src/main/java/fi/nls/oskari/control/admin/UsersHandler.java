@@ -130,12 +130,13 @@ public class UsersHandler extends RestActionHandler {
         User user = new User();
         getUserParams(user, params);
         String password = params.getHttpParam(PARAM_PASSWORD);
+        String[] roles = params.getRequest().getParameterValues("roles");
         if (password == null || password.length() == 0) {
             throw new ActionException("Parameter 'password' not found.");
         }
         User retUser = null;
         try {
-            retUser = userService.createUser(user);
+            retUser = userService.createUser(user, roles);
             userService.setUserPassword(retUser.getScreenname(), password);
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
