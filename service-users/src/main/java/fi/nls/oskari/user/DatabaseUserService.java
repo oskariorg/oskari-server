@@ -115,7 +115,7 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public User createUser(User user) throws ServiceException {
-        log.debug("createUser");
+        log.debug("createUser #######################");
         if(user.getUuid() == null || user.getUuid().isEmpty()) {
             user.setUuid(generateUuid());
         }
@@ -130,16 +130,19 @@ public class DatabaseUserService extends UserService {
     public User modifyUser(User user) throws ServiceException {
         log.debug("modifyUser");
         userService.updateUser(user);
-        return userService.find(user.getId());
+        User retUser = userService.find(user.getId());
+        List<Role> roles = roleService.findByUserId(user.getId());
+        retUser.setRoles(new HashSet<Role>(roles));
+        return retUser;
     }
 
     @Override
     public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
-        log.debug("modifyUser");
+        log.debug("modifyUserWithRoles");
         userService.updateUser(user);
         
         if(roleIds != null){
-        	log.debug("starting to delte roles from a user");
+        	log.debug("starting to delete roles from a user");
             roleService.deleteUsersRoles(user.getId());
             log.debug("users roles deleted");
             for(String roleId : roleIds){
@@ -159,6 +162,7 @@ public class DatabaseUserService extends UserService {
         User user = userService.find(id);
         if (user != null) {
             userService.deletePassword(user.getScreenname());
+            roleService.deleteUsersRoles(id);
             userService.delete(id);
         }
     }

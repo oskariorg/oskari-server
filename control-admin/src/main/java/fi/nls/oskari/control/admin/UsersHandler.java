@@ -104,6 +104,7 @@ public class UsersHandler extends RestActionHandler {
                     userService.updateUserPassword(retUser.getScreenname(), password);
                 }
             } else {
+            	log.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
                 if (password == null || password.length() == 0) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
