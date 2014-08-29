@@ -1,9 +1,8 @@
 package fi.nls.oskari.control.admin;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import fi.nls.oskari.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +16,6 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -28,14 +26,13 @@ public class ManageRolesHandler extends RestActionHandler {
     
     final private static String ROLE_NAME = "name";
     final private static String ROLE_ID = "id";
-    
-    
-    private DatabaseUserService databaseUserService = null;
+
+    private UserService userService = null;
 
     @Override
     public void init() {
         try {
-        	databaseUserService = DatabaseUserService.getInstance();
+        	userService = UserService.getInstance();
         } catch (ServiceException se) {
             log.error(se, "Unable to initialize User service!");
         }
@@ -44,110 +41,63 @@ public class ManageRolesHandler extends RestActionHandler {
     
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        log.info("handleGet");
-        
-        if(params.getHttpParam("test") == null)
-        	preProcess(params);
-
         Role[] roles = null;
         try {
-        	roles = databaseUserService.getRoles(Collections.emptyMap());
+        	roles = userService.getRoles(Collections.emptyMap());
 
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        JSONObject response = null;
         try {
-            response = roles2JsonArray(roles);
+            ResponseHelper.writeResponse(params, roles2JsonArray(roles));
         } catch (JSONException je) {
             throw new ActionException(je.getMessage(), je);
         }
-        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        log.debug("handlePut");
-        if(params.getHttpParam("test") == null)
-        	preProcess(params);
 
-        String roleName = params.getHttpParam(ROLE_NAME);
-        log.debug("Name: " + roleName);
+        final String roleName = params.getRequiredParam(ROLE_NAME);
+        log.debug("Inserting role with name:", roleName);
 
-        Role role = null;
-        if (roleName != null) {
-        	try {
-               role =  databaseUserService.insertRole(roleName);
-            } catch (ServiceException se) {
-            	throw new ActionException(se.getMessage(), se);
-            }
-        }else{
-        	throw new ActionException("Parameter " + ROLE_NAME + " not found.");
-        }
-        JSONObject response = null;
         try {
-            response = role2Json(role);
-        } catch (JSONException je) {
-            throw new ActionException(je.getMessage(), je);
+            final Role role =  userService.insertRole(roleName);
+            ResponseHelper.writeResponse(params, role2Json(role));
+        } catch (Exception se) {
+            throw new ActionException(se.getMessage(), se);
         }
-        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         log.debug("handleDelete");
-        if(params.getHttpParam("test") == null)
-        	preProcess(params);
-
-        log.debug("roleId: " + params.getHttpParam(ROLE_ID));
-        
-        
-        int id = getId(params);
-        if (id > -1) {
-            try {
-            	databaseUserService.deleteRole(id);
-            } catch (ServiceException se) {
-                throw new ActionException(se.getMessage(), se);
-            }
-        } else {
-            throw new ActionException("Parameter 'id' not found.");
+        final int id = params.getRequiredParamInt(ROLE_ID);
+        if (id < 0) {
+            throw new ActionException("Parameter 'id' value can't be negative.");
+        }
+        try {
+            userService.deleteRole(id);
+        } catch (ServiceException se) {
+            throw new ActionException(se.getMessage(), se);
         }
     }
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-    	log.debug("Manage Roles preproses");
         if (!params.getUser().isAdmin()) {
             throw new ActionDeniedException("Admin only");
         }
     }
-    
-    
-    private int getId(ActionParameters params) throws NumberFormatException {
-        // see if params contains an ID
-        int id = -1;
-        String idString = params.getHttpParam(ROLE_ID, "-1");
-        if (idString != null && idString.length() > 0) {
-            id = Integer.parseInt(idString);
-        }
-        return id;
-    } 
 
     private JSONObject roles2JsonArray(Role[] roles) throws JSONException {
-    	
-        List<JSONObject> valueList = new ArrayList<JSONObject>();
-        JSONObject response = new JSONObject();
-        
-        JSONObject tmp = null;
+
+        final JSONArray roleValues = new JSONArray();
         for(Role role : roles){
-            log.debug("id:name: " + role.getId() + " : " + role.getName());
-        	tmp = new JSONObject();
-        	JSONHelper.putValue(tmp, "id", role.getId());
-        	JSONHelper.putValue(tmp, "name", role.getName());
-        	valueList.add(tmp);
+            roleValues.put(role2Json(role));
         }
-        final JSONArray roleValues = new JSONArray(valueList);
-        
+
+        final JSONObject response = new JSONObject();
         JSONHelper.put(response, "rolelist", roleValues);
         
         return response;
