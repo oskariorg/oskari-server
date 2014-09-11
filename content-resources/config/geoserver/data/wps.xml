@@ -1,6 +1,7 @@
 <wps>
   <id>WPSInfoImpl--344e6efc:13ef5dfc369:-7b67</id>
   <enabled>true</enabled>
+  <name>WPS</name>
   <versions>
     <org.geotools.util.Version>
       <version>1.0.0</version>
