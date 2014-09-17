@@ -138,12 +138,14 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     private String appendNoDataFilter(String wfsfilter){
         String nodatafilter = NO_DATA_FILTER_TEMPLATE.replace("{propertyName}", this.getAggreField1());
         nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+        wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
         wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>",nodatafilter);
         return wfsfilter;
     }
     private String appendNoDataCountFilter(String wfsfilter){
         String nodatafilter = NO_DATACOUNT_FILTER_TEMPLATE.replace("{propertyName}", this.getAggreField1());
         nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+        wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
         wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>",nodatafilter);
         return wfsfilter;
     }
