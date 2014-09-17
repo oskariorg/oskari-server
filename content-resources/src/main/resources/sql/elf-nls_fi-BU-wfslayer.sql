@@ -3,7 +3,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             minscale, maxscale, 
                             url, locale) 
   VALUES('wfslayer', 'elf_bu_nlsfi', 905, 
-         120000, 1, 
+         20000, 1, 
          'wfs', '{fi:{name:"BU Rakennukset - nls.fi", subtitle:""},sv:{name:"BU Byggnader - nls.fi", subtitle:""},en:{name:"BU Buildings- nls.fi", subtitle:""}}');
          
 
@@ -51,7 +51,7 @@ INSERT INTO portti_wfs_layer (
        '2.0.0', 5000, 
        'elf-lod0bu', 
        '', 
-       '{"default" : "*geometry:Geometry"}', 
+       '{"default" : "*geometry:Geometry,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
        '{}', 
        '{}', 
        '2d', 
