@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.data.domain;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,9 +21,10 @@ public class GFIRequestParams {
     private String currentStyle;
     private String srsName;
 
+    private static final String WMS_GFI_FEAUTURE_COUNT = PropertyUtil.get("wms.gfi.feature.count","50");
     private static final String WMS_GFI_BASE_PARAMS = "REQUEST=GetFeatureInfo"
             + "&EXCEPTIONS=application/vnd.ogc.se_xml" + "&VERSION=1.1.1"
-            + "&FEATURE_COUNT=10" + "&FORMAT=image/png" + "&SERVICE=WMS";
+            + "&FEATURE_COUNT="+ WMS_GFI_FEAUTURE_COUNT  + "&FORMAT=image/png" + "&SERVICE=WMS";
 
     public OskariLayer getLayer() {
         return layer;
