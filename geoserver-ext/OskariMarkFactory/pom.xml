@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <geotools.version>10.2</geotools.version>
+    <geotools.version>11.2</geotools.version>
   </properties>
   <!-- set parent pom to community pom -->
   <parent>
@@ -34,7 +34,7 @@
     <repository>
       <id>opengeo</id>
       <name>opengeo</name>
-      <url>http://repo.opengeo.org</url>
+      <url>http://geotools.org</url>
     </repository>
   </repositories>
   <dependencies>
