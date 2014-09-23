@@ -92,8 +92,12 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Store geojson via ibatis
             UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
 
-            params.getResponse().setContentType("application/json;charset=utf-8");
-            ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
+            // workaround because of IE iframe submit json download functionality
+            //params.getResponse().setContentType("application/json;charset=utf-8");
+            //ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
+            params.getResponse().setContentType("text/plain;charset=utf-8");
+            params.getResponse().setCharacterEncoding("UTF-8");
+            params.getResponse().getWriter().print(userlayerService.parseUserLayer2JSON(ulayer));
 
         } catch (Exception e) {
             throw new ActionException("Couldn't get the import file set",

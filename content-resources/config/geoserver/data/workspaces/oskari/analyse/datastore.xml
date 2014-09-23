@@ -7,7 +7,7 @@
     <id>WorkspaceInfoImpl-5040a49e:12704d4341f:-7f75</id>
   </workspace>
   <connectionParameters>
-    <entry key="port">5433</entry>
+    <entry key="port">5432</entry>
     <entry key="Connection timeout">20</entry>
     <entry key="passwd">crypt1:8wjI3z2hmVKVcsiagr+dJqEelYJ7Hsok</entry>
     <entry key="dbtype">postgis</entry>
@@ -15,7 +15,7 @@
     <entry key="validate connections">true</entry>
     <entry key="encode functions">false</entry>
     <entry key="max connections">10</entry>
-    <entry key="database">oskariall</entry>
+    <entry key="database">oskaridb</entry>
     <entry key="namespace">http://www.oskari.org</entry>
     <entry key="schema">public</entry>
     <entry key="Loose bbox">true</entry>

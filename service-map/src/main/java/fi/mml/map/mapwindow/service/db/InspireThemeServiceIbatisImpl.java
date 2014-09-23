@@ -69,7 +69,9 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         InspireTheme theme = ID_CACHE.get("" + id);
         if(theme == null) {
             theme = super.find(id);
-            ID_CACHE.put("" + theme.getId(), theme);
+            if(theme != null) {
+                ID_CACHE.put("" + theme.getId(), theme);
+            }
         }
         return theme;
     }
@@ -129,21 +131,20 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
             client = getSqlMapClient();
             client.startTransaction();
             // remove old links
-            log.debug("Removing");
             client.delete(getNameSpace() + ".removeThemeLinks", maplayerId);
-            log.debug("Removed");
             final List<Integer> themeLayers = getLinkCache((int)maplayerId);
             themeLayers.clear();
             // link new set of themes and update cache
             final Map<String, Object> params = new HashMap<String, Object>(2);
             params.put("layerId", maplayerId);
-            log.debug("Inserting");
-            for(InspireTheme theme : themes) {
-                params.put("themeId", theme.getId());
-                client.insert(getNameSpace() + ".linkThemeToLayer", params);
-                themeLayers.add(theme.getId());
+            if(themes != null) {
+                // sublayers dont have themes
+                for(InspireTheme theme : themes) {
+                    params.put("themeId", theme.getId());
+                    client.insert(getNameSpace() + ".linkThemeToLayer", params);
+                    themeLayers.add(theme.getId());
+                }
             }
-            log.debug("Linked");
             client.commitTransaction();
         } catch (Exception e) {
             throw new RuntimeException("Failed to set links", e);

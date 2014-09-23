@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+  <settings enhancementEnabled="true" useStatementNamespaces="true"/>
+
+    <!-- Use custom userlayer datasource -->
+  <transactionManager type="JDBC" commitRequired="true">
+    <dataSource type="JNDI">
+      <property name="DataSource" value="java:/comp/env/${db.userlayer.jndi.name}" />
+    </dataSource>
+  </transactionManager>
+
+    <sqlMap resource="META-INF/UserLayer.xml" />
+    <sqlMap resource="META-INF/UserLayerData.xml" />
+    <sqlMap resource="META-INF/UserLayerStyle.xml" />
+ 
+</sqlMapConfig>
