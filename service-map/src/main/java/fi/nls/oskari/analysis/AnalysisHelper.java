@@ -51,7 +51,7 @@ public class AnalysisHelper {
 
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional("analysis.rendering.url");
-    private static final String ANALYSIS_RENDERING_URL = getAnalysisTileUrl();
+    private static final String ANALYSIS_RENDERING_URL = getAnalysisRenderingUrl();
     private static final String ANALYSIS_RENDERING_ELEMENT = PropertyUtil.get("analysis.rendering.element");
 
     private static final Logger log = LogFactory.getLogger(AnalysisHelper.class);
@@ -217,7 +217,7 @@ public class AnalysisHelper {
         return fm;
     }
 
-    private static String getAnalysisTileUrl() {
+    public static String getAnalysisRenderingUrl() {
         if (PROPERTY_RENDERING_URL == null) {
             // action_route name points to fi.nls.oskari.control.layer.AnalysisTileHandler
             return PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=AnalysisTile&wpsLayerId=";
