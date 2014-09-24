@@ -48,6 +48,7 @@ public class WFSServiceTester {
     private final static String LAYER_GROUP = System.getProperty("oskari.layer.group");
     private final static String INSPIRE_THEME = System.getProperty("oskari.inspire.theme");
     private final static String WPS_PARAMS = System.getProperty("oskari.wps_params");
+    private final static String LAYER_OPACITY = System.getProperty("oskari.layer.opacity");
 
     private final static String[] versions =  {"1.0.0", "1.1.0", "2.0.0"};
     private static StringBuilder report = new StringBuilder();
@@ -462,11 +463,13 @@ public class WFSServiceTester {
             if(LAYER_GROUP != null) layerGroup= LAYER_GROUP;
             String wps_params = "{}";
             if(WPS_PARAMS != null) wps_params= WPS_PARAMS;
+            String opacity = "80";
+            if(LAYER_OPACITY != null) opacity= LAYER_OPACITY;
             if (sqlTemplate != null) {
             sqlTemplate = sqlTemplate.replace("$WFS_URL", lc.getURL());
             sqlTemplate = sqlTemplate.replace("$LAYER_NAME", lc.getLayerName().replace(":","_"));
             sqlTemplate = sqlTemplate.replace("$LAYER_GROUP", layerGroup);
-            sqlTemplate = sqlTemplate.replace("$OPACITY", "80");
+            sqlTemplate = sqlTemplate.replace("$OPACITY", opacity);
             sqlTemplate = sqlTemplate.replace("$MIN_SCALE", Double.toString(lc.getMinScale()));
             sqlTemplate = sqlTemplate.replace("$MAX_SCALE", Double.toString(lc.getMaxScale()));
 
@@ -498,7 +501,7 @@ public class WFSServiceTester {
                 else {
                     filePath = System.getProperty("java.io.tmpdir");
                 }
-                filename = filePath+lc.getFeatureElement()+".sql";
+                filename = filePath+lc.getLayerName().replace(":","_")+".sql";
                 writer = new BufferedWriter(new FileWriter(filename));
                 writer.write(sqlTemplate);
 
