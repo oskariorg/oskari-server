@@ -40,6 +40,7 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
      * @return
      */
     public boolean parseGeoJSON(File file, String target_epsg) {
+        log.error("ZIP1");
         OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "MapInfo File");
@@ -57,7 +58,9 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         ReferencedEnvelope bounds = null;
 
         try {
+            log.error("ZIP2");
             store = factory.createDataStore(connectionParams);
+            log.error("ZIP3");
             typeName = store.getTypeNames()[0];
             source = store.getFeatureSource(typeName);
             collection = source.getFeatures();
