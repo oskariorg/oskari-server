@@ -62,32 +62,47 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             store = factory.createDataStore(connectionParams);
             log.error("ZIP3");
             typeName = store.getTypeNames()[0];
+            log.error("ZIP4");
             source = store.getFeatureSource(typeName);
+            log.error("ZIP5");
             collection = source.getFeatures();
+            log.error("ZIP6");
             it = collection.features();
+            log.error("ZIP7");
             schema = collection.getSchema();
+            log.error("ZIP8");
 
             //Coordinate transformation support
+            log.error("ZIP9");
             bounds = source.getBounds();
+            log.error("ZIP10");
             if (bounds != null) {
                 sourceCrs = bounds.getCoordinateReferenceSystem();
             }
+            log.error("ZIP11");
             if (sourceCrs == null) {
                 sourceCrs = schema.getCoordinateReferenceSystem();
             }
+            log.error("ZIP12");
 
             // Oskari crs
             //(oskari OL map crs)
+            log.error("ZIP13");
             targetCrs = CRS.decode(target_epsg, true);
+            log.error("ZIP14");
 
             // TODO: better check algorithm - name is not 100% proof
+            log.error("ZIP15");
             if ((sourceCrs != null)&&(!targetCrs.getName().equals(sourceCrs.getName()))) {
                 transform = CRS.findMathTransform(sourceCrs, targetCrs, true);
             }
+            log.error("ZIP16");
 
             features = new JSONArray();
+            log.error("ZIP17");
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
+                log.error(feature);
                 if (transform != null) {
                     Geometry geometry = (Geometry) feature.getDefaultGeometry();
                     feature.setDefaultGeometry(JTS.transform(geometry, transform));
@@ -97,14 +112,23 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
                     features.put(geojs);
                 }
             }
+            log.error("ZIP18.1");
+            log.error(features);
+            log.error("ZIP18.2");
             it.close();
+            log.error("ZIP19");
             setGeoJson(JSONHelper.createJSONObject("features",features));
+            log.error("ZIP20");
             setFeatureType((FeatureType)schema);
+            log.error("ZIP21");
             setTypeName(typeName);
+            log.error("ZIP22");
             return true;
         } catch (Exception e) {
-             log.error("Couldn't create geoJSON from the MapInfo file",e);
-             return false;
+            log.error("ZIP23");
+            log.error("Couldn't create geoJSON from the MapInfo file",e);
+            log.error("ZIP24");
+            return false;
         }
     }
 }
