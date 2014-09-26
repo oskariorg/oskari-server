@@ -42,6 +42,17 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
     public boolean parseGeoJSON(File file, String target_epsg) {
         log.error("ZIP1");
         OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
+
+        java.util.Set<String> drivers = factory.getAvailableDrivers();
+        for (String driver : drivers) {
+            log.error(driver);
+        }
+
+        log.error("ZIP1.1");
+        log.error(file.getAbsolutePath());
+        log.error("ZIP1.2");
+
+
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "MapInfo File");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
