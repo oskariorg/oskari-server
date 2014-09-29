@@ -7,6 +7,7 @@ import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Location;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.PropertyFilter;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.WFSMapLayerJob;
@@ -137,6 +138,9 @@ public class WFSFilter {
                 setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 GeoJSONFilter geoJSONFilter = session.getFilter();
                 filter = initGeoJSONFilter(geoJSONFilter);
+            }else if(type == WFSMapLayerJob.Type.PROPERTY_FILTER) {
+                log.debug("Filter: Property filter");
+                filter = initPropertyFilter(session, bounds, layer);
             } else if(type == WFSMapLayerJob.Type.NORMAL) {
                 log.debug("Filter: normal");
                 Location location;
@@ -349,7 +353,44 @@ public class WFSFilter {
 
         return filter;
     }
+    /**
+     * Inits filter for property filter select
+     *
+     * @param session  WFS transport service session data
+     * @param bounds  Map bounds
+     * @param layer   WFS layer metadata
+     *
+     * @return filter
+     */
+    public Filter initPropertyFilter( final SessionStore session,
+                                     final List<Double> bounds, final WFSLayerStore layer) {
 
+        PropertyFilter propertyFilter = session.getPropertyFilter();
+        Location location;
+        if(bounds != null) {
+            location = new Location(session.getLocation().getSrs());
+            location.setBbox(bounds);
+        } else {
+            location = session.getLocation();
+        }
+        if(propertyFilter == null ) {
+            log.error("Failed to create property filter (invalid JSON for property filter)");
+            return null;
+        }
+        // Bbox filter is always on
+        Filter filter = initBBOXFilter(location, layer);
+        if(filter == null ) {
+            log.error("Failed to create bbox filter for property filter");
+            return null;
+        }
+        // parse property filters
+        Filter propertyFilters = WFSFilterBuilder.parseWfsJsonFilter(propertyFilter.getPropertyFilter(), null, null);
+        if( propertyFilters != null ) {
+            filter = ff.and(filter, propertyFilters);
+        }
+
+        return filter;
+    }
     /**
      * Defines a radius factor of point sizes for filtering
      *

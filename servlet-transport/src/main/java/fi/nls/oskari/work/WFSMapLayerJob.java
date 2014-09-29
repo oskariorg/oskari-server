@@ -339,7 +339,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 log.debug("No feature data!");
                 this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
             }
-        } else if(this.type == Type.GEOJSON) {
+        } else if(this.type == Type.GEOJSON || this.type == Type.PROPERTY_FILTER) {
             if(!this.requestHandler(null)) {
                 return;
             }
@@ -422,7 +422,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_MAP_CLICK, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
-        } else if(this.type == Type.GEOJSON && this.features.size() == 0) {
+        } else if((this.type == Type.GEOJSON && this.features.size() == 0) || (this.type == Type.PROPERTY_FILTER && this.features.size() == 0)) {
             log.debug("Empty result for filter",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
@@ -648,6 +648,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             if(session.getFilter() != null) {
                 return true;
             }
+        }
+        else if(this.type == Type.PROPERTY_FILTER) {
+                if(session.getPropertyFilter() != null) {
+                    return true;
+                }
         } else if(this.type == Type.NORMAL) {
             return true;
         }

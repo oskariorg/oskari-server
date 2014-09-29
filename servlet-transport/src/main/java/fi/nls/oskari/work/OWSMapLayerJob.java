@@ -35,7 +35,7 @@ public abstract class OWSMapLayerJob extends Job {
 
     public static enum Type {
         NORMAL("normal"), HIGHLIGHT("highlight"), MAP_CLICK("mapClick"), GEOJSON(
-                "geoJSON");
+                "geoJSON"), PROPERTY_FILTER("property_filter");
 
         protected final String name;
 

@@ -69,8 +69,20 @@ public class WFSFilterBuilder {
      * @return WFS filter in xml syntax
      */
     public static String parseWfsFilter(final JSONObject filter_js,
-            String srsName, String geom_elem) {
+                                        String srsName, String geom_elem) {
 
+        Filter all = parseWfsJsonFilter(filter_js, srsName, geom_elem);
+
+        if (all == null) {
+            return null;
+        }
+
+        return getFilterAsString(all);
+
+    }
+
+    public static Filter parseWfsJsonFilter(final JSONObject filter_js,
+                                            String srsName, String geom_elem) {
         if (filter_js == null) {
             return null;
         }
@@ -82,7 +94,7 @@ public class WFSFilterBuilder {
 
         try {
             if (!filter_js.has(KEY_FILTERS) && filter_js.has(KEY_FEATUREIDS)) {
-                if(filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) return null;
+                if (filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) return null;
             }
 
             if (filter_js.has(KEY_FILTERS)) {
@@ -164,7 +176,7 @@ public class WFSFilterBuilder {
             // If there is only one feature to be selected, then other filters must be ignored
             // Geotools skips id filter, if many overlapping filters
 
-            if(all != null && isOneIdFilter(filter_js)) return getFilterAsString(all);
+            if (all != null && isOneIdFilter(filter_js)) return all;
 
             if (andConditions.size() > 0) {
                 all = appendFilter(all, ff.and(andConditions));
@@ -182,12 +194,14 @@ public class WFSFilterBuilder {
                 all = appendFilter(all, fbbox);
             }
 
-            // output Filter as string
-            return getFilterAsString(all);
+
+            return all;
         } catch (JSONException e) {
-            log.warn(e, "JSON parse failed");
+            log.warn(e, "Filter JSON parse failed ");
         }
         return null;
+
+
     }
 
     private static Filter appendFilter(final Filter main, final Filter toAppend) {
@@ -267,7 +281,7 @@ public class WFSFilterBuilder {
      */
     private static Filter getBboxFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
-        if (filter_js.has(KEY_BBOX)) {
+        if (filter_js.has(KEY_BBOX) && srsName != null && geom_elem != null) {
             // Add BBOX filter
             JSONObject bbox = filter_js.getJSONObject(KEY_BBOX);
             return ff.bbox(geom_elem, bbox.getDouble("left"), bbox

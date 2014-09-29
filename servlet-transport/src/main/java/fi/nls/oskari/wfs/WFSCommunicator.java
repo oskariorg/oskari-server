@@ -47,6 +47,8 @@ public class WFSCommunicator {
 	 */
 	@SuppressWarnings("unchecked")
 	public static String createRequestPayload(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
+
+
 		OMFactory factory = OMAbstractFactory.getOMFactory();
 
 		// namespaces
@@ -54,6 +56,7 @@ public class WFSCommunicator {
 		OMNamespace wfs = factory.createOMNamespace("http://www.opengis.net/wfs", "wfs");
 		// root element
 		OMElement root = factory.createOMElement("GetFeature", wfs);
+        try {
 		OMAttribute schemaLocation = factory.createOMAttribute("schemaLocation", 
 				xsi,
 				"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/" 
@@ -85,8 +88,9 @@ public class WFSCommunicator {
 		root.addAttribute(version);
 		root.addAttribute(service);
 		root.addAttribute(maxFeatures);
+
 		// query
-		try {
+		//try {
             OMElement query = factory.createOMElement("Query", wfs);
             OMAttribute typeName = factory.createOMAttribute("typeName", null,
                     layer.getFeatureNamespace() + ":" + layer.getFeatureElement());
@@ -131,6 +135,7 @@ public class WFSCommunicator {
             // load filter
             WFSFilter wfsFilter = constructFilter(layer.getLayerId());
             String filterStr = wfsFilter.create(type, layer, session, bounds, transform);
+            log.debug(" ++++++++++++++++++++++++++++++ filter xml: ", filterStr);
             if(filterStr != null) {
                 StAXOMBuilder staxOMBuilder = XMLHelper.createBuilder(filterStr);
                 OMElement filter = staxOMBuilder.getDocumentElement();
@@ -138,7 +143,7 @@ public class WFSCommunicator {
             }
 		}
 		catch (Exception e){
-		    log.error(e, "Failed to create payload");
+		    log.error(e, "Failed to create payload - root: ", root);
 		}
 
 		return root.toString();
@@ -180,7 +185,7 @@ public class WFSCommunicator {
 		} catch (Exception e) {
             e.printStackTrace();
 			if(!errorHandled)
-				log.error(e, "Features couldn't be parsed");
+				log.error(e, "Features couldn't be parsed: - response: ", response, " obj: ", obj);
 		}
 		
 		return features;

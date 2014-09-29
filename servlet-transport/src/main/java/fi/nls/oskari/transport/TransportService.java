@@ -110,6 +110,7 @@ public class TransportService extends AbstractService implements ResultProcessor
     public static final String CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE = "/service/wfs/setMapLayerCustomStyle";
 	public static final String CHANNEL_SET_MAP_CLICK = "/service/wfs/setMapClick";
 	public static final String CHANNEL_SET_FILTER = "/service/wfs/setFilter";
+    public static final String CHANNEL_SET_PROPERTY_FILTER = "/service/wfs/setPropertyFilter";
 	public static final String CHANNEL_SET_MAP_LAYER_VISIBILITY = "/service/wfs/setMapLayerVisibility";
 	public static final String CHANNEL_HIGHLIGHT_FEATURES = "/service/wfs/highlightFeatures";
 
@@ -166,6 +167,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         addService(CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE, "processRequest");
         addService(CHANNEL_SET_MAP_CLICK, "processRequest");
         addService(CHANNEL_SET_FILTER, "processRequest");
+        addService(CHANNEL_SET_PROPERTY_FILTER, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_VISIBILITY, "processRequest");
         addService(CHANNEL_HIGHLIGHT_FEATURES, "processRequest");
     }
@@ -315,6 +317,8 @@ public class TransportService extends AbstractService implements ResultProcessor
             setMapClick(store, params);
         } else if (channel.equals(CHANNEL_SET_FILTER)) {
             setFilter(store, json);
+        } else if (channel.equals(CHANNEL_SET_PROPERTY_FILTER)) {
+            setPropertyFilter(store, json);
         } else if (channel.equals(CHANNEL_SET_MAP_LAYER_VISIBILITY)) {
             setMapLayerVisibility(store, params);
         }
@@ -651,7 +655,32 @@ public class TransportService extends AbstractService implements ResultProcessor
             }
         }
     }
+    /**
+     * Property filter isn't saved in session. Set filter will be request just once.
+     *
+     * Sends only feature json.
+     *
+     * @param store
+     * @param json
+     */
+    private void setPropertyFilter(SessionStore store, String json) {
+        PropertyFilter propertyFilter = PropertyFilter.setParamsJSON(json);
+        // stores property filters, but doesn't save
+        store.setPropertyFilter(propertyFilter);
 
+        Job job = null;
+        for (Entry<String, Layer> e : store.getLayers().entrySet()) {
+            if (e.getValue().isVisible()) {
+                // job without image drawing
+                // only for requested layer
+                if (e.getValue().getId().equals(propertyFilter.getLayerId())) {
+                    job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.PROPERTY_FILTER, store, e.getValue().getId(), true, false, false);
+                    jobs.remove(job);
+                    jobs.add(job);
+                }
+            }
+        }
+    }
     /**
      * Sets layer visibility into session and starts/stops job for the layer
      * 
