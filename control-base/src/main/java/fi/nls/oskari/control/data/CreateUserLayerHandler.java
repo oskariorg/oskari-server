@@ -16,6 +16,8 @@ import fi.nls.oskari.log.Logger;
 
 
 import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
@@ -41,8 +43,10 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
-    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML");
+    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML", "GPX", "MIF");
     private static final String IMPORT_SHP = ".SHP";
+    private static final String IMPORT_GPX = ".GPX";
+    private static final String IMPORT_MIF = ".MIF";
     private static final String IMPORT_KML = ".KML";
     private static final String PARAM_EPSG_KEY = "epsg";
 
@@ -66,6 +70,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Only 1st file item is handled
             RawUpLoadItem loadItem = getZipFiles(params);
 
+            log.error("ZIP "+ACCEPTED_FORMATS.size());
             File file = unZip(loadItem.getFileitem());
 
             if (file == null) {
@@ -82,6 +87,10 @@ public class CreateUserLayerHandler extends ActionHandler {
                 geojsonWorker = new SHPGeoJsonCollection();
             } else if (file.getName().toUpperCase().indexOf(IMPORT_KML) > -1) {
                 geojsonWorker = new KMLGeoJsonCollection();
+            } else if (file.getName().toUpperCase().indexOf(IMPORT_GPX) > -1) {
+                geojsonWorker = new GPXGeoJsonCollection();
+            } else if (file.getName().toUpperCase().indexOf(IMPORT_MIF) > -1) {
+                geojsonWorker = new MIFGeoJsonCollection();
             }
             // Parse import data to geojson
             if (!geojsonWorker.parseGeoJSON(file, target_epsg)) {

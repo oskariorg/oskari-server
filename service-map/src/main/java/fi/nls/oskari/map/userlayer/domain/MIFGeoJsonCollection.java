@@ -1,0 +1,145 @@
+package fi.nls.oskari.map.userlayer.domain;
+
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
+import fi.nls.oskari.util.JSONHelper;
+import org.geotools.data.DataStore;
+import org.geotools.data.ogr.OGRDataStoreFactory;
+import org.geotools.data.ogr.bridj.BridjOGRDataStoreFactory;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.referencing.CRS;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import com.vividsolutions.jts.geom.Geometry;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
+
+    final FeatureJSON io = new FeatureJSON();
+    private static final Logger log = LogFactory
+            .getLogger(MIFGeoJsonCollection.class);
+
+    /**
+     * Parse MapInfo file set to geojson features
+     * Coordinate transformation is executed, if shape .prj file is within
+     * @param file .mif import file
+     * @param target_epsg target CRS
+     * @return
+     */
+    public boolean parseGeoJSON(File file, String target_epsg) {
+        log.error("ZIP1");
+        OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
+
+        java.util.Set<String> drivers = factory.getAvailableDrivers();
+        for (String driver : drivers) {
+            log.error(driver);
+        }
+
+        log.error("ZIP1.1");
+        log.error(file.getAbsolutePath());
+        log.error("ZIP1.2");
+
+
+        Map<String, String> connectionParams = new HashMap<String, String>();
+        connectionParams.put("DriverName", "MapInfo File");
+        connectionParams.put("DatasourceName", file.getAbsolutePath());
+        DataStore store;
+        String typeName = null;
+        SimpleFeatureSource source;
+        SimpleFeatureCollection collection;
+        SimpleFeatureType schema = null;
+        SimpleFeatureIterator it = null;
+        CoordinateReferenceSystem sourceCrs = null;
+        CoordinateReferenceSystem targetCrs = null;
+        MathTransform transform = null;
+        JSONArray features = null;
+        ReferencedEnvelope bounds = null;
+
+        try {
+            log.error("ZIP2");
+            store = factory.createDataStore(connectionParams);
+            log.error("ZIP3");
+            typeName = store.getTypeNames()[0];
+            log.error("ZIP4");
+            source = store.getFeatureSource(typeName);
+            log.error("ZIP5");
+            collection = source.getFeatures();
+            log.error("ZIP6");
+            it = collection.features();
+            log.error("ZIP7");
+            schema = collection.getSchema();
+            log.error("ZIP8");
+
+            //Coordinate transformation support
+            log.error("ZIP9");
+            bounds = source.getBounds();
+            log.error("ZIP10");
+            if (bounds != null) {
+                sourceCrs = bounds.getCoordinateReferenceSystem();
+            }
+            log.error("ZIP11");
+            if (sourceCrs == null) {
+                sourceCrs = schema.getCoordinateReferenceSystem();
+            }
+            log.error("ZIP12");
+
+            // Oskari crs
+            //(oskari OL map crs)
+            log.error("ZIP13");
+            targetCrs = CRS.decode(target_epsg, true);
+            log.error("ZIP14");
+
+            // TODO: better check algorithm - name is not 100% proof
+            log.error("ZIP15");
+            if ((sourceCrs != null)&&(!targetCrs.getName().equals(sourceCrs.getName()))) {
+                transform = CRS.findMathTransform(sourceCrs, targetCrs, true);
+            }
+            log.error("ZIP16");
+
+            features = new JSONArray();
+            log.error("ZIP17");
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+                log.error(feature);
+                if (transform != null) {
+                    Geometry geometry = (Geometry) feature.getDefaultGeometry();
+                    feature.setDefaultGeometry(JTS.transform(geometry, transform));
+                }
+                JSONObject geojs = JSONHelper.createJSONObject(io.toString(feature));
+                if (geojs != null) {
+                    features.put(geojs);
+                }
+            }
+            log.error("ZIP18.1");
+            log.error(features);
+            log.error("ZIP18.2");
+            it.close();
+            log.error("ZIP19");
+            setGeoJson(JSONHelper.createJSONObject("features",features));
+            log.error("ZIP20");
+            setFeatureType((FeatureType)schema);
+            log.error("ZIP21");
+            setTypeName(typeName);
+            log.error("ZIP22");
+            return true;
+        } catch (Exception e) {
+            log.error("ZIP23");
+            log.error("Couldn't create geoJSON from the MapInfo file",e);
+            log.error("ZIP24");
+            return false;
+        }
+    }
+}
