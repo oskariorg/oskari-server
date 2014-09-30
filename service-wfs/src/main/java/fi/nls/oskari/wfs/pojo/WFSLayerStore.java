@@ -3,6 +3,7 @@ package fi.nls.oskari.wfs.pojo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
@@ -194,7 +195,39 @@ public class WFSLayerStore extends WFSLayerConfiguration {
         }
         return null;
     }
+/*
+    @JsonIgnore
+    public static WFSLayerStore setJSONWithoutStreamingParser(String json) throws IOException {
+        WFSLayerStore store = new WFSLayerStore();
+        Map<String,Object> parsed = mapper.readValue(json, Map.class);
+        if(parsed.containsKey(ERROR)) {
+            return null;
+        }
+        store.setLayerId((String) parsed.get(LAYER_ID));
+        store.setURL((String) parsed.get(URL_PARAM));
+        store.setUsername((String) parsed.get(USERNAME));
+        store.setPassword((String) parsed.get(PASSWORD));
 
+        store.setLayerName((String) parsed.get(LAYER_NAME));
+
+        store.setGMLGeometryProperty((String) parsed.get(GML_GEOMETRY_PROPERTY));
+        store.setSRSName((String) parsed.get(SRS_NAME));
+        store.setGMLVersion((String) parsed.get(GML_VERSION));
+        store.setGML2Separator((Boolean) parsed.get(GML2_SEPARATOR));
+
+        store.setWFSVersion((String) parsed.get(WFS_VERSION));
+        store.setMaxFeatures((Integer) parsed.get(MAX_FEATURES));
+
+        store.setFeatureNamespace((String) parsed.get(FEATURE_NAMESPACE));
+        store.setFeatureNamespaceURI((String) parsed.get(FEATURE_NAMESPACE_URI));
+        store.setGeometryNamespaceURI((String) parsed.get(GEOMETRY_NAMESPACE_URI));
+
+        store.setFeatureElement((String) parsed.get(FEATURE_ELEMENT));
+        store.setOutputFormat((String) parsed.get(OUTPUT_FORMAT));
+        //FEATURE_TYPE and the rest missing
+        return store;
+    }
+*/
     /**
      * Transforms JSON String to object
      *
@@ -204,7 +237,6 @@ public class WFSLayerStore extends WFSLayerConfiguration {
     @JsonIgnore
     public static WFSLayerStore setJSON(String json) throws IOException {
         WFSLayerStore store = new WFSLayerStore();
-        // Map<String, List<String>> featureParamsLocales = new HashMap<String, List<String>>();
 
         JsonFactory factory = new JsonFactory();
         JsonParser parser = factory.createJsonParser(json);
