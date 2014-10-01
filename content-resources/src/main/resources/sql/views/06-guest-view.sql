@@ -154,11 +154,17 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "mapanalysis" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
             "oskariui" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "maparcgis" : {
+                "bundlePath" : "/Oskari/packages/arcgis/bundle/"
             },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -209,6 +215,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+       { "id" : "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
             "config" : {
