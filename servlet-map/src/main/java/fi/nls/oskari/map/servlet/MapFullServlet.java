@@ -81,7 +81,8 @@ public class MapFullServlet extends HttpServlet {
         log.debug("Checking for params", paramHandlers);
 
         // check if we have development flag -> serve non-minified js
-        isDevelopmentMode = "true".equals(PropertyUtil.get(PROPERTY_DEVELOPMENT));
+
+        isDevelopmentMode = ConversionHelper.getBoolean(PropertyUtil.get(PROPERTY_DEVELOPMENT), false);
         // Get version from init params or properties, prefer version from properties and default to init param
         version = PropertyUtil.get(PROPERTY_VERSION, getServletConfig().getInitParameter(KEY_VERSION));
     }
