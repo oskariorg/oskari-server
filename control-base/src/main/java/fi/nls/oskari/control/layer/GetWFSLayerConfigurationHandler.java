@@ -75,10 +75,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     private WFSLayerConfiguration getLayerInfoForRedis(final int id, final String requestedLayerId) {
 
-        WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-
-        log.warn("id:", id, "requested layer id:", requestedLayerId);
-        log.warn(lc);
+        log.info("Loading wfs layer with id:", id, "requested layer id:", requestedLayerId);
+        final WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
+        log.debug(lc);
         final long userDataLayerId = extractId(requestedLayerId);
         UserDataLayer userLayer = null;
 
@@ -98,12 +97,14 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
             userLayer = userLayerDbService.getUserLayerById(userDataLayerId);
         }
         if(userLayer != null) {
+            log.debug("Was a user created layer");
             // set id to user data layer id for redis
             lc.setLayerId(requestedLayerId);
             if(lc.isPublished()) {
                 // Transport uses this uuid in WFS query instead of users id if published is true.
                 lc.setPublished(true);
                 lc.setUuid(userLayer.getUuid());
+                log.debug("Was published", lc);
             }
         }
         return lc;
