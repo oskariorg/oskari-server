@@ -97,10 +97,14 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         else if (requestedLayerId.startsWith(USERLAYER_PREFIX)) {
             userLayer = userLayerDbService.getUserLayerById(userDataLayerId);
         }
-        if(userLayer != null && userLayer.isPublished()) {
+        if(userLayer != null) {
             // set id to user data layer id for redis
             lc.setLayerId(requestedLayerId);
-            setupPublishedFlags(lc, userLayer.getUuid());
+            if(lc.isPublished()) {
+                // Transport uses this uuid in WFS query instead of users id if published is true.
+                lc.setPublished(true);
+                lc.setUuid(userLayer.getUuid());
+            }
         }
         return lc;
     }
@@ -137,15 +141,5 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         }
         final String id = values[values.length - 1];
         return ConversionHelper.getLong(id, -1);
-    }
-
-    /**
-     * Transport uses this uuid in WFS query instead of users id if published is true.
-     * @param lc
-     * @param uuid
-     */
-    private void setupPublishedFlags(final WFSLayerConfiguration lc, final String uuid) {
-        lc.setPublished(true);
-        lc.setUuid(uuid);
     }
 }
