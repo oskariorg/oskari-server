@@ -73,7 +73,6 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Only 1st file item is handled
             RawUpLoadItem loadItem = getZipFiles(params);
 
-            log.error("ZIP "+ACCEPTED_FORMATS.size());
             File file = unZip(loadItem.getFileitem());
 
             if (file == null) {
