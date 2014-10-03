@@ -711,6 +711,9 @@ public class WFSLayerConfiguration {
     	// styles
 		final JSONObject styleList = new JSONObject();
 		for (final WFSSLDStyle ls : this.getSLDStyles()) {
+            if(ls.getId() == null) {
+                continue;
+            }
 	        final JSONObject style = new JSONObject();
 	        JSONHelper.putValue(style, ID, ls.getId());
 	        JSONHelper.putValue(style, NAME, ls.getName());
