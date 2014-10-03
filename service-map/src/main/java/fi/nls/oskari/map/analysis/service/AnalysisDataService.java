@@ -215,39 +215,52 @@ public class AnalysisDataService {
     /**
      * Get analysis columns to Json string
      *
-     * @param analysis_id Key to one analysis
+     * @param analysis_id Key to one analysis (should be number value as string)
      * @return analysis columns
      */
     public String getAnalysisNativeColumns(final String analysis_id) {
-        if (analysis_id != null) {
-            final List<String> columnNames = new ArrayList<String>(); // key,
-            // name
-            Analysis analysis = analysisService
-                    .getAnalysisById(ConversionHelper.getLong(analysis_id, 0));
-            if (analysis != null) {
-                // fixed extra becauseof WFS
-                // columnNames.add("__fid");
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
-                            String columnName = colx.split("=")[0];
-                            // Let's make sure no geometry field gets involved.
-                            if (columnName != ANALYSIS_GEOMETRY_FIELD) {
-                                columnNames.add(colx.split("=")[0]);
-                            }
-                        }
-                    }
-
-                }
-                // Add geometry for filter and for highlight.
-                // On the other hand, let's not add it so it won't pollute our gfi.
-                // (it gets added to the query by WFS anyway)
-                //columnNames.add(ANALYSIS_GEOMETRY_FIELD);
-                return "{default:" + columnNames.toString() + "}";
-            }
+        if (analysis_id == null) {
+            return null;
         }
-        return null;
+        return getAnalysisNativeColumns(ConversionHelper.getLong(analysis_id, 0));
+    }
+    /**
+     * Get analysis columns to Json string
+     *
+     * @param analysis_id Key to one analysis
+     * @return analysis columns
+     */
+    public String getAnalysisNativeColumns(final long analysis_id) {
+        final Analysis analysis = analysisService.getAnalysisById(analysis_id);
+        return getAnalysisNativeColumns(analysis);
+    }
+
+    /**
+     * Get analysis columns to Json string
+     *
+     * @param analysis analysis to get columns from
+     * @return analysis columns in a JSON string or null if parameter is null
+     */
+    public String getAnalysisNativeColumns(final Analysis analysis) {
+        if(analysis == null) {
+            return null;
+        }
+        final List<String> columnNames = new ArrayList<String>();
+        for (int j = 1; j < 11; j++) {
+            // format of colx is "<internal name f.ex t1>=<actual name in original data>"
+            String colx = analysis.getColx(j);
+            if (colx == null || colx.isEmpty() || colx.indexOf("=") == -1) {
+                // skip if column data is not valid(?)
+                continue;
+            }
+            String columnName = colx.split("=")[0];
+            if (columnName.equals(ANALYSIS_GEOMETRY_FIELD)) {
+                // ignore geometry field (it gets added to the query by WFS anyway)
+                continue;
+            }
+            columnNames.add(colx.split("=")[0]);
+        }
+        return "{default:" + columnNames.toString() + "}";
     }
 
     /**
