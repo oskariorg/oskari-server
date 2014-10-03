@@ -100,7 +100,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
             log.debug("Was a user created layer");
             // set id to user data layer id for redis
             lc.setLayerId(requestedLayerId);
-            if(lc.isPublished()) {
+            if(userLayer.isPublished()) {
                 // Transport uses this uuid in WFS query instead of users id if published is true.
                 lc.setPublished(true);
                 lc.setUuid(userLayer.getUuid());
