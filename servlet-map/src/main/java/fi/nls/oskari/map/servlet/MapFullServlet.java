@@ -157,6 +157,8 @@ public class MapFullServlet extends HttpServlet {
     private String setupRenderParameters(final ActionParameters params) throws ServletException {
 
         try {
+        	log.debug("getting a view and setting Render parameters");
+        	
             HttpServletRequest request = params.getRequest();
             
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
