@@ -132,10 +132,6 @@ public class GetAppSetupHandler extends ActionHandler {
         // oldId => support for migrated published maps
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
         final boolean isOldPublishedMap = oldId != -1;
-
-        log.debug("jess");
-        
-        log.debug("NYT OLLAAN handle actioinissa!!!!!!!!!!!!!!!!!!!");
         
         final long defaultViewId = viewService.getDefaultViewId(params.getUser());
         long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID), defaultViewId);
@@ -152,15 +148,7 @@ public class GetAppSetupHandler extends ActionHandler {
                 .getHttpHeader("Referer"));
 
         
-        log.debug("getting viewId from request");
         log.debug("uuid: " + uuId);
-        log.debug("viewId: " + viewId);
-        if (uuId == null) {
-        	log.debug("didn't get uuid");
-        }else{
-        	log.debug("uuId is: " + uuId);
-        }
-        
         
         final View view = getView(viewId, oldId, uuId);
 
@@ -194,7 +182,6 @@ public class GetAppSetupHandler extends ActionHandler {
                     + " - View created by user " + creator);
         }
 
-    	log.debug("1 cheking referer");
         if (view.getType().equals(ViewTypes.PUBLISHED)) {
             // Check referrer
             final String pubDomain = view.getPubDomain();
@@ -237,7 +224,6 @@ public class GetAppSetupHandler extends ActionHandler {
             }
             */
         }
-        log.debug("2");
 
         // JSON presentation of view
         final JSONObject configuration = getConfiguration(view);
@@ -249,7 +235,6 @@ public class GetAppSetupHandler extends ActionHandler {
         modifierParams.setBaseAjaxUrl(getBaseAjaxUrl(params));
         modifierParams.setConfig(configuration);
         modifierParams.setActionParams(params);
-        log.debug("3");
 
         modifierParams.setReferer(referer);
         modifierParams.setViewType(view.getType());
@@ -258,7 +243,6 @@ public class GetAppSetupHandler extends ActionHandler {
         modifierParams.setOldPublishedMap(oldId != -1);
         modifierParams.setModifyURLs(isSecure(params));
         modifierParams.setAjaxRouteParamName(ActionControl.PARAM_ROUTE);
-        log.debug("4");
 
         int locationModified = 0;
         for (String paramKey : paramHandlers) {
@@ -285,9 +269,7 @@ public class GetAppSetupHandler extends ActionHandler {
         modifierParams.setLocationModified(locationModified > 0);
         // TODO: if we have modified location more than once, user gave
         // conflicting params, maybe notify about it?
-        log.debug("5");
         for (int i = 0; i < startupSequence.length(); i++) {
-            log.debug("6");
             final JSONObject bundle = (JSONObject) startupSequence.opt(i);
             final String bundleid = bundle.optString("bundlename");
             if (bundleHandlers.containsKey(bundleid)) {
@@ -303,7 +285,6 @@ public class GetAppSetupHandler extends ActionHandler {
         // Add admin-layerselector/layer-rights bundle, if admin role and default view
         // TODO: check if we can assume ViewTypes.DEFAULT || ViewTypes.USER for this.
         //add bundles according to role/rights
-        log.debug("7");
         if (ViewTypes.DEFAULT.equals(view.getType()) ||
             ViewTypes.USER.equals(view.getType())) {
             log.debug("Adding bundles for user", params.getUser());
@@ -319,7 +300,6 @@ public class GetAppSetupHandler extends ActionHandler {
         }
 
         // write response
-        log.debug("8");
         try {
             JSONObject appSetup = new JSONObject();
             appSetup.put(KEY_STARTUP, startupSequence);
@@ -380,21 +360,6 @@ public class GetAppSetupHandler extends ActionHandler {
         }
     }
     
-    
-//    private View getView(final long viewId, final long oldId) {
-//        if (oldId > 0) {
-//            log.debug("Using old View ID :" + oldId);
-//            return viewService.getViewWithConfByOldId(oldId);
-//        } else {
-//            log.debug("Using View ID:" + viewId);
-//            return viewService.getViewWithConf(viewId);
-//        }
-//    }
-
-    private View getViewWithUuid(final long uuId) {
-            log.debug("Using uu ID:" + uuId);
-            return viewService.getViewWithConf(uuId);
-    }
 
     private JSONObject getStateFromCookie(javax.servlet.http.Cookie cookie) {
         if (cookie == null) {
