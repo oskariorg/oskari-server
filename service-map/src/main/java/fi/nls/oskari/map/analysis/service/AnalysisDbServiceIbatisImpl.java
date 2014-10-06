@@ -93,10 +93,27 @@ public class AnalysisDbServiceIbatisImpl extends
         return queryForList(getNameSpace() + ".findAnalysisByUid", uid);
     }
 
+    /**
+     * Get Analysis data  by uuid and analysis id
+     *
+     * @param id analysis id
+     * @param uuid user uuid
+     * @param select_items select body string in select statement
+     * @return List of analysis data rows
+     */
+    public List< HashMap<String,Object>> getAnalysisDataByIdUid(long id, String uuid, String select_items) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("id", id);
+        params.put("uuid", uuid);
+        params.put("select_items", select_items);
+        return queryForList(getNameSpace() + ".findAnalysisDataByIdUid",params);
+    }
+
     public void deleteAnalysisById(final long id) throws ServiceException {
         final Analysis analysis = getAnalysisById(id);
         deleteAnalysis(analysis);
     }
+
 
     public void deleteAnalysis(final Analysis analysis) throws ServiceException {
         if(analysis == null) {

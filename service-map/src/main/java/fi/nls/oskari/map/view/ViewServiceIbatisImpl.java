@@ -96,7 +96,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public View getViewWithConfByUuId(String uuId) {
         if (uuId == null)
             return null;
-        View view = (View) queryForObject("View.view-with-conf-by-view-id", uuId);
+        View view = (View) queryForObject("View.view-with-conf-by-uu-id", uuId);
         return view;
     }
 
