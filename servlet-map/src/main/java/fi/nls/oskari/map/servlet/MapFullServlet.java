@@ -170,15 +170,23 @@ public class MapFullServlet extends HttpServlet {
             
             final String uuId = params.getHttpParam("uuId");
             
-            log.debug("uuId is : " + uuId);
+            log.debug("uuId is nano nano: " + uuId);
 
+            
             final View view = getView(uuId, viewId);
             if (view == null) {
+            	log.debug("no such view");
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
             }
+            
+            
+            
             log.debug("Serving view with id:", view.getId());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
+            request.setAttribute("viewId", view.getId());
+            
+            
             request.setAttribute("viewId", view.getId());
 
             // viewJSP might change if using dev override
@@ -188,7 +196,13 @@ public class MapFullServlet extends HttpServlet {
             // construct control params
             final JSONObject controlParams = getControlParams(params);
             
-            JSONHelper.putValue(controlParams, "viewId", view.getId());
+            if(uuId != null){
+                JSONHelper.putValue(controlParams, "uuId", view.getUuid());
+            }else{
+                JSONHelper.putValue(controlParams, "viewId", view.getId());
+            }
+            
+            
             JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
             request.setAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
