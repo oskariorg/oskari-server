@@ -2,6 +2,17 @@
 
 ## 1.24
 
+### control-base
+
+GetWFSLayerConfiguration now does additional handling for layers created by users. As result those layers should now get feature data in published maps.
+
+PublishHandler will now delete layer data from Redis for layers created by users when such layer is published.
+This will result in transport getting the updated data about layer being published and ultimately end up serving feature data in published maps.
+
+### service-base
+
+Added new base-class for layers created by users: fi.nls.oskari.domain.map.UserDataLayer. Analysis, UserLayer and MyPlaceCategory extend this.
+
 ### service-map
 
 Implemented GPX and MIF/MID dataset import with GeoTools OGR plugin. To be able to use it, the GDAL library file needs to be included in the environment variable PATH (Windows) or LD_LIBRARY_PATH (Linux).

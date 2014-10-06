@@ -3,6 +3,8 @@ package fi.nls.oskari.domain.map.wfs;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +20,9 @@ import javax.xml.namespace.QName;
  * Similar WFSLayerStore class can be found in transport.
  */
 public class WFSLayerConfiguration {
+
+    private static final Logger log = LogFactory
+            .getLogger(WFSLayerConfiguration.class);
 	public final static String KEY = "WFSLayer_";
 
     private static final double DEFAULT_TILE_BUFFER = 0.0d;
@@ -635,7 +640,10 @@ public class WFSLayerConfiguration {
 
 
 	public void save() {
-		JedisManager.setex(KEY + this.layerId, JedisManager.EXPIRY_TIME_DAY, getAsJSON()); // expire in 1 day
+        final String key = KEY + this.layerId;
+        final String json = getAsJSON();
+        log.debug("Writing WFS to Redis:", key, "->", json);
+		JedisManager.setex(key, JedisManager.EXPIRY_TIME_DAY, json); // expire in 1 day
 	}
 
 	public void destroy() {
@@ -703,6 +711,9 @@ public class WFSLayerConfiguration {
     	// styles
 		final JSONObject styleList = new JSONObject();
 		for (final WFSSLDStyle ls : this.getSLDStyles()) {
+            if(ls.getId() == null) {
+                continue;
+            }
 	        final JSONObject style = new JSONObject();
 	        JSONHelper.putValue(style, ID, ls.getId());
 	        JSONHelper.putValue(style, NAME, ls.getName());

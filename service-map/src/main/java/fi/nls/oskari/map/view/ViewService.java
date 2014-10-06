@@ -15,6 +15,8 @@ public interface ViewService extends BaseService<Object> {
     public boolean hasPermissionToAlterView(final View view, final User user);
     
     public View getViewWithConf(long viewId);
+    
+    public View getViewWithConfByUuId(String uuId);
 
     public View getViewWithConfByOldId(long oldId);
 

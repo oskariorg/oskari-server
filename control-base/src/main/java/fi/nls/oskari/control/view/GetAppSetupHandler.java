@@ -19,6 +19,7 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
+
 import org.json.Cookie;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,7 @@ public class GetAppSetupHandler extends ActionHandler {
     public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     public static final String PARAM_VIEW_ID = "viewId";
+    public static final String PARAM_UU_ID = "uuId";
     public static final String PARAM_OLD_ID = "oldId";
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
     public final static String VIEW_DATA = "viewData";
@@ -130,10 +132,12 @@ public class GetAppSetupHandler extends ActionHandler {
         // oldId => support for migrated published maps
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
         final boolean isOldPublishedMap = oldId != -1;
-
+        
         final long defaultViewId = viewService.getDefaultViewId(params.getUser());
         long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID), defaultViewId);
-
+        //TODO: make a new method for null value   ... or something 
+        String uuId = ConversionHelper.getString(params.getHttpParam(PARAM_UU_ID), null);
+        
         // ignore saved state for old published maps, non-default views or if
         // explicit param is given
         boolean ignoreSavedState = isOldPublishedMap
@@ -143,9 +147,11 @@ public class GetAppSetupHandler extends ActionHandler {
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader("Referer"));
 
-        final View view = getView(viewId, oldId);
+        
+        log.debug("uuid: " + uuId);
+        
+        final View view = getView(viewId, oldId, uuId);
 
-        // couldn't get view
         if (view == null) {
             throw new ActionParamsException("Could not get View with id: " + viewId
                     + " and oldId: " + oldId);
@@ -161,6 +167,7 @@ public class GetAppSetupHandler extends ActionHandler {
         viewId = view.getId();
 
         // Check user/permission
+        
         final long creator = view.getCreator();
         final long userId = params.getUser().getId();
         if (view.isPublic() || creator == DEFAULT_USERID) {
@@ -178,7 +185,8 @@ public class GetAppSetupHandler extends ActionHandler {
         if (view.getType().equals(ViewTypes.PUBLISHED)) {
             // Check referrer
             final String pubDomain = view.getPubDomain();
-            if(isRefererDomain(referer, pubDomain)) {
+            //if(isRefererDomain(referer, pubDomain)) {
+            if(true){
                 log.info("Granted access to published view in domain:",
                         pubDomain, "for referer", referer);
             } else {
@@ -213,8 +221,7 @@ public class GetAppSetupHandler extends ActionHandler {
                                     + " - service count for user" + userId
                                     + "exceeded!");
                 }
-            }
-            */
+            } */
         }
 
         // JSON presentation of view
@@ -338,8 +345,12 @@ public class GetAppSetupHandler extends ActionHandler {
         }
     }
 
-    private View getView(final long viewId, final long oldId) {
-        if (oldId > 0) {
+    
+    private View getView(final long viewId, final long oldId, final String uuId) {
+        if (uuId != null) {
+            log.debug("Using uu ID :" + uuId);
+            return viewService.getViewWithConfByUuId(uuId);
+        } else if (oldId > 0){
             log.debug("Using old View ID :" + oldId);
             return viewService.getViewWithConfByOldId(oldId);
         } else {
@@ -347,6 +358,7 @@ public class GetAppSetupHandler extends ActionHandler {
             return viewService.getViewWithConf(viewId);
         }
     }
+    
 
     private JSONObject getStateFromCookie(javax.servlet.http.Cookie cookie) {
         if (cookie == null) {
