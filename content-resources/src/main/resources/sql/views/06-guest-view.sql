@@ -1077,12 +1077,12 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
         "__name": "Analyse",
         "title": {
-            "en": "Analyse",
-            "fi": "Analyysi",
-            "sv": "Analys"
+            "en": "Analyse <font color=red>(BETA)</font>",
+            "fi": "Analyysi <font color=red>(BETA)</font>",
+            "sv": "Analys <font color=red>(BETA)</font>"
         },
         "desc": {
-            "en": "You need to log in before using the embedding function.",
+            "en": "You need to log in before using the analysis function.",
             "fi": "Voit käyttää Analyysitoimintoa kirjauduttuasi palveluun.",
             "sv": "Logga in i tjänsten för att använda analys funktioner."
         },
