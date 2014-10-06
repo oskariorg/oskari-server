@@ -75,10 +75,9 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
 
     private WFSLayerConfiguration getLayerInfoForRedis(final int id, final String requestedLayerId) {
 
-        WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-
-        log.warn("id:", id, "requested layer id:", requestedLayerId);
-        log.warn(lc);
+        log.info("Loading wfs layer with id:", id, "requested layer id:", requestedLayerId);
+        final WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
+        log.debug(lc);
         final long userDataLayerId = extractId(requestedLayerId);
         UserDataLayer userLayer = null;
 
@@ -97,10 +96,16 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         else if (requestedLayerId.startsWith(USERLAYER_PREFIX)) {
             userLayer = userLayerDbService.getUserLayerById(userDataLayerId);
         }
-        if(userLayer != null && userLayer.isPublished()) {
+        if(userLayer != null) {
+            log.debug("Was a user created layer");
             // set id to user data layer id for redis
             lc.setLayerId(requestedLayerId);
-            setupPublishedFlags(lc, userLayer.getUuid());
+            if(userLayer.isPublished()) {
+                // Transport uses this uuid in WFS query instead of users id if published is true.
+                lc.setPublished(true);
+                lc.setUuid(userLayer.getUuid());
+                log.debug("Was published", lc);
+            }
         }
         return lc;
     }
@@ -137,15 +142,5 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         }
         final String id = values[values.length - 1];
         return ConversionHelper.getLong(id, -1);
-    }
-
-    /**
-     * Transport uses this uuid in WFS query instead of users id if published is true.
-     * @param lc
-     * @param uuid
-     */
-    private void setupPublishedFlags(final WFSLayerConfiguration lc, final String uuid) {
-        lc.setPublished(true);
-        lc.setUuid(uuid);
     }
 }
