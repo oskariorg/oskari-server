@@ -81,7 +81,7 @@
     </select>
 
     <select id="view-with-conf-by-uu-id"
-            parameterClass="java.lang.Long"
+            parameterClass="java.lang.String"
             resultMap="view-with-conf">
             <!--cacheModel="view-cache">-->
       SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
