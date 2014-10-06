@@ -165,9 +165,14 @@ public class MapFullServlet extends HttpServlet {
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
             
-            final String uuid = ConversionHelper.getString(params.getHttpParam("uuId"), null);
+            
+            log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
+            
+            final String uuId = params.getHttpParam("uuId");
+            
+            log.debug("uuId is : " + uuId);
 
-            final View view = getView(uuid, viewId);
+            final View view = getView(uuId, viewId);
             if (view == null) {
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
@@ -224,8 +229,10 @@ public class MapFullServlet extends HttpServlet {
     
     private View getView(String uuId, long viewId){
     	if(uuId != null){
+    		log.debug("Using Uuid to fetch a view");
     		return viewService.getViewWithConfByUuId(uuId);
     	}else{
+    		log.debug("Using id to fetch a view");
     		return viewService.getViewWithConf(viewId);
     	}
     }
