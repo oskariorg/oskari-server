@@ -190,7 +190,7 @@ public class Analysis {
         String select = "Select ";
         for (int i = 0; i < fields.size(); i++) {
             String colmap = fields.get(i).replace("=", " As ");
-            select = select + " " + colmap;
+            select = select + " " + colmap + ",";
             switch (i) {
             case 0:
                 this.setCol1(fields.get(i));
@@ -226,6 +226,7 @@ public class Analysis {
             }
 
         }
+        if (select.length() > 1) select = select.substring(0,select.length()-1);  // last , off
         select = select + " from analysis_data where analysis_id = "
                 + Long.toString(this.getId());
         this.setSelect_to_data(select);

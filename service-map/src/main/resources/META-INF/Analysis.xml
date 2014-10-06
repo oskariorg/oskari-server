@@ -118,7 +118,18 @@
         where uuid = #uid# 
  
     </select>
-    
+
+    <select id="findAnalysisDataByIdUid" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+        select
+        <dynamic>
+            $select_items$
+        </dynamic>
+
+        from
+        analysis_data
+        where analysis_id = #id# and uuid=#uuid#
+
+    </select>
 
     <statement id="deleteAnalysis" parameterClass="long">
         delete from
