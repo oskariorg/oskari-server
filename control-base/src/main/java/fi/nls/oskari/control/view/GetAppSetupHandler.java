@@ -221,8 +221,7 @@ public class GetAppSetupHandler extends ActionHandler {
                                     + " - service count for user" + userId
                                     + "exceeded!");
                 }
-            }
-            */
+            } */
         }
 
         // JSON presentation of view
