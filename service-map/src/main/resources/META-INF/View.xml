@@ -90,7 +90,7 @@
 	       s.width, s.height, s.old_id
         FROM   portti_view v, portti_view_supplement s
        WHERE   v.supplement_id = s.id
-         AND   v.id = #id#
+         AND   v.uuid = #uuId#
     </select>
 
     <select id="view-with-conf-by-old-id"
