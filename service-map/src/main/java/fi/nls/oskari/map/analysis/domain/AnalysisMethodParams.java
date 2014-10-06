@@ -24,7 +24,7 @@ import fi.nls.oskari.map.analysis.service.AnalysisWPSNamespaceContext;
 
 public abstract class AnalysisMethodParams {
 
-    private final String bboxFilterTemplate = "<ogc:Filter><ogc:And><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
+    private final String bboxFilterTemplate = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
 
     public final String HREF = "{href}";
     public final String MAXFEATURES = "{maxFeatures}";
