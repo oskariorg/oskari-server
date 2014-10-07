@@ -2,9 +2,14 @@
 
 ## 1.24
 
-## lib changes
+## lib and db changes
 
 Geotools have been updated to version 11.2.
+
+The UUID column in PORTTI_VIEW changes its type to UUID instead of varchar. It's still blank by default, but a view can be referenced by uuid in addition to id.
+The upgrade SQL has a commented section to autogenerate UUID values.
+
+Username/password fields have been added for OSKARI_MAPLAYER. If used the maptile requests are proxied through oskari-server to the actual service.
 
 ### geoserver-ext
 
