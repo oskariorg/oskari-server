@@ -148,8 +148,6 @@ public class GetAppSetupHandler extends ActionHandler {
                 .getHttpHeader("Referer"));
 
         
-        log.debug("uuid: " + uuId);
-        
         final View view = getView(viewId, oldId, uuId);
 
         if (view == null) {
@@ -206,7 +204,6 @@ public class GetAppSetupHandler extends ActionHandler {
             // Check usage count -
             // // FIXME: we cannot use the current user -> the publisher is the
             // one we are interested in!!!!
-            /*
             if (!params.getUser().hasRole(UNRESTRICTED_USAGE_ROLE)) {
                 final List<Integer> viewIdList = new ArrayList<Integer>();
                 // get all view for view creator
@@ -221,7 +218,7 @@ public class GetAppSetupHandler extends ActionHandler {
                                     + " - service count for user" + userId
                                     + "exceeded!");
                 }
-            } */
+            }
         }
 
         // JSON presentation of view
