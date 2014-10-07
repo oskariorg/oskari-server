@@ -159,19 +159,14 @@ public class MapFullServlet extends HttpServlet {
 
         try {
         	log.debug("getting a view and setting Render parameters");
-        	
             HttpServletRequest request = params.getRequest();
             
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
             
-            
             log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
             
             final String uuId = params.getHttpParam("uuId");
-            
-            log.debug("uuId is nano nano: " + uuId);
-
             
             final View view = getView(uuId, viewId);
             if (view == null) {
@@ -180,13 +175,8 @@ public class MapFullServlet extends HttpServlet {
                 return null;
             }
             
-            
-            
             log.debug("Serving view with id:", view.getId());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
-            request.setAttribute("viewId", view.getId());
-            
-            
             request.setAttribute("viewId", view.getId());
 
             // viewJSP might change if using dev override

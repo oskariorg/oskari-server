@@ -203,4 +203,25 @@ public class ActionParameters {
         }
         return null;
     }
+
+    /**
+     * Calling this will throw an exception if user isn't logged in
+     * @throws ActionDeniedException if user is guest
+     */
+    public void requireLoggedInUser() throws ActionDeniedException {
+        if(getUser().isGuest()) {
+            throw new ActionDeniedException("Session expired");
+        }
+    }
+
+    /**
+     * Calling this will throw an exception if user isn't an admin
+     * @throws ActionDeniedException if user is not admin
+     */
+    public void requireAdminUser() throws ActionDeniedException {
+        requireLoggedInUser();
+        if(getUser().isAdmin()) {
+            throw new ActionDeniedException("Admin only");
+        }
+    }
 }

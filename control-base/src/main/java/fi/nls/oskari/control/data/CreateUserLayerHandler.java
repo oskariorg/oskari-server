@@ -6,6 +6,7 @@ package fi.nls.oskari.control.data;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -64,6 +65,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
+        // stop here if user isn't logged in
+        params.requireLoggedInUser();
 
         final HttpServletResponse response = params.getResponse();
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
@@ -80,9 +83,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             }
 
             User user = params.getUser();
-
             // import format
-
             GeoJsonWorker geojsonWorker = null;
 
             if (file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1) {
