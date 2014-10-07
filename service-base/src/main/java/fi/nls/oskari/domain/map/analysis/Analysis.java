@@ -1,14 +1,15 @@
 package fi.nls.oskari.domain.map.analysis;
 
 
+import fi.nls.oskari.domain.map.UserDataLayer;
+
 import java.lang.reflect.Method;
 import java.util.List;
 
 
-public class Analysis {
+public class Analysis extends UserDataLayer {
 
     private long id;
-    private String uuid;
     private String name;
     private long layer_id;
     private String analyse_json;
@@ -27,13 +28,6 @@ public class Analysis {
     private String override_sld;
     private long old_id;
 
-    public boolean isOwnedBy(final String uuid) {
-        if(uuid == null || getUuid() == null) {
-            return false;
-        }
-        return getUuid().equals(uuid);
-    }
-
     public long getId() {
         return id;
     }
@@ -48,14 +42,6 @@ public class Analysis {
 
     public void setOld_id(long old_id) {
         this.old_id = old_id;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getName() {
@@ -190,7 +176,7 @@ public class Analysis {
         String select = "Select ";
         for (int i = 0; i < fields.size(); i++) {
             String colmap = fields.get(i).replace("=", " As ");
-            select = select + " " + colmap;
+            select = select + " " + colmap + ",";
             switch (i) {
             case 0:
                 this.setCol1(fields.get(i));
@@ -226,6 +212,7 @@ public class Analysis {
             }
 
         }
+        if (select.length() > 1) select = select.substring(0,select.length()-1);  // last , off
         select = select + " from analysis_data where analysis_id = "
                 + Long.toString(this.getId());
         this.setSelect_to_data(select);
@@ -234,19 +221,13 @@ public class Analysis {
     public String getColx(int i) {
         try
         {
-        final Class c = this.getClass();
-        Class parameters[] = {};
-         Method m = c.getMethod("getCol"+String.valueOf(i),parameters);
-         String valu = (String) m.invoke(this);
-         return valu;
+            final Class c = this.getClass();
+            Class parameters[] = {};
+            Method m = c.getMethod("getCol"+String.valueOf(i),parameters);
+            String valu = (String) m.invoke(this);
+            return valu;
         }
-        catch (Exception e)
-        {
-        
-        }
-       
-
-       
+        catch (Exception e) { }
         return null;
 
     }

@@ -269,6 +269,9 @@ public class SaveLayerHandler extends ActionHandler {
             ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent));
         }
 
+        ml.setUsername(params.getHttpParam("username", ml.getUsername()));
+        ml.setPassword(params.getHttpParam("password", ml.getPassword()));
+
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
 

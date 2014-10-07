@@ -35,7 +35,7 @@ public abstract class OWSMapLayerJob extends Job {
 
     public static enum Type {
         NORMAL("normal"), HIGHLIGHT("highlight"), MAP_CLICK("mapClick"), GEOJSON(
-                "geoJSON");
+                "geoJSON"), PROPERTY_FILTER("property_filter");
 
         protected final String name;
 
@@ -245,16 +245,19 @@ public abstract class OWSMapLayerJob extends Job {
         String json = WFSLayerStore.getCache(layerId);
         boolean fromCache = (json != null);
         if(!fromCache) {
-            log.warn(getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId);
+            final String apiUrl = getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId;
+            log.debug("Fetching layer data from", apiUrl);
             String cookies = null;
             if(route != null && !route.equals("")) {
                 cookies = ROUTE_COOKIE_NAME + route;
             }
             // NOTE: result is not handled
-            String result = HttpHelper.getRequest(getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId, cookies);
+            String result = HttpHelper.getRequest(apiUrl, cookies);
             json = WFSLayerStore.getCache(layerId);
-            if(json == null)
+            if(json == null) {
+                log.error("Couldn't find JSON for WFSLayerStore with id:", layerId, " - API url:", apiUrl);
                 return null;
+            }
         }
         try {
             return WFSLayerStore.setJSON(json);

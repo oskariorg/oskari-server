@@ -1,18 +1,16 @@
 package fi.nls.oskari.domain.map;
 
-public class MyPlaceCategory {
+public class MyPlaceCategory extends UserDataLayer {
     
     private long id; 
     private String category_name;
     private long stroke_width;
     private String stroke_color;
     private String fill_color;
-    private String uuid;
     private String dot_color;
     private long dot_size;
     private long border_width;
     private String border_color;
-    private String publisher_name;
 
     public long getId() {
         return id;
@@ -48,12 +46,6 @@ public class MyPlaceCategory {
     public void setFill_color(String fill_color) {
         this.fill_color = fill_color;
     }
-    public String getUuid() {
-        return uuid;
-    }
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
     
     public String getDot_color() {
         return dot_color;
@@ -80,23 +72,4 @@ public class MyPlaceCategory {
     public void setBorder_color(String border_color) {
         this.border_color = border_color;
     }
-    
-    public String getPublisher_name() {
-        return publisher_name;
-    }
-    public void setPublisher_name(String publisher_name) {
-        this.publisher_name = publisher_name;
-    }
-
-    public boolean isPublished() {
-        return getPublisher_name() != null;
-    }
-
-    public boolean isOwnedBy(final String uuid) {
-        if(uuid == null || getUuid() == null) {
-            return false;
-        }
-        return getUuid().equals(uuid);
-    }
-    
 }

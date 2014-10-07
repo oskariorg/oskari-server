@@ -79,7 +79,7 @@ public abstract class UserService {
      * @return something
      * @throws ServiceException if anything goes wrong internally.
      */
-    public String insertRole(String roleId, String userID) throws ServiceException{
+    public Role insertRole(String roleId) throws ServiceException{
     	throw new ServiceException("Not Implemented Yet");
     }
     
@@ -90,7 +90,7 @@ public abstract class UserService {
      * @return something
      * @throws ServiceException if anything goes wrong internally.
      */
-    public String deleteRole(String roleId, String userID) throws ServiceException{
+    public String deleteRole(int roleId) throws ServiceException{
     	throw new ServiceException("Not Implemented Yet");
     }
     
@@ -140,6 +140,8 @@ public abstract class UserService {
     public Role[] getRoles() throws ServiceException {
         return getRoles(Collections.emptyMap());
     }
+    
+    
 
     /**
      * Return the user by username. This method should be overridden in concrete implementation. The
@@ -174,6 +176,16 @@ public abstract class UserService {
     }
 
     /**
+     * Return all users. This method should be overridden in concrete implementation. The
+     * default implementation always throws an exception.
+     * @return List<User> users
+     * @throws ServiceException
+     */
+    public List<User> getUsersWithRoles() throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+
+    /**
      * Create a new user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.
      * @param user User to be created
@@ -184,6 +196,11 @@ public abstract class UserService {
         throw new ServiceException("Not implemented");
     }
 
+    
+    public User createUser(User user, String[] roleIds) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+    
     /**
      * Modify a user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.
@@ -195,6 +212,10 @@ public abstract class UserService {
         throw new ServiceException("Not implemented");
     }
 
+    public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }      
+    
     /**
      * Delete a user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.

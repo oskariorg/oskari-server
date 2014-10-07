@@ -56,6 +56,32 @@
         )
     </statement>
 
+    <statement id="insert" parameterClass="fi.nls.oskari.domain.Role">
+        INSERT INTO oskari_roles (
+        name
+        )
+        VALUES (
+        #name#
+        )
+    </statement>
+    
+    <statement id="maxId" resultClass="int">
+        select
+            MAX(id)
+        from
+            oskari_roles
+    </statement>
+    
+    <statement id="delete" parameterClass="int">
+        DELETE FROM oskari_roles        
+        WHERE id = #id#
+    </statement>
+    
+    <statement id="deleteUsersRoles" parameterClass="long">
+        DELETE FROM oskari_role_oskari_user        
+        WHERE user_id = #id#
+    </statement>
+    
 
     <select id="findExternalRolesOfType" parameterClass="String" resultClass="java.util.HashMap">
         select r.id as id, r.name as name, m.name as ext

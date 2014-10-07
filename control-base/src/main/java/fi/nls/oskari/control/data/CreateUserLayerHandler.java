@@ -4,7 +4,9 @@ package fi.nls.oskari.control.data;
  *
  */
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -16,9 +18,12 @@ import fi.nls.oskari.log.Logger;
 
 
 import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +38,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.json.JSONObject;
 
 
 @OskariActionRoute("CreateUserLayer")
@@ -41,8 +47,10 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final Logger log = LogFactory
             .getLogger(CreateUserLayerHandler.class);
     private final UserLayerDataService userlayerService = new UserLayerDataService();
-    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML");
+    private static final List<String> ACCEPTED_FORMATS = Arrays.asList("SHP", "KML", "GPX", "MIF");
     private static final String IMPORT_SHP = ".SHP";
+    private static final String IMPORT_GPX = ".GPX";
+    private static final String IMPORT_MIF = ".MIF";
     private static final String IMPORT_KML = ".KML";
     private static final String PARAM_EPSG_KEY = "epsg";
 
@@ -57,6 +65,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
+        // stop here if user isn't logged in
+        params.requireLoggedInUser();
 
         final HttpServletResponse response = params.getResponse();
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
@@ -73,15 +83,17 @@ public class CreateUserLayerHandler extends ActionHandler {
             }
 
             User user = params.getUser();
-
             // import format
-
             GeoJsonWorker geojsonWorker = null;
 
             if (file.getName().toUpperCase().indexOf(IMPORT_SHP) > -1) {
                 geojsonWorker = new SHPGeoJsonCollection();
             } else if (file.getName().toUpperCase().indexOf(IMPORT_KML) > -1) {
                 geojsonWorker = new KMLGeoJsonCollection();
+            } else if (file.getName().toUpperCase().indexOf(IMPORT_GPX) > -1) {
+                geojsonWorker = new GPXGeoJsonCollection();
+            } else if (file.getName().toUpperCase().indexOf(IMPORT_MIF) > -1) {
+                geojsonWorker = new MIFGeoJsonCollection();
             }
             // Parse import data to geojson
             if (!geojsonWorker.parseGeoJSON(file, target_epsg)) {
@@ -97,7 +109,11 @@ public class CreateUserLayerHandler extends ActionHandler {
             //ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
             params.getResponse().setContentType("text/plain;charset=utf-8");
             params.getResponse().setCharacterEncoding("UTF-8");
-            params.getResponse().getWriter().print(userlayerService.parseUserLayer2JSON(ulayer));
+
+            JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
+            JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+            JSONHelper.putValue(userLayer, "permissions", permissions);
+            params.getResponse().getWriter().print(userLayer);
 
         } catch (Exception e) {
             throw new ActionException("Couldn't get the import file set",

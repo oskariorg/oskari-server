@@ -1,0 +1,15 @@
+<layer>
+  <name>vuser_layer_data</name>
+  <id>LayerInfoImpl--17b3d817:1486373e21c:-7ff5</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--17b3d817:1486373e21c:-7ff9</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--17b3d817:1486373e21c:-7ff6</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

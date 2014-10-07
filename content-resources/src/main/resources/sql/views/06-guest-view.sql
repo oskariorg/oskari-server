@@ -154,11 +154,17 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapstats" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "mapanalysis" : {
+                "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
             "oskariui" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
             "mapfull" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
+            },
+            "maparcgis" : {
+                "bundlePath" : "/Oskari/packages/arcgis/bundle/"
             },
             "ui-components": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -178,6 +184,7 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
     "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
     "imageLocation": "/Oskari/resources",
+    "mapOptions" : {"srsName":"EPSG:3067","maxExtent":{"bottom":6291456,"left":-548576,"right":1548576,"top":8388608},"resolutions":[2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25]},
     "plugins" : [
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
        { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
@@ -209,6 +216,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+       { "id" : "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
             "config" : {
@@ -1069,12 +1077,12 @@ UPDATE portti_view_bundle_seq set startup = '{
 UPDATE portti_view_bundle_seq set config = '{
         "__name": "Analyse",
         "title": {
-            "en": "Analyse",
-            "fi": "Analyysi",
-            "sv": "Analys"
+            "en": "Analyse <font color=red>(BETA)</font>",
+            "fi": "Analyysi <font color=red>(BETA)</font>",
+            "sv": "Analys <font color=red>(BETA)</font>"
         },
         "desc": {
-            "en": "You need to log in before using the embedding function.",
+            "en": "You need to log in before using the analysis function.",
             "fi": "Voit käyttää Analyysitoimintoa kirjauduttuasi palveluun.",
             "sv": "Logga in i tjänsten för att använda analys funktioner."
         },

@@ -10,8 +10,11 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
@@ -93,8 +96,26 @@ public class DatabaseUserService extends UserService {
     }
 
     @Override
+    public List<User> getUsersWithRoles() throws ServiceException {
+        log.info("getUsersWithRoles");
+        List<User> users = userService.findAll();
+        
+        List<User> newUserList = new ArrayList<User>();
+        
+        for(User user : users){
+        	log.debug("userid: " + user.getId());
+        	List<Role> roles = roleService.findByUserId(user.getId());
+        	Set<Role> hashsetRoles = new HashSet<Role>(roles);
+        	user.setRoles(hashsetRoles);
+        	newUserList.add(user);
+        }
+        
+        return newUserList;
+    }
+
+    @Override
     public User createUser(User user) throws ServiceException {
-        log.debug("createUser");
+        log.debug("createUser #######################");
         if(user.getUuid() == null || user.getUuid().isEmpty()) {
             user.setUuid(generateUuid());
         }
@@ -104,20 +125,66 @@ public class DatabaseUserService extends UserService {
         }
         return userService.find(id);
     }
+    
+    
+    @Override
+    public User createUser(User user, String[] roleIds) throws ServiceException {
+        log.debug("createUser #######################");
+        if(user.getUuid() == null || user.getUuid().isEmpty()) {
+            user.setUuid(generateUuid());
+        }
+        Long id = userService.addUser(user);
+//        for(Role r : user.getRoles()) {
+//            roleService.linkRoleToNewUser(r.getId(), id);
+//        }
+        
+        for(String roleId : roleIds){
+        	log.debug("roleId: " + roleId + " userId: " + id);
+            roleService.linkRoleToUser(Long.valueOf(roleId), id);
+        }    
+        
+        return userService.find(id);
+    }
+    
+    
 
     @Override
     public User modifyUser(User user) throws ServiceException {
         log.debug("modifyUser");
         userService.updateUser(user);
-        return userService.find(user.getId());
+        User retUser = userService.find(user.getId());
+        List<Role> roles = roleService.findByUserId(user.getId());
+        retUser.setRoles(new HashSet<Role>(roles));
+        return retUser;
     }
 
+    @Override
+    public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
+        log.debug("modifyUserWithRoles");
+        userService.updateUser(user);
+        
+        if(roleIds != null){
+        	log.debug("starting to delete roles from a user");
+            roleService.deleteUsersRoles(user.getId());
+            log.debug("users roles deleted");
+            for(String roleId : roleIds){
+            	log.debug("roleId: " + roleId + " userId: " + user.getId());
+                roleService.linkRoleToUser(Long.valueOf(roleId), user.getId());
+            }
+        }else{
+        	log.debug("roleIds == null");
+        }
+        
+        return userService.find(user.getId());
+    }    
+    
     @Override
     public void deleteUser(long id) throws ServiceException {
         log.debug("deleteUser");
         User user = userService.find(id);
         if (user != null) {
             userService.deletePassword(user.getScreenname());
+            roleService.deleteUsersRoles(id);
             userService.delete(id);
         }
     }
@@ -136,19 +203,27 @@ public class DatabaseUserService extends UserService {
 
     
     @Override
-    public String insertRole(String roleId, String userID) throws ServiceException {
-    	return null;
+    public Role insertRole(String roleName) throws ServiceException {
+    	log.debug("insertRole");
+    	Role role = new Role();
+    	role.setName(roleName);
+    	log.debug("rolename: " + role.getName());
+    	long id = roleService.insert(role);
+    	role.setId(id);
+    	return role;
     }
     
     
     @Override
-    public String deleteRole(String roleId, String userID) throws ServiceException {
+    public String deleteRole(int roleId) throws ServiceException {
+    	log.debug("deleteRole");
+    	roleService.delete(roleId);
     	return null;
     }
-
-    
+   
     @Override
     public String modifyRole(String roleId, String userID) throws ServiceException {
+    	log.debug("modifyRole");
     	return null;
     }
     

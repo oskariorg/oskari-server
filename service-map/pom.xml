@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.23</version>
+        <version>1.24</version>
 	</parent>
     
     <groupId>fi.nls.oskari.service</groupId>
@@ -77,6 +77,16 @@
             <artifactId>gt-xsd-kml</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-ogr-core</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-ogr-bridj</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
@@ -84,3 +94,4 @@
     </dependencies>
 
 </project>
+

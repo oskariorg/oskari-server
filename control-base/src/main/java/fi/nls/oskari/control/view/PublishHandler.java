@@ -6,6 +6,7 @@ import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -16,6 +17,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
@@ -585,6 +587,8 @@ public class PublishHandler extends ActionHandler {
         for (MyPlaceCategory place : myPlacesLayers) {
             if (place.isOwnedBy(userUuid)) {
                 myPlaceService.updatePublisherName(categoryId, userUuid, publisherName); // make it public
+                // IMPORTANT! delete layer data from redis so transport will get updated layer data
+                JedisManager.del(WFSLayerConfiguration.KEY + layerId);
                 return true;
             }
         }
@@ -614,6 +618,8 @@ public class PublishHandler extends ActionHandler {
         if (hasPermission) {
             // write publisher name for analysis
             analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());
+            // IMPORTANT! delete layer data from redis so transport will get updated layer data
+            JedisManager.del(WFSLayerConfiguration.KEY + layerId);
         }
         else {
             log.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
@@ -630,6 +636,8 @@ public class PublishHandler extends ActionHandler {
         final UserLayer userLayer = userLayerService.getUserLayerById(id);
         if (userLayer.isOwnedBy(user.getUuid())) {
             userLayerService.updatePublisherName(id, user.getUuid(), user.getScreenname());
+            // IMPORTANT! delete layer data from redis so transport will get updated layer data
+            JedisManager.del(WFSLayerConfiguration.KEY + layerId);
             return true;
         } else {
             return false;

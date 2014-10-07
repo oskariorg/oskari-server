@@ -147,6 +147,9 @@ UPDATE portti_view_bundle_seq set startup = '{
             "mapmyplaces" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
+            "maparcgis" : {
+                "bundlePath" : "/Oskari/packages/arcgis/bundle/"
+            },
             "oskariui" : {
                 "bundlePath" : "/Oskari/packages/framework/bundle/"
             },
@@ -157,9 +160,6 @@ UPDATE portti_view_bundle_seq set startup = '{
                 "bundlePath": "/Oskari/packages/framework/bundle/"
             },
             "mapuserlayers" : {
-              "bundlePath" : "/Oskari/packages/framework/bundle/"
-            },
-            "routesearch" : {
               "bundlePath" : "/Oskari/packages/framework/bundle/"
             }
         },
@@ -229,7 +229,8 @@ UPDATE portti_view_bundle_seq set config = '{
                 "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
             }
         } },
-        {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
+        {"id": "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" },
+       { "id" : "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin" }
       ],
       "layers": [
       ]

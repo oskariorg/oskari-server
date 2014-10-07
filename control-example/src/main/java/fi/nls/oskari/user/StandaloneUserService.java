@@ -182,24 +182,5 @@ public class StandaloneUserService extends UserService {
         return user;
     }
     
-
-//    
-//    @Override
-//    public String insertRole(String roleId, String userID) throws ServiceException {
-//    	return null;
-//    }
-//    
-//    
-//    @Override
-//    public String deleteRole(String roleId, String userID) throws ServiceException {
-//    	return null;
-//    }
-//
-//    
-//    @Override
-//    public String modifyRole(String roleId, String userID) throws ServiceException {
-//    	return null;
-//    }    
-//    
     
 }

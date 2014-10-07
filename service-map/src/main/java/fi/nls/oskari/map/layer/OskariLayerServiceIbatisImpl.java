@@ -146,6 +146,10 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         result.setRealtime((Boolean) data.get("realtime"));
         result.setRefreshRate((Integer) data.get("refresh_rate"));
 
+        // username and password
+        result.setUsername((String) data.get("username"));
+        result.setPassword((String) data.get("password"));
+
         result.setGeometry((String) data.get("geom"));
 
         result.setCreated((Date) data.get("created"));

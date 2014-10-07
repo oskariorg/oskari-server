@@ -1,19 +1,15 @@
 package fi.nls.oskari.domain.map.userlayer;
 
 
-import java.lang.reflect.Method;
-import java.util.List;
+import fi.nls.oskari.domain.map.UserDataLayer;
 
-
-public class UserLayer {
+public class UserLayer extends UserDataLayer {
     public static final String TYPE = "userlayer";
     private long id;
-    private String uuid;
     private String layer_name;
     private String layer_desc;
     private String layer_source;
     private String fields;
-    private String publisher_name;
     private long style_id;
 
     public long getId() {
@@ -22,14 +18,6 @@ public class UserLayer {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getLayer_name() {
@@ -64,14 +52,6 @@ public class UserLayer {
         this.fields = fields;
     }
 
-    public String getPublisher_name() {
-        return publisher_name;
-    }
-
-    public void setPublisher_name(String publisher_name) {
-        this.publisher_name = publisher_name;
-    }
-
     public long getStyle_id() {
         return style_id;
     }
@@ -79,16 +59,4 @@ public class UserLayer {
     public void setStyle_id(long style_id) {
         this.style_id = style_id;
     }
-
-    public boolean isPublished() {
-        return getPublisher_name() != null;
-    }
-
-    public boolean isOwnedBy(final String uuid) {
-        if(uuid == null || getUuid() == null) {
-            return false;
-        }
-        return getUuid().equals(uuid);
-    }
-
 }

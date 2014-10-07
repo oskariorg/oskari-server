@@ -86,6 +86,8 @@ CREATE TABLE oskari_maplayer
   refresh_rate integer DEFAULT 0,
   created timestamp with time zone,
   updated timestamp with time zone,
+  username character varying(256),
+  password character varying(256),
   CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
   CONSTRAINT oskari_maplayer_groupId_fkey FOREIGN KEY (groupId)
   REFERENCES oskari_layergroup (id) MATCH SIMPLE
@@ -188,7 +190,7 @@ CREATE TABLE portti_view_supplement (
 
 
 CREATE TABLE portti_view (
-   uuid             VARCHAR(128),
+   uuid             UUID,
    id               bigserial NOT NULL,
    name             VARCHAR(128)  NOT NULL,
    supplement_id    BIGINT        ,

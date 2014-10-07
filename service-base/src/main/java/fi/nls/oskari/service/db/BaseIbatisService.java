@@ -98,6 +98,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
             List<E> results = client.queryForList(sqlId);
             return results;
         } catch (Exception e) {
+        	System.out.println(e.getMessage());
             throw new RuntimeException("Failed to query", e);
         }
     }
@@ -365,6 +366,7 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      * Parameterized type for finding all Objects
      */
     public List<E> findAll() {
+    	System.out.println("IBATIS: " + getNameSpace() + ".findAll");
         return queryForList(getNameSpace() + ".findAll");
     }
     
@@ -401,6 +403,11 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      */
     public void delete(Map<String, String> parameterMap) {
         delete(getNameSpace() + ".delete", parameterMap);
+    }
+    
+    
+    public void deleteUsersRoles(long userId){
+    	delete(getNameSpace() + ".deleteUsersRoles", userId);
     }
 
 }

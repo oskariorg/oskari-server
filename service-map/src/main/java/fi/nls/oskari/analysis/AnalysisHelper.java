@@ -51,7 +51,7 @@ public class AnalysisHelper {
 
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional("analysis.rendering.url");
-    private static final String ANALYSIS_RENDERING_URL = getAnalysisTileUrl();
+    private static final String ANALYSIS_RENDERING_URL = getAnalysisRenderingUrl();
     private static final String ANALYSIS_RENDERING_ELEMENT = PropertyUtil.get("analysis.rendering.element");
 
     private static final Logger log = LogFactory.getLogger(AnalysisHelper.class);
@@ -217,11 +217,47 @@ public class AnalysisHelper {
         return fm;
     }
 
-    private static String getAnalysisTileUrl() {
+    public static String getAnalysisRenderingUrl() {
         if (PROPERTY_RENDERING_URL == null) {
             // action_route name points to fi.nls.oskari.control.layer.AnalysisTileHandler
             return PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=AnalysisTile&wpsLayerId=";
         }
         return PROPERTY_RENDERING_URL + "&wpsLayerId=";
+    }
+
+    /**
+     *  parse name mapped select items for analysis data select
+     *  sample Analysis.getSelect_to_data()
+     *  "Select  t1 As ika_0_14 t2 As kunta t3 As ika_15_64 t4 As ika_65_ t5 As miehet from analysis_data where analysis_id = 1324"
+     * @param al  Analysis metadata
+     * @return
+     */
+    public static String getAnalysisSelectItems(final Analysis al) {
+        if (al == null) return null;
+        if (al.getSelect_to_data() == null) return null;
+        if (al.getSelect_to_data().isEmpty()) return null;
+        String[] select_items = al.getSelect_to_data().split("from");
+        String columns = select_items[0].substring(8);
+        // Add column separators if not there
+        if (columns.indexOf(",") == -1) {
+            String[] parts = columns.split("[\\W]");
+            StringBuilder sbuilder = new StringBuilder();
+            // loop parts and add separator
+            int i3 = 0;
+            for (String s : parts) {
+                sbuilder.append(s);
+                i3++;
+                if (i3 == 3) {
+                    sbuilder.append(",");
+                    i3 = 0;
+                }
+                sbuilder.append(" ");
+
+            }
+            columns = sbuilder.toString().substring(0, sbuilder.toString().length() - 2);
+
+        }
+
+        return columns;
     }
 }
