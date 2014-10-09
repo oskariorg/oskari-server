@@ -37,7 +37,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         public void setResponse(BufferedReader response) {
             this.response = response;
         }
-        
+
         public void flush() throws IOException {
             if( response != null ) {
                 response.close();
@@ -49,10 +49,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
-	 * 
+	 *
 	 * Parameters define client's service (communication channel), session and layer's id.
 	 * Sends all resources that the layer configuration allows.
-	 * 
+	 *
 	 * @param service
 	 * @param store
 	 * @param layerId
@@ -60,13 +60,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId) {
 		this(service, type, store, layerId, true, true, true);
     }
-	
+
 	/**
 	 * Creates a new runnable job with own Jedis instance
-	 * 
+	 *
 	 * Parameters define client's service (communication channel), session and layer's id.
 	 * Also sets resources that will be sent if the layer configuration allows.
-	 * 
+	 *
 	 * @param service
 	 * @param store
 	 * @param layerId
@@ -77,17 +77,17 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId,
 			boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
 	    super(service,type,store,layerId,reqSendFeatures,reqSendImage,reqSendHighlight);
-		
+
     }
 
-  
 
-  
 
-  
+
+
+
     /**
      * Makes request
-     * 
+     *
      * @param type
      * @param layer
      * @param session
@@ -113,13 +113,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         WFSRequestResponse requestResponse = new WFSRequestResponse();
         requestResponse.setResponse(response);
-        
+
         return requestResponse;
     }
 
     /**
      * Parses response to features
-     * 
+     *
      * @param layer
      * @return features
      */
@@ -148,7 +148,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     }
 
     /**
-     * Unique key definition 
+     * Unique key definition
      */
 	@Override
 	public String getKey() {
@@ -157,7 +157,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
     /**
 	 * Process of the job
-	 * 
+	 *
 	 * Worker calls this when starts the job.
 	 *
 	 */
@@ -242,13 +242,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 }
 
 				if(!goNext()) return;
-				
+
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
 		   	 		}
-		   	 		
+
 					// get from cache
 				    BufferedImage bufferedImage = getImageCache(bbox);
 			    	boolean fromCache = (bufferedImage != null);
@@ -387,7 +387,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         // make a request
         Map<String, Object> output = new HashMap<String, Object>();
         RequestResponse response = request(type, layer, session, bounds, transformService);
-       
+
         try {
 
         // request failed
@@ -474,25 +474,41 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
 
         log.debug("properties handler");
-
-        List<String> selectedProperties = new ArrayList<String>();
-        List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-
-        // selected props
-        if(layerSelectedProperties != null && layerSelectedProperties.size() != 0) {
-            selectedProperties.addAll(this.layer.getSelectedFeatureParams(this.session.getLanguage()));
-        } else { // all properties
-            for(Property prop : this.features.features().next().getProperties()) {
-                String field = prop.getName().toString();
-                if(!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
-                    selectedProperties.add(field);
-                }
-            }
-        }
+        final List<String> selectedProperties = getPropertiesToInclude();
 
         this.sendWFSProperties(selectedProperties, this.layer.getFeatureParamsLocales(this.session.getLanguage()));
     }
 
+    /**
+     * Returns array of property names that will be sent in response
+     * @return
+     */
+    private List<String> getPropertiesToInclude() {
+
+        final List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
+        if(selectedProperties != null && selectedProperties.size() != 0) {
+            log.debug("Using selected properties:", selectedProperties);
+            return selectedProperties;
+        }
+
+        if(this.features.features().hasNext()) {
+            final List<String> propertyNames = new ArrayList<String>();
+            final Collection<Property> featureProperties = this.features.features().next().getProperties();
+            for (Property prop : featureProperties) {
+                final String field = prop.getName().toString();
+                // don't add geometry
+                if (!this.layer.getGMLGeometryProperty().equals(field)) {
+                    propertyNames.add(field);
+                }
+            }
+            log.debug("Using all non-geometry feature properties:", propertyNames);
+            return propertyNames;
+        }
+        else {
+            log.warn("Tried to determine properties by there's no features!");
+        }
+        return Collections.EMPTY_LIST;
+    }
     /**
      * Parses features values
      */
@@ -507,6 +523,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         this.featureValuesList = new ArrayList<List<Object>>();
         this.geomValuesList = new ArrayList<List<Object>>();
+
+        final List<String> selectedProperties = getPropertiesToInclude();
 
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
@@ -549,22 +567,8 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             }
             Point centerPoint = WFSParser.getGeometryCenter(geometry);
 
-            // selected values
-            List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-            if (selectedProperties != null && selectedProperties.size() != 0) {
-                log.debug("Using selected properties:", selectedProperties);
-                for (String attr : selectedProperties) {
-                    values.add(getFeaturePropertyValueForResponse(feature.getAttribute(attr)));
-                }
-            } else { // all values
-                Collection<Property> featureProperties = this.features.features().next().getProperties();
-                log.debug("Using all non-geometry feature properties:", featureProperties);
-                for (Property prop : featureProperties) {
-                    String field = prop.getName().toString();
-                    if (!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
-                        values.add(getFeaturePropertyValueForResponse(feature.getAttribute(field)));
-                    }
-                }
+            for (String attr : selectedProperties) {
+                values.add(getFeaturePropertyValueForResponse(feature.getAttribute(attr)));
             }
 
             // center position (must be in properties also)
@@ -576,9 +580,9 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 values.add(null);
             }
 
-            log.debug("Got properties:", values);
+            log.debug("Got property values:", values);
             WFSParser.parseValuesForJSON(values);
-            log.debug("Transformed properties:", values);
+            log.debug("Transformed property values:", values);
 
             if(this.type == Type.NORMAL) {
                 this.sendWFSFeature(values);
@@ -588,6 +592,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
 	}
 
+    /**
+     * Normalize value for response
+     * @param input
+     * @return
+     */
     private Object getFeaturePropertyValueForResponse(final Object input) {
         if(input == null) {
             return null;
