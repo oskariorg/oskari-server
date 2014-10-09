@@ -49,7 +49,11 @@ public class SchedulerService {
             final String cronLine = PropertyUtil.get(key + ".cronLine");
             final String className = PropertyUtil.get(key + ".className");
             final String methodName = PropertyUtil.get(key + ".methodName");
-            this.scheduleMethodCall(jobCode, cronLine, className, methodName);
+            if (null == cronLine || null == className || null == methodName) {
+                log.error("the job", jobCode, "needs the cronLine, className and methodName configuration parameters");
+            } else {
+                this.scheduleMethodCall(jobCode, cronLine, className, methodName);
+            }
         }
         return this;
     }
