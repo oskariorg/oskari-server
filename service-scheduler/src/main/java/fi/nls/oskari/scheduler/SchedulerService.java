@@ -29,20 +29,21 @@ public class SchedulerService {
 
     private Scheduler scheduler;
 
-    public void initializeScheduler() throws SchedulerException {
+    public SchedulerService initializeScheduler() throws SchedulerException {
         final Properties schedulerProperties = PropertyUtil.getProperties();
         final StdSchedulerFactory sf = new StdSchedulerFactory();
         sf.initialize(schedulerProperties);
         scheduler = sf.getScheduler();
         scheduler.start();
         this.setupJobs();
+        return this;
     }
 
     public void shutdownScheduler() throws SchedulerException {
         scheduler.shutdown(false);
     }
 
-    public void setupJobs() {
+    public SchedulerService setupJobs() {
         for (final String jobCode : PropertyUtil.getCommaSeparatedList(JOBS_KEY)) {
             final String key = String.format("oskari.scheduler.job.%s", jobCode);
             final String cronLine = PropertyUtil.get(key + ".cronLine");
@@ -50,12 +51,14 @@ public class SchedulerService {
             final String methodName = PropertyUtil.get(key + ".methodName");
             this.scheduleMethodCall(jobCode, cronLine, className, methodName);
         }
+        return this;
     }
 
-    public void scheduleMethodCall(final String jobCode, final String cronLine,
+    public SchedulerService scheduleMethodCall(final String jobCode, final String cronLine,
                                    final String className, final String methodName)
     {
         final JobDetail job = newJob()
+                .withIdentity(jobCode)
                 .ofType(ArbitraryStaticMethodCallJob.class)
                 .build();
         final Trigger trigger = newTrigger()
@@ -69,6 +72,7 @@ public class SchedulerService {
         } catch (final SchedulerException e) {
             log.error(e, "failed to schedule job", jobCode);
         }
+        return this;
     }
 
 }
