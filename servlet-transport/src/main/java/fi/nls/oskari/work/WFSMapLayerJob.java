@@ -1,6 +1,7 @@
 package fi.nls.oskari.work;
 
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.*;
 
@@ -20,6 +21,7 @@ import org.opengis.referencing.operation.MathTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 /**
  * Job for WFS Map Layer
@@ -35,7 +37,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         public void setResponse(BufferedReader response) {
             this.response = response;
         }
-        
+
         public void flush() throws IOException {
             if( response != null ) {
                 response.close();
@@ -47,10 +49,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
-	 * 
+	 *
 	 * Parameters define client's service (communication channel), session and layer's id.
 	 * Sends all resources that the layer configuration allows.
-	 * 
+	 *
 	 * @param service
 	 * @param store
 	 * @param layerId
@@ -58,13 +60,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId) {
 		this(service, type, store, layerId, true, true, true);
     }
-	
+
 	/**
 	 * Creates a new runnable job with own Jedis instance
-	 * 
+	 *
 	 * Parameters define client's service (communication channel), session and layer's id.
 	 * Also sets resources that will be sent if the layer configuration allows.
-	 * 
+	 *
 	 * @param service
 	 * @param store
 	 * @param layerId
@@ -75,17 +77,17 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId,
 			boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
 	    super(service,type,store,layerId,reqSendFeatures,reqSendImage,reqSendHighlight);
-		
+
     }
 
-  
 
-  
 
-  
+
+
+
     /**
      * Makes request
-     * 
+     *
      * @param type
      * @param layer
      * @param session
@@ -111,13 +113,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         WFSRequestResponse requestResponse = new WFSRequestResponse();
         requestResponse.setResponse(response);
-        
+
         return requestResponse;
     }
 
     /**
      * Parses response to features
-     * 
+     *
      * @param layer
      * @return features
      */
@@ -146,7 +148,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
     }
 
     /**
-     * Unique key definition 
+     * Unique key definition
      */
 	@Override
 	public String getKey() {
@@ -155,7 +157,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
     /**
 	 * Process of the job
-	 * 
+	 *
 	 * Worker calls this when starts the job.
 	 *
 	 */
@@ -240,13 +242,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 }
 
 				if(!goNext()) return;
-				
+
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
 		   	 		Double[] bbox = new Double[4];
 		   	 		for (int i = 0; i < bbox.length; i++) {
 			   	 		bbox[i] = bounds.get(i);
 		   	 		}
-		   	 		
+
 					// get from cache
 				    BufferedImage bufferedImage = getImageCache(bbox);
 			    	boolean fromCache = (bufferedImage != null);
@@ -385,7 +387,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         // make a request
         Map<String, Object> output = new HashMap<String, Object>();
         RequestResponse response = request(type, layer, session, bounds, transformService);
-       
+
         try {
 
         // request failed
@@ -472,30 +474,46 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
 
         log.debug("properties handler");
-
-        List<String> selectedProperties = new ArrayList<String>();
-        List<String> layerSelectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-
-        // selected props
-        if(layerSelectedProperties != null && layerSelectedProperties.size() != 0) {
-            selectedProperties.addAll(this.layer.getSelectedFeatureParams(this.session.getLanguage()));
-        } else { // all properties
-            for(Property prop : this.features.features().next().getProperties()) {
-                String field = prop.getName().toString();
-                if(!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
-                    selectedProperties.add(field);
-                }
-            }
-        }
+        final List<String> selectedProperties = getPropertiesToInclude();
 
         this.sendWFSProperties(selectedProperties, this.layer.getFeatureParamsLocales(this.session.getLanguage()));
     }
 
     /**
+     * Returns array of property names that will be sent in response
+     * @return
+     */
+    private List<String> getPropertiesToInclude() {
+
+        final List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
+        if(selectedProperties != null && selectedProperties.size() != 0) {
+            log.debug("Using selected properties:", selectedProperties);
+            return selectedProperties;
+        }
+
+        if(this.features.features().hasNext()) {
+            final List<String> propertyNames = new ArrayList<String>();
+            final Collection<Property> featureProperties = this.features.features().next().getProperties();
+            for (Property prop : featureProperties) {
+                final String field = prop.getName().toString();
+                // don't add geometry
+                if (!this.layer.getGMLGeometryProperty().equals(field)) {
+                    propertyNames.add(field);
+                }
+            }
+            log.debug("Using all non-geometry feature properties:", propertyNames);
+            return propertyNames;
+        }
+        else {
+            log.warn("Tried to determine properties by there's no features!");
+        }
+        return Collections.EMPTY_LIST;
+    }
+    /**
      * Parses features values
      */
     protected void featuresHandler() {
-        log.debug("features handler");
+        log.debug("features handler - layer:", this.layer.getLayerId());
 
         // create filter of screen area
         Filter screenBBOXFilter = WFSFilter.initBBOXFilter(this.session.getLocation(), this.layer);
@@ -506,90 +524,98 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         this.featureValuesList = new ArrayList<List<Object>>();
         this.geomValuesList = new ArrayList<List<Object>>();
 
+        final List<String> selectedProperties = getPropertiesToInclude();
+
         while(goNext(featuresIter.hasNext())) {
             SimpleFeature feature = featuresIter.next();
+            String fid = feature.getIdentifier().getID();
+            log.debug("Processing properties of feature:", fid);
 
             // if is not in shown area -> skip
             if(!screenBBOXFilter.evaluate(feature)) {
-                //log.debug("Not selected");
+                log.debug("Feature not on screen, skipping", fid);
                 continue;
             }
 
             List<Object> values = new ArrayList<Object>();
 
-            String fid = feature.getIdentifier().getID();
-            if (!this.processedFIDs.contains(fid)) {
-                // __fid value
-                values.add(fid);
-                this.processedFIDs.add(fid);
-
-                // get feature geometry (transform if needed) and get geometry center
-                Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
-
-                // Add geometry property, if requested  in hili
-                if (this.session.isGeomRequest())
-                {
-                    List<Object> gvalues = new ArrayList<Object>();
-                    gvalues.add(fid);
-                    gvalues.add(geometry); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
-                    this.geomValuesList.add(gvalues);
-                }
-
-                // send values
-                if(this.sendFeatures) {
-                    Point centerPoint = WFSParser.getGeometryCenter(geometry);
-
-                    // selected values
-                    List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
-                    if (selectedProperties != null && selectedProperties.size() != 0) {
-                        for (String attr : selectedProperties) {
-                            // Serve always object, if object
-                            Object prop = feature.getAttribute(attr);
-                            try {
-                                HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
-                                values.add(propMap);
-                            } catch (Exception e) {
-                                values.add(prop);
-                            }
-                        }
-                    } else { // all values
-                        for (Property prop : this.features.features().next().getProperties()) {
-                            String field = prop.getName().toString();
-                            if (!this.layer.getGMLGeometryProperty().equals(field)) { // don't add geometry
-                                // Serve always object, if object
-                                Object attr = feature.getAttribute(field);
-                                try {
-                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(attr.toString(), HashMap.class);
-                                    values.add(propMap);
-                                } catch (Exception e) {
-                                    values.add(attr);
-                                }
-                            }
-                        }
-                    }
-
-                    // center position (must be in properties also)
-                    if(centerPoint != null) {
-                        values.add(centerPoint.getX());
-                        values.add(centerPoint.getY());
-                    } else {
-                        values.add(null);
-                        values.add(null);
-                    }
-
-                    WFSParser.parseValuesForJSON(values);
-
-                    if(this.type == Type.NORMAL) {
-                        this.sendWFSFeature(values);
-                    } else {
-                        this.featureValuesList.add(values);
-                    }
-                }
-            } else {
+            if (this.processedFIDs.contains(fid)) {
                 log.warn("Found duplicate feature ID", fid);
+                continue;
+            }
+            // __fid value
+            values.add(fid);
+            this.processedFIDs.add(fid);
+
+            // get feature geometry (transform if needed) and get geometry center
+            Geometry geometry = WFSParser.getFeatureGeometry(feature, this.layer.getGMLGeometryProperty(), this.transformClient);
+
+            // Add geometry property, if requested  in hili
+            if (this.session.isGeomRequest())
+            {
+                log.debug("Requested geometry", fid);
+                List<Object> gvalues = new ArrayList<Object>();
+                gvalues.add(fid);
+                gvalues.add(geometry); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+                this.geomValuesList.add(gvalues);
+            }
+
+            // send values
+            if(!this.sendFeatures) {
+                log.warn("Didn't request properties - skipping", fid);
+                continue;
+            }
+            Point centerPoint = WFSParser.getGeometryCenter(geometry);
+
+            for (String attr : selectedProperties) {
+                values.add(getFeaturePropertyValueForResponse(feature.getAttribute(attr)));
+            }
+
+            // center position (must be in properties also)
+            if(centerPoint != null) {
+                values.add(centerPoint.getX());
+                values.add(centerPoint.getY());
+            } else {
+                values.add(null);
+                values.add(null);
+            }
+
+            log.debug("Got property values:", values);
+            WFSParser.parseValuesForJSON(values);
+            log.debug("Transformed property values:", values);
+
+            if(this.type == Type.NORMAL) {
+                this.sendWFSFeature(values);
+            } else {
+                this.featureValuesList.add(values);
             }
         }
 	}
+
+    /**
+     * Normalize value for response
+     * @param input
+     * @return
+     */
+    private Object getFeaturePropertyValueForResponse(final Object input) {
+        if(input == null) {
+            return null;
+        }
+        final String value = input.toString();
+        if(value == null) {
+            return null;
+        }
+        if(value.isEmpty()) {
+            return "";
+        }
+        try {
+            HashMap<String, Object> propMap = new ObjectMapper().readValue(value, HashMap.class);
+            return propMap;
+        } catch (Exception e) {
+            return value;
+        }
+
+    }
 
     /**
      * Gets image from cache
