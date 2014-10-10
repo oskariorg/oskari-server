@@ -612,7 +612,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         try {
             HashMap<String, Object> propMap = new ObjectMapper().readValue(value, HashMap.class);
             if(propMap.isEmpty()) {
-                log.warn("Got empty map from value: '" + value + "' - Returning null");
+                log.debug("Got empty map from value: '" + value + "' - Returning null. Input was", input.getClass().getName());
                 return null;
             }
             return propMap;
