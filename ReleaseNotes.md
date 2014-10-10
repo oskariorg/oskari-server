@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.24.2
+
+### servlet-transport
+
+Changed feature property values handling so empty value maps are treated as <null> and not as empty JSON object.
+
 ## 1.24.1
 
 ### servlet-transport
