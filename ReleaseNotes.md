@@ -4,13 +4,13 @@
 
 ### servlet-transport
 
-Changed feature property values handling so empty value maps are treated as <null> and not as empty JSON object.
+Changed feature property values handling so empty value maps are treated as [null] and not as empty JSON object.
 
 ## 1.24.1
 
 ### servlet-transport
 
-Changed feature property values handling so empty values are treated as <null> and not as empty JSON object. Also added some debug logging for property handling.
+Changed feature property values handling so empty values are treated as [null] and not as empty JSON object. Also added some debug logging for property handling.
 
 ## 1.24
 
