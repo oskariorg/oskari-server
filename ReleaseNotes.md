@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.25
+
+### control-base
+
+Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
+
 ## 1.24.2
 
 ### servlet-transport
