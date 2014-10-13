@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.nls.paikkatietoikkuna</groupId>
   <artifactId>transport</artifactId>
-  <version>1.22-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
 
   <name>Oskari Transport service aggregator</name>

@@ -29,6 +29,7 @@ Test properties can be modified in /oskari-server/service-wfs/src/main/resources
     * oskari.layer.group Layer group name e.g. Tilastokeskus  (only used, when wfs.sql.insert.layer.template is defined)
     * oskari.inspire.theme  Inspire theme  e.g. Tilastoyksiköt (only used, when wfs.sql.insert.layer.template is defined)
     * oskari.wps_params    e.g. {"no_data":-1} (only used, when wfs.sql.insert.layer.template is defined)
+    * oskari.layer.opacity    e.g. 30 (only used, when wfs.sql.insert.layer.template is defined)
 
 ## Run
 

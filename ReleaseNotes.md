@@ -1,5 +1,58 @@
 # Release Notes
 
+## 1.24.2
+
+### servlet-transport
+
+Changed feature property values handling so empty value maps are treated as <null> and not as empty JSON object.
+
+## 1.24.1
+
+### servlet-transport
+
+Changed feature property values handling so empty values are treated as <null> and not as empty JSON object. Also added some debug logging for property handling.
+
+## 1.24
+
+## lib and db changes
+
+Geotools have been updated to version 11.2.
+
+The UUID column in PORTTI_VIEW changes its type to UUID instead of varchar. It's still blank by default, but a view can be referenced by uuid in addition to id.
+The upgrade SQL has a commented section to autogenerate UUID values.
+
+Username/password fields have been added for OSKARI_MAPLAYER. If used the maptile requests are proxied through oskari-server to the actual service.
+
+### geoserver-ext
+
+Extensions for Geoserver have been updated to compile for Geoserver 2.5.2 and matching Geotools 11.2.
+No code changes was required so extensions are still usable with Geoserver 2.4.2/Geotools 10.2 (by reverting pom.xmls to previous versions).
+
+### control-base
+
+GetWFSLayerConfiguration now does additional handling for layers created by users. As result those layers should now get feature data in published maps.
+
+PublishHandler will now delete layer data from Redis for layers created by users when such layer is published.
+This will result in transport getting the updated data about layer being published and ultimately end up serving feature data in published maps.
+
+CreateUserLayer now prevents Guest-users to import data.
+
+### service-control
+
+Added convenience method to ActionParameters: requireLoggedInUser() and requireAdminUser() which will throw ActionDeniedException if user is guest/not an admin.
+
+### service-base
+
+Added new base-class for layers created by users: fi.nls.oskari.domain.map.UserDataLayer. Analysis, UserLayer and MyPlaceCategory extend this.
+
+### service-map
+
+Implemented GPX and MIF/MID dataset import with GeoTools OGR plugin. To be able to use it, the GDAL library file needs to be included in the environment variable PATH (Windows) or LD_LIBRARY_PATH (Linux).
+
+The Windows .dll file and dependencies can be downloaded e.g. at http://www.gisinternals.com/sdk/. Actual .dll file needs to be renamed as gdal.dll or referenced in the environment variable GDAL_LIBRARY_NAME. The Linux version of GDAL including the needed .so file is probably available in the package repository of your distribution. It can also be compiled from the source code, see http://trac.osgeo.org/gdal/wiki/DownloadSource. The import functionality was tested with GDAL 1.11.0.
+
+For further reference, see the OGR GeoTools plugin instructions at http://docs.geotools.org/stable/userguide/library/data/ogr.html.
+
 ## 1.23
 
 ### New admin bundles

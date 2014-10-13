@@ -8,6 +8,7 @@ import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSFilter;
+import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -81,6 +82,21 @@ public class AdditionalIdFilter extends WFSFilter {
 
         } else if(type == WFSMapLayerJob.Type.NORMAL) {
             log.debug("Filter: normal");
+            Location location;
+            if(bounds != null) {
+                location = new Location(session.getLocation().getSrs());
+                location.setBbox(bounds);
+            } else {
+                location = session.getLocation();
+            }
+            filter = super.initEnlargedBBOXFilter(location, layer);
+
+            // Analysis id
+            Filter idFilter = initIdFilter(layer, session);
+            filter = ff.and(filter, idFilter);
+
+        }else if(type == WFSMapLayerJob.Type.PROPERTY_FILTER) {
+            log.debug("Filter: property filter");
             Location location;
             if(bounds != null) {
                 location = new Location(session.getLocation().getSrs());

@@ -190,7 +190,7 @@ CREATE TABLE portti_view_supplement (
 
 
 CREATE TABLE portti_view (
-   uuid             VARCHAR(128),
+   uuid             UUID,
    id               bigserial NOT NULL,
    name             VARCHAR(128)  NOT NULL,
    supplement_id    BIGINT        ,

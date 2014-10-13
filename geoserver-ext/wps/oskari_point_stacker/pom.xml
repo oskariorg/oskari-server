@@ -6,14 +6,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <geotools.version>10.2</geotools.version>
-    <geoserver.version>2.4.2</geoserver.version>
+    <geotools.version>11.2</geotools.version>
+    <geoserver.version>2.5.2</geoserver.version>
   </properties>
 
    <groupId>org.geoserver</groupId>
    <artifactId>oskari_point_stacker</artifactId>
    <packaging>jar</packaging>
-   <version>2.4.2</version>
+   <version>2.5.2</version>
    <name>oskari_point_stacker</name>
    <dependencies>
     <dependency>
@@ -24,7 +24,7 @@
     <dependency>
        <groupId>org.geoserver</groupId>
        <artifactId>main</artifactId>
-       <version>2.4.2</version>
+       <version>2.5.2</version>
        <classifier>tests</classifier>
        <scope>test</scope>
      </dependency>
@@ -59,7 +59,7 @@
      <repository>
        <id>opengeo</id>
        <name>opengeo</name>
-       <url>http://repo.opengeo.org</url>
+       <url>http://download.osgeo.org/webdav/geotools/</url>
      </repository>
    </repositories>
 

@@ -48,8 +48,6 @@ public class PropertyUtil {
         return getDefaultLocale().split("_")[0];
     }
 
-
-
     /**
      * PropertyUtil defaults to NullLogger. Set a different logger with this method if needed.
      * @param logger
@@ -57,7 +55,6 @@ public class PropertyUtil {
     public static void setLogger(Logger logger) {
         log = logger;
     }
-    
     
     static Set<String> propertiesFiles = new HashSet<String>();
 
@@ -76,8 +73,7 @@ public class PropertyUtil {
      * @param overwrite true to overwrite existing properties
      */
     public static void loadProperties(final String propertiesFile, final boolean overwrite) {
-        
-        if( propertiesFiles.contains(propertiesFile)) {
+        if (propertiesFiles.contains(propertiesFile)) {
             return;
         }
         InputStream in = null;
@@ -112,7 +108,6 @@ public class PropertyUtil {
     }
 
     public static String[] getCommaSeparatedList(final String propertyName) {
-
         final String propertiesList = get(new Locale(getDefaultLanguage()), propertyName, null);
         if (propertiesList == null || propertiesList.isEmpty()) {
             return new String[0];
@@ -174,7 +169,7 @@ public class PropertyUtil {
     }
 
     public static String get(final Locale locale, final String propertyName, final String defaultValue) {
-        if(localization.containsKey(locale)) {
+        if (localization.containsKey(locale)) {
             final String val = localization.get(locale).getProperty(propertyName);
             if(val != null) {
                 return val;
@@ -201,7 +196,7 @@ public class PropertyUtil {
      */
     public static List<String> getPropertyNamesStartingWith(final String prefix) {
         final List<String> props = new ArrayList<String>();
-        for(Object o : properties.keySet()) {
+        for (Object o : properties.keySet()) {
             final String key = ((String)o);
             if(key.startsWith(prefix)) {
                 props.add(key);
@@ -210,6 +205,7 @@ public class PropertyUtil {
         log.debug("Tried to find properties starting with'", prefix, "' - found ", props);
         return props;
     }
+
     /**
      * Returns property names that match the given regular expression
      * @param regex Regular expression
@@ -220,7 +216,7 @@ public class PropertyUtil {
         final Enumeration e = properties.propertyNames();
         final Pattern p = Pattern.compile(regex);
 
-        while( e.hasMoreElements() ) {
+        while (e.hasMoreElements()) {
             final String key = (String) e.nextElement();
             final Matcher m = p.matcher(key);
             if (m.matches()) {
@@ -232,7 +228,7 @@ public class PropertyUtil {
     }
 
     public static void addProperties(final Properties props, final boolean overwrite) throws DuplicateException {
-        for(Object key : props.keySet()) {
+        for (final Object key : props.keySet()) {
             addProperty((String)key, props.getProperty((String)key), overwrite);
         }
     }
@@ -270,12 +266,20 @@ public class PropertyUtil {
         }
         props.put(key, value);
     }
-    public static void addProperty(final String key, final String value, final Locale locale) throws DuplicateException {
 
+    public static void addProperty(final String key, final String value, final Locale locale) throws DuplicateException {
         if(!localization.containsKey(locale)) {
             localization.put(locale, new Properties());
         }
         final Properties locProps = localization.get(locale);
         addProperty(locProps, key, value, false);
     }
+
+    /**
+     * @return a immutable copy of currently loaded properties, changes to this object won't be reflected back to global properties
+     */
+    public static Properties getProperties() {
+        return new Properties(properties);
+    }
+
 }

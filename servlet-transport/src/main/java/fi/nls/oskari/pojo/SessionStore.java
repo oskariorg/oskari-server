@@ -43,6 +43,7 @@ public class SessionStore {
 	private Map<String, Layer> layers;
 	private Coordinate mapClick; // passed parameter - not saved
 	private GeoJSONFilter filter; // passed parameter - not saved
+    private PropertyFilter propertyFilter; // passed parameter - not saved
 	private boolean keepPrevious = false; // passed parameter - not saved
     private boolean geomRequest = false; // passed parameter - geom property returned or not - not saved
 
@@ -358,14 +359,32 @@ public class SessionStore {
 		return filter;
 	}
 
+    /**
+     * Sets filter
+     *
+     * @param filter
+     */
+    public void setFilter(GeoJSONFilter filter) {
+        this.filter = filter;
+    }
+
 	/**
 	 * Sets filter
 	 * 
 	 * @param filter
 	 */
-	public void setFilter(GeoJSONFilter filter) {
-		this.filter = filter;
+	public void setPropertyFilter(PropertyFilter filter) {
+		this.propertyFilter = filter;
 	}
+    /**
+     * Gets property filter
+     *
+     * @return filter
+     */
+    @JsonIgnore
+    public PropertyFilter getPropertyFilter() {
+        return propertyFilter;
+    }
 
 	/**
 	 * Checks if keeping previous in front

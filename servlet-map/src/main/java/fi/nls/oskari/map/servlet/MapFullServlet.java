@@ -81,7 +81,8 @@ public class MapFullServlet extends HttpServlet {
         log.debug("Checking for params", paramHandlers);
 
         // check if we have development flag -> serve non-minified js
-        isDevelopmentMode = "true".equals(PropertyUtil.get(PROPERTY_DEVELOPMENT));
+
+        isDevelopmentMode = ConversionHelper.getBoolean(PropertyUtil.get(PROPERTY_DEVELOPMENT), false);
         // Get version from init params or properties, prefer version from properties and default to init param
         version = PropertyUtil.get(PROPERTY_VERSION, getServletConfig().getInitParameter(KEY_VERSION));
     }
@@ -157,15 +158,23 @@ public class MapFullServlet extends HttpServlet {
     private String setupRenderParameters(final ActionParameters params) throws ServletException {
 
         try {
+        	log.debug("getting a view and setting Render parameters");
             HttpServletRequest request = params.getRequest();
+            
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
-
-            final View view = viewService.getViewWithConf(viewId);
+            
+            log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
+            
+            final String uuId = params.getHttpParam("uuId");
+            
+            final View view = getView(uuId, viewId);
             if (view == null) {
+            	log.debug("no such view");
                 ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
                 return null;
             }
+            
             log.debug("Serving view with id:", view.getId());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             request.setAttribute("viewId", view.getId());
@@ -176,7 +185,14 @@ public class MapFullServlet extends HttpServlet {
 
             // construct control params
             final JSONObject controlParams = getControlParams(params);
-            JSONHelper.putValue(controlParams, "viewId", view.getId());
+            
+            if(uuId != null){
+                JSONHelper.putValue(controlParams, "uuId", view.getUuid());
+            }else{
+                JSONHelper.putValue(controlParams, "viewId", view.getId());
+            }
+            
+            
             JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
             request.setAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
@@ -212,6 +228,17 @@ public class MapFullServlet extends HttpServlet {
         } catch (Exception ex) {
             throw new ServletException(ex);
         }
+    }
+    
+    
+    private View getView(String uuId, long viewId){
+    	if(uuId != null){
+    		log.debug("Using Uuid to fetch a view");
+    		return viewService.getViewWithConfByUuId(uuId);
+    	}else{
+    		log.debug("Using id to fetch a view");
+    		return viewService.getViewWithConf(viewId);
+    	}
     }
 
     /**
