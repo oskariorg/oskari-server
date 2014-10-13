@@ -18,10 +18,13 @@ public class GetCSWDataHandler extends ActionHandler {
     private static final String LANG_PARAM = "lang";
     private static final String UUID_PARAM = "uuid";
     // TODO get baseUrl from properties
-    private String baseUrl = PropertyUtil.getNecessary("service.metadata.url");
+    private String baseUrl = PropertyUtil.getOptional("service.metadata.url");
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
+        if (baseUrl == null) {
+            throw new ActionException("Service not configured.");
+        }
         final String uuid = params.getRequiredParam(UUID_PARAM);
         // TODO use default lang if not found?
         final String lang = params.getRequiredParam(LANG_PARAM);

@@ -110,7 +110,6 @@ public class CSWISORecordParser {
         XPATH_DISTRIBUTION_INFO = xpath.compile(
                 "./gmd:distributionInfo/gmd:MD_Distribution");
 
-        // FIXME we need the format as well, not just the version
         //(0..*)
         XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMATS = xpath.compile(
                 "./gmd:distributionFormat/gmd:MD_Format");
@@ -178,13 +177,13 @@ public class CSWISORecordParser {
                 "./gmd:graphicOverview/gmd:MD_BrowseGraphic");
         //(1..1)
         XPATH_DI_SI_BROWSE_GRAPHICS_FILE_NAME = xpath.compile(
-                "./gmd:fileName");
+                "./gmd:fileName/gco:CharacterString");
         //(0..1)
         XPATH_DI_SI_BROWSE_GRAPHICS_FILE_DESCRIPTION = xpath.compile(
-                "./gmd:fileDescription");
+                "./gmd:fileDescription/gco:CharacterString");
         //(0..1)
         XPATH_DI_SI_BROWSE_GRAPHICS_FILE_TYPE = xpath.compile(
-                "./gmd:fileType");
+                "./gmd:fileType/gco:CharacterString");
 
         XPATH_DI_SI_RESPONSIBLE_PARTIES = xpath.compile(
                 "./gmd:pointOfContact/gmd:CI_ResponsibleParty");
@@ -269,17 +268,18 @@ public class CSWISORecordParser {
             final String[] languages = Locale.getISOLanguages();
             for (String language : languages) {
                 Locale locale = new Locale(language);
-                log.debug("Adding mapping:", locale.getISO3Language(), " -> ", locale.getLanguage());
                 ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
             }
         }
     }
 
     public CSWIsoRecord parse(final Node elem, final Locale locale, MathTransform transform) throws XPathExpressionException, ParseException, TransformException {
+        int i;
         Node node;
         NodeList nodeList;
         CSWIsoRecord record = new CSWIsoRecord();
         final Map<String, String> locales = getLocaleMap(elem);
+        String value;
         XPathExpression pathToLocalizedValue = null;
         if (locales != null && locales.containsKey(locale.getISO3Language())) {
             pathToLocalizedValue = xpath.compile(
@@ -295,6 +295,7 @@ public class CSWISORecordParser {
         if (nodeList.getLength() > 0) {
             parseDataQualities(nodeList, record.getDataQualities(), pathToLocalizedValue);
         }
+
         node = (Node) XPATH_DISTRIBUTION_INFO.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             parseDistributionInfo(node, record, pathToLocalizedValue);
@@ -304,33 +305,43 @@ public class CSWISORecordParser {
         if (node != null) {
             record.setFileIdentifier(getLocalizedContent(node, pathToLocalizedValue));
         }
+
         nodeList = (NodeList) XPATH_SCOPE_CODES.evaluate(elem, XPathConstants.NODESET);
         List<String> list = record.getScopeCodes();
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
+        for (i = 0; i < nodeList.getLength(); i++) {
+            list.add(getText(nodeList.item(i)));
+        }
+
         node = (Node) XPATH_METADATA_STANDARD_NAME.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             record.setMetadataStandardName(getLocalizedContent(node, pathToLocalizedValue));
         }
+
         node = (Node) XPATH_METADATA_STANDARD_VERSION.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             record.setMetadataStandardVersion(getLocalizedContent(node, pathToLocalizedValue));
         }
+
         node = (Node) XPATH_LANGUAGE.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             record.setMetadataLanguage(getLanguageIfAvailable(getLocalizedContent(node, pathToLocalizedValue)));
         }
+
         node = (Node) XPATH_METADATA_CHARSET.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             record.setMetadataCharacterSet(getLocalizedContent(node, pathToLocalizedValue));
         }
+
         nodeList = (NodeList) XPATH_METADATA_RESPONSIBLE_PARTIES.evaluate(elem, XPathConstants.NODESET);
         List<CSWIsoRecord.ResponsibleParty> rpList = record.getMetadataResponsibleParties();
         parseResponsibleParties(nodeList, rpList, pathToLocalizedValue);
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
+
         node = (Node) XPATH_METADATA_DATE.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
-            record.setMetadataDateStamp(df.parse(getLocalizedContent(node, pathToLocalizedValue)));
+            value = getLocalizedContent(node, pathToLocalizedValue);
+            record.setMetadataDateStamp(df.parse(value));
         }
+
         return record;
     }
 
@@ -758,12 +769,10 @@ public class CSWISORecordParser {
                         if ("LanguageCode".equals(locChildren.item(j).getLocalName())) {
                             theLangCode = locChildren.item(j);
                             final String lang3letter = theLangCode.getAttributes().getNamedItem("codeListValue").getTextContent();
-                            // value is 3-letter code -> transform to 2-letter code since oskari lang is the 2-letter code
-                            final String lang = ISO3letterOskariLangMapping.get(lang3letter);
-                            if (lang != null) {
-                                locales.put(lang, localeKey);
+                            if (lang3letter != null) {
+                                locales.put(lang3letter, localeKey);
                             } else {
-                                log.warn("Failed to find locale mapping for:", lang3letter);
+                                log.warn("Failed to find locale mapping");
                             }
                             break;
                         }
@@ -792,10 +801,14 @@ public class CSWISORecordParser {
 
     private String getLocalizedContent(final Node elem, final XPathExpression pathToLocaledValue) {
         String ret = getText(elem);
+        String localized;
         if (elem != null && pathToLocaledValue != null) {
             try {
                 final Node localeNode = (Node) pathToLocaledValue.evaluate(elem, XPathConstants.NODE);
-                ret  = getText(localeNode);
+                localized  = getText(localeNode);
+                if (localized != null && !localized.isEmpty()) {
+                    ret = localized;
+                }
             } catch (Exception e) {
                 log.warn("Error parsing localized value for:", elem.getLocalName(), ". Message:", e.getMessage());
             }
