@@ -5,6 +5,7 @@
 ### service-control
 
 ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
+The same errorhandling was added for ViewModifierManager.
 
 ### control-base
 
