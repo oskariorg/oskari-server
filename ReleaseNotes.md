@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### service-control
+
+ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
+
 ### control-base
 
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.

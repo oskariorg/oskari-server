@@ -39,9 +39,14 @@ public class ActionControl {
      * @param handler handler for the route
      */
     public static void addAction(final String action, final ActionHandler handler) {
-        actions.put(action, handler);
-        handler.init();
-        log.debug("Action added", action,"=", handler.getClass().getCanonicalName());
+        try {
+            handler.init();
+            actions.put(action, handler);
+            log.debug("Action added", action,"=", handler.getClass().getCanonicalName());
+        }
+        catch (Exception ex) {
+            log.error(ex, "Action init failed! Skipping", action,"=", handler.getClass().getCanonicalName());
+        }
     }
 
     /**
@@ -117,7 +122,12 @@ public class ActionControl {
      */
     public static void teardown() {
         for( ActionHandler h : actions.values()) {
-            h.teardown();
+            try {
+                h.teardown();
+            }
+            catch (Exception ex) {
+                log.error(ex, "Action teardown failed! Skipping", h.getName(),"=", h.getClass().getCanonicalName());
+            }
         }
     }
 }
