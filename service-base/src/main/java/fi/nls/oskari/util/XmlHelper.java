@@ -4,15 +4,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
-import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.jaxen.SimpleNamespaceContext;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.jaxen.NamespaceContext;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,7 +130,7 @@ public class XmlHelper {
         return getAttributesAsMap(elem).get(attrLocalName);
     }
 
-    public static AXIOMXPath buildXPath(final String str, final SimpleNamespaceContext ctx) {
+    public static AXIOMXPath buildXPath(final String str, final NamespaceContext ctx) {
         try {
             AXIOMXPath xpath = new AXIOMXPath(str);
             xpath.setNamespaceContext(ctx);

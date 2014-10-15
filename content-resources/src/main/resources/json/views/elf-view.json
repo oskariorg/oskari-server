@@ -212,9 +212,9 @@
             "id": "publisher",
             "config": {
             	"publishedMapUrl": {
-            		"en" : "?lang=en&viewId=",
-            		"sv" : "?lang=sv&viewId=",
-            		"fi" : "?lang=fi&viewId="
+            		"en" : "http://54.216.109.137/?lang=en&viewId=",
+            		"sv" : "http://54.216.109.137/?lang=sv&viewId=",
+            		"fi" : "http://54.216.109.137/?lang=fi&viewId="
             	}
             }
         }, {

@@ -155,7 +155,6 @@ public class JSONHelper {
         return false;
     }
     
-    
     public static final boolean put(final JSONObject json, final String key, final JSONArray value){
         try {
             json.put(key, value);
@@ -187,7 +186,7 @@ public class JSONHelper {
     }
     public static final boolean putValue(final JSONObject json, final String key, final Date value) {
         try {
-            json.put(key, value);
+            json.put(key, String.format("%tFT%<tRZ", value));
             return true;
         } catch (Exception ignore) {
             log.warn("Can't put", key, "value", value, "to json");

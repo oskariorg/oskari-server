@@ -8,7 +8,7 @@ import fi.nls.oskari.util.XmlHelper;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.axiom.om.OMAttribute; 
+import org.apache.axiom.om.OMAttribute;
 import org.jaxen.SimpleNamespaceContext;
 
 import javax.xml.namespace.QName;
