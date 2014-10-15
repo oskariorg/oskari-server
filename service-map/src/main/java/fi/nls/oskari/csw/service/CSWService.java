@@ -123,8 +123,9 @@ public class CSWService {
         final String service = "CSW";
         final String version = "2.0.2";
 
+        // Using metadatacsw url as it has absolute image URLs
         final URL url = new URL(
-                baseURL + "/srv/" + lang + "/csw" +
+                baseURL + "/srv/" + lang + "/metadatacsw" +
                         "?elementSetName=" + elementSetName +
                         "&id=" + id +
                         "&outputSchema=" + outputSchema +
@@ -132,6 +133,7 @@ public class CSWService {
                         "&service=" + service +
                         "&version=" + version
         );
+        log.debug("GetRecordById URL: " + url.toString());
         return url;
     }
 
