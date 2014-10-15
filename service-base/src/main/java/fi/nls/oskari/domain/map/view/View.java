@@ -150,10 +150,14 @@ public class View implements Serializable {
     }
 
     public void removeBundle(final String bundleName) {
-        this.bundles.remove(getBundleByName(bundleName));
+        final Bundle bundle = getBundleByName(bundleName);
+        if(bundle == null) {
+            return;
+        }
+        this.bundles.remove(bundle);
         int seqNo = 0;
-        for (Bundle bundle : this.bundles) {
-            bundle.setSeqNo(seqNo);
+        for (Bundle b : this.bundles) {
+            b.setSeqNo(seqNo);
             seqNo++;
         }
     }

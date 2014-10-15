@@ -250,6 +250,9 @@ public class PublishHandler extends ActionHandler {
         if(user.hasAnyRoleIn(drawToolsEnabledRoles)) {
             final Bundle myplaces = setupBundle(currentView, publisherData, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
             handleMyplacesDrawLayer(myplaces, user);
+        } else {
+            // check that template doesn't have it either, remove if found
+            currentView.removeBundle(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
         }
 
         // Setup toolbar bundle if user has configured it

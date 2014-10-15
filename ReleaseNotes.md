@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.24.3
+
+### control-base/PublishHandler
+
+Now checks if publish template view has 'publishedmyplaces2' included and removes it from the view if user isn't allowed to add draw tools for map.
+
 ## 1.24.2
 
 ### servlet-transport
