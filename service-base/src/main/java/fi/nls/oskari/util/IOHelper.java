@@ -346,7 +346,12 @@ public class IOHelper {
      * @throws IOException
      */
     public static String getURL(final String pUrl, final String userName, final String password ) throws IOException {
-        return getURL(pUrl, userName, password, Collections.EMPTY_MAP);
+        if (userName != null && userName.length() > 0 && password != null && password.length() > 0) {
+            return getURL(pUrl, userName, password, Collections.EMPTY_MAP);
+        }
+        else {
+            return getURL(pUrl, Collections.EMPTY_MAP);
+        }
     }
     /**
      * Calls given URL with given http headers and returns the response as String.
