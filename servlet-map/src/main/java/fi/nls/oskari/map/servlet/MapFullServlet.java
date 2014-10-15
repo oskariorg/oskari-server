@@ -216,7 +216,7 @@ public class MapFullServlet extends HttpServlet {
                 final String app = params.getHttpParam("app");
                 final String page = params.getHttpParam("page");
                 if (page != null && app != null) {
-                    log.debug("Using dev-override!!! \nUsing JSP:", page, "with application:", app);
+                    log.warn("Using dev-override!!! \nUsing JSP:", page, "with application:", app);
                     request.setAttribute(KEY_PATH, app);
                     request.setAttribute("application", app);
                     viewJSP = page;

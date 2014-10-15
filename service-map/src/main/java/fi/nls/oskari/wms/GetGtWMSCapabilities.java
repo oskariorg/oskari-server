@@ -15,6 +15,12 @@ import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.ows.StyleImpl;
 import org.geotools.data.ows.Service;
 import org.geotools.data.wms.xml.MetadataURL;
+
+import org.geotools.data.ows.HTTPClient;
+import org.geotools.data.ows.SimpleHttpClient;
+
+import org.geotools.data.wms.WebMapServer;
+import org.geotools.data.wms.xml.MetadataURL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.URL;
@@ -40,11 +46,18 @@ public class GetGtWMSCapabilities {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWMSCapabilities(final String rurl) throws ServiceException {
+    public static JSONObject getWMSCapabilities(final String rurl, final String user, final String pwd) throws ServiceException {
         try {
 
             URL url = new URL(getUrl(rurl));
-            WebMapServer wms = new WebMapServer(url, IOHelper.getReadTimeoutMs());
+            HTTPClient client=new SimpleHttpClient();
+            if (user != null && user.length() > 0 && pwd != null && pwd.length() > 0) {
+                client.setUser(user);
+                client.setPassword(pwd);
+            }
+            client.setConnectTimeout(IOHelper.getReadTimeoutMs());
+            client.setTryGzip(false);
+            WebMapServer wms = new WebMapServer(url, client);
             WMSCapabilities caps = wms.getCapabilities();
             // caps to json
             return parseLayer(caps.getLayer(), rurl, caps);
@@ -224,7 +237,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
      * @return
      */
     static private String getMetaDataUrl(Service service) {
-       if ( service.getOnlineResource() != null) return service.getOnlineResource().toString();
-       return null;
+        if ( service.getOnlineResource() != null) return service.getOnlineResource().toString();
+        return null;
     }
 }

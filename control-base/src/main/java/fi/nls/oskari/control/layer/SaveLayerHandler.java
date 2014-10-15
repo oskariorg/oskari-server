@@ -176,12 +176,12 @@ public class SaveLayerHandler extends ActionHandler {
             }
             cc.setVersion(version);
             if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
-                final String capabilitiesXML = GetWMSCapabilities.getResponse(url);
+                final String capabilitiesXML = GetWMSCapabilities.getResponse(url, ml.getUsername(), ml.getPassword());
                 cc.setData(capabilitiesXML);
             }
             else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
                 // TODO: maybe it a bit more elegant solution
-                final String capabilitiesXML = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities");
+                final String capabilitiesXML = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities", ml.getUsername(), ml.getPassword());
                 cc.setData(capabilitiesXML);
             }
 
