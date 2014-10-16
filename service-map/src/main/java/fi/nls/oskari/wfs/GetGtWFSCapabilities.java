@@ -39,7 +39,7 @@ public class GetGtWFSCapabilities {
     private static final Logger log = LogFactory.getLogger(GetGtWFSCapabilities.class);
 
     private final static String KEY_LAYERS = "layers";
-
+    private final static String DEFAULT_VERSION = "1.1.0";
     private final static LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
 
     /**
@@ -50,20 +50,21 @@ public class GetGtWFSCapabilities {
      * @throws fi.nls.oskari.service.ServiceException
      *
      */
-    public static JSONObject getWFSCapabilities(final String rurl, final String version) throws ServiceException {
+    public static JSONObject getWFSCapabilities(final String rurl, final String version, final String user, final String pw) throws ServiceException {
         try {
+            String wfs_version = version;
+            if(version.isEmpty()) wfs_version = DEFAULT_VERSION;
+            Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(rurl, wfs_version, user, pw);
+            if (capa == null || !capa.containsKey("WFSDataStore"))  throw new ServiceException("Couldn't read/get wfs capabilities response from url." );
+            try {
 
-            Map connectionParameters = new HashMap();
-            connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL" , getUrl(rurl, version));
-            connectionParameters.put("WFSDataStoreFactory:TIMEOUT" , 30000);
+                WFSDataStore wfsds = (WFSDataStore) capa.get("WFSDataStore");
+                return parseLayer(wfsds, rurl, user, pw);
 
-            //  connection
-            DataStore data = DataStoreFinder.getDataStore(connectionParameters);
+            } catch (Exception ex) {
+                throw new ServiceException("Couldn't read/get wfs capabilities response from url." , ex);
+            }
 
-            WFSDataStore wfsds = null;
-            if (data instanceof WFSDataStore) wfsds = (WFSDataStore) data;
-
-            return parseLayer(wfsds, rurl);
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wfs capabilities response from url." , ex);
         }
@@ -118,7 +119,7 @@ public class GetGtWFSCapabilities {
      * @throws fi.nls.oskari.service.ServiceException
      *
      */
-    public static JSONObject parseLayer(WFSDataStore data, String rurl) throws ServiceException {
+    public static JSONObject parseLayer(WFSDataStore data, String rurl, String user, String pw) throws ServiceException {
         if (data == null) {
             return null;
         }
@@ -137,7 +138,7 @@ public class GetGtWFSCapabilities {
 
                 // Loop feature types
                 for (String typeName : typeNames) {
-                    layers.put(layerToOskariLayerJson(data, typeName, rurl));
+                    layers.put(layerToOskariLayerJson(data, typeName, rurl, user, pw));
                 }
             }
 
@@ -157,7 +158,7 @@ public class GetGtWFSCapabilities {
      * @throws fi.nls.oskari.service.ServiceException
      *
      */
-    public static JSONObject layerToOskariLayerJson(WFSDataStore data, String typeName, String rurl) throws ServiceException {
+    public static JSONObject layerToOskariLayerJson(WFSDataStore data, String typeName, String rurl, String user, String pw) throws ServiceException {
 
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WFS);
@@ -207,6 +208,9 @@ public class GetGtWFSCapabilities {
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
             JSONHelper.putValue(json, "title" , title);
+            //FIXME  merge oskarilayer and wfsLayer
+            WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(data, typeName, rurl, user, pw);
+            JSONHelper.putValue(json, "wfslayer" , lc.getAsJSON());
 
             // NOTE! Important to remove id since this is at template
             json.remove("id");

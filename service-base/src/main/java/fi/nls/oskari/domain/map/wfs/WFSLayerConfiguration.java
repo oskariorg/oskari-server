@@ -651,6 +651,7 @@ public class WFSLayerConfiguration {
 	}
 
     private String getLayerFriendlyName() {
+        if(this.getNameLocales() == null) return "";
         final JSONObject loc = JSONHelper.createJSONObject(this.getNameLocales());
         final JSONObject langName = JSONHelper.getJSONObject(loc, PropertyUtil.getDefaultLanguage());
         return JSONHelper.getStringFromJSON(langName, "name", "");

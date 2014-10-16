@@ -72,7 +72,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                 }
                 else if(OskariLayer.TYPE_WFS.equals(layerType)) {
                     // New method for parsing WFSCetGapabilites to Oskari layers structure
-                    final JSONObject capabilities = GetGtWFSCapabilities.getWFSCapabilities(url, version);
+                    final JSONObject capabilities = GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw);
                     ResponseHelper.writeResponse(params, capabilities);
                 }
                 else {
