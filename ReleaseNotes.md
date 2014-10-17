@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.24.4
+
+### content-resources/publish template
+
+The 'publishedstatehandler' bundle was missing from publish template. As a result any published maps with history-tools
+are broken. Updated publish template is provided in content-resources/src/main/resources/json/views/publisher-template-view.json
+and an SQL to fix existing template is in content-resources/src/main/resources/sql/upgrade/1.24.4/add_publishedstatehandler_to_published_maps.sql.
+
+Notice that these won't fix previously published maps with history-tools. To fix them you need to add 'publishedstatehandler' bundle to views of type 'PUBLISHED'. Also
+make sure you have the 'publishedstatehandler' bundle included in minified JS.
+
 ## 1.24.3
 
 ### control-base/PublishHandler
