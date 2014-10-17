@@ -57,6 +57,7 @@
             }
         },
         { "id" : "infobox" },
-        { "id" : "toolbar" }
+        { "id" : "toolbar" },
+        { "id" : "publishedstatehandler" }
     ]
 }
