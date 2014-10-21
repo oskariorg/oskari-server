@@ -217,7 +217,7 @@ public class PublishHandler extends ActionHandler {
 
         // setup basic info about view
         final String domain = JSONHelper.getStringFromJSON(publisherData, KEY_DOMAIN, null);
-        if(domain == null) {
+        if(domain == null || domain.trim().isEmpty()) {
             throw new ActionParamsException("Domain missing");
         }
         final String name = JSONHelper.getStringFromJSON(publisherData, KEY_NAME, "Published map " + System.currentTimeMillis());
