@@ -210,7 +210,8 @@ public class GetGtWFSCapabilities {
             JSONHelper.putValue(json, "title" , title);
             //FIXME  merge oskarilayer and wfsLayer
             WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(data, typeName, rurl, user, pw);
-            JSONHelper.putValue(json, "wfslayer" , lc.getAsJSON());
+
+            JSONHelper.putValue(json.getJSONObject("admin"), "passthrough" , JSONHelper.createJSONObject(lc.getAsJSON()));
 
             // NOTE! Important to remove id since this is at template
             json.remove("id");
