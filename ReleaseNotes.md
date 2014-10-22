@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### service-base
+
+Role now has a static method to determine default role for logged in user as well as admin role.
+
 ### content-resources
 
 New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
