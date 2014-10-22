@@ -1,12 +1,12 @@
 package fi.nls.oskari.view.modifier;
 
-import java.util.Locale;
-
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fi.nls.oskari.domain.User;
+import java.util.Locale;
 
 /**
  * A wrapper class for the request information needed by ViewModifiers.
@@ -22,8 +22,7 @@ public class ModifierParams {
     private String paramValue;
     private JSONObject config;
     private JSONArray startupSequence;
-    private String viewType;
-    private long viewId;
+    private View view;
     private boolean locationModified = false;
     private boolean oldPublishedMap = false;
     private boolean modifyURLs = false;
@@ -102,10 +101,7 @@ public class ModifierParams {
      * @see fi.nls.oskari.domain.map.view.ViewTypes
      */
     public String getViewType() {
-        return viewType;
-    }
-    public void setViewType(String viewType) {
-        this.viewType = viewType;
+        return view.getType();
     }
 
     /**
@@ -122,11 +118,17 @@ public class ModifierParams {
      * @return
      */
     public long getViewId() {
-        return viewId;
+        return view.getId();
     }
-    public void setViewId(long viewId) {
-        this.viewId = viewId;
+
+    public View getView() {
+        return view;
     }
+
+    public void setView(View view) {
+        this.view = view;
+    }
+
     /**
      * StartupSequence (bundle load order) as a JSONArray for the view to be modified
      * @return

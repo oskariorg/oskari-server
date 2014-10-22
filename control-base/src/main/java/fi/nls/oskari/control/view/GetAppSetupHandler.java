@@ -233,8 +233,7 @@ public class GetAppSetupHandler extends ActionHandler {
         modifierParams.setActionParams(params);
 
         modifierParams.setReferer(referer);
-        modifierParams.setViewType(view.getType());
-        modifierParams.setViewId(view.getId());
+        modifierParams.setView(view);
         modifierParams.setStartupSequence(startupSequence);
         modifierParams.setOldPublishedMap(oldId != -1);
         modifierParams.setModifyURLs(isSecure(params));
