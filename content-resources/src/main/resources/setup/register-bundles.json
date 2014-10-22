@@ -30,7 +30,9 @@
             "028-featuredata2.sql",
             "029-admin-layerrights.sql",
             "030-publishedstatehandler.sql",
-            "033-admin-users.sql"
+            "033-admin-users.sql",
+            "034-routesearch.sql",
+            "035-rpc.sql"
         ],
         "integration" : [
             "001-admin-layerselector.sql"

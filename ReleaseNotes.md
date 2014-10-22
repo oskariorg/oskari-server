@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### content-resources
+
+New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
+
 ### service-control
 
 ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
