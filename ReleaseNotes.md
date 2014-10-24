@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### service-map
+
+GetGeoPointDataService now uses credentials for layer when making a GetFeatureInfo request to a WMS service.
+
 ### service-base
 
 Role now has a static method to determine default role for logged in user as well as admin role.
