@@ -58,6 +58,7 @@
         },
         { "id" : "infobox" },
         { "id" : "toolbar" },
-        { "id" : "publishedstatehandler" }
+        { "id" : "publishedstatehandler" },
+        { "id" : "rpc" }
     ]
 }
