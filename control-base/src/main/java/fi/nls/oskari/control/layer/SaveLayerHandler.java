@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Admin insert/update of WMS map layer
@@ -265,8 +267,24 @@ public class SaveLayerHandler extends ActionHandler {
 
         final String gfiContent = request.getParameter("gfiContent");
         if (gfiContent != null) {
-            // TODO: some sanitation of content data
-            ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent));
+            // Clean GFI content
+            final String[] tags = PropertyUtil.getCommaSeparatedList("gficontent.whitelist");
+            HashMap<String,String[]> attributes = new HashMap<String, String[]>();
+            HashMap<String[],String[]> protocols = new HashMap<String[], String[]>();
+            String[] allAttributes = PropertyUtil.getCommaSeparatedList("gficontent.whitelist.attr");
+            if (allAttributes.length > 0) {
+                attributes.put(":all",allAttributes);
+            }
+            List<String> attrProps = PropertyUtil.getPropertyNamesStartingWith("gficontent.whitelist.attr.");
+            for (String attrProp : attrProps) {
+                String[] parts = attrProp.split("\\.");
+                if (parts[parts.length-2].equals("protocol")) {
+                    protocols.put(new String[]{parts[parts.length-3],parts[parts.length-1]},PropertyUtil.getCommaSeparatedList(attrProp));
+                } else {
+                    attributes.put(parts[parts.length-1],PropertyUtil.getCommaSeparatedList(attrProp));
+                }
+            }
+            ml.setGfiContent(RequestHelper.cleanHTMLString(gfiContent, tags, attributes, protocols));
         }
 
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));

@@ -7,9 +7,13 @@
 ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
 The same errorhandling was added for ViewModifierManager.
 
+Enabled customized HTML string cleaning.
+
 ### control-base
 
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
+
+Enabled customized HTML tags for GFI content.
 
 ## 1.24.4
 

@@ -32,6 +32,34 @@ public class RequestHelper {
         return str;
     }
 
+    public static final String cleanHTMLString(final String str, final String[] tags,
+            HashMap<String, String[]> attributes, HashMap<String[],String[]> protocols) {
+
+        if (str != null) {
+            Whitelist whitelist = Whitelist.relaxed();
+
+            // Tags
+            whitelist.addTags(tags);
+
+            // Attributes
+            for (Map.Entry<String, String[]> attribute : attributes.entrySet()) {
+                whitelist.addAttributes(attribute.getKey(),attribute.getValue());
+            }
+
+            // Protocols
+            for (Map.Entry<String[], String[]> protocol : protocols.entrySet()) {
+                String[] key = protocol.getKey();
+                if ((key == null)||(key.length < 2)) {
+                    continue;
+                }
+                whitelist.addProtocols(key[0],key[1],protocol.getValue());
+            }
+            String s = Jsoup.clean(str, whitelist);
+            return StringEscapeUtils.unescapeHtml(s);
+        }
+        return str;
+    }
+
     public static final String cleanHTMLString(final String str) {
         if (str != null) {
             Whitelist whitelist = Whitelist.relaxed();
