@@ -11,24 +11,27 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
+import net.opengis.wfs.WfsFactory;
 import org.geotools.data.DataStore;
+import org.geotools.data.ResourceInfo;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.wfs.WFSServiceInfo;
+import org.geotools.data.wfs.protocol.wfs.WFSProtocol;
 import org.geotools.referencing.CRS;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Methods for parsing WFS capabilities data
@@ -184,6 +187,10 @@ public class GetGtWFSCapabilities {
             for (String lang : languages) {
                 oskariLayer.setName(lang, title);
             }
+
+            // ResourceInfo info = source.getInfo();
+            // Set<String> keywords = info.getKeywords();
+
 
              // JSON formatter will parse uuid from url
             // Metadataurl is in featureType, but no method to get it

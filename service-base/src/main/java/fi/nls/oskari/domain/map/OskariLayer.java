@@ -60,6 +60,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private String username;
     private String password;
 
+    private String version;
+    private String srs_name;
+
     private Date created = null;
     private Date updated = null;
 
@@ -389,4 +392,19 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.password = password;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getSrs_name() {
+        return srs_name;
+    }
+
+    public void setSrs_name(String srs_name) {
+        this.srs_name = srs_name;
+    }
 }

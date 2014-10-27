@@ -81,7 +81,7 @@ public class WFSLayerConfiguration {
     protected final static String NAME = "name";
     protected final static String SLD_STYLE = "SLDStyle";
 
-
+    private int id = -1;
 	private String layerId;
 	private String nameLocales;
 	private String URL;
@@ -147,6 +147,14 @@ public class WFSLayerConfiguration {
         name prefix         | feature_namespace
         */
         return new QName(getFeatureNamespaceURI(), getFeatureElement(), getFeatureNamespace());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getLayerId() {
@@ -733,7 +741,7 @@ public class WFSLayerConfiguration {
         this.setWFSVersion("1.1.0");
         this.setMaxFeatures(2000);
         this.setGeometryNamespaceURI("");
-        this.setOutputFormat("");
+        //this.setOutputFormat("");
         this.setFeatureType("{}");
         this.setSelectedFeatureParams("{}");
         this.setFeatureParamsLocales("{}");
@@ -743,6 +751,7 @@ public class WFSLayerConfiguration {
         this.setGetFeatureInfo(true);
         this.setTileRequest(false);
         this.setTileBuffer("{}");
+        this.setWps_params("{}");
         this.setMinScale(15000000d);
         this.setMaxScale(1d);
         this.setPublished(false);

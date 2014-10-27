@@ -13,11 +13,13 @@ import fi.nls.oskari.domain.map.CapabilitiesCache;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.util.*;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ import java.util.Enumeration;
 public class SaveLayerHandler extends ActionHandler {
 
     private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
+    private WFSLayerConfigurationService wfsLayerService = ServiceFactory.getWfsLayerService();
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
     private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
@@ -65,7 +68,8 @@ public class SaveLayerHandler extends ActionHandler {
         // update cache - do this before creating json!
         boolean cacheUpdated = ml.isCollection();
         // skip cache update for collections since they don't have the info
-        if(!ml.isCollection()) {
+        // Skip WFS
+        if(!ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
         }
 
@@ -129,6 +133,16 @@ public class SaveLayerHandler extends ActionHandler {
                     // update the name with the id for permission mapping
                     ml.setName(ml.getId() + "_group");
                     mapLayerService.update(ml);
+                }
+                // Wfs
+                if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
+                    final WFSLayerConfiguration wfsl = new WFSLayerConfiguration();
+                    wfsl.setDefaults();
+                    wfsl.setLayerId(Integer.toString(id));
+                    handleRequestToWfsLayer(params, wfsl);
+                    int idwfsl = wfsLayerService.insert(wfsl);
+                    wfsl.setId(idwfsl);
+
                 }
 
                 final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
@@ -278,11 +292,39 @@ public class SaveLayerHandler extends ActionHandler {
         if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
             handleWMSSpecific(params, ml);
         }
+        else if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
+            handleWFSSpecific(params, ml);
+        }
         else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
             handleWMTSSpecific(params, ml);
         }
     }
+    private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
 
+        wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam("GML2Separator"),wfsl.isGML2Separator()));
+        wfsl.setGMLGeometryProperty(params.getHttpParam("GMLGeometryProperty"));
+        wfsl.setGMLVersion(params.getHttpParam("GMLVersion"));
+        wfsl.setSRSName(params.getHttpParam("SRSName"));
+        wfsl.setWFSVersion(params.getHttpParam("WFSVersion"));
+        wfsl.setFeatureElement(params.getHttpParam("featureElement"));
+        wfsl.setFeatureNamespace(params.getHttpParam("featureNamespace"));
+        wfsl.setFeatureNamespaceURI(params.getHttpParam("featureNamespaceURI"));
+        wfsl.setFeatureParamsLocales(params.getHttpParam("featureParamsLocales"));
+        wfsl.setFeatureType(params.getHttpParam("featureType"));
+        wfsl.setGeometryNamespaceURI(params.getHttpParam("geometryNamespaceURI"));
+        wfsl.setGeometryType(params.getHttpParam("geometryType"));
+        wfsl.setGetFeatureInfo(ConversionHelper.getBoolean(params.getHttpParam("getFeatureInfo"), wfsl.isGetFeatureInfo()));
+        wfsl.setGetHighlightImage(ConversionHelper.getBoolean(params.getHttpParam("getHighlightImage"), wfsl.isGetHighlightImage()));
+        wfsl.setGetMapTiles(ConversionHelper.getBoolean(params.getHttpParam("getMapTiles"), wfsl.isGetMapTiles()));
+
+        wfsl.setLayerName(params.getHttpParam("layerName"));
+        wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam("maxFeatures"),wfsl.getMaxFeatures()));
+        wfsl.setOutputFormat(params.getHttpParam("outputFormat"));
+        wfsl.setSelectedFeatureParams(params.getHttpParam("selectedFeatureParams"));
+        wfsl.setTileBuffer(params.getHttpParam("tileBuffer"));
+        wfsl.setTileRequest(ConversionHelper.getBoolean(params.getHttpParam("tileRequest"), wfsl.isTileRequest()));
+
+    }
     private void handleWMSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
 
         HttpServletRequest request = params.getRequest();
@@ -299,6 +341,10 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setTileMatrixSetData(params.getHttpParam("matrixSet", ml.getTileMatrixSetData()));
     }
 
+    private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+        ml.setSrs_name(params.getHttpParam("SRSName",ml.getSrs_name()));
+        ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
+    }
     private String validateUrl(final String url) throws ActionParamsException {
         try {
             // check that it's a valid url by creating an URL object...

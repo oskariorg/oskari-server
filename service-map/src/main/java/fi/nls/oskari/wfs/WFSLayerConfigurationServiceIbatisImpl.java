@@ -1,7 +1,9 @@
 package fi.nls.oskari.wfs;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -30,5 +32,33 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
     public List<WFSSLDStyle> findWFSLayerStyles(final int layerId) {
         List<WFSSLDStyle> styles = queryForList(getNameSpace() + ".findStylesForLayer", layerId);
         return styles;
+    }
+    public void update(final WFSLayerConfiguration layer) {
+        try {
+            getSqlMapClient().update(getNameSpace() + ".update", layer);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update", e);
+        }
+    }
+
+    public synchronized int insert(final WFSLayerConfiguration layer) {
+        SqlMapClient client = null;
+        try {
+            client = getSqlMapClient();
+            client.startTransaction();
+            client.insert(getNameSpace() + ".insert", layer);
+            Integer id = (Integer) client.queryForObject(getNameSpace()
+                    + ".maxId");
+            client.commitTransaction();
+            return id;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to insert", e);
+        } finally {
+            if (client != null) {
+                try {
+                    client.endTransaction();
+                } catch (SQLException ignored) { }
+            }
+        }
     }
 }

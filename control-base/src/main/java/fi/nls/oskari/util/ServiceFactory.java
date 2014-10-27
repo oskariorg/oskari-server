@@ -13,6 +13,8 @@ import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 public class ServiceFactory {
 	
@@ -22,6 +24,7 @@ public class ServiceFactory {
     private static PermissionsService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
+    private static WFSLayerConfigurationService wfsLayerService;
  
 	public static LayerGroupService getLayerGroupService() {
 		if (layerGroupService == null) {
@@ -62,5 +65,12 @@ public class ServiceFactory {
             capabilitiesCacheService = new CapabilitiesCacheServiceIbatisImpl();
         }
         return capabilitiesCacheService;
+    }
+
+    public static WFSLayerConfigurationService getWfsLayerService() {
+        if (wfsLayerService == null) {
+            wfsLayerService = new WFSLayerConfigurationServiceIbatisImpl();
+        }
+        return wfsLayerService;
     }
 }
