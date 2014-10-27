@@ -12,7 +12,7 @@ UPDATE portti_bundle set startup = '{
     "metadata": {
         "Import-Bundle": {
             "routesearch": {
-                "bundlePath": "../../../packages/framework/bundle/"
+                "bundlePath": "/Oskari/packages/framework/bundle/"
             }
         },
         "Require-Bundle-Instance": [

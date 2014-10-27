@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,49 +46,56 @@ public class GetGeoPointDataService {
 
     public JSONObject getWMSFeatureInfo(final GFIRequestParams params) {
 
+        final String gfiResponse = makeGFIcall(params);
+        if(gfiResponse == null || gfiResponse.trim().isEmpty()) {
+            return null;
+        }
+
+        final JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, TYPE, params.getLayer().getType());
+        JSONHelper.putValue(response, LAYER_ID, params.getLayer().getId());
+        // try transform if XSLT is provided
+        final String xslt = params.getLayer().getGfiXslt();
+        JSONObject respObj = null;
+        if (xslt != null && !xslt.isEmpty()) {
+            final String transformedResult = transformResponse(xslt, gfiResponse);
+            respObj = JSONHelper.createJSONObject(transformedResult);
+            if(respObj != null) {
+                JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
+                JSONHelper.putValue(response, CONTENT, respObj);
+            }
+        }
+        // use text content if respObj isn't present (transformed JSON not created)
+        if(respObj == null) {
+            JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
+            JSONHelper.putValue(response, CONTENT, gfiResponse);
+        }
+        // Add gfi content, it needs to be a separate field so we can mangle it as we like in the frontend
+        final String gfiContent = params.getLayer().getGfiContent();
+        if (gfiContent != null) {
+            JSONHelper.putValue(response, GFI_CONTENT, gfiContent);
+        }
+        return response;
+    }
+
+    private String makeGFIcall(final GFIRequestParams params) {
+
         final Map<String, String> headers = new HashMap<String,String>();
         headers.put("User-Agent", "Mozilla/5.0 "
                 + "(Windows; U; Windows NT 6.0; pl; rv:1.9.1.2) "
                 + "Gecko/20090729 Firefox/3.5.2");
         headers.put("Referer", "/");
         headers.put("Cookie", "_ptifiut_");
-        
-        String gfiResponse;
+
         try {
             final String url = params.getGFIUrl();
             log.debug("Calling GFI url:", url);
-            gfiResponse = IOHelper.getURL(url, headers);
+            HttpURLConnection conn = IOHelper.getConnection(url, params.getLayer().getUsername(), params.getLayer().getPassword());
+            String gfiResponse = IOHelper.getURL(conn, headers,IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
+            return gfiResponse;
         } catch (IOException e) {
             log.error(e, "Couldn't call GFI URL with params:", params);
-            return null;
-        }
-        if (gfiResponse != null && !gfiResponse.isEmpty()) {
-            final JSONObject response = new JSONObject();
-            JSONHelper.putValue(response, TYPE, params.getLayer().getType());
-            JSONHelper.putValue(response, LAYER_ID, params.getLayer().getId());
-            // try transform if XSLT is provided
-            final String xslt = params.getLayer().getGfiXslt();
-            JSONObject respObj = null;
-            if (xslt != null && !xslt.isEmpty()) {
-                final String transformedResult = transformResponse(xslt, gfiResponse);
-                respObj = JSONHelper.createJSONObject(transformedResult);
-                if(respObj != null) {
-                    JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
-                    JSONHelper.putValue(response, CONTENT, respObj);
-                }
-            }
-            // use text content if respObj isn't present (transformed JSON not created)
-            if(respObj == null) {
-                JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_TEXT);
-                JSONHelper.putValue(response, CONTENT, gfiResponse);
-            }
-            // Add gfi content, it needs to be a separate field so we can mangle it as we like in the frontend
-            final String gfiContent = params.getLayer().getGfiContent();
-            if (gfiContent != null) {
-                JSONHelper.putValue(response, GFI_CONTENT, gfiContent);
-            }
-            return response;
         }
         return null;
     }

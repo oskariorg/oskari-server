@@ -51,11 +51,7 @@ public class OskariContextInitializer implements ServletContextListener {
      */
     private void initializeOskariContext() {
 
-        // populate properties
-        info("- loading /oskari.properties");
-        PropertyUtil.loadProperties("/oskari.properties");
-        info("- loading /oskari-ext.properties");
-        PropertyUtil.loadProperties("/oskari-ext.properties");
+        loadProperties();
 
         info("- checking default DataSource");
         final InitialContext ctx = getContext();
@@ -72,6 +68,14 @@ public class OskariContextInitializer implements ServletContextListener {
             }
         }
         // TODO: possibly update database structure if we start to use http://flywaydb.org/ or similar (or maybe in another listener)
+    }
+
+    public void loadProperties() {
+        // populate properties
+        info("- loading /oskari.properties");
+        PropertyUtil.loadProperties("/oskari.properties");
+        info("- loading /oskari-ext.properties");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
     }
 
     private boolean checkDataSource(final InitialContext ctx, final String prefix) {
