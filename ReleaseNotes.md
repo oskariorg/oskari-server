@@ -20,6 +20,12 @@ To get a map of annotated classes (key is annotation value):
 Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
 setup that service-search includes.
 
+IOHelper now has a method getConnectionFromProps("prefix") which gives a HttpURLConnection based on properties prefixed with given string:
+    - [propertiesPrefix]url=[url to call for this service] (required)
+    - [propertiesPrefix]user=[username for basic auth] (optional)
+    - [propertiesPrefix]pass=[password for basic auth] (optional)
+    - [propertiesPrefix]header.[header name]=[header value] (optional)
+
 ### service-search
 
 Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
