@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes(OskariActionRouteAnnotationProcessor.ANNOTATION_TYPE)
-public class OskariActionRouteAnnotationProcessor extends OskariAnnotationProcessor {
+public class OskariActionRouteAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
      * This is the annotation we are going to process
      */

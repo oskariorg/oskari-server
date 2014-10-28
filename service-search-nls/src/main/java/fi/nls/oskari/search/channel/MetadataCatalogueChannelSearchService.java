@@ -4,6 +4,7 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -41,7 +42,8 @@ import java.util.*;
  *      - mustMatch: true means the field will be treated as AND filter instead of OR when creating query filter (defaults to false)
  *
  */
-public class MetadataCatalogueChannelSearchService implements SearchableChannel {
+@Oskari(MetadataCatalogueChannelSearchService.ID)
+public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private final Logger log = LogFactory.getLogger(this.getClass());
 
@@ -59,8 +61,24 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
     
     private OskariLayerServiceIbatisImpl mapLayerService = (OskariLayerServiceIbatisImpl)ServiceFactory.getMapLayerService();
 
-    public String getId() {
-        return ID;
+    private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
+    private static final String PROPERTY_FETCHURL_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.";
+
+    @Override
+    public void init() {
+        super.init();
+        final List<String> imageKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_IMAGE_PREFIX);
+        final int imgPrefixLen = PROPERTY_IMAGE_PREFIX.length();
+        for(String key : imageKeys) {
+            final String langCode = key.substring(imgPrefixLen);
+            imageURLs.put(langCode, PropertyUtil.get(key));
+        }
+        final List<String> urlKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_FETCHURL_PREFIX);
+        final int urlPrefixLen = PROPERTY_FETCHURL_PREFIX.length();
+        for(String key : urlKeys) {
+            final String langCode = key.substring(urlPrefixLen);
+            fetchPageURLs.put(langCode, PropertyUtil.get(key));
+        }
     }
 
     public static String getServerURL() {
@@ -108,19 +126,6 @@ public class MetadataCatalogueChannelSearchService implements SearchableChannel 
             }
         }
         return null;
-    }
-
-    public void setProperty(String propertyName, String propertyValue) {
-
-        if (null != propertyName) {
-            if (propertyName.indexOf("image.url.") == 0) {
-                // after first 10 chars there is a language code
-                imageURLs.put(propertyName.substring(10), propertyValue);
-            } else if (propertyName.indexOf("fetchpage.url.") == 0) {
-                // after first 14 chars there is a language code
-                fetchPageURLs.put(propertyName.substring(14), propertyValue);
-            }
-        }
     }
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)

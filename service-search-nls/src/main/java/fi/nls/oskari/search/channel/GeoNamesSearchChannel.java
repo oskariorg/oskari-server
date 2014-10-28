@@ -3,6 +3,7 @@ package fi.nls.oskari.search.channel;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.IOHelper;
@@ -22,26 +23,20 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 
-public class GeoNamesSearchChannel implements SearchableChannel {
+@Oskari(GeoNamesSearchChannel.ID)
+public class GeoNamesSearchChannel extends SearchChannel {
 
     /** logger */
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
     public static final String ID = "GEONAMES_CHANNEL";
-    public static final String PROPERTY_SERVICE_URL = "service.url";
+    private static final String PROPERTY_SERVICE_URL = "search.channel.GEONAMES_CHANNEL.service.url";
 
-
-    public void setProperty(String propertyName, String propertyValue) {
-        if (PROPERTY_SERVICE_URL.equals(propertyName)) {
-            serviceURL = propertyValue;
-            log.debug("ServiceURL set to " + serviceURL);
-        } else {
-            log.warn("Unknown property for " + ID + " search channel: " + propertyName);
-        }
-    }
-
-    public String getId() {
-        return ID;
+    @Override
+    public void init() {
+        super.init();
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+        log.debug("ServiceURL set to " + serviceURL);
     }
 
     /**

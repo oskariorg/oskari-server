@@ -1,6 +1,7 @@
 package fi.nls.oskari.annotation;
 
-import fi.nls.oskari.view.modifier.ViewModifier;
+
+import fi.nls.oskari.service.OskariComponent;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -9,26 +10,19 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Processor for the @OskariViewModifier annotation. Ran on compile time and processes any @OskariViewModifier annotation.
- * Checks that the annotated Class is a concrete Class that is assignable as ViewModifier.
- * If it isn't the compilation will fail. If it is an entry is written to an SPI services file.
- * The file is created if it didn't exist and duplicates aren't written.
- */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
-@SupportedAnnotationTypes(OskariViewModifierAnnotationProcessor.ANNOTATION_TYPE)
-public class OskariViewModifierAnnotationProcessor extends OskariBaseAnnotationProcessor {
+@SupportedAnnotationTypes(OskariComponentAnnotationProcessor.ANNOTATION_TYPE)
+public class OskariComponentAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
      * This is the annotation we are going to process
      */
-    public static final String ANNOTATION_TYPE = "fi.nls.oskari.annotation.OskariViewModifier";
-    public static final String SERVICE_NAME = "fi.nls.oskari.view.modifier.ViewModifier";
-
+    public static final String ANNOTATION_TYPE = "fi.nls.oskari.annotation.Oskari";
+    public static final String SERVICE_NAME = "fi.nls.oskari.service.OskariComponent";
 
     @Override
     public boolean process(
@@ -58,19 +52,28 @@ public class OskariViewModifierAnnotationProcessor extends OskariBaseAnnotationP
 
             for (final Element m : annotatedElements) {
 
-                // we know @OskariViewModifier is a type annotation so casting to TypeElement
+                // we know @OskariActionRoute is a type annotation so casting to TypeElement
                 final TypeElement el = (TypeElement) m;
 
                 // check that the class is not abstract since we cant instantiate it if it is
-                // and that its of the correct type for our fi.nls.oskari.view.modifier.ViewModifierManager
+                // and that its of the correct type for our fi.nls.oskari.control.ActionControl
                 if (el.getModifiers().contains(Modifier.ABSTRACT) ||
-                        !isAssignable(m.asType(), ViewModifier.class)) {
+                        !isAssignable(m.asType(), OskariComponent.class)) {
                     // wasn't proper annotation -> go for compilation failure
-                    processingEnv.getMessager().printMessage(Kind.ERROR,
-                            "@OskariViewModifier annotated classes must be non-abstract and of type " + ViewModifier.class, m);
+                    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                            "@Oskari annotated classes must be non-abstract and of type " + OskariComponent.class, m);
 
                 } else {
                     // we are good to go, gather it up in the results
+                    Oskari route = el.getAnnotation(Oskari.class);
+                    String comment = processingEnv.getElementUtils().getDocComment(el);
+                    if (comment != null) {
+                        writeDoc(route.value(), comment);
+                    } else {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING,
+                                "Documentation missing for component " + route.value() + " (" + el.getQualifiedName().toString() + ")");
+                    }
+
                     results.add(el.getQualifiedName().toString());
                 }
             }
@@ -80,12 +83,11 @@ public class OskariViewModifierAnnotationProcessor extends OskariBaseAnnotationP
         } catch (final IOException ioe) {
             System.out.println("ERROR " + ioe.getMessage());
             processingEnv.getMessager().printMessage(
-                    Kind.ERROR, "I/O Error during processing.");
+                    Diagnostic.Kind.ERROR, "I/O Error during processing.");
 
             ioe.printStackTrace();
         }
 
         return true;
     }
-
 }

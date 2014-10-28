@@ -10,6 +10,32 @@ GetGeoPointDataService now uses credentials for layer when making a GetFeatureIn
 
 Role now has a static method to determine default role for logged in user as well as admin role.
 
+Moved common annotation processing classes from service-control to service-base.
+
+Added a new custom annotation @Oskari("key"). This can be used as a common way to mark classes extending OskariComponent.
+To get a map of annotated classes (key is annotation value):
+
+    Map<String, OskariComponent> allComponents = fi.nls.oskari.service.OskariComponentManager.getComponentsOfType(OskariComponent.class);
+
+Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
+setup that service-search includes.
+
+### service-search
+
+Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
+with @Oskari("searchChannelID"). Channels are detected with:
+
+        final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
+
+The legacy way of providing classname in properties is also supported by discouraged.
+
+SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
+PropertyUtil or other internal means to get configuration.
+
+### service-search-nls/servlet-map - search channels
+
+Migrated search channels to use annotated approach
+
 ### content-resources
 
 New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
@@ -20,6 +46,8 @@ ActionControl now catches exceptions on ActionHandler.init() and teardown(). A s
 The same errorhandling was added for ViewModifierManager.
 
 Enabled customized HTML string cleaning.
+
+Moved common annotation processing classes from service-control to service-base.
 
 ### control-base
 
