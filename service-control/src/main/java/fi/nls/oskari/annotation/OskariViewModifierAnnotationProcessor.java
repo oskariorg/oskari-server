@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes(OskariViewModifierAnnotationProcessor.ANNOTATION_TYPE)
-public class OskariViewModifierAnnotationProcessor extends OskariAnnotationProcessor {
+public class OskariViewModifierAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
      * This is the annotation we are going to process
      */
