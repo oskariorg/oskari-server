@@ -5,6 +5,7 @@ import fi.mml.nameregister.FeaturePropertyType;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.QueryParser;
@@ -19,21 +20,13 @@ import org.jsoup.safety.Whitelist;
 import java.net.URLEncoder;
 import java.util.Map;
 
-public class RegisterOfNomenclatureChannelSearchService implements SearchableChannel{
+@Oskari(RegisterOfNomenclatureChannelSearchService.ID)
+public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
     /** logger */
     private Logger log = LogFactory.getLogger(this.getClass());
 
     public static final String ID = "REGISTER_OF_NOMENCLATURE_CHANNEL";
     private static final String STR_UNDERSCORE = "_";
-
-    public void setProperty(String propertyName, String propertyValue) {
-        // NOOP, we have nothing to set
-        log.warn("Unknown property for " + ID + " search channel: " + propertyName);
-    }
-
-    public String getId() {
-        return ID;
-    }
 
     private String getLocaleCode(String locale) {
         final String currentLocaleCode =  SearchUtil.getLocaleCode(locale);

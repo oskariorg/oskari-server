@@ -32,6 +32,10 @@ The legacy way of providing classname in properties is also supported by discour
 SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
 PropertyUtil or other internal means to get configuration.
 
+### service-search-nls/servlet-map - search channels
+
+Migrated search channels to use annotated approach
+
 ### content-resources
 
 New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
