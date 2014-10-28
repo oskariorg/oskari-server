@@ -28,7 +28,7 @@
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

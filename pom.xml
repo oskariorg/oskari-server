@@ -87,7 +87,7 @@
         <deegree.version>2</deegree.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
-        <junit.version>4.4</junit.version>
+        <junit.version>4.11</junit.version>
     </properties>
 
     <!-- Managed dependencies -->
@@ -156,6 +156,12 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-permissions</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-scheduler</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
