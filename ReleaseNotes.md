@@ -20,6 +20,18 @@ To get a map of annotated classes (key is annotation value):
 Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
 setup that service-search includes.
 
+### service-search
+
+Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
+with @Oskari("searchChannelID"). Channels are detected with:
+
+        final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
+
+The legacy way of providing classname in properties is also supported by discouraged.
+
+SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
+PropertyUtil or other internal means to get configuration.
+
 ### content-resources
 
 New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.

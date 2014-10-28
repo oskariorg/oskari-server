@@ -27,5 +27,6 @@ public interface SearchableChannel {
      * @param propertyName
      * @param propertyValue
      */
+    @Deprecated
     public void setProperty(String propertyName, String propertyValue);
 }
