@@ -13,7 +13,7 @@
     <typeAlias alias="OskariLayer" type="fi.nls.oskari.domain.map.OskariLayer" />
 
     <parameterMap id="LayerInsertParameter" class="OskariLayer">
-        <parameter property="parentId" />
+        <parameter property="parentId" jdbcType="INTEGER"  javaType="int" />
         <parameter property="type" />
         <parameter property="baseMap" />
         <parameter property="groupId" />
@@ -44,6 +44,9 @@
 
         <parameter property="username" />
         <parameter property="password" />
+
+        <parameter property="version" />
+        <parameter property="srs_name" />
 
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
@@ -82,6 +85,9 @@
 
         <parameter property="username" />
         <parameter property="password" />
+
+        <parameter property="version" />
+        <parameter property="srs_name" />
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
@@ -124,6 +130,8 @@
         l.refresh_rate,
         l.username,
         l.password,
+        l.version,
+        l.srs_name,
         m.geom,
 
         l.created,
@@ -174,6 +182,8 @@
         l.refresh_rate,
         l.username,
         l.password,
+        l.version,
+        l.srs_name,
         m.geom,
 
         l.created,
@@ -224,6 +234,8 @@
         l.refresh_rate,
         l.username,
         l.password,
+        l.version,
+        l.srs_name,
         m.geom,
 
         l.created,
@@ -275,6 +287,8 @@
         l.refresh_rate,
         l.username,
         l.password,
+        l.version,
+        l.srs_name,
         m.geom,
 
         l.created,
@@ -326,6 +340,8 @@
         l.refresh_rate,
         l.username,
         l.password,
+        l.version,
+        l.srs_name,
         m.geom,
 
         l.created,
@@ -376,6 +392,8 @@
     l.refresh_rate,
     l.username,
     l.password,
+    l.version,
+    l.srs_name,
     m.geom,
 
     l.created,
@@ -429,9 +447,12 @@
             username,
             password,
 
+            version,
+            srs_name,
+
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -467,6 +488,9 @@
 
         username = ?,
         password = ?,
+
+        version = ?,
+        srs_name = ?,
 
         updated=?
         WHERE id = ?
