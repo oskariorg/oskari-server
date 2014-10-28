@@ -16,8 +16,10 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import org.json.JSONObject;
@@ -375,18 +377,25 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {
 
-        final Permissions permissions = new Permissions();
-        permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-        permissions.getUniqueResourceName().setNamespace(ml.getUrl());
-        permissions.getUniqueResourceName().setName(ml.getName());
+        OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
         for (String externalId : externalIds) {
             final long extId = ConversionHelper.getLong(externalId, -1);
             if (extId != -1 && user.hasRoleWithId(extId)) {
-                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_VIEW_LAYER);
-                permissionsService.insertPermissions(permissions.getUniqueResourceName(), externalId, Permissions.EXTERNAL_TYPE_ROLE, Permissions.PERMISSION_TYPE_EDIT_LAYER);
+                Permission permission = new Permission();
+                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                permission.setExternalId(externalId);
+                permission.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
+                res.addPermission(permission);
+
+                permission = new Permission();
+                permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+                permission.setExternalId(externalId);
+                permission.setType(Permissions.PERMISSION_TYPE_EDIT_LAYER);
+                res.addPermission(permission);
             }
         }
+        permissionsService.saveResourcePermissions(res);
 
     }
 }

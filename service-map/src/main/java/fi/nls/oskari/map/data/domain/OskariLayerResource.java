@@ -11,6 +11,6 @@ public class OskariLayerResource extends Resource {
 
     public OskariLayerResource(OskariLayer layer) {
         setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-        setMapping(layer.getUrl(), layer.getName());
+        setMapping(layer.getType() + "+" + layer.getUrl(), layer.getName());
     }
 }

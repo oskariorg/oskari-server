@@ -68,7 +68,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
                 realJson.put(JSON_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 realJson.put(JSON_NAMES_SPACE, layer.getUrl());
                 realJson.put(JSON_RESOURCE_NAME, layer.getName());
-                final String permissionKey = layer.getUrl() + "+" + layer.getName();
+                final String permissionKey = layer.getType()+ "+" +layer.getUrl() + "+" + layer.getName();
 
                 if (resources.contains(permissionKey)) {
                     realJson.put(JSON_IS_SELECTED, true);

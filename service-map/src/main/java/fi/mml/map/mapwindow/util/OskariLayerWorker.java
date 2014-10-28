@@ -92,7 +92,7 @@ public class OskariLayerWorker {
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
-            final String permissionKey = layer.getUrl() + "+" + layer.getName();
+            final String permissionKey = layer.getType()+ "+" + layer.getUrl() + "+" + layer.getName();
             if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
                 // not permitted if resource NOT found in permissions!
                 // sublayers can pass through since their parentId != -1
