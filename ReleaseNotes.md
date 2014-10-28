@@ -38,9 +38,11 @@ The legacy way of providing classname in properties is also supported by discour
 SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
 PropertyUtil or other internal means to get configuration.
 
+SearchChannel baseclass has getConnection() method which returns a HttpURLConnection based on properties prefixed with 'search.channel.[channel id].service.'.
+
 ### service-search-nls/servlet-map - search channels
 
-Migrated search channels to use annotated approach
+Migrated search channels to use annotated approach and getConnection() from baseclass so credential handling is consistent.
 
 ### content-resources
 

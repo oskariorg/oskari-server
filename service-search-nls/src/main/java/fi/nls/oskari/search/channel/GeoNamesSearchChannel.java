@@ -4,7 +4,6 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -74,7 +73,7 @@ public class GeoNamesSearchChannel extends SearchChannel {
 
         String userName = PropertyUtil.get("search.channel.GEONAMES_CHANNEL.username");
         buf.append("&username="+userName);
-        String data = IOHelper.getURL(buf.toString());
+        String data = IOHelper.readString(getConnection(buf.toString()));
         log.debug("DATA: " + data);
 
         return JSONHelper.createJSONObject(data).getJSONArray("geonames");
