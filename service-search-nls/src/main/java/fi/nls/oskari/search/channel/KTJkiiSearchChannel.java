@@ -11,32 +11,31 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.PropertyUtil;
 
-import java.net.URL;
 import java.util.List;
 
 @Oskari(KTJkiiSearchChannel.ID)
 public class KTJkiiSearchChannel extends SearchChannel {
 
     private String serviceURL = null;
-    private String serviceKTJHost = null;
-    private String serviceKTJAuth = null;
     private Logger log = LogFactory.getLogger(this.getClass());
+    private static final String PROPERTY_SERVICE_URL = "search.channel.KTJ_KII_CHANNEL.service.url";
 
     public static final String ID = "KTJ_KII_CHANNEL";
 
     @Override
     public void init() {
         super.init();
-        serviceURL = PropertyUtil.get("search.channel.KTJ_KII_CHANNEL.service.url", "https://ws.nls.fi/ktjkii/wfs/wfs");
-        serviceKTJHost = PropertyUtil.getOptional("search.channel.KTJ_KII_CHANNEL.service.host");
-        serviceKTJAuth = PropertyUtil.getOptional("search.channel.KTJ_KII_CHANNEL.service.authentization");
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
     }
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
             throws IllegalSearchCriteriaException {
+        if(serviceURL == null) {
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+            return null;
+        }
         ChannelSearchResult searchResultList = new ChannelSearchResult();
 
         String registerUnitID = searchCriteria.getSearchString();
@@ -44,13 +43,7 @@ public class KTJkiiSearchChannel extends SearchChannel {
         KTJkiiWFSSearchChannelImpl impl = new KTJkiiWFSSearchChannelImpl();
 
         try {
-
-            URL serviceUrl = new URL(serviceURL);
-
-            impl.setServiceURL(serviceUrl);
-            impl.setHost(serviceKTJHost);
-            impl.setAuth(serviceKTJAuth);
-
+            impl.setConnectionProvider(this);
 
             RegisterUnitId registerUnitId = 
                     impl.convertRequestStringToRegisterUnitID(

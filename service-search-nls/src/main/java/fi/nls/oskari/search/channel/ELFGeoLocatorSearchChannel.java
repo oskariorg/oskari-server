@@ -102,7 +102,8 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         }
 
         log.debug("/getData");
-        return IOHelper.getURL(buf.toString());
+
+        return IOHelper.readString(getConnection(buf.toString()));
     }
 
     /**
