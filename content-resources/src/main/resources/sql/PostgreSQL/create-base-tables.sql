@@ -88,6 +88,8 @@ CREATE TABLE oskari_maplayer
   updated timestamp with time zone,
   username character varying(256),
   password character varying(256),
+  srs_name character varying,
+  version character varying(64),
   CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
   CONSTRAINT oskari_maplayer_groupId_fkey FOREIGN KEY (groupId)
   REFERENCES oskari_layergroup (id) MATCH SIMPLE
