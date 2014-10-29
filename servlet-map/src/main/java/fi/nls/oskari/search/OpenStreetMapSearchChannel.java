@@ -63,7 +63,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         }
         buf.append("&q=");
         buf.append(URLEncoder.encode(searchCriteria.getSearchString(),"UTF-8"));
-        String data = IOHelper.getURL(buf.toString());
+        String data = IOHelper.readString(getConnection(buf.toString()));
         log.debug("DATA: " + data);
         return JSONHelper.createJSONArray(data);
     }

@@ -33,7 +33,7 @@ with @Oskari("searchChannelID"). Channels are detected with:
 
         final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
 
-The legacy way of providing classname in properties is also supported by discouraged.
+The legacy way of providing classname in properties is also supported but discouraged.
 
 SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
 PropertyUtil or other internal means to get configuration.
