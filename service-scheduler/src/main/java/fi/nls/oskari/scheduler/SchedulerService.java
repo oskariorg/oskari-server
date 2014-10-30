@@ -30,6 +30,7 @@ public class SchedulerService {
     private Scheduler scheduler;
 
     public SchedulerService initializeScheduler() throws SchedulerException {
+        log.info("Initializing scheduler");
         final Properties schedulerProperties = PropertyUtil.getProperties();
         final StdSchedulerFactory sf = new StdSchedulerFactory();
         sf.initialize(schedulerProperties);
@@ -40,10 +41,13 @@ public class SchedulerService {
     }
 
     public void shutdownScheduler() throws SchedulerException {
-        scheduler.shutdown(false);
+        if (null != scheduler) {
+            scheduler.shutdown(false);
+        }
     }
 
     public SchedulerService setupJobs() {
+        log.info("Starting up scheduler jobs");
         for (final String jobCode : PropertyUtil.getCommaSeparatedList(JOBS_KEY)) {
             final String key = String.format("oskari.scheduler.job.%s", jobCode);
             final String cronLine = PropertyUtil.get(key + ".cronLine");
