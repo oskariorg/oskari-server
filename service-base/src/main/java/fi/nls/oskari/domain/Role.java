@@ -44,7 +44,7 @@ public class Role {
     public static Role getAdminRole() {
         if(ADMIN_ROLE == null) {
             // default to Administrator
-            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
+            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
             ADMIN_ROLE = getRoleByName(rolename);
         }
         return ADMIN_ROLE;
@@ -57,7 +57,7 @@ public class Role {
     public static Role getDefaultUserRole() {
         if(USER_ROLE == null) {
             // default to User
-            final String rolename = PropertyUtil.get("oskari.user.role.loggedIn", DEFAULT_USER_ROLE_NAME);
+            final String rolename = PropertyUtil.get("oskari.user.role.loggedIn", DEFAULT_USER_ROLE_NAME).trim();
             USER_ROLE = getRoleByName(rolename);
         }
         return USER_ROLE;
