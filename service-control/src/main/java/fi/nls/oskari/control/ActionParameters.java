@@ -220,7 +220,7 @@ public class ActionParameters {
      */
     public void requireAdminUser() throws ActionDeniedException {
         requireLoggedInUser();
-        if(getUser().isAdmin()) {
+        if(!getUser().isAdmin()) {
             throw new ActionDeniedException("Admin only");
         }
     }
