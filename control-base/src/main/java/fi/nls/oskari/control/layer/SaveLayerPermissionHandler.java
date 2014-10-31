@@ -30,7 +30,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
         permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
 
         final JSONArray resources = parseJSONArray(params.getHttpParam(PARAMETER_PERMISSION_DATA));
-        final String whoMakesThisModification = params.getUser().getEmail();
+        final String whoMakesThisModification = params.getUser().getScreenname();
 
         try {
             for (int i = 0; i < resources.length(); i++) {
