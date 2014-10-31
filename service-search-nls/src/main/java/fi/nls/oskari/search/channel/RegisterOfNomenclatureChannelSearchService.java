@@ -13,6 +13,7 @@ import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.xmlbeans.XmlObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -26,7 +27,17 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
     private Logger log = LogFactory.getLogger(this.getClass());
 
     public static final String ID = "REGISTER_OF_NOMENCLATURE_CHANNEL";
+    private static final String PROPERTY_SERVICE_URL = "search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.service.url";
     private static final String STR_UNDERSCORE = "_";
+
+    private String serviceURL = null;
+
+    @Override
+    public void init() {
+        super.init();
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+        log.debug("ServiceURL set to " + serviceURL);
+    }
 
     private String getLocaleCode(String locale) {
         final String currentLocaleCode =  SearchUtil.getLocaleCode(locale);
@@ -37,7 +48,10 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
     }
 
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
-
+        if(serviceURL == null) {
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+            return null;
+        }
     	
     	boolean villageFound = false;
     	boolean searchVillages = true;
@@ -67,7 +81,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
 
         try {
         	final String url = getWFSUrl(searchString);
-            final String data = IOHelper.getURL(url);
+            final String data = IOHelper.readString(getConnection(url));
             
             final String currentLocaleCode =  getLocaleCode(searchCriteria.getLocale());
             final FeatureCollectionDocument fDoc =  FeatureCollectionDocument.Factory.parse(data);
@@ -189,7 +203,7 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                         "</Filter>";
         filterXml = URLEncoder.encode(filterXml, "UTF-8");
 
-        String wfsUrl = SearchUtil.getNameRegisterUrl() +
+        String wfsUrl = serviceURL +
                 "?SERVICE=WFS&VERSION=1.1.0" +
                 "&maxFeatures=" +  (SearchUtil.maxCount+1) +  // added 1 to maxCount because need to know if there are more then maxCount
                 "&REQUEST=GetFeature&TYPENAME=pnr:Paikka" +

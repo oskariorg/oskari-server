@@ -13,4 +13,4 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Others%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://avaa.tdata.fi/geoserver/osm_finland/wms+osm_finland:osm-finland');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://avaa.tdata.fi/geoserver/osm_finland/wms+osm_finland:osm-finland');

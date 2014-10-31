@@ -26,6 +26,9 @@ public class MaastoAddressChannelSearchService extends BaseWfsAddressChannelSear
 
 	@Override
 	protected String getQueryUrl(String filter) {
+        if(queryURL == null) {
+            return null;
+        }
 		return queryURL +  filter + "&maxFeatures=" +  (SearchUtil.maxCount+1);  // added 1 to maxCount because need to know if there are more then maxCount
 	}
 	

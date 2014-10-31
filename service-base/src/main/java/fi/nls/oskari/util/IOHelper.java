@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -65,6 +66,15 @@ public class IOHelper {
         return readString(is, DEFAULT_CHARSET);
     }
 
+    /**
+     * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
+     * @param conn
+     * @return
+     * @throws IOException
+     */
+    public static String readString(HttpURLConnection conn) throws IOException {
+        return readString(conn, DEFAULT_CHARSET);
+    }
     /**
      * Reads the given input stream and converts its contents to a string using given charset
      * @param conn connection used to get inputstream and detect gzip encoding
@@ -149,6 +159,39 @@ public class IOHelper {
     }
 
     /**
+     * Returns a connection based on properties:
+     * - [propertiesPrefix]url=[url to call for this service] (required)
+     * - [propertiesPrefix]user=[username for basic auth] (optional)
+     * - [propertiesPrefix]pass=[password for basic auth] (optional)
+     * - [propertiesPrefix]header.[header name]=[header value] (optional)
+     */
+    public static HttpURLConnection getConnectionFromProps(final String propertiesPrefix)
+            throws IOException {
+        final String url = PropertyUtil.getNecessary(propertiesPrefix + "url");
+        return getConnectionFromProps(url, propertiesPrefix);
+    }
+    /**
+     * Returns a connection based on properties:
+     * - [propertiesPrefix]user=[username for basic auth] (optional)
+     * - [propertiesPrefix]pass=[password for basic auth] (optional)
+     * - [propertiesPrefix]header.[header name]=[header value] (optional)
+     */
+    public static HttpURLConnection getConnectionFromProps(final String url, final String propertiesPrefix)
+            throws IOException {
+        final String username = PropertyUtil.getOptional(propertiesPrefix + "user");
+        final String password = PropertyUtil.getOptional(propertiesPrefix + "pass");
+        final HttpURLConnection conn = getConnection(url, username, password);
+        final String headerPropPrefix = propertiesPrefix + "header.";
+        final List<String> headerPropNames = PropertyUtil.getPropertyNamesStartingWith(headerPropPrefix);
+        for (String propName : headerPropNames) {
+            final String header = propName.substring(headerPropPrefix.length());
+            final String value = PropertyUtil.get(propName);
+            writeHeader(conn, header, value);
+        }
+        return conn;
+    }
+
+    /**
      * Opens a HttpURLConnection to given url
      * @param pUrl
      * @return
@@ -213,7 +256,6 @@ public class IOHelper {
         final HttpURLConnection con = getConnection(pUrl);
         if (userName != null && !userName.isEmpty()) {
             final String encoded = encode64(userName + ':' + password);
-            log.debug(encoded, " ---- > ", encoded.replaceAll("\r", "").replaceAll("\n", ""));
             con.setRequestProperty(HEADER_AUTHORIZATION, "Basic " + encoded.replaceAll("\r", "").replaceAll("\n", ""));
         }
         return con;
@@ -314,7 +356,6 @@ public class IOHelper {
      */
     public static String getURL(final String pUrl,
                                 final Map<String, String> headers, final String charset) throws IOException {
-    	log.debug("Calls given URL with given http headers and returns the response interpreted with given charset as String");
         final HttpURLConnection con = getConnection(pUrl);
         return getURL(con, headers, charset);
     }
@@ -329,7 +370,6 @@ public class IOHelper {
      */
     public static String getURL(final HttpURLConnection con,
                                 final Map<String, String> headers, final String charset) throws IOException {
-    	log.debug("Writes the given http headers to the connection and returns the response interpreted with given charset as String");
         try {
             writeHeaders(con, headers);
             return IOHelper.readString(con.getInputStream(), charset);

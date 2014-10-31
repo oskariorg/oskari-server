@@ -46,10 +46,11 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                         
             WFSOsoitenimiFilterMaker wfsoFM = new WFSOsoitenimiFilterMaker(queryParser);
             String filterXml = URLEncoder.encode(wfsoFM.getFilter(), "UTF-8"); 
-                        
-            final URL url = new URL(this.getQueryUrl(filterXml));
-                        
-            URLConnection conn = url.openConnection();
+            final String queryUrl = this.getQueryUrl(filterXml);
+            if(queryUrl == null) {
+                return null;
+            }
+            URLConnection conn = getConnection(queryUrl);
             InputStream ins = conn.getInputStream();
                         
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

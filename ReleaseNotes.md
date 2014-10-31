@@ -22,6 +22,12 @@ To get a map of annotated classes (key is annotation value):
 Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
 setup that service-search includes.
 
+IOHelper now has a method getConnectionFromProps("prefix") which gives a HttpURLConnection based on properties prefixed with given string:
+    - [propertiesPrefix]url=[url to call for this service] (required)
+    - [propertiesPrefix]user=[username for basic auth] (optional)
+    - [propertiesPrefix]pass=[password for basic auth] (optional)
+    - [propertiesPrefix]header.[header name]=[header value] (optional)
+
 ### service-search
 
 Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
@@ -29,14 +35,16 @@ with @Oskari("searchChannelID"). Channels are detected with:
 
         final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
 
-The legacy way of providing classname in properties is also supported by discouraged.
+The legacy way of providing classname in properties is also supported but discouraged.
 
 SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
 PropertyUtil or other internal means to get configuration.
 
+SearchChannel baseclass has getConnection() method which returns a HttpURLConnection based on properties prefixed with 'search.channel.[channel id].service.'.
+
 ### service-search-nls/servlet-map - search channels
 
-Migrated search channels to use annotated approach
+Migrated search channels to use annotated approach and getConnection() from baseclass so credential handling is consistent.
 
 ### content-resources
 
