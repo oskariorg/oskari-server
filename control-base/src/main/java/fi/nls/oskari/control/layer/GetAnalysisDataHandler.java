@@ -66,8 +66,10 @@ public class GetAnalysisDataHandler extends ActionHandler {
                     for (Map.Entry<String, Object> entry : a.entrySet()) {
                         String key = entry.getKey();
                         Object value = entry.getValue();
-                        JSONObject sub = JSONHelper.createJSONObject(value.toString());
-                        if(sub != null) ajson.put(key,sub);
+                        if(value.toString().indexOf("{") > -1) {
+                            JSONObject sub = JSONHelper.createJSONObject(value.toString());
+                            if (sub != null) ajson.put(key, sub);
+                        }
                     }
                     JSONObject row = new JSONObject(a);
                     if(ajson.size() > 0) row = new JSONObject(ajson);
