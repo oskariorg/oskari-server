@@ -2,14 +2,14 @@
 
 
 
--- ELF GN fgi.fi - requires username, password
+-- INSPIRE GN fgi.fi - requires username, password
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
                             url, locale) 
-  VALUES('wfslayer', 'elf_gn_fgi_fi', 906, 
+  VALUES('wfslayer', 'inspire_gn_fgi_fi', 906, 
          50000, 1, 
-         'wfs', '{fi:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"},en:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"}}');
+         'wfs', '{fi:{name:"GN (INSPIRE) Geographical Names - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"GN (INSPIRE) Geographical Names - fgi.fi", subtitle:"ELF Cascading"},en:{name:"GN (INSPIRE) Geographical Names - fgi.fi", subtitle:"ELF Cascading"}}');
          
 
          
@@ -23,9 +23,9 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
 -- add template model stuff;
 INSERT INTO portti_wfs_template_model(name, description, type, request_template, response_template) 
 VALUES (
-	'ELF GN', 'ELF GN PoC', 'mah taip', 
+	'INSPIRE GN', 'ELF GN PoC', 'mah taip', 
 	'/fi/nls/oskari/fe/input/format/gml/inspire/gn/fgi_cascade_wfs_template.xml', 
-	'/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy');          
+	'/fi/nls/oskari/fe/input/format/gml/gn/INSPIRE_generic_GN.groovy');          
 
 -- add wfs specific layer data; 
 INSERT INTO portti_wfs_layer ( 
@@ -50,19 +50,19 @@ INSERT INTO portti_wfs_layer (
     job_type, 
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
-      'elf_gn_fgi_fi', 
-       'http://54.228.221.191/ELFcascadingWFS/service', '', '', 
+      'inspire_gn_fgi_fi', 
+       'http://54.228.221.191/ELFcascadingWFS/service', NULL, NULL, 
        'geom', '3.2.1', false, 
        '2.0.0', 5000, 
-       'elf-lod1gn', 
+       'gn', 
        '', 
        '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
        '{}', 
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-	'urn:ogc:def:crs:EPSG::3857', 
-	'NamedPlace', 'http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0', 
+	'EPSG:900913', 
+	'NamedPlace', 'urn:x-inspire:specification:gmlas:GeographicalNames:3.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
 	'oskari-feature-engine', (select max(id) from portti_wfs_template_model)); 
@@ -80,7 +80,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
 	
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_gn_fgi_fi');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+inspire_gn_fgi_fi');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
