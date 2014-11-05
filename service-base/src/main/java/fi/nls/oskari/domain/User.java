@@ -19,12 +19,16 @@ public class User {
     private String uuid = "";
     private Set<Role> roles = new HashSet<Role>();
 
+    public void clearRoles() {
+        roles = new HashSet<Role>();
+    }
 
     public void addRole(final Role role) {
         if(role != null) {
             roles.add(role);
         }
     }
+
     public void addRole(final long id, final String name) {
         Role role = new Role();
         role.setId(id);
