@@ -44,6 +44,8 @@ public class GetAnalysisDataHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         final JSONObject response = new JSONObject();
+        // only for logged in users!
+        params.requireLoggedInUser();
 
 
         final long id = ConversionHelper.getLong(params.getHttpParam(ANALYSE_ID), -1);
@@ -52,23 +54,21 @@ public class GetAnalysisDataHandler extends ActionHandler {
         }
 
         final User user = params.getUser();
-        if (!user.isGuest()) {
-            // Get analysis select items
-            final Analysis analysis = analysisService.getAnalysisById(id);
-            final String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
+        // Get analysis select items
+        final Analysis analysis = analysisService.getAnalysisById(id);
+        final String select_items = AnalysisHelper.getAnalysisSelectItems(analysis);
 
-            if (select_items != null) {
+        if (select_items != null) {
 
-                final List<HashMap<String, Object>> list = analysisService.getAnalysisDataByIdUid(id, user.getUuid(), select_items);
-                JSONArray rows = new JSONArray();
-                for (HashMap<String, Object> a : list) {
-                    JSONObject row = new JSONObject(a);
-                    rows.put(row);
-                }
-                JSONHelper.putValue(response, JSKEY_ANALYSISDATA, rows);
-                JSONHelper.putValue(response, ANALYSE_ID, id);
-
+            final List<HashMap<String, Object>> list = analysisService.getAnalysisDataByIdUid(id, user.getUuid(), select_items);
+            JSONArray rows = new JSONArray();
+            for (HashMap<String, Object> a : list) {
+                JSONObject row = new JSONObject(a);
+                rows.put(row);
             }
+            JSONHelper.putValue(response, JSKEY_ANALYSISDATA, rows);
+            JSONHelper.putValue(response, ANALYSE_ID, id);
+
         }
 
         ResponseHelper.writeResponse(params, response);
