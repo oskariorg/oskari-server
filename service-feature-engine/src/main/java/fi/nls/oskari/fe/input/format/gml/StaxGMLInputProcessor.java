@@ -16,20 +16,16 @@ import fi.nls.oskari.fe.input.XMLInputProcessor;
 
 public class StaxGMLInputProcessor implements XMLInputProcessor {
 
-	SMInputFactory inf;
-	SMFilterFactory ffac = new SMFilterFactory();
+    static XMLInputFactory2 ifac = (XMLInputFactory2) XMLInputFactory
+            .newInstance();
+    static SMFilterFactory ffac = new SMFilterFactory();
+	static SMInputFactory inf = new SMInputFactory(ifac);
 	private InputStream inp;
+	
 
 	private SMHierarchicCursor rootC;
 
 	public StaxGMLInputProcessor() {
-		XMLInputFactory2 ifac = (XMLInputFactory2) XMLInputFactory
-				.newInstance();
-		ifac.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-		ifac.configureForSpeed();
-
-		inf = new SMInputFactory(ifac);
-
 	}
 
 	public void close() throws XMLStreamException, IOException {
