@@ -37,6 +37,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -734,7 +735,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         session, bounds, transform, crs);
 
                 StringEntity entity = new StringEntity(params.toString());
-
+                httppost.setHeader(new BasicHeader("Content-Type", "text/xml; charset=UTF-8"));
                 httppost.setEntity(entity);
                 log.debug("[fe] HTTP POST " + httppost.getRequestLine());
 
