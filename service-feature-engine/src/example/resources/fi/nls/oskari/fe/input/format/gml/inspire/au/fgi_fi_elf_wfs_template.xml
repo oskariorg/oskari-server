@@ -2,12 +2,12 @@
 <wfs:GetFeature service="WFS" version="2.0.0" 
 	resolveDepth="*" outputFormat="application/gml+xml; version=3.2"
 	xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:fes="http://www.opengis.net/fes/2.0"
-	xmlns:gml="http://www.opengis.net/gml/3.2"
-	xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0"
+	xmlns:gml="http://www.opengis.net/gml/3.2"	
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tns="http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0"
 	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 
  http://schemas.opengis.net/wfs/2.0.0/wfs.xsd">
-	<wfs:Query typeNames="elf-lod1gn:NamedPlace" srsName="EPSG:900913">
+	<wfs:Query typeNames="tns:AdministrativeBoundary" srsName="EPSG:900913">
 		<fes:Filter>
 			<fes:BBOX>
 				<gml:Envelope srsName="EPSG:900913">

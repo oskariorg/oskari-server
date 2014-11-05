@@ -14,6 +14,8 @@ import java.util.Map;
 public abstract class BaseIbatisService<E> implements BaseService<E> {
 
     private SqlMapClient client = null;
+    // make it static so we can change this with one call to all services when needed
+    private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
 
     /** Override this and return ibatis namespace */
     protected abstract String getNameSpace();
@@ -47,12 +49,19 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
         }
     }
 
+    /**
+     * Static setter to override default location
+     * @param newLocation
+     */
+    public static void setSqlMapLocation(final String newLocation) {
+        SQL_MAP_LOCATION = newLocation;
+    }
     /*
      * The purpose of this method is to allow many SqlMapConfig.xml files in a
      * single portlet
      */
     protected String getSqlMapLocation() {
-        return "META-INF/SqlMapConfig.xml";
+        return SQL_MAP_LOCATION;
     }
 
     /**
