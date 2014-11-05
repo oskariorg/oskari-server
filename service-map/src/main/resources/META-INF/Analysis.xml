@@ -119,7 +119,7 @@
  
     </select>
 
-    <select id="findAnalysisDataByIdUid" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    <select id="findAnalysisDataByIdUid" parameterClass="java.util.HashMap" resultClass="java.util.HashMap" remapResults = "true" >
         select
         <dynamic>
             $select_items$
