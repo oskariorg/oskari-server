@@ -35,9 +35,9 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 					}						
                 }
 
-                /*output.vertex(output_ID, O.GeographicalName.qn,
-                        output_props, EMPTY);*/
-                /*output.edge(output_NamedPlace_ID, O.NamedPlace.name, output_ID);*/
+                output.vertex(/*output_ID*/O.NamedPlace.qn.unique(), O.NamedPlace.qn,
+                                         output_props, EMPTY, output_geoms);
+
 
             },
             "NamedPlace": { input_Feat ->
@@ -80,8 +80,8 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
                     }
                 }
 
-                output.vertex(output_ID, O.NamedPlace.qn,
-                        output_props, EMPTY, output_geoms);
+                /*output.vertex(output_ID, O.NamedPlace.qn,
+                        output_props, EMPTY, output_geoms);*/
 
             },
 			"SpellingOfName" : { input_Feat, output_GeographicalName_ID, output_props, output_geoms ->
