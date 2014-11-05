@@ -147,6 +147,9 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
         JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());
 
+        JSONHelper.putValue(layerJson, "srs_name", layer.getSrs_name());
+        JSONHelper.putValue(layerJson, "version", layer.getVersion());
+
         //log.debug("getLegendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());
@@ -247,6 +250,8 @@ public class LayerJSONFormatter {
         layer.setGeometry(json.optString("geometry", layer.getGeometry()));
         layer.setRealtime(json.optBoolean("realtime", layer.getRealtime()));
         layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
+        layer.setSrs_name(json.optString("srs_name", layer.getGeometry()));
+        layer.setVersion(json.optString("version", layer.getGeometry()));
         // omit permissions, these are handled by LayerHelper
 
         // handle params, check for null to avoid overwriting empty JS Object Literal

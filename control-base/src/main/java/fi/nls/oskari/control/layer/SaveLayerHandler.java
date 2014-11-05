@@ -83,7 +83,7 @@ public class SaveLayerHandler extends ActionHandler {
             // handle error getting JSON failed
             throw new ActionException("Error constructing JSON for layer");
         }
-        if(!cacheUpdated) {
+        if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
         }
@@ -306,6 +306,9 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));
         ml.setPassword(params.getHttpParam("password", ml.getPassword()));
 
+        ml.setSrs_name(params.getHttpParam("srs_name",ml.getSrs_name()));
+        ml.setVersion(params.getHttpParam("version",ml.getVersion()));
+
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
 
@@ -362,6 +365,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
+        // these are only in insert
         ml.setSrs_name(params.getHttpParam("SRSName",ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
     }
