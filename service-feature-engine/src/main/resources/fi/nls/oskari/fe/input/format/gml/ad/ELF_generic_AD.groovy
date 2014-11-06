@@ -7,7 +7,7 @@ public class ELF_generic_ad_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 	def input_ns = "http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0";
 	def input_ad_ns = "urn:x-inspire:specification:gmlas:Addresses:3.0"
-	def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/"	
+	def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
 	def input_gml_ns = "http://www.opengis.net/gml/3.2";
 
 	def output_ns = "http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0#";
@@ -92,7 +92,7 @@ public class ELF_generic_ad_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 			"qn": qn(input_ad_ns, "GeographicPosition"),
 			"geometry": qn(input_ad_ns, "geometry"),
 			"geoms": mapGeometryTypes("http://www.opengis.net/gml/3.2",
-				"Point","MultiPoint"
+			"Point","MultiPoint"
 			)
 		]
 	];
@@ -116,7 +116,7 @@ public class ELF_generic_ad_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 		output.prefix("_bu", output_ad_ns);
 
 		output.type(O.Address.qn,
-			simpleTypes(
+				simpleTypes(
 				pair(
 				iri(output_ns, "localId"),
 				XSDDatatype.XSDstring
@@ -138,12 +138,12 @@ public class ELF_generic_ad_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 				XSDDatatype.XSDstring
 				)
 
-			),
-			EMPTY,
-			geometryTypes(
+				),
+				EMPTY,
+				geometryTypes(
 				pair(O.Geom, "GEOMETRY" )
-			)
-		);
+				)
+				);
 
 
 		/* Process */

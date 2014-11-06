@@ -7,10 +7,10 @@
 	xmlns:tns="http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0"
 	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 
  http://schemas.opengis.net/wfs/2.0.0/wfs.xsd">
-	<wfs:Query typeNames="tns:AdministrativeUnit" srsName="urn:ogc:def:crs:epsg::3857">
+	<wfs:Query typeNames="tns:AdministrativeUnit" srsName="EPSG:900913">
 		<fes:Filter>
 			<fes:BBOX>
-				<gml:Envelope srsName="urn:ogc:def:crs:epsg::3857">
+				<gml:Envelope srsName="EPSG:900913">
 					<gml:lowerCorner>[LOWER_CORNER]</gml:lowerCorner>
 					<gml:upperCorner>[UPPER_CORNER]</gml:upperCorner>
 				</gml:Envelope>
