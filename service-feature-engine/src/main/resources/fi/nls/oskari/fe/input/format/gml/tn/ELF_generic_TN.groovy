@@ -41,8 +41,10 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 				}
 			}
 
-			output.vertex(/*output_ID*/O.NamedPlace.qn.unique(), O.NamedPlace.qn,
-					output_props, EMPTY, output_geoms);
+			// TODO properly support multiple languages
+			output.vertex(/*output_ID*/O.RoadLink.qn.unique(), O.RoadLink.qn,
+				output_props, EMPTY, output_geoms);
+
 
 
 		},
@@ -77,6 +79,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 						input_Feats.readDescendants(I.GeographicalName.qn).each { featGNProps ->
 							PARSER.GeographicalName(featGNProps, output_ID, output_props, output_geoms);
+							placeNamesCount++;
 						}
 						break;
 
@@ -90,8 +93,10 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 			}
 
 
-			output.vertex(output_ID, O.RoadLink.qn,
+			if( placeNamesCount == 0 ) {
+				output.vertex(output_ID, O.RoadLink.qn,
 					output_props, EMPTY, output_geoms);
+			}
 
 
 		},
