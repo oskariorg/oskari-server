@@ -1,0 +1,20 @@
+{
+  "result": [
+    {
+      "infoUrl": "http://directory.spatineo.com/service/9195/",
+      "status": "OK",
+      "week": {
+        "hoursDown": 2.6677925,
+        "hoursMaintenance": 0,
+        "hoursUp": 173.79492694444446
+      },
+      "year": {
+        "hoursDown": 514.6802619444444,
+        "hoursMaintenance": 0,
+        "hoursUp": 6496.638144444444
+      }
+    }
+  ],
+  "status": "OK",
+  "version": "1.0"
+}
