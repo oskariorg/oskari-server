@@ -2,9 +2,11 @@ import fi.nls.oskari.fe.input.format.gml.recipe.AbstractGroovyGMLParserRecipe;
 import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import groovy.util.logging.* 
 
+@Commons
 public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
-
+					
 	def input_ns = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0";
 	def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0"
 	def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/"
@@ -47,6 +49,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 			def output_ID = O.NamedPlace.qn.unique(gmlid);
 			def output_props = properties();
 			def output_geoms = geometries();
+			def placeNamesCount = 0;
 
 			input_Feat.readChildren().each { input_Feats ->
 
@@ -68,8 +71,10 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 						}
 						break;
 					case I.NamedPlace.name:
+						
 						input_Feats.readDescendants(I.GeographicalName.qn).each { featGNProps ->
 							PARSER.GeographicalName(featGNProps, output_ID, output_props, output_geoms);
+							placeNamesCount++;
 						}
 						break;
 					default:
@@ -81,6 +86,10 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 				}
 			}
 
+			if( placeNamesCount == 0 ) {
+				output.vertex(output_ID, O.NamedPlace.qn,
+					output_props, EMPTY, output_geoms);
+			}
 			/*output.vertex(output_ID, O.NamedPlace.qn,
 			 output_props, EMPTY, output_geoms);*/
 
@@ -237,8 +246,13 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 
 		/* Process */
+		def fcount = 0
+			
 		iter(input.root().descendantElementCursor(I.NamedPlace.qn)).each { input_Feat ->
 			PARSER.NamedPlace(input_Feat);
+			fcount++;
+			
+			System.out.println(input_Feat);
 		}
 
 

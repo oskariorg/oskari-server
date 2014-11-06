@@ -219,7 +219,7 @@ public class TestELFGML {
 
 		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
 		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
-				"EPSG:3857");
+				"EPSG:3785");
 
 		InputStream inp = getClass().getResourceAsStream(
 				"/fi/nls/oskari/fe/input/format/gml/gn/ign_fr-ELF-GN-wfs.xml");

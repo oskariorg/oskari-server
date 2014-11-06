@@ -35,10 +35,8 @@ public class INSPIRE_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML
 				}
 			}
 
-			/*output.vertex(output_ID, O.GeographicalName.qn,
-			 output_props, EMPTY);*/
-			/*output.edge(output_NamedPlace_ID, O.NamedPlace.name, output_ID);*/
-
+			output.vertex(/*output_ID*/O.NamedPlace.qn.unique(), O.NamedPlace.qn,
+					output_props, EMPTY, output_geoms);
 		},
 		"NamedPlace": { input_Feat ->
 
@@ -46,6 +44,7 @@ public class INSPIRE_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML
 			def output_ID = O.NamedPlace.qn.unique(gmlid);
 			def output_props = properties();
 			def output_geoms = geometries();
+			def placeNamesCount = 0;
 
 			input_Feat.readChildren().each { input_Feats ->
 
@@ -69,6 +68,7 @@ public class INSPIRE_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML
 					case I.NamedPlace.name:
 						input_Feats.readDescendants(I.GeographicalName.qn).each { featGNProps ->
 							PARSER.GeographicalName(featGNProps, output_ID, output_props, output_geoms);
+							placeNamesCount++;
 						}
 						break;
 					default:
@@ -80,8 +80,10 @@ public class INSPIRE_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML
 				}
 			}
 
-			output.vertex(output_ID, O.NamedPlace.qn,
+			if( placeNamesCount == 0 ) {
+				output.vertex(output_ID, O.NamedPlace.qn,
 					output_props, EMPTY, output_geoms);
+			}
 
 		},
 		"SpellingOfName" : { input_Feat, output_GeographicalName_ID, output_props, output_geoms ->
