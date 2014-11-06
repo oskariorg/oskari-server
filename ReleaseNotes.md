@@ -2,6 +2,15 @@
 
 ## 1.25
 
+### service-scheduler
+
+Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
+
+### service-spatineo-monitor
+
+Added a new scheduler task for utilising a service availability functionality provided by Spatineo.
+Not included by default in servlet. See README.md in service-spatineo-monitor for details.
+
 ### service-map
 
 GetGeoPointDataService now uses credentials for layer when making a GetFeatureInfo request to a WMS service.
