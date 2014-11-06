@@ -65,14 +65,9 @@ public class Role {
 
     private static Role getRoleByName(final String rolename) {
         try {
-            final Role[] roles = UserService.getInstance().getRoles();
-            for(Role role : roles) {
-                if(rolename.equals(role.getName())) {
-                    return role;
-                }
-            }
+            return UserService.getInstance().getRoleByName(rolename);
         } catch (ServiceException ex) {
-            log.error(ex, "Error getting roles from user service");
+            log.error(ex, "Error getting UserService");
         }
         return null;
     }
