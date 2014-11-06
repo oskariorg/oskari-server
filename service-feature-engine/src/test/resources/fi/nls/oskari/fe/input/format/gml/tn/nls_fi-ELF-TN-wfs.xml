@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0 http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod1rdtn?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf_lod1rtn:RoadLink&amp;NAMESPACES=xmlns(elf_lod1rtn,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FRoadTransportNetwork%2FMasterLoD1%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-11-06T10:32:36Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="3" numberReturned="3">
+  <wfs:boundedBy>
+    <gml:Envelope srsName="EPSG:3035">
+      <gml:lowerCorner>5086688.179 4166574.708</gml:lowerCorner>
+      <gml:upperCorner>5087124.458 4166832.628</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy>
+  <wfs:member>
+    <elf_lod1rtn:RoadLink xmlns:elf_lod1rtn="http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0" gml:id="FI.Tieviiva.59784275">
+      <gml:identifier>FI.Tieviiva.59784275</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-09-11T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>59784275</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000782/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </net:inspireId>
+      <net:endLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2" xsi:nil="true" nilReason="unpopulated"/>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'FI.Tieviiva.59784275_NET_CENTRELINEGEOMETRY'-->
+        <gml:LineString gml:id="FI.Tieviiva.59784275_NET_CENTRELINEGEOMETRY" srsName="EPSG:3035">
+          <gml:posList>5086923.320 4166792.866 5086924.127 4166792.474 5086933.259 4166788.309 5086934.668 4166787.761 5086936.558 4166787.086 5086938.472 4166786.482 5086940.410 4166785.968 5086942.377 4166785.580 5086944.365 4166785.331 5086946.541 4166785.238 5086948.541 4166785.295 5086950.533 4166785.459 5086952.518 4166785.708 5086964.319 4166787.814 5086965.369 4166787.950 5086967.359 4166788.151 5086969.356 4166788.278 5086971.356 4166788.329 5086973.357 4166788.298 5086975.356 4166788.179 5086977.349 4166787.965 5086979.328 4166787.654 5086980.992 4166787.316 5086982.937 4166786.827 5086984.858 4166786.247 5086986.749 4166785.579 5086988.614 4166784.835 5086990.448 4166784.019 5086992.251 4166783.136 5086993.296 4166782.584 5086998.614 4166779.753 5087000.457 4166778.956 5087002.358 4166778.318 5087004.315 4166777.888 5087006.183 4166777.707 5087008.183 4166777.738 5087010.171 4166777.952 5087014.110 4166778.621 5087014.563 4166778.713 5087022.376 4166780.385 5087023.837 4166780.690 5087025.798 4166781.070 5087029.745 4166781.702 5087031.735 4166781.892 5087033.735 4166781.947 5087035.735 4166781.861 5087036.267 4166781.813 5087038.251 4166781.538 5087040.211 4166781.115 5087042.138 4166780.558 5087044.031 4166779.893 5087045.890 4166779.137 5087047.714 4166778.295 5087048.324 4166777.992 5087050.097 4166777.051 5087051.834 4166776.040 5087053.528 4166774.963 5087055.181 4166773.821 5087056.790 4166772.619 5087058.356 4166771.361 5087059.875 4166770.047 5087060.453 4166769.519 5087067.753 4166762.623 5087069.298 4166761.339 5087070.398 4166760.506 5087072.051 4166759.364 5087073.758 4166758.306 5087075.513 4166757.330 5087077.306 4166756.426 5087079.131 4166755.591 5087080.987 4166754.825 5087081.815 4166754.505 5087083.705 4166753.825 5087087.535 4166752.635 5087093.364 4166751.144 5087095.038 4166750.763 5087104.857 4166748.744</gml:posList>
+        </gml:LineString>
+      </net:centrelineGeometry>
+    </elf_lod1rtn:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <elf_lod1rtn:RoadLink xmlns:elf_lod1rtn="http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0" gml:id="FI.Tieviiva.1237478707">
+      <gml:identifier>FI.Tieviiva.1237478707</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-09-11T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>1237478707</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000782/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </net:inspireId>
+      <net:endLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2" xsi:nil="true" nilReason="unpopulated"/>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'FI.Tieviiva.1237478707_NET_CENTRELINEGEOMETRY'-->
+        <gml:LineString gml:id="FI.Tieviiva.1237478707_NET_CENTRELINEGEOMETRY" srsName="EPSG:3035">
+          <gml:posList>5086841.931 4166695.381 5086831.722 4166685.905 5086828.934 4166683.064 5086828.437 4166682.541 5086819.012 4166672.289 5086816.140 4166669.534 5086814.792 4166668.356 5086813.244 4166667.105 5086811.648 4166665.916 5086810.005 4166664.790 5086808.319 4166663.729 5086806.594 4166662.731 5086804.832 4166661.802 5086803.034 4166660.940 5086801.568 4166660.299 5086799.714 4166659.566 5086795.935 4166658.284 5086790.166 4166656.677 5086780.458 4166654.344 5086776.591 4166653.348 5086776.052 4166653.198 5086758.943 4166647.734 5086757.018 4166647.207 5086755.373 4166646.799 5086749.524 4166645.495 5086747.614 4166644.921 5086745.765 4166644.176 5086744.003 4166643.218 5086742.394 4166642.048 5086740.948 4166640.682 5086739.681 4166639.150 5086736.306 4166634.228 5086735.581 4166633.092 5086733.383 4166629.775 5086732.227 4166628.156 5086731.015 4166626.577 5086729.706 4166625.080 5086728.295 4166623.678 5086727.630 4166623.085 5086726.078 4166621.838 5086724.443 4166620.704 5086719.263 4166617.722 5086718.463 4166617.290</gml:posList>
+        </gml:LineString>
+      </net:centrelineGeometry>
+    </elf_lod1rtn:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <elf_lod1rtn:RoadLink xmlns:elf_lod1rtn="http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0" gml:id="FI.Tieviiva.59784269">
+      <gml:identifier>FI.Tieviiva.59784269</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-09-11T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>59784269</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000782/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </net:inspireId>
+      <net:endLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2" xsi:nil="true" nilReason="unpopulated"/>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'FI.Tieviiva.59784269_NET_CENTRELINEGEOMETRY'-->
+        <gml:LineString gml:id="FI.Tieviiva.59784269_NET_CENTRELINEGEOMETRY" srsName="EPSG:3035">
+          <gml:posList>5086841.931 4166695.381 5086841.487 4166693.901 5086837.393 4166678.497 5086836.982 4166677.131 5086831.590 4166662.141 5086831.070 4166660.783 5086828.138 4166653.378 5086827.345 4166651.552 5086826.483 4166649.759 5086825.549 4166648.002 5086824.964 4166646.978 5086823.913 4166645.289 5086817.123 4166635.471 5086816.324 4166634.200 5086815.338 4166632.472 5086814.435 4166630.698 5086813.625 4166628.881 5086812.911 4166627.022 5086812.323 4166625.118 5086811.879 4166623.177 5086811.587 4166621.205 5086811.539 4166620.709 5086811.450 4166618.716 5086811.520 4166616.720 5086811.741 4166614.733 5086812.096 4166612.765 5086812.570 4166610.822 5086812.974 4166609.473 5086813.634 4166607.582 5086814.386 4166605.726 5086815.229 4166603.907 5086818.038 4166598.587 5086818.943 4166596.963</gml:posList>
+        </gml:LineString>
+      </net:centrelineGeometry>
+    </elf_lod1rtn:RoadLink>
+  </wfs:member>
+</wfs:FeatureCollection>

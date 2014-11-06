@@ -10,11 +10,11 @@
     <se:Title>RoadLink Default Style</se:Title>
     <se:Abstract> The geometry is rendered as a solid Green line with a stroke width of 3 pixel (#008000). Ends are rounded and have a 2 pixel black casing (#000000).</se:Abstract>
    </se:Description>
-   <se:FeatureTypeName>TN:RoadLink</se:FeatureTypeName>
+   <se:FeatureTypeName>RoadLink</se:FeatureTypeName>
    <se:Rule>
     <se:LineSymbolizer>
      <se:Geometry>
-      <ogc:PropertyName>Network:centrelineGeometry</ogc:PropertyName>
+      <ogc:PropertyName>geometry</ogc:PropertyName>
      </se:Geometry>
      <se:Stroke/>
     </se:LineSymbolizer>
