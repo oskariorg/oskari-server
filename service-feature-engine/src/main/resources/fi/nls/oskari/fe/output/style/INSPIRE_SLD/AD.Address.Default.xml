@@ -96,6 +96,7 @@
 <se:Rule>
 <!--The middle accuracy - Thoroughfare level - 50% gray-->
 <se:Filter>
+<se:PropertyIsEqualTo>
 <ogc:PropertyName>AD:Address.position.specification</ogc:PropertyName>
 <ogc:Literal> segment</ogc:Literal>
 </se:PropertyIsEqualTo>

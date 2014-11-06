@@ -252,7 +252,7 @@ public class ELF_generic_GN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 			PARSER.NamedPlace(input_Feat);
 			fcount++;
 			
-			System.out.println(input_Feat);
+			//System.out.println(input_Feat);
 		}
 
 
