@@ -106,7 +106,7 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
             throw new IOException(e);
         }
 
-        Resource type = Resource.iri("http://test/", "Me");
+        Resource type = Resource.iri("http://test/", "Feature");
 
         SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
         ftb.setName(type.getLocalPart());
