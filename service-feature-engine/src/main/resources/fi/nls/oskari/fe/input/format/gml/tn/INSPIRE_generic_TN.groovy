@@ -5,17 +5,19 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 import groovy.util.logging.*
 
 @Commons
-public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
+public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
-	def input_ns = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0";
+	// <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0"	
+	def input_ns = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
+	def input_tn_ns = "urn:x-inspire:specification:gmlas:CommonTransportElements:3.0";
 	def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
 	def input_net_ns = "urn:x-inspire:specification:gmlas:Network:3.2";
 	def input_base_ns = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/";
 	def input_gml_ns = "http://www.opengis.net/gml/3.2";
 
-	def output_ns = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0#";
+	def output_ns = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0#";
 	def output_net_ns = "urn:x-inspire:specification:gmlas:Network:3.2#";
-	def output_tn_ns = "urn:x-inspire:specification:gmlas:Network:3.2#";
+	def output_tn_ns = "urn:x-inspire:specification:gmlas:CommonTransportElements:3.0#";
 	def output_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0#";
 
 
@@ -50,6 +52,8 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 		},
 		"RoadLink": { input_Feat ->
 
+			System.out.println(input_Feat);
+			
 			def gmlid = input_Feat.attr(input_gml_ns, "id");
 			def output_ID = O.RoadLink.qn.unique(gmlid);
 			def output_props = properties();
@@ -86,7 +90,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 					default:
 						input_Feats.readPrimitive(
 						I.RoadLink.props, output_props,
-						iri(output_tn_ns, input_Feats.qn.getLocalPart())
+						iri(output_ns, input_Feats.qn.getLocalPart())
 						)
 						break;
 				}
@@ -131,7 +135,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 			"localType"
 			),
 			"geometry": qn(input_net_ns, "centrelineGeometry"),
-			"geographicalName": qn(input_net_ns, "geographicalName"),
+			"geographicalName": qn(input_tn_ns, "geographicalName"),
 			"geoms": mapGeometryTypes("http://www.opengis.net/gml/3.2",
 			"LineString", "Curve", "CompositeCurve", "OrientableCurve","MultiCurve"
 			),
@@ -173,7 +177,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 		"RoadLink": [
 			"qn": iri(output_ns, "RoadLink"),
 			"geometry": iri(output_ns, "geometry"),
-			"geographicalName": iri(output_tn_ns, "geographicalName")
+			"geographicalName": iri(output_ns, "geographicalName")
 		],
 		"GeographicalName": [
 			"qn": iri(output_ns, "GeographicalName"),
@@ -188,6 +192,8 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 	/* Entry point */
 	public void parse() {
+		
+		System.out.println("Here We Go");
 
 		/* Declare prfixes (mainly for JSON-LD to be more compact) */
 		output.prefix("_ns", output_ns);
@@ -254,12 +260,14 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 		/* Process */
 		def fcount = 0
+		
+		System.out.println("Here We Go");
 
 		iter(input.root().descendantElementCursor(I.RoadLink.qn)).each { input_Feat ->
 			PARSER.RoadLink(input_Feat);
 			fcount++;
 
-			//System.out.println(input_Feat);
+			System.out.println(input_Feat);
 		}
 
 
