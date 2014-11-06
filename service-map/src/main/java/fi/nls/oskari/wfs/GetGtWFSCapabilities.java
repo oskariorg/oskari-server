@@ -271,7 +271,9 @@ public class GetGtWFSCapabilities {
 
 
             lc.setGMLGeometryProperty(geomName);
-            lc.setSRSName("EPSG:"+Integer.toString(isrs));
+            //TODO add srs support later
+            // lc.setSRSName("EPSG:"+Integer.toString(isrs));
+
 
             //lc.setGMLVersion();
             lc.setWFSVersion(data.getInfo().getVersion());

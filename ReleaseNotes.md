@@ -65,6 +65,10 @@ Added new action route for fetching CSW metadata. Requires a geonetwork base URL
 
 Enabled customized HTML tags for GFI content.
 
+### servlet-transport
+
+Excluded specific GML properties from parsed features.
+
 ## 1.24.4
 
 ### content-resources/publish template

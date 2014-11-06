@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 
 import fi.nls.oskari.util.PropertyUtil;
@@ -32,6 +34,15 @@ public abstract class OWSMapLayerJob extends Job {
 
     protected static final Logger log = LogFactory
             .getLogger(OWSMapLayerJob.class);
+
+    protected static Set<String> excludedProperties = new HashSet<String>();
+    static {
+        excludedProperties.add("metaDataProperty");
+        excludedProperties.add("description");
+        excludedProperties.add("name");
+        excludedProperties.add("boundedBy");
+        excludedProperties.add("location");
+    }
 
     public static enum Type {
         NORMAL("normal"), HIGHLIGHT("highlight"), MAP_CLICK("mapClick"), GEOJSON(

@@ -24,6 +24,7 @@ public class WFSLayerConfiguration {
     private static final Logger log = LogFactory
             .getLogger(WFSLayerConfiguration.class);
 	public final static String KEY = "WFSLayer_";
+    public final static String IMAGE_KEY = "WFSImage_";
 
     private static final double DEFAULT_TILE_BUFFER = 0.0d;
     private static final String KEY_DEFAULT = "default";

@@ -152,6 +152,9 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
 
         result.setGeometry((String) data.get("geom"));
 
+        result.setSrs_name((String) data.get("srs_name"));
+        result.setVersion((String) data.get("version"));
+
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));
 

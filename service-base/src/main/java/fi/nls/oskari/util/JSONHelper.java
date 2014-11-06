@@ -68,7 +68,8 @@ public class JSONHelper {
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Couldn't get JSONArray from " + content + " with key = " + key);
+            log.warn("Couldn't get JSONArray from " + content + " with key = " + key);
+            return null;
         }
     }
     public static final <T> Map<String, T> getObjectAsMap(final JSONObject obj) {

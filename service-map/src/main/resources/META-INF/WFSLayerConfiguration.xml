@@ -175,10 +175,8 @@
 		LEFT OUTER JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
 		WHERE l.maplayer_id = #id#
     </select>
-    <statement id="delete" parameterClass="int">
-        <![CDATA[
-        delete from portti_wfs_layer where id=#id#;
-        ]]>
+    <statement id="delete" parameterClass="java.lang.Long">
+        delete from portti_wfs_layer where maplayer_id=#maplayer_id#;
     </statement>
 
     <statement id="insert" parameterMap="LayerInsertParameter" >
