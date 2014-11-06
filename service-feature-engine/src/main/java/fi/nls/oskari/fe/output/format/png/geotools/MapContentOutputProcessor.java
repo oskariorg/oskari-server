@@ -99,9 +99,10 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         try {
             crs = CRS.decode(srsName, true);
         } catch (NoSuchAuthorityCodeException e) {
-
+        	e.printStackTrace();
             throw new IOException(e);
         } catch (FactoryException e) {
+        	e.printStackTrace();
             throw new IOException(e);
         }
 
@@ -182,6 +183,9 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
 
     public void end() throws IOException {
         /* Draw MAP */
+    	if( crs == null ) {
+    		throw new IOException("No CRS");
+    	}
         final MapContent map = new MapContent();
         final MapViewport viewport = new MapViewport();
         viewport.setCoordinateReferenceSystem(crs);
