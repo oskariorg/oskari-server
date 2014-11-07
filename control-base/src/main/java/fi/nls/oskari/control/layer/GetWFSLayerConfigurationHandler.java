@@ -35,10 +35,14 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     private UserLayerDbService userLayerDbService = new UserLayerDbServiceIbatisImpl();
     private MyPlacesService myPlacesService = new MyPlacesServiceIbatisImpl();
 
-    private final static String ID = "id";
+    private final static String PARAMS_ID = "id";
+    // if not defined, configuration is written to redis or =yes
+    // if =no configuration is in json response
+    private final static String PARAMS_REDIS = "redis";
 
     private final static String RESULT = "result";
     private final static String RESULT_SUCCESS = "success";
+    private final static String RESULT_WFSLAYER = "wfslayer";
 
     // Analysis
     public static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
@@ -55,21 +59,27 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         // Because of analysis layers
-        final String sid = params.getHttpParam(ID, "n/a");
+        final String sid = params.getHttpParam(PARAMS_ID, "n/a");
         final int id = ConversionHelper.getInt(getBaseLayerId(sid), -1);
         if(id == -1) {
-            throw new ActionParamsException("Required parameter '" + ID + "' missing!");
+            throw new ActionParamsException("Required parameter '" + PARAMS_ID + "' missing!");
         }
+        final String redis = params.getHttpParam(PARAMS_REDIS, "yes");
+        if(redis.equals("yes"))  params.requireLoggedInUser(); // only for logged in users!
 
         final WFSLayerConfiguration lc = getLayerInfoForRedis(id, sid);
-        if (lc == null) {
-            throw new ActionParamsException("Couldn't find matching layer for id " + ID);
-        }
-        // lc.save() saves the layer info to redis as JSON
-        lc.save();
 
+        if (lc == null) {
+            throw new ActionParamsException("Couldn't find matching layer for id " + PARAMS_ID);
+        }
         final JSONObject root = new JSONObject();
-        JSONHelper.putValue(root, RESULT, RESULT_SUCCESS);
+        if (redis.equals("no")) {
+            JSONHelper.putValue(root, RESULT_WFSLAYER, lc.getAsJSONObject());
+        } else {
+            // lc.save() saves the layer info to redis as JSON
+            lc.save();
+            JSONHelper.putValue(root, RESULT, RESULT_SUCCESS);
+        }
         ResponseHelper.writeResponse(params, root);
     }
 
