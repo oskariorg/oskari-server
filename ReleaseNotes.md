@@ -6,6 +6,8 @@
 
 Moved CSW related code from service-map to a new module.
 
+Includes a scheduled job to update coverage data for layers with metadata-identifier.
+
 ### service-scheduler
 
 Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
