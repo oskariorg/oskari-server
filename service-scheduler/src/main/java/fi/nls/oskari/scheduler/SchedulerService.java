@@ -2,13 +2,16 @@ package fi.nls.oskari.scheduler;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.worker.ScheduledJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.Map;
 import java.util.Properties;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
@@ -48,16 +51,52 @@ public class SchedulerService {
 
     public SchedulerService setupJobs() {
         log.info("Starting up scheduler jobs");
-        for (final String jobCode : PropertyUtil.getCommaSeparatedList(JOBS_KEY)) {
+
+        final Map<String, ScheduledJob> annotatedJobs = OskariComponentManager.getComponentsOfType(ScheduledJob.class);
+        log.info("Annotated scheduler jobs:", annotatedJobs.size());
+        for (final String jobCode : annotatedJobs.keySet()) {
             final String key = String.format("oskari.scheduler.job.%s", jobCode);
-            final String cronLine = PropertyUtil.get(key + ".cronLine");
-            final String className = PropertyUtil.get(key + ".className");
-            final String methodName = PropertyUtil.get(key + ".methodName");
+            final String cronLine = PropertyUtil.getOptional(key + ".cronLine");
+            if (null == cronLine) {
+                log.warn("Available scheduled job", jobCode, "needs the cronLine configuration parameter");
+            } else {
+                this.scheduleJob(annotatedJobs.get(jobCode), cronLine);
+            }
+        }
+
+        final String[] propertiesJobCodes = PropertyUtil.getCommaSeparatedList(JOBS_KEY);
+        log.info("Properties based scheduler jobs:", propertiesJobCodes.length);
+        for (final String jobCode : propertiesJobCodes) {
+            final String key = String.format("oskari.scheduler.job.%s", jobCode);
+            final String cronLine = PropertyUtil.getOptional(key + ".cronLine");
+            final String className = PropertyUtil.getOptional(key + ".className");
+            final String methodName = PropertyUtil.getOptional(key + ".methodName");
             if (null == cronLine || null == className || null == methodName) {
                 log.error("the job", jobCode, "needs the cronLine, className and methodName configuration parameters");
             } else {
                 this.scheduleMethodCall(jobCode, cronLine, className, methodName);
             }
+        }
+        return this;
+    }
+    public SchedulerService scheduleJob(final ScheduledJob scheduledJob, final String cronLine)
+    {
+        final String jobCode = scheduledJob.getName();
+
+        final JobDetail job = newJob()
+                .withIdentity(jobCode)
+                .ofType(OskariScheduledJob.class)
+                .usingJobData(OskariScheduledJob.CLASS_NAME, scheduledJob.getClass().getName())
+                .build();
+
+        final Trigger trigger = newTrigger()
+                .withSchedule(cronSchedule(cronLine))
+                .build();
+        try {
+            scheduler.scheduleJob(job, trigger);
+            log.info("Scheduled job", jobCode);
+        } catch (final SchedulerException e) {
+            log.error(e, "Failed to schedule job", jobCode);
         }
         return this;
     }

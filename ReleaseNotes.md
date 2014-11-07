@@ -23,6 +23,9 @@ Improved GPX data import.
 
 ### service-base
 
+Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
+scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
+
 Role now has a static method to determine default role for logged in user as well as admin role.
 
 Moved common annotation processing classes from service-control to service-base.
