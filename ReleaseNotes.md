@@ -2,6 +2,12 @@
 
 ## 1.25
 
+### service-cws
+
+Moved CSW related code from service-map to a new module.
+
+Includes a scheduled job to update coverage data for layers with metadata-identifier.
+
 ### service-scheduler
 
 Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
@@ -18,6 +24,9 @@ GetGeoPointDataService now uses credentials for layer when making a GetFeatureIn
 Improved GPX data import.
 
 ### service-base
+
+Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
+scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
 
 Role now has a static method to determine default role for logged in user as well as admin role.
 
@@ -73,6 +82,8 @@ Moved common annotation processing classes from service-control to service-base.
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
 
 Enabled customized HTML tags for GFI content.
+
+Added service-csw as a new dependency, it has code that was previously part of service-map.
 
 ### servlet-transport
 

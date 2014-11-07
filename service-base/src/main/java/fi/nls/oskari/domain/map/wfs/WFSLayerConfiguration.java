@@ -666,7 +666,7 @@ public class WFSLayerConfiguration {
         return JSONHelper.getStringFromJSON(langName, "name", "");
     }
 
-	public String getAsJSON() {
+	public JSONObject getAsJSONObject() {
 		final JSONObject root = new JSONObject();
 
 		JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
@@ -732,8 +732,12 @@ public class WFSLayerConfiguration {
 		}
 		JSONHelper.putValue(root, STYLES, styleList);
 
-		return root.toString();
+		return root;
 	}
+
+    public String getAsJSON() {
+        return getAsJSONObject().toString();
+    }
 
     public void setDefaults() {
         this.setSRSName("EPSG:3067");
