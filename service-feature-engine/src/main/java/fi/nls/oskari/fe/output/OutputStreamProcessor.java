@@ -4,5 +4,5 @@ import java.io.OutputStream;
 
 public interface OutputStreamProcessor extends OutputProcessor {
 
-	public void setOutput(OutputStream out);
+    public void setOutput(OutputStream out);
 }

@@ -66,225 +66,6 @@ import fi.nls.oskari.log.Logger;
 /* PoC which builds GeoTools Map to PNG */
 public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
-    protected static final Logger log = LogFactory
-            .getLogger(MapContentOutputProcessor.class);
-
-    private CoordinateReferenceSystem crs;
-    private SimpleFeatureType schema;
-    private SimpleFeatureBuilder sfb;
-    private List<SimpleFeature> sfc;
-    private StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
-    private FilterFactory filterFactory = CommonFactoryFinder
-            .getFilterFactory2();
-    private String srsName = null;
-    private Style sldStyle = null;
-
-    protected MapContentOutputProcessor() {
-
-    }
-
-    public MapContentOutputProcessor(String srsName) {
-        this.srsName = srsName;
-    }
-
-    public MapContentOutputProcessor(String srsName, Style sldStyle) {
-        this.srsName = srsName;
-        this.sldStyle = sldStyle;
-    }
-
-    public void begin() throws IOException {
-        // TODO Auto-generated method stub
-        /* Setup MAP */
-
-        try {
-            crs = CRS.decode(srsName, true);
-        } catch (NoSuchAuthorityCodeException e) {
-        	e.printStackTrace();
-            throw new IOException(e);
-        } catch (FactoryException e) {
-        	e.printStackTrace();
-            throw new IOException(e);
-        }
-
-        Resource type = Resource.iri("http://test/", "Feature");
-
-        SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
-        ftb.setName(type.getLocalPart());
-        ftb.setNamespaceURI(type.getNs());
-
-        // add a geometry property
-        ftb.setCRS(crs); // set crs first
-        ftb.add("geometry", Geometry.class, crs); // then add geometry
-
-        schema = ftb.buildFeatureType();
-
-        sfb = new SimpleFeatureBuilder(schema);
-
-        sfc = new LinkedList<SimpleFeature>();
-
-    }
-
-    private Style createStyle() {
-
-        // create a partially opaque outline stroke
-        Stroke stroke = styleFactory.createStroke(
-                filterFactory.literal(Color.BLUE), filterFactory.literal(1),
-                filterFactory.literal(0.5));
-
-        // create a partial opaque fill
-        Fill fill = styleFactory.createFill(filterFactory.literal(Color.CYAN),
-                filterFactory.literal(0.5));
-
-        /*
-         * Setting the geometryPropertyName arg to null signals that we want to
-         * draw the default geomettry of features
-         */
-        PolygonSymbolizer polygonSymbolizer = styleFactory
-                .createPolygonSymbolizer(stroke, fill, null);
-
-        /* Point */
-        Graphic gr = styleFactory.createDefaultGraphic();
-
-        Mark mark = styleFactory.getStarMark();
-
-        mark.setStroke(styleFactory.createStroke(
-                filterFactory.literal(Color.BLUE), filterFactory.literal(1)));
-
-        mark.setFill(styleFactory.createFill(filterFactory.literal(Color.CYAN)));
-
-        gr.graphicalSymbols().clear();
-        gr.graphicalSymbols().add(mark);
-        gr.setSize(filterFactory.literal(15));
-
-        /*
-         * Setting the geometryPropertyName arg to null signals that we want to
-         * draw the default geomettry of features
-         */
-        PointSymbolizer pointSymbolizer = styleFactory.createPointSymbolizer(
-                gr, null);
-
-        Rule rule = styleFactory.createRule();
-        rule.symbolizers().add(polygonSymbolizer);
-        rule.symbolizers().add(pointSymbolizer);
-
-        FeatureTypeStyle fts = styleFactory
-                .createFeatureTypeStyle(new Rule[] { rule });
-        Style style = styleFactory.createStyle();
-        style.featureTypeStyles().add(fts);
-
-        return style;
-    }
-
-    public void edge(Resource subject, Resource predicate, Resource value)
-            throws IOException {
-        /* Links -> might draw something */
-
-    }
-
-    public void end() throws IOException {
-        /* Draw MAP */
-    	if( crs == null ) {
-    		throw new IOException("No CRS");
-    	}
-        final MapContent map = new MapContent();
-        final MapViewport viewport = new MapViewport();
-        viewport.setCoordinateReferenceSystem(crs);
-
-        boolean upnorth = crs.getCoordinateSystem().getAxis(1).getDirection() == AxisDirection.NORTH;
-
-        map.setViewport(viewport);
-        final StreamingRenderer draw = new StreamingRenderer();
-        draw.setMapContent(map);
-
-        final SimpleFeatureCollection collection = DataUtilities
-                .collection(sfc);
-
-        ReferencedEnvelope bounds = collection.getBounds();
-        // bounds.expandBy(-100);
-
-        Style style = sldStyle != null ? sldStyle : createStyle();
-        Layer layer = new FeatureLayer(collection, style);
-        map.addLayer(layer);
-
-        int width = 500;
-        int height = upnorth ? (int) (bounds.getHeight() / bounds.getWidth() * width)
-                : (int) (bounds.getWidth() / bounds.getHeight() * width);
-
-        final Rectangle rect = new Rectangle(0, 0, width, height);
-
-        viewport.setScreenArea(rect);
-        viewport.setBounds(bounds);
-
-        /*
-         * AffineTransform transform = null;
-         *
-         * transform = RendererUtilities.worldToScreenTransform(bounds, rect,
-         * crs);
-         */
-        viewport.setCoordinateReferenceSystem(crs);
-
-        BufferedImage image = null;
-        Rectangle outputArea = new Rectangle(0, 0, width, height);
-
-        /* upscale / downscale to help geotools... */
-
-        image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D g2d = image.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-        draw.paint(g2d, outputArea, bounds);
-
-        g2d.dispose();
-
-        BufferedOutputStream pngo = new BufferedOutputStream(outs);
-        ImageIO.write(image, "png", pngo);
-        pngo.flush();
-
-    }
-
-    public void flush() throws IOException {
-
-    }
-
-    public void type(Resource type,
-                     List<Pair<Resource, XSDDatatype>> simpleProperties,
-                     List<Pair<Resource, Object>> linkProperties,
-                     List<Pair<Resource, String>> geometryProperties) throws IOException {
-
-    }
-
-    public void vertex(final Resource iri, final Resource type,
-                       final List<Pair<Resource, ?>> simpleProperties,
-                       final List<Pair<Resource, ?>> linkProperties) throws IOException {
-        /* No Geometry - IGNORE */
-
-    }
-
-    public void vertex(Resource iri, Resource type,
-                       List<Pair<Resource, ?>> simpleProperties,
-                       List<Pair<Resource, ?>> linkProperties,
-                       List<Pair<Resource, Geometry>> geometryProperties)
-            throws IOException {
-
-        for (Pair<Resource, Geometry> geomPair : geometryProperties) {
-            Geometry geom = geomPair.getValue();
-
-            System.out.println("+ "+geom.toString());
-            
-            sfb.add(geom);
-
-            SimpleFeature f = sfb.buildFeature(iri.toString());
-
-            sfc.add(f);
-
-        }
-
-    }
-
     public static Style createSLDStyle(String sldFilename) {
 
         log.info("[fe] Creating Style tryin 1.1.0 " + sldFilename);
@@ -377,6 +158,225 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         }
 
         return null;
+    }
+
+    protected static final Logger log = LogFactory
+            .getLogger(MapContentOutputProcessor.class);
+    private CoordinateReferenceSystem crs;
+    private SimpleFeatureType schema;
+    private SimpleFeatureBuilder sfb;
+    private List<SimpleFeature> sfc;
+    private StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory();
+    private FilterFactory filterFactory = CommonFactoryFinder
+            .getFilterFactory2();
+    private String srsName = null;
+
+    private Style sldStyle = null;
+
+    protected MapContentOutputProcessor() {
+
+    }
+
+    public MapContentOutputProcessor(String srsName) {
+        this.srsName = srsName;
+    }
+
+    public MapContentOutputProcessor(String srsName, Style sldStyle) {
+        this.srsName = srsName;
+        this.sldStyle = sldStyle;
+    }
+
+    public void begin() throws IOException {
+        // TODO Auto-generated method stub
+        /* Setup MAP */
+
+        try {
+            crs = CRS.decode(srsName, true);
+        } catch (NoSuchAuthorityCodeException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        } catch (FactoryException e) {
+            e.printStackTrace();
+            throw new IOException(e);
+        }
+
+        Resource type = Resource.iri("http://test/", "Feature");
+
+        SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
+        ftb.setName(type.getLocalPart());
+        ftb.setNamespaceURI(type.getNs());
+
+        // add a geometry property
+        ftb.setCRS(crs); // set crs first
+        ftb.add("geometry", Geometry.class, crs); // then add geometry
+
+        schema = ftb.buildFeatureType();
+
+        sfb = new SimpleFeatureBuilder(schema);
+
+        sfc = new LinkedList<SimpleFeature>();
+
+    }
+
+    private Style createStyle() {
+
+        // create a partially opaque outline stroke
+        Stroke stroke = styleFactory.createStroke(
+                filterFactory.literal(Color.BLUE), filterFactory.literal(1),
+                filterFactory.literal(0.5));
+
+        // create a partial opaque fill
+        Fill fill = styleFactory.createFill(filterFactory.literal(Color.CYAN),
+                filterFactory.literal(0.5));
+
+        /*
+         * Setting the geometryPropertyName arg to null signals that we want to
+         * draw the default geomettry of features
+         */
+        PolygonSymbolizer polygonSymbolizer = styleFactory
+                .createPolygonSymbolizer(stroke, fill, null);
+
+        /* Point */
+        Graphic gr = styleFactory.createDefaultGraphic();
+
+        Mark mark = styleFactory.getStarMark();
+
+        mark.setStroke(styleFactory.createStroke(
+                filterFactory.literal(Color.BLUE), filterFactory.literal(1)));
+
+        mark.setFill(styleFactory.createFill(filterFactory.literal(Color.CYAN)));
+
+        gr.graphicalSymbols().clear();
+        gr.graphicalSymbols().add(mark);
+        gr.setSize(filterFactory.literal(15));
+
+        /*
+         * Setting the geometryPropertyName arg to null signals that we want to
+         * draw the default geomettry of features
+         */
+        PointSymbolizer pointSymbolizer = styleFactory.createPointSymbolizer(
+                gr, null);
+
+        Rule rule = styleFactory.createRule();
+        rule.symbolizers().add(polygonSymbolizer);
+        rule.symbolizers().add(pointSymbolizer);
+
+        FeatureTypeStyle fts = styleFactory
+                .createFeatureTypeStyle(new Rule[] { rule });
+        Style style = styleFactory.createStyle();
+        style.featureTypeStyles().add(fts);
+
+        return style;
+    }
+
+    public void edge(Resource subject, Resource predicate, Resource value)
+            throws IOException {
+        /* Links -> might draw something */
+
+    }
+
+    public void end() throws IOException {
+        /* Draw MAP */
+        if (crs == null) {
+            throw new IOException("No CRS");
+        }
+        final MapContent map = new MapContent();
+        final MapViewport viewport = new MapViewport();
+        viewport.setCoordinateReferenceSystem(crs);
+
+        boolean upnorth = crs.getCoordinateSystem().getAxis(1).getDirection() == AxisDirection.NORTH;
+
+        map.setViewport(viewport);
+        final StreamingRenderer draw = new StreamingRenderer();
+        draw.setMapContent(map);
+
+        final SimpleFeatureCollection collection = DataUtilities
+                .collection(sfc);
+
+        ReferencedEnvelope bounds = collection.getBounds();
+        // bounds.expandBy(-100);
+
+        Style style = sldStyle != null ? sldStyle : createStyle();
+        Layer layer = new FeatureLayer(collection, style);
+        map.addLayer(layer);
+
+        int width = 500;
+        int height = upnorth ? (int) (bounds.getHeight() / bounds.getWidth() * width)
+                : (int) (bounds.getWidth() / bounds.getHeight() * width);
+
+        final Rectangle rect = new Rectangle(0, 0, width, height);
+
+        viewport.setScreenArea(rect);
+        viewport.setBounds(bounds);
+
+        /*
+         * AffineTransform transform = null;
+         * 
+         * transform = RendererUtilities.worldToScreenTransform(bounds, rect,
+         * crs);
+         */
+        viewport.setCoordinateReferenceSystem(crs);
+
+        BufferedImage image = null;
+        Rectangle outputArea = new Rectangle(0, 0, width, height);
+
+        /* upscale / downscale to help geotools... */
+
+        image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D g2d = image.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        draw.paint(g2d, outputArea, bounds);
+
+        g2d.dispose();
+
+        BufferedOutputStream pngo = new BufferedOutputStream(outs);
+        ImageIO.write(image, "png", pngo);
+        pngo.flush();
+
+    }
+
+    public void flush() throws IOException {
+
+    }
+
+    public void type(Resource type,
+            List<Pair<Resource, XSDDatatype>> simpleProperties,
+            List<Pair<Resource, Object>> linkProperties,
+            List<Pair<Resource, String>> geometryProperties) throws IOException {
+
+    }
+
+    public void vertex(final Resource iri, final Resource type,
+            final List<Pair<Resource, ?>> simpleProperties,
+            final List<Pair<Resource, ?>> linkProperties) throws IOException {
+        /* No Geometry - IGNORE */
+
+    }
+
+    public void vertex(Resource iri, Resource type,
+            List<Pair<Resource, ?>> simpleProperties,
+            List<Pair<Resource, ?>> linkProperties,
+            List<Pair<Resource, Geometry>> geometryProperties)
+            throws IOException {
+
+        for (Pair<Resource, Geometry> geomPair : geometryProperties) {
+            Geometry geom = geomPair.getValue();
+
+            System.out.println("+ " + geom.toString());
+
+            sfb.add(geom);
+
+            SimpleFeature f = sfb.buildFeature(iri.toString());
+
+            sfc.add(f);
+
+        }
+
     }
 
 }

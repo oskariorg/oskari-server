@@ -1,20 +1,13 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.util.Map;
-
-import org.geotools.gml2.FeatureTypeCache;
-import org.geotools.gml3.bindings.ArcStringTypeBinding;
-import org.geotools.gml3.bindings.ArcTypeBinding;
-import org.geotools.gml3.bindings.CircleTypeBinding;
-import org.geotools.gml3.bindings.GML3EncodingUtils;
+import org.geotools.gml3.ArcParameters;
+import org.geotools.gml3.GML;
 import org.geotools.gml3.bindings.RingTypeBinding;
 import org.geotools.gml3.bindings.SurfacePatchArrayPropertyTypeBinding;
 import org.geotools.gml3.bindings.X_ArcStringTypeBinding;
 import org.geotools.gml3.bindings.X_ArcTypeBinding;
 import org.geotools.gml3.bindings.X_CircleTypeBinding;
-import org.geotools.gml3.ArcParameters;
-import org.geotools.gml3.GML;
-import org.geotools.gml3.XSDIdRegistry;
+import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
 
 import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
