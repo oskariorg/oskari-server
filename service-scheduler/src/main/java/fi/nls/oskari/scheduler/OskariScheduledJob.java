@@ -9,9 +9,9 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
-* A configurable Quartz job wrapper for calling an arbitrary static method.
+* A configurable Quartz job wrapper for executing Oskari ScheduledJobs.
  *
- * Requires JobData entries for "className" and "methodName", which contain the obvious parameters.
+ * Requires JobData entry for "className" which should point to a class extending fi.nls.oskari.worker.ScheduledJob.
 */
 public class OskariScheduledJob implements Job {
 
