@@ -1,0 +1,284 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0 http://www.ign.es/wfs-inspire/transportes-btn100?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=tn-ro:RoadLink&amp;NAMESPACES=xmlns(tn-ro,urn%3Ax-inspire%3Aspecification%3Agmlas%3ARoadTransportNetwork%3A3.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-11-06T12:06:46Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="10" numberReturned="10">
+  <wfs:boundedBy>
+    <gml:Envelope srsName="EPSG:900913">
+      <gml:lowerCorner>-759602.465 4704122.769</gml:lowerCorner>
+      <gml:upperCorner>-51059.969 5376180.485</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_100000604L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">100000604L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>100000604L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_100000604L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_100000604L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_11322683-0e57-43e7-8069-74c7454325ff" srsName="EPSG:900913">
+              <gml:posList>-590410.924 5001530.149 -590326.141 5001660.741 -590256.535 5001776.026 -590244.966 5001796.616</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+      <tn:geographicalName xmlns:tn="urn:x-inspire:specification:gmlas:CommonTransportElements:3.0">
+        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>DSA 695</gn:text>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </tn:geographicalName>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_100000605L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">100000605L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>100000605L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_100000605L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_100000605L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_fef93465-685e-4de6-8d0b-118379d59483" srsName="EPSG:900913">
+              <gml:posList>-332177.097 5311827.493 -332345.261 5311842.416 -332632.153 5311718.364 -332778.376 5311615.586</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_100000606L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">100000606L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2012-10-09T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>100000606L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_100000606L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_100000606L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_76c98ab0-37f1-482e-a616-3e5aa04f736e" srsName="EPSG:900913">
+              <gml:posList>-461239.635 4951971.682 -461453.703 4952046.870 -461422.050 4952114.169 -461350.627 4952266.024 -461617.979 4952486.863</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_100000608L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">100000608L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>100000608L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_100000608L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_100000608L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_e63a7be4-7127-481f-aa15-b6a2efe2c5c3" srsName="EPSG:900913">
+              <gml:posList>-716558.814 4962832.280 -716457.125 4963004.916 -716385.698 4963153.834 -716342.478 4963264.373 -716332.092 4963344.206 -716280.697 4963387.794 -716175.189 4963534.611 -715997.616 4963814.528 -715956.680 4963861.786 -716096.293 4963487.009 -716140.514 4963355.210 -716157.340 4963277.785 -716165.568 4963241.513 -716197.605 4963215.368 -716256.056 4963177.816 -716342.889 4963060.728 -716558.814 4962832.280</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000601L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000601L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000601L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000601L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000601L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_fde81633-33a7-4624-af9e-48b5df731526" srsName="EPSG:900913">
+              <gml:posList>-399575.704 4935922.580 -399539.649 4935922.823 -399484.841 4935923.194</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+      <tn:geographicalName xmlns:tn="urn:x-inspire:specification:gmlas:CommonTransportElements:3.0">
+        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>M-13</gn:text>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </tn:geographicalName>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000602L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000602L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000602L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000602L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000602L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_e59f5f05-5396-4a61-915f-ea3f3935884a" srsName="EPSG:900913">
+              <gml:posList>-445985.826 4847729.497 -446042.812 4847715.536 -446134.258 4847685.980</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+      <tn:geographicalName xmlns:tn="urn:x-inspire:specification:gmlas:CommonTransportElements:3.0">
+        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>TO-22</gn:text>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </tn:geographicalName>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000603L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000603L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000603L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000603L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000603L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_c68cf2e5-38f0-4cb7-b199-df97dccdeed6" srsName="EPSG:900913">
+              <gml:posList>-648811.636 5199338.399 -648832.883 5199358.980 -648849.840 5199375.404 -648868.222 5199393.563 -648879.554 5199404.758 -648901.097 5199426.041</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+      <tn:geographicalName xmlns:tn="urn:x-inspire:specification:gmlas:CommonTransportElements:3.0">
+        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>N-VI</gn:text>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </tn:geographicalName>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000604L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000604L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000604L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000604L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000604L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_cca54f6d-f9d8-40c7-9dc8-2b07400013b2" srsName="EPSG:900913">
+              <gml:posList>-759602.465 5376180.485 -759272.761 5376158.157 -759240.465 5376155.970 -759176.559 5375931.233 -758791.997 5375790.258 -758846.251 5375623.562 -758898.904 5375512.133 -758828.516 5375416.028 -758660.529 5375320.275 -758529.874 5375319.384 -758481.282 5375290.983 -758481.161 5375288.347 -758427.392 5375206.269 -758405.992 5375141.199 -758417.904 5375056.104 -758400.778 5374911.575 -758402.181 5374826.966 -758457.892 5374663.242 -758465.874 5374607.394 -758437.338 5374566.550 -758320.591 5374469.449 -758239.640 5374262.087 -758102.573 5374150.428 -757965.508 5374038.768 -758025.792 5373793.195 -758205.645 5373667.676 -758131.554 5373429.664 -758092.984 5373412.812 -758054.414 5373395.961 -757986.210 5373226.659 -757767.079 5373123.602 -757641.894 5372940.365 -757554.867 5372991.258 -757483.641 5373147.643 -757345.983 5373203.616 -757305.299 5373336.529 -757139.558 5373288.949 -756914.878 5373471.202 -756797.711 5373449.452 -756854.995 5373348.885 -757161.222 5373130.696 -757122.550 5373066.255 -756973.713 5373027.552 -756937.462 5372895.409 -757089.276 5372804.532 -757113.480 5372771.009 -757124.171 5372654.012 -757153.933 5372560.246 -757234.241 5372345.652 -757227.428 5372327.887 -757211.449 5372328.620 -757184.762 5372357.963 -757033.921 5372650.109 -757018.124 5372654.851 -757009.130 5372633.167 -757147.606 5372245.172 -757132.049 5372209.203</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+      <tn:geographicalName xmlns:tn="urn:x-inspire:specification:gmlas:CommonTransportElements:3.0">
+        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+          <gn:spelling>
+            <gn:SpellingOfName>
+              <gn:text>AS-35</gn:text>
+            </gn:SpellingOfName>
+          </gn:spelling>
+        </gn:GeographicalName>
+      </tn:geographicalName>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000605L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000605L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2013-07-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000605L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000605L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000605L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_ba439fd9-247d-4110-9306-2270fcdb385a" srsName="EPSG:900913">
+              <gml:posList>-717748.318 4704122.769 -717496.070 4704184.239 -717401.686 4704205.613 -716987.334 4704752.033 -716938.411 4704815.718 -715946.838 4705503.791 -715818.954 4705343.727 -715372.008 4705537.093 -715119.062 4705708.795 -714834.558 4705880.699</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+    </tn-ro:RoadLink>
+  </wfs:member>
+  <wfs:member>
+    <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0" gml:id="TN-RO_ROADLINK_10000606L">
+      <gml:identifier codeSpace="urn:x-inspire:specification:gmlas:BaseTypes:3.2">10000606L</gml:identifier>
+      <net:beginLifespanVersion xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">2012-01-01T00:00:00</net:beginLifespanVersion>
+      <net:inspireId xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>10000606L</base:localId>
+          <base:namespace>ES.IGN.BTN100.</base:namespace>
+          <base:versionId>2013</base:versionId>
+        </base:Identifier>
+      </net:inspireId>
+      <net:centrelineGeometry xmlns:net="urn:x-inspire:specification:gmlas:Network:3.2">
+        <!--Inlined geometry 'TN-RO_ROADLINK_10000606L_NET_CENTRELINEGEOMETRY'-->
+        <gml:MultiCurve gml:id="TN-RO_ROADLINK_10000606L_NET_CENTRELINEGEOMETRY" srsName="EPSG:900913">
+          <gml:curveMember>
+            <gml:LineString gml:id="GEOMETRY_03dd084d-d9ab-4666-954d-74af100033f3" srsName="EPSG:900913">
+              <gml:posList>-51059.969 4806777.840 -51134.251 4806810.002 -51178.560 4806847.701 -51208.219 4806872.935 -51362.400 4806911.530 -51505.551 4806938.404 -51667.517 4806969.610 -51728.883 4807002.444 -51863.382 4807298.797 -51888.546 4807354.243</gml:posList>
+            </gml:LineString>
+          </gml:curveMember>
+        </gml:MultiCurve>
+      </net:centrelineGeometry>
+    </tn-ro:RoadLink>
+  </wfs:member>
+</wfs:FeatureCollection>
