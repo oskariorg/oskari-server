@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### standalone-jetty
+
+Fixed an issue with user logout functionality.
+
 ### service-cws
 
 Moved CSW related code from service-map to a new module.

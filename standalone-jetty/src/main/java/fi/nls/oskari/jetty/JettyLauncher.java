@@ -73,7 +73,7 @@ public class JettyLauncher {
         // <filter-mapping><filter-name>oskariRequestFilter</filter-name><servlet-name>mapFullServlet</servlet-name></filter-mapping>
         servletContext.addFilter(OskariRequestFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
         servletContext.addFilter(OskariRequestFilter.class, "/j_security_check", EnumSet.noneOf(DispatcherType.class));
-        servletContext.addFilter(OskariRequestFilter.class, "/logout", EnumSet.noneOf(DispatcherType.class));
+        servletContext.addFilter(OskariRequestFilter.class, PropertyUtil.get("auth.logout.url", "/logout"), EnumSet.noneOf(DispatcherType.class));
 
         servletContext.addServlet(createFrontEndServlet(), "/Oskari/*");
         servletContext.addServlet(JspServlet.class, "*.jsp");
@@ -97,6 +97,7 @@ public class JettyLauncher {
         Configuration.setConfiguration(new JNDILoginConfiguration(jndiDbPoolName));
         servletContext.setSecurityHandler(createJaasSecurityHandler());
         servletContext.addFilter(PrincipalAuthenticationFilter.class, "/", EnumSet.noneOf(DispatcherType.class));
+        servletContext.addFilter(PrincipalAuthenticationFilter.class, PropertyUtil.get("auth.logout.url", "/logout"), EnumSet.noneOf(DispatcherType.class));
     }
 
     private static Resource createResourceCollection() throws Exception {
