@@ -7,7 +7,7 @@ import groovy.util.logging.*
 @Commons
 public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
-	// <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0"	
+	// <tn-ro:RoadLink xmlns:tn-ro="urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0"
 	def input_ns = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
 	def input_tn_ns = "urn:x-inspire:specification:gmlas:CommonTransportElements:3.0";
 	def input_gn_ns = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
@@ -45,7 +45,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 
 			// TODO properly support multiple languages
 			output.vertex(/*output_ID*/O.RoadLink.qn.unique(), O.RoadLink.qn,
-				output_props, EMPTY, output_geoms);
+					output_props, EMPTY, output_geoms);
 
 
 
@@ -53,7 +53,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 		"RoadLink": { input_Feat ->
 
 			System.out.println(input_Feat);
-			
+
 			def gmlid = input_Feat.attr(input_gml_ns, "id");
 			def output_ID = O.RoadLink.qn.unique(gmlid);
 			def output_props = properties();
@@ -99,7 +99,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 
 			if( placeNamesCount == 0 ) {
 				output.vertex(output_ID, O.RoadLink.qn,
-					output_props, EMPTY, output_geoms);
+						output_props, EMPTY, output_geoms);
 			}
 
 
@@ -192,7 +192,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 
 	/* Entry point */
 	public void parse() {
-		
+
 		System.out.println("Here We Go");
 
 		/* Declare prfixes (mainly for JSON-LD to be more compact) */
@@ -251,7 +251,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 				iri(output_gn_ns,"script"),
 				XSDDatatype.XSDstring
 				)
-				
+
 				),
 				EMPTY,
 				geometryTypes(
@@ -260,7 +260,7 @@ public class INSPIRE_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML
 
 		/* Process */
 		def fcount = 0
-		
+
 		System.out.println("Here We Go");
 
 		iter(input.root().descendantElementCursor(I.RoadLink.qn)).each { input_Feat ->

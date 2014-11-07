@@ -43,7 +43,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 			// TODO properly support multiple languages
 			output.vertex(/*output_ID*/O.RoadLink.qn.unique(), O.RoadLink.qn,
-				output_props, EMPTY, output_geoms);
+					output_props, EMPTY, output_geoms);
 
 
 
@@ -95,7 +95,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 
 			if( placeNamesCount == 0 ) {
 				output.vertex(output_ID, O.RoadLink.qn,
-					output_props, EMPTY, output_geoms);
+						output_props, EMPTY, output_geoms);
 			}
 
 
@@ -245,7 +245,7 @@ public class ELF_generic_TN_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 				iri(output_gn_ns,"script"),
 				XSDDatatype.XSDstring
 				)
-				
+
 				),
 				EMPTY,
 				geometryTypes(

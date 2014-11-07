@@ -117,7 +117,7 @@ public class ELF_generic_bu_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 		output.prefix("_bu", output_bu_ns);
 
 		output.type(O.Building.qn,
-			simpleTypes(
+				simpleTypes(
 				pair(
 				iri(output_ns, "localId"),
 				XSDDatatype.XSDstring
@@ -139,12 +139,12 @@ public class ELF_generic_bu_Parser extends AbstractGroovyGMLParserRecipe.GML32 {
 				XSDDatatype.XSDstring
 				)
 
-			),
-			EMPTY,
-			geometryTypes(
-				pair(O.Geom, "GEOMETRY" ) 
-			) 
-		);
+				),
+				EMPTY,
+				geometryTypes(
+				pair(O.Geom, "GEOMETRY" )
+				)
+				);
 
 
 		/* Process */
