@@ -36,12 +36,13 @@ public interface OutputProcessor {
             throws IOException;
 
     public void vertex(final Resource iri, final Resource type,
-            final List<Pair<Resource, ?>> simpleProperties,
-            final List<Pair<Resource, ?>> linkProperties) throws IOException;
+            final List<Pair<Resource, Object>> simpleProperties,
+            final List<Pair<Resource, Object>> linkProperties)
+            throws IOException;
 
     public void vertex(final Resource iri, final Resource type,
-            final List<Pair<Resource, ?>> simpleProperties,
-            final List<Pair<Resource, ?>> linkProperties,
+            final List<Pair<Resource, Object>> simpleProperties,
+            final List<Pair<Resource, Object>> linkProperties,
             final List<Pair<Resource, Geometry>> geometryProperties)
             throws IOException;
 

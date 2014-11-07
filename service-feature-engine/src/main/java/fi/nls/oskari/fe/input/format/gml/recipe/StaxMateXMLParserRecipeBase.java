@@ -130,7 +130,7 @@ public abstract class StaxMateXMLParserRecipeBase {
 
         public void readFirstChildGeometry(
                 Map<QName, FEPullParser.PullParserHandler> handlers,
-                List<Pair<Resource, ?>> output, Resource rc)
+                List<Pair<Resource, Geometry>> output, Resource rc)
                 throws XMLStreamException, IOException, SAXException {
             SMInputCursor childCrsr = childElementCursor();
             iter(childCrsr).next().readGeometry(handlers, output, rc);
@@ -138,9 +138,9 @@ public abstract class StaxMateXMLParserRecipeBase {
 
         public void readGeometry(
                 Map<QName, FEPullParser.PullParserHandler> handlers,
-                List<Pair<Resource, ?>> output, Resource rc)
+                List<Pair<Resource, Geometry>> output, Resource rc)
                 throws XMLStreamException, IOException, SAXException {
-            Object obj = parseGeometry(handlers);
+            Geometry obj = (Geometry) parseGeometry(handlers);
 
             if (obj != null) {
                 output.add(pair(rc, obj));
@@ -148,7 +148,7 @@ public abstract class StaxMateXMLParserRecipeBase {
         }
 
         public void readPrimitive(Map<QName, Resource> primitive,
-                List<Pair<Resource, ?>> output, Resource rc)
+                List<Pair<Resource, Object>> output, Resource rc)
                 throws XMLStreamException {
             Object obj = parsePrimitive(primitive);
 
@@ -163,7 +163,7 @@ public abstract class StaxMateXMLParserRecipeBase {
          * @param output
          * @throws XMLStreamException
          */
-        public void readXlink(List<Pair<Resource, ?>> output, Resource rc)
+        public void readXlink(List<Pair<Resource, Object>> output, Resource rc)
                 throws XMLStreamException {
             Object obj = parseXlink();
 
@@ -279,7 +279,7 @@ public abstract class StaxMateXMLParserRecipeBase {
         return new ImmutablePair<Resource, Geometry>(rc, val);
     }
 
-    public Pair<Resource, ?> pair(Resource rc, Object val) {
+    public Pair<Resource, Object> pair(Resource rc, Object val) {
         return new ImmutablePair<Resource, Object>(rc, val);
     }
 

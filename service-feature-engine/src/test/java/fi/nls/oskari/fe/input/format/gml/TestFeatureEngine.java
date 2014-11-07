@@ -151,16 +151,16 @@ public class TestFeatureEngine {
 
 				@Override
 				public void vertex(Resource iri, Resource type,
-						List<Pair<Resource, ?>> simpleProperties,
-						List<Pair<Resource, ?>> linkProperties)
+						List<Pair<Resource, Object>> simpleProperties,
+						List<Pair<Resource, Object>> linkProperties)
 						throws IOException {
 
 				}
 
 				@Override
 				public void vertex(Resource iri, Resource type,
-						List<Pair<Resource, ?>> simpleProperties,
-						List<Pair<Resource, ?>> linkProperties,
+						List<Pair<Resource, Object>> simpleProperties,
+						List<Pair<Resource, Object>> linkProperties,
 						List<Pair<Resource, Geometry>> geometryProperties)
 						throws IOException {
 

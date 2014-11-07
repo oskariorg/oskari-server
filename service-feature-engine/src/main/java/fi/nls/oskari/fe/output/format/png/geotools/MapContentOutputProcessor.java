@@ -280,6 +280,11 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         if (crs == null) {
             throw new IOException("No CRS");
         }
+        
+        if( sfc.isEmpty()) {
+            return;
+        }
+        
         final MapContent map = new MapContent();
         final MapViewport viewport = new MapViewport();
         viewport.setCoordinateReferenceSystem(crs);
@@ -294,6 +299,10 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
                 .collection(sfc);
 
         ReferencedEnvelope bounds = collection.getBounds();
+        
+        if( bounds.isEmpty() ) {
+            return;
+        }
         // bounds.expandBy(-100);
 
         Style style = sldStyle != null ? sldStyle : createStyle();
@@ -352,15 +361,16 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
     }
 
     public void vertex(final Resource iri, final Resource type,
-            final List<Pair<Resource, ?>> simpleProperties,
-            final List<Pair<Resource, ?>> linkProperties) throws IOException {
+            final List<Pair<Resource, Object>> simpleProperties,
+            final List<Pair<Resource, Object>> linkProperties)
+            throws IOException {
         /* No Geometry - IGNORE */
 
     }
 
     public void vertex(Resource iri, Resource type,
-            List<Pair<Resource, ?>> simpleProperties,
-            List<Pair<Resource, ?>> linkProperties,
+            List<Pair<Resource, Object>> simpleProperties,
+            List<Pair<Resource, Object>> linkProperties,
             List<Pair<Resource, Geometry>> geometryProperties)
             throws IOException {
 
