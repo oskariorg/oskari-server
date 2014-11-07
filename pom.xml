@@ -177,6 +177,12 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-csw</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-search</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -693,6 +699,7 @@
         <module>service-search-nls</module>
         <module>service-control</module>
         <module>service-scheduler</module>
+        <module>service-csw</module>
 
         <module>control-base</module>
         <module>control-example</module>

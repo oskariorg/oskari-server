@@ -2,6 +2,10 @@
 
 ## 1.25
 
+### service-cws
+
+Moved CSW related code from service-map to a new module.
+
 ### service-scheduler
 
 Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
@@ -73,6 +77,8 @@ Moved common annotation processing classes from service-control to service-base.
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
 
 Enabled customized HTML tags for GFI content.
+
+Added service-csw as a new dependency, it has code that was previously part of service-map.
 
 ### servlet-transport
 
