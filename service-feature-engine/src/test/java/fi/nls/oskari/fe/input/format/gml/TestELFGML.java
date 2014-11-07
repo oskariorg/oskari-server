@@ -561,7 +561,7 @@ public class TestELFGML {
 				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/TN.RoadTransportNetwork.RoadLink.Default.sld");
 
 		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
-				"EPSG:3035", sldStyle);
+				"EPSG:3857", sldStyle);
 
 		InputStream inp = getClass()
 				.getResourceAsStream(

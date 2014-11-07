@@ -366,5 +366,59 @@ public class TestInspireGML {
 	 * 
 	 * }
 	 */
+	
+	/**
+	 * 
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 */
+	@Test
+	public void test_IgnEs_TN_WFS_GMLtoPNG()
+			throws InstantiationException, IllegalAccessException, IOException,
+			XMLStreamException {
+
+		GroovyFeatureEngine engine = new GroovyFeatureEngine();
+
+		XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+		
+		Style sldStyle = MapContentOutputProcessor
+				.createSLDStyle("/fi/nls/oskari/fe/output/style/INSPIRE_SLD/TN.RoadTransportNetwork.RoadLink.Default.sld");
+
+		OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
+				"EPSG:3785", sldStyle);
+
+		InputStream inp = getClass()
+				.getResourceAsStream(
+						"/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+
+		try {
+			inputProcessor.setInput(inp);
+
+			FileOutputStream fouts = new FileOutputStream("TN-ign_es.png");
+			try {
+				outputProcessor.setOutput(fouts);
+
+				GroovyParserRecipe recipe = setupGroovyScript(
+						"/fi/nls/oskari/fe/input/format/gml/tn/INSPIRE_generic_TN.groovy")
+						.newInstance();
+				engine.setRecipe(recipe);
+
+				engine.setInputProcessor(inputProcessor);
+				engine.setOutputProcessor(outputProcessor);
+
+				engine.process();
+
+			} finally {
+				fouts.close();
+			}
+
+		} finally {
+			inp.close();
+		}
+
+	}
+
 
 }
