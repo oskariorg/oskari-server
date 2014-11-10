@@ -551,14 +551,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 }
 
                 public void vertex(final Resource iri, final Resource type,
-                        final List<Pair<Resource, ?>> simpleProperties,
-                        final List<Pair<Resource, ?>> linkProperties)
+                        final List<Pair<Resource, Object>> simpleProperties,
+                        final List<Pair<Resource, Object>> linkProperties)
                         throws IOException {
                 }
 
                 public void vertex(Resource iri, Resource type,
-                        List<Pair<Resource, ?>> simpleProperties,
-                        List<Pair<Resource, ?>> linkProperties,
+                        List<Pair<Resource, Object>> simpleProperties,
+                        List<Pair<Resource, Object>> linkProperties,
                         List<Pair<Resource, Geometry>> geometryProperties)
                         throws IOException {
 

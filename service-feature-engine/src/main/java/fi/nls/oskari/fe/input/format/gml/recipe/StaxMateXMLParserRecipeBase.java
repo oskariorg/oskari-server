@@ -283,6 +283,15 @@ public abstract class StaxMateXMLParserRecipeBase {
         return new ImmutablePair<Resource, Object>(rc, val);
     }
 
+    public ImmutablePair<Resource, String> pair(Resource rc, String val) {
+        return new ImmutablePair<Resource, String>(rc, val);
+    }
+
+    public ImmutablePair<Resource, XSDDatatype> pair(Resource rc,
+            XSDDatatype val) {
+        return new ImmutablePair<Resource, XSDDatatype>(rc, val);
+    }
+
     public abstract Object parseGeometry(
             Map<QName, FEPullParser.PullParserHandler> handlers,
             SMInputCursor crsr) throws XMLStreamException, IOException,

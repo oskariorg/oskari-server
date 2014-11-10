@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xml.sax.SAXException;
 
@@ -46,7 +45,14 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
     final QName I_RoadLink_inspireId;
     final QName I_RoadLink_Identifier;
     final QName I_RoadLink_geographicalName;
+
     final QName I_GeographicalName_qn;
+    final QName I_GeographicalName_spelling;
+    final Map<QName, Resource> I_GeographicalName_props;
+
+    final QName I_SpellingOfName_qn;
+    final Map<QName, Resource> I_SpellingOfName_props;
+
     final Map<QName, PullParserHandler> I_RoadLink_geoms;
     final Map<QName, Resource> I_RoadLink_props;
 
@@ -54,6 +60,11 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
     /* def O = [ in Groovy ]; */
     final Resource O_Geom = iri("http://oskari.org/spatial#", "location");
     final Resource O_RoadLink_qn = iri(output_ns, "RoadLink");
+    final Resource O_GeographicalName_qn = iri(output_ns, "GeographicalName");
+    final Resource O_SpellingOfName_qn = iri(output_ns, "SpellingOfName");
+    final Resource O_SpellingOfName_text = iri(output_gn_ns, "text");
+
+    final List<Pair<Resource, Object>> EMPTY = new ArrayList<Pair<Resource, Object>>();
 
     /**
      * 
@@ -81,20 +92,50 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
         I_RoadLink_Identifier = qn(input_base_ns, "Identifier");
 
         I_GeographicalName_qn = qn(input_gn_ns, "GeographicalName");
+        I_GeographicalName_spelling = qn(input_gn_ns, "spelling");
+        I_GeographicalName_props = mapPrimitiveTypes(XSDDatatype.XSDstring,
+                input_gn_ns, "language", "sourceOfName", "pronunciation",
+                "referenceName");
+
+        I_SpellingOfName_qn = qn(input_gn_ns, "SpellingOfName");
+        I_SpellingOfName_props = mapPrimitiveTypes(XSDDatatype.XSDstring,
+                input_gn_ns, "text", "script");
 
     }
 
-    ImmutablePair<Resource, String> pair(Resource rc, String val) {
-        return new ImmutablePair<Resource, String>(rc, val);
-    }
+    private void PARSER_GeographicalName(InputEvent input_Feat,
+            Resource output_NamedPlace_ID,
+            List<Pair<Resource, Object>> output_props,
+            List<Pair<Resource, Geometry>> output_geoms)
+            throws XMLStreamException, IOException {
 
-    ImmutablePair<Resource, XSDDatatype> pair(Resource rc, XSDDatatype val) {
-        return new ImmutablePair<Resource, XSDDatatype>(rc, val);
-    }
+        Resource output_ID = O_GeographicalName_qn.unique();
+        // def output_props = properties();
 
-    private void PARSER_GeographicalName(InputEvent featGNProps,
-            Resource output_ID, List<Pair<Resource, Object>> output_props,
-            List<Pair<Resource, Geometry>> output_geoms) {
+        Iterator<InputEvent> input_Feats_iter = input_Feat.readChildren();
+        while (input_Feats_iter.hasNext()) {
+            InputEvent input_Feats = input_Feats_iter.next();
+
+            if (input_Feats.qn.equals(I_GeographicalName_spelling)) {
+                Iterator<InputEvent> featGNProps_iter = input_Feats
+                        .readDescendants(I_SpellingOfName_qn);
+                while (featGNProps_iter.hasNext()) {
+                    InputEvent featGNProps = featGNProps_iter.next();
+
+                    PARSER_SpellingOfName(featGNProps, output_ID, output_props,
+                            output_geoms);
+                }
+            } else {
+                input_Feats.readPrimitive(I_GeographicalName_props,
+                        output_props,
+                        iri(output_gn_ns, input_Feats.qn.getLocalPart()));
+            }
+
+        }
+
+        // TODO properly support multiple languages
+        output.vertex(/* output_ID */O_RoadLink_qn.unique(), O_RoadLink_qn,
+                output_props, EMPTY, output_geoms);
 
     }
 
@@ -136,10 +177,27 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
 
         if (placeNamesCount == 0) {
 
-            List<Pair<Resource, Object>> EMPTY = new ArrayList<Pair<Resource, Object>>();
-
             output.vertex(output_ID, O_RoadLink_qn, output_props, EMPTY,
                     output_geoms);
+
+        }
+
+    }
+
+    private void PARSER_SpellingOfName(InputEvent input_Feat,
+            Resource output_GeographicalName_ID,
+            List<Pair<Resource, Object>> output_props,
+            List<Pair<Resource, Geometry>> output_geoms)
+            throws XMLStreamException, IOException {
+
+        Resource output_ID = O_SpellingOfName_qn.unique();
+
+        Iterator<InputEvent> input_Feats_iter = input_Feat.readChildren();
+        while (input_Feats_iter.hasNext()) {
+            InputEvent input_Feats = input_Feats_iter.next();
+
+            input_Feats.readPrimitive(I_SpellingOfName_props, output_props,
+                    iri(output_gn_ns, input_Feats.qn.getLocalPart()));
 
         }
 
@@ -154,7 +212,31 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
             /* Declare a Type for Transport */
 
             final List<Pair<Resource, XSDDatatype>> simpleProperties = new ArrayList<Pair<Resource, XSDDatatype>>();
-            setupOutputProperties(simpleProperties);
+            simpleProperties.add(pair(iri(output_ns, "localId"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_ns, "namespace"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_ns, "versionId"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(
+                    iri(output_tn_ns, "beginLifespanVersion"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_tn_ns, "endLifespanVersion"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_tn_ns, "localType"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "language"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "sourceOfName"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "pronunciation"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "referenceName"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "text"),
+                    XSDDatatype.XSDstring));
+            simpleProperties.add(pair(iri(output_gn_ns, "script"),
+                    XSDDatatype.XSDstring));
 
             final List<Pair<Resource, Object>> linkProperties = new ArrayList<Pair<Resource, Object>>();
             final List<Pair<Resource, String>> geometryProperties = new ArrayList<Pair<Resource, String>>();
@@ -180,36 +262,6 @@ public class ELF_TN_RoadLinkParserRecipe extends StaxMateGMLParserRecipeBase {
 
             throw new IOException(e);
         }
-
-    }
-
-    private void setupOutputProperties(
-            List<Pair<Resource, XSDDatatype>> simpleProperties) {
-
-        simpleProperties.add(pair(iri(output_ns, "localId"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_ns, "namespace"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_ns, "versionId"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_tn_ns, "beginLifespanVersion"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_tn_ns, "endLifespanVersion"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_tn_ns, "localType"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "language"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "sourceOfName"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "pronunciation"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "referenceName"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "text"),
-                XSDDatatype.XSDstring));
-        simpleProperties.add(pair(iri(output_gn_ns, "script"),
-                XSDDatatype.XSDstring));
 
     }
 
