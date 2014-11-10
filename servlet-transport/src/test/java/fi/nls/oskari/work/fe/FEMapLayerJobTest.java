@@ -42,7 +42,7 @@ public class FEMapLayerJobTest {
 
     }
 
-    // @org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testTNRequest() throws IOException {
 
@@ -77,7 +77,7 @@ public class FEMapLayerJobTest {
 
     }
 
-    // @org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testConcurrentRequests() throws IOException {
 
