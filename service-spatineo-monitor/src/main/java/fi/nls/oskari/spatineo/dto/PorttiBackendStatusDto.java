@@ -1,6 +1,7 @@
 package fi.nls.oskari.spatineo.dto;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Calendar;
 
@@ -10,8 +11,13 @@ import java.util.Calendar;
 public class PorttiBackendStatusDto {
 
     public static interface Mapper {
-        @Insert("INSERT INTO portti_backendstatus (ts, maplayer_id, status, statusmessage, infourl) VALUES (NOW(), #{mapLayerId}, #{status}, #{statusMessage}, #{infoUrl})")
+        @Insert("INSERT INTO portti_backendstatus " +
+                " (ts, maplayer_id, status, statusmessage, infourl) " +
+                " VALUES (NOW(), #{mapLayerId}, #{status}, #{statusMessage}, #{infoUrl})")
         public void saveStatus(final PorttiBackendStatusDto status);
+
+        @Update("TRUNCATE portti_backendstatus")
+        public void truncateStatusTable();
     }
 
     public PorttiBackendStatusDto() {

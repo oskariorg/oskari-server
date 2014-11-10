@@ -35,6 +35,7 @@ public class SpatineoServalUpdateService {
         final OskariDao oskariDao = new OskariDao(dataSource);
         final WmsServiceStatusDao serviceStatusDao = new WmsServiceStatusDao(dataSource);
         final SpatineoServalDao spatineoDao = new SpatineoServalDao(SERVAL_URL);
+        serviceStatusDao.truncateStatusTable();
         for (final List<OskariMapLayerDto> layers : Lists.partition(oskariDao.findWmsMapLayerData(), CHUNK_SIZE)) {
             log.debug("checking status for layers", layers);
             final SpatineoResponseDto spatineoResponse = spatineoDao.checkServiceStatus(layers);

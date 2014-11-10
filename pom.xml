@@ -697,6 +697,7 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-spatineo-monitor</module>
         <module>service-control</module>
         <module>service-scheduler</module>
         <module>service-csw</module>

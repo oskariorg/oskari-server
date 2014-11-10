@@ -49,4 +49,15 @@ public class WmsServiceStatusDao {
         }
     }
 
+    public void truncateStatusTable() {
+        final SqlSession session = factory.openSession();
+        try {
+            final PorttiBackendStatusDto.Mapper mapper = session.getMapper(PorttiBackendStatusDto.Mapper.class);
+            mapper.truncateStatusTable();
+            session.commit();
+        } finally {
+            session.close();
+        }
+    }
+
 }
