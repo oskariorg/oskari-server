@@ -20,15 +20,15 @@
             <groupId>fi.nls.oskari</groupId>
             <artifactId>content-resources</artifactId>
         </dependency>
-        <!-- dependency>
+        <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
+        </dependency -->
+        <!-- dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
         </dependency -->
