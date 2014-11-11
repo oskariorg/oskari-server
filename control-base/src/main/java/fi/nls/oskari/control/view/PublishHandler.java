@@ -68,6 +68,7 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_STATE = "state";
     public static final String KEY_RESPONSIVE = "responsive";
     public static final String VIEW_RESPONSIVE = "responsive";
+    public static final String APP_RESPONSIVE = "responsive-published-map";
 
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
@@ -219,6 +220,7 @@ public class PublishHandler extends ActionHandler {
                     responsive
             );
             currentView.setPage(VIEW_RESPONSIVE);
+            currentView.setApplication(APP_RESPONSIVE);
         }
 
         // Setup user
