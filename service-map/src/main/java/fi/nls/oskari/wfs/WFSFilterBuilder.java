@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
@@ -325,7 +326,8 @@ public class WFSFilterBuilder {
 
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
-            final JSONArray jsIdArray = filter_js.getJSONArray(KEY_FEATUREIDS);
+            final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
+            if(jsIdArray == null || jsIdArray.length() == 0) return null;
             for (int i = 0; i < jsIdArray.length(); i++) {
                 final String featureid = jsIdArray.optString(i);
 

@@ -496,6 +496,9 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             final Collection<Property> featureProperties = this.features.features().next().getProperties();
             for (Property prop : featureProperties) {
                 final String field = prop.getName().toString();
+                if (this.excludedProperties.contains(field)) {
+                    continue;
+                }
                 // don't add geometry
                 if (!this.layer.getGMLGeometryProperty().equals(field)) {
                     propertyNames.add(field);

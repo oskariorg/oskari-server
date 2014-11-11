@@ -22,17 +22,15 @@ public class SaveLayerPermissionHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         log.debug("PERMISSION HANDLER LAYER");
-
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Denied, user not admin");
-        }
+        // only accept admins
+        params.requireAdminUser();
 
         final Permissions permissions = new Permissions();
         permissions.setExternalIdType(Permissions.EXTERNAL_TYPE_ROLE);
         permissions.getUniqueResourceName().setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
 
         final JSONArray resources = parseJSONArray(params.getHttpParam(PARAMETER_PERMISSION_DATA));
-        final String whoMakesThisModification = params.getUser().getEmail();
+        final String whoMakesThisModification = params.getUser().getScreenname();
 
         try {
             for (int i = 0; i < resources.length(); i++) {

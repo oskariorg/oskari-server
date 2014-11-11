@@ -14,4 +14,4 @@ transport.log
 *pom.xml.versionsBackup
 /standalone-jetty/dist/public/oskari
 /standalone-jetty/dist/public/Oskari
-
+/bin/

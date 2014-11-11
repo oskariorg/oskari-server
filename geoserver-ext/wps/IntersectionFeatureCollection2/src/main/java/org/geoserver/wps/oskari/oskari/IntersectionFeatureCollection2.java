@@ -111,12 +111,13 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 && (!isGeometryTypeIn(firstGeomType, MultiPolygon.class, Polygon.class) || !isGeometryTypeIn(
                 secondGeomType, MultiPolygon.class, Polygon.class))) {
             throw new IllegalArgumentException(
-                    "In case of opMode or areaMode are true, the features in the first and second collection must be polygonal");
+                    "In case of opMode or areaMode are true, the features in the first (" + firstGeomType.getName()
+                            + ") and second (" + secondGeomType.getName() + ") collection must be polygonal");
         }
         if (!isGeometryTypeIn(firstGeomType, MultiPolygon.class, Polygon.class,
                 MultiLineString.class, LineString.class)) {
             throw new IllegalArgumentException(
-                    "First feature collection must be polygonal or linear");
+                    "First feature collection must be polygonal or linear. Was: " + firstGeomType.getName());
         }
 
         return new IntersectedFeatureCollection(firstFeatures, firstAttributes, secondFeatures,

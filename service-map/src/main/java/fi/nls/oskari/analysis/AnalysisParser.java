@@ -81,7 +81,7 @@ public class AnalysisParser {
     private static final String LAYER_UNION = "layer_union";
     private static final String ZONESECTOR = "areas_and_sectors";
     private static final String FUNC_NODATACOUNT = "NoDataCnt";
-    private static final String DELTA_FIELD_NAME = "muutos_AB";
+    private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
     private static final String JSONKEY_OVERRIDE_SLD = "override_sld";
 
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
@@ -474,9 +474,8 @@ public class AnalysisParser {
             method.setWps_reference_type(analysisLayer.getInputType());
             method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
 
-            // New field types for difference data
-            analysisLayer.getFieldtypeMap().put(method.getFieldA1()+"_A", "numeric");
-            analysisLayer.getFieldtypeMap().put(method.getFieldB1()+"_B", "numeric");
+            // New field types for difference data (string is default
+
             analysisLayer.getFieldtypeMap().put(DELTA_FIELD_NAME, "numeric");
 
             // Set override style

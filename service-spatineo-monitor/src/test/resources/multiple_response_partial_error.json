@@ -1,0 +1,24 @@
+{
+  "result": [
+    {
+      "status": "ERROR",
+      "statusMessage": "Unknown service"
+    },
+    {
+      "infoUrl": "http://directory.spatineo.com/service/3470/",
+      "status": "OK",
+      "week": {
+        "hoursDown": 1.0001394444444445,
+        "hoursMaintenance": 0,
+        "hoursUp": 175.34268166666666
+      },
+      "year": {
+        "hoursDown": 247.06458138888888,
+        "hoursMaintenance": 0,
+        "hoursUp": 6790.603538888889
+      }
+    }
+  ],
+  "status": "OK",
+  "version": "1.0"
+}

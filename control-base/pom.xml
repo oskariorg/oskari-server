@@ -25,6 +25,10 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-csw</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-wfs</artifactId>
         </dependency>
         <dependency>

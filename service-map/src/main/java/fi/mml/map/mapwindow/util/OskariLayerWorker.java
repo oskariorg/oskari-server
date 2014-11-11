@@ -8,6 +8,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
@@ -29,7 +30,6 @@ public class OskariLayerWorker {
 
     private static final String NO_PUBLICATION_PERMISSION = "no_publication_permission";
     private static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
-
 
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -92,7 +92,7 @@ public class OskariLayerWorker {
         final JSONArray layersList = new JSONArray();
         start = System.currentTimeMillis();
         for (OskariLayer layer : layers) {
-            final String permissionKey = layer.getUrl() + "+" + layer.getName();
+            final String permissionKey = layer.getType()+ "+" + layer.getUrl() + "+" + layer.getName();
             if (layer.getParentId() == -1 && !resources.contains(permissionKey)) {
                 // not permitted if resource NOT found in permissions!
                 // sublayers can pass through since their parentId != -1
@@ -181,6 +181,18 @@ public class OskariLayerWorker {
         if(layer.getInspireTheme() != null) {
             JSONHelper.putValue(adminData, "inspireId", layer.getInspireTheme().getId());
         }
+    }
+
+    public static void transformWKTGeom(final JSONObject layerJSON, final String mapSRS) {
+
+        final String wktWGS84 = layerJSON.optString("geom");
+        if(wktWGS84 == null) {
+            return;
+        }
+        // WTK is saved as EPSG:4326 in database
+        final String transformed = WKTHelper.transform(wktWGS84, WKTHelper.PROJ_EPSG_4326, mapSRS);
+        // value will be removed if transform failed, that's ok since client can't handle it if it's in unknown projection
+        JSONHelper.putValue(layerJSON, "geom", transformed);
     }
 
     /**

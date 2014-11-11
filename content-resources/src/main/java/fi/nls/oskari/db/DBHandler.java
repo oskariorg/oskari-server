@@ -2,14 +2,17 @@ package fi.nls.oskari.db;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +33,9 @@ public class DBHandler {
     private static Logger log = LogFactory.getLogger(DBHandler.class);
 
     public static void main(String[] args) throws Exception {
+        // set alternate sqlMapLocation when running on commandline
+        BaseIbatisService.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
+
         // populate standalone properties
         PropertyUtil.loadProperties("/db.properties");
         final String environment = System.getProperty("oskari.env");
@@ -76,35 +82,42 @@ public class DBHandler {
      * @throws SQLException if connection cannot be fetched
      */
     public static Connection getConnection() throws SQLException {
+        return getDataSource().getConnection();
+    }
 
-        final String datasource = PropertyUtil.get("db.jndi.name", "jdbc/OskariPool");
+    public static DataSource getDataSource() throws SQLException {
+        final String jndiUrl = String.format("java:/comp/env/%s",
+                PropertyUtil.get("db.jndi.name", "jdbc/OskariPool"));
         try {
-            final InitialContext ctx = new InitialContext();
-            final DataSource ds = (DataSource) ctx.lookup("java:/comp/env/" + datasource);
-            return ds.getConnection();
-        } catch (Exception e) {
+            return (DataSource) new InitialContext().lookup(jndiUrl);
+        } catch (final NamingException e) {
+            // fallthrough, continue if the DataSource was not found from the JNDI context
         }
 
-        final String url = PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb");
+        final BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl(PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb"));
+        dataSource.setUsername(getProperty("db.username"));
+        dataSource.setPassword(getProperty("db.password"));
         try {
-            final Properties connectionProps = new Properties();
-            final String user = PropertyUtil.getOptional("db.username");
-            if(user != null) connectionProps.put("user", user);
+            new InitialContext().rebind(jndiUrl, dataSource);
+        } catch (final NamingException e) {
+            log.error(e, "Unable to set the JNDI data source from DBHandler.");
+        }
+        return dataSource;
+    }
 
-            final String pass = PropertyUtil.getOptional("db.password");
-            if(pass != null) connectionProps.put("password", pass);
+    private static String getProperty(final String key) {
+        return firstNonNull(PropertyUtil.getOptional(key), System.getProperty(key));
+    }
 
-            overrideConnectionPropertiesFromSystemProperties(connectionProps);
-
-            final Connection conn = DriverManager.getConnection(url, connectionProps);
-            if(conn != null) {
-                log.info("Using connection:", url);
-                return conn;
+    private static String firstNonNull(final String ... strings) {
+        for (final String s : strings) {
+            if (null != s) {
+                return s;
             }
-        } catch (Exception e) {
         }
-        throw new SQLException("Couldn't get db connection! Tried with datasource: "
-                +datasource + " and url: " + url + ". Aborting...");
+        return null;
     }
 
     private static void overrideConnectionPropertiesFromSystemProperties(Properties connectionProps) {

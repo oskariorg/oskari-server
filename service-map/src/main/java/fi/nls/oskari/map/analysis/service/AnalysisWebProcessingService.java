@@ -38,7 +38,7 @@ public class AnalysisWebProcessingService {
     private static final String GEOJSON_LAYER2 = "layer2";
     private static final String GEOJSON_GEOMETRY = "geometry";
     private static final String GEOJSON_PROPERTIES = "properties";
-    private static final String DELTA_FIELD_NAME = "muutos_AB";
+    private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
 
     /**
      * Get WPS results as wfs FeatureCollection
@@ -125,12 +125,13 @@ public class AnalysisWebProcessingService {
         String featureSet = null;
         try {
             // 1) Get Analysis Specific WFS 2.0 GetFeature XML
-            final DifferenceMethodParams methodParams = (DifferenceMethodParams) analysisLayer
+            final DifferenceMethodParams params = (DifferenceMethodParams) analysisLayer
                     .getAnalysisMethodParams();
             // Geojson response
-            final String rawFeatureSet = this.requestWFS2(methodParams.getServiceUrl(), methodParams.getWFSXML2(), methodParams.getServiceUser(), methodParams.getServicePw());
+            final String rawFeatureSet = this.requestWFS2(params.getServiceUrl(), params.getWFSXML2(), params.getServiceUser(), params.getServicePw());
             // Loop geojson features and process property difference values
-            featureSet = processDifferenceValueFS(methodParams.getFieldA1(), methodParams.getFieldB1(), methodParams.getNoDataValue(), rawFeatureSet);
+            featureSet = processDifferenceValueFS(params.getTypeName(), params.getTypeName2(), params.getKeyA1(),
+                    params.getFieldA1(), params.getFieldB1(), params.getNoDataValue(), rawFeatureSet);
         } catch (Exception e) {
             throw new ServiceException("request GetFeature failed due to wfs 2.0 request build", e);
         }
@@ -163,13 +164,16 @@ public class AnalysisWebProcessingService {
      *  1. Loop WFS 2.0.0 response geojson (join of two feature collections)
      *  2. process new geojson with delta values (fieldA1 - fieldB1)
      *  3. encode geojson to gml feature collection (xml)
-     * @param fieldA1  field name of 1st feature collection
-     * @param fieldB1  field name of 2nd feature collection
-     * @param nodata  No data value; if fieldA1 value is nodata value, then delta is 0
-     * @param rawJson WFS 2.0.0 response geojson
+     *  @param lay1 {String} name of dataset 1
+     *  @param lay2 {String} name of dataset 2
+     * @param keyA1 {String} name of join property
+     * @param fieldA1 {String}  field name of 1st feature collection
+     * @param fieldB1 {String}  field name of 2nd feature collection
+     * @param nodata {String} No data value; if fieldA1 value is nodata value, then delta is 0
+     * @param rawJson {String} WFS 2.0.0 response geojson
      * @return gml feature collection (xml)
      */
-    public String processDifferenceValueFS(String fieldA1, String fieldB1, String nodata, String rawJson) {
+    public String processDifferenceValueFS(String lay1, String lay2, String keyA1, String fieldA1, String fieldB1, String nodata, String rawJson) {
 
 
         String featureSet = null;
@@ -204,10 +208,13 @@ public class AnalysisWebProcessingService {
                 final Object valueA = properties.get(fieldA1);
                 final String layer2fea = properties.optString(GEOJSON_LAYER2);
                 double delta = this.findValueDifference(valueA, layer2fea, fieldB1, dnodata);
-                double valueB =  valueToDouble(valueA) - delta;
+                double valueB = valueToDouble(valueA) - delta;
+                delta = -delta;
                 JSONObject newproperties = new JSONObject();
-                newproperties.put(fieldA1+"_B", valueB);
-                newproperties.put(fieldA1+"_A", valueA);
+                newproperties.put(keyA1, properties.get(keyA1));
+                newproperties.put("t1__" + lay1.replace(":","_") + "__" + fieldA1, valueA);
+                newproperties.put("t2__" + lay2.replace(":","_") + "__" + fieldB1, valueB);
+
                 newproperties.put(DELTA_FIELD_NAME, delta);
                 geofea.remove(GEOJSON_PROPERTIES);
                 geofea.put(GEOJSON_PROPERTIES, newproperties);
@@ -229,7 +236,6 @@ public class AnalysisWebProcessingService {
 
             //output stream to serialize to
             OutputStream xml = new ByteArrayOutputStream();
-
 
 
             try {

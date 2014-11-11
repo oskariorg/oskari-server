@@ -66,6 +66,9 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_SELLAYERS = "selectedLayers";
     public static final String KEY_CONFIG = "config";
     public static final String KEY_STATE = "state";
+    public static final String KEY_RESPONSIVE = "responsive";
+    public static final String VIEW_RESPONSIVE = "responsive";
+    public static final String APP_RESPONSIVE = "responsive-published-map";
 
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
@@ -201,7 +204,26 @@ public class PublishHandler extends ActionHandler {
 
         final Bundle mapFullBundle = currentView.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
         if (mapFullBundle == null) {
-            throw new ActionParamsException("Could find mapfull bundle from view:" + currentView.getId());
+            throw new ActionParamsException("Could not find mapfull bundle from view: " + currentView.getId());
+        }
+
+        // Add responsive boolean to mapfull if it's true
+        // this _could_ be done by checking view.getPage() in a viewmodifier,
+        // but this messes up the code less IMHO
+        final Boolean responsive =  JSONHelper.getBooleanFromJSON(
+                publisherData,
+                KEY_RESPONSIVE,
+                false
+        );
+
+        if (responsive) {
+            JSONHelper.putValue(
+                    mapFullBundle.getConfigJSON(),
+                    KEY_RESPONSIVE,
+                    responsive
+            );
+            currentView.setPage(VIEW_RESPONSIVE);
+            currentView.setApplication(APP_RESPONSIVE);
         }
 
         // Setup user

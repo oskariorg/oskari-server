@@ -5,25 +5,26 @@ package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.net.URLEncoder;
 import java.util.Locale;
 
 
-public class ELFGeoLocatorSearchChannel implements SearchableChannel {
+@Oskari(ELFGeoLocatorSearchChannel.ID)
+public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
-    /**
-     * logger
-     */
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
-    public static final String PROPERTY_SERVICE_URL = "service.url";
+    private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
+
     public static final String KEY_LANG_HOLDER = "_LANG_";
     public static final String KEY_LATITUDE_HOLDER = "_LATITUDE_";
     public static final String KEY_LONGITUDE_HOLDER = "_LONGITUDE_";
@@ -44,17 +45,11 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
 
     private ELFGeoLocatorParser elfParser = new ELFGeoLocatorParser();
 
-    public void setProperty(String propertyName, String propertyValue) {
-        if (PROPERTY_SERVICE_URL.equals(propertyName)) {
-            serviceURL = propertyValue;
-            log.debug("ServiceURL set to " + serviceURL);
-        } else {
-            log.warn("Unknown property for " + ID + " search channel: " + propertyName);
-        }
-    }
-
-    public String getId() {
-        return ID;
+    @Override
+    public void init() {
+        super.init();
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+        log.debug("ServiceURL set to " + serviceURL);
     }
 
     /**
@@ -107,7 +102,8 @@ public class ELFGeoLocatorSearchChannel implements SearchableChannel {
         }
 
         log.debug("/getData");
-        return IOHelper.getURL(buf.toString());
+
+        return IOHelper.readString(getConnection(buf.toString()));
     }
 
     /**

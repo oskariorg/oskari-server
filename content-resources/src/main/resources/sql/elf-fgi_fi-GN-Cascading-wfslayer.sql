@@ -8,7 +8,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             minscale, maxscale, 
                             url, locale) 
   VALUES('wfslayer', 'elf_gn_fgi_fi', 906, 
-         120000, 1, 
+         50000, 1, 
          'wfs', '{fi:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"},sv:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"},en:{name:"GN Geographical Names - fgi.fi", subtitle:"ELF Cascading"}}');
          
 

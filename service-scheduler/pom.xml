@@ -15,20 +15,14 @@
     <packaging>jar</packaging>
     <name>Scheduler Service</name>
 
-    <properties>
-        <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>${quartz-scheduler.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
-            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

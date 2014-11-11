@@ -2,14 +2,103 @@
 
 ## 1.25
 
+### standalone-jetty
+
+Fixed an issue with user logout functionality.
+
+### service-cws
+
+Moved CSW related code from service-map to a new module.
+
+Includes a scheduled job to update coverage data for layers with metadata-identifier. Coverage data is stored in
+oskari_maplayer_metadata as WKT in EPSG:4326 projection.
+
+### service-scheduler
+
+Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
+
+### service-spatineo-monitor
+
+Added a new scheduler task for utilising a service availability functionality provided by Spatineo.
+Not included by default in servlet. See README.md in service-spatineo-monitor for details.
+
+### service-map
+
+GetGeoPointDataService now uses credentials for layer when making a GetFeatureInfo request to a WMS service.
+
+Improved GPX data import.
+
+Added a simple helper class for projection transforms and WKT handling: fi.nls.oskari.map.geometry.WKTHelper
+
+Layer coverage data is now loaded from oskari_maplayer_metadata based on metadataid
+(previously from portti_maplayer_metadata based on layerId). Coverage data is transformed to requested projection
+when layers are loaded.
+
+### service-base
+
+Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
+scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
+
+Role now has a static method to determine default role for logged in user as well as admin role.
+
+Moved common annotation processing classes from service-control to service-base.
+
+Added a new custom annotation @Oskari("key"). This can be used as a common way to mark classes extending OskariComponent.
+To get a map of annotated classes (key is annotation value):
+
+    Map<String, OskariComponent> allComponents = fi.nls.oskari.service.OskariComponentManager.getComponentsOfType(OskariComponent.class);
+
+Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
+setup that service-search includes.
+
+IOHelper now has a method getConnectionFromProps("prefix") which gives a HttpURLConnection based on properties prefixed with given string:
+    - [propertiesPrefix]url=[url to call for this service] (required)
+    - [propertiesPrefix]user=[username for basic auth] (optional)
+    - [propertiesPrefix]pass=[password for basic auth] (optional)
+    - [propertiesPrefix]header.[header name]=[header value] (optional)
+
+### service-search
+
+Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
+with @Oskari("searchChannelID"). Channels are detected with:
+
+        final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
+
+The legacy way of providing classname in properties is also supported but discouraged.
+
+SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
+PropertyUtil or other internal means to get configuration.
+
+SearchChannel baseclass has getConnection() method which returns a HttpURLConnection based on properties prefixed with 'search.channel.[channel id].service.'.
+
+### service-search-nls/servlet-map - search channels
+
+Migrated search channels to use annotated approach and getConnection() from baseclass so credential handling is consistent.
+
+### content-resources
+
+New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
+
 ### service-control
 
 ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
 The same errorhandling was added for ViewModifierManager.
 
+Enabled customized HTML string cleaning.
+
+Moved common annotation processing classes from service-control to service-base.
+
 ### control-base
 
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
+
+Enabled customized HTML tags for GFI content.
+
+Added service-csw as a new dependency, it has code that was previously part of service-map.
+
+### servlet-transport
+
+Excluded specific GML properties from parsed features.
 
 ## 1.24.4
 

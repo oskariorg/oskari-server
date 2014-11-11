@@ -8,6 +8,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
@@ -42,6 +43,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
+        // require admin user
+        params.requireAdminUser();
 
         String externalId = params.getHttpParam("externalId", "");
         String externalType = params.getHttpParam("externalType", "");
@@ -63,12 +66,13 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 
         for (OskariLayer layer : layers) {
             try {
+                final OskariLayerResource res = new OskariLayerResource(layer);
                 JSONObject realJson = new JSONObject();
                 realJson.put(JSON_ID, layer.getId());
                 realJson.put(JSON_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
-                realJson.put(JSON_NAMES_SPACE, layer.getUrl());
-                realJson.put(JSON_RESOURCE_NAME, layer.getName());
-                final String permissionKey = layer.getUrl() + "+" + layer.getName();
+                realJson.put(JSON_NAMES_SPACE, res.getNamespace());
+                realJson.put(JSON_RESOURCE_NAME, res.getName());
+                final String permissionKey = res.getMapping();
 
                 if (resources.contains(permissionKey)) {
                     realJson.put(JSON_IS_SELECTED, true);
