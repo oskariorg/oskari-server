@@ -179,14 +179,14 @@
            VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
         RETURNING id
     </statement>
-
+<!--  
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">
       INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application )
            VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
         RETURNING id
-    </statement>
+    </statement> -->
     
     <statement id="update-access"
                parameterClass="View">
