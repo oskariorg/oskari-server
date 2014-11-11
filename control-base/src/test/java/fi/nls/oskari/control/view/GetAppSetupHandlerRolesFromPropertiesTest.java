@@ -26,6 +26,7 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -37,6 +38,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.fail;
@@ -107,7 +110,12 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     @Test
     public void testAddedLayerSelectorBundle () throws Exception {
-        final ActionParameters params = createActionParams(getLoggedInUser());
+        
+    	Map<String,String> paramMap = new HashMap<String,String>();
+    	//paramMap.put("uuId", "")
+    	
+    	
+    	final ActionParameters params = createActionParams(getLoggedInUser());
         Role r = new Role();
         r.setName("Karttajulkaisija_Tre");
         r.setId(42);
@@ -148,6 +156,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         dummyView.setType(ViewTypes.DEFAULT);
         doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+        doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
 
         // TODO: mock view loading
         /**

@@ -190,8 +190,11 @@ public class PublishHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final User user = params.getUser();
 
+    	final String useUuid = PropertyUtil.get("oskari.publish.only.with.uuid");    	
+    	final User user = params.getUser();
+
+        
         // Parse stuff sent by JS
         final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
         final View currentView = getBaseView(publisherData, user);
@@ -230,6 +233,17 @@ public class PublishHandler extends ActionHandler {
         currentView.setIsPublic(true);
         // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
+        
+        currentView.setUuid(UUID.randomUUID().toString());
+        
+        if(useUuid != null && useUuid.equalsIgnoreCase("true")){
+        	log.debug("setting uuid to true");
+        	currentView.setOnlyForUuId(true);
+        }else{
+        	log.debug("setting uuid to false");
+        	currentView.setOnlyForUuId(false);
+        }
+        log.debug("UUID: " + currentView.getUuid());
 
         // setup map state
         setupMapState(mapFullBundle, publisherData, user);

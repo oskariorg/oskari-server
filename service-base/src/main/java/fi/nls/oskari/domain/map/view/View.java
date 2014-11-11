@@ -12,6 +12,7 @@ public class View implements Serializable {
     private String name = null;
     private String description = null;
     private String uuid = null;
+    private boolean onlyForUuId = false;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public long getId() { return this.id; }
@@ -22,6 +23,9 @@ public class View implements Serializable {
 
     public String getUuid() { return this.uuid; }
     public void setUuid(String uuid) { this.uuid = uuid; }
+
+    public boolean isOnlyForUuId() { return this.onlyForUuId; }
+    public void setOnlyForUuId(boolean onlyForUuId) { this.onlyForUuId = onlyForUuId; }
 
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
