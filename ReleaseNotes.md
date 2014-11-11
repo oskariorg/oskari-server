@@ -27,6 +27,8 @@ GetGeoPointDataService now uses credentials for layer when making a GetFeatureIn
 
 Improved GPX data import.
 
+Added a simple helper class for projection transforms and WKT handling: fi.nls.oskari.map.geometry.WKTHelper
+
 ### service-base
 
 Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
