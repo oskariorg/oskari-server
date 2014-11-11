@@ -11,11 +11,13 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -79,7 +81,12 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         handler.handleAction(params);
         // test that response was written once
         verifyResponseWritten(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("PublishHandlerTest-output-simple.json", this));
+        final JSONObject expectedResult = ResourceHelper.readJSONResource("PublishHandlerTest-output-simple.json", this);
+        final JSONObject actualResponse = getResponseJSON();
+        assertNotNull("Must contain actual UUID", actualResponse.getString("uuid"));
+        actualResponse.remove("uuid");
+        expectedResult.remove("uuid");
+        assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
     }
 	
 }

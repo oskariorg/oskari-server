@@ -9,6 +9,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <settings enhancementEnabled="true" useStatementNamespaces="true"/>
 
   <typeHandler javaType="org.json.JSONObject" jdbcType="VARCHAR" callback="fi.nls.oskari.domain.utils.JSONTypeHandler"/>
+  <typeHandler javaType="java.lang.String" jdbcType="OTHER" callback="fi.nls.oskari.domain.utils.UuIdTypeHandler"/>
 
   <transactionManager type="JDBC" commitRequired="true">
       <dataSource type="fi.nls.oskari.db.IbatisDataSourceFactory" />

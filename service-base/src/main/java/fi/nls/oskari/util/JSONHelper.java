@@ -112,6 +112,15 @@ public class JSONHelper {
         }
         return array;
     }
+
+    public static boolean getBooleanFromJSON(final JSONObject data, final String key, final boolean defaultValue) {
+        try {
+            final boolean value = data.getBoolean(key);
+            return value;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
     
     public static final String getStringFromJSON(final JSONObject data, final String key, final String defaultValue) {
         try {
