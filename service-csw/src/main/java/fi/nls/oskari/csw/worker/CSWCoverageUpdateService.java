@@ -69,6 +69,7 @@ public class CSWCoverageUpdateService extends ScheduledJob {
             }
             final OskariLayerMetadataDto dto = new OskariLayerMetadataDto();
             dto.metadataId  = metadataId;
+            // NOTE! wkt is WGS:84
             dto.wkt = geom.getEnvelope().toText();
             dto.json = csw.toJSON().toString();
             dao.saveMetadata(dto);

@@ -1,4 +1,4 @@
-
+-- CSW metadata is now saved to a new table, old one can be dropped;
 CREATE TABLE oskari_maplayer_metadata
 (
   id serial NOT NULL,
@@ -8,3 +8,5 @@ CREATE TABLE oskari_maplayer_metadata
   ts timestamp DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT oskari_maplayer_metadata_pkey PRIMARY KEY (id)
 );
+
+DROP TABLE IF EXISTS portti_maplayer_metadata;

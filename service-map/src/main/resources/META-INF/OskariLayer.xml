@@ -132,14 +132,14 @@
         l.password,
         l.version,
         l.srs_name,
-        m.geom,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.id = #id# OR l.parentId = #id#
         ORDER BY l.parentId ASC
@@ -184,14 +184,14 @@
         l.password,
         l.version,
         l.srs_name,
-        m.geom,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.parentId = #id#
 
@@ -236,14 +236,14 @@
         l.password,
         l.version,
         l.srs_name,
-        m.geom,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.externalId = #id#
         AND l.parentId = -1
@@ -289,14 +289,14 @@
         l.password,
         l.version,
         l.srs_name,
-        m.geom,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         m.uuid = #id#
         AND l.parentId = -1
@@ -342,14 +342,14 @@
         l.password,
         l.version,
         l.srs_name,
-        m.geom,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.name = #name#
         AND  l.url = #url#
@@ -394,14 +394,14 @@
     l.password,
     l.version,
     l.srs_name,
-    m.geom,
+    m.wkt as geom,
 
     l.created,
     l.updated
 
     FROM
-    oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-    ON  m.maplayerid = l.id
+    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+    ON  m.metadataid = l.metadataId
     ORDER BY l.parentId ASC
     </select>
 
