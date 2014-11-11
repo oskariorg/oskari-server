@@ -200,13 +200,12 @@ public class PublishHandler extends ActionHandler {
 
         final Bundle mapFullBundle = currentView.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
         if (mapFullBundle == null) {
-            throw new ActionParamsException("Could find mapfull bundle from view:" + currentView.getId());
+            throw new ActionParamsException("Could not find mapfull bundle from view: " + currentView.getId());
         }
 
         // Add responsive boolean to mapfull if it's true
         // this _could_ be done by checking view.getPage() in a viewmodifier,
         // but this messes up the code less IMHO
-        log.error("Responsive:", JSONHelper.getBooleanFromJSON(publisherData, KEY_RESPONSIVE, false));
         final Boolean responsive =  JSONHelper.getBooleanFromJSON(
                 publisherData,
                 KEY_RESPONSIVE,
@@ -214,15 +213,12 @@ public class PublishHandler extends ActionHandler {
         );
 
         if (responsive) {
-            log.error("Is responsive");
             JSONHelper.putValue(
                     mapFullBundle.getConfigJSON(),
                     KEY_RESPONSIVE,
                     responsive
             );
             currentView.setPage(VIEW_RESPONSIVE);
-        } else {
-            log.error("Is not responsive");
         }
 
         // Setup user
