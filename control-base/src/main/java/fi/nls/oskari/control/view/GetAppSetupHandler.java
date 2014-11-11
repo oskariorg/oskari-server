@@ -138,6 +138,17 @@ public class GetAppSetupHandler extends ActionHandler {
         //TODO: make a new method for null value   ... or something 
         String uuId = ConversionHelper.getString(params.getHttpParam(PARAM_UU_ID), null);
         
+        
+        Enumeration<String> keys = params.getRequest().getParameterNames();
+        log.debug("##########################");
+        while(keys.hasMoreElements()){
+        	String key = keys.nextElement();
+        	log.debug(key + " -- " + params.getRequest().getParameter(key));
+        }
+        log.debug("##########################");
+        
+        
+        
         // ignore saved state for old published maps, non-default views or if
         // explicit param is given
         boolean ignoreSavedState = isOldPublishedMap
