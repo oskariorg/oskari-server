@@ -31,10 +31,6 @@ public class CSWCoverageUpdateService extends ScheduledJob {
     @Override
     public void execute(Map<String, Object> params) {
         log.info("Starting the CSW coverage update service call...");
-        log.debug("CSWCoverageUpdateService running: ", PropertyUtil.get("jdbc.default.jndi.name"), PropertyUtil.get("db.jndi.name"));
-        System.out.println("sysout: CSWCoverageUpdateService running: "
-                + PropertyUtil.get("jdbc.default.jndi.name")
-                + " " + PropertyUtil.get("db.jndi.name"));
 
         final String baseUrl = PropertyUtil.getOptional(PROPERTY_BASE_URL);
         if(baseUrl == null) {
