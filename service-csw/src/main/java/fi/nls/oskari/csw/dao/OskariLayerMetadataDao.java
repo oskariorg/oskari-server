@@ -14,11 +14,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import javax.sql.DataSource;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 7.11.2014
- * Time: 16:22
- * To change this template use File | Settings | File Templates.
+ * Simple MyBatis Dao for saving CSW metadata for maplayers
  */
 public class OskariLayerMetadataDao {
     private final SqlSessionFactory factory;
