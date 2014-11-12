@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
@@ -96,6 +97,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public View getViewWithConfByUuId(String uuId) {
         if (uuId == null)
             return null;
+        log.debug("uuid != null --> view-with-conf-by-uu-id");
         View view = (View) queryForObject("View.view-with-conf-by-uu-id", uuId);
         return view;
     }
@@ -125,6 +127,8 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         SqlMapSession session = openSession();
 
         try {
+        	view.setUuid(generateUuid());
+        	
             session.startTransaction();
             Object ret = queryForObject("View.add-supplement", view);
             long suppId = ((Long) ret).longValue();
@@ -376,5 +380,12 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
                 .longValue();
     }
 
+    /**
+     * Generates random UUID
+     * @return uuid
+     */
+    public String generateUuid() {
+        return UUID.randomUUID().toString();
+    }
     
 }

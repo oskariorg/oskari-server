@@ -16,7 +16,8 @@ DROP TABLE IF EXISTS oskari_maplayer;
 DROP TABLE IF EXISTS oskari_layergroup;
 DROP TABLE IF EXISTS portti_inspiretheme;
 
-
+DROP TABLE IF EXISTS oskari_maplayer_metadata;
+-- portti_maplayer_metadata was removed in 1.25;
 DROP TABLE IF EXISTS portti_maplayer_metadata;
 DROP TABLE IF EXISTS portti_capabilities_cache;
 
@@ -125,20 +126,14 @@ WITH (
 OIDS=FALSE
 );
 
-CREATE TABLE portti_maplayer_metadata
+CREATE TABLE oskari_maplayer_metadata
 (
   id serial NOT NULL,
-  maplayerid integer,
-  uuid character varying(256),
-  namefi character varying(512),
-  namesv character varying(512),
-  nameen character varying(512),
-  abstractfi character varying(1024),
-  abstractsv character varying(1024),
-  abstracten character varying(1024),
-  browsegraphic character varying(1024),
-  geom character varying(512) default '',
-  CONSTRAINT portti_maplayer_metadata_pkey PRIMARY KEY (id)
+  metadataid character varying(256),
+  wkt character varying(512) default '',
+  json text default '',
+  ts timestamp DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT oskari_maplayer_metadata_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE oskari_resource

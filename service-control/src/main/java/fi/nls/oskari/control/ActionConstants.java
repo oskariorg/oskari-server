@@ -10,4 +10,9 @@ public interface ActionConstants {
     // used for locale fields as prefix. Params are named 'name_<locale>' f.ex. 'name_en'
     public static final String PARAM_NAME_PREFIX = "name_";
 
+    // projection
+    public static final String PARAM_SRS = "epsg";
+
+    // language
+    public static final String PARAM_LANGUAGE = "lang";
 }

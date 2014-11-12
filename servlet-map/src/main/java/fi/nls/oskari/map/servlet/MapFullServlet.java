@@ -14,6 +14,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,6 +55,11 @@ public class MapFullServlet extends HttpServlet {
     private boolean isDevelopmentMode = false;
     private String version = null;
     private final Set<String> paramHandlers = new HashSet<String>();
+    
+    public static final String PARAM_VIEW_ID = "viewId";
+    public static final String PARAM_UU_ID = "uuId";
+    public static final String PARAM_OLD_ID = "oldId";
+    
 
     private static final long serialVersionUID = 1L;
 
@@ -164,33 +171,48 @@ public class MapFullServlet extends HttpServlet {
             final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
                     viewService.getDefaultViewId(params.getUser()));
             
-            log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
+//            final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID),
+//                    viewService.getDefaultViewId(params.getUser()));
+            
+            final long oldId = -1;
+            
             
             final String uuId = params.getHttpParam("uuId");
             
-            final View view = getView(uuId, viewId);
+            log.debug("user's view: " + viewService.getDefaultViewId(params.getUser()));
+            log.debug("Oldid: " + oldId);
+            log.debug("uuId: " + uuId);
+            log.debug("viewId: " + viewId);
+            
+            
+            final View view = getView(uuId, viewId, oldId);
             if (view == null) {
-            	log.debug("no such view");
-                ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
+            	log.debug("no such view, viewID:" + viewId + " uuid:" + uuId);
+                ResponseHelper.writeError(params, "No such view");
                 return null;
             }
             
             log.debug("Serving view with id:", view.getId());
+            log.debug("Using uuid to get the view:", view.getUuid());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
-            request.setAttribute("viewId", view.getId());
+            //request.setAttribute("viewId", view.getId());
+            request.setAttribute("uuId", view.getUuid());
 
             // viewJSP might change if using dev override
             String viewJSP = view.getPage();
             log.debug("Using JSP:", viewJSP, "with view:", view);
 
             // construct control params
+            // Laitetaan vain uuid --> selvitä uuid
+            
             final JSONObject controlParams = getControlParams(params);
             
-            if(uuId != null){
+            //if(uuId != null){
                 JSONHelper.putValue(controlParams, "uuId", view.getUuid());
-            }else{
                 JSONHelper.putValue(controlParams, "viewId", view.getId());
-            }
+            //}else{
+                //JSONHelper.putValue(controlParams, "viewId", view.getId());
+            //}
             
             
             JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
@@ -231,15 +253,32 @@ public class MapFullServlet extends HttpServlet {
     }
     
     
-    private View getView(String uuId, long viewId){
-    	if(uuId != null){
-    		log.debug("Using Uuid to fetch a view");
-    		return viewService.getViewWithConfByUuId(uuId);
-    	}else{
-    		log.debug("Using id to fetch a view");
-    		return viewService.getViewWithConf(viewId);
-    	}
+//    private View getView(String uuId, long viewId){
+//    	if(uuId != null){
+//    		log.debug("Using Uuid to fetch a view");
+//    		return viewService.getViewWithConfByUuId(uuId);
+//    	}else if(){
+//    		log.debug("Using id to fetch a view");
+//    		return viewService.getViewWithConf(viewId);
+//    	}else{
+//    		
+//    	}
+//    }
+    
+    private View getView(final String uuId,  final long viewId, final long oldId) {
+        if (uuId != null) {
+            log.debug("Using uu ID :" + uuId);
+            return viewService.getViewWithConfByUuId(uuId);
+        } else if (oldId > 0){
+            log.debug("Using old View ID :" + oldId);
+            return viewService.getViewWithConfByOldId(oldId);
+        } else {
+            log.debug("Using View ID:" + viewId);
+            return viewService.getViewWithConf(viewId);
+        }
     }
+        
+    
 
     /**
      * Checks all viewmodifiers registered in the system that are handling parameters

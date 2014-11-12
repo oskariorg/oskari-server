@@ -80,6 +80,20 @@
          AND   v.id = #id#
     </select>
 
+    <select id="new-view-with-conf-by-view-id"
+            parameterClass="java.lang.Long"
+            resultMap="view-with-conf">
+            <!--cacheModel="view-cache">-->
+      SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
+               v.application, v.page, v.application_dev_prefix, s.creator,
+	       s.is_public, s.pubdomain, s.lang,
+	       s.width, s.height, s.old_id
+        FROM   portti_view v, portti_view_supplement s
+       WHERE   v.supplement_id = s.id
+		 AND   v.only_for_uuid = false
+         AND   v.id = #id#
+    </select>
+
     <select id="view-with-conf-by-uu-id"
             parameterClass="java.lang.String"
             resultMap="view-with-conf">
@@ -165,7 +179,15 @@
            VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
         RETURNING id
     </statement>
-
+<!--  
+    <statement id="add-view"
+               resultClass="java.lang.Long"
+               parameterClass="View">
+      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application )
+           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
+        RETURNING id
+    </statement> -->
+    
     <statement id="update-access"
                parameterClass="View">
       UPDATE portti_view_supplement

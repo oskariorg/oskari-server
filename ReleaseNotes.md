@@ -10,7 +10,8 @@ Fixed an issue with user logout functionality.
 
 Moved CSW related code from service-map to a new module.
 
-Includes a scheduled job to update coverage data for layers with metadata-identifier.
+Includes a scheduled job to update coverage data for layers with metadata-identifier. Coverage data is stored in
+oskari_maplayer_metadata as WKT in EPSG:4326 projection.
 
 ### service-scheduler
 
@@ -26,6 +27,12 @@ Not included by default in servlet. See README.md in service-spatineo-monitor fo
 GetGeoPointDataService now uses credentials for layer when making a GetFeatureInfo request to a WMS service.
 
 Improved GPX data import.
+
+Added a simple helper class for projection transforms and WKT handling: fi.nls.oskari.map.geometry.WKTHelper
+
+Layer coverage data is now loaded from oskari_maplayer_metadata based on metadataid
+(previously from portti_maplayer_metadata based on layerId). Coverage data is transformed to requested projection
+when layers are loaded.
 
 ### service-base
 
