@@ -25,7 +25,12 @@ import fi.nls.oskari.map.analysis.service.AnalysisWPSNamespaceContext;
 public abstract class AnalysisMethodParams {
 
     private final String bboxFilterTemplate = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
+    public final String wfsReferenceTemplate = "wfs-reference.xml";
+    public final String dataReferenceTemplate = "data-reference.xml";
+    public final String vectorReferenceTemplate = "vector-reference.xml";
 
+    public final String REFERENCE1 = "{Reference1}";
+    public final String REFERENCE2 = "{Reference2}";
     public final String HREF = "{href}";
     public final String MAXFEATURES = "{maxFeatures}";
     public final String OUTPUTFORMAT = "{outputFormat}";
@@ -324,7 +329,7 @@ public abstract class AnalysisMethodParams {
         DocumentBuilder builder;
         Document doc = null;
 
-      
+
         factory.setNamespaceAware(true);
         builder = factory.newDocumentBuilder();
 
@@ -343,6 +348,56 @@ public abstract class AnalysisMethodParams {
         inp.close();
 
         return template;
+    }
+
+    /**
+     *  Set input reference for wps execute
+     * @return
+     * @throws ParserConfigurationException
+     * @throws IOException
+     */
+
+    protected String getReference1() throws ParserConfigurationException, IOException {
+        String reference1 = null;
+        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS))
+            reference1 = this.getTemplate(this.vectorReferenceTemplate);
+        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS))
+            reference1 = this.getTemplate(this.wfsReferenceTemplate);
+        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON))
+            reference1 = this.getTemplate(this.dataReferenceTemplate);
+
+        if (reference1 != null) {
+            // Replace {} variables in wps execute .xml
+            reference1 = reference1.replace(HREF, this.getHref());
+            reference1 = reference1.replace(MAXFEATURES, this.getMaxFeatures());
+            reference1 = reference1.replace(OUTPUTFORMAT, this.getOutputFormat());
+            reference1 = reference1.replace(VERSION, this.getVersion());
+            reference1 = reference1.replace(SRSNAME, this.getSrsName());
+            reference1 = reference1.replace(XMLNS, this.getXmlns());
+            reference1 = reference1.replace(TYPENAME, this.getTypeName());
+            reference1 = reference1.replace(GEOJSONFEATURES, this.getGeojson());
+        }
+        return reference1;
+
+    }
+
+    protected String getWfsFilter1() {
+        // Filter
+        String wfsfilter = "";
+        if (this.getFilter() != null) {
+            wfsfilter = this.getFilter();
+        } else {
+
+            String fbbox = this.getBboxFilterTemplate();
+            fbbox = fbbox.replace(GEOM, this.getGeom());
+            fbbox = fbbox.replace(SRSNAME, this.getSrsName());
+            fbbox = fbbox.replace(X_LOWER, this.getX_lower());
+            fbbox = fbbox.replace(Y_LOWER, this.getY_lower());
+            fbbox = fbbox.replace(X_UPPER, this.getX_upper());
+            fbbox = fbbox.replace(Y_UPPER, this.getY_upper());
+            wfsfilter = fbbox;
+        }
+        return wfsfilter;
     }
 
     /**

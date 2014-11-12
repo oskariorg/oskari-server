@@ -1,0 +1,14 @@
+<wps:Reference mimeType="text/xml" xlink:href="http://geoserver/wfs"
+               method="POST">
+    <wps:Body>
+        <wfs:GetFeature service="WFS"
+                        version="{version}" maxFeatures="{maxFeatures}"
+                        outputFormat="{outputFormat}"
+        {xmlns}>
+        <wfs:Query srsName="{srsName}"
+                   typeName="{typeName}">
+            {properties}{filter}
+        </wfs:Query>
+        </wfs:GetFeature>
+    </wps:Body>
+</wps:Reference>

@@ -1,19 +1,23 @@
 package fi.nls.oskari.map.analysis.domain;
 
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class IntersectMethodParams extends AnalysisMethodParams {
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
-    private final String analysisMethodTemplate = "layer-wps-intersect2.xml";
+public class IntersectJoinMethodParams extends AnalysisMethodParams {
+
+    private final String analysisMethodTemplate = "layer-wps-intersect-join.xml";
+    private final String retainDataInput1stTemplate =  "<wps:Input><ows:Identifier>first attributes to retain</ows:Identifier><wps:Data><wps:LiteralData>{retainfield}</wps:LiteralData></wps:Data></wps:Input>";
+    private final String retainDataInput2ndTemplate =  "<wps:Input><ows:Identifier>second attributes to retain</ows:Identifier><wps:Data><wps:LiteralData>{retainfield}</wps:LiteralData></wps:Data></wps:Input>";
 
     // xml template paths {}
 
+    private final String RETAIN_FIELD = "{retainfield}";
+    private final String RETAIN_FIELDSA = "{retainfieldsA}";
+    private final String RETAIN_FIELDSB = "{retainfieldsB}";
 
     private final String INTERSECTIONMODE = "{intersectionMode}";
     private final String INTERSECT_CONTAINS = "contains";
@@ -24,27 +28,27 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private String typeName2 = "";
     private String filter2 = "";
     private String geom2 = "";
-    private String fieldA1 = "";
-    private String fieldB1 = "";
+    private String retainfieldsA = "";
+    private String retainfieldsB = "";
     private String properties2 = "";
     private String geojson2 = "";
     private String wps_reference_type2 = "";
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
-    public String getFieldA1() {
-        return fieldA1;
+    public String getRetainfieldsA() {
+        return retainfieldsA;
     }
 
-    public void setFieldA1(String fieldA1) {
-        this.fieldA1 = fieldA1;
+    public void setRetainfieldsA(String retainfieldsA) {
+        this.retainfieldsA = retainfieldsA;
     }
 
-    public String getFieldB1() {
-        return fieldB1;
+    public String getRetainfieldsB() {
+        return retainfieldsB;
     }
 
-    public void setFieldB1(String fieldB1) {
-        this.fieldB1 = fieldB1;
+    public void setRetainfieldsB(String retainfieldsB) {
+        this.retainfieldsB = retainfieldsB;
     }
 
     public String getGeom2() {
@@ -145,13 +149,15 @@ public class IntersectMethodParams extends AnalysisMethodParams {
 
         if(doctemp == null || reference1 == null || reference2 == null) return null;
 
-        reference2 = reference2.replace(HREF, this.getHref2());
-        reference2 = reference2.replace(MAXFEATURES, this.getMaxFeatures());
-        reference2 = reference2.replace(OUTPUTFORMAT, this.getOutputFormat());
-        reference2 = reference2.replace(VERSION, this.getVersion());
-        reference2 = reference2.replace(SRSNAME, this.getSrsName());
-        reference2 = reference2.replace(XMLNS, this.getXmlns2());
-        reference2 = reference2.replace(TYPENAME, this.getTypeName2());
+        // Replace {} variables for wps execute .xml  (layer 2 reference)
+
+        reference2 =reference2.replace(HREF, this.getHref2());
+        reference2 =reference2.replace(MAXFEATURES, this.getMaxFeatures());
+        reference2 =reference2.replace(OUTPUTFORMAT, this.getOutputFormat());
+        reference2 =reference2.replace(VERSION, this.getVersion());
+        reference2 =reference2.replace(SRSNAME, this.getSrsName());
+        reference2 =reference2.replace(XMLNS, this.getXmlns2());
+        reference2 =reference2.replace(TYPENAME, this.getTypeName2());
         reference2 = reference2.replace(GEOJSONFEATURES, this.getGeojson2());
 
         //Properties and filter - reference 1
@@ -162,7 +168,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         {
             reference1 = reference1.replace(PROPERTIES, "");
         }
-
+        
         // Filter
         String wfsfilter = this.getWfsFilter1();
 
@@ -199,14 +205,33 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(REFERENCE1, reference1);
         doctemp = doctemp.replace(REFERENCE2, reference2);
 
-        // Srs name
-        doctemp = doctemp.replace(SRSNAME, this.getSrsName());
+        //Retain fields A
+        doctemp = doctemp.replace(RETAIN_FIELDSA, getRetainData(this.getRetainfieldsA(), retainDataInput1stTemplate));
+        doctemp = doctemp.replace(RETAIN_FIELDSB, getRetainData(this.getRetainfieldsB(), retainDataInput2ndTemplate));
+
         // Intersection mode
         doctemp = doctemp.replace(INTERSECTIONMODE, this.getIntersection_mode());
+
 
         Document doc = this.getDocument2(doctemp);
 
         return doc;
     }
 
+    /**
+     * generate input sections for retain fields
+     * @param fields  field names
+     * @param template
+     * @return
+     */
+    private String getRetainData(String fields, String template) {
+
+        StringBuilder data = new StringBuilder();
+        for (String field: fields.split(","))
+        {
+            String input = template.replace(RETAIN_FIELD,field);
+            data.append(input);
+        }
+        return data.toString();
+    }
 }
