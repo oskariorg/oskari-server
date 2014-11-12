@@ -2,6 +2,7 @@ package fi.nls.oskari.db;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -31,10 +32,17 @@ import java.util.jar.JarFile;
 public class DBHandler {
 
     private static Logger log = LogFactory.getLogger(DBHandler.class);
+    private static boolean startedAsStandalone = false;
+
+    public static boolean isCommandLineUsage() {
+        return startedAsStandalone;
+    }
 
     public static void main(String[] args) throws Exception {
+        startedAsStandalone = true;
         // set alternate sqlMapLocation when running on commandline
         BaseIbatisService.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
+        OskariLayerServiceIbatisImpl.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
 
         // populate standalone properties
         PropertyUtil.loadProperties("/db.properties");
@@ -99,10 +107,14 @@ public class DBHandler {
         dataSource.setUrl(PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb"));
         dataSource.setUsername(getProperty("db.username"));
         dataSource.setPassword(getProperty("db.password"));
-        try {
-            new InitialContext().rebind(jndiUrl, dataSource);
-        } catch (final NamingException e) {
-            log.error(e, "Unable to set the JNDI data source from DBHandler.");
+
+        // don't try to bind JNDI if we are running this from command line
+        if(!isCommandLineUsage()) {
+            try {
+                new InitialContext().rebind(jndiUrl, dataSource);
+            } catch (final NamingException e) {
+                log.error(e, "Unable to set the JNDI data source from DBHandler.");
+            }
         }
         return dataSource;
     }
