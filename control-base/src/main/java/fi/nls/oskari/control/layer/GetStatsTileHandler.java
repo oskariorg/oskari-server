@@ -46,12 +46,16 @@ public class GetStatsTileHandler extends ActionHandler {
     final private static String PARAM_VISUALIZATION_VIS = "VIS_COLORS"; // vis=choro:ccffcc|99cc99|669966
 
     private String geoserverUrl = null;
+    private String geoserverUser = null;
+    private String geoserverPass = null;
     private String sldServerUrl = null;
 
     @Override
     public void init() {
         super.init();
         geoserverUrl = PropertyUtil.getOptional("statistics.geoserver.wms.url");
+        geoserverUser = PropertyUtil.get("statistics.user");
+        geoserverPass = PropertyUtil.get("statistics.password");
         sldServerUrl = PropertyUtil.getOptional("statistics.sld.server");
     }
 
@@ -105,7 +109,7 @@ public class GetStatsTileHandler extends ActionHandler {
         try {
             String xml = buildXML(params);
 
-            HttpURLConnection con = IOHelper.getConnection(geoserverUrl);
+            HttpURLConnection con = IOHelper.getConnection(geoserverUrl, geoserverUser, geoserverPass);
             IOHelper.writeHeader(con, "Content-type", "text/xml");
             IOHelper.writeToConnection(con, xml);
             byte[] presponse = IOHelper.readBytes(con);
@@ -128,7 +132,7 @@ public class GetStatsTileHandler extends ActionHandler {
 
         // copy parameters
         final HttpServletRequest httpRequest = params.getRequest();
-        final StringBuilder ajaxUrl = new StringBuilder(PropertyUtil.get("statistics.sld.server"));
+        final StringBuilder ajaxUrl = new StringBuilder(sldServerUrl);
 
         ajaxUrl.append(PropertyUtil.get("statistics.sld.server.path",
                 PropertyUtil.get(params.getLocale(), GetAppSetupHandler.PROPERTY_AJAXURL)));
@@ -173,9 +177,9 @@ public class GetStatsTileHandler extends ActionHandler {
             queryString.append(params.getHttpParam(keyStr));
         }
         try {
-            final String url = PropertyUtil.get("statistics.geoserver.wms.url") + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
+            final String url = geoserverUrl + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
             log.debug("Getting stats tile from url:", url);
-            return IOHelper.getConnection(url, PropertyUtil.get("statistics.user"), PropertyUtil.get("statistics.password"));
+            return IOHelper.getConnection(url, geoserverUser, geoserverPass);
         } catch (Exception e) {
             throw new ActionException(
                     "Couldnt get connection to geoserver", e);
