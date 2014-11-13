@@ -142,7 +142,7 @@ public class MapFullServlet extends HttpServlet {
         } catch (ActionDeniedException e) {
             // User tried to execute action he/she is not authorized to execute or session had expired
             if(params.getUser().isGuest()) {
-                log.error("Session expired - Action was denied:", route, ". Parameters: ", params.getRequest().getParameterMap());
+                log.error("Session expired - Action was denied:", route, ". Parameters: ", params.getRequest().getParameterMap(), "- Cause:", log.getCauseMessages(e));
             }
             else {
                 log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
