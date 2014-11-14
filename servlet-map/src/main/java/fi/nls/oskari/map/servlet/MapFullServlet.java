@@ -14,6 +14,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 import org.json.JSONObject;
 
@@ -55,11 +56,6 @@ public class MapFullServlet extends HttpServlet {
     private boolean isDevelopmentMode = false;
     private String version = null;
     private final Set<String> paramHandlers = new HashSet<String>();
-    
-    public static final String PARAM_VIEW_ID = "viewId";
-    public static final String PARAM_UU_ID = "uuId";
-    public static final String PARAM_OLD_ID = "oldId";
-    
 
     private static final long serialVersionUID = 1L;
 
@@ -168,24 +164,12 @@ public class MapFullServlet extends HttpServlet {
         	log.debug("getting a view and setting Render parameters");
             HttpServletRequest request = params.getRequest();
             
-            final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
+            final long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID),
                     viewService.getDefaultViewId(params.getUser()));
             
-//            final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID),
-//                    viewService.getDefaultViewId(params.getUser()));
+            final String uuId = params.getHttpParam(PARAM_UUID);
             
-            final long oldId = -1;
-            
-            
-            final String uuId = params.getHttpParam("uuId");
-            
-            log.debug("user's view: " + viewService.getDefaultViewId(params.getUser()));
-            log.debug("Oldid: " + oldId);
-            log.debug("uuId: " + uuId);
-            log.debug("viewId: " + viewId);
-            
-            
-            final View view = getView(uuId, viewId, oldId);
+            final View view = getView(uuId, viewId);
             if (view == null) {
             	log.debug("no such view, viewID:" + viewId + " uuid:" + uuId);
                 ResponseHelper.writeError(params, "No such view");
@@ -203,16 +187,10 @@ public class MapFullServlet extends HttpServlet {
             log.debug("Using JSP:", viewJSP, "with view:", view);
 
             // construct control params
-            // Laitetaan vain uuid --> selvitä uuid
-            
             final JSONObject controlParams = getControlParams(params);
-            
-            //if(uuId != null){
-                JSONHelper.putValue(controlParams, "uuId", view.getUuid());
-                JSONHelper.putValue(controlParams, "viewId", view.getId());
-            //}else{
-                //JSONHelper.putValue(controlParams, "viewId", view.getId());
-            //}
+            JSONHelper.putValue(controlParams, PARAM_UUID, view.getUuid());
+            // TODO: remove viewId from here when safe
+            JSONHelper.putValue(controlParams, PARAM_VIEW_ID, view.getId());
             
             
             JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
@@ -252,26 +230,10 @@ public class MapFullServlet extends HttpServlet {
         }
     }
     
-    
-//    private View getView(String uuId, long viewId){
-//    	if(uuId != null){
-//    		log.debug("Using Uuid to fetch a view");
-//    		return viewService.getViewWithConfByUuId(uuId);
-//    	}else if(){
-//    		log.debug("Using id to fetch a view");
-//    		return viewService.getViewWithConf(viewId);
-//    	}else{
-//    		
-//    	}
-//    }
-    
-    private View getView(final String uuId,  final long viewId, final long oldId) {
+    private View getView(final String uuId, final long viewId) {
         if (uuId != null) {
-            log.debug("Using uu ID :" + uuId);
+            log.debug("Using UUID :" + uuId);
             return viewService.getViewWithConfByUuId(uuId);
-        } else if (oldId > 0){
-            log.debug("Using old View ID :" + oldId);
-            return viewService.getViewWithConfByOldId(oldId);
         } else {
             log.debug("Using View ID:" + viewId);
             return viewService.getViewWithConf(viewId);

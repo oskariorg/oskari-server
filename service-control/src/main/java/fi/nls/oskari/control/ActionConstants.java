@@ -6,6 +6,8 @@ package fi.nls.oskari.control;
 public interface ActionConstants {
 
     public static final String PARAM_ID = "id";
+    public static final String PARAM_UUID = "uuId";
+    public static final String PARAM_VIEW_ID = "viewId";
 
     // used for locale fields as prefix. Params are named 'name_<locale>' f.ex. 'name_en'
     public static final String PARAM_NAME_PREFIX = "name_";

@@ -18,30 +18,39 @@ public class View implements Serializable {
     private boolean onlyForUuId = false;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
-    private static String baseUrlForView = null;
-
     public String getUrl() {
         final Map<String, String> valuesMap = new HashMap();
         valuesMap.put("lang", getLang());
         valuesMap.put("uuid", getUuid());
         final StrSubstitutor sub = new StrSubstitutor(valuesMap);
 
-        String baseUrl = getBaseUrlForView();
+        String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
         return sub.replace(baseUrl);
     }
 
-    private static String getBaseUrlForView() {
-        if(baseUrlForView == null) {
-            // view.published.url = http://foo.bar/${uuid}?lang=${lang}
-            baseUrlForView = PropertyUtil.getOptional("view.published.url");
-            if (baseUrlForView == null) {
-                // oskari.domain=http://foo.bar
-                // oskari.map.url=/oskari-map
-                baseUrlForView = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
-                baseUrlForView = baseUrlForView + "?lang=${lang}&uuId=${uuid}";
-            }
+    private String getBaseUrlForView(final String type, final String lang) {
+        String value = null;
+        // view.published.url = http://foo.bar/${lang}/${uuid}
+        // view.user.url.fi = http://foo.bar/kayttaja/${uuid}
+        // view.user.url.en = http://foo.bar/user/${uuid}
+        final String basePropKey = "view." + type + ".url";
+        List<String> urls = PropertyUtil.getPropertyNamesStartingWith(basePropKey);
+        if(urls.size() == 1) {
+            // normal override of defaults
+            value =  PropertyUtil.get(basePropKey);
         }
-        return baseUrlForView;
+        else if(urls.size() > 1) {
+            // locale-specific urls
+            value = PropertyUtil.getOptional(basePropKey + "." + lang);
+        }
+        if(value == null) {
+            // not defined, use reasonable default
+            // oskari.domain=http://foo.bar
+            // oskari.map.url=/oskari-map
+            value = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
+            value = value + "?lang=${lang}&uuId=${uuid}";
+        }
+        return value;
     }
 
     public long getId() { return this.id; }
