@@ -5,7 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.scheduler.SchedulerService;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.quartz.SchedulerException;
 
 import javax.naming.InitialContext;

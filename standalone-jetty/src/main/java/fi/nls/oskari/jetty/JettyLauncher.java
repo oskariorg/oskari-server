@@ -5,7 +5,7 @@ import fi.nls.oskari.map.servlet.OskariRequestFilter;
 import fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.jndi.EnvEntry;

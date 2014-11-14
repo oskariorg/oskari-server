@@ -61,6 +61,7 @@
         <commons-codec.version>1.7</commons-codec.version>
         <commons-fileupload.version>1.2</commons-fileupload.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
 
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
@@ -77,7 +78,7 @@
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
         <jetty.version>9.1.0.M0</jetty.version>
-        <postgresql.version>8.4-702.jdbc4</postgresql.version>
+        <postgresql.version>9.3-1102-jdbc41</postgresql.version>
         <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
 
         <xerces.version>2.10.0</xerces.version>
@@ -298,10 +299,11 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>${commons-dbcp.version}</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${commons-dbcp2.version}</version>
             </dependency>
 
             <!-- jetty -->
@@ -343,7 +345,7 @@
             </dependency>
 
             <dependency>
-                <groupId>postgresql</groupId>
+                <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
             </dependency>
