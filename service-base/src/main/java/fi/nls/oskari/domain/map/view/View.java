@@ -1,10 +1,13 @@
 package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.lang.text.StrSubstitutor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Map;
 
 public class View implements Serializable {
     private long id = -1;
@@ -14,6 +17,32 @@ public class View implements Serializable {
     private String uuid = null;
     private boolean onlyForUuId = false;
     private List<Bundle> bundles = new ArrayList<Bundle>();
+
+    private static String baseUrlForView = null;
+
+    public String getUrl() {
+        final Map<String, String> valuesMap = new HashMap();
+        valuesMap.put("lang", getLang());
+        valuesMap.put("uuid", getUuid());
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        String baseUrl = getBaseUrlForView();
+        return sub.replace(baseUrl);
+    }
+
+    private static String getBaseUrlForView() {
+        if(baseUrlForView == null) {
+            // view.published.url = http://foo.bar/${uuid}?lang=${lang}
+            baseUrlForView = PropertyUtil.getOptional("view.published.url");
+            if (baseUrlForView == null) {
+                // oskari.domain=http://foo.bar
+                // oskari.map.url=/oskari-map
+                baseUrlForView = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
+                baseUrlForView = baseUrlForView + "?lang=${lang}&uuId=${uuid}";
+            }
+        }
+        return baseUrlForView;
+    }
 
     public long getId() { return this.id; }
     public void setId(long id) { this.id = id; }

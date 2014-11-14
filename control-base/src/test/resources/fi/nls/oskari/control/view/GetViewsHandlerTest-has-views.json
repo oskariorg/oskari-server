@@ -36,7 +36,8 @@
             }
         },
         "isPublic":true,
-        "lang":"fi"
+        "lang":"fi",
+        "url" : "//foo.bar:1234/?lang=fi&uuId=aaaa-bbbbb-cccc"
     }]
 }
 

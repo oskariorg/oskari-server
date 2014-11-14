@@ -36,10 +36,17 @@ when layers are loaded.
 
 ### service-base
 
+fi.nls.oskari.domain.map.view.View now has a method getUrl() which returns URL pointing to that view. It uses properties to
+contruct the url with placeholders for view uuid and language:
+
+    view.published.url = http://foo.bar/${uuid}?lang=${lang}
+
+If 'view.published.url' is not defined uses a default by combining 'oskari.domain' and 'oskari.map.url'.
+
 Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
 scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
 
-Role now has a static method to determine default role for logged in user as well as admin role.
+fi.nls.oskari.domain.Role now has a static method to determine default role for logged in user as well as admin role.
 
 Moved common annotation processing classes from service-control to service-base.
 
@@ -89,6 +96,8 @@ Enabled customized HTML string cleaning.
 Moved common annotation processing classes from service-control to service-base.
 
 ### control-base
+
+GetViewsHandler now returns view URLs in response.
 
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
 

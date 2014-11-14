@@ -11,6 +11,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,9 +31,12 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_VIEWS = "views";
     public static final String KEY_CONFIG = "config";
 
+    private static final String KEY_URL = "url";
+
     private ViewService viewService = null;
 
     private final static Logger log = LogFactory.getLogger(GetViewsHandler.class);
+
 
     public void setViewService(final ViewService service) {
         viewService = service;
@@ -71,6 +75,8 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_ID, view.getId());
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
+                viewJson.put(KEY_URL, view.getUrl());
+
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
 
