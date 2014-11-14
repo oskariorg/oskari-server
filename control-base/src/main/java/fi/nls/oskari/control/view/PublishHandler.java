@@ -259,10 +259,8 @@ public class PublishHandler extends ActionHandler {
         currentView.setUuid(UUID.randomUUID().toString());
         
         if(useUuid != null && useUuid.equalsIgnoreCase("true")){
-        	log.debug("setting uuid to true");
         	currentView.setOnlyForUuId(true);
         }else{
-        	log.debug("setting uuid to false");
         	currentView.setOnlyForUuId(false);
         }
         log.debug("UUID: " + currentView.getUuid());
@@ -324,9 +322,7 @@ public class PublishHandler extends ActionHandler {
             mergeBundleConfiguration(gridBundle, null, gridState);
         }
 
-        log.debug("Save view:", currentView);
         final View newView = saveView(currentView);
-        log.debug("Published a map:", newView);
 
         try {
             JSONObject newViewJson = new JSONObject(newView.toString());
