@@ -140,13 +140,6 @@ public class GetAppSetupHandler extends ActionHandler {
         
         
         Enumeration<String> keys = params.getRequest().getParameterNames();
-        log.debug("##########################");
-        while(keys.hasMoreElements()){
-        	String key = keys.nextElement();
-        	log.debug(key + " -- " + params.getRequest().getParameter(key));
-        }
-        log.debug("##########################");
-        
         
         
         // ignore saved state for old published maps, non-default views or if
@@ -165,6 +158,7 @@ public class GetAppSetupHandler extends ActionHandler {
             throw new ActionParamsException("Could not get View with id: " + viewId
                     + " and oldId: " + oldId);
         }
+        
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");
