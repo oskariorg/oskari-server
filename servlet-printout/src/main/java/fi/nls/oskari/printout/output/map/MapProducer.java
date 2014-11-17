@@ -217,16 +217,17 @@ public class MapProducer {
 		for (final LayerDefinition layerDefinition : layers) {
 
 			Geometry polygon = layerDefinition.getGeom();
-			if (polygon != null) {
+			/*  complex to test - we should know env srs - layer definition geom srs is WGS84
+			  if (polygon != null) {
 				Envelope envGeom = polygon.getEnvelopeInternal();
 				if (!envGeom.intersects(env)) {
 
 					log.info("Out of bounds for "
-							+ layerDefinition.getLayerid() + " / bounds " + env
+							+ layerDefinition.getLayerid() + " / bounds " + env.
 							+ " vs " + envGeom);
 					continue;
 				}
-			}
+			}  */
 
 			if ("geojson".equals(layerDefinition.getLayerType())) {
 				log.info("geojson Processing for Layer "
