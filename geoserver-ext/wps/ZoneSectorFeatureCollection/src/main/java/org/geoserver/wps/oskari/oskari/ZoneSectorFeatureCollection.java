@@ -17,9 +17,12 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
+import java.awt.geom.AffineTransform;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.geotools.geometry.jts.JTS;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
@@ -34,17 +37,23 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.feature.type.GeometryTypeImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.util.Converters;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.LinearRing;
+import org.opengis.referencing.operation.MathTransform;
 
 /**
  * ZoneSectors a feature collection using a certain distance
- * 
+ *
  * @author Gianni Barrotta - Sinergis
  * @author Andrea Di Nora - Sinergis
  * @author Pietro Arena - Sinergis
@@ -58,28 +67,34 @@ public class ZoneSectorFeatureCollection implements GSProcess {
     public SimpleFeatureCollection execute(
             @DescribeParameter(name = "feature collection", description = "Feature collection") SimpleFeatureCollection features,
             @DescribeParameter(name = "width of the zonesector", description = "The width of the zonesector") Double distance,
+            @DescribeParameter(name = "sector count", description = "The count of sectors, default=0, max=12") int sector_count,
             @DescribeParameter(name = "zone count", description = "The count of zones,default=5") int zone_count) {
 
         if (distance == null) {
             throw new IllegalArgumentException("ZoneSector distance was not specified");
-        } 
+        }
 
-         if(zone_count < 1 ) zone_count = 5;
-         Double min_distance = 0.0;
-         Double max_distance = 0.0;
-        
-         ListFeatureCollection result = null;
+        if(zone_count < 1 ) zone_count = 5;
+        if(sector_count > 12 ) sector_count = 12;
 
-         for (int i = 0; i < zone_count; i++) {
-             max_distance= max_distance + distance;
-            SimpleFeatureCollection zone = new ZoneSectoredFeatureCollection(features, zone_count, min_distance, max_distance);
-            if(result == null) result = new ListFeatureCollection(zone.getSchema());
-            this.appendFeatureCollection(result, zone);
+        Double min_distance = 0.0;
+        Double max_distance = 0.0;
+
+
+        ListFeatureCollection result = null;
+
+        for (int i = 0; i < zone_count; i++) {
+            max_distance = max_distance + distance;
+            for (int k = 0; k < sector_count; k++) {
+                SimpleFeatureCollection zone = new ZoneSectoredFeatureCollection(features, zone_count, k, sector_count, min_distance, max_distance);
+                if (result == null) result = new ListFeatureCollection(zone.getSchema());
+                this.appendFeatureCollection(result, zone);
+            }
             min_distance = min_distance + distance;
         }
 
         return (SimpleFeatureCollection) result;
-        
+
     }
 
     /**
@@ -91,26 +106,30 @@ public class ZoneSectorFeatureCollection implements GSProcess {
         Double max_distance;
 
         int zone_count;
+        int sector_count;
+        int sector;
         String attribute;
-        
-        SimpleFeatureCollection delegate;
-       
 
-        public ZoneSectoredFeatureCollection(SimpleFeatureCollection delegate, int zone_count,
-                Double min_distance,  Double max_distance) {
+        SimpleFeatureCollection delegate;
+
+
+        public ZoneSectoredFeatureCollection(SimpleFeatureCollection delegate, int zone_count, int sector, int sector_count,
+                                             Double min_distance,  Double max_distance) {
             this.min_distance = min_distance;
             this.max_distance = max_distance;
             this.zone_count = zone_count;
+            this.sector_count = sector_count;
+            this.sector = sector;
             this.delegate = delegate;
             this.attribute = null;
-           
 
-            
+
+
         }
 
         @Override
         public SimpleFeatureIterator features() {
-            return new ZoneSectoredFeatureIterator(delegate, this.zone_count, this.min_distance, this.max_distance, getSchema());
+            return new ZoneSectoredFeatureIterator(delegate, this.zone_count, this.sector, this.sector_count, this.min_distance, this.max_distance, getSchema());
         }
 
         @Override
@@ -133,7 +152,7 @@ public class ZoneSectorFeatureCollection implements GSProcess {
             for (AttributeDescriptor descriptor : delegate.getSchema().getAttributeDescriptors()) {
                 if (!(descriptor.getType() instanceof GeometryTypeImpl)
                         || (!delegate.getSchema().getGeometryDescriptor().equals(descriptor))) {
-                    tb.add(descriptor);
+                   // tb.add(descriptor);  Add only sector id attribute
                 } else {
                     AttributeTypeBuilder builder = new AttributeTypeBuilder();
                     builder.setBinding(MultiPolygon.class);
@@ -143,8 +162,15 @@ public class ZoneSectorFeatureCollection implements GSProcess {
                     if(tb.getDefaultGeometry() == null) {
                         tb.setDefaultGeometry(descriptor.getLocalName());
                     }
+                    builder.setBinding(String.class);
+                    AttributeDescriptor attribute2 = builder.buildDescriptor(
+                            "sector_id", builder.buildType());
+                    tb.add(attribute2);
+
                 }
             }
+            AttributeTypeBuilder builder = new AttributeTypeBuilder();
+
             tb.setDescription(delegate.getSchema().getDescription());
             tb.setCRS(delegate.getSchema().getCoordinateReferenceSystem());
             tb.setName(delegate.getSchema().getName());
@@ -155,7 +181,7 @@ public class ZoneSectorFeatureCollection implements GSProcess {
         public int size() {
             return delegate.size();
         }
-      
+
     }
 
     /**
@@ -171,6 +197,8 @@ public class ZoneSectorFeatureCollection implements GSProcess {
 
 
         int zone_count;
+        int sector_count;
+        int sector;
 
         String attribute;
 
@@ -180,16 +208,18 @@ public class ZoneSectorFeatureCollection implements GSProcess {
 
         SimpleFeature next;
 
-        public ZoneSectoredFeatureIterator(SimpleFeatureCollection delegate, int zone_count,
-                Double min_distance, Double max_distance, SimpleFeatureType schema) {
+        public ZoneSectoredFeatureIterator(SimpleFeatureCollection delegate, int zone_count, int sector, int sector_count,
+                                           Double min_distance, Double max_distance, SimpleFeatureType schema) {
             this.delegate = delegate.features();
             this.min_distance = min_distance;
             this.max_distance = max_distance;
             this.collection = delegate;
             this.zone_count = zone_count;
+            this.sector_count = sector_count;
+            this.sector = sector;
             this.attribute = null;
             fb = new SimpleFeatureBuilder(schema);
-            
+
         }
 
         public void close() {
@@ -203,20 +233,36 @@ public class ZoneSectorFeatureCollection implements GSProcess {
                     if (value instanceof Geometry) {
                         Double fDistance1 = min_distance;
                         Double fDistance2 = max_distance;
-                       
+                        //Create sector
+                        Geometry gsector = getSectorGeometry((Geometry) value, 2.0*fDistance2, sector, sector_count);
+
                         if(fDistance1 != null &&  fDistance2 != null && fDistance1 == 0.0) {
                             // Create buffer
                             value = ((Geometry) value).buffer(fDistance2);
-                        } 
+                            if(gsector != null) value = ((Geometry) value).intersection(gsector);
+                        }
                         else if(fDistance1 != null &&  fDistance2 != null && fDistance1 != 0.0) {
                             // Create zone
                             Geometry minbuffer = ((Geometry) value).buffer(fDistance1);
                             Geometry maxbuffer = ((Geometry) value).buffer(fDistance2);
-                            value = (Geometry) maxbuffer.difference(minbuffer);
+                            value =  maxbuffer.difference(minbuffer);
+                            if(gsector != null) value = ((Geometry) value).intersection(gsector);
                         }
+                        fb.add(value);  // Geometry
                     }
-                    fb.add(value);
+
                 }
+                //Format distance
+                double dkm = max_distance/1000.0d;
+                String skm = new DecimalFormat("#0.0").format(dkm);
+                String sunit = "km";
+                if(dkm < 1.0d) {
+                    sunit = "m";
+                    skm = new DecimalFormat("#0").format(max_distance);
+                }
+
+                String sector_id=Integer.toString(sector+1)+"_"+skm+sunit;
+                fb.add(sector_id);   // Sector id
                 next = fb.buildFeature("zones." + count);
                 count++;
                 fb.reset();
@@ -233,19 +279,65 @@ public class ZoneSectorFeatureCollection implements GSProcess {
             return result;
         }
 
-    }
-     private void appendFeatureCollection(ListFeatureCollection result, SimpleFeatureCollection zone)
-        {
-             SimpleFeatureIterator iterator=zone.features();
-             try {
-                   while( iterator.hasNext()  ){
-                   SimpleFeature feature = iterator.next();
-                   result.add(feature);
-                   }
-           }
-            finally {
-            iterator.close();
+        /**
+         *  Computes one sector based on sector number and total number of sectors (2-12)
+         *  - use buffer quadrantSegments for getting sector points
+         *  - buffer 1st point is in the east - we want from the north
+         * @param gfeature    {Geometry}  feature for the sector center point
+         * @param distance    {double}  buffer/sector distance
+         * @param sector      {int} current sector # (1st index is 0)
+         * @param sector_count {int} total number of sectors
+         * @return {Geometry}  sector geometry
+         */
+        private Geometry getSectorGeometry(Geometry gfeature, double distance, int sector, int sector_count){
+            try {
+                GeometryFactory geometryFactory = new GeometryFactory();
+                if (sector_count < 2) return null;
+                int startInd = 4 * sector;
+                int endInd = 4 * (sector+1);
+                int midleInd = (startInd + endInd) / 2 ;
+                Geometry sectorbuf = (gfeature).buffer(distance, sector_count);
+                Coordinate center = sectorbuf.getCentroid().getCoordinate();
+                // Rotate geometry - we want sectors clockwise from north
+                AffineTransform affineTransform =
+                        AffineTransform.getRotateInstance(Math.toRadians(90.0d), center.x,
+                                center.y);
+                MathTransform mathTransform = new AffineTransform2D(affineTransform);
+
+                sectorbuf = JTS.transform(sectorbuf, mathTransform);
+                Coordinate[] coords = sectorbuf.getCoordinates();
+                Coordinate[] gsector = new Coordinate[5];
+                gsector[0] = center;
+                gsector[1] = coords[startInd];
+                gsector[2] = coords[midleInd];
+                gsector[3] = coords[endInd];
+                gsector[4] = center;
+                LinearRing ring = geometryFactory.createLinearRing(gsector);
+
+                Polygon polygon = geometryFactory.createPolygon(ring, null);
+                return (Geometry) polygon;
+            }
+            catch (Exception e)
+            {
+                System.out.println("Sector computation failed" + e);
+                return null;
             }
         }
+
+
+    }
+    private void appendFeatureCollection(ListFeatureCollection result, SimpleFeatureCollection zone)
+    {
+        SimpleFeatureIterator iterator=zone.features();
+        try {
+            while( iterator.hasNext()  ){
+                SimpleFeature feature = iterator.next();
+                result.add(feature);
+            }
+        }
+        finally {
+            iterator.close();
+        }
+    }
 
 }
