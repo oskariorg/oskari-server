@@ -2,6 +2,51 @@
 
 ## 1.25
 
+### DB upgrades and new configurations
+
+#### Control embedded maps in iframes from the parent page
+
+Add RPC-bundle to the publish template and all new embedded maps will get the functionality:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01-add-rpc-to-publish-template.sql
+
+To add the functionality to existing embedded maps, add the bundle to all views of type 'PUBLISHED'
+
+#### Move common layer properties to oskari_maplayer table
+
+Run SQLs:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01_alter_table_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/02_update_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/03_update_oskari_resource.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/04_drop_columns_portti_wfs_layer.sql
+
+#### Replace unused portti_maplayer_metadata with oskari_maplayer_metadata
+
+The table is populated by scheduled job described in service-cws:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/05-create-maplayer-metadata-table.sql
+
+Add a property for scheduling in oskari-ext.properties:
+
+    oskari.scheduler.job.CSWCoverageImport.cronLine=0 1 * * * ?
+
+The CSW service is configured by:
+
+    service.metadata.url=http://www.paikkatietohakemisto.fi/geonetwork
+
+#### Populate unique UUIDs for views
+
+Oskari 1.25+ will reference views with their UUIDs rather than ids. Loading a view with id is still supported.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/01-generate-uuids-for-views node app.js
+
+NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari before).
+After this, you can add a constraint for portti_view by running the SQL in:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
+
 ### standalone-jetty
 
 Fixed an issue with user logout functionality.
