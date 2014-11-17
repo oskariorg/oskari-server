@@ -19,8 +19,7 @@ public abstract class RestActionHandler extends ActionHandler {
 	 * @throws fi.nls.oskari.control.ActionException Exception is thrown if the action cannot be handled
 	 */
     public void handleAction(ActionParameters params) throws ActionException {
-        // TODO: removepreprocess
-    	//preProcess(params);
+    	preProcess(params);
         final HttpServletRequest req = params.getRequest();
         String method = req.getMethod();
         log.debug("Method:", method);
