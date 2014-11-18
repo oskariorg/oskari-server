@@ -199,7 +199,8 @@ CREATE TABLE portti_view (
    application_dev_prefix character varying(256) DEFAULT '/applications/sample',
   CONSTRAINT portti_view_pkey PRIMARY KEY (id),
   CONSTRAINT portti_view_supplement_id_fkey FOREIGN KEY (supplement_id)
-  REFERENCES portti_view_supplement (id) MATCH SIMPLE
+  REFERENCES portti_view_supplement (id) MATCH SIMPLE,
+  CONSTRAINT portti_view_uuid_key UNIQUE (uuid)
 );
 
 
