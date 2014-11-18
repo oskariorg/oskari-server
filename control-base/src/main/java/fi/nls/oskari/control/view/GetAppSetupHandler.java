@@ -38,8 +38,6 @@ public class GetAppSetupHandler extends ActionHandler {
 
     public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
-    public static final String PARAM_VIEW_ID = "viewId";
-    public static final String PARAM_UU_ID = "uuId";
     public static final String PARAM_OLD_ID = "oldId";
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
     public final static String VIEW_DATA = "viewData";
@@ -134,14 +132,9 @@ public class GetAppSetupHandler extends ActionHandler {
         final boolean isOldPublishedMap = oldId != -1;
         
         final long defaultViewId = viewService.getDefaultViewId(params.getUser());
-        long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID), defaultViewId);
-        //TODO: make a new method for null value   ... or something 
-        String uuId = ConversionHelper.getString(params.getHttpParam(PARAM_UU_ID), null);
-        
-        
-        Enumeration<String> keys = params.getRequest().getParameterNames();
-        
-        
+        long viewId = ConversionHelper.getLong(params.getHttpParam(ActionConstants.PARAM_VIEW_ID), defaultViewId);
+        final String uuId = params.getHttpParam(ActionConstants.PARAM_UUID);
+
         // ignore saved state for old published maps, non-default views or if
         // explicit param is given
         boolean ignoreSavedState = isOldPublishedMap
@@ -151,7 +144,6 @@ public class GetAppSetupHandler extends ActionHandler {
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader("Referer"));
 
-        
         final View view = getView(viewId, oldId, uuId);
 
         if (view == null) {

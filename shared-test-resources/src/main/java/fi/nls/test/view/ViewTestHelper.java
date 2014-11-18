@@ -20,6 +20,7 @@ public class ViewTestHelper {
         view.setName("test");
         view.setDescription("test view");
         view.setLang("fi");
+        view.setUuid("aaaa-bbbbb-cccc");
         view.setId(123);
         view.setIsPublic(true);
         view.setPubDomain("paikkis.fi");

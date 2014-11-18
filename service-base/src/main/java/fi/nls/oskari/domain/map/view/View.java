@@ -1,10 +1,13 @@
 package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.lang.text.StrSubstitutor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Map;
 
 public class View implements Serializable {
     private long id = -1;
@@ -14,6 +17,42 @@ public class View implements Serializable {
     private String uuid = null;
     private boolean onlyForUuId = false;
     private List<Bundle> bundles = new ArrayList<Bundle>();
+
+    public String getUrl() {
+        final Map<String, String> valuesMap = new HashMap();
+        valuesMap.put("lang", getLang());
+        valuesMap.put("uuid", getUuid());
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
+        return sub.replace(baseUrl);
+    }
+
+    private String getBaseUrlForView(final String type, final String lang) {
+        String value = null;
+        // view.published.url = http://foo.bar/${lang}/${uuid}
+        // view.user.url.fi = http://foo.bar/kayttaja/${uuid}
+        // view.user.url.en = http://foo.bar/user/${uuid}
+        final String basePropKey = "view." + type + ".url";
+        List<String> urls = PropertyUtil.getPropertyNamesStartingWith(basePropKey);
+        if(urls.size() == 1) {
+            // normal override of defaults
+            value =  PropertyUtil.get(basePropKey);
+        }
+        else if(urls.size() > 1) {
+            // locale-specific urls
+            value = PropertyUtil.getOptional(basePropKey + "." + lang);
+        }
+        if(value == null) {
+            // not defined, use reasonable default
+            // oskari.domain=http://foo.bar
+            // oskari.map.url=/oskari-map
+            value = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
+            // uuid param name should match ActionConstants.PARAM_UUID
+            value = value + "?lang=${lang}&uuid=${uuid}";
+        }
+        return value;
+    }
 
     public long getId() { return this.id; }
     public void setId(long id) { this.id = id; }
@@ -110,6 +149,7 @@ public class View implements Serializable {
             "'" + this.pubDomain.replace("\n", "").replace("\r", "") + "'";
 
         sb.append("]");
+        
         String ret =
             "{\n" +
             "  id: " + this.id + ",\n" +
@@ -120,9 +160,11 @@ public class View implements Serializable {
             "  lang: " + lang + ",\n" +
             "  width: " + this.width + ",\n" +
             "  pubDomain: " + pubDomain + ",\n" +
+            "  url: '" + getUrl() + "',\n" +
             "  height: " + this.height + ",\n" +
             "  states: " + sb.toString() + "\n" +
             "  }\n";
+        
         return ret;
     }
 

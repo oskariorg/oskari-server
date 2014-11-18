@@ -18,7 +18,7 @@ public class Role {
     private static final Logger log = LogFactory.getLogger(Role.class);
     private static Role ADMIN_ROLE = null;
     private static Role USER_ROLE = null;
-    public static final String DEFAULT_ADMIN_ROLE_NAME = "Administrator";
+    public static final String DEFAULT_ADMIN_ROLE_NAME = "Admin";
     public static final String DEFAULT_USER_ROLE_NAME = "User";
 
     private long id;

@@ -110,11 +110,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     @Test
     public void testAddedLayerSelectorBundle () throws Exception {
-        
-    	Map<String,String> paramMap = new HashMap<String,String>();
-    	//paramMap.put("uuId", "")
-    	
-    	
+
     	final ActionParameters params = createActionParams(getLoggedInUser());
         Role r = new Role();
         r.setName("Karttajulkaisija_Tre");

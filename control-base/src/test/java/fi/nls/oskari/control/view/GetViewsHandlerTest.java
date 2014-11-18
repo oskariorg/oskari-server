@@ -10,9 +10,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.*;
 
@@ -29,26 +27,26 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
     final private GetViewsHandler handler = new GetViewsHandler();
     private ViewService viewService = null;
 
-    @BeforeClass
-    public static void addLocales() throws Exception {
-        Properties properties = new Properties();
+    public void loadProperties() {
         try {
+            Properties properties = new Properties();
             properties.load(GetViewsHandlerTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
-            String locales = PropertyUtil.getNecessary("oskari.locales");
-            if (locales == null)
-                fail("No darned locales");
-        } catch (DuplicateException e) {
-            // ignore
+        } catch (Exception e) {
         }
     }
 
     @Before
     public void setUp() throws Exception {
+        loadProperties();
         viewService = mock(ViewServiceIbatisImpl.class);
         handler.setViewService(viewService);
 
         handler.init();
+    }
+    @After
+    public void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Test

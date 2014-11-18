@@ -2,6 +2,73 @@
 
 ## 1.25
 
+### DB upgrades and new configurations
+
+#### Control embedded maps in iframes from the parent page
+
+Add RPC-bundle to the publish template and all new embedded maps will get the functionality:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01-add-rpc-to-publish-template.sql
+
+To add the functionality to existing embedded maps, add the bundle to all views of type 'PUBLISHED'.
+
+#### Move common layer properties to oskari_maplayer table
+
+Run SQLs:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01_alter_table_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/02_update_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/03_update_oskari_resource.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/04_drop_columns_portti_wfs_layer.sql
+
+#### Replace unused portti_maplayer_metadata with oskari_maplayer_metadata
+
+The table is populated by scheduled job described in service-cws:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/05-create-maplayer-metadata-table.sql
+
+Add a property for scheduling in oskari-ext.properties:
+
+    oskari.scheduler.job.CSWCoverageImport.cronLine=0 1 * * * ?
+
+The CSW service is configured by:
+
+    service.metadata.url=http://www.paikkatietohakemisto.fi/geonetwork
+
+#### Populate unique UUIDs for views
+
+Oskari 1.25+ will reference views with their UUIDs rather than ids. Loading a view with id is still supported.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/01-generate-uuids-for-views node app.js
+
+NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari before).
+After this, you can add a constraint for portti_view by running the SQL in:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
+
+#### embedded maps urls
+
+Publisher and personaldata bundles in frontend now use embedded map urls provided by backend. The URLs will now always use
+ the views UUID instead of ID and the above database changes will generate unique UUIDs for all present views. PublishHandler
+ will also generate UUIDs for all new published views. To configure correct urls based on your environment you can configure:
+
+    view.published.url=http://myhost/${lang}/${uuid}
+
+or for heavily language-specific urls:
+
+    view.published.url.fi=http://myhost/kartta?uuid=${uuid}
+    view.published.url.sv=http://myhost/kartfonstret?uuid=${uuid}
+    view.published.url.en=http://myhost/map-window?uuid=${uuid}
+
+Both accept also URLs without protocol (//myhost/map) or host (/map)- frontend will include the missing parts based on browser location.
+If the above are not configured the URLs default to using:
+
+    oskari.domain=http://localhost:2373
+    oskari.map.url=/
+
+The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
+
 ### standalone-jetty
 
 Fixed an issue with user logout functionality.
@@ -36,10 +103,21 @@ when layers are loaded.
 
 ### service-base
 
+fi.nls.oskari.domain.map.view.View now has a method getUrl() which returns URL pointing to that view. It uses properties to
+contruct the url with placeholders for view uuid and language:
+
+    view.published.url = http://foo.bar/${uuid}?lang=${lang}
+
+If 'view.published.url' is not defined uses a default by combining 'oskari.domain' and 'oskari.map.url'.
+
 Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
 scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
 
-Role now has a static method to determine default role for logged in user as well as admin role.
+fi.nls.oskari.domain.Role now has a static method to determine default role for logged in user as well as admin role.
+The role names can be configured with properties and such match the role names in the database:
+
+    oskari.user.role.admin = Admin
+    oskari.user.role.loggedIn = User
 
 Moved common annotation processing classes from service-control to service-base.
 
@@ -89,6 +167,8 @@ Enabled customized HTML string cleaning.
 Moved common annotation processing classes from service-control to service-base.
 
 ### control-base
+
+GetViewsHandler now returns view URLs in response.
 
 Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
 

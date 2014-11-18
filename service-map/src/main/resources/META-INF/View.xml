@@ -104,7 +104,7 @@
 	       s.width, s.height, s.old_id
         FROM   portti_view v, portti_view_supplement s
        WHERE   v.supplement_id = s.id
-         AND   v.uuid = #uuId#
+         AND   v.uuid::text = #uuId#
     </select>
 
     <select id="view-with-conf-by-old-id"
@@ -175,8 +175,8 @@
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">
-      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application )
-           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
+      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application, uuid )
+           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application#, '$uuid$' )
         RETURNING id
     </statement>
 <!--  
