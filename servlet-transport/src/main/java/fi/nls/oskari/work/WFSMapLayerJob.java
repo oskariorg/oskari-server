@@ -475,6 +475,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         log.debug("properties handler");
         final List<String> selectedProperties = getPropertiesToInclude();
+<<<<<<< Updated upstream
 
         this.sendWFSProperties(selectedProperties, this.layer.getFeatureParamsLocales(this.session.getLanguage()));
     }
@@ -491,14 +492,35 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             return selectedProperties;
         }
 
+=======
+
+        this.sendWFSProperties(selectedProperties, this.layer.getFeatureParamsLocales(this.session.getLanguage()));
+    }
+
+    /**
+     * Returns array of property names that will be sent in response
+     * @return
+     */
+    private List<String> getPropertiesToInclude() {
+
+        final List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
+        if(selectedProperties != null && selectedProperties.size() != 0) {
+            log.debug("Using selected properties:", selectedProperties);
+            return selectedProperties;
+        }
+
+>>>>>>> Stashed changes
         if(this.features.features().hasNext()) {
             final List<String> propertyNames = new ArrayList<String>();
             final Collection<Property> featureProperties = this.features.features().next().getProperties();
             for (Property prop : featureProperties) {
                 final String field = prop.getName().toString();
+<<<<<<< Updated upstream
                 if (this.excludedProperties.contains(field)) {
                     continue;
                 }
+=======
+>>>>>>> Stashed changes
                 // don't add geometry
                 if (!this.layer.getGMLGeometryProperty().equals(field)) {
                     propertyNames.add(field);

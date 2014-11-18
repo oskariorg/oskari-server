@@ -508,7 +508,7 @@ public class PublishHandler extends ActionHandler {
             }
             // setup ids for updating a view
             view.setId(existingView.getId());
-            view.setSupplementId(existingView.getSupplementId());
+            view.setCreator(existingView.getCreator());
             view.setUuid(existingView.getUuid());
             view.setOldId(existingView.getOldId());
         }

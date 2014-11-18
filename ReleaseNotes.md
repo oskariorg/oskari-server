@@ -69,6 +69,13 @@ If the above are not configured the URLs default to using:
 
 The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
 
+#### Streamlining view tables in database
+
+The portti_view and portti_view_supplement have had 1:1 relation. To remove complexity portti_view_supplement has now
+been removed and the columns that are actually used have been moved to portti_view with same names (except pubdomain -> domain):
+
+    07_alter_table_portti_view.sql
+
 ### standalone-jetty
 
 Fixed an issue with user logout functionality.
