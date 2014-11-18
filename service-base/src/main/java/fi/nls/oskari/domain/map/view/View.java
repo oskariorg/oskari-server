@@ -148,6 +148,7 @@ public class View implements Serializable {
             "'" + this.pubDomain.replace("\n", "").replace("\r", "") + "'";
 
         sb.append("]");
+        
         String ret =
             "{\n" +
             "  id: " + this.id + ",\n" +
@@ -158,9 +159,11 @@ public class View implements Serializable {
             "  lang: " + lang + ",\n" +
             "  width: " + this.width + ",\n" +
             "  pubDomain: " + pubDomain + ",\n" +
+            "  url: '" + getUrl() + "',\n" +
             "  height: " + this.height + ",\n" +
             "  states: " + sb.toString() + "\n" +
             "  }\n";
+        
         return ret;
     }
 

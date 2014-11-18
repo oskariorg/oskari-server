@@ -39,6 +39,8 @@ public class PublishHandlerTest extends JSONActionRouteTest {
     @BeforeClass
     public static void addProperties() throws Exception {
         PropertyUtil.addProperty("view.template.publish", "3", true);
+        PropertyUtil.addProperty("oskari.domain", "domain", true);
+        PropertyUtil.addProperty("oskari.map.url", "map", true);
     }
 
     @Before
@@ -86,6 +88,12 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         assertNotNull("Must contain actual UUID", actualResponse.getString("uuid"));
         actualResponse.remove("uuid");
         expectedResult.remove("uuid");
+        
+        assertNotNull("Must contain some URL", actualResponse.getString("url"));
+        actualResponse.remove("url");
+        expectedResult.remove("url");
+        
+        
         assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
     }
 	
