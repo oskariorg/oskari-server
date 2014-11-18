@@ -180,7 +180,7 @@ public class MapFullServlet extends HttpServlet {
             log.debug("Using uuid to get the view:", view.getUuid());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             //request.setAttribute("viewId", view.getId());
-            request.setAttribute("uuId", view.getUuid());
+            request.setAttribute(PARAM_UUID, view.getUuid());
 
             // viewJSP might change if using dev override
             String viewJSP = view.getPage();

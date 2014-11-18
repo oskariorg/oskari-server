@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.service.db.MyPlacesService;
 import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -39,8 +40,8 @@ public class PublishHandlerTest extends JSONActionRouteTest {
     @BeforeClass
     public static void addProperties() throws Exception {
         PropertyUtil.addProperty("view.template.publish", "3", true);
-        PropertyUtil.addProperty("oskari.domain", "domain", true);
-        PropertyUtil.addProperty("oskari.map.url", "map", true);
+        PropertyUtil.addProperty("oskari.domain", "//domain.com", true);
+        PropertyUtil.addProperty("oskari.map.url", "/map", true);
     }
 
     @Before
@@ -85,15 +86,17 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         verifyResponseWritten(params);
         final JSONObject expectedResult = ResourceHelper.readJSONResource("PublishHandlerTest-output-simple.json", this);
         final JSONObject actualResponse = getResponseJSON();
+        // UUID will change in each run, so just checking that there is one
         assertNotNull("Must contain actual UUID", actualResponse.getString("uuid"));
         actualResponse.remove("uuid");
         expectedResult.remove("uuid");
-        
+
+        // URL will change in each run as it contains the UUID, so just checking that there is one
         assertNotNull("Must contain some URL", actualResponse.getString("url"));
-        actualResponse.remove("url");
+        assertNotNull("URL should start with expected format", actualResponse.getString("url").startsWith("//domain.com/map?lang=fi&" + ActionConstants.PARAM_UUID + "="));
+                actualResponse.remove("url");
         expectedResult.remove("url");
-        
-        
+
         assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
     }
 	

@@ -48,7 +48,8 @@ public class View implements Serializable {
             // oskari.domain=http://foo.bar
             // oskari.map.url=/oskari-map
             value = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
-            value = value + "?lang=${lang}&uuId=${uuid}";
+            // uuid param name should match ActionConstants.PARAM_UUID
+            value = value + "?lang=${lang}&uuid=${uuid}";
         }
         return value;
     }

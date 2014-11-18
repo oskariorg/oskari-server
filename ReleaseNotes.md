@@ -10,7 +10,7 @@ Add RPC-bundle to the publish template and all new embedded maps will get the fu
 
     content-resources/src/main/resources/sql/upgrade/1.25/01-add-rpc-to-publish-template.sql
 
-To add the functionality to existing embedded maps, add the bundle to all views of type 'PUBLISHED'
+To add the functionality to existing embedded maps, add the bundle to all views of type 'PUBLISHED'.
 
 #### Move common layer properties to oskari_maplayer table
 
@@ -46,6 +46,26 @@ NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari
 After this, you can add a constraint for portti_view by running the SQL in:
 
     content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
+
+#### embedded maps urls
+
+Publisher and personaldata bundles in frontend now use embedded map urls provided by backend. To configure
+ correct urls based on your environment you can configure:
+
+    view.published.url=http://myhost/${lang}/${uuid}
+
+or for heavily language-specific urls:
+
+    view.published.url.fi=http://myhost/kartta?uuid=${uuid}
+    view.published.url.sv=http://myhost/kartfonstret?uuid=${uuid}
+    view.published.url.en=http://myhost/map-window?uuid=${uuid}
+
+If the above are not configured the URLs default to using:
+
+    oskari.domain=http://localhost:2373
+    oskari.map.url=/
+
+The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
 
 ### standalone-jetty
 
