@@ -326,6 +326,9 @@ public class AnalysisParser {
             method.setWps_reference_type(analysisLayer.getInputType());
             analysisLayer.setAnalysisMethodParams(method);
 
+            // Set override style
+            analysisLayer.setOverride_sld(json.optString(JSONKEY_OVERRIDE_SLD));
+
             // WFS filter
             analysisLayer.getAnalysisMethodParams().setFilter(
                     this.parseFilter(lc, filter1, analysisLayer

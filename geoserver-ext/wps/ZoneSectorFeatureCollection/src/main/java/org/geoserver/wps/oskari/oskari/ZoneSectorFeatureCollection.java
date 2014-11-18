@@ -234,7 +234,9 @@ public class ZoneSectorFeatureCollection implements GSProcess {
                         Double fDistance1 = min_distance;
                         Double fDistance2 = max_distance;
                         //Create sector
-                        Geometry gsector = getSectorGeometry((Geometry) value, 2.0*fDistance2, sector, sector_count);
+                        double sectorside = ((Geometry) value).getLength() + (2.0d*fDistance2);
+
+                        Geometry gsector = getSectorGeometry(((Geometry) ((Geometry) value).getCentroid()), sectorside, sector, sector_count);
 
                         if(fDistance1 != null &&  fDistance2 != null && fDistance1 == 0.0) {
                             // Create buffer
