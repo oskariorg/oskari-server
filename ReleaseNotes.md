@@ -49,8 +49,9 @@ After this, you can add a constraint for portti_view by running the SQL in:
 
 #### embedded maps urls
 
-Publisher and personaldata bundles in frontend now use embedded map urls provided by backend. To configure
- correct urls based on your environment you can configure:
+Publisher and personaldata bundles in frontend now use embedded map urls provided by backend. The URLs will now always use
+ the views UUID instead of ID and the above database changes will generate unique UUIDs for all present views. PublishHandler
+ will also generate UUIDs for all new published views. To configure correct urls based on your environment you can configure:
 
     view.published.url=http://myhost/${lang}/${uuid}
 
