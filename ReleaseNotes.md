@@ -60,6 +60,7 @@ or for heavily language-specific urls:
     view.published.url.sv=http://myhost/kartfonstret?uuid=${uuid}
     view.published.url.en=http://myhost/map-window?uuid=${uuid}
 
+Both accept also URLs without protocol (//myhost/map) or host (/map)- frontend will include the missing parts based on browser location.
 If the above are not configured the URLs default to using:
 
     oskari.domain=http://localhost:2373
