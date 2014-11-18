@@ -29,13 +29,11 @@
       <result property="application" column="application" />
       <result property="page" column="page" />
       <result property="developmentPath" column="application_dev_prefix" />
-      <result property="pubDomain" column="pubdomain" />
+      <result property="pubDomain" column="domain" />
       <result property="lang" column="lang" />
       <result property="creator" column="creator" />
+      <result property="onlyForUuId" column="only_uuid" />
       <result property="isPublic" column="is_public" />
-      <result property="width" column="width" />
-      <result property="height" column="height" />
-      <result property="supplementId" column="supplement_id" />
       <result property="bundles" column="id"
               select="View.states-with-conf-by-view-id" />
     </resultMap>
@@ -59,76 +57,45 @@
         FROM   portti_view
        WHERE   name = #name#
     </select>
-    <!-- PublishHandler uses these as a template. As there's no deep copy and these are not immutable, the cache would be broken
-    <cacheModel type="LRU" id="view-cache" readOnly="true" serialize="false">
-        <flushInterval minutes="5"/>
-        <flushOnExecute  statement="View.update-supplement"/>
-        <flushOnExecute  statement="View.delete-view"/>
-        <property name="CacheSize" value="300"/>
-    </cacheModel>-->
 
     <select id="view-with-conf-by-view-id"
             parameterClass="java.lang.Long"
             resultMap="view-with-conf">
-            <!--cacheModel="view-cache">-->
-      SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
-               v.application, v.page, v.application_dev_prefix, s.creator,
-	       s.is_public, s.pubdomain, s.lang,
-	       s.width, s.height, s.old_id
-        FROM   portti_view v, portti_view_supplement s
-       WHERE   v.supplement_id = s.id
-         AND   v.id = #id#
+      SELECT   id, name, description, type, uuid, only_uuid,
+               application, page, application_dev_prefix, creator,
+	           is_public, domain, lang, old_id
+        FROM   portti_view
+       WHERE   id = #id#
     </select>
 
-    <select id="new-view-with-conf-by-view-id"
-            parameterClass="java.lang.Long"
-            resultMap="view-with-conf">
-            <!--cacheModel="view-cache">-->
-      SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
-               v.application, v.page, v.application_dev_prefix, s.creator,
-	       s.is_public, s.pubdomain, s.lang,
-	       s.width, s.height, s.old_id
-        FROM   portti_view v, portti_view_supplement s
-       WHERE   v.supplement_id = s.id
-		 AND   v.only_for_uuid = false
-         AND   v.id = #id#
-    </select>
-
-    <select id="view-with-conf-by-uu-id"
+    <select id="view-with-conf-by-uuid"
             parameterClass="java.lang.String"
             resultMap="view-with-conf">
-            <!--cacheModel="view-cache">-->
-      SELECT   v.id, v.name, v.description, v.type, v.uuid, v.supplement_id,
-               v.application, v.page, v.application_dev_prefix, s.creator,
-	       s.is_public, s.pubdomain, s.lang,
-	       s.width, s.height, s.old_id
-        FROM   portti_view v, portti_view_supplement s
-       WHERE   v.supplement_id = s.id
-         AND   v.uuid::text = #uuId#
+        SELECT   id, name, description, type, uuid, only_uuid,
+                 application, page, application_dev_prefix, creator,
+                 is_public, domain, lang, old_id
+        FROM   portti_view
+       WHERE   uuid::text = #uuId#
     </select>
 
     <select id="view-with-conf-by-old-id"
             parameterClass="java.lang.Long"
             resultMap="view-with-conf">
-      SELECT   v.id, v.name, v.description,  v.type, v.uuid, v.supplement_id,
-            v.application, v.page, v.application_dev_prefix, s.creator,
-	       s.is_public, s.pubdomain, s.lang,
-	       s.width, s.height, s.old_id
-        FROM   portti_view v, portti_view_supplement s
-       WHERE   v.supplement_id = s.id
-         AND   s.old_id = #old_id#
+        SELECT   id, name, description, type, uuid, only_uuid,
+                application, page, application_dev_prefix, creator,
+                is_public, domain, lang, old_id
+        FROM   portti_view
+       WHERE   old_id = #old_id#
     </select>
 
     <select id="views-with-conf-by-user-id"
             resultMap="view-with-conf">
-      SELECT   v.id, v.uuid, v.type, v.name, v.description, v.supplement_id,
-            v.application, v.page, v.application_dev_prefix, s.creator,
-	       s.is_public, s.pubdomain, s.lang,
-	       s.width, s.height, s.old_id
-        FROM   portti_view v, portti_view_supplement s
-       WHERE   v.supplement_id = s.id
-         AND   s.creator = #user_id#
-    ORDER BY   v.name ASC
+        SELECT   id, name, description, type, uuid, only_uuid,
+                application, page, application_dev_prefix, creator,
+                is_public, domain, lang, old_id
+        FROM   portti_view
+       WHERE   creator = #user_id#
+    ORDER BY   name ASC
     </select>
             
     <select id="get-default-view-id"
@@ -139,66 +106,28 @@
        WHERE   is_default = TRUE
          AND   type = #type#
     </select>
-	    
-        
-    <statement id="add-supplement"
-               resultClass="java.lang.Long"
-               parameterClass="View">
-      INSERT INTO portti_view_supplement (
-		pubdomain,
-		lang,
-        creator,
-        is_public,
-		old_id 
-	  ) VALUES (
-		#pubDomain#,
-		#lang#,
-        #creator#,
-        #isPublic#,
-		#oldId# )
-      RETURNING id
-    </statement> 
-    
-     <statement id="update-supplement"
-               resultClass="java.lang.Long"
-               parameterClass="View">
-      UPDATE portti_view_supplement SET
-	      pubdomain   = #pubDomain#,
-	      lang        = #lang#,
-	      creator     = #creator#,
-	      is_public   = #isPublic#
-      WHERE id = #supplementId#
-    </statement> 
-    
-    
- 
+
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">
-      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application, uuid )
-           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application#, '$uuid$' )
+      INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application, uuid, only_uuid, domain, lang, creator, is_public, is_default)
+           VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault# )
         RETURNING id
     </statement>
-<!--  
-    <statement id="add-view"
-               resultClass="java.lang.Long"
-               parameterClass="View">
-      INSERT INTO portti_view ( name, "description", type, supplement_id, application_dev_prefix, page, application )
-           VALUES ( #name#, #description#, #type#, #supplementId#, #developmentPath#, #page#, #application# )
-        RETURNING id
-    </statement> -->
     
     <statement id="update-access"
                parameterClass="View">
-      UPDATE portti_view_supplement
+      UPDATE portti_view
          SET is_public = #isPublic#
-       WHERE id = #supplementId#
+       WHERE id = #id#
     </statement>
 
-    <statement id="update-view"
+    <statement id="update"
                parameterClass="View">
       UPDATE portti_view
-         SET name = #name#, description = #description#, application = #application#, page = #page#, application_dev_prefix = #developmentPath#
+         SET name = #name#, description = #description#,
+        application = #application#, page = #page#, application_dev_prefix = #developmentPath#,
+         domain = #pubDomain#, lang = #lang#, is_public = #isPublic#
        WHERE id = #id#
     </statement>
 
@@ -206,18 +135,11 @@
                parameterClass="java.lang.Long">
       DELETE FROM portti_view WHERE id = #id#
     </statement>
-    
-    <statement id="delete-view-supplement"
-               parameterClass="java.lang.Long">
-      <!-- NOTE! id is not view id but portti_view.supplement_id (in most cases its the same) -->
-      DELETE FROM portti_view_supplement WHERE id = #id#
-    </statement>
 
     <statement id="delete-view-by-user"
                parameterClass="java.lang.Long">
-      DELETE FROM portti_view v, portti_view_supplement s
-            WHERE s.creator = #userId#
-              AND v.supplement_id = s.id
+      DELETE FROM portti_view
+            WHERE creator = #userId#
     </statement>
                
 
@@ -229,8 +151,6 @@
        WHERE   s.bundle_id = b.id AND view_id = #id# order by s.seqno
     </select>
 
-
-<!-- -->
     <select id="bundle-by-view-id"
             parameterClass="java.lang.Long"
             resultMap="bundle">
@@ -260,19 +180,6 @@
             state = #state#,
             bundleinstance = #bundleinstance#
         WHERE view_id = #view_id# AND bundle_id = #bundle_id#
-    </update>
-    
-    <update id="update" 
-        parameterClass="View">
-        UPDATE portti_view SET
-           name = #name#,
-           "description" = #description#,
-           type = #type#,
-           supplement_id = #supplementId#,
-           application = #application#,
-           page = #page#,
-           application_dev_prefix = #developmentPath#
-        WHERE id = #id#
     </update>
 
 </sqlMap>

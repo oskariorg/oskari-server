@@ -72,7 +72,6 @@ public class DBHandler {
     public static void debugPrintDBContents() {
         // Enable to show db contents for view related tables if an error occurs
         printQuery("SELECT * FROM portti_bundle");
-        printQuery("SELECT * FROM portti_view_supplement");
         printQuery("SELECT * FROM portti_view");
         printQuery("SELECT * FROM portti_view_bundle_seq");
 

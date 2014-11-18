@@ -36,33 +36,21 @@ public class ViewHelper {
     public static long insertView(Connection conn, final String viewfile) throws IOException, SQLException {
         log.info("/ - /json/views/" + viewfile);
         String json = IOHelper.readString(DBHandler.class.getResourceAsStream("/json/views/" + viewfile));
-        JSONObject view = JSONHelper.createJSONObject(json);
-        log.debug(view);
+        JSONObject viewJSON = JSONHelper.createJSONObject(json);
+        log.debug(viewJSON);
         try {
-            final String creator = view.optString("creator");
-            DBHandler.executeSingleSql(conn, "INSERT INTO portti_view_supplement (is_public, creator) VALUES (" + view.getBoolean("public") +
-                    "," + ConversionHelper.getLong(creator, -1) + " )");
-            Map<String, String> supplementResult = DBHandler.selectSql(conn, "SELECT max(id) as id FROM portti_view_supplement");
-            final long supplementId = ConversionHelper.getLong(supplementResult.get("id"), -1);
+            final View view = new View();
+            view.setCreator(ConversionHelper.getLong( viewJSON.optString("creator"), -1));
+            view.setIsPublic(viewJSON.getBoolean("public"));
+            view.setName(viewJSON.getString("name"));
+            view.setType(viewJSON.getString("type"));
+            view.setIsDefault(viewJSON.optBoolean("default"));
+            final JSONObject oskari = JSONHelper.getJSONObject(viewJSON, "oskari");
+            view.setPage(oskari.getString("page"));
+            view.setDevelopmentPath(oskari.getString("development_prefix"));
+            view.setApplication(oskari.getString("application"));
 
-            final String insertViewSQL = "INSERT INTO portti_view (name, type, is_default, supplement_id, application, page, application_dev_prefix) " +
-                    "VALUES (?,?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = conn.prepareStatement(insertViewSQL);
-            preparedStatement.setString(1, view.getString("name"));
-            preparedStatement.setString(2, view.getString("type"));
-            preparedStatement.setBoolean(3, view.optBoolean("default"));
-            preparedStatement.setLong(4, supplementId);
-            final JSONObject oskari = JSONHelper.getJSONObject(view, "oskari");
-            preparedStatement.setString(5, oskari.getString("application"));
-            preparedStatement.setString(6, oskari.getString("page"));
-            preparedStatement.setString(7, oskari.getString("development_prefix"));
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-
-            Map<String, String> viewResult = DBHandler.selectSql(conn, "SELECT max(id) as id FROM portti_view");
-            final long viewId = ConversionHelper.getLong(viewResult.get("id"), -1);
-
-            final JSONArray layers = view.optJSONArray("selectedLayers");
+            final JSONArray layers = viewJSON.optJSONArray("selectedLayers");
             final Set<Integer> selectedLayerIds = new HashSet<Integer>();
             if(layers != null) {
                 for (int i = 0; i < layers.length(); ++i) {
@@ -71,8 +59,7 @@ public class ViewHelper {
                 }
             }
 
-            final View viewObj = viewService.getViewWithConf(viewId);
-            final JSONArray bundles = view.getJSONArray("bundles");
+            final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
                 final Bundle bundle = bundleService.getBundleTemplateByName(bJSON.getString("id"));
@@ -97,9 +84,9 @@ public class ViewHelper {
                 }
 
                 // set up seq number
-                viewObj.addBundle(bundle);
-                viewService.addBundleForView(viewId, bundle);
+                view.addBundle(bundle);
             }
+            final long viewId = viewService.addView(view);
             log.info("Added view from file: " + viewfile + "/viewId is:" + viewId);
             return viewId;
         } catch (Exception ex) {
