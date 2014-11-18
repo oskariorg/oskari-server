@@ -112,6 +112,10 @@ Added a common base class that can be extended for scheduled tasks 'fi.nls.oskar
 scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
 
 fi.nls.oskari.domain.Role now has a static method to determine default role for logged in user as well as admin role.
+The role names can be configured with properties and such match the role names in the database:
+
+    oskari.user.role.admin = Admin
+    oskari.user.role.loggedIn = User
 
 Moved common annotation processing classes from service-control to service-base.
 
