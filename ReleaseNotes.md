@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.24.5 - security patch
+
+### service-control/RestActionHandler & control-admin
+
+The preprocess-method call was commented out on Oskari versions 1.24.0-1.24.4. This is a serious security issue as
+ many of the admin functionalities depend on preprocess() to check that the user is an admin. On affected versions even
+ Guest-users can use the admin functionalities.
+
 ## 1.24.4
 
 ### content-resources/publish template
