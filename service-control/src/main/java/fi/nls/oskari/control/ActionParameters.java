@@ -167,6 +167,15 @@ public class ActionParameters {
         return ConversionHelper.getInt(getHttpParam(key), defaultValue);
     }
     /**
+     * Returns a parameter as long or default value if not present/can't be parsed
+     * @param key parameter name for an long parameter
+     * @param defaultValue value to be returned if parameter is not present in the request or can't be parsed
+     * @return cleaned up value for the parameter or given defaultValue if not found
+     */
+    public long getHttpParam(final String key, final long defaultValue) {
+        return ConversionHelper.getLong(getHttpParam(key), defaultValue);
+    }
+    /**
      * Returns value of a header field matching given key
      * @param key header name
      * @return
