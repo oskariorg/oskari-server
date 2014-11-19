@@ -170,7 +170,6 @@ public class MapFullServlet extends HttpServlet {
             final String uuId = params.getHttpParam(PARAM_UUID);
             
             final View view = getView(uuId, viewId);
-            log.debug(view, view.getBundles());
             if (view == null) {
             	log.debug("no such view, viewID:" + viewId + " uuid:" + uuId);
                 ResponseHelper.writeError(params, "No such view");
