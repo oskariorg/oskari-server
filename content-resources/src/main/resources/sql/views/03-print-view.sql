@@ -15,23 +15,16 @@ SELECT b.name, s.config, s.state, s.startup
 
 
 --------------------------------------------
--- Supplement
--- TODO: This should be refactored so view is inserted first 
--- and supplement should contain some sane values
---------------------------------------------
-
-INSERT INTO portti_view_supplement (app_startup, baseaddress, is_public)
-    VALUES ('full-map', 'print', true);
-
---------------------------------------------
 -- View
 --------------------------------------------
 
-INSERT INTO portti_view (name, type, is_default, supplement_id)
+INSERT INTO portti_view (name, type, is_default,  application, page, application_dev_prefix)
     VALUES ('print', 
             'PRINT', 
-             true, 
-             (SELECT max(id) FROM portti_view_supplement));
+             true,
+             'full-map',
+             'print',
+             '/applications/paikkatietoikkuna.fi');
 
 
 --------------------------------------------

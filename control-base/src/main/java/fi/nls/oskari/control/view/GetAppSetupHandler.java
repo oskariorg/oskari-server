@@ -126,31 +126,25 @@ public class GetAppSetupHandler extends ActionHandler {
         SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
     }
 
-    public void handleAction(ActionParameters params) throws ActionException {
+    public void handleAction(final ActionParameters params) throws ActionException {
         // oldId => support for migrated published maps
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
-        final boolean isOldPublishedMap = oldId != -1;
-        
         final long defaultViewId = viewService.getDefaultViewId(params.getUser());
-        long viewId = ConversionHelper.getLong(params.getHttpParam(ActionConstants.PARAM_VIEW_ID), defaultViewId);
-        final String uuId = params.getHttpParam(ActionConstants.PARAM_UUID);
+        final View view = getView(params, defaultViewId, oldId);
 
-        // ignore saved state for old published maps, non-default views or if
-        // explicit param is given
-        boolean ignoreSavedState = isOldPublishedMap
-                || viewId != defaultViewId
-                || ConversionHelper.getBoolean(params.getHttpParam(PARAM_NO_SAVED_STATE), false);
-
+        if (view == null) {
+            throw new ActionParamsException("Could not load View");
+        }
+        // Strictly necessary only if oldId used
+        final long viewId = view.getId();
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader("Referer"));
 
-        final View view = getView(viewId, oldId, uuId);
-
-        if (view == null) {
-            throw new ActionParamsException("Could not get View with id: " + viewId
-                    + " and oldId: " + oldId);
-        }
-        
+        // ignore saved state for ancient published maps (having oldId), non-default views or if
+        // explicit param is given
+        boolean ignoreSavedState = oldId != -1
+                || viewId != defaultViewId
+                || ConversionHelper.getBoolean(params.getHttpParam(PARAM_NO_SAVED_STATE), false);
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");
@@ -158,11 +152,7 @@ public class GetAppSetupHandler extends ActionHandler {
                     .getCookie(COOKIE_SAVED_STATE)));
         }
 
-        // Strictly necessary only if oldId used
-        viewId = view.getId();
-
         // Check user/permission
-        
         final long creator = view.getCreator();
         final long userId = params.getUser().getId();
         if (view.isPublic() || creator == DEFAULT_USERID) {
@@ -180,8 +170,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if (view.getType().equals(ViewTypes.PUBLISHED)) {
             // Check referrer
             final String pubDomain = view.getPubDomain();
-            //if(isRefererDomain(referer, pubDomain)) {
-            if(true){
+            if(isRefererDomain(referer, pubDomain)) {
                 log.info("Granted access to published view in domain:",
                         pubDomain, "for referer", referer);
             } else {
@@ -201,6 +190,7 @@ public class GetAppSetupHandler extends ActionHandler {
             // Check usage count -
             // // FIXME: we cannot use the current user -> the publisher is the
             // one we are interested in!!!!
+            /*
             if (!params.getUser().hasRole(UNRESTRICTED_USAGE_ROLE)) {
                 final List<Integer> viewIdList = new ArrayList<Integer>();
                 // get all view for view creator
@@ -216,6 +206,7 @@ public class GetAppSetupHandler extends ActionHandler {
                                     + "exceeded!");
                 }
             }
+            */
         }
 
         // JSON presentation of view
@@ -314,7 +305,7 @@ public class GetAppSetupHandler extends ActionHandler {
             return false;
         }
         for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
-            if(referer.endsWith(domain)) {
+            if(domain.equals("*") || referer.endsWith(domain)) {
                 return true;
             }
         }
@@ -339,17 +330,25 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
     
-    private View getView(final long viewId, final long oldId, final String uuId) {
+    private View getView(final ActionParameters params, final long defaultViewId, final long oldId) throws ActionException {
+
+        long viewId = ConversionHelper.getLong(params.getHttpParam(ActionConstants.PARAM_VIEW_ID), defaultViewId);
+        final String uuId = params.getHttpParam(ActionConstants.PARAM_UUID);
+        //final long viewId, final long oldId, final String uuId
         if (uuId != null) {
-            log.debug("Using uu ID :" + uuId);
+            log.debug("Requested UUID :" + uuId);
             return viewService.getViewWithConfByUuId(uuId);
         } else if (oldId > 0){
-            log.debug("Using old View ID :" + oldId);
+            log.debug("Requested old View ID :" + oldId);
             return viewService.getViewWithConfByOldId(oldId);
-        } else {
-            log.debug("Using View ID:" + viewId);
-            return viewService.getViewWithConf(viewId);
         }
+        log.debug("Requested View ID:" + viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(viewId != defaultViewId && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
     
 

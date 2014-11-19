@@ -42,7 +42,7 @@ Run the node.js upgrade script under content-resources/db-upgrade:
 
     SCRIPT=1.25/01-generate-uuids-for-views node app.js
 
-NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari before).
+NOTE! This will replace any existing UUIDs (they haven't been used in Oskari before).
 After this, you can add a constraint for portti_view by running the SQL in:
 
     content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
@@ -68,6 +68,10 @@ If the above are not configured the URLs default to using:
     oskari.map.url=/
 
 The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
+
+Note! Views added by 1.25.0 can only be loaded by it's uuid. To make a view available by viewId
+change the boolean flag "only_uuid" in portti_view database table. Exception to this is any view defined as
+default view.
 
 #### Streamlining view tables in database
 
