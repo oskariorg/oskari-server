@@ -33,6 +33,7 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.apache.commons.lang.StringUtils;
+import static fi.nls.oskari.control.ActionConstants.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,10 +54,7 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_LASTNAME = "lastName";
     public static final String KEY_NICKNAME = "nickName";
     public static final String KEY_LOGINNAME = "loginName";
-    public static final String KEY_USER = "user";
-    public static final String KEY_ID = "id";
     public static final String KEY_DOMAIN = "domain";
-    public static final String KEY_NAME = "name";
     public static final String KEY_LAYOUT = "layout";
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_PLUGINS = "plugins";
@@ -64,8 +62,6 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_MAPSTATE = "mapstate";
     public static final String KEY_LAYERS = "layers";
     public static final String KEY_SELLAYERS = "selectedLayers";
-    public static final String KEY_CONFIG = "config";
-    public static final String KEY_STATE = "state";
     public static final String KEY_RESPONSIVE = "responsive";
     public static final String VIEW_RESPONSIVE = "responsive";
     public static final String APP_RESPONSIVE = "responsive-published-map";
@@ -80,7 +76,6 @@ public class PublishHandler extends ActionHandler {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYER = "userlayer_";
-    private static final String PREFIX_BASELAYER = "base_";
     private static final Set<String> CLASS_WHITELIST;
     static {
         CLASS_WHITELIST = new TreeSet<String>();
@@ -513,7 +508,7 @@ public class PublishHandler extends ActionHandler {
             }
             // setup ids for updating a view
             view.setId(existingView.getId());
-            view.setSupplementId(existingView.getSupplementId());
+            view.setCreator(existingView.getCreator());
             view.setUuid(existingView.getUuid());
             view.setOldId(existingView.getOldId());
         }

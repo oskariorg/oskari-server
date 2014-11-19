@@ -3,6 +3,7 @@ package fi.nls.oskari.control.view;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
@@ -161,7 +162,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     public void testWithViewIdGiven() throws Exception {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "3");
+        parameters.put(ActionConstants.PARAM_VIEW_ID, "3");
         // TODO: setup a cookie with state and see that it shouldn't change the view since a specific non-default view was requested
         // TODO: create a test without giving viewId and see that the cookie affects it
         final ActionParameters params = createActionParams(parameters);
@@ -194,7 +195,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     public void testWithOldIdGiven() throws Exception {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "456");
+        parameters.put(ActionConstants.PARAM_VIEW_ID, "456");
         parameters.put(GetAppSetupHandler.PARAM_OLD_ID, "123");
         // TODO: setup a cookie with state and see that it shouldn't change the view since a migrated view was requested
         final ActionParameters params = createActionParams(parameters);

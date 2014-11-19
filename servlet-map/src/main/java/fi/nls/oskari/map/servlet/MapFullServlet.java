@@ -138,7 +138,7 @@ public class MapFullServlet extends HttpServlet {
         } catch (ActionDeniedException e) {
             // User tried to execute action he/she is not authorized to execute or session had expired
             if(params.getUser().isGuest()) {
-                log.error("Session expired - Action was denied:", route, ". Parameters: ", params.getRequest().getParameterMap(), "- Cause:", log.getCauseMessages(e));
+                log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             }
             else {
                 log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
@@ -163,15 +163,11 @@ public class MapFullServlet extends HttpServlet {
         try {
         	log.debug("getting a view and setting Render parameters");
             HttpServletRequest request = params.getRequest();
-            
-            final long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID),
-                    viewService.getDefaultViewId(params.getUser()));
-            
-            final String uuId = params.getHttpParam(PARAM_UUID);
-            
-            final View view = getView(uuId, viewId);
+
+
+            final View view = getView(params);
             if (view == null) {
-            	log.debug("no such view, viewID:" + viewId + " uuid:" + uuId);
+            	log.debug("no such view, params" + params.getRequest().getParameterMap(), params.getUser());
                 ResponseHelper.writeError(params, "No such view");
                 return null;
             }
@@ -180,7 +176,7 @@ public class MapFullServlet extends HttpServlet {
             log.debug("Using uuid to get the view:", view.getUuid());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
             //request.setAttribute("viewId", view.getId());
-            request.setAttribute("uuId", view.getUuid());
+            request.setAttribute(PARAM_UUID, view.getUuid());
 
             // viewJSP might change if using dev override
             String viewJSP = view.getPage();
@@ -230,14 +226,21 @@ public class MapFullServlet extends HttpServlet {
         }
     }
     
-    private View getView(final String uuId, final long viewId) {
+    private View getView(final ActionParameters params) {
+        final String uuId = params.getHttpParam(PARAM_UUID);
         if (uuId != null) {
-            log.debug("Using UUID :" + uuId);
+            log.debug("Requested UUID :" + uuId);
             return viewService.getViewWithConfByUuId(uuId);
-        } else {
-            log.debug("Using View ID:" + viewId);
-            return viewService.getViewWithConf(viewId);
         }
+        final long defaultViewId = viewService.getDefaultViewId(params.getUser());
+        final long viewId = params.getHttpParam(PARAM_VIEW_ID, defaultViewId);
+        log.debug("Requested View ID:" + viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(viewId != defaultViewId && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
         
     
