@@ -42,7 +42,7 @@ Run the node.js upgrade script under content-resources/db-upgrade:
 
     SCRIPT=1.25/01-generate-uuids-for-views node app.js
 
-NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari before).
+NOTE! This will replace any existing UUIDs (they haven't been used in Oskari before).
 After this, you can add a constraint for portti_view by running the SQL in:
 
     content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
