@@ -14,6 +14,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     private final String analysisMethodTemplate = "analysis-layer-wps-aggregate.xml";
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-aggregate.xml";
     private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-aggregate.xml";
+    private final String bboxAggreFilterTemplate = "<ogc:Filter><ogc:And><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
     private final String functionsTemplate = "<wps:Input><ows:Identifier>function</ows:Identifier><wps:Data><wps:LiteralData>{functions}</wps:LiteralData></wps:Data></wps:Input>";
     private static final String  NO_DATA_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsNotEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsNotEqualTo></ogc:And></ogc:And></ogc:Filter>";
     private static final String  NO_DATACOUNT_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:And></ogc:And></ogc:Filter>";
@@ -43,6 +44,10 @@ public class AggregateMethodParams extends AnalysisMethodParams {
 
     public void setNoDataValue(String noDataValue) {
         this.noDataValue = noDataValue;
+    }
+
+    public String getBboxAggreFilterTemplate() {
+        return bboxAggreFilterTemplate;
     }
 
     public List<String> getAggreFunctions() {
@@ -95,6 +100,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         } else {
 
             String fbbox = this.getBboxFilterTemplate();
+            if (this.getNoDataValue() != null) fbbox =this.getBboxAggreFilterTemplate();
             fbbox = fbbox.replace(GEOM, this.getGeom());
             fbbox = fbbox.replace(SRSNAME, this.getSrsName());
             fbbox = fbbox.replace(X_LOWER, this.getX_lower());
