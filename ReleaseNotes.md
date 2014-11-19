@@ -80,6 +80,16 @@ been removed and the columns that are actually used have been moved to portti_vi
 
     07_alter_table_portti_view.sql
 
+### servlet-map/PrincipalAuthenticationFilter
+
+AuthenticationFilter can now be configured to use lowercase usernames when querying database for users and
+adding users to database. To enable this add a property to oskari-ext.properties:
+
+    auth.lowercase.username=true
+
+Notice that when using this check that the existing usernames in database are in lowercase format. This can be useful if
+the authentication module (like JAAS-LDAP) handles usernames case-insensitively.
+
 ### standalone-jetty
 
 Fixed an issue with user logout functionality.
