@@ -22,6 +22,7 @@ public class PrincipalAuthenticationFilter implements Filter {
     private String logoutUrl = "logout";
     private String loggedOutPage = "/";
     private boolean addMissingUsers = true;
+    private boolean useLowerCaseUsernames = false;
     private String roleMappingType = null;
 
     private IbatisRoleService roleService = null;
@@ -36,7 +37,9 @@ public class PrincipalAuthenticationFilter implements Filter {
         // favor init params, fallback to property
         addMissingUsers = ConversionHelper.getBoolean(filterConfig.getInitParameter("auth.add.missing.users"),
                 PropertyUtil.getOptional("auth.add.missing.users", addMissingUsers));
-        roleMappingType =ConversionHelper.getString(filterConfig.getInitParameter("auth.external.role.mapping"),
+
+        useLowerCaseUsernames = ConversionHelper.getBoolean(PropertyUtil.getOptional("auth.lowercase.username"), useLowerCaseUsernames);
+        roleMappingType = ConversionHelper.getString(filterConfig.getInitParameter("auth.external.role.mapping"),
                 PropertyUtil.getOptional("auth.external.role.mapping"));
 
         roleService = new IbatisRoleService();
@@ -90,18 +93,21 @@ public class PrincipalAuthenticationFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    public void setupSession(final HttpServletRequest httpRequest, final String username) throws Exception {
+    public void setupSession(final HttpServletRequest httpRequest, String username) throws Exception {
         final HttpSession session = httpRequest.getSession(false);
         final User user = getLoggedInUser(httpRequest);
-        if(session != null && user != null && !user.isGuest()) {
+        if(session != null && user != null && !user.isGuest() || username == null) {
             // user is already logged in
             return;
+        }
+        if(useLowerCaseUsernames) {
+            username = username.toLowerCase();
         }
         log.debug("Getting user from service with principal name:", username);
         User loadedUser = userService.getUser(username);
         log.debug("Got user from service:", loadedUser);
         if(addMissingUsers && loadedUser == null) {
-            loadedUser = addUser(httpRequest);
+            loadedUser = addUser(httpRequest, username);
         }
         if(loadedUser != null) {
             httpRequest.getSession(true).setAttribute(KEY_USER, loadedUser);
@@ -111,13 +117,20 @@ public class PrincipalAuthenticationFilter implements Filter {
             log.error("Login user check failed! Got user from principal, but can't find it in Oskari db:", username);
         }
     }
+    public void addUser(final HttpServletRequest httpRequest) throws Exception {
+        String username = httpRequest.getUserPrincipal().getName();
+        if(useLowerCaseUsernames) {
+            username = username.toLowerCase();
+        }
+        addUser(httpRequest, username);
+    }
 
-    public User addUser(final HttpServletRequest httpRequest) throws Exception {
+    public User addUser(final HttpServletRequest httpRequest, final String username) throws Exception {
         final User user = new User();
-        user.setScreenname(httpRequest.getUserPrincipal().getName());
+        user.setScreenname(username);
         user.setFirstname(null);
         user.setLastname(null);
-        user.setUuid(userService.generateUuid(user.getScreenname()));
+        user.setUuid(userService.generateUuid(username));
         for(String extRoleName : EXTERNAL_ROLES_MAPPING.keySet()) {
             if(httpRequest.isUserInRole(extRoleName)) {
                 user.addRole(EXTERNAL_ROLES_MAPPING.get(extRoleName));
