@@ -69,6 +69,9 @@ If the above are not configured the URLs default to using:
 
 The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
 
+Note! Views added by 1.25.0 can only be loaded by it's uuid. To make a view available by viewId
+change the boolean flag "only_uuid" in portti_view database table.
+
 #### Streamlining view tables in database
 
 The portti_view and portti_view_supplement have had 1:1 relation. To remove complexity portti_view_supplement has now

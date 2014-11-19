@@ -237,7 +237,12 @@ public class MapFullServlet extends HttpServlet {
             return viewService.getViewWithConfByUuId(uuId);
         } else {
             log.debug("Using View ID:" + viewId);
-            return viewService.getViewWithConf(viewId);
+            View view = viewService.getViewWithConf(viewId);
+            if(view.isOnlyForUuId()) {
+                log.warn("View can only be loaded by uuid. ViewId:", viewId);
+                return null;
+            }
+            return view;
         }
     }
         

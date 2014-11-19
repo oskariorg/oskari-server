@@ -339,7 +339,7 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
     
-    private View getView(final long viewId, final long oldId, final String uuId) {
+    private View getView(final long viewId, final long oldId, final String uuId) throws ActionException {
         if (uuId != null) {
             log.debug("Using uu ID :" + uuId);
             return viewService.getViewWithConfByUuId(uuId);
@@ -348,7 +348,11 @@ public class GetAppSetupHandler extends ActionHandler {
             return viewService.getViewWithConfByOldId(oldId);
         } else {
             log.debug("Using View ID:" + viewId);
-            return viewService.getViewWithConf(viewId);
+            View view = viewService.getViewWithConf(viewId);
+            if(view.isOnlyForUuId()) {
+                throw new ActionDeniedException("View can only be loaded by uuid");
+            }
+            return view;
         }
     }
     
