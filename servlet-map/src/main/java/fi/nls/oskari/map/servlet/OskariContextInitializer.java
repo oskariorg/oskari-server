@@ -12,6 +12,7 @@ import javax.naming.InitialContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * Initializes context for oskari-map servlet:
@@ -26,12 +27,24 @@ public class OskariContextInitializer implements ServletContextListener {
 
     private SchedulerService schedulerService;
 
+    private boolean dataSourceCreatedLocally = false;
+
+    private BasicDataSource localDataSource;
+
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
         try {
             this.schedulerService.shutdownScheduler();
         } catch (final SchedulerException e) {
             log.error(e, "Failed to shut down the Oskari scheduler");
+        }
+        if (this.dataSourceCreatedLocally) {
+            try {
+                this.localDataSource.close();
+                log.info("Closed locally created data source");
+            } catch (final SQLException e) {
+                log.error(e, "Failed to close locally created data source");
+            }
         }
         System.out.println("Context destroy");
     }
@@ -102,14 +115,16 @@ public class OskariContextInitializer implements ServletContextListener {
         final String poolName = PropertyUtil.get("db." + poolToken + "jndi.name", "jdbc/OskariPool");
 
         info(" - checking existance of database pool: " + poolName);
-        final DataSource ds = getDataSource(ctx, poolName);
+        final BasicDataSource ds = getDataSource(ctx, poolName);
         boolean success = (ds != null);
-        if(!success) {
+        if (!success) {
             warn("!!! Couldn't find DataSource with name: " + poolName);
             warn("!!! Please edit webapps XML (web.xml/context.xml etc) to provide database connection resource !!!");
             //  + " - creating one with defaults."
             info(" - trying to create DataSource with defaults based on configured properties");
-            final DataSource defaultPool = createDataSource(null);
+            final BasicDataSource defaultPool = createDataSource(null);
+            this.dataSourceCreatedLocally = true;
+            this.localDataSource = defaultPool;
             addDataSource(ctx, poolName, defaultPool);
             info(" - checking existance of database pool: " + poolName);
             success = (getDataSource(ctx, poolName) != null);
@@ -126,7 +141,7 @@ public class OskariContextInitializer implements ServletContextListener {
         return null;
     }
 
-    private void addDataSource(final InitialContext ctx, final String name, final DataSource ds) {
+    private void addDataSource(final InitialContext ctx, final String name, final BasicDataSource ds) {
         if(ctx == null) {
             return;
         }
@@ -141,50 +156,51 @@ public class OskariContextInitializer implements ServletContextListener {
 
     private void constructContext(final InitialContext ctx, final String... path) {
         String current = "java:";
-        for(String key : path) {
+        for (String key : path) {
             try {
                 current = current + "/" + key;
                 ctx.createSubcontext(current);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
     }
 
-    private DataSource getDataSource(final InitialContext ctx, final String name) {
+    private BasicDataSource getDataSource(final InitialContext ctx, final String name) {
         if(ctx == null) {
             return null;
         }
         try {
-            return (DataSource) ctx.lookup("java:comp/env/" + name);
+            return (BasicDataSource) ctx.lookup("java:comp/env/" + name);
         } catch (Exception ex) {
-            System.err.println("Couldn't find pool with name '" + name +"': " + ex.getMessage());
+            log.error("Couldn't find pool with name '" + name + "': " + ex.getMessage());
         }
         return null;
     }
 
-    private DataSource createDataSource(final String prefix) {
+    private BasicDataSource createDataSource(final String prefix) {
         final String poolToken = (prefix == null) ? "" : prefix + ".";
-
         final BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"));
         dataSource.setUrl(PropertyUtil.get("db." + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
         dataSource.setUsername(PropertyUtil.get("db." + poolToken + "username", ""));
         dataSource.setPassword(PropertyUtil.get("db." + poolToken + "password", ""));
+        dataSource.setTimeBetweenEvictionRunsMillis(-1);
+        dataSource.setTestOnBorrow(true);
+        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setValidationQueryTimeout(100);
         return dataSource;
     }
 
-    /*
-    LOGGING METHODS
-     */
     private void info(final String msg) {
-        System.out.println("# " + msg);
+        log.info("# " + msg);
     }
     private void warn(final String msg) {
-        System.err.println("# !!! " + msg);
+        log.warn("# !!! " + msg);
     }
 
     private void error(final String msg) {
-        System.err.println("# !!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.err.println("# !!! " + msg);
-        System.err.println("# !!!!!!!!!!!!!!!!!!!!!!!!!");
+        log.error("# !!!!!!!!!!!!!!!!!!!!!!!!!");
+        log.error("# !!! " + msg);
+        log.error("# !!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 }

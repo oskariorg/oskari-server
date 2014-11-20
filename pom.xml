@@ -70,7 +70,7 @@
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.14</axiom.version>
         <xmlunit.version>1.5</xmlunit.version>
-        <jedis.version>2.0.0</jedis.version>
+        <jedis.version>2.6.0</jedis.version>
         <jackson.version>1.9.11</jackson.version>
 
         <fi.mml.capabilities.version>1.3.0</fi.mml.capabilities.version>
