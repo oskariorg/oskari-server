@@ -80,6 +80,10 @@ been removed and the columns that are actually used have been moved to portti_vi
 
     07_alter_table_portti_view.sql
 
+#### Published maps
+
+Removed redundant marker button from published map tools.
+
 ### servlet-map/PrincipalAuthenticationFilter
 
 AuthenticationFilter can now be configured to use lowercase usernames when querying database for users and
