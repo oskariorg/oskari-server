@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.25.1
+
+### control-base/GetWFSLayerConfiguration
+
+Now always writes response to Redis (for transport).
+Returns WFS-layer configuration as response for admin-users only (for admin-layerselector)
+
 ## 1.25
 
 ### DB upgrades and new configurations
@@ -79,6 +86,25 @@ The portti_view and portti_view_supplement have had 1:1 relation. To remove comp
 been removed and the columns that are actually used have been moved to portti_view with same names (except pubdomain -> domain):
 
     07_alter_table_portti_view.sql
+
+#### Published maps
+
+Removed redundant marker button from published map tools.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/02-remove-marker-buttons-from-published-views node app.js
+
+This will remove marker-tool from previously published maps.
+
+### servlet-map/PrincipalAuthenticationFilter
+
+AuthenticationFilter can now be configured to use lowercase usernames when querying database for users and
+adding users to database. To enable this add a property to oskari-ext.properties:
+
+    auth.lowercase.username=true
+
+Notice that when using this check that the existing usernames in database are in lowercase format. This can be useful if
+the authentication module (like JAAS-LDAP) handles usernames case-insensitively.
 
 ### standalone-jetty
 

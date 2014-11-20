@@ -22,34 +22,6 @@ public class DatabaseUserService extends UserService {
 
     private static final Logger log = LogFactory.getLogger(DatabaseUserService.class);
 
-    
-    
-    
-    private static DatabaseUserService instance = null;
-    /**
-     * Returns a concrete implementation of UserService. Class to be returned is defined with property "oskari.user.service".
-     * @return
-     * @throws ServiceException if class cannot be
-     */
-    public static DatabaseUserService getInstance() throws ServiceException {
-        if(instance != null) {
-            return instance;
-        }
-//        final String className = PropertyUtil.getOptional("oskari.user.service");
-//        if(className == null) {
-//            throw new ServiceException("User service implementation not defined, add 'oskari.user.service' property with a value of fully qualified classname extending " + UserService.class.getCanonicalName());
-//        }
-        try {
-            instance = (DatabaseUserService)Class.forName("fi.nls.oskari.user.DatabaseUserService").newInstance();
-            instance.init();
-            return instance;
-        } catch (Exception e) {
-            throw new ServiceException("Error initializing UserService for classname: "+ "DatabaseUserService", e);
-        }   
-    }    
-    
-    
-    
     @Override
     public User getGuestUser() {
         User user = super.getGuestUser();

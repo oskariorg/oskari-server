@@ -14,8 +14,10 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
  * Manages Jedis connections using JedisPool (connection pool)
  */
 public class JedisManager {
+
     private static final JedisManager instance = new JedisManager();
-    private static JedisPool pool;
+
+    private static volatile JedisPool pool;
 
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
 
@@ -28,26 +30,29 @@ public class JedisManager {
 
     /**
      * Connects configured connection pool to a Redis server
-     * 
-     * @param poolSize
-     * @param host
-     * @param port
      */
-    public static void connect(int poolSize, String host, int port) {
-        JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxActive(poolSize); // pool size
+    public static void connect(final int poolSize, final String host, final int port) {
+        final JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setTestOnBorrow(true);
         poolConfig.setTestOnReturn(true);
         poolConfig.setTestWhileIdle(true);
-        poolConfig.setMaxIdle(poolSize/2);
+        poolConfig.setMaxIdle(poolSize / 2);
         poolConfig.setMinIdle(1);
-        poolConfig.setNumTestsPerEvictionRun(10);
-        poolConfig.setTimeBetweenEvictionRunsMillis(30000);
-        
+        poolConfig.setTimeBetweenEvictionRunsMillis(-1);
+        poolConfig.setTestOnBorrow(true);
+        final JedisPool oldPool = pool;
         pool = new JedisPool(poolConfig, host, port);
         log.debug("Created Redis connection pool with host", host, "port", port);
+        if (null != oldPool) {
+            log.debug("Closing old Jedis pool");
+            oldPool.close();
+        }
     }
-    
+
+    public static void shutdown() {
+        pool.close();
+    }
+
     /**
      * Destroys the pool
      */

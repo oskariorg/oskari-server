@@ -36,9 +36,6 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     private MyPlacesService myPlacesService = new MyPlacesServiceIbatisImpl();
 
     private final static String PARAMS_ID = "id";
-    // if not defined, configuration is written to redis or =yes
-    // if =no configuration is in json response
-    private final static String PARAMS_REDIS = "redis";
 
     private final static String RESULT = "result";
     private final static String RESULT_SUCCESS = "success";
@@ -64,20 +61,21 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         if(id == -1) {
             throw new ActionParamsException("Required parameter '" + PARAMS_ID + "' missing!");
         }
-        final String redis = params.getHttpParam(PARAMS_REDIS, "yes");
-        if(redis.equals("yes"))  params.requireLoggedInUser(); // only for logged in users!
-
         final WFSLayerConfiguration lc = getLayerInfoForRedis(id, sid);
 
         if (lc == null) {
             throw new ActionParamsException("Couldn't find matching layer for id " + PARAMS_ID);
         }
+
+        // lc.save() saves the layer info to redis as JSON so transport can use this
+        lc.save();
+
         final JSONObject root = new JSONObject();
-        if (redis.equals("no")) {
+        if (params.getUser().isAdmin()) {
+            // for admin, write the JSON to response as admin-layerselector uses this
             JSONHelper.putValue(root, RESULT_WFSLAYER, lc.getAsJSONObject());
         } else {
-            // lc.save() saves the layer info to redis as JSON
-            lc.save();
+            // for all other users, just reply success (==data can be read from Redis)
             JSONHelper.putValue(root, RESULT, RESULT_SUCCESS);
         }
         ResponseHelper.writeResponse(params, root);

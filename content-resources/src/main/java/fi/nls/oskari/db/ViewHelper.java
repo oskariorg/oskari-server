@@ -87,7 +87,7 @@ public class ViewHelper {
                 view.addBundle(bundle);
             }
             final long viewId = viewService.addView(view);
-            log.info("Added view from file: " + viewfile + "/viewId is:" + viewId);
+            log.info("Added view from file:", viewfile, "/viewId is:", viewId, "/uuid is:", view.getUuid());
             return viewId;
         } catch (Exception ex) {
             log.error(ex, "Unable to insert view! ");
