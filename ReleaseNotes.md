@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.25.1
+
+### control-base/GetWFSLayerConfiguration
+
+Now always writes response to Redis (for transport).
+Returns WFS-layer configuration as response for admin-users only (for admin-layerselector)
+
 ## 1.25
 
 ### DB upgrades and new configurations
