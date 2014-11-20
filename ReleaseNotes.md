@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.25.1
+
+### control-base/GetWFSLayerConfiguration
+
+Now always writes response to Redis (for transport).
+Returns WFS-layer configuration as response for admin-users only (for admin-layerselector)
+
 ## 1.25
 
 ### DB upgrades and new configurations
@@ -83,6 +90,11 @@ been removed and the columns that are actually used have been moved to portti_vi
 #### Published maps
 
 Removed redundant marker button from published map tools.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/02-remove-marker-buttons-from-published-views node app.js
+
+This will remove marker-tool from previously published maps.
 
 ### servlet-map/PrincipalAuthenticationFilter
 
