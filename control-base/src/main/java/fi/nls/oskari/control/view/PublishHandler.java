@@ -33,6 +33,7 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.apache.commons.lang.StringUtils;
+import static fi.nls.oskari.control.ActionConstants.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,10 +54,7 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_LASTNAME = "lastName";
     public static final String KEY_NICKNAME = "nickName";
     public static final String KEY_LOGINNAME = "loginName";
-    public static final String KEY_USER = "user";
-    public static final String KEY_ID = "id";
     public static final String KEY_DOMAIN = "domain";
-    public static final String KEY_NAME = "name";
     public static final String KEY_LAYOUT = "layout";
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_PLUGINS = "plugins";
@@ -64,8 +62,9 @@ public class PublishHandler extends ActionHandler {
     public static final String KEY_MAPSTATE = "mapstate";
     public static final String KEY_LAYERS = "layers";
     public static final String KEY_SELLAYERS = "selectedLayers";
-    public static final String KEY_CONFIG = "config";
-    public static final String KEY_STATE = "state";
+    public static final String KEY_RESPONSIVE = "responsive";
+    public static final String VIEW_RESPONSIVE = "responsive";
+    public static final String APP_RESPONSIVE = "responsive-published-map";
 
     public static final String KEY_GRIDSTATE = "gridState";
     private static final String[] CACHED_BUNDLE_IDS = {
@@ -77,7 +76,6 @@ public class PublishHandler extends ActionHandler {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYER = "userlayer_";
-    private static final String PREFIX_BASELAYER = "base_";
     private static final Set<String> CLASS_WHITELIST;
     static {
         CLASS_WHITELIST = new TreeSet<String>();
@@ -190,15 +188,37 @@ public class PublishHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-        final User user = params.getUser();
 
+    	final String useUuid = PropertyUtil.get("oskari.publish.only.with.uuid");    	
+    	final User user = params.getUser();
+
+        
         // Parse stuff sent by JS
         final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
         final View currentView = getBaseView(publisherData, user);
 
         final Bundle mapFullBundle = currentView.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
         if (mapFullBundle == null) {
-            throw new ActionParamsException("Could find mapfull bundle from view:" + currentView.getId());
+            throw new ActionParamsException("Could not find mapfull bundle from view: " + currentView.getId());
+        }
+
+        // Add responsive boolean to mapfull if it's true
+        // this _could_ be done by checking view.getPage() in a viewmodifier,
+        // but this messes up the code less IMHO
+        final Boolean responsive =  JSONHelper.getBooleanFromJSON(
+                publisherData,
+                KEY_RESPONSIVE,
+                false
+        );
+
+        if (responsive) {
+            JSONHelper.putValue(
+                    mapFullBundle.getConfigJSON(),
+                    KEY_RESPONSIVE,
+                    responsive
+            );
+            currentView.setPage(VIEW_RESPONSIVE);
+            currentView.setApplication(APP_RESPONSIVE);
         }
 
         // Setup user
@@ -217,7 +237,7 @@ public class PublishHandler extends ActionHandler {
 
         // setup basic info about view
         final String domain = JSONHelper.getStringFromJSON(publisherData, KEY_DOMAIN, null);
-        if(domain == null) {
+        if(domain == null || domain.trim().isEmpty()) {
             throw new ActionParamsException("Domain missing");
         }
         final String name = JSONHelper.getStringFromJSON(publisherData, KEY_NAME, "Published map " + System.currentTimeMillis());
@@ -230,6 +250,15 @@ public class PublishHandler extends ActionHandler {
         currentView.setIsPublic(true);
         // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
+        
+        currentView.setUuid(UUID.randomUUID().toString());
+        
+        if(useUuid != null && useUuid.equalsIgnoreCase("true")){
+        	currentView.setOnlyForUuId(true);
+        }else{
+        	currentView.setOnlyForUuId(false);
+        }
+        log.debug("UUID: " + currentView.getUuid());
 
         // setup map state
         setupMapState(mapFullBundle, publisherData, user);
@@ -288,9 +317,7 @@ public class PublishHandler extends ActionHandler {
             mergeBundleConfiguration(gridBundle, null, gridState);
         }
 
-        log.debug("Save view:", currentView);
         final View newView = saveView(currentView);
-        log.debug("Published a map:", newView);
 
         try {
             JSONObject newViewJson = new JSONObject(newView.toString());
@@ -481,7 +508,7 @@ public class PublishHandler extends ActionHandler {
             }
             // setup ids for updating a view
             view.setId(existingView.getId());
-            view.setSupplementId(existingView.getSupplementId());
+            view.setCreator(existingView.getCreator());
             view.setUuid(existingView.getUuid());
             view.setOldId(existingView.getOldId());
         }

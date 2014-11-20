@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import static fi.nls.oskari.control.ActionConstants.*;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -20,19 +21,15 @@ import java.util.List;
 @OskariActionRoute("GetViews")
 public class GetViewsHandler extends ActionHandler {
 
-    public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
-    public static final String KEY_ID = "id";
-    public static final String KEY_LANG = "lang";
     public static final String KEY_ISPUBLIC = "isPublic";
     public static final String KEY_PUBDOMAIN = "pubDomain";
-    public static final String KEY_STATE = "state";
     public static final String KEY_VIEWS = "views";
-    public static final String KEY_CONFIG = "config";
 
     private ViewService viewService = null;
 
     private final static Logger log = LogFactory.getLogger(GetViewsHandler.class);
+
 
     public void setViewService(final ViewService service) {
         viewService = service;
@@ -71,6 +68,8 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_ID, view.getId());
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
+                viewJson.put(KEY_URL, view.getUrl());
+
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
 

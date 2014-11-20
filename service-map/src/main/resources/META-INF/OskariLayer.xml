@@ -13,7 +13,7 @@
     <typeAlias alias="OskariLayer" type="fi.nls.oskari.domain.map.OskariLayer" />
 
     <parameterMap id="LayerInsertParameter" class="OskariLayer">
-        <parameter property="parentId" />
+        <parameter property="parentId" jdbcType="INTEGER"  javaType="int" />
         <parameter property="type" />
         <parameter property="baseMap" />
         <parameter property="groupId" />
@@ -44,6 +44,9 @@
 
         <parameter property="username" />
         <parameter property="password" />
+
+        <parameter property="version" />
+        <parameter property="srs_name" />
 
         <parameter property="created" jdbcType="DATETIME" javaType="java.util.Date" />
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
@@ -82,6 +85,9 @@
 
         <parameter property="username" />
         <parameter property="password" />
+
+        <parameter property="version" />
+        <parameter property="srs_name" />
 
         <parameter property="updated" jdbcType="DATETIME" javaType="java.util.Date" />
 
@@ -124,14 +130,16 @@
         l.refresh_rate,
         l.username,
         l.password,
-        m.geom,
+        l.version,
+        l.srs_name,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.id = #id# OR l.parentId = #id#
         ORDER BY l.parentId ASC
@@ -174,14 +182,16 @@
         l.refresh_rate,
         l.username,
         l.password,
-        m.geom,
+        l.version,
+        l.srs_name,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.parentId = #id#
 
@@ -224,14 +234,16 @@
         l.refresh_rate,
         l.username,
         l.password,
-        m.geom,
+        l.version,
+        l.srs_name,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.externalId = #id#
         AND l.parentId = -1
@@ -275,14 +287,16 @@
         l.refresh_rate,
         l.username,
         l.password,
-        m.geom,
+        l.version,
+        l.srs_name,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         m.uuid = #id#
         AND l.parentId = -1
@@ -326,14 +340,16 @@
         l.refresh_rate,
         l.username,
         l.password,
-        m.geom,
+        l.version,
+        l.srs_name,
+        m.wkt as geom,
 
         l.created,
         l.updated
 
         FROM
-        oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-        ON  m.maplayerid = l.id
+        oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+        ON  m.metadataid = l.metadataId
         WHERE
         l.name = #name#
         AND  l.url = #url#
@@ -376,14 +392,16 @@
     l.refresh_rate,
     l.username,
     l.password,
-    m.geom,
+    l.version,
+    l.srs_name,
+    m.wkt as geom,
 
     l.created,
     l.updated
 
     FROM
-    oskari_maplayer l LEFT OUTER JOIN portti_maplayer_metadata m
-    ON  m.maplayerid = l.id
+    oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
+    ON  m.metadataid = l.metadataId
     ORDER BY l.parentId ASC
     </select>
 
@@ -429,9 +447,12 @@
             username,
             password,
 
+            version,
+            srs_name,
+
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -467,6 +488,9 @@
 
         username = ?,
         password = ?,
+
+        version = ?,
+        srs_name = ?,
 
         updated=?
         WHERE id = ?

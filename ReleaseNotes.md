@@ -1,5 +1,215 @@
 # Release Notes
 
+## 1.25
+
+### DB upgrades and new configurations
+
+#### Control embedded maps in iframes from the parent page
+
+Add RPC-bundle to the publish template and all new embedded maps will get the functionality:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01-add-rpc-to-publish-template.sql
+
+To add the functionality to existing embedded maps, add the bundle to all views of type 'PUBLISHED'.
+
+#### Move common layer properties to oskari_maplayer table
+
+Run SQLs:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/01_alter_table_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/02_update_oskari_maplayer.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/03_update_oskari_resource.sql
+    content-resources/src/main/resources/sql/upgrade/1.25/04_drop_columns_portti_wfs_layer.sql
+
+#### Replace unused portti_maplayer_metadata with oskari_maplayer_metadata
+
+The table is populated by scheduled job described in service-cws:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/05-create-maplayer-metadata-table.sql
+
+Add a property for scheduling in oskari-ext.properties:
+
+    oskari.scheduler.job.CSWCoverageImport.cronLine=0 1 * * * ?
+
+The CSW service is configured by:
+
+    service.metadata.url=http://www.paikkatietohakemisto.fi/geonetwork
+
+#### Populate unique UUIDs for views
+
+Oskari 1.25+ will reference views with their UUIDs rather than ids. Loading a view with id is still supported.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/01-generate-uuids-for-views node app.js
+
+NOTE! This will replace any existing UUIDs (they haven't been used in Oskari before).
+After this, you can add a constraint for portti_view by running the SQL in:
+
+    content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
+
+#### embedded maps urls
+
+Publisher and personaldata bundles in frontend now use embedded map urls provided by backend. The URLs will now always use
+ the views UUID instead of ID and the above database changes will generate unique UUIDs for all present views. PublishHandler
+ will also generate UUIDs for all new published views. To configure correct urls based on your environment you can configure:
+
+    view.published.url=http://myhost/${lang}/${uuid}
+
+or for heavily language-specific urls:
+
+    view.published.url.fi=http://myhost/kartta?uuid=${uuid}
+    view.published.url.sv=http://myhost/kartfonstret?uuid=${uuid}
+    view.published.url.en=http://myhost/map-window?uuid=${uuid}
+
+Both accept also URLs without protocol (//myhost/map) or host (/map)- frontend will include the missing parts based on browser location.
+If the above are not configured the URLs default to using:
+
+    oskari.domain=http://localhost:2373
+    oskari.map.url=/
+
+The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
+
+Note! Views added by 1.25.0 can only be loaded by it's uuid. To make a view available by viewId
+change the boolean flag "only_uuid" in portti_view database table. Exception to this is any view defined as
+default view.
+
+#### Streamlining view tables in database
+
+The portti_view and portti_view_supplement have had 1:1 relation. To remove complexity portti_view_supplement has now
+been removed and the columns that are actually used have been moved to portti_view with same names (except pubdomain -> domain):
+
+    07_alter_table_portti_view.sql
+
+#### Published maps
+
+Removed redundant marker button from published map tools.
+Run the node.js upgrade script under content-resources/db-upgrade:
+
+    SCRIPT=1.25/02-remove-marker-buttons-from-published-views node app.js
+
+This will remove marker-tool from previously published maps.
+
+### servlet-map/PrincipalAuthenticationFilter
+
+AuthenticationFilter can now be configured to use lowercase usernames when querying database for users and
+adding users to database. To enable this add a property to oskari-ext.properties:
+
+    auth.lowercase.username=true
+
+Notice that when using this check that the existing usernames in database are in lowercase format. This can be useful if
+the authentication module (like JAAS-LDAP) handles usernames case-insensitively.
+
+### standalone-jetty
+
+Fixed an issue with user logout functionality.
+
+### service-cws
+
+Moved CSW related code from service-map to a new module.
+
+Includes a scheduled job to update coverage data for layers with metadata-identifier. Coverage data is stored in
+oskari_maplayer_metadata as WKT in EPSG:4326 projection.
+
+### service-scheduler
+
+Added basic scheduler functionality as a common service package. See README.md in service-scheduler for details.
+
+### service-spatineo-monitor
+
+Added a new scheduler task for utilising a service availability functionality provided by Spatineo.
+Not included by default in servlet. See README.md in service-spatineo-monitor for details.
+
+### service-map
+
+GetGeoPointDataService now uses credentials for layer when making a GetFeatureInfo request to a WMS service.
+
+Improved GPX data import.
+
+Added a simple helper class for projection transforms and WKT handling: fi.nls.oskari.map.geometry.WKTHelper
+
+Layer coverage data is now loaded from oskari_maplayer_metadata based on metadataid
+(previously from portti_maplayer_metadata based on layerId). Coverage data is transformed to requested projection
+when layers are loaded.
+
+### service-base
+
+fi.nls.oskari.domain.map.view.View now has a method getUrl() which returns URL pointing to that view. It uses properties to
+contruct the url with placeholders for view uuid and language:
+
+    view.published.url = http://foo.bar/${uuid}?lang=${lang}
+
+If 'view.published.url' is not defined uses a default by combining 'oskari.domain' and 'oskari.map.url'.
+
+Added a common base class that can be extended for scheduled tasks 'fi.nls.oskari.worker.ScheduledJob'. Note that a
+scheduler such as the one provided in module service-scheduler needs to be included for scheduling to actually happen.
+
+fi.nls.oskari.domain.Role now has a static method to determine default role for logged in user as well as admin role.
+The role names can be configured with properties and such match the role names in the database:
+
+    oskari.user.role.admin = Admin
+    oskari.user.role.loggedIn = User
+
+Moved common annotation processing classes from service-control to service-base.
+
+Added a new custom annotation @Oskari("key"). This can be used as a common way to mark classes extending OskariComponent.
+To get a map of annotated classes (key is annotation value):
+
+    Map<String, OskariComponent> allComponents = fi.nls.oskari.service.OskariComponentManager.getComponentsOfType(OskariComponent.class);
+
+Service-search currently triggers the annotation processing. To use annotations without using service-search use a similar META-INF/services
+setup that service-search includes.
+
+IOHelper now has a method getConnectionFromProps("prefix") which gives a HttpURLConnection based on properties prefixed with given string:
+    - [propertiesPrefix]url=[url to call for this service] (required)
+    - [propertiesPrefix]user=[username for basic auth] (optional)
+    - [propertiesPrefix]pass=[password for basic auth] (optional)
+    - [propertiesPrefix]header.[header name]=[header value] (optional)
+
+### service-search
+
+Search channels can now be added to Oskari by extending fi.nls.oskari.search.channel.SearchChannel and annotating the implementing class
+with @Oskari("searchChannelID"). Channels are detected with:
+
+        final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
+
+The legacy way of providing classname in properties is also supported but discouraged.
+
+SearchableChannel.setProperty() has been deprecated and will be removed in future release. SearchChannels should use
+PropertyUtil or other internal means to get configuration.
+
+SearchChannel baseclass has getConnection() method which returns a HttpURLConnection based on properties prefixed with 'search.channel.[channel id].service.'.
+
+### service-search-nls/servlet-map - search channels
+
+Migrated search channels to use annotated approach and getConnection() from baseclass so credential handling is consistent.
+
+### content-resources
+
+New bundle registration: rpc. Enables postMessage communication with embedded map. Added to publish template.
+
+### service-control
+
+ActionControl now catches exceptions on ActionHandler.init() and teardown(). A single faulty ActionHandler no longer breaks the initialization.
+The same errorhandling was added for ViewModifierManager.
+
+Enabled customized HTML string cleaning.
+
+Moved common annotation processing classes from service-control to service-base.
+
+### control-base
+
+GetViewsHandler now returns view URLs in response.
+
+Added new action route for fetching CSW metadata. Requires a geonetwork base URL in properties under service.metadata.url.
+
+Enabled customized HTML tags for GFI content.
+
+Added service-csw as a new dependency, it has code that was previously part of service-map.
+
+### servlet-transport
+
+Excluded specific GML properties from parsed features.
+
 ## 1.24.5 - security patch
 
 ### service-control/RestActionHandler & control-admin

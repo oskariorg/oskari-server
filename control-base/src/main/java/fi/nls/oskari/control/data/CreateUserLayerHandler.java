@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.data;
 /**
- * Store zipped shape file set or kmz(zipped kml) to oskari_user_store database
+ * Store zipped file set to oskari_user_store database
  *
  */
 

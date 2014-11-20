@@ -9,8 +9,20 @@ import fi.nls.oskari.permission.domain.Resource;
  */
 public class OskariLayerResource extends Resource {
 
+    private String namespace = "";
+    private String name = "";
+
     public OskariLayerResource(OskariLayer layer) {
         setType(Permissions.RESOURCE_TYPE_MAP_LAYER);
-        setMapping(layer.getUrl(), layer.getName());
+        namespace = layer.getType() + "+" + layer.getUrl();
+        name = layer.getName();
+        setMapping(namespace, name);
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+    public String getName() {
+        return name;
     }
 }

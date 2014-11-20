@@ -3,6 +3,7 @@ package fi.nls.oskari.control.view;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
@@ -27,6 +28,7 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -137,7 +139,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams();
         handler.handleAction(params);
 
-        // check that view was loaded vith id 2 as we mocked the default view to be for guest user
+        // check that view was loaded with id 2 as we mocked the default view to be for guest user
         verify(viewService, times(1)).getViewWithConf(2);
 
         // check that the guest view matches
@@ -149,7 +151,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(getLoggedInUser());
         handler.handleAction(params);
 
-        // check that view was loaded vith id 1 as we mocked the default view to be logged in user
+        // check that view was loaded with id 1 as we mocked the default view to be logged in user
         verify(viewService, times(1)).getViewWithConf(1);
 
         // check that the user is written to the config
@@ -160,13 +162,13 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     public void testWithViewIdGiven() throws Exception {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "3");
+        parameters.put(ActionConstants.PARAM_VIEW_ID, "3");
         // TODO: setup a cookie with state and see that it shouldn't change the view since a specific non-default view was requested
         // TODO: create a test without giving viewId and see that the cookie affects it
         final ActionParameters params = createActionParams(parameters);
         handler.handleAction(params);
 
-        // check that view was loaded vith id 3 as requested
+        // check that view was loaded with id 3 as requested
         verify(viewService, times(1)).getViewWithConf(3);
 
         // check that the response matches expected
@@ -193,7 +195,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     public void testWithOldIdGiven() throws Exception {
         // setup params
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_VIEW_ID, "456");
+        parameters.put(ActionConstants.PARAM_VIEW_ID, "456");
         parameters.put(GetAppSetupHandler.PARAM_OLD_ID, "123");
         // TODO: setup a cookie with state and see that it shouldn't change the view since a migrated view was requested
         final ActionParameters params = createActionParams(parameters);
@@ -218,6 +220,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         dummyView.setType(ViewTypes.USER);
         doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
         doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+        doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
 
         // TODO: mock view loading
         /**

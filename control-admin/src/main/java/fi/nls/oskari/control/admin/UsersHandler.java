@@ -63,17 +63,6 @@ public class UsersHandler extends RestActionHandler {
                 List<User> newUsers = userService.getUsersWithRoles();
                 
                 for (User user : newUsers) {
-                	Set<Role> roles = user.getRoles();
-                	
-//                	if(roles != null){
-//                		for(Role role : roles){
-//                			log.debug(role.getId());
-//                			log.debug(role.getName());
-//                		}
-//                	}else{
-//                		log.debug("roles == null");
-//                	}
-//                	
                     arr.put(user2Json(user));
                 }
             }

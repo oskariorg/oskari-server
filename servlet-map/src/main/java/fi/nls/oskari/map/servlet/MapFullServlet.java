@@ -14,6 +14,8 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import static fi.nls.oskari.control.ActionConstants.*;
+
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -135,7 +138,7 @@ public class MapFullServlet extends HttpServlet {
         } catch (ActionDeniedException e) {
             // User tried to execute action he/she is not authorized to execute or session had expired
             if(params.getUser().isGuest()) {
-                log.error("Session expired - Action was denied:", route, ". Parameters: ", params.getRequest().getParameterMap());
+                log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             }
             else {
                 log.error("Action was denied:", route, ", Error msg:", e.getMessage(), ". User: ", params.getUser(), ". Parameters: ", params.getRequest().getParameterMap());
@@ -160,24 +163,20 @@ public class MapFullServlet extends HttpServlet {
         try {
         	log.debug("getting a view and setting Render parameters");
             HttpServletRequest request = params.getRequest();
-            
-            final long viewId = ConversionHelper.getLong(params.getHttpParam("viewId"),
-                    viewService.getDefaultViewId(params.getUser()));
-            
-            log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
-            
-            final String uuId = params.getHttpParam("uuId");
-            
-            final View view = getView(uuId, viewId);
+
+
+            final View view = getView(params);
             if (view == null) {
-            	log.debug("no such view");
-                ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
+            	log.debug("no such view, params" + params.getRequest().getParameterMap(), params.getUser());
+                ResponseHelper.writeError(params, "No such view");
                 return null;
             }
             
             log.debug("Serving view with id:", view.getId());
+            log.debug("Using uuid to get the view:", view.getUuid());
             log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
-            request.setAttribute("viewId", view.getId());
+            //request.setAttribute("viewId", view.getId());
+            request.setAttribute(PARAM_UUID, view.getUuid());
 
             // viewJSP might change if using dev override
             String viewJSP = view.getPage();
@@ -185,12 +184,9 @@ public class MapFullServlet extends HttpServlet {
 
             // construct control params
             final JSONObject controlParams = getControlParams(params);
-            
-            if(uuId != null){
-                JSONHelper.putValue(controlParams, "uuId", view.getUuid());
-            }else{
-                JSONHelper.putValue(controlParams, "viewId", view.getId());
-            }
+            JSONHelper.putValue(controlParams, PARAM_UUID, view.getUuid());
+            // TODO: remove viewId from here when safe
+            JSONHelper.putValue(controlParams, PARAM_VIEW_ID, view.getId());
             
             
             JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
@@ -216,7 +212,7 @@ public class MapFullServlet extends HttpServlet {
                 final String app = params.getHttpParam("app");
                 final String page = params.getHttpParam("page");
                 if (page != null && app != null) {
-                    log.debug("Using dev-override!!! \nUsing JSP:", page, "with application:", app);
+                    log.warn("Using dev-override!!! \nUsing JSP:", page, "with application:", app);
                     request.setAttribute(KEY_PATH, app);
                     request.setAttribute("application", app);
                     viewJSP = page;
@@ -230,16 +226,24 @@ public class MapFullServlet extends HttpServlet {
         }
     }
     
-    
-    private View getView(String uuId, long viewId){
-    	if(uuId != null){
-    		log.debug("Using Uuid to fetch a view");
-    		return viewService.getViewWithConfByUuId(uuId);
-    	}else{
-    		log.debug("Using id to fetch a view");
-    		return viewService.getViewWithConf(viewId);
-    	}
+    private View getView(final ActionParameters params) {
+        final String uuId = params.getHttpParam(PARAM_UUID);
+        if (uuId != null) {
+            log.debug("Requested UUID :" + uuId);
+            return viewService.getViewWithConfByUuId(uuId);
+        }
+        final long defaultViewId = viewService.getDefaultViewId(params.getUser());
+        final long viewId = params.getHttpParam(PARAM_VIEW_ID, defaultViewId);
+        log.debug("Requested View ID:" + viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(viewId != defaultViewId && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
+        
+    
 
     /**
      * Checks all viewmodifiers registered in the system that are handling parameters

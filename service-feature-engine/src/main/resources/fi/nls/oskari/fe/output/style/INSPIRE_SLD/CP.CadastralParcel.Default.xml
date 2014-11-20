@@ -44,7 +44,6 @@
             </se:Fill>
           </se:TextSymbolizer>
         </se:Rule>
-</StyledLayerDescriptor>
       </se:FeatureTypeStyle>
     </sld:UserStyle>
   </sld:NamedLayer>

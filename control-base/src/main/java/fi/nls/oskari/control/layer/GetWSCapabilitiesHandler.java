@@ -26,6 +26,8 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
     private static final String PARM_URL = "url";
     private static final String PARM_TYPE = "type";
     private static final String PARM_VERSION = "version";
+    private static final String PARM_USER = "user";
+    private static final String PARM_PW = "pw";
 
     private String[] permittedRoles = new String[0];
 
@@ -43,12 +45,14 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         final String url = params.getRequiredParam(PARM_URL);
         final String layerType = params.getHttpParam(PARM_TYPE, OskariLayer.TYPE_WMS);
         final String version = params.getHttpParam(PARM_VERSION, "");
+        final String user = params.getHttpParam(PARM_USER, "");
+        final String pw = params.getHttpParam(PARM_PW, "");
 
         log.debug("Trying to get capabilities for type:", layerType, "with url:", url);
         try {
             if(OskariLayer.TYPE_WMS.equals(layerType)) {
                 // New method for parsing WMSCetGapabilites to Oskari layers structure
-                final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url);
+                final JSONObject capabilities = GetGtWMSCapabilities.getWMSCapabilities(url, user, pw);
                 ResponseHelper.writeResponse(params, capabilities);
             }
             else {
@@ -61,14 +65,14 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                     capabilitiesParams.put("request", "GetCapabilities");
                     final String capabilitiesUrl = IOHelper.constructUrl(url, capabilitiesParams);
 
-                    final String capabilities = IOHelper.getURL(capabilitiesUrl);
+                    final String capabilities = IOHelper.getURL(capabilitiesUrl, user, pw);
                     JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
                     JSONHelper.putValue(resultJSON, "xml", capabilities);
                     ResponseHelper.writeResponse(params, resultJSON);
                 }
                 else if(OskariLayer.TYPE_WFS.equals(layerType)) {
                     // New method for parsing WFSCetGapabilites to Oskari layers structure
-                    final JSONObject capabilities = GetGtWFSCapabilities.getWFSCapabilities(url, version);
+                    final JSONObject capabilities = GetGtWFSCapabilities.getWFSCapabilities(url, version, user, pw);
                     ResponseHelper.writeResponse(params, capabilities);
                 }
                 else {

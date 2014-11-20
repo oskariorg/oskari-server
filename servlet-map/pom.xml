@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.24</version>
+        <version>1.25</version>
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>map-servlet</artifactId>
@@ -30,6 +30,11 @@
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-users</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>service-scheduler</artifactId>
 		</dependency>
 
 		<!-- artifactId "oskari-control-base" is implied by adding extended actions -->

@@ -30,6 +30,8 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.search.channel.ConnectionProvider;
+import fi.nls.oskari.util.IOHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -130,7 +132,6 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 		}
 
 		public String getValue() {
-			// TODO Auto-generated method stub
 			return value;
 		}
 
@@ -140,23 +141,11 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 	KTJkiiWFSNamespaceContext nscontext = new KTJkiiWFSNamespaceContext();
 
-	URL serviceURL;
-    String host;
-    String auth;
+	private ConnectionProvider connectionProvider;
 
-	public void setServiceURL(URL url) {
-		this.serviceURL = url;
+	public void setConnectionProvider(ConnectionProvider provider) {
+		this.connectionProvider = provider;
 	}
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setAuth(String auth) {
-        this.auth = auth;
-    }
-
-
 
 	/**
 	 * 
@@ -372,6 +361,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 				.compile("ktjkiiwfs:tunnuspisteSijainti/gml:Point/gml:pos/text()");
 
 
+
 		NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
 		if (nodes == null)
@@ -536,10 +526,9 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 		List<RegisterUnitParcelSearchResult> results = null;
 
-		logger.info("opening -> " + serviceURL);
 
-		URLConnection connection = getUrlConnection();//serviceURL.openConnection();
-		//connection.setDoOutput(true);
+		URLConnection connection = connectionProvider.getConnection();
+        connection.setDoOutput(true);
 
 		OutputStream outs = connection.getOutputStream();
 		try {
@@ -580,21 +569,6 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 	}
 
-
-    private URLConnection getUrlConnection() throws IOException {
-        URLConnection connection = serviceURL.openConnection();
-        if (host != null)  {
-            connection.addRequestProperty("Host",host);
-        }
-
-        if (auth != null) {
-            connection.addRequestProperty("Authorization", auth);
-        }
-        connection.setDoOutput(true);
-
-        return connection;
-    }
-
 	/**
 	 * alternate search via Feature RekisteriyksikonTietoja
 	 * 
@@ -621,10 +595,8 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 
 		List<RegisterUnitParcelSearchResult> results = null;
 
-		logger.info("opening -> " + serviceURL);
-
-        URLConnection connection = getUrlConnection();//serviceURL.openConnection();
-		//connection.setDoOutput(true);
+        URLConnection connection = connectionProvider.getConnection();
+        connection.setDoOutput(true);
 
 		OutputStream outs = connection.getOutputStream();
 		try {
@@ -633,7 +605,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 						+ " sending Request");
 				buildRegisterUnitFeatureQueryToStream(registerUnitID, outs);
 			} finally {
-				outs.close();
+                IOHelper.close(outs);
 			}
 			logger.info("searchByRegisterUnitId -> " + registerUnitID
 					+ " reading response");
@@ -641,7 +613,7 @@ public class KTJkiiWFSSearchChannelImpl implements KTJkiiWFSSearchChannel {
 			try {
 				results = processRegisterUnitFeatureResponseFromStream(registerUnitID, inp);
 			} finally {
-				inp.close();
+                IOHelper.close(inp);
 			}
 
 			logger.info("searchByRegisterUnitId -> " + registerUnitID

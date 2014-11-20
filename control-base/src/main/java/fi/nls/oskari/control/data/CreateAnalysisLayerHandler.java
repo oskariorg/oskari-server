@@ -20,7 +20,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AggregateMethodParams;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.domain.IntersectMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
@@ -63,12 +62,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
-
-    private static final String INTERSECT = "intersect";
-    private static final String AGGREGATE = "aggregate";
-    private static final String UNION = "union";
-    private static final String LAYER_UNION = "layer_union";
-    private static final String DIFFERENCE = "difference";
 
     private static final String ERROR_ANALYSE_PARAMETER_MISSING = "Analyse_parameter_missing";
     private static final String ERROR_UNABLE_TO_PARSE_ANALYSE = "Unable_to_parse_analysis";
@@ -123,7 +116,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         Analysis analysis = null;
 
 
-        if (analysisLayer.getMethod().equals(LAYER_UNION)) {
+        if (analysisLayer.getMethod().equals(AnalysisParser.LAYER_UNION)) {
             // no WPS for merge analysis
             analysis = analysisDataService.mergeAnalysisData(
                     analysisLayer, analyse, params.getUser());
@@ -147,14 +140,15 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 this.MyError(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES, params, null);
                 return;
             }
-            if (analysisLayer.getMethod().equals(UNION)
-                    || analysisLayer.getMethod().equals(INTERSECT)) {
+            if (analysisLayer.getMethod().equals(AnalysisParser.UNION)
+                    || analysisLayer.getMethod().equals(AnalysisParser.INTERSECT)
+                    || analysisLayer.getMethod().equals(AnalysisParser.SPATIAL_JOIN)) {
                 // Harmonize namespaces and element names
                 featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
             }
 
             // Add data to analysis db  - we must create still an union in aggregate case
-            if (analysisLayer.getMethod().equals(AGGREGATE)) {
+            if (analysisLayer.getMethod().equals(AnalysisParser.AGGREGATE)) {
                 // No store to analysis db for aggregate - set results in to the
                 // response
                 //Save analysis results - use union of input data
@@ -326,7 +320,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         String featureSet = null;
         Boolean doRequest = true;
-        if (analysisLayer.getMethod().equals(AGGREGATE)) {
+        if (analysisLayer.getMethod().equals(AnalysisParser.AGGREGATE)) {
             StringBuilder sb = new StringBuilder();
             // Loop aggregate attribute fields
             // Temp save  aggregate function setup
@@ -364,7 +358,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
             featureSet = sb.toString();
         }
-        else if (analysisLayer.getMethod().equals(DIFFERENCE)) {
+        else if (analysisLayer.getMethod().equals(AnalysisParser.DIFFERENCE)) {
             // Get feature set via WFS 2.0 GetFeature
             featureSet = wpsService.requestWFS2FeatureSet(analysisLayer);
 

@@ -10,12 +10,16 @@ import fi.nls.oskari.util.PropertyUtil;
  * Internal model for user role.
  * Admin role name can be configured with property "oskari.user.role.admin" in PropertyUtil
  * and defaults to "Administrator".
+ * Default logged in user role name can be configured with property "oskari.user.role.loggedIn" in PropertyUtil
+ * and defaults to "User".
  */
 public class Role {
 
     private static final Logger log = LogFactory.getLogger(Role.class);
     private static Role ADMIN_ROLE = null;
-    public static final String DEFAULT_ADMIN_ROLE_NAME = "Administrator";
+    private static Role USER_ROLE = null;
+    public static final String DEFAULT_ADMIN_ROLE_NAME = "Admin";
+    public static final String DEFAULT_USER_ROLE_NAME = "User";
 
     private long id;
     private String name;
@@ -33,23 +37,39 @@ public class Role {
         return getAdminRole().getName();
     }
 
+    /**
+     * Returns Admin role
+     * @return
+     */
     public static Role getAdminRole() {
         if(ADMIN_ROLE == null) {
             // default to Administrator
-            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
-            try {
-                final Role[] roles = UserService.getInstance().getRoles();
-                for(Role role : roles) {
-                    if(rolename.equals(role.getName())) {
-                        ADMIN_ROLE = role;
-                        break;
-                    }
-                }
-            } catch (ServiceException ex) {
-                log.error(ex, "Error getting roles from user service");
-            }
+            final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME).trim();
+            ADMIN_ROLE = getRoleByName(rolename);
         }
         return ADMIN_ROLE;
+    }
+
+    /**
+     * Returns default role for logged in users
+     * @return
+     */
+    public static Role getDefaultUserRole() {
+        if(USER_ROLE == null) {
+            // default to User
+            final String rolename = PropertyUtil.get("oskari.user.role.loggedIn", DEFAULT_USER_ROLE_NAME).trim();
+            USER_ROLE = getRoleByName(rolename);
+        }
+        return USER_ROLE;
+    }
+
+    private static Role getRoleByName(final String rolename) {
+        try {
+            return UserService.getInstance().getRoleByName(rolename);
+        } catch (ServiceException ex) {
+            log.error(ex, "Error getting UserService");
+        }
+        return null;
     }
 
     public long getId() {
@@ -68,5 +88,4 @@ public class Role {
     public boolean isAdminRole() {
         return (getAdminRoleName().equals(getName()));
     }
-    
 }

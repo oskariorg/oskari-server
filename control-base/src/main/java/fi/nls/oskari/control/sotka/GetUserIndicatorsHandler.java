@@ -40,7 +40,7 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         }
         int id  = -1;
         try {
-            id = Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_ID, "-1"));
+            id = Integer.parseInt(getId(params.getHttpParam(PARAM_INDICATOR_ID, "-1")));
         } catch (NumberFormatException nfe) {
             throw  new ActionException(" Invalid number ");
         }
@@ -109,6 +109,11 @@ public class GetUserIndicatorsHandler extends ActionHandler {
 
     public void setUserIndicatorService(UserIndicatorService uis) {
         userIndicatorService = uis;
+    }
+    private String getId(String id) {
+        String [] parts = id.split("_");
+        if (parts.length < 2) return id;
+        return parts[parts.length-1];
     }
 }
 

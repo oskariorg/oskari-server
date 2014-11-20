@@ -1,5 +1,6 @@
 package fi.nls.oskari.search.channel;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannel.RegisterUnitId;
 import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannelImpl;
 import fi.nls.oskari.search.ktjkiiwfs.RegisterUnitParcelSearchResult;
@@ -10,44 +11,31 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 
-import java.net.URL;
 import java.util.List;
 
-public class KTJkiiSearchChannel implements SearchableChannel {
+@Oskari(KTJkiiSearchChannel.ID)
+public class KTJkiiSearchChannel extends SearchChannel {
 
     private String serviceURL = null;
-    private String serviceKTJHost = null;
-    private String serviceKTJAuth = null;
     private Logger log = LogFactory.getLogger(this.getClass());
-    private String defaultServiceUrl = "https://ws.nls.fi/ktjkii/wfs/wfs";
+    private static final String PROPERTY_SERVICE_URL = "search.channel.KTJ_KII_CHANNEL.service.url";
 
     public static final String ID = "KTJ_KII_CHANNEL";
-    public static final String SERVICE_URL = "service.url";
-    public static final String SERVICE_KTJ_HOST = "service.host";
-    public static final String SERVICE_KTJ_AUTH = "service.authentization";
 
-    public void setProperty(String propertyName, String propertyValue) {
-        if (SERVICE_URL.equals(propertyName)) {
-            serviceURL = propertyValue;
-            log.debug("ServiceURL set to " + serviceURL);
-        } else if (SERVICE_KTJ_HOST.equals(propertyName)) {
-            serviceKTJHost = propertyValue;
-            log.debug("serviceKTJHost set to " + serviceKTJHost);
-        } else if (SERVICE_KTJ_AUTH.equals(propertyName)) {
-            serviceKTJAuth = propertyValue;
-            log.debug("serviceKTJAuth set to " + serviceKTJAuth);
-        } else {
-            log.warn("Unknown property for " + ID + " search channel: " + propertyName);
-        }
+    @Override
+    public void init() {
+        super.init();
+        serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
     }
-    
-    public String getId() {
-        return ID;
-    }
-    
+
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria)
             throws IllegalSearchCriteriaException {
+        if(serviceURL == null) {
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+            return null;
+        }
         ChannelSearchResult searchResultList = new ChannelSearchResult();
 
         String registerUnitID = searchCriteria.getSearchString();
@@ -55,15 +43,7 @@ public class KTJkiiSearchChannel implements SearchableChannel {
         KTJkiiWFSSearchChannelImpl impl = new KTJkiiWFSSearchChannelImpl();
 
         try {
-
-            defaultServiceUrl = serviceURL;
-
-            URL serviceUrl = new URL(defaultServiceUrl);
-
-            impl.setServiceURL(serviceUrl);
-            impl.setHost(serviceKTJHost);
-            impl.setAuth(serviceKTJAuth);
-
+            impl.setConnectionProvider(this);
 
             RegisterUnitId registerUnitId = 
                     impl.convertRequestStringToRegisterUnitID(
@@ -104,7 +84,7 @@ public class KTJkiiSearchChannel implements SearchableChannel {
                         item.setNorthBoundLatitude(bbox[3]);
                     }
                 }
-
+                // FIXME: Kiinteistötunnus...
                 item.setDescription("Kiinteistötunnus");
                 item.setActionURL("Kiinteistötunnus");
                 item.setType(SearchUtil.getLocationType("Kiinteistötunnus_" +
@@ -114,7 +94,7 @@ public class KTJkiiSearchChannel implements SearchableChannel {
                 item.setZoomLevel("11");
                 // resource id == feature id
                 item.setResourceId(rupsr.getGmlID());
-                item.setResourceNameSpace(defaultServiceUrl);
+                item.setResourceNameSpace(serviceURL);
                 searchResultList.addItem(item);
             }
 
@@ -124,7 +104,7 @@ public class KTJkiiSearchChannel implements SearchableChannel {
             // so we can catch all
             log.error(e, "Search resulted in an exception for query: ", 
                     searchCriteria.getSearchString(), 
-                    "- ServiceURL used was:", defaultServiceUrl);
+                    "- ServiceURL used was:", serviceURL);
         }
 
         return searchResultList;

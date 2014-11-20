@@ -15,7 +15,6 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
@@ -42,6 +41,9 @@ public class MapfullHandler extends BundleHandler {
     private static final Logger log = LogFactory.getLogger(MapfullHandler.class);
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
+    // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
+    public static final String DEFAULT_MAP_SRS = "EPSG:3067";
+
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_SEL_LAYERS = "selectedLayers";
     private static final String KEY_ID = "id";
@@ -53,6 +55,10 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_NICKNAME = "nickName";
     private static final String KEY_USERUUID = "userUUID";
     private static final String KEY_USERID = "userID";
+
+
+    private static final String KEY_MAP_OPTIONS = "mapOptions";
+    private static final String KEY_SRS = "srsName";
 
 
     private final static String KEY_ROLE_ID = "id";
@@ -78,7 +84,6 @@ public class MapfullHandler extends BundleHandler {
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
-
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig());
         final JSONObject mapfullState = getBundleState(params.getConfig());
         
@@ -115,7 +120,12 @@ public class MapfullHandler extends BundleHandler {
                 bundleIds,
                 useDirectURLForMyplaces,
         		params.isModifyURLs());
-        
+
+        final String mapSRS = getSRSFromMapConfig(mapfullConfig);
+        // transform WKT for layers now that we know SRS
+        for(int i = 0; i < fullConfigLayers.length(); ++i) {
+            OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
+        }
         // overwrite layers
         try {
             mapfullConfig.put(KEY_LAYERS, fullConfigLayers);
@@ -141,6 +151,33 @@ public class MapfullHandler extends BundleHandler {
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces) {
         return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false);
+    }
+
+    /**
+     * Detect projection that will be used for view that is being loaded
+     *
+     *  {
+     *    "mapOptions" : {
+     *       "srsName":"EPSG:3067"
+     *    }
+     *  }
+     *
+     * @param mapfullConfig
+     * @return conf.mapOptions.srsName or DEFAULT_MAP_SRS if it doesn't exist
+     */
+    public String getSRSFromMapConfig(final JSONObject mapfullConfig) {
+        if(mapfullConfig == null) {
+            return DEFAULT_MAP_SRS;
+        }
+        final JSONObject options = mapfullConfig.optJSONObject(KEY_MAP_OPTIONS);
+        if(options == null) {
+            return DEFAULT_MAP_SRS;
+        }
+        final String mapSRS = options.optString(KEY_SRS);
+        if(mapSRS != null) {
+            return mapSRS;
+        }
+        return DEFAULT_MAP_SRS;
     }
 
     /**

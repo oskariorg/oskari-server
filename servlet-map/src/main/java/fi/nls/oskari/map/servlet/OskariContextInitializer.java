@@ -1,8 +1,12 @@
 package fi.nls.oskari.map.servlet;
 
 import fi.nls.oskari.db.DBHandler;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.scheduler.SchedulerService;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.quartz.SchedulerException;
 
 import javax.naming.InitialContext;
 import javax.servlet.ServletContextEvent;
@@ -18,14 +22,22 @@ import javax.sql.DataSource;
  */
 public class OskariContextInitializer implements ServletContextListener {
 
+    private final static Logger log = LogFactory.getLogger(OskariContextInitializer.class);
+
+    private SchedulerService schedulerService;
+
     @Override
-    public void contextDestroyed(ServletContextEvent event) {
-        // noop
+    public void contextDestroyed(final ServletContextEvent event) {
+        try {
+            this.schedulerService.shutdownScheduler();
+        } catch (final SchedulerException e) {
+            log.error(e, "Failed to shut down the Oskari scheduler");
+        }
         System.out.println("Context destroy");
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent event) {
+    public void contextInitialized(final ServletContextEvent event) {
         try {
             // catch all so we don't get mysterious listener start errors
             info("#########################################################");
@@ -44,6 +56,13 @@ public class OskariContextInitializer implements ServletContextListener {
             error("!!! Error initializing context for Oskari !!!");
             ex.printStackTrace();
         }
+
+        this.schedulerService = new SchedulerService();
+        try {
+            this.schedulerService.initializeScheduler();
+        } catch (final SchedulerException e) {
+            log.error(e, "Failed to start up the Oskari scheduler");
+        }
     }
 
     /**
@@ -51,11 +70,7 @@ public class OskariContextInitializer implements ServletContextListener {
      */
     private void initializeOskariContext() {
 
-        // populate properties
-        info("- loading /oskari.properties");
-        PropertyUtil.loadProperties("/oskari.properties");
-        info("- loading /oskari-ext.properties");
-        PropertyUtil.loadProperties("/oskari-ext.properties");
+        loadProperties();
 
         info("- checking default DataSource");
         final InitialContext ctx = getContext();
@@ -72,6 +87,14 @@ public class OskariContextInitializer implements ServletContextListener {
             }
         }
         // TODO: possibly update database structure if we start to use http://flywaydb.org/ or similar (or maybe in another listener)
+    }
+
+    public void loadProperties() {
+        // populate properties
+        info("- loading /oskari.properties");
+        PropertyUtil.loadProperties("/oskari.properties");
+        info("- loading /oskari-ext.properties");
+        PropertyUtil.loadProperties("/oskari-ext.properties");
     }
 
     private boolean checkDataSource(final InitialContext ctx, final String prefix) {

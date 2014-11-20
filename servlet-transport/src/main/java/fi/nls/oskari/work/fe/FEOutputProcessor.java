@@ -1,0 +1,231 @@
+package fi.nls.oskari.work.fe;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.JTS;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+
+public class FEOutputProcessor implements OutputProcessor {
+    protected static final Logger log = LogFactory
+            .getLogger(FEOutputProcessor.class);
+
+    final Map<Resource, SimpleFeatureBuilder> responseBuilders = new HashMap<Resource, SimpleFeatureBuilder>();
+    final Map<Resource, List<SimpleFeature>> responseFeatures = new HashMap<Resource, List<SimpleFeature>>();
+    final ArrayList<List<Object>> list;
+    final Map<Resource, SimpleFeatureCollection> responseCollections;
+
+    final CoordinateReferenceSystem crs;
+
+    final FERequestResponse requestResponse;
+
+    final ArrayList<String> selectedProperties;
+
+    final Map<Resource, Integer> selectedPropertiesIndex;
+
+    final MathTransform transform;
+
+    public FEOutputProcessor(final ArrayList<List<Object>> list,
+            final Map<Resource, SimpleFeatureCollection> responseCollections,
+            CoordinateReferenceSystem crs, FERequestResponse requestResponse,
+            ArrayList<String> selectedProperties,
+            Map<Resource, Integer> selectedPropertiesIndex,
+            MathTransform transform) {
+        this.list = list;
+        this.responseCollections = responseCollections;
+        this.crs = crs;
+        this.requestResponse = requestResponse;
+        this.selectedProperties = selectedProperties;
+        this.selectedPropertiesIndex = selectedPropertiesIndex;
+        this.transform = transform;
+    }
+
+    public void begin() throws IOException {
+        /* Setup MAP */
+
+    }
+
+    @Override
+    public void edge(Resource subject, Resource predicate, Resource value)
+            throws IOException {
+    }
+
+    @Override
+    public void end() throws IOException {
+
+        for (Resource type : responseFeatures.keySet()) {
+            List<SimpleFeature> sfc = getAndSetListSimpleFeature(type);
+
+            SimpleFeatureCollection fc = DataUtilities.collection(sfc);
+
+            responseCollections.put(type, fc);
+
+            log.debug("[fe] type: " + type + " / fc: { len: " + fc.size() + "}");
+        }
+    }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    public SimpleFeatureBuilder getAndSetFeatureBuilder(Resource type) {
+
+        SimpleFeatureBuilder sfb = responseBuilders.get(type);
+        if (sfb == null) {
+
+            SimpleFeatureTypeBuilder ftb = new SimpleFeatureTypeBuilder();
+            ftb.setName(type.getLocalPart());
+            ftb.setNamespaceURI(type.getNs());
+
+            // add a geometry property
+
+            ftb.setCRS(crs); // set crs first
+            ftb.add("geometry", Geometry.class, crs); // then add
+            // geometry
+
+            SimpleFeatureType schema = ftb.buildFeatureType();
+
+            sfb = new SimpleFeatureBuilder(schema);
+
+            responseBuilders.put(type, sfb);
+
+            log.debug("[fe] creating featurebuilder for : " + type);
+        }
+        return sfb;
+    }
+
+    public List<SimpleFeature> getAndSetListSimpleFeature(Resource type) {
+
+        List<SimpleFeature> list = responseFeatures.get(type);
+        if (list == null) {
+            list = new LinkedList<SimpleFeature>();
+            responseFeatures.put(type, list);
+            log.debug("[fe] creating featureList for : " + type);
+        }
+        return list;
+    }
+
+    @Override
+    public void prefix(String prefix, String ns) throws IOException {
+    }
+
+    @Override
+    public void type(Resource type,
+            List<Pair<Resource, XSDDatatype>> simpleProperties,
+            List<Pair<Resource, Object>> linkProperties,
+            List<Pair<Resource, String>> geometryProperties) throws IOException {
+        requestResponse.setFeatureIri(type);
+
+        log.debug("[fe] registering (generic) output type for " + type);
+
+        /*
+         * List<String> layerSelectedProperties = layer
+         * .getSelectedFeatureParams(session.getLanguage());
+         */
+        selectedProperties.add(0, "__fid");
+
+        for (Pair<Resource, XSDDatatype> prop : simpleProperties) {
+
+            selectedPropertiesIndex.put(prop.getKey(),
+                    selectedProperties.size());
+            log.debug("SEETING KEYINDEX " + prop.getKey() + " as "
+                    + selectedProperties.size());
+            selectedProperties.add(prop.getKey().getLocalPart());
+
+        }
+        selectedProperties.add("__centerX");
+        selectedProperties.add("__centerY");
+
+    }
+
+    public void vertex(final Resource iri, final Resource type,
+            final List<Pair<Resource, Object>> simpleProperties,
+            final List<Pair<Resource, Object>> linkProperties)
+            throws IOException {
+    }
+
+    public void vertex(Resource iri, Resource type,
+            List<Pair<Resource, Object>> simpleProperties,
+            List<Pair<Resource, Object>> linkProperties,
+            List<Pair<Resource, Geometry>> geometryProperties)
+            throws IOException {
+
+        SimpleFeatureBuilder sfb = getAndSetFeatureBuilder(type);
+        List<SimpleFeature> sfc = getAndSetListSimpleFeature(type);
+
+        for (Pair<Resource, Geometry> geomPair : geometryProperties) {
+            Geometry geom = geomPair.getValue();
+
+            try {
+                geom = JTS.transform(geom, transform);
+            } catch (MismatchedDimensionException e) {
+
+                throw new IOException(e);
+            } catch (TransformException e) {
+
+                throw new IOException(e);
+            }
+
+            sfb.add(geom);
+
+            SimpleFeature f = sfb.buildFeature(iri.toString());
+
+            sfc.add(f);
+
+        }
+
+        if (!(type.getNs().equals(requestResponse.getFeatureIri().getNs()) && type
+                .getLocalPart().equals(
+                        requestResponse.getFeatureIri().getLocalPart()))) {
+            log.debug("[fe] type mismatch for Transport regd "
+                    + requestResponse.getFeatureIri() + " vs added " + type
+                    + " -> properties discarded");
+            return;
+        }
+
+        if (selectedProperties != null && selectedProperties.size() > 0) {
+            ArrayList<Object> props = new ArrayList<Object>(
+                    selectedProperties.size());
+            for (String field : selectedProperties) {
+                props.add(null);
+            }
+            props.set(0, iri.toString());
+            for (Pair<Resource, ?> pair : simpleProperties) {
+                Integer keyIndex = selectedPropertiesIndex.get(pair.getKey());
+                if (keyIndex == null) {
+                    /*
+                     * log.debug("KEY INDEX FOR " + pair.getKey() +
+                     * " not found");
+                     */
+                    continue;
+                }
+                props.set(keyIndex, pair.getValue());
+            }
+
+            list.add(props);
+        }
+    }
+
+};

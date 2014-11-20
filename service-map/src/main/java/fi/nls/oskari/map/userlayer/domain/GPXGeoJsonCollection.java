@@ -44,24 +44,17 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         connectionParams.put("DriverName", "GPX");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
         DataStore store;
-        String typeName = null;
         SimpleFeatureSource source;
         SimpleFeatureCollection collection;
-        SimpleFeatureType schema = null;
-        SimpleFeatureIterator it = null;
-        CoordinateReferenceSystem sourceCrs = null;
-        CoordinateReferenceSystem targetCrs = null;
+        SimpleFeatureIterator it;
+        SimpleFeature feature;
+        SimpleFeatureType featureType = null;
+        CoordinateReferenceSystem sourceCrs;
+        CoordinateReferenceSystem targetCrs;
         MathTransform transform = null;
-        JSONArray features = null;
+        JSONArray features = new JSONArray();
 
         try {
-            store = factory.createDataStore(connectionParams);
-            typeName = store.getTypeNames()[0];
-            source = store.getFeatureSource(typeName);
-            collection = source.getFeatures();
-            it = collection.features();
-            schema = collection.getSchema();
-
             // Transform
             // Gpx epsg:4326 and longitude 1st
             sourceCrs = CRS.decode("EPSG:4326",true);
@@ -71,26 +64,39 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             if (!targetCrs.getName().equals(sourceCrs.getName())) {
                 transform = CRS.findMathTransform(sourceCrs, targetCrs, true);
             }
-            features = new JSONArray();
-            while (it.hasNext()) {
-                SimpleFeature feature = it.next();
-                if (transform != null) {
-                    Geometry geometry = (Geometry) feature.getDefaultGeometry();
-                    feature.setDefaultGeometry(JTS.transform(geometry, transform));
+            store = factory.createDataStore(connectionParams);
+            String[] typeNames = store.getTypeNames();
+            for (String typeName : typeNames) {
+                // Skip track points
+                if (typeName.equals("track_points")) {
+                    continue;
                 }
-                JSONObject geojs = JSONHelper.createJSONObject(io.toString(feature));
-                if (geojs != null) {
-                    features.put(geojs);
+                source = store.getFeatureSource(typeName);
+                collection = source.getFeatures();
+                it = collection.features();
+                while (it.hasNext()) {
+                    feature = it.next();
+                    featureType = feature.getFeatureType();
+                    if (transform != null) {
+                        Geometry geometry = (Geometry) feature.getDefaultGeometry();
+                        feature.setDefaultGeometry(JTS.transform(geometry, transform));
+                    }
+                    JSONObject geojs = JSONHelper.createJSONObject(io.toString(feature));
+                    if (geojs != null) {
+                        features.put(geojs);
+                    }
                 }
+                it.close();
             }
-            it.close();
-            setGeoJson(JSONHelper.createJSONObject("features",features));
-            setFeatureType((FeatureType)schema);
-            setTypeName(typeName);
-            return true;
+            if (features.length() > 0) {
+                setGeoJson(JSONHelper.createJSONObject("features", features));
+                setFeatureType((FeatureType)featureType);
+                setTypeName("GPX_");
+            }
         } catch (Exception e) {
              log.error("Couldn't create geoJSON from the GPX file",e);
              return false;
         }
+        return true;
     }
 }

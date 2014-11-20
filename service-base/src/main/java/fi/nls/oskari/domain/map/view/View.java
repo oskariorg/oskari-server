@@ -1,10 +1,13 @@
 package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.lang.text.StrSubstitutor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Map;
 
 public class View implements Serializable {
     private long id = -1;
@@ -12,7 +15,44 @@ public class View implements Serializable {
     private String name = null;
     private String description = null;
     private String uuid = null;
+    private boolean onlyForUuId = false;
     private List<Bundle> bundles = new ArrayList<Bundle>();
+
+    public String getUrl() {
+        final Map<String, String> valuesMap = new HashMap();
+        valuesMap.put("lang", getLang());
+        valuesMap.put("uuid", getUuid());
+        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+
+        String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
+        return sub.replace(baseUrl);
+    }
+
+    private String getBaseUrlForView(final String type, final String lang) {
+        String value = null;
+        // view.published.url = http://foo.bar/${lang}/${uuid}
+        // view.user.url.fi = http://foo.bar/kayttaja/${uuid}
+        // view.user.url.en = http://foo.bar/user/${uuid}
+        final String basePropKey = "view." + type + ".url";
+        List<String> urls = PropertyUtil.getPropertyNamesStartingWith(basePropKey);
+        if(urls.size() == 1) {
+            // normal override of defaults
+            value =  PropertyUtil.get(basePropKey);
+        }
+        else if(urls.size() > 1) {
+            // locale-specific urls
+            value = PropertyUtil.getOptional(basePropKey + "." + lang);
+        }
+        if(value == null) {
+            // not defined, use reasonable default
+            // oskari.domain=http://foo.bar
+            // oskari.map.url=/oskari-map
+            value = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
+            // uuid param name should match ActionConstants.PARAM_UUID
+            value = value + "?lang=${lang}&uuid=${uuid}";
+        }
+        return value;
+    }
 
     public long getId() { return this.id; }
     public void setId(long id) { this.id = id; }
@@ -23,6 +63,9 @@ public class View implements Serializable {
     public String getUuid() { return this.uuid; }
     public void setUuid(String uuid) { this.uuid = uuid; }
 
+    public boolean isOnlyForUuId() { return this.onlyForUuId; }
+    public void setOnlyForUuId(boolean onlyForUuId) { this.onlyForUuId = onlyForUuId; }
+
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 
@@ -32,21 +75,15 @@ public class View implements Serializable {
     }
     public void setDescription(String description) { this.description = description; }
 
-    /* Supplement bits, these should prolly have be in a member object */
-    private long supplementId = -1;
     private String application = "full-map"; // app name
     private String page = "view"; // JSP
     private String developmentPath = "/applications";
     private long creator = -1;
     private boolean isPublic = false;
+    private boolean isDefault = false;
     private String type = null;
     private String pubDomain = "";
     private String lang = PropertyUtil.getDefaultLanguage();
-    private int width = 0;
-    private int height = 0;
-
-    public long getSupplementId() { return this.supplementId; }
-    public void setSupplementId(long supId) { this.supplementId = supId; }
 
     public String getApplication() { return this.application; }
     public void setApplication(String as) { this.application = as; }
@@ -58,20 +95,15 @@ public class View implements Serializable {
     public void setCreator(long creator) { this.creator = creator; }
 
     public boolean isPublic() { return this.isPublic; }
-    public boolean getIsPublic() { return this.isPublic; }
     public void setIsPublic(boolean isPublic) { this.isPublic = isPublic; }
+    public boolean isDefault() { return this.isDefault; }
+    public void setIsDefault(boolean isDefault) { this.isDefault = isDefault; }
 
     public String getPubDomain() { return this.pubDomain; }
     public void setPubDomain(String pd) { this.pubDomain = pd; }
 
     public String getLang() { return this.lang; }
     public void setLang(String lang) { this.lang = lang; }
-
-    public int getWidth() { return this.width; }
-    public void setWidth(int width) { this.width = width; }
-
-    public int getHeight() { return this.height; }
-    public void setHeight(int height) { this.height = height; }
 
     public String getDevelopmentPath() {
         return developmentPath;
@@ -87,13 +119,6 @@ public class View implements Serializable {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("[");
-        boolean first = true;
-        /*
-        for (Bundle s : this.states) {
-            if (!first) sb.append(",");
-            first = false;
-            sb.append(s.toString());
-        } */
         String name = this.name == null ? null :
             "'" + this.name.replace("\n", "").replace("\r", "") + "'";
         String description = this.description == null ? null :
@@ -106,6 +131,7 @@ public class View implements Serializable {
             "'" + this.pubDomain.replace("\n", "").replace("\r", "") + "'";
 
         sb.append("]");
+        
         String ret =
             "{\n" +
             "  id: " + this.id + ",\n" +
@@ -114,11 +140,11 @@ public class View implements Serializable {
             "  description: " + description + ",\n" +
             "  uuid: " + uuid + ",\n" +
             "  lang: " + lang + ",\n" +
-            "  width: " + this.width + ",\n" +
             "  pubDomain: " + pubDomain + ",\n" +
-            "  height: " + this.height + ",\n" +
+            "  url: '" + getUrl() + "',\n" +
             "  states: " + sb.toString() + "\n" +
             "  }\n";
+        
         return ret;
     }
 
@@ -168,13 +194,13 @@ public class View implements Serializable {
      */
     public View cloneBasicInfo() {
         View view = new View();
-        // skip id, oldId, uuid, supplementId
+        // skip id, oldId, uuid, isDefault
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());
         view.setDevelopmentPath(getDevelopmentPath());
         view.setApplication(getApplication());
-        view.setIsPublic(getIsPublic());
+        view.setIsPublic(isPublic());
         view.setLang(getLang());
         view.setPage(getPage());
         view.setPubDomain(getPubDomain());

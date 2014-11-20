@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.24</version>
+        <version>1.25</version>
 	</parent>
     
     <groupId>fi.nls.oskari.service</groupId>
@@ -22,6 +22,10 @@
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-map</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-csw</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>

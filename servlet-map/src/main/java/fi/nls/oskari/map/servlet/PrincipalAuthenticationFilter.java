@@ -4,7 +4,6 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.user.IbatisRoleService;
 import fi.nls.oskari.util.ConversionHelper;
@@ -12,7 +11,6 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
@@ -24,6 +22,7 @@ public class PrincipalAuthenticationFilter implements Filter {
     private String logoutUrl = "logout";
     private String loggedOutPage = "/";
     private boolean addMissingUsers = true;
+    private boolean useLowerCaseUsernames = false;
     private String roleMappingType = null;
 
     private IbatisRoleService roleService = null;
@@ -38,7 +37,9 @@ public class PrincipalAuthenticationFilter implements Filter {
         // favor init params, fallback to property
         addMissingUsers = ConversionHelper.getBoolean(filterConfig.getInitParameter("auth.add.missing.users"),
                 PropertyUtil.getOptional("auth.add.missing.users", addMissingUsers));
-        roleMappingType =ConversionHelper.getString(filterConfig.getInitParameter("auth.external.role.mapping"),
+
+        useLowerCaseUsernames = ConversionHelper.getBoolean(PropertyUtil.getOptional("auth.lowercase.username"), useLowerCaseUsernames);
+        roleMappingType = ConversionHelper.getString(filterConfig.getInitParameter("auth.external.role.mapping"),
                 PropertyUtil.getOptional("auth.external.role.mapping"));
 
         roleService = new IbatisRoleService();
@@ -75,7 +76,15 @@ public class PrincipalAuthenticationFilter implements Filter {
         // handle login/session setup
         else {
             try {
-                setupSession(httpRequest, user);
+                final Principal userPrincipal = httpRequest.getUserPrincipal();
+                if(userPrincipal != null) {
+                    setupSession(httpRequest, userPrincipal.getName());
+                }
+                // our jaas fail url is by default /?loginState=failed
+                // -> pass the failed login flag to request as attribute
+                if ("failed".equals(httpRequest.getParameter("loginState"))) {
+                    httpRequest.setAttribute("loginState", "failed");
+                }
             } catch (Exception e) {
                 log.error(e, "Session setup failed");
             }
@@ -84,39 +93,44 @@ public class PrincipalAuthenticationFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    private void setupSession(final HttpServletRequest httpRequest, final User user) throws Exception {
-        final Principal userPrincipal = httpRequest.getUserPrincipal();
-        if(userPrincipal != null) {
-            final HttpSession session = httpRequest.getSession(false);
-            if(session == null || user == null || user.isGuest()) {
-                log.debug("Getting user from service with principal name:", userPrincipal.getName());
-                User loadedUser = userService.getUser(userPrincipal.getName());
-                log.debug("Got user from service:", loadedUser);
-                if(addMissingUsers && loadedUser == null) {
-                    loadedUser = addUser(httpRequest);
-                }
-                if(loadedUser != null) {
-                    httpRequest.getSession(true).setAttribute(KEY_USER, loadedUser);
-                    httpRequest.setAttribute("_logout_uri", logoutUrl);
-                }
-                else {
-                    log.error("Login user check failed! Got user from principal, but can't find it in Oskari db:", userPrincipal.getName());
-                }
-            }
+    public void setupSession(final HttpServletRequest httpRequest, String username) throws Exception {
+        final HttpSession session = httpRequest.getSession(false);
+        final User user = getLoggedInUser(httpRequest);
+        if(session != null && user != null && !user.isGuest() || username == null) {
+            // user is already logged in
+            return;
         }
-        // our jaas fail url is by default /?loginState=failed
-        // -> pass the failed login flag to request as attribute
-        if ("failed".equals(httpRequest.getParameter("loginState"))) {
-            httpRequest.setAttribute("loginState", "failed");
+        if(useLowerCaseUsernames) {
+            username = username.toLowerCase();
+        }
+        log.debug("Getting user from service with principal name:", username);
+        User loadedUser = userService.getUser(username);
+        log.debug("Got user from service:", loadedUser);
+        if(addMissingUsers && loadedUser == null) {
+            loadedUser = addUser(httpRequest, username);
+        }
+        if(loadedUser != null) {
+            httpRequest.getSession(true).setAttribute(KEY_USER, loadedUser);
+            httpRequest.setAttribute("_logout_uri", logoutUrl);
+        }
+        else {
+            log.error("Login user check failed! Got user from principal, but can't find it in Oskari db:", username);
         }
     }
+    public void addUser(final HttpServletRequest httpRequest) throws Exception {
+        String username = httpRequest.getUserPrincipal().getName();
+        if(useLowerCaseUsernames) {
+            username = username.toLowerCase();
+        }
+        addUser(httpRequest, username);
+    }
 
-    public User addUser(final HttpServletRequest httpRequest) throws Exception {
+    public User addUser(final HttpServletRequest httpRequest, final String username) throws Exception {
         final User user = new User();
-        user.setScreenname(httpRequest.getUserPrincipal().getName());
+        user.setScreenname(username);
         user.setFirstname(null);
         user.setLastname(null);
-        user.setUuid(userService.generateUuid(user.getScreenname()));
+        user.setUuid(userService.generateUuid(username));
         for(String extRoleName : EXTERNAL_ROLES_MAPPING.keySet()) {
             if(httpRequest.isUserInRole(extRoleName)) {
                 user.addRole(EXTERNAL_ROLES_MAPPING.get(extRoleName));

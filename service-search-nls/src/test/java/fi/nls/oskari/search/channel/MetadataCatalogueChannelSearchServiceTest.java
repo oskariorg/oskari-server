@@ -5,6 +5,7 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public class MetadataCatalogueChannelSearchServiceTest {
     private static String SERVER_URL = null;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setup() {
         PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
@@ -31,19 +32,18 @@ public class MetadataCatalogueChannelSearchServiceTest {
         SERVER_URL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server");
     }
 
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
+    }
+
     private MetadataCatalogueChannelSearchService getSearchChannel() {
         if(channel != null) {
             return channel;
         }
         channel = new MetadataCatalogueChannelSearchService();
         MetadataCatalogueChannelSearchService.resetProperties();
-        channel.setProperty("fetchpage.url.fi", "fetchPageURL.fi");
-        channel.setProperty("fetchpage.url.en", "fetchPageURL.en");
-        channel.setProperty("fetchpage.url.sv", "fetchPageURL.sv");
-
-        channel.setProperty("image.url.fi", "imageURL.fi");
-        channel.setProperty("image.url.en", "imageURL.en");
-        channel.setProperty("image.url.sv", "imageURL.sv");
+        channel.init();
         return channel;
     }
 

@@ -267,7 +267,7 @@
             oskari_maplayer l
       WHERE
             u.id = p.oskari_resource_id AND
-            u.resource_mapping = l.url || '+' || l.name
+            u.resource_mapping = l.type || '+' || l.url || '+' || l.name
             <isNotEmpty property="permissionsType">AND p.permission = #permissionType#</isNotEmpty>
             <isNotEmpty property="idList" prepend="and">
                 l.id in
@@ -365,7 +365,7 @@
             op.permission = 'VIEW_LAYER' AND
             osr.id = op.oskari_resource_id AND
             osr.resource_type = 'maplayer' AND
-            osr.resource_mapping = map.url || '+' || map.name AND
+            osr.resource_mapping = map.type || '+' || map.url || '+' || map.name AND
             op.external_Id IN
 		    <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
@@ -386,7 +386,7 @@
         (op.permission = 'VIEW_LAYER' OR op.permission = 'VIEW_PUBLISHED') AND
         osr.id = op.oskari_resource_id AND
         osr.resource_type = 'maplayer' AND
-        osr.resource_mapping = map.url || '+' || map.name AND
+        osr.resource_mapping = map.type || '+' || map.url || '+' || map.name AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#
@@ -405,7 +405,7 @@
             op.permission = 'VIEW_LAYER' AND
             osr.id = op.oskari_resource_id AND
             osr.resource_type = 'maplayer' AND
-            osr.resource_mapping = map.url || '+' || map.name AND
+            osr.resource_mapping = map.type || '+' || map.url || '+' || map.name AND
             op.external_Id IN
             <iterate open="(" close=")" conjunction="," property="idList" >
                     #idList[]#
@@ -426,7 +426,7 @@
         op.permission = 'EDIT_LAYER' AND
         ore.id = op.oskari_resource_id AND
         ore.resource_type = 'maplayer' AND
-        ore.resource_mapping = map.url || '+' || map.name AND
+        ore.resource_mapping = map.type || '+' || map.url || '+' || map.name AND
         op.external_Id IN
         <iterate open="(" close=")" conjunction="," property="idList" >
             #idList[]#

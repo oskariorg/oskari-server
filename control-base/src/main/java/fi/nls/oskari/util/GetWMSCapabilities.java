@@ -15,10 +15,10 @@ public class GetWMSCapabilities {
     final static String ENCODE_ATTRIBUTE =  "encoding=\"";
 
 
-    public static String getResponse(final String url) throws ActionException {
+    public static String getResponse(final String url, final String user, final String pwd) throws ActionException {
         try {
 
-            final String rawResponse =  IOHelper.getURL(getUrl(url));
+            final String rawResponse =  IOHelper.getURL(url, user, pwd);
             final String response = fixEncode(rawResponse, url);
 
             if (response == null) {

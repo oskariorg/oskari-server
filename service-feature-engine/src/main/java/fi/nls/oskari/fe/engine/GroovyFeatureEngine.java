@@ -10,46 +10,46 @@ import fi.nls.oskari.fe.output.OutputProcessor;
 
 public class GroovyFeatureEngine implements FeatureEngine {
 
-	private InputProcessor inputProcessor;
-	private OutputProcessor outputProcessor;
+    private InputProcessor inputProcessor;
+    private OutputProcessor outputProcessor;
 
-	GroovyParserRecipe recipe;
+    GroovyParserRecipe recipe;
 
-	public void process() throws IOException, XMLStreamException {
+    public GroovyParserRecipe getRecipe() {
+        return recipe;
+    }
 
-		try {
-			outputProcessor.begin();
+    public void process() throws IOException, XMLStreamException {
 
-			try {
+        try {
+            outputProcessor.begin();
 
-				recipe.setInputOutput(inputProcessor, outputProcessor);
-				recipe.parse();
+            try {
 
-			} finally {
-				inputProcessor.close();
-			}
+                recipe.setInputOutput(inputProcessor, outputProcessor);
+                recipe.parse();
 
-			outputProcessor.flush();
-		} finally {
-			outputProcessor.end();
-		}
+            } finally {
+                inputProcessor.close();
+            }
 
-	}
+            outputProcessor.flush();
+        } finally {
+            outputProcessor.end();
+        }
 
-	public GroovyParserRecipe getRecipe() {
-		return recipe;
-	}
+    }
 
-	public void setRecipe(GroovyParserRecipe recipe) {
-		this.recipe = recipe;
-	}
+    public void setInputProcessor(InputProcessor inputProcessor) {
+        this.inputProcessor = inputProcessor;
+    }
 
-	public void setInputProcessor(InputProcessor inputProcessor) {
-		this.inputProcessor = inputProcessor;
-	}
+    public void setOutputProcessor(OutputProcessor outputProcessor) {
+        this.outputProcessor = outputProcessor;
+    }
 
-	public void setOutputProcessor(OutputProcessor outputProcessor) {
-		this.outputProcessor = outputProcessor;
-	}
+    public void setRecipe(GroovyParserRecipe recipe) {
+        this.recipe = recipe;
+    }
 
 }

@@ -11,42 +11,28 @@
 SELECT b.name, s.config, s.state, s.startup
     FROM portti_view_bundle_seq s, portti_bundle b 
     WHERE s.bundle_id = b.id AND s.view_id = 
-        (SELECT max(v.id) FROM portti_view v, portti_view_supplement s 
-            WHERE v.supplement_id = s.id AND v.page = 'parcel')
+        (SELECT max(id) FROM portti_view WHERE page = 'parcel')
     ORDER BY s.view_id, s.seqno;
-
-
---------------------------------------------
--- Supplement
--- TODO: This should be refactored so view is inserted first 
--- and supplement should contain some sane values
---------------------------------------------
-
-INSERT INTO portti_view_supplement (is_public, lang, creator, app_startup)
-    VALUES (true, 'fi', 10110, 'parcel');
 
 --------------------------------------------
 -- View
 --------------------------------------------
 
-INSERT INTO portti_view (name, type, is_default, supplement_id, application, page, application_dev_prefix)
+INSERT INTO portti_view (name, type, is_default, application, page, application_dev_prefix, lang, creator)
     VALUES ('parcel', 
             'USER', 
-             false, 
-             (SELECT max(id) FROM portti_view_supplement),
+             false,
              'parcel',
              'parcel',
-             '/applications');
-
-
+             '/applications',
+             'fi',
+             10110);
 
 --------------------------------------------
 -- QUERY FOR VIEW ID AND MODIFY THE FOLLOWING STATEMENTS TO USE IT INSTEAD OF [VIEW_ID]
 --------------------------------------------
 
-SELECT v.id FROM portti_view v, portti_view_supplement s 
-            WHERE v.supplement_id = s.id AND s.app_startup = 'parcel';
-
+SELECT id FROM portti_view WHERE page = 'parcel';
 
 --------------------------------------------
 -- 1. Openlayers

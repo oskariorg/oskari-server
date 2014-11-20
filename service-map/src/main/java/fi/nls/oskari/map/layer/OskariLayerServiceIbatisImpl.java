@@ -29,6 +29,9 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     private Logger log = LogFactory.getLogger(OskariLayerServiceIbatisImpl.class);
     private SqlMapClient client = null;
 
+    // make it static so we can change this with one call to all services when needed
+    private static String SQL_MAP_LOCATION = "META-INF/SqlMapConfig.xml";
+
     private static LayerGroupService layerGroupService = new LayerGroupServiceIbatisImpl();
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
 
@@ -38,6 +41,13 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         typeMapping.put(OskariLayer.TYPE_WMS, OskariLayer.class);
     }
 
+    /**
+     * Static setter to override default location
+     * @param newLocation
+     */
+    public static void setSqlMapLocation(final String newLocation) {
+        SQL_MAP_LOCATION = newLocation;
+    }
     /**
      * Returns SQLmap
      *
@@ -72,7 +82,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
      * single portlet
      */
     protected String getSqlMapLocation() {
-        return "META-INF/SqlMapConfig.xml";
+        return SQL_MAP_LOCATION;
     }
 
     protected String getNameSpace() {
@@ -151,6 +161,9 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         result.setPassword((String) data.get("password"));
 
         result.setGeometry((String) data.get("geom"));
+
+        result.setSrs_name((String) data.get("srs_name"));
+        result.setVersion((String) data.get("version"));
 
         result.setCreated((Date) data.get("created"));
         result.setUpdated((Date) data.get("updated"));

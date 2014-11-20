@@ -15,7 +15,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -212,7 +211,8 @@ public class SearchUtil {
 		}
 		return villageCache;
 	}
-	
+
+	@Deprecated
 	public static String getNameRegisterUrl() throws Exception {
 		return PropertyUtil.get(NAME_REGISTER_URL_PROPERTY);
 	}
@@ -250,38 +250,10 @@ public class SearchUtil {
 	
 	private static String getData(String villageName) throws Exception {
 		
-		final String login = PropertyUtil.get(SearchUtil.NAME_REGISTER_USER_PROPERTY);
-        final String password = PropertyUtil.get(SearchUtil.NAME_REGISTER_PASSWORD_PROPERTY);
-        
-        if (login != null && !"".equals(login) && password != null && !"".equals(password)) {
-	        Authenticator.setDefault(new Authenticator() {
-	            protected PasswordAuthentication getPasswordAuthentication() {
-	                return new PasswordAuthentication (login, password.toCharArray());
-	            }
-	        }); 
-        }
-		final URL url = new URL(getWFSUrl(villageName));
-		URLConnection conn = url.openConnection();
-		InputStream ins;
-		
-		StringBuilder data = new StringBuilder();
-		if (conn instanceof HttpsURLConnection) {
-			HttpsURLConnection https_conn = (HttpsURLConnection) conn;
-		    ins = https_conn.getInputStream();
-		} else {
-			ins = conn.getInputStream();
-		}
-		InputStreamReader isr = new InputStreamReader(ins);
-	    BufferedReader in = new BufferedReader(isr);
-	    String inputLine;
-	    	
-	    while ((inputLine = in.readLine()) != null) {
-	        data.append(inputLine);
-	    }
-	    in.close();
-		conn.connect();
-			  
-		return data.toString();
+		final String login = PropertyUtil.getOptional(NAME_REGISTER_USER_PROPERTY);
+        final String password = PropertyUtil.getOptional(NAME_REGISTER_PASSWORD_PROPERTY);
+        final String url = getWFSUrl(villageName);
+		return IOHelper.getURL(url, login, password);
 	}
 	
 	
@@ -297,8 +269,6 @@ public class SearchUtil {
 		searchResultList.setChannelId(RegisterOfNomenclatureChannelSearchService.ID);
 		
 		try {
-			//final URL wfsUrl = new URL(getWFSUrl(villageName));
-			
 			String data = getData(villageName);
 			final FeatureCollectionDocument fDoc =  FeatureCollectionDocument.Factory.parse(data);
 			

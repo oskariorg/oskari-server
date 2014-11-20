@@ -68,7 +68,8 @@ public class JSONHelper {
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Couldn't get JSONArray from " + content + " with key = " + key);
+            log.warn("Couldn't get JSONArray from " + content + " with key = " + key);
+            return null;
         }
     }
     public static final <T> Map<String, T> getObjectAsMap(final JSONObject obj) {
@@ -110,6 +111,15 @@ public class JSONHelper {
             return new JSONArray();
         }
         return array;
+    }
+
+    public static boolean getBooleanFromJSON(final JSONObject data, final String key, final boolean defaultValue) {
+        try {
+            final boolean value = data.getBoolean(key);
+            return value;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
     
     public static final String getStringFromJSON(final JSONObject data, final String key, final String defaultValue) {
@@ -155,7 +165,6 @@ public class JSONHelper {
         return false;
     }
     
-    
     public static final boolean put(final JSONObject json, final String key, final JSONArray value){
         try {
             json.put(key, value);
@@ -187,7 +196,7 @@ public class JSONHelper {
     }
     public static final boolean putValue(final JSONObject json, final String key, final Date value) {
         try {
-            json.put(key, value);
+            json.put(key, String.format("%tFT%<tRZ", value));
             return true;
         } catch (Exception ignore) {
             log.warn("Can't put", key, "value", value, "to json");

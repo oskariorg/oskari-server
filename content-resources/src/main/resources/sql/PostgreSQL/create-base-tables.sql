@@ -16,7 +16,8 @@ DROP TABLE IF EXISTS oskari_maplayer;
 DROP TABLE IF EXISTS oskari_layergroup;
 DROP TABLE IF EXISTS portti_inspiretheme;
 
-
+DROP TABLE IF EXISTS oskari_maplayer_metadata;
+-- portti_maplayer_metadata was removed in 1.25;
 DROP TABLE IF EXISTS portti_maplayer_metadata;
 DROP TABLE IF EXISTS portti_capabilities_cache;
 
@@ -27,6 +28,7 @@ DROP TABLE IF EXISTS portti_backendstatus;
 DROP TABLE IF EXISTS portti_view_bundle_seq;
 DROP TABLE IF EXISTS portti_bundle;
 DROP TABLE IF EXISTS portti_view;
+-- portti_view_supplement was removed in 1.25;
 DROP TABLE IF EXISTS portti_view_supplement;
 
 DROP TABLE IF EXISTS portti_published_map_usage;
@@ -88,6 +90,8 @@ CREATE TABLE oskari_maplayer
   updated timestamp with time zone,
   username character varying(256),
   password character varying(256),
+  srs_name character varying,
+  version character varying(64),
   CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
   CONSTRAINT oskari_maplayer_groupId_fkey FOREIGN KEY (groupId)
   REFERENCES oskari_layergroup (id) MATCH SIMPLE
@@ -123,20 +127,14 @@ WITH (
 OIDS=FALSE
 );
 
-CREATE TABLE portti_maplayer_metadata
+CREATE TABLE oskari_maplayer_metadata
 (
   id serial NOT NULL,
-  maplayerid integer,
-  uuid character varying(256),
-  namefi character varying(512),
-  namesv character varying(512),
-  nameen character varying(512),
-  abstractfi character varying(1024),
-  abstractsv character varying(1024),
-  abstracten character varying(1024),
-  browsegraphic character varying(1024),
-  geom character varying(512) default '',
-  CONSTRAINT portti_maplayer_metadata_pkey PRIMARY KEY (id)
+  metadataid character varying(256),
+  wkt character varying(512) default '',
+  json text default '',
+  ts timestamp DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT oskari_maplayer_metadata_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE oskari_resource
@@ -175,34 +173,25 @@ CREATE VIEW portti_backendstatus_allknown AS
   FROM portti_backendstatus;
 
 
-
-CREATE TABLE portti_view_supplement (
-   id               bigserial NOT NULL,
-   creator          BIGINT        DEFAULT -1,
-   pubdomain        VARCHAR(512)  DEFAULT '',
-   lang             VARCHAR(2)    DEFAULT 'en',
-   width            INTEGER       DEFAULT 0,
-   height           INTEGER       DEFAULT 0,
-   is_public        BOOLEAN       DEFAULT FALSE,
-   old_id	    BIGINT	  DEFAULT -1,
-  CONSTRAINT portti_view_supplement_pkey PRIMARY KEY (id)
-);
-
-
 CREATE TABLE portti_view (
    uuid             UUID,
    id               bigserial NOT NULL,
    name             VARCHAR(128)  NOT NULL,
-   supplement_id    BIGINT        ,
    is_default       BOOLEAN       DEFAULT FALSE,
    type		    varchar(16)	  DEFAULT 'USER',
    description   VARCHAR(2000) ,
    page character varying(128) DEFAULT 'index',
    application character varying(128) DEFAULT 'servlet',
    application_dev_prefix character varying(256) DEFAULT '/applications/sample',
+   only_uuid boolean DEFAULT FALSE,
+   creator bigint DEFAULT (-1),
+   domain character varying(512) DEFAULT ''::character varying,
+   lang character varying(2) DEFAULT 'en'::character varying,
+   is_public boolean DEFAULT FALSE,
+   old_id bigint DEFAULT (-1),
+   created timestamp DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT portti_view_pkey PRIMARY KEY (id),
-  CONSTRAINT portti_view_supplement_id_fkey FOREIGN KEY (supplement_id)
-  REFERENCES portti_view_supplement (id) MATCH SIMPLE
+  CONSTRAINT portti_view_uuid_key UNIQUE (uuid)
 );
 
 

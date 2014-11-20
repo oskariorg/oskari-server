@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.24</version>
+    <version>1.25</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -78,6 +78,7 @@
 
         <jetty.version>9.1.0.M0</jetty.version>
         <postgresql.version>8.4-702.jdbc4</postgresql.version>
+        <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
 
         <xerces.version>2.10.0</xerces.version>
         <xmlbeans.version>2.5.0</xmlbeans.version>
@@ -85,9 +86,12 @@
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>
+
+        <mybatis.version>3.2.7</mybatis.version>
+        <com.google.guava.version>18.0</com.google.guava.version>
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
-        <junit.version>4.4</junit.version>
+        <junit.version>4.11</junit.version>
     </properties>
 
     <!-- Managed dependencies -->
@@ -156,6 +160,24 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-permissions</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-scheduler</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-spatineo-monitor</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
@@ -469,6 +491,23 @@
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz-scheduler.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${com.google.guava.version}</version>
+            </dependency>
+
             <!-- Managed test dependencies -->
             <dependency>
                 <groupId>fi.nls.oskari</groupId>
@@ -496,6 +535,7 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -559,6 +599,7 @@
             <plugin>
                 <!-- explicitly define maven-deploy-plugin after other to force exec order -->
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
                 <executions>
                     <execution>
                         <id>deploy</id>
@@ -656,7 +697,10 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-spatineo-monitor</module>
         <module>service-control</module>
+        <module>service-scheduler</module>
+        <module>service-csw</module>
 
         <module>control-base</module>
         <module>control-example</module>
@@ -670,5 +714,24 @@
         <module>standalone-jetty</module>
         <module>elf-jetty</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>transport</id>
+            <modules>
+                <module>service-base</module>
+                <module>service-control</module>
+                <module>service-search</module>
+                <module>service-permissions</module>
+                <module>service-map</module>
+                <module>service-wfs</module>
+                <module>shared-test-resources</module>
+                <module>geoserver-ext/OskariMarkFactory</module>
+                <module>service-feature-engine</module>
+                <module>servlet-transport</module>
+                <module>webapp-transport</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

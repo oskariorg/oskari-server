@@ -10,28 +10,11 @@ import org.xml.sax.SAXException;
 
 public class IntersectMethodParams extends AnalysisMethodParams {
 
-    private final String analysisMethodTemplate1 = "wfs2wfs-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate3 = "analysis2wfs-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate4 = "wfs2analysis-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate5 = "geojson2geojson-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate6 = "geojson2wfs-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate7 = "geojson2analysis-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate8 = "wfs2geojson-layer-wps-intersect2.xml";
-    private final String analysisMethodTemplate9 = "analysis2geojson-layer-wps-intersect2.xml";
-    private final String bboxFilter2Template = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom2}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
+    private final String analysisMethodTemplate = "layer-wps-intersect2.xml";
 
     // xml template paths {}
 
-    private final String HREF2 = "{href2}";
-    private final String XMLNS2 = "{xmlns2}";
-    private final String TYPENAME2 = "{typeName2}";
-    private final String FILTER2 = "{filter2}";
-    private final String GEOM2 = "{geom2}";
-    private final String FIELDA1 = "{fieldA1}";
-    private final String FIELDB1 = "{fieldB1}";
-    private final String SRSNAME2 = "{srsName2}";
-    public final String GEOJSONFEATURES2 = "{geoJsonFeatures2}";
+
     private final String INTERSECTIONMODE = "{intersectionMode}";
     private final String INTERSECT_CONTAINS = "contains";
     private final String INTERSECT_CLIP = "clip";
@@ -70,10 +53,6 @@ public class IntersectMethodParams extends AnalysisMethodParams {
 
     public void setGeom2(String geom2) {
         this.geom2 = geom2;
-    }
-
-    public String getBboxFilter2Template() {
-        return bboxFilter2Template;
     }
 
     public String getHref2() {
@@ -127,7 +106,7 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     public String getIntersection_mode() {
         if (intersection_mode.equals(INTERSECT_CONTAINS)) return "SECOND_CONTAINS";
         else if (intersection_mode.equals(INTERSECT_CLIP)) return "SECOND_CLIP";
-        else return "SECOND";
+        else return "SECOND";  //"INTERSECTION" mode doesn't work
     }
 
     public void setIntersection_mode(String intersection_mode) {
@@ -152,79 +131,51 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     public Document getWPSXML2() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {
 
-        String doctemp = null;
-        if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate2);
-        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate1);
-        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate4);
-        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate3);
-        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate9);
-        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
-            doctemp = this.getTemplate(this.analysisMethodTemplate5);
-        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_GS) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
-            doctemp = this.getTemplate(this.analysisMethodTemplate7);
-        else if (this.getWps_reference_type().equals(this.REFERENCE_TYPE_WFS) && this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
-            doctemp = this.getTemplate(this.analysisMethodTemplate6);
-        else if (this.getWps_reference_type().equals(this.INPUT_GEOJSON) && this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
-            doctemp = this.getTemplate(this.analysisMethodTemplate8);
+        String doctemp = this.getTemplate(this.analysisMethodTemplate);
+        String reference1 = this.getReference1();
+        String reference2 = null;
+
+        if (this.getWps_reference_type2().equals(this.REFERENCE_TYPE_GS))
+            reference2 = this.getTemplate(this.vectorReferenceTemplate);
+        else if (this.getWps_reference_type2().equals(this.REFERENCE_TYPE_WFS))
+            reference2 = this.getTemplate(this.wfsReferenceTemplate);
+        else if (this.getWps_reference_type2().equals(this.INPUT_GEOJSON))
+            reference2 = this.getTemplate(this.dataReferenceTemplate);
 
 
-        if(doctemp == null) return null;
+        if(doctemp == null || reference1 == null || reference2 == null) return null;
 
-        // Replace {} variables in wps execute .xml
-        doctemp = doctemp.replace(HREF, this.getHref());
-        doctemp = doctemp.replace(MAXFEATURES, this.getMaxFeatures());
-        doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
-        doctemp = doctemp.replace(VERSION, this.getVersion());
-        doctemp = doctemp.replace(SRSNAME, this.getSrsName());
-        doctemp = doctemp.replace(XMLNS, this.getXmlns());
-        doctemp = doctemp.replace(TYPENAME, this.getTypeName());
+        reference2 = reference2.replace(HREF, this.getHref2());
+        reference2 = reference2.replace(MAXFEATURES, this.getMaxFeatures());
+        reference2 = reference2.replace(OUTPUTFORMAT, this.getOutputFormat());
+        reference2 = reference2.replace(VERSION, this.getVersion());
+        reference2 = reference2.replace(SRSNAME, this.getSrsName());
+        reference2 = reference2.replace(XMLNS, this.getXmlns2());
+        reference2 = reference2.replace(TYPENAME, this.getTypeName2());
+        reference2 = reference2.replace(GEOJSONFEATURES, this.getGeojson2());
 
-        doctemp = doctemp.replace(HREF2, this.getHref2());
-        doctemp = doctemp.replace(XMLNS2, this.getXmlns2());
-        doctemp = doctemp.replace(TYPENAME2, this.getTypeName2());
-        doctemp = doctemp.replace(FIELDA1, this.getFieldA1());
-        doctemp = doctemp.replace(FIELDB1, this.getFieldB1());
-        doctemp = doctemp.replace(SRSNAME2, this.getSrsName());
-
-        // Intersection mode
-        doctemp = doctemp.replace(INTERSECTIONMODE, this.getIntersection_mode());
-
-        // GeoJson input
-        doctemp = doctemp.replace(GEOJSONFEATURES, this.getGeojson());
-        doctemp = doctemp.replace(GEOJSONFEATURES2, this.getGeojson2());
-
-        //Properties
+        //Properties and filter - reference 1
         if (this.getProperties() != null) {
-            doctemp = doctemp.replace(PROPERTIES, this.getProperties());
+            reference1 = reference1.replace(PROPERTIES, this.getProperties());
         }
         else
         {
-            doctemp = doctemp.replace(PROPERTIES, "");
+            reference1 = reference1.replace(PROPERTIES, "");
         }
-        
+
         // Filter
-        String wfsfilter = "";
-        if (this.getFilter() != null ) {
-            wfsfilter = this.getFilter();
-        } else {
+        String wfsfilter = this.getWfsFilter1();
 
-            String fbbox = this.getBboxFilterTemplate();
-            fbbox = fbbox.replace(GEOM, this.getGeom());
-            fbbox = fbbox.replace(SRSNAME, this.getSrsName());
-            fbbox = fbbox.replace(X_LOWER, this.getX_lower());
-            fbbox = fbbox.replace(Y_LOWER, this.getY_lower());
-            fbbox = fbbox.replace(X_UPPER, this.getX_upper());
-            fbbox = fbbox.replace(Y_UPPER, this.getY_upper());
-            wfsfilter = fbbox;
+        reference1 = reference1.replace(FILTER, wfsfilter);
+
+        //Properties and filter - reference 2
+        if (this.getProperties() != null) {
+            reference2 = reference2.replace(PROPERTIES, this.getProperties2());
         }
-
-        doctemp = doctemp.replace(FILTER, wfsfilter);
-        
+        else
+        {
+            reference2 = reference2.replace(PROPERTIES, "");
+        }
 
         String wfsfilter2 = "";
         if (this.getFilter2() != null ) {
@@ -232,8 +183,8 @@ public class IntersectMethodParams extends AnalysisMethodParams {
         } else {
 
             // Bbox filter 2
-            String fbbox2 = this.getBboxFilter2Template();
-            fbbox2 = fbbox2.replace(GEOM2, this.getGeom2());
+            String fbbox2 = this.getBboxFilterTemplate();
+            fbbox2 = fbbox2.replace(GEOM, this.getGeom2());
             fbbox2 = fbbox2.replace(SRSNAME, this.getSrsName());
             fbbox2 = fbbox2.replace(X_LOWER, this.getX_lower());
             fbbox2 = fbbox2.replace(Y_LOWER, this.getY_lower());
@@ -243,7 +194,16 @@ public class IntersectMethodParams extends AnalysisMethodParams {
             wfsfilter2 = fbbox2;
         }
 
-        doctemp = doctemp.replace(FILTER2, wfsfilter2);
+        reference2 = reference2.replace(FILTER, wfsfilter2);
+
+        doctemp = doctemp.replace(REFERENCE1, reference1);
+        doctemp = doctemp.replace(REFERENCE2, reference2);
+
+        // Srs name
+        doctemp = doctemp.replace(SRSNAME, this.getSrsName());
+        // Intersection mode
+        doctemp = doctemp.replace(INTERSECTIONMODE, this.getIntersection_mode());
+
         Document doc = this.getDocument2(doctemp);
 
         return doc;

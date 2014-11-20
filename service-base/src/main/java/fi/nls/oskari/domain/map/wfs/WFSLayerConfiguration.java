@@ -24,6 +24,7 @@ public class WFSLayerConfiguration {
     private static final Logger log = LogFactory
             .getLogger(WFSLayerConfiguration.class);
 	public final static String KEY = "WFSLayer_";
+    public final static String IMAGE_KEY = "WFSImage_";
 
     private static final double DEFAULT_TILE_BUFFER = 0.0d;
     private static final String KEY_DEFAULT = "default";
@@ -81,7 +82,7 @@ public class WFSLayerConfiguration {
     protected final static String NAME = "name";
     protected final static String SLD_STYLE = "SLDStyle";
 
-
+    private int id = -1;
 	private String layerId;
 	private String nameLocales;
 	private String URL;
@@ -147,6 +148,14 @@ public class WFSLayerConfiguration {
         name prefix         | feature_namespace
         */
         return new QName(getFeatureNamespaceURI(), getFeatureElement(), getFeatureNamespace());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getLayerId() {
@@ -651,12 +660,13 @@ public class WFSLayerConfiguration {
 	}
 
     private String getLayerFriendlyName() {
+        if(this.getNameLocales() == null) return "";
         final JSONObject loc = JSONHelper.createJSONObject(this.getNameLocales());
         final JSONObject langName = JSONHelper.getJSONObject(loc, PropertyUtil.getDefaultLanguage());
         return JSONHelper.getStringFromJSON(langName, "name", "");
     }
 
-	public String getAsJSON() {
+	public JSONObject getAsJSONObject() {
 		final JSONObject root = new JSONObject();
 
 		JSONHelper.putValue(root, LAYER_ID, this.getLayerId());
@@ -722,8 +732,12 @@ public class WFSLayerConfiguration {
 		}
 		JSONHelper.putValue(root, STYLES, styleList);
 
-		return root.toString();
+		return root;
 	}
+
+    public String getAsJSON() {
+        return getAsJSONObject().toString();
+    }
 
     public void setDefaults() {
         this.setSRSName("EPSG:3067");
@@ -732,7 +746,7 @@ public class WFSLayerConfiguration {
         this.setWFSVersion("1.1.0");
         this.setMaxFeatures(2000);
         this.setGeometryNamespaceURI("");
-        this.setOutputFormat("");
+        //this.setOutputFormat("");
         this.setFeatureType("{}");
         this.setSelectedFeatureParams("{}");
         this.setFeatureParamsLocales("{}");
@@ -742,6 +756,7 @@ public class WFSLayerConfiguration {
         this.setGetFeatureInfo(true);
         this.setTileRequest(false);
         this.setTileBuffer("{}");
+        this.setWps_params("{}");
         this.setMinScale(15000000d);
         this.setMaxScale(1d);
         this.setPublished(false);

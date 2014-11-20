@@ -33,9 +33,14 @@ public class ViewModifierManager {
      * @param handler
      */
     public static void addModifier(final String action, final ViewModifier handler) {
-        actions.put(action, handler);
-        handler.init();
-        log.debug("Modifier added", action,"=", handler.getClass().getCanonicalName());
+        try {
+            handler.init();
+            actions.put(action, handler);
+            log.debug("ViewModifier added", action,"=", handler.getClass().getCanonicalName());
+        }
+        catch (Exception ex) {
+            log.error(ex, "ViewModifier init failed! Skipping", action,"=", handler.getClass().getCanonicalName());
+        }
     }
 
     /**
@@ -88,7 +93,12 @@ public class ViewModifierManager {
      */
     public static void teardown() {
         for( ViewModifier h : actions.values()) {
-            h.teardown();
+            try {
+                h.teardown();
+            }
+            catch (Exception ex) {
+                log.error(ex, "ViewModifier teardown failed! Skipping", h.getName(),"=", h.getClass().getCanonicalName());
+            }
         }
     }
 }

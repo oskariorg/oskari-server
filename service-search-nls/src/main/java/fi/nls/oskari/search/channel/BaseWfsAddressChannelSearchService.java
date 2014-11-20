@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
@@ -21,7 +20,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.*;
 
-public abstract class BaseWfsAddressChannelSearchService implements SearchableChannel {
+public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
         
     private static final String BOUNDED_BY              = "gml:boundedBy";
     private static final String OSOITE_NIMI     = "oso:Osoitenimi";
@@ -47,10 +46,11 @@ public abstract class BaseWfsAddressChannelSearchService implements SearchableCh
                         
             WFSOsoitenimiFilterMaker wfsoFM = new WFSOsoitenimiFilterMaker(queryParser);
             String filterXml = URLEncoder.encode(wfsoFM.getFilter(), "UTF-8"); 
-                        
-            final URL url = new URL(this.getQueryUrl(filterXml));
-                        
-            URLConnection conn = url.openConnection();
+            final String queryUrl = this.getQueryUrl(filterXml);
+            if(queryUrl == null) {
+                return null;
+            }
+            URLConnection conn = getConnection(queryUrl);
             InputStream ins = conn.getInputStream();
                         
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
