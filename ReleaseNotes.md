@@ -69,6 +69,10 @@ If the above are not configured the URLs default to using:
 
 The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
 
+#### Published maps
+
+Removed redundant marker button from published map tools.
+
 ### standalone-jetty
 
 Fixed an issue with user logout functionality.
