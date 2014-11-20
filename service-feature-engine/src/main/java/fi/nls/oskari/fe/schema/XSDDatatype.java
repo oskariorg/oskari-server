@@ -142,7 +142,9 @@ public enum XSDDatatype {
 	XSDgYearMonth("gYearMonth"),
 
 	/** Datatype representing xsd:gMonthDay */
-	XSDgMonthDay("gMonthDay")
+	XSDgMonthDay("gMonthDay"),
+	
+	XSDany("any")
 
 	;
 
