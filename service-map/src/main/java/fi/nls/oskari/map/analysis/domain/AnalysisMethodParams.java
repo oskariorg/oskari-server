@@ -402,7 +402,7 @@ public abstract class AnalysisMethodParams {
 
     /**
      * Returns the WPS XML Document
-     * 
+     *
      * @return Returns a Web Processing Service XML Document
      * @throws XPathExpressionException
      * @throws IOException
@@ -414,7 +414,7 @@ public abstract class AnalysisMethodParams {
 
     /**
      * Returns the WPS XML Document
-     * 
+     *
      * @return Returns a Web Processing Service XML Document
      * @throws XPathExpressionException
      * @throws IOException

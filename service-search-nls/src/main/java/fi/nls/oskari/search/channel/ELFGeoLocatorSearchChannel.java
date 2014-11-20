@@ -131,8 +131,9 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
             log.debug("DATA: " + data);
-
-            return elfParser.parse(data, searchCriteria.getSRS(), searchCriteria.getParam(PARAM_EXONYM).toString().equals("true"));
+            boolean exonym = false;
+            if(hasParam(searchCriteria,PARAM_EXONYM)) exonym = searchCriteria.getParam(PARAM_EXONYM).toString().equals("true");
+            return elfParser.parse(data, searchCriteria.getSRS(), exonym);
 
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of ELF GeoLocator");
