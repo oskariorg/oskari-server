@@ -11,34 +11,21 @@
 SELECT b.name, s.config, s.state, s.startup
     FROM portti_view_bundle_seq s, portti_bundle b 
     WHERE s.bundle_id = b.id AND s.view_id = 
-        (SELECT max(v.id) FROM portti_view v, portti_view_supplement s 
-            WHERE v.supplement_id = s.id AND s.app_startup = 'digiroad')
+        (SELECT max(id) FROM portti_view WHERE application = 'digiroad')
     ORDER BY s.view_id, s.seqno;
-
-
---------------------------------------------
--- Supplement
--- TODO: This should be refactored so view is inserted first 
--- and supplement should contain some sane values
---   app_startup == js app folder
---   baseaddress == jsp-file
---------------------------------------------
-
-INSERT INTO portti_view_supplement (app_startup, baseaddress, is_public, old_id)
-    VALUES ('digiroad', 'view', true, -1);
 
 --------------------------------------------
 -- View
 --------------------------------------------
 
-INSERT INTO portti_view (name, type, is_default, supplement_id, application, page, application_dev_prefix)
-    VALUES ('Guest default view', 
+INSERT INTO portti_view (name, type, is_default, application, page, application_dev_prefix, is_public)
+    VALUES ('Digiroad view',
             'USER', 
-             false, 
-             (SELECT max(id) FROM portti_view_supplement),
+             false,
              'digiroad',
              'view',
-             '/applications');
+             '/applications',
+             true);
 
 
 
@@ -46,8 +33,7 @@ INSERT INTO portti_view (name, type, is_default, supplement_id, application, pag
 -- QUERY FOR VIEW ID AND MODIFY THE FOLLOWING STATEMENTS TO USE IT INSTEAD OF [VIEW_ID]
 --------------------------------------------
 
-SELECT v.id FROM portti_view v, portti_view_supplement s 
-            WHERE v.supplement_id = s.id AND s.app_startup = 'digiroad'
+SELECT id FROM portti_view WHERE application = 'digiroad';
 
 
 --------------------------------------------

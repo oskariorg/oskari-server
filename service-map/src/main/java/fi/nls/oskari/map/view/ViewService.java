@@ -25,8 +25,6 @@ public interface ViewService extends BaseService<Object> {
     public List<View> getViewsForUser(long userId);
 
     public long addView(View view) throws ViewException;
-    @Deprecated
-    public long addView(View view, final JSONObject viewJson)  throws ViewException;
 
     public void updateAccessFlag(View view);
     
@@ -53,8 +51,6 @@ public interface ViewService extends BaseService<Object> {
     public long getDefaultViewId(final User user);
     
     public void updatePublishedView(View view) throws ViewException;
-    @Deprecated
-    public void updatePublishedView(View view, JSONObject json) throws ViewException;
 
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
 

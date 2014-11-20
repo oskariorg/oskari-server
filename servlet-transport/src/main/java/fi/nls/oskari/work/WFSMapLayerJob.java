@@ -475,7 +475,6 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 
         log.debug("properties handler");
         final List<String> selectedProperties = getPropertiesToInclude();
-
         this.sendWFSProperties(selectedProperties, this.layer.getFeatureParamsLocales(this.session.getLanguage()));
     }
 

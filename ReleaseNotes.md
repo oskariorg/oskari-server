@@ -42,7 +42,7 @@ Run the node.js upgrade script under content-resources/db-upgrade:
 
     SCRIPT=1.25/01-generate-uuids-for-views node app.js
 
-NOTE! This will replace any existing UUIDs (but they haven't been used in Oskari before).
+NOTE! This will replace any existing UUIDs (they haven't been used in Oskari before).
 After this, you can add a constraint for portti_view by running the SQL in:
 
     content-resources/src/main/resources/sql/upgrade/1.25/06-add-uuid-constraint.sql
@@ -69,9 +69,30 @@ If the above are not configured the URLs default to using:
 
 The above property values are combined: oskari.domain + oskari.map.url + "?lang=${lang}&uuid=${uuid}
 
+Note! Views added by 1.25.0 can only be loaded by it's uuid. To make a view available by viewId
+change the boolean flag "only_uuid" in portti_view database table. Exception to this is any view defined as
+default view.
+
+#### Streamlining view tables in database
+
+The portti_view and portti_view_supplement have had 1:1 relation. To remove complexity portti_view_supplement has now
+been removed and the columns that are actually used have been moved to portti_view with same names (except pubdomain -> domain):
+
+    07_alter_table_portti_view.sql
+
 #### Published maps
 
 Removed redundant marker button from published map tools.
+
+### servlet-map/PrincipalAuthenticationFilter
+
+AuthenticationFilter can now be configured to use lowercase usernames when querying database for users and
+adding users to database. To enable this add a property to oskari-ext.properties:
+
+    auth.lowercase.username=true
+
+Notice that when using this check that the existing usernames in database are in lowercase format. This can be useful if
+the authentication module (like JAAS-LDAP) handles usernames case-insensitively.
 
 ### standalone-jetty
 

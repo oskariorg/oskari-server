@@ -97,8 +97,8 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public View getViewWithConfByUuId(String uuId) {
         if (uuId == null)
             return null;
-        log.debug("uuid != null --> view-with-conf-by-uu-id");
-        View view = (View) queryForObject("View.view-with-conf-by-uu-id", uuId);
+        log.debug("uuid != null --> view-with-conf-by-uuid");
+        View view = (View) queryForObject("View.view-with-conf-by-uuid", uuId);
         return view;
     }
 
@@ -130,11 +130,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         	view.setUuid(generateUuid());
         	
             session.startTransaction();
-            Object ret = queryForObject("View.add-supplement", view);
-            long suppId = ((Long) ret).longValue();
-
-            view.setSupplementId(suppId);
-            ret =  queryForObject("View.add-view", view);
+            Object ret =  queryForObject("View.add-view", view);
             long id = ((Long) ret).longValue();
 
             view.setId(id);
@@ -150,48 +146,18 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         }
     }
 
-    @Deprecated
-    public long addView(View view, final JSONObject viewJson) throws ViewException {
-        SqlMapSession session = openSession();
-        
-        try {
-            session.startTransaction();
-            Object ret = queryForObject("View.add-supplement", view);
-            long suppId = ((Long) ret).longValue();
-            
-            view.setSupplementId(suppId);
-            ret =  queryForObject("View.add-view", view);
-            long id = ((Long) ret).longValue();
-            
-            view.setId(id);
-            insertBundle(view, viewJson);
-            session.commitTransaction();
-            return id;
-        }  catch (Exception e) {
-            e.printStackTrace();
-            throw new ViewException("Error adding a view ", e);
-        } finally {
-            endSession(session);
-        }
-    }
-
-
     public void updateAccessFlag(View view) {
         update("View.update-access", view);
     }
 
     public void deleteViewById(final long id) throws DeleteViewException {
-
+        // TODO: why load it if not used?
         View view = queryForObject("View.view-with-conf-by-view-id", id);
         SqlMapSession session = openSession();
         try {
             session.startTransaction();
-            //session.delete("View.delete-state-by-view", id);
-            // delete("View.delete-config-by-view", id);
             session.delete("View.delete-bundle-by-view", id);
             session.delete("View.delete-view", id);
-            session.delete("View.delete-view-supplement",
-            view.getSupplementId());
             session.commitTransaction();
         } catch (Exception e) {
             throw new DeleteViewException("Error deleting a view with id:" + id, e);
@@ -205,7 +171,6 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         try {
             session.startTransaction();
             delete("View.delete-state-by-user", userId);
-            // delete("View.delete-config-by-user", userId);
             delete("View.delete-seq-by-user", userId);
             delete("View.delete-view-by-user", userId);
             session.commitTransaction();
@@ -218,7 +183,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     
 
 	public void updateView(View view) {
-        update("View.update-view", view);
+        update("View.update", view);
     }
 
     public void updatePublishedView(final View view) throws ViewException {
@@ -227,8 +192,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
         try {
             session.startTransaction();
-            update("View.update-supplement",view);
-            update("View.update",view);
+            updateView(view);
             delete("View.delete-bundle-by-view", id);
 
             for (Bundle bundle : view.getBundles()) {
@@ -241,63 +205,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             endSession(session);
         }
     }
-    @Deprecated
-    public void updatePublishedView(final View view, final JSONObject viewJson) throws ViewException {
-	    SqlMapSession session = openSession();
-        long id = view.getId();
-        
-        try {
-            session.startTransaction();
-            update("View.update-supplement",view);
-            update("View.update",view);
-            delete("View.delete-bundle-by-view", id);
-            
-            insertBundle(view, viewJson);
-            session.commitTransaction();
-        } catch (Exception e) {
-            throw new ViewException("Error updating a view with id:" + id, e);
-        } finally {
-            endSession(session);
-        }
-	}
 
-    private void insertBundle(final View view, final JSONObject viewJson) throws SQLException {
-        int seqIndex = 1;
-
-        for (Bundle bundle : view.getBundles()) {
-
-            String bundleName = bundle.getName();
-            long bundleId = bundle.getBundleId();
-            // Do we have data for this bundle?
-            JSONObject bundleJson = null;
-            try {
-                bundleJson = viewJson.getJSONObject(bundleName);
-            } catch (JSONException je) {
-                //je.printStackTrace();
-                log.error("bundle " + bundleName + " not found from JSON");
-            }
-
-            if (bundleJson != null && !bundleJson.isNull("config")) {
-                try {
-                    bundle.setConfig(bundleJson.getJSONObject("config").toString());
-                } catch (JSONException jsonex) {
-                    throw new RuntimeException("Malformed config" + " for '"
-                            + bundleName + "'" + " in request");
-                }
-            }
-
-            if (bundleJson != null && !bundleJson.isNull("state")) {
-                try {
-                    bundle.setState(bundleJson.getJSONObject("state").toString());
-                } catch (JSONException jsonex) {
-                    throw new RuntimeException("Malformed state" + " for '"
-                            + bundleName + "'" + " in request");
-                }
-            }
-
-            addBundleForView(view.getId(), bundle);
-        }
-    }
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException {
         // TODO: maybe setup sequencenumber to last if not set?
         bundle.setViewId(viewId);
