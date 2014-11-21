@@ -17,18 +17,21 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.vividsolutions.jts.geom.Geometry;
 
-import fi.nls.oskari.eu.inspire.util.GeometryProperty;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 
-public class FEGeometryDeserializer extends JsonDeserializer<GeometryProperty> {
-
-    public FEGeometryDeserializer() {
-    }
+public class GeometryPropertyDeserializer extends
+        JsonDeserializer<GeometryProperty> {
 
     protected Configuration gml;
-
     protected FEPullParser parserAny;
+    protected final Map<QName, FEPullParser.PullParserHandler> handlers = new HashMap<QName, FEPullParser.PullParserHandler>();
+
+    public GeometryPropertyDeserializer(Configuration gml,
+            FEPullParser parserAny) {
+        this.gml = gml;
+        this.parserAny = parserAny;
+    }
 
     public Map<QName, FEPullParser.PullParserHandler> mapGeometryType(
             final QName qname) {
@@ -38,9 +41,7 @@ public class FEGeometryDeserializer extends JsonDeserializer<GeometryProperty> {
         return handlers;
     }
 
-    public Map<QName, FEPullParser.PullParserHandler> mapGeometryTypes(
-            final String ns, final String... localNames) {
-        Map<QName, FEPullParser.PullParserHandler> handlers = new HashMap<QName, FEPullParser.PullParserHandler>();
+    public void mapGeometryTypes(final String ns, final String... localNames) {
 
         for (String localPart : localNames) {
             QName qname = new QName(ns, localPart);
@@ -48,7 +49,7 @@ public class FEGeometryDeserializer extends JsonDeserializer<GeometryProperty> {
                     qname, gml));
         }
 
-        return handlers;
+        ;
 
     }
 
@@ -75,26 +76,25 @@ public class FEGeometryDeserializer extends JsonDeserializer<GeometryProperty> {
             DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
         // TODO Auto-generated method stub
-        FEFromXmlParser parser = (FEFromXmlParser) ctxt.getParser();
+        FromXmlParser parser = (FromXmlParser) ctxt.getParser();
 
         Geometry geom = null;
 
         XMLStreamReader reader = parser.getStaxReader();
 
         try {
-            // geom = (Geometry) parseGeometry(I_RoadLink_geoms, reader);
-            // parser.resetContext();
-            parser.skipChildren();
+            geom = (Geometry) parseGeometry(handlers, reader);
+            parser.resume();
+            // parser.skipChildren();
 
-            /*
-             * } catch (XMLStreamException e) { // TODO Auto-generated catch
-             * block throw new IOException(e); } catch (SAXException e) { throw
-             * new IOException(e);
-             */
+        } catch (XMLStreamException e) {
+            throw new IOException(e);
+        } catch (SAXException e) {
+            throw new IOException(e);
+
         } finally {
         }
 
         return new GeometryProperty(geom);
     }
-
 }

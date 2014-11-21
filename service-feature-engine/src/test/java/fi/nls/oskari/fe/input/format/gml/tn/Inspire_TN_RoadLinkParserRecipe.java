@@ -10,9 +10,10 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.eu.inspire.gmlas.geographicalnames.GeographicalName;
@@ -21,7 +22,9 @@ import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.StaxMateGMLParserRecipeBase;
-import fi.nls.oskari.fe.input.jackson.FEXmlMapper;
+import fi.nls.oskari.fe.input.jackson.GeometryProperty;
+import fi.nls.oskari.fe.input.jackson.GeometryPropertySerializer;
+import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
@@ -44,11 +47,7 @@ public class Inspire_TN_RoadLinkParserRecipe extends
 
     /* input element qualified name declarations */
     /* def I = [ in Groovy ] */
-    final QName I_RoadLink_qn;
-    final QName I_RoadLink_geometry;
-
-    final Map<QName, PullParserHandler> I_RoadLink_geoms;
-    final Map<QName, Resource> I_RoadLink_props;
+    final QName I_RoadLink_qn = qn(input_ns, "RoadLink");
 
     /* output element qualified name declarations */
     /* def O = [ in Groovy ]; */
@@ -59,7 +58,7 @@ public class Inspire_TN_RoadLinkParserRecipe extends
     final Resource O_SpellingOfName_text = iri(output_gn_ns, "text");
 
     final List<Pair<Resource, Object>> EMPTY = new ArrayList<Pair<Resource, Object>>();
-    final FEXmlMapper mapper = new FEXmlMapper();
+    final GmlMapper mapper;
 
     /**
      * 
@@ -72,15 +71,11 @@ public class Inspire_TN_RoadLinkParserRecipe extends
         parserAny = new FEPullParser(gml, null);
 
         /* setup input element qualified names and mappings */
-        I_RoadLink_qn = qn(input_ns, "RoadLink");
-        I_RoadLink_props = mapPrimitiveTypes(XSDDatatype.XSDstring,
-                input_net_ns, "beginLifespanVersion", "endLifespanVersion",
-                "localType");
 
-        I_RoadLink_geometry = qn(input_net_ns, "centrelineGeometry");
-        I_RoadLink_geoms = mapGeometryTypes("http://www.opengis.net/gml/3.2",
-                "LineString", "Curve", "CompositeCurve", "OrientableCurve",
-                "MultiCurve");
+        mapper = new GmlMapper(gml);
+        mapper.getGeometryDeserializer().mapGeometryTypes(
+                "http://www.opengis.net/gml/3.2", "LineString", "Curve",
+                "CompositeCurve", "OrientableCurve", "MultiCurve");
 
     }
 
@@ -141,6 +136,10 @@ public class Inspire_TN_RoadLinkParserRecipe extends
                     .root().descendantElementCursor(I_RoadLink_qn));
 
             ObjectMapper json = new ObjectMapper();
+            SimpleModule gmlModule = new SimpleModule("MyModule", new Version(1, 0, 0, null));
+            gmlModule.addSerializer(GeometryProperty.class,new GeometryPropertySerializer()); 
+            json.registerModule(gmlModule);
+
 
             while (iter.hasNext()) {
 
@@ -158,6 +157,10 @@ public class Inspire_TN_RoadLinkParserRecipe extends
                 List<Pair<Resource, Object>> output_props = new ArrayList<Pair<Resource, Object>>();
                 List<Pair<Resource, Geometry>> output_geoms = new ArrayList<Pair<Resource, Geometry>>();
 
+                if( roadLink.centrelineGeometry!=null && roadLink.centrelineGeometry.geometry != null) {
+                    output_geoms.add(pair(O_Geom, roadLink.centrelineGeometry.geometry));
+                }
+                
                 if (roadLink.geographicalName != null) {
                     for (GeographicalName gn : roadLink.geographicalName) {
                         output.vertex(O_RoadLink_qn.unique(), O_RoadLink_qn,

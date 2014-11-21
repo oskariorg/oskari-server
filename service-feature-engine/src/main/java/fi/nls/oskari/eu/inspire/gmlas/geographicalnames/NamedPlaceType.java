@@ -6,8 +6,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
-import fi.nls.oskari.eu.inspire.util.GeometryProperty;
 import fi.nls.oskari.eu.inspire.util.Nillable;
+import fi.nls.oskari.fe.input.jackson.GeometryProperty;
 
 @JacksonXmlRootElement(namespace="urn:x-inspire:specification:gmlas:GeographicalNames:3.0")
 public class NamedPlaceType {
