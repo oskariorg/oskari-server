@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.25.2
+
+### control-base/PublishHandler
+
+Fixed an issue where editing an embedded map gave the user wrong URL for the edited map.
+
 ## 1.25.1
 
 ### control-base/GetWFSLayerConfiguration
