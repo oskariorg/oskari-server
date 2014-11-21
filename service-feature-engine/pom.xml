@@ -17,7 +17,7 @@
 		<commons-lang3.version>3.0</commons-lang3.version>
 		<stax-api.version>1.0-2</stax-api.version>
 		<stax2-api.version>3.1.1</stax2-api.version>
-		<woodstox.version>4.1.4</woodstox.version>
+		<woodstox.version>4.4.1</woodstox.version>
 		<jsonld-java.version>0.3</jsonld-java.version>
 	</properties>
 
@@ -173,5 +173,16 @@
 			<artifactId>jsonld-java</artifactId>
 			<version>${jsonld-java.version}</version>
 		</dependency>
+		
+		<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>2.4.3</version>
+</dependency>
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-annotations</artifactId>
+  <version>2.4.3</version>
+</dependency>
 	</dependencies>
 </project>
