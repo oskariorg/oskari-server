@@ -251,8 +251,6 @@ public class PublishHandler extends ActionHandler {
         // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
         
-        currentView.setUuid(UUID.randomUUID().toString());
-        
         if(useUuid != null && useUuid.equalsIgnoreCase("true")){
         	currentView.setOnlyForUuId(true);
         }else{
