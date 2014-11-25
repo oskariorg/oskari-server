@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.25.3
+
+### control-base/GetWMSCapabilities
+
+Fixed a problem with updating layer capabilities into database. This affected 1.25.0-1.25.2. Any layers added
+with the affected versions will not have for example GFI-capabilities. Open the layer in admin-layerselector
+and save the layer (nothing needs to be changed in the form) to update the database and fix this issue.
+
 ## 1.25.2
 
 ### control-base/PublishHandler
