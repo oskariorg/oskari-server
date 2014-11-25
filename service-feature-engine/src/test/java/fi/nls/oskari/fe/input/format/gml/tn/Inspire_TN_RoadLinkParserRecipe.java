@@ -44,7 +44,8 @@ public class Inspire_TN_RoadLinkParserRecipe extends JacksonParserRecipe {
             RoadLink roadLink = iter.next();
             Resource output_ID = outputContext.uniqueId(roadLink.id);
 
-            outputFeature.setFeature(roadLink).setId(output_ID);
+            outputFeature.setFeature(roadLink).
+                setId(output_ID);
 
             outputFeature.addGeometryProperty(geom,
                     roadLink.centrelineGeometry.geometry);

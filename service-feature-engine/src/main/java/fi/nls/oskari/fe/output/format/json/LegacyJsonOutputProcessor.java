@@ -11,30 +11,32 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.Version;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.module.SimpleModule;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
-import com.fasterxml.jackson.databind.Module.SetupContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.fe.input.jackson.GeometryProperty;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.output.jackson.GeometryPropertySerializer;
+import fi.nls.oskari.fe.output.jackson.LegacyGeometryPropertySerializer;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
-public class JsonOutputProcessor extends AbstractOutputStreamProcessor
+public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
+    /* output */
+    long counter = 0;
+    protected OpenBufferedWriter ps;
+
+    final JsonFactory jsonFactory = new JsonFactory();
+    final ObjectMapper json = new ObjectMapper();
 
     static class PairSerializer extends JsonSerializer<Pair<Resource, ?>> {
 
@@ -44,9 +46,10 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
                 JsonProcessingException {
 
             jgen.writeStartObject();
-            provider.defaultSerializeField(
-                    value.getKey().toString(), value.getValue(),jgen);
+            jgen.writeFieldName(value.getKey().toString());
+            jgen.writeObject(value.getValue());
             jgen.writeEndObject();
+            
 
         }
 
@@ -80,41 +83,28 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
 
         @Override
         public void setupModule(SetupContext context) {
-            addSerializer(new GeometryPropertySerializer());
+            addSerializer(new LegacyGeometryPropertySerializer());
             addSerializer(JsonOutputModule.<Pair<Resource, Object>> getClazz(),
                     new PairSerializer());
             super.setupModule(context);
         }
     };
 
-    /* output */
-    long counter = 0;
-
-    protected OpenBufferedWriter ps;
-
-    protected final ObjectMapper json = new ObjectMapper();
-
     public void setOutput(OutputStream out) {
         outs = out;
         ps = new OpenBufferedWriter(new OutputStreamWriter(outs, Charset
                 .forName("UTF-8").newEncoder()));
-
     }
 
-    public JsonOutputProcessor() {
-        json.setSerializationInclusion(Include.NON_NULL);
-        json.disable(SerializationFeature.CLOSE_CLOSEABLE);
-        json.enable(SerializationFeature.INDENT_OUTPUT);
+    public LegacyJsonOutputProcessor() {
 
         JsonOutputModule simpleModule = new JsonOutputModule();
 
         json.registerModule(simpleModule);
-
     }
 
     @Override
     public void begin() throws IOException {
-        // TODO Auto-generated method stub
         ps.write("{ \"results\": [\n");
     }
 
@@ -126,7 +116,6 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
 
     @Override
     public void end() throws IOException {
-        // TODO Auto-generated method stub
         ps.flush();
         ps.write("\n");
         ps.write("] }\n");
@@ -205,15 +194,17 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
         jsonVertex.type = type;
         jsonVertex.simpleProperties = simpleProperties;
         jsonVertex.linkProperties = linkProperties;
-        jsonVertex.geometryProperties = new ArrayList<Pair<Resource, Object>>();
-
+        jsonVertex.geometryProperties = null;// geometryProperties;
         if (geometryProperties != null) {
+            jsonVertex.geometryProperties = new ArrayList<Pair<Resource, Object>>(
+                    geometryProperties.size());
             for (Pair<Resource, Geometry> p : geometryProperties) {
-                jsonVertex.geometryProperties.add(pair(p.getKey(), p.getValue()
-                        .toText()));
+                jsonVertex.geometryProperties.add(pair(p.getKey(),
+                        new GeometryProperty(p.getValue())));
             }
+        } else {
+            jsonVertex.geometryProperties = null;// geometryProperties;
         }
-
         if (counter != 0L) {
             ps.write(",\n");
         }
@@ -222,7 +213,8 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
 
     }
 
-    public ImmutablePair<Resource, Object> pair(Resource rc, String val) {
+    public ImmutablePair<Resource, Object> pair(Resource rc, Object val) {
         return new ImmutablePair<Resource, Object>(rc, val);
     }
+
 }

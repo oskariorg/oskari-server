@@ -18,6 +18,7 @@ import fi.nls.oskari.fe.input.format.gml.tn.ELF_TN_RoadLinkParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.tn.Inspire_TN_RoadLinkParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
+import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 
@@ -177,7 +178,7 @@ public class TestBasicParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    @Ignore("Not ready")
+    //@Ignore("Not ready")
     @Test
     public void test_IgnEs_TN_WFS_GMLtoJSON() throws InstantiationException,
             IllegalAccessException, IOException, XMLStreamException {
@@ -187,6 +188,53 @@ public class TestBasicParser {
         XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+
+        try {
+            inputProcessor.setInput(inp);
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                PullParserGMLParserRecipe recipe = new Inspire_TN_RoadLinkParserRecipe();
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }
+    
+    /**
+     * 
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    //@Ignore("Not ready")
+    @Test
+    public void test_IgnEs_TN_WFS_GMLtoLegacyJSON() throws InstantiationException,
+            IllegalAccessException, IOException, XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new LegacyJsonOutputProcessor();
 
         InputStream inp = getClass()
                 .getResourceAsStream(

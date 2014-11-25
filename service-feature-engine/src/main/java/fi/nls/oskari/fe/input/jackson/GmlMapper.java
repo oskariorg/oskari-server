@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
+import fi.nls.oskari.fe.output.jackson.GeometryPropertySerializer;
 
 public class GmlMapper extends XmlMapper {
 

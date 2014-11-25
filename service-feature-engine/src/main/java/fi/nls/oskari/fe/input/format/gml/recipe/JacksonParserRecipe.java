@@ -21,8 +21,6 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
-    protected final Resource O_Geom = iri("http://oskari.org/spatial#",
-            "location");
     protected final List<Pair<Resource, Object>> EMPTY = new ArrayList<Pair<Resource, Object>>();
 
     protected final List<Pair<Resource, XSDDatatype>> O_properties = new ArrayList<Pair<Resource, XSDDatatype>>();
@@ -49,15 +47,18 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     }
 
     public class FeatureOutputContext {
-        public final Resource r;
+        protected final Resource O_Geom = JacksonParserRecipe.this.iri(
+                "http://oskari.org/spatial#", "location");
+
+        public final Resource featureResource;
         public final String namespace;
 
         public FeatureOutputContext(final String ns, final String name)
                 throws IOException {
-            this.namespace = ns;
-            r = iri(name);
+            this.namespace = outputNamespace(ns);
+            featureResource = iri(name);
             addOutputPrefix("_ns", namespace);
-            addOutputType(r);
+            addOutputType(featureResource);
         }
 
         public FeatureOutputContext(QName qn) throws IOException {
@@ -66,7 +67,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
         public Resource addDefaultGeometryProperty() {
             O_geometryProperties.add(pair(O_Geom, "GEOMETRY"));
-            return r;
+            return O_Geom;
         }
 
         public Resource addGeometryProperty(Resource r) {
@@ -106,7 +107,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
         }
 
         public Resource uniqueId(String id) {
-            return r.unique(id);
+            return featureResource.unique(id);
         }
     }
 
@@ -149,7 +150,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
         protected FeatureOutputContext outputContext;
 
         public OutputFeature(FeatureOutputContext outputContext) {
-            this.output_r = outputContext.r;
+            this.output_r = outputContext.featureResource;
             this.outputContext = outputContext;
         }
 
@@ -166,6 +167,9 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
         public OutputFeature<T> build() throws IOException {
             output.vertex(output_ID, output_r, output_props, EMPTY,
                     output_geoms);
+            output_props.clear();
+            output_geoms.clear();
+            output_ID = null;
             return this;
 
         }
