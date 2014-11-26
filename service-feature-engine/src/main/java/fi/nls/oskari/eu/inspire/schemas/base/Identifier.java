@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import fi.nls.oskari.eu.inspire.util.Nillable;
+import fi.nls.oskari.fe.xml.util.Nillable;
 
 @JacksonXmlRootElement(namespace = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/", localName = "Identifier")
 public class Identifier {

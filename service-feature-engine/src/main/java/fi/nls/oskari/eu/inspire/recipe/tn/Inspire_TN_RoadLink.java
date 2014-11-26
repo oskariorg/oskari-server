@@ -1,14 +1,14 @@
-package fi.nls.oskari.fe.input.format.gml.tn;
+package fi.nls.oskari.eu.inspire.recipe.tn;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.elf.roadtransportnetwork.masterlod1.RoadLink;
+import fi.nls.oskari.eu.inspire.gmlas.roadtransportnetwork.RoadLink;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
 /* PoC Streaming Parser to Match Groovy Parser in Java 7 */
-public class ELF_TN_RoadLinkParserRecipe extends JacksonParserRecipe {
+public class Inspire_TN_RoadLink extends JacksonParserRecipe {
 
     @Override
     public void parse() throws IOException {
@@ -44,7 +44,8 @@ public class ELF_TN_RoadLinkParserRecipe extends JacksonParserRecipe {
             RoadLink roadLink = iter.next();
             Resource output_ID = outputContext.uniqueId(roadLink.id);
 
-            outputFeature.setFeature(roadLink).setId(output_ID);
+            outputFeature.setFeature(roadLink).
+                setId(output_ID);
 
             outputFeature.addGeometryProperty(geom,
                     roadLink.centrelineGeometry.geometry);

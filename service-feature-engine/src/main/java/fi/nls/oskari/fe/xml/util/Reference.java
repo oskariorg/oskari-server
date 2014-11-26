@@ -1,8 +1,8 @@
-package fi.nls.oskari.eu.inspire.util;
+package fi.nls.oskari.fe.xml.util;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class Reference {
+public class Reference extends Identifiable {
 
     // [/~{http://www.w3.org/1999/xlink}actuate] [0..1]
     @JacksonXmlProperty(isAttribute = true, namespace = "http://www.w3.org/1999/xlink")

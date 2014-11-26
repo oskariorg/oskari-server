@@ -1,0 +1,2404 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0 http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod1gn?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod1gn:NamedPlace&amp;NAMESPACES=xmlns(elf-lod1gn,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FGeographicalNames%2FMasterLoD1%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-11-26T08:39:24Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="unknown" numberReturned="0">
+  <!--NOTE: numberReturned attribute should be 'unknown' as well, but this would not validate against the current version of the WFS 2.0 schema (change upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925.-->
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000654">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000654_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000654_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4947450.201 4305758.142</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000654</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Field or meadow</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Isosuo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000655">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000655_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000655_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943873.806 4305390.515</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000655</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Forest</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Pietari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000656">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000656_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000656_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4944753.194 4306154.194</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000656</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Forest</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Takamaa</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000657">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000657_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000657_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4944050.661 4305784.214</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000657</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Forest</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Suutarinkuoppa</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000658">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000658_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000658_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943027.381 4303292.461</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000658</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Field or meadow</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Sitlahdensuo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000659">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000659_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000659_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4944751.223 4303539.536</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000659</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Swamp</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Kourujärvi</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000660">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000660_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000660_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4945624.716 4302721.122</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000660</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Swamp</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Uusisuo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000661">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000661_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000661_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943988.716 4304100.350</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000661</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Swamp</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Rahkasuo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000662">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000662_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000662_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4944460.568 4302599.251</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000662</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Elevation</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Välimäki</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000663">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000663_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000663_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4946557.394 4304412.106</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000663</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Elevation</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Röyskänkallio</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landform/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000664">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000664_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000664_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4947684.781 4303708.272</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000664</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Forest</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Palo-Rantala</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000665">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000665_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000665_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4945870.369 4304070.866</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000665</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Swamp</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Aaltsuo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000666">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000666_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000666_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4947238.694 4304866.679</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000666</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Forest</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Raja-Alho</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/landcover/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000667">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000667_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000667_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4938648.166 4300121.511</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000667</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Part of sea, lake or pond</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Tröömi</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000668">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000668_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000668_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4938545.434 4299599.901</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000668</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Part of sea, lake or pond</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Laitakarinlahti</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000669">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000669_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000669_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4937900.957 4304341.296</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000669</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Part of sea, lake or pond</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Sassilanlahti</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/hydrography/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000670">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000670_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000670_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942655.210 4306135.546</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000670</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Road</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Stoltintie</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/transportNetwork/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000671">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000671_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000671_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4940672.210 4300479.517</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000671</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Alaniittu</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000672">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000672_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000672_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4940408.915 4300360.366</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000672</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Koivisto</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000673">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000673_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000673_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939512.114 4300600.803</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000673</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>swe</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Ström</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000674">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000674_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000674_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939343.458 4299689.735</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000674</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Anttila</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000675">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000675_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000675_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939084.001 4298039.537</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000675</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Latokari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000676">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000676_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000676_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939431.116 4298361.912</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000676</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Alasmäki</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000677">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000677_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000677_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939313.360 4298209.985</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000677</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Salmenranta</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000678">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000678_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000678_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939285.541 4297105.662</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000678</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">250000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Härmälä</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000679">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000679_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000679_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939956.231 4297818.496</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000679</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Nummi</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000680">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000680_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000680_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939945.702 4297869.416</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000680</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Mäntymäki</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000681">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000681_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000681_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939711.546 4298056.108</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000681</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Santaketo</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000682">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000682_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000682_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4939533.970 4297946.357</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000682</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Saloranta</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000683">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000683_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000683_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4940446.078 4297705.279</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000683</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Prami</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000684">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000684_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000684_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942029.289 4299968.529</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000684</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Hallakorpi</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000685">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000685_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000685_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942439.937 4299660.895</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000685</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">250000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Hallaperä</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000686">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000686_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000686_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942480.468 4299612.659</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000686</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Lahdenpohja</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000687">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000687_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000687_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942918.574 4299146.557</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000687</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Uusi-Kukko</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000688">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000688_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000688_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4940944.442 4300684.990</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000688</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Metsärinta</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000689">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000689_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000689_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941138.075 4300972.153</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000689</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Suomenkari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000690">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000690_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000690_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941224.048 4300785.467</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000690</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Eteläkari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000691">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000691_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000691_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941625.700 4300629.089</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000691</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Issukka</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000692">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000692_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000692_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941911.551 4300679.991</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000692</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">100000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Koivukari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000693">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000693_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000693_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941581.548 4300692.931</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000693</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Tasanne</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000694">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000694_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000694_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941790.216 4301060.297</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000694</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Itäkärki</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000695">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000695_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000695_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941788.271 4301144.914</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000695</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">25000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Ahola</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000696">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000696_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000696_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942063.571 4301192.140</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000696</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">250000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Village, district or neighbourhood</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Hutsaari</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000697">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000697_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000697_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4941038.367 4301022.226</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000697</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">250000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Village, district or neighbourhood</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Kipuksenkulma</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000698">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000698_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000698_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4940860.735 4297927.032</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000698</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">500000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Village, district or neighbourhood</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Lemlahti</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000699">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000699_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000699_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942970.139 4298691.610</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000699</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">250000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">Village, district or neighbourhood</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Mikola</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000700">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000700_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000700_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4942930.271 4298358.806</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000700</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Rainiomaa</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000701">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000701_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000701_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943126.075 4298310.657</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000701</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Vanha-Kukko</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000702">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000702_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000702_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943621.861 4298222.604</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000702</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Koivumäki</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod1gn:NamedPlace xmlns:elf-lod1gn="http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0" gml:id="FI_NR_PAIKKA_10000703">
+      <gn:beginLifespanVersion xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">2014-02-27T00:00:00</gn:beginLifespanVersion>
+      <gn:geometry xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <!--Inlined geometry 'FI_NR_PAIKKA_10000703_GN_GEOMETRY'-->
+        <gml:Point gml:id="FI_NR_PAIKKA_10000703_GN_GEOMETRY" srsName="EPSG:3035">
+          <gml:pos>4943729.826 4297472.186</gml:pos>
+        </gml:Point>
+      </gn:geometry>
+      <gn:inspireId xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>10000703</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </gn:inspireId>
+      <gn:leastDetailedViewingResolution xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
+          <gmd:equivalentScale>
+            <gmd:MD_RepresentativeFraction>
+              <gmd:denominator>
+                <gco:Integer xmlns:gco="http://www.isotc211.org/2005/gco">50000</gco:Integer>
+              </gmd:denominator>
+            </gmd:MD_RepresentativeFraction>
+          </gmd:equivalentScale>
+          <gmd:distance xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unpopulated"/>
+        </gmd:MD_Resolution>
+      </gn:leastDetailedViewingResolution>
+      <gn:localType xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">House</gn:localType>
+      <gn:name xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+        <elf-lod1gn:GeographicalName>
+          <gn:language>fin</gn:language>
+          <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/endonym.en.xml"/>
+          <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised/standardised.en.xml"/>
+          <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+          <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+          <gn:spelling>
+            <elf-lod1gn:SpellingOfName>
+              <gn:text>Kuusisto</gn:text>
+              <gn:script>Latn</gn:script>
+            </elf-lod1gn:SpellingOfName>
+          </gn:spelling>
+          <elf-lod1gn:referenceName>false</elf-lod1gn:referenceName>
+        </elf-lod1gn:GeographicalName>
+      </gn:name>
+      <gn:type xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace/"/>
+    </elf-lod1gn:NamedPlace>
+  </wfs:member>
+</wfs:FeatureCollection>

@@ -32,8 +32,11 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
     protected JacksonParserRecipe() {
         gml = new org.geotools.gml3.v3_2.GMLConfiguration(true);
-        mapper = new GmlMapper(gml);
+        mapper = new GmlMapper(gml, false);
+    }
 
+    public void setLenient(boolean l) {
+        mapper.setLenient(l);
     }
 
     public GeometryPropertyDeserializer getGeometryDeserializer() {

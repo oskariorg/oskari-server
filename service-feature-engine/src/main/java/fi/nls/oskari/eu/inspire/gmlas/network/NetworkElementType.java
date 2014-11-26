@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
-import fi.nls.oskari.eu.inspire.util.Nillable;
+import fi.nls.oskari.fe.xml.util.Nillable;
 
 @JacksonXmlRootElement(namespace = "urn:x-inspire:specification:gmlas:Network:3.2")
 public class NetworkElementType {

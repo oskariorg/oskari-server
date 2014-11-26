@@ -46,7 +46,10 @@ public class FEEngineManager {
         BasicFeatureEngine engine = new BasicFeatureEngine();
         Class<PullParserGMLParserRecipe> recipeClazz = (Class<PullParserGMLParserRecipe>) Class
                 .forName(recipePath);
-        engine.setRecipe(recipeClazz.newInstance());
+        log.debug("[fe] Java recipe Lookup " + recipePath + " / " + recipeClazz);
+        PullParserGMLParserRecipe instance = recipeClazz.newInstance();
+        log.debug("[fe] Java recipe instance " + instance);
+        engine.setRecipe(instance);
         return engine;
     }
 
@@ -58,8 +61,8 @@ public class FEEngineManager {
 
             synchronized (gcl) {
                 try {
-                    log.debug("[fe] recipe compiling " + recipePath + " / "
-                            + recipePath);
+                    log.debug("[fe] Groovy recipe compiling " + recipePath
+                            + " / " + recipePath);
 
                     InputStreamReader reader = new InputStreamReader(
                             FEEngineManager.class
@@ -73,16 +76,16 @@ public class FEEngineManager {
 
                     recipeClazzes.put(recipePath, recipeClazz);
 
-                    log.debug("[fe] caching recipe " + recipePath);
+                    log.debug("[fe] Groovy caching recipe " + recipePath);
 
                 } catch (RuntimeException e) {
 
-                    log.debug("[fe] recipe setup FAILURE");
+                    log.debug("[fe] Groovy recipe setup FAILURE");
                     e.printStackTrace(System.err);
 
                 } finally {
 
-                    log.debug("[fe] recipe setup finalized");
+                    log.debug("[fe] Groovy recipe setup finalized");
 
                 }
             }
