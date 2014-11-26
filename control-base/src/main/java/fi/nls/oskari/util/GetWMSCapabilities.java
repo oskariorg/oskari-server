@@ -3,6 +3,8 @@ package fi.nls.oskari.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.XML;
@@ -18,7 +20,7 @@ public class GetWMSCapabilities {
     public static String getResponse(final String url, final String user, final String pwd) throws ActionException {
         try {
 
-            final String rawResponse =  IOHelper.getURL(url, user, pwd);
+            final String rawResponse =  IOHelper.getURL(getUrl(url), user, pwd);
             final String response = fixEncode(rawResponse, url);
 
             if (response == null) {
@@ -70,26 +72,20 @@ public class GetWMSCapabilities {
         }
     }
 
-    private static String getUrl(String urlin) {
-
-        if (urlin.isEmpty())
+    private static String getUrl(final String url) {
+        if (url == null || url.isEmpty()) {
             return "";
-        String url = urlin;
-        // check params
-        if (url.indexOf("?") == -1) {
-            url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "service=WMS";
-            if (url.toLowerCase().indexOf("getcapabilities") == -1)
-                url = url + "&request=GetCapabilities";
-        } else {
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "&service=WMS";
-            if (url.toLowerCase().indexOf("getcapabilities") == -1)
-                url = url + "&request=GetCapabilities";
-
         }
 
-        return url;
+        final Map<String, String> params = new HashMap<String, String>();
+        // check existing params
+        if(!url.toLowerCase().contains("service=")) {
+            params.put("service", "WMS");
+        }
+        if(!url.toLowerCase().contains("getcapabilities=")) {
+            params.put("request", "GetCapabilities");
+        }
+
+        return IOHelper.constructUrl(url, params);
     }
 }
