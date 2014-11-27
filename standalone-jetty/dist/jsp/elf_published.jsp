@@ -34,7 +34,7 @@
     <!-- ############# /css ################# -->
 </head>
 <body>
-<div id="contentMap">
+<div id="contentMap" class="published">
     <div id="mapdiv"></div>
 </div>
 

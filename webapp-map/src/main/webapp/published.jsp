@@ -43,7 +43,7 @@
     <!-- ############# /css ################# -->
 </head>
 <body>
-<div id="contentMap" class="oskariui container-fluid">
+<div id="contentMap" class="oskariui container-fluid published">
     <div class="row-fluid" style="height: 100%; background-color:white;">
         <div class="oskariui-left"></div>
         <div class="span12 oskariui-center" style="height: 100%; margin: 0;">
