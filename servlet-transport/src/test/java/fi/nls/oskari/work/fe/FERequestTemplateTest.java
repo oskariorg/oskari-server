@@ -31,7 +31,7 @@ public class FERequestTemplateTest {
         FERequestTemplate template = new FERequestTemplate(
                 "http://example.com/wfs", true);
 
-        String templatePath = "/fi/nls/oskari/fe/input/request/wfs/au/ELF_generic_au_wfs_template.xml";
+        String templatePath = "/fi/nls/oskari/fe/input/request/wfs/au/ELF_generic_AU_wfs_template.xml";
         String geomNs = ""; // Not Used ATM
         String wFSver = "1.1.0";
         String featureNs = ""; // Not Used ATM
