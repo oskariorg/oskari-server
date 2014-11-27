@@ -14,7 +14,7 @@ import fi.nls.oskari.eu.inspire.recipe.tn.Inspire_TN_RoadLink;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.PullParserGMLParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
@@ -56,7 +56,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                PullParserGMLParserRecipe recipe = new Inspire_TN_RoadLink();
+                ParserRecipe recipe = new Inspire_TN_RoadLink();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -102,7 +102,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                PullParserGMLParserRecipe recipe = new Inspire_TN_RoadLink();
+                ParserRecipe recipe = new Inspire_TN_RoadLink();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -149,7 +149,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                PullParserGMLParserRecipe recipe = new Inspire_TN_RoadLink();
+                ParserRecipe recipe = new Inspire_TN_RoadLink();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -197,7 +197,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                PullParserGMLParserRecipe recipe = new Inspire_TN_RoadLink();
+                ParserRecipe recipe = new Inspire_TN_RoadLink();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

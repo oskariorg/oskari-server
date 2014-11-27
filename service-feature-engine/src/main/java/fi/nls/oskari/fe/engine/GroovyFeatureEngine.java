@@ -8,6 +8,7 @@ import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
 import fi.nls.oskari.fe.output.OutputProcessor;
 
+@Deprecated
 public class GroovyFeatureEngine implements FeatureEngine {
 
     private InputProcessor inputProcessor;

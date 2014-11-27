@@ -4,11 +4,12 @@
 	xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:fes="http://www.opengis.net/fes/2.0"
 	xmlns:gml="http://www.opengis.net/gml/3.2"	
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tns="urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0"
+	xmlns:tns="http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0"
 	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0.0/wfs.xsd">
-	<wfs:Query typeNames="tns:AdministrativeUnit" srsName="[SRSNAME]">
-		<fes:Filter>
+	<wfs:Query typeNames="tns:[FEATURENAME]" srsName="[SRSNAME]">
+		<fes:Filter>		    
 			<fes:BBOX>
+			    <fes:ValueReference>[GEOMETRYNAME]</fes:ValueReference>
 				<gml:Envelope srsName="[SRSNAME]">
 					<gml:lowerCorner>[LOWER_CORNER]</gml:lowerCorner>
 					<gml:upperCorner>[UPPER_CORNER]</gml:upperCorner>

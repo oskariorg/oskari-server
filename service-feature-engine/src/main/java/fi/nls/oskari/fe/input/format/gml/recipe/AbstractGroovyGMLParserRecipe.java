@@ -3,6 +3,7 @@ package fi.nls.oskari.fe.input.format.gml.recipe;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 
 /* Backwards compatibility for Groovy impls */
+@Deprecated
 public abstract class AbstractGroovyGMLParserRecipe extends
         StaxMateGMLParserRecipeBase implements GroovyParserRecipe {
 
