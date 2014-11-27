@@ -125,7 +125,7 @@ public class CSWService {
 
         // Using metadatacsw url as it has absolute image URLs
         final URL url = new URL(
-                baseURL + "/srv/" + lang + "/metadatacsw" +
+                baseURL +
                         "?elementSetName=" + elementSetName +
                         "&id=" + id +
                         "&outputSchema=" + outputSchema +
