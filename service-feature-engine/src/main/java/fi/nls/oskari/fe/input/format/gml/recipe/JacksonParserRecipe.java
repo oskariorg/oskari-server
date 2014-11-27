@@ -61,7 +61,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             this.namespace = outputNamespace(ns);
             featureResource = iri(name);
             addOutputPrefix("_ns", namespace);
-            addOutputType(featureResource);
+
         }
 
         public FeatureOutputContext(QName qn) throws IOException {
@@ -96,7 +96,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             return prop;
         }
 
-        public void addOutputType(Resource r) throws IOException {
+        protected void addOutputType(Resource r) throws IOException {
             output.type(r, O_properties, O_linkProperties, O_geometryProperties);
         }
 
@@ -111,6 +111,11 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
         public Resource uniqueId(String id) {
             return featureResource.unique(id);
+        }
+
+        public void build() throws IOException {
+            addOutputType(featureResource);
+
         }
     }
 

@@ -145,18 +145,22 @@ public class FEOutputProcessor implements OutputProcessor {
          * .getSelectedFeatureParams(session.getLanguage());
          */
         selectedProperties.add(0, "__fid");
-
+        log.debug("- Property:" + "__fid" + " as 0");
         for (Pair<Resource, XSDDatatype> prop : simpleProperties) {
 
+            log.debug("- Property:" + prop.getKey() + " as "
+                    + selectedProperties.size());
             selectedPropertiesIndex.put(prop.getKey(),
                     selectedProperties.size());
-            log.debug("SEETING KEYINDEX " + prop.getKey() + " as "
-                    + selectedProperties.size());
             selectedProperties.add(prop.getKey().getLocalPart());
 
         }
         selectedProperties.add("__centerX");
+        log.debug("- Property:" + "__centerX" + " as "+ selectedProperties.size());
         selectedProperties.add("__centerY");
+        log.debug("- Property:" + "__centerY" + " as "+ selectedProperties.size());
+        
+        
 
     }
 

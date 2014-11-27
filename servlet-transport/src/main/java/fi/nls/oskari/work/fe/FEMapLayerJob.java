@@ -9,6 +9,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,8 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.json.JSONObject;
+import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -145,9 +149,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     }
 
-    /**
-     * Parses features properties and sends to appropriate channels
-     */
     protected void propertiesHandler() {
         this.sendWFSProperties(selectedProperties,
                 this.layer.getFeatureParamsLocales(this.session.getLanguage()));
@@ -187,7 +188,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             final SessionStore session, final List<Double> bounds,
             final MathTransform transformService) {
 
-        final ArrayList<List<Object>> list = new ArrayList<List<Object>>();
+        final ArrayList<List<Object>> resultsList = new ArrayList<List<Object>>();
         final Map<Resource, SimpleFeatureCollection> responseCollections = new HashMap<Resource, SimpleFeatureCollection>();
 
         final FERequestResponse requestResponse = new FERequestResponse();
@@ -209,22 +210,23 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String username = layer.getUsername();
         final String password = layer.getPassword();
 
-        /* TODO finish generic GetFeature templates support */
-        /*
-         * final String srsName = layer.getSRSName(); final String featureNs =
-         * layer.getFeatureNamespaceURI(); final String featureName =
-         * layer.getFeatureElement();
-         * 
-         * final String WFSver = layer.getWFSVersion(); final String geomProp =
-         * layer.getGMLGeometryProperty(); final String geomNs =
-         * layer.getGeometryNamespaceURI();
-         */
+        final String srsName = layer.getSRSName();
+        final String featureNs = layer.getFeatureNamespaceURI();
+        final String featureName = layer.getFeatureElement();
+        final String WFSver = layer.getWFSVersion();
+        final String geomProp = layer.getGMLGeometryProperty();
+        final String geomNs = layer.getGeometryNamespaceURI();
+
+        JSONObject selectedFeatureParams = layer.getSelectedFeatureParams();
 
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {
             log.error("NO Request Template available");
             return requestResponse;
         }
+
+        backendRequestTemplate.setRequestFeatures(srsName, featureNs,
+                featureName, WFSver, geomProp, geomNs);
 
         FeatureEngine featureEngine = null;
         try {
@@ -249,7 +251,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         log.debug("[fe] featureEngine " + recipePath + " instantiated as "
                 + featureEngine);
 
-        this.featureValuesList = list;
+        this.featureValuesList = resultsList;
 
         try {
             /* CRS */
@@ -266,8 +268,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             /* FeatureEngine InputProcessor */
             final XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
 
-            final OutputProcessor outputProcessor = new FEOutputProcessor(list,
-                    responseCollections, crs, requestResponse,
+            final OutputProcessor outputProcessor = new FEOutputProcessor(
+                    resultsList, responseCollections, crs, requestResponse,
                     selectedProperties, selectedPropertiesIndex, transform);
 
             /* Backend HTTP URI info */
@@ -305,6 +307,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 backendRequestTemplate.buildParams(params, type, layer,
                         session, bounds, transform, crs);
+
+                log.debug("WFS POST Body " + params);
 
                 StringEntity entity = new StringEntity(params.toString());
                 httppost.setHeader(new BasicHeader("Content-Type",
@@ -791,11 +795,11 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 return;
             }
 
-            String url = createImageURL(
+            String imageURL = createImageURL(
                     this.session.getLayers().get(this.layerId).getStyleName(),
                     bounds);
             this.type = Type.HIGHLIGHT;
-            this.sendWFSImage(url, bufferedImage, bounds, false, false);
+            this.sendWFSImage(imageURL, bufferedImage, bounds, false, false);
 
             bufferedImage.flush();
 

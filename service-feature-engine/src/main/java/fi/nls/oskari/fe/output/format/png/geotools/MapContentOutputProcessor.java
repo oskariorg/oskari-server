@@ -347,6 +347,7 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         ImageIO.write(image, "png", pngo);
         pngo.flush();
 
+        map.dispose();
     }
 
     public void flush() throws IOException {
