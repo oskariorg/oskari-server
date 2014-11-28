@@ -687,50 +687,42 @@ public class FromXmlParser extends ParserMinimalBase {
     @Override
     public BigInteger getBigIntegerValue() throws IOException,
             JsonParseException {
-        // TODO Auto-generated method stub
-        return null;
+       throw new IOException("NYI");
     }
 
     @Override
     public BigDecimal getDecimalValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IOException("NYI");
     }
 
     @Override
     public double getDoubleValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new IOException("NYI");
     }
 
     @Override
     public float getFloatValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new IOException("NYI");
     }
 
     @Override
     public int getIntValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new IOException("NYI");
     }
 
     @Override
     public long getLongValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new IOException("NYI");
     }
 
     @Override
     public NumberType getNumberType() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IOException("NYI");
     }
 
     @Override
     public Number getNumberValue() throws IOException, JsonParseException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IOException("NYI");
     }
 
     /*

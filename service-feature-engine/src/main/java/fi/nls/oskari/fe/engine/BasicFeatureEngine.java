@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
 
 import fi.nls.oskari.fe.input.InputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.PullParserGMLParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputProcessor;
 
 public class BasicFeatureEngine implements FeatureEngine {
@@ -13,9 +13,9 @@ public class BasicFeatureEngine implements FeatureEngine {
     private InputProcessor inputProcessor;
     private OutputProcessor outputProcessor;
 
-    PullParserGMLParserRecipe recipe;
+    ParserRecipe recipe;
 
-    public PullParserGMLParserRecipe getRecipe() {
+    public ParserRecipe getRecipe() {
         return recipe;
     }
 
@@ -48,7 +48,7 @@ public class BasicFeatureEngine implements FeatureEngine {
         this.outputProcessor = outputProcessor;
     }
 
-    public void setRecipe(PullParserGMLParserRecipe recipe) {
+    public void setRecipe(ParserRecipe recipe) {
         this.recipe = recipe;
     }
 

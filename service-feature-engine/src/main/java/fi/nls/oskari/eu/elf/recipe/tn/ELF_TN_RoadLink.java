@@ -33,6 +33,8 @@ public class ELF_TN_RoadLink extends JacksonParserRecipe {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+        
+        outputContext.build();
 
         OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
                 outputContext);

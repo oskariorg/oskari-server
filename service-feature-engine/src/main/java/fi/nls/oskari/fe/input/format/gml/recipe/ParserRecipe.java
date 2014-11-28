@@ -16,7 +16,7 @@ import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
-public interface PullParserGMLParserRecipe {
+public interface ParserRecipe {
     public List<Pair<Resource, Geometry>> geometries(
             Pair<Resource, Geometry>... pairs);
 

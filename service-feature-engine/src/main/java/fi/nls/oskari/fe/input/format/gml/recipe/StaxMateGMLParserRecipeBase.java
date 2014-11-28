@@ -15,7 +15,7 @@ import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 
 public abstract class StaxMateGMLParserRecipeBase extends
-        StaxMateXMLParserRecipeBase implements PullParserGMLParserRecipe {
+        StaxMateXMLParserRecipeBase implements ParserRecipe {
 
     protected Configuration gml;
 

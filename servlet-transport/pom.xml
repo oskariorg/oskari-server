@@ -112,6 +112,12 @@
 		<dependency>
 		   <groupId>org.geotools</groupId>
 		   <artifactId>gt-referencing</artifactId>
+		   <exclusions>
+		      <exclusion>
+		          <artifactId>commons-pool</artifactId>
+		          <groupId>commons-pool</groupId>
+		      </exclusion>
+		   </exclusions>
 		</dependency>
         <dependency>
             <groupId>org.geotools</groupId>

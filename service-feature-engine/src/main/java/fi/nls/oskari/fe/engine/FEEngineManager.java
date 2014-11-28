@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
-import fi.nls.oskari.fe.input.format.gml.recipe.PullParserGMLParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import groovy.lang.GroovyClassLoader;
@@ -44,10 +44,10 @@ public class FEEngineManager {
             ClassNotFoundException {
 
         BasicFeatureEngine engine = new BasicFeatureEngine();
-        Class<PullParserGMLParserRecipe> recipeClazz = (Class<PullParserGMLParserRecipe>) Class
+        Class<ParserRecipe> recipeClazz = (Class<ParserRecipe>) Class
                 .forName(recipePath);
         log.debug("[fe] Java recipe Lookup " + recipePath + " / " + recipeClazz);
-        PullParserGMLParserRecipe instance = recipeClazz.newInstance();
+        ParserRecipe instance = recipeClazz.newInstance();
         log.debug("[fe] Java recipe instance " + instance);
         engine.setRecipe(instance);
         return engine;

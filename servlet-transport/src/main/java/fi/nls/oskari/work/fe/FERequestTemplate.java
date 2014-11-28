@@ -33,6 +33,7 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -44,6 +45,7 @@ import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.WFSMapLayerJob;
 
 public class FERequestTemplate {
+
     class RequestNSContext implements NamespaceContext {
 
         Map<String, String> ns2prefix = new HashMap<String, String>();
@@ -77,7 +79,7 @@ public class FERequestTemplate {
 
     }
 
-    public String url;
+    public String templateResource;
     public boolean isPost;
     public FEQueryArgsBuilder argsBuilder;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -85,21 +87,27 @@ public class FERequestTemplate {
     XPathFactory xFactory = XPathFactory.newInstance();
 
     TransformerFactory tFactory = TransformerFactory.newInstance();
+    private String srsName;
+    private String featureNs;
+    private String featureName;
+    private String wfsVer;
+    private String geomProp;
+    private String geomNs;
 
     public FERequestTemplate(FEQueryArgsBuilder argsBuilder) {
-        this.url = null;
+        this.templateResource = null;
         this.isPost = false;
         this.argsBuilder = argsBuilder;
     }
 
-    public FERequestTemplate(String url) {
-        this.url = url;
+    public FERequestTemplate(String templateResource) {
+        this.templateResource = templateResource;
         this.isPost = true;
         this.argsBuilder = null;
     }
 
     public FERequestTemplate(String url, boolean isPost) {
-        this.url = url;
+        this.templateResource = url;
         this.isPost = isPost;
         this.argsBuilder = null;
     }
@@ -142,6 +150,51 @@ public class FERequestTemplate {
             Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
 
             nd.setTextContent(upperCorner);
+
+        }
+
+        if (srsName != null) {
+            XPathExpression expr = xpath.compile("//*[@srsName='[SRSNAME]']");
+            
+            String _srsName = srsName;
+            if( srsName.indexOf("3857") != -1) {
+                  _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up 
+            }
+                
+            NodeList nds = (NodeList) expr
+                    .evaluate(doc, XPathConstants.NODESET);
+
+            if (nds != null && nds.getLength() > 0) {
+
+                for (int n = 0; n < nds.getLength(); n++) {
+                    Node nd = nds.item(n);
+                    nd.getAttributes().getNamedItem("srsName")
+                            .setTextContent(_srsName);
+                }
+            }
+
+        }
+
+        if (geomProp != null) {
+
+            XPathExpression expr = xpath.compile("//*[.='[GEOMETRYNAME]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.setTextContent(geomProp);
+            }
+
+        }
+
+        if (featureName != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@typeNames='tns:[FEATURENAME]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("typeNames")
+                        .setTextContent("tns:" + featureName);
+            }
 
         }
 
@@ -195,7 +248,7 @@ public class FERequestTemplate {
 
         ByteArrayOutputStream outs = new ByteArrayOutputStream();
 
-        InputStream inp = getClass().getResourceAsStream(url);
+        InputStream inp = getClass().getResourceAsStream(templateResource);
         try {
             buildBBOXRequest_XPath(params, inp, outs, bbox);
 
@@ -216,6 +269,17 @@ public class FERequestTemplate {
 
         argsBuilder.buildParams(builder, type, layer, session, bounds,
                 transform, crs);
+
+    }
+
+    public void setRequestFeatures(String srsName, String featureNs,
+            String featureName, String wFSver, String geomProp, String geomNs) {
+        this.srsName = srsName;
+        this.featureNs = featureNs;
+        this.featureName = featureName;
+        this.wfsVer = wFSver;
+        this.geomProp = geomProp;
+        this.geomNs = geomNs;
 
     }
 
