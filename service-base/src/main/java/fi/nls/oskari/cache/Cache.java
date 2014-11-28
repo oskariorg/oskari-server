@@ -17,9 +17,9 @@ public class Cache<T> {
     private static final Logger log = LogFactory.getLogger(Cache.class);
 
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
-    private volatile int limit = 1000;
-    private volatile long expiration = 30 * 60 * 1000;
-    private volatile long lastFlush = currentTime();
+    private int limit = 1000;
+    private long expiration = 30 * 60 * 1000;
+    private long lastFlush = currentTime();
     private String name;
     public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
     private boolean cacheSizeConfigured = false;
