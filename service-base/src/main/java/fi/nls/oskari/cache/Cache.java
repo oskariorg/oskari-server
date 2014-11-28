@@ -2,8 +2,11 @@ package fi.nls.oskari.cache;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -13,12 +16,13 @@ public class Cache<T> {
 
     private static final Logger log = LogFactory.getLogger(Cache.class);
 
-    private ConcurrentSkipListMap<String,T> items = new ConcurrentSkipListMap<String, T>();
-    private int limit = 1000;
-    private long expiration = 30 * 60 * 1000;
-    private long lastFlush = System.currentTimeMillis();
+    private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
+    private volatile int limit = 1000;
+    private volatile long expiration = 30 * 60 * 1000;
+    private volatile long lastFlush = currentTime();
     private String name;
-
+    public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
+    private boolean cacheSizeConfigured = false;
     private boolean cacheMissDebugEnabled = false;
 
     public void setCacheMissDebugEnabled(boolean enabled) {
@@ -31,6 +35,16 @@ public class Cache<T> {
 
     public void setName(String name) {
         this.name = name;
+        // setName is called after constructor by CacheManager so get the limit from properties in here
+        int configuredLimit = PropertyUtil.getOptional(getLimitPropertyName(), -1);
+        if(configuredLimit != -1) {
+            cacheSizeConfigured = true;
+            limit = configuredLimit;
+        }
+    }
+
+    private String getLimitPropertyName() {
+        return PROPERTY_LIMIT_PREFIX + getName();
     }
 
     public int getLimit() {
@@ -42,6 +56,11 @@ public class Cache<T> {
      * @param limit
      */
     public void setLimit(int limit) {
+        if(cacheSizeConfigured) {
+            log.info("Trying to set cache limit, but it's configured by user so ignoring automatic limit change.",
+                    "Limit is", this.limit, "- Change limit with property: ", getLimitPropertyName());
+            return;
+        }
         this.limit = limit;
     }
 
@@ -106,9 +125,22 @@ public class Cache<T> {
         boolean overflowing = false;
         if(items.size() >= limit) {
             // limit reached - remove oldest object
-            log.debug("Cache", getName(),"overflowing! Limit is", limit);
-            final String key = items.firstKey();
-            items.remove(key);
+            log.warn("Cache", getName(), "overflowing! Limit is", limit);
+            log.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
+            while (true) {
+                final Map.Entry<String, T> firstEntry = items.firstEntry();
+                if (null == firstEntry) {
+                    break; // was empty when checking for the first element
+                } else {
+                    if (items.remove(firstEntry.getKey(), firstEntry.getValue())) {
+                        break; // we made some space for ourselves
+                    } else if (items.isEmpty()) {
+                        break; // wasn't empty before, but is now
+                    }
+                }
+                // let's give it an another shot, maybe next time the entry
+                // will stick around long enough for us to remove it, looping...
+            }
             overflowing = true;
         }
         items.put(name, item);
@@ -116,7 +148,7 @@ public class Cache<T> {
     }
 
     public boolean flush(final boolean force) {
-        final long now = System.currentTimeMillis();
+        final long now = currentTime();
         if(force || (lastFlush + expiration < now)) {
             // flushCache
             log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
@@ -125,5 +157,9 @@ public class Cache<T> {
             return true;
         }
         return false;
+    }
+
+    private static long currentTime() {
+        return System.nanoTime() / 1000L;
     }
 }
