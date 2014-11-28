@@ -122,26 +122,15 @@ public class Cache<T> {
             // can't save null value
             return false;
         }
-        boolean overflowing = false;
-        if(items.size() >= limit) {
+        final boolean overflowing = (items.size() >= limit);
+        if(overflowing) {
             // limit reached - remove oldest object
             log.warn("Cache", getName(), "overflowing! Limit is", limit);
             log.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
-            while (true) {
-                final Map.Entry<String, T> firstEntry = items.firstEntry();
-                if (null == firstEntry) {
-                    break; // was empty when checking for the first element
-                } else {
-                    if (items.remove(firstEntry.getKey(), firstEntry.getValue())) {
-                        break; // we made some space for ourselves
-                    } else if (items.isEmpty()) {
-                        break; // wasn't empty before, but is now
-                    }
-                }
-                // let's give it an another shot, maybe next time the entry
-                // will stick around long enough for us to remove it, looping...
+            final Map.Entry<String, T> firstEntry = items.firstEntry();
+            if (firstEntry != null) {
+                items.remove(firstEntry.getKey(), firstEntry.getValue());
             }
-            overflowing = true;
         }
         items.put(name, item);
         return overflowing;
