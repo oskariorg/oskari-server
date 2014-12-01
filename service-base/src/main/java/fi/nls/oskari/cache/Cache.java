@@ -17,9 +17,9 @@ public class Cache<T> {
     private static final Logger log = LogFactory.getLogger(Cache.class);
 
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
-    private int limit = 1000;
-    private long expiration = 30 * 60 * 1000;
-    private long lastFlush = currentTime();
+    private volatile int limit = 1000;
+    private volatile long expiration = 30 * 60 * 1000;
+    private volatile long lastFlush = currentTime();
     private String name;
     public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
     private boolean cacheSizeConfigured = false;
@@ -127,9 +127,26 @@ public class Cache<T> {
             // limit reached - remove oldest object
             log.warn("Cache", getName(), "overflowing! Limit is", limit);
             log.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
-            final Map.Entry<String, T> firstEntry = items.firstEntry();
-            if (firstEntry != null) {
-                items.remove(firstEntry.getKey(), firstEntry.getValue());
+            final int retrycount = 5;
+            int count  = 0;
+            // loop is meant to deal with concurrency issue where another thread modifies items.
+            while (count < retrycount) {
+                final Map.Entry<String, T> firstEntry = items.firstEntry();
+                if (null == firstEntry) {
+                    break; // was empty when checking for the first element
+                } else {
+                    if (items.remove(firstEntry.getKey(), firstEntry.getValue())) {
+                        break; // we made some space for ourselves
+                    } else if (items.isEmpty()) {
+                        break; // wasn't empty before, but is now
+                    }
+                }
+                // let's give it an another shot, maybe next time the entry
+                // will stick around long enough for us to remove it, looping...
+                count++;
+            }
+            if(count == retrycount) {
+                log.error("Error clearing overflowing cache", getName());
             }
         }
         items.put(name, item);
