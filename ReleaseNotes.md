@@ -6,6 +6,10 @@
 
 PropertyUtil now always trims property values for leading and trailing spaces.
 
+### control-base
+
+GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
+
 ## 1.25.4
 
 Fixes an issues with caching. Issue only affects relatively large caches (over 1000 map layers etc)
