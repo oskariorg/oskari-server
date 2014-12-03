@@ -6,42 +6,32 @@
 
 <sqlMap namespace="UserLayerData">
 
-    <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="UserLayerData"
-        type="fi.nls.oskari.domain.map.userlayer.UserLayerData" />
+    <typeAlias alias="UserLayerData" type="fi.nls.oskari.domain.map.userlayer.UserLayerData" />
 
-
-
-    <statement id="insertUserLayerData" resultClass="java.lang.Long"
-        parameterClass="UserLayerData">
-        INSERT INTO user_layer_data (
-
-        user_layer_id,
-        uuid,
-        feature_id,
-        property_json,
-        geometry)
-
-        VALUES (
-        #user_layer_id#,
-        #uuid#,
-        #feature_id#,
-        CAST (#property_json# as json),
-        ST_GeomFromGeoJSON(#geometry#) )
-        RETURNING
-        id
+    <statement id="insertUserLayerData" resultClass="java.lang.Long" parameterClass="UserLayerData">
+        INSERT INTO user_layer_data
+        (
+            user_layer_id,
+            uuid,
+            feature_id,
+            property_json,
+            geometry
+        ) VALUES (
+            #user_layer_id#,
+            #uuid#,
+            #feature_id#,
+            CAST(#property_json# as json),
+            ST_GeomFromGeoJSON(#geometry#)
+        )
+        RETURNING id
     </statement>
 
-
     <update id="updateUserLayerDataCols" parameterClass="UserLayerData">
-        update
-        user_layer_data set
-
-        property_json = #property_json#,
-        geometry = ST_GeomFromGeoJSON(#geometry#)
-
-
-        where feature_id = #feature_id# and uuid =#uuid#
+        UPDATE user_layer_data
+        SET property_json = #property_json#,
+            geometry = ST_GeomFromGeoJSON(#geometry#)
+        WHERE feature_id = #feature_id#
+          AND uuid = #uuid#
     </update>
 
 </sqlMap>
