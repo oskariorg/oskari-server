@@ -10,6 +10,15 @@ PropertyUtil now always trims property values for leading and trailing spaces.
 
 GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
 
+### servlet-printout
+
+New printout properties to support GetLayerTile action route for authorised map tiles
+
+    mapproducer.localurl.match=/web (prefixes to match as local resources)
+    mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
+    mapproducer.referer=referer info for maptile requests
+    mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
+
 ## 1.25.4
 
 Fixes an issues with caching. Issue only affects relatively large caches (over 1000 map layers etc)
