@@ -9,7 +9,20 @@ import java.util.Map;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.FeatureLayer;
-import org.geotools.styling.*;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Fill;
+import org.geotools.styling.Font;
+import org.geotools.styling.Graphic;
+import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
+import org.geotools.styling.PointPlacement;
+import org.geotools.styling.Rule;
+import org.geotools.styling.Stroke;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleBuilder;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.Symbolizer;
+import org.geotools.styling.TextSymbolizer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryType;
@@ -23,538 +36,535 @@ import org.opengis.filter.expression.Literal;
 import fi.nls.oskari.printout.imaging.ColorOps;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
 
-
 /**
  * 
  * This class draws geojson features styled with a 'poor-mans-sld-or-css'.
  * Styling and style defs follow css/sld naming conventions.
  * 
- * This class uses geotools extensions to lookup values from features to
- * be used in simple style rules.
- *  
+ * This class uses geotools extensions to lookup values from features to be used
+ * in simple style rules.
+ * 
  */
 
 public class DirectFeatureLayer extends FeatureLayer {
-	
-	
 
-	enum Css {
-		strokeColor, strokeOpacity, strokeWidth, strokeDashstyle,
-		/**
+    enum Css {
+        strokeColor, strokeOpacity, strokeWidth, strokeDashstyle,
+        /**
 		 * 
 		 */
 
-		fillColor, fillOpacity,
+        fillColor, fillOpacity,
 
-		/**
+        /**
 		 * 
 		 */
-		labelAlign, label, labelXOffset, labelYOffset,
+        labelAlign, label, labelXOffset, labelYOffset,
 
-		/**
+        /**
 		 * 
 		 */
-		graphicName, graphicSize, // ?
+        graphicName, graphicSize, // ?
 
-		/**
+        /**
 		 * 
 		 */
-		fontColor, fontFamily, fontSize, fontWeight, onlineResource
-
-		;
-		
-		final ColorOps colorOps = new ColorOps();
-
-		final CharSequence HASHMARK = "#";
-
-		final CharSequence RGBA = "rgba";
-
-		float[] dashStyle(Map<String, ?> styleMapDefaultStyle, float strokeWidth) {
-			float widthFactor = 1f;
-			String strokeDashStyle = (String) styleMapDefaultStyle
-					.get(toString());
-			if (strokeDashStyle == null) {
-				return null;
-			}
-			float w = strokeWidth * widthFactor;
-
-			if ("solid".equals(strokeDashStyle))
-				return null;
-			else if ("dot".equals(strokeDashStyle))
-				return new float[] { 1f, 4 * w };
-			else if ("dash".equals(strokeDashStyle))
-				return new float[] { 4 * w, 4 * w };
-			else if ("dashdot".equals(strokeDashStyle))
-				return new float[] { 4 * w, 4 * w, 1f, 4 * w };
-			else if ("longdash".equals(strokeDashStyle))
-				return new float[] { 8 * w, 4 * w };
-			else if ("longdashdot".equals(strokeDashStyle))
-				return new float[] { 8 * w, 4 * w, 1f, 4 * w };
-
-			return null;
-		}
-
-		/**
-		 * 
-		 * @param styleMapDefaultStyle
-		 * @return
-		 */
+        fontColor, fontFamily, fontSize, fontWeight, onlineResource
 
-		String get(Map<String, ?> styleMapDefaultStyle) {
-			Object obj = styleMapDefaultStyle.get(toString());
-			if (obj == null)
-				return null;
+        ;
 
-			return obj.toString();
+        final ColorOps colorOps = new ColorOps();
 
-		}
+        final CharSequence HASHMARK = "#";
 
-		Color get(Map<String, ?> styleMapDefaultStyle, Color defaultValue) {
+        final CharSequence RGBA = "rgba";
 
-			/*
-			 * #00ff00 /* rgba(215, 40, 40, 0.9)
-			 */
-			Color col = defaultValue;
+        float[] dashStyle(Map<String, ?> styleMapDefaultStyle, float strokeWidth) {
+            float widthFactor = 1f;
+            String strokeDashStyle = (String) styleMapDefaultStyle
+                    .get(toString());
+            if (strokeDashStyle == null) {
+                return null;
+            }
+            float w = strokeWidth * widthFactor;
 
-			Object val = styleMapDefaultStyle.get(toString());
-			if (val == null) {
-				return defaultValue;
-			}
-			
-			col = colorOps.get((String)val, defaultValue);
+            if ("solid".equals(strokeDashStyle))
+                return null;
+            else if ("dot".equals(strokeDashStyle))
+                return new float[] { 1f, 4 * w };
+            else if ("dash".equals(strokeDashStyle))
+                return new float[] { 4 * w, 4 * w };
+            else if ("dashdot".equals(strokeDashStyle))
+                return new float[] { 4 * w, 4 * w, 1f, 4 * w };
+            else if ("longdash".equals(strokeDashStyle))
+                return new float[] { 8 * w, 4 * w };
+            else if ("longdashdot".equals(strokeDashStyle))
+                return new float[] { 8 * w, 4 * w, 1f, 4 * w };
 
-			return col;
-		}
+            return null;
+        }
 
-		Color get(Map<String, ?> styleMapDefaultStyle, Color defaultValue,
-				Float alphaFloat) {
+        /**
+         * 
+         * @param styleMapDefaultStyle
+         * @return
+         */
 
-			Color col = get(styleMapDefaultStyle, defaultValue);
+        String get(Map<String, ?> styleMapDefaultStyle) {
+            Object obj = styleMapDefaultStyle.get(toString());
+            if (obj == null)
+                return null;
 
-			if (alphaFloat == null) {
-				return col;
-			}
+            return obj.toString();
 
-			int alpha = new Float(alphaFloat * 256f / 256f).intValue();
+        }
 
-			col = new Color(col.getRed(), col.getGreen(), col.getBlue(), alpha);
+        Color get(Map<String, ?> styleMapDefaultStyle, Color defaultValue) {
 
-			return col;
-		}
+            /*
+             * #00ff00 /* rgba(215, 40, 40, 0.9)
+             */
+            Color col = defaultValue;
 
-		Float get(Map<String, ?> styleMapDefaultStyle, Float defaultValue) {
+            Object val = styleMapDefaultStyle.get(toString());
+            if (val == null) {
+                return defaultValue;
+            }
 
-			Object val = styleMapDefaultStyle.get(toString());
-			if (val == null) {
-				return defaultValue;
-			}
-			if (val instanceof Number) {
-				return ((Number) val).floatValue();
-			}
+            col = colorOps.get((String) val, defaultValue);
 
-			return Float.parseFloat(val.toString());
-		}
+            return col;
+        }
 
-		String get(Map<String, ?> styleMapDefaultStyle, String defaultValue) {
-			Object obj = styleMapDefaultStyle.get(toString());
-			if (obj == null)
-				return defaultValue;
+        Color get(Map<String, ?> styleMapDefaultStyle, Color defaultValue,
+                Float alphaFloat) {
 
-			String s = obj.toString();
-			return s;
-		}
+            Color col = get(styleMapDefaultStyle, defaultValue);
 
-		String[] getFontFamily(Map<String, ?> styleMapDefaultStyle,
-				String... defaultValue) {
-			String s = (String) styleMapDefaultStyle.get(toString());
-			if (s == null)
-				return defaultValue;
+            if (alphaFloat == null) {
+                return col;
+            }
 
-			if (s.indexOf(',') != -1) {
-				return s.split(",");
-			} else {
-				return new String[] { s };
-			}
+            int alpha = new Float(alphaFloat * 256f / 256f).intValue();
 
-		}
+            col = new Color(col.getRed(), col.getGreen(), col.getBlue(), alpha);
 
-		Float getPx(Map<String, ?> styleMapDefaultStyle, Float defaultValue) {
-			String px = (String) styleMapDefaultStyle.get(toString());
+            return col;
+        }
 
-			if (px == null) {
-				return defaultValue;
-			}
+        Float get(Map<String, ?> styleMapDefaultStyle, Float defaultValue) {
 
-			if (px.indexOf("px") == -1) {
-				return Float.valueOf(px);
-			}
+            Object val = styleMapDefaultStyle.get(toString());
+            if (val == null) {
+                return defaultValue;
+            }
+            if (val instanceof Number) {
+                return ((Number) val).floatValue();
+            }
 
-			return Float.valueOf(px.substring(0, px.indexOf("px")));
-		}
+            return Float.parseFloat(val.toString());
+        }
 
-	}
+        String get(Map<String, ?> styleMapDefaultStyle, String defaultValue) {
+            Object obj = styleMapDefaultStyle.get(toString());
+            if (obj == null)
+                return defaultValue;
 
-	private int layerOpacity;
+            String s = obj.toString();
+            return s;
+        }
 
-	final StyleFactory sf = CommonFactoryFinder.getStyleFactory();
+        String[] getFontFamily(Map<String, ?> styleMapDefaultStyle,
+                String... defaultValue) {
+            String s = (String) styleMapDefaultStyle.get(toString());
+            if (s == null)
+                return defaultValue;
 
-	final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-	StyleBuilder sb = new StyleBuilder();
-	private FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+            if (s.indexOf(',') != -1) {
+                return s.split(",");
+            } else {
+                return new String[] { s };
+            }
 
-	public DirectFeatureLayer(LayerDefinition layerDefinition,
-			FeatureSource<SimpleFeatureType, SimpleFeature> fs,
-			AffineTransform transform) throws URISyntaxException {
-		super(fs, null);
-		this.fs = fs;
+        }
 
-		super.setStyle(extractLayerStyle(layerDefinition));
-	}
+        Float getPx(Map<String, ?> styleMapDefaultStyle, Float defaultValue) {
+            String px = (String) styleMapDefaultStyle.get(toString());
 
-	private Fill createFill(Map<String, ?> styleMapDefaultStyle,
-			Float fillOpacity) {
-		Fill fill = null;
+            if (px == null) {
+                return defaultValue;
+            }
 
-		String fillColorStr = Css.fillColor.get(styleMapDefaultStyle);
+            if (px.indexOf("px") == -1) {
+                return Float.valueOf(px);
+            }
 
-		if (fillColorStr != null && fillColorStr.indexOf('$') != -1) {
+            return Float.valueOf(px.substring(0, px.indexOf("px")));
+        }
 
-			Function colorFunc = createPropertyAccessor(fillColorStr);
-			Literal literalOpacity = ff.literal(fillOpacity);
-			fill = sf.createFill(colorFunc, literalOpacity);
+    }
 
-		} else {
-			Color fillColor = Css.fillColor.get(styleMapDefaultStyle,
-					(Color) null);
+    private int layerOpacity;
 
-			if (fillColor == null) {
-				return null;
-			}
+    final StyleFactory sf = CommonFactoryFinder.getStyleFactory();
 
-			Literal literalFill = ff.literal(fillColor);
-			Literal literalOpacity = ff.literal(fillOpacity);
-			fill = literalFill != null ? sf.createFill(literalFill,
-					literalOpacity) : null;
-		}
+    final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+    StyleBuilder sb = new StyleBuilder();
+    private FeatureSource<SimpleFeatureType, SimpleFeature> fs;
 
-		return fill;
-	}
+    public DirectFeatureLayer(LayerDefinition layerDefinition,
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs,
+            AffineTransform transform) throws URISyntaxException {
+        super(fs, null);
+        this.fs = fs;
 
-	@SuppressWarnings("unchecked")
-	private Expression createGeometryAccessor(
-			Map<String, ?> styleMapDefaultStyle) {
-		Map<String, ?> geomProps = (Map<String, ?>) styleMapDefaultStyle
-				.get("geometry");
+        super.setStyle(extractLayerStyle(layerDefinition));
+    }
 
-		String geomPropName = geomProps != null ? (String) geomProps
-				.get("name") : null;
-		if (geomPropName == null) {
-			return null;
-		}
+    private Fill createFill(Map<String, ?> styleMapDefaultStyle,
+            Float fillOpacity) {
+        Fill fill = null;
 
-		Object translateX = geomProps.get("translateX");
-		Object translateY = geomProps.get("translateY");
+        String fillColorStr = Css.fillColor.get(styleMapDefaultStyle);
 
-		Expression geomAccessor = ff.property(geomPropName);
+        if (fillColorStr != null && fillColorStr.indexOf('$') != -1) {
 
-		if (translateX != null && translateY != null) {
+            Function colorFunc = createPropertyAccessor(fillColorStr);
+            Literal literalOpacity = ff.literal(fillOpacity);
+            fill = sf.createFill(colorFunc, literalOpacity);
 
-			Expression offsetX = null;
-			Expression offsetY = null;
+        } else {
+            Color fillColor = Css.fillColor.get(styleMapDefaultStyle,
+                    (Color) null);
 
-			if (translateX instanceof String) {
-				offsetX = createPropertyAccessor((String) translateX);
-			} else {
-				offsetX = ff.literal(((Number) translateX).doubleValue());
-			}
+            if (fillColor == null) {
+                return null;
+            }
 
-			if (translateY instanceof String) {
-				offsetY = createPropertyAccessor((String) translateY);
-			} else {
-				offsetY = ff.literal(((Number) translateY).doubleValue());
-			}
+            Literal literalFill = ff.literal(fillColor);
+            Literal literalOpacity = ff.literal(fillOpacity);
+            fill = literalFill != null ? sf.createFill(literalFill,
+                    literalOpacity) : null;
+        }
 
-			geomAccessor = ff
-					.function("offset", geomAccessor, offsetX, offsetY);
+        return fill;
+    }
 
-		} else {
-			geomAccessor = ff.property(geomPropName);
-		}
+    @SuppressWarnings("unchecked")
+    private Expression createGeometryAccessor(
+            Map<String, ?> styleMapDefaultStyle) {
+        Map<String, ?> geomProps = (Map<String, ?>) styleMapDefaultStyle
+                .get("geometry");
 
-		return geomAccessor;
-	};
+        String geomPropName = geomProps != null ? (String) geomProps
+                .get("name") : null;
+        if (geomPropName == null) {
+            return null;
+        }
 
-	Mark createMark(Map<String, ?> styleMapDefaultStyle, Mark defaultValue) {
+        Object translateX = geomProps.get("translateX");
+        Object translateY = geomProps.get("translateY");
 
-		String markGraphicName = Css.graphicName.get(styleMapDefaultStyle);
-		if (markGraphicName == null) {
-			return defaultValue;
-		}
+        Expression geomAccessor = ff.property(geomPropName);
 
-		return sb.createMark(markGraphicName);
-	}
+        if (translateX != null && translateY != null) {
 
-	/**
-	 * 
-	 * force OpenLayers ${} to %1$s Java counterpart
-	 */
-	private Function createPropertyAccessor(String propertyAccessorDefinition) {
-		String propertyAccessor = new String(propertyAccessorDefinition);
+            Expression offsetX = null;
+            Expression offsetY = null;
 
-		/* 1) FIX labelFormat ${refs} to index Java String refs $1s */
-		/* 2) add props to func */
-		Collection<PropertyDescriptor> props = fs.getSchema().getDescriptors();
-		int exprsCount = props.size();
-		int exprsLabelFormatIndex = exprsCount;
-		Expression[] exprs = new Expression[1 + props.size()];
+            if (translateX instanceof String) {
+                offsetX = createPropertyAccessor((String) translateX);
+            } else {
+                offsetX = ff.literal(((Number) translateX).doubleValue());
+            }
 
-		for (PropertyDescriptor pd : props) {
-			PropertyType pdt = pd.getType();
+            if (translateY instanceof String) {
+                offsetY = createPropertyAccessor((String) translateY);
+            } else {
+                offsetY = ff.literal(((Number) translateY).doubleValue());
+            }
 
-			if (pdt instanceof GeometryType) {
-				int pdn = (--exprsCount);
-				exprs[pdn] = ff.literal(pd.getName().getLocalPart());
-				continue;
-			}
+            geomAccessor = ff
+                    .function("offset", geomAccessor, offsetX, offsetY);
 
-			int pdn = (--exprsCount);
-			exprs[pdn] = ff.property(pd.getName().getLocalPart());
+        } else {
+            geomAccessor = ff.property(geomPropName);
+        }
 
-			propertyAccessor = propertyAccessor.replaceAll("\\$\\{"
-					+ pd.getName().getLocalPart() + "\\}", "\\%" + (pdn + 1)
-					+ "\\$s");
+        return geomAccessor;
+    };
 
-		}
+    Mark createMark(Map<String, ?> styleMapDefaultStyle, Mark defaultValue) {
 
-		exprs[exprsLabelFormatIndex] = ff.literal(propertyAccessor);
+        String markGraphicName = Css.graphicName.get(styleMapDefaultStyle);
+        if (markGraphicName == null) {
+            return defaultValue;
+        }
 
-		Function labelFunc = ff.function("renderproperty", exprs);
+        return sb.createMark(markGraphicName);
+    }
 
-		return labelFunc;
-	}
+    /**
+     * 
+     * force OpenLayers ${} to %1$s Java counterpart
+     */
+    private Function createPropertyAccessor(String propertyAccessorDefinition) {
+        String propertyAccessor = new String(propertyAccessorDefinition);
 
-	private Rule createRule(Map<String, ?> styleMapDefaultStyle)
-			throws URISyntaxException {
+        /* 1) FIX labelFormat ${refs} to index Java String refs $1s */
+        /* 2) add props to func */
+        Collection<PropertyDescriptor> props = fs.getSchema().getDescriptors();
+        int exprsCount = props.size();
+        int exprsLabelFormatIndex = exprsCount;
+        Expression[] exprs = new Expression[1 + props.size()];
 
-		/* stroke */
-		Float strokeWidth = Css.strokeWidth.get(styleMapDefaultStyle, 0f);
-		float[] dashStyle = Css.strokeDashstyle.dashStyle(styleMapDefaultStyle,
-				strokeWidth);
+        for (PropertyDescriptor pd : props) {
+            PropertyType pdt = pd.getType();
 
-		/* fill */
-		Float fillOpacity = Css.fillOpacity.get(styleMapDefaultStyle,
-				(Float) null);
+            if (pdt instanceof GeometryType) {
+                int pdn = (--exprsCount);
+                exprs[pdn] = ff.literal(pd.getName().getLocalPart());
+                continue;
+            }
 
-		String strokeColor = Css.strokeColor.get(styleMapDefaultStyle);
-		String fillColor = Css.fillColor.get(styleMapDefaultStyle);
+            int pdn = (--exprsCount);
+            exprs[pdn] = ff.property(pd.getName().getLocalPart());
 
-		/* mark */
+            propertyAccessor = propertyAccessor.replaceAll("\\$\\{"
+                    + pd.getName().getLocalPart() + "\\}", "\\%" + (pdn + 1)
+                    + "\\$s");
 
-		/* text */
-		Color fontColor = Css.fontColor.get(styleMapDefaultStyle, Color.BLACK);
-		String[] fontFamily = Css.fontFamily.getFontFamily(
-				styleMapDefaultStyle, "Lucida Sans", "sans-serif");
-		Float fontSize = Css.fontSize.getPx(styleMapDefaultStyle, 10f);
-		String fontWeight = Css.fontWeight.get(styleMapDefaultStyle);
+        }
 
-		boolean isItalic = fontWeight != null
-				&& fontWeight.indexOf("italic") != -1;
-		boolean isBold = fontWeight != null && fontWeight.indexOf("bold") != -1;
+        exprs[exprsLabelFormatIndex] = ff.literal(propertyAccessor);
 
-		String labelXOffset = Css.labelXOffset.get(styleMapDefaultStyle);
-		String labelYOffset = Css.labelYOffset.get(styleMapDefaultStyle);
+        Function labelFunc = ff.function("renderproperty", exprs);
 
-		Rule rule = sf.createRule();
+        return labelFunc;
+    }
 
-		/* stroke */
+    private Rule createRule(Map<String, ?> styleMapDefaultStyle)
+            throws URISyntaxException {
 
-		if (strokeColor != null && strokeWidth > 0) {
-			Stroke stroke = null;
-			stroke = strokeColor != null ? createStroke(styleMapDefaultStyle,
-					strokeWidth) : null;
-			if (dashStyle != null && stroke != null) {
-				stroke.setDashArray(dashStyle);
-			}
-			Symbolizer symbolizer = null;
+        /* stroke */
+        Float strokeWidth = Css.strokeWidth.get(styleMapDefaultStyle, 0f);
+        float[] dashStyle = Css.strokeDashstyle.dashStyle(styleMapDefaultStyle,
+                strokeWidth);
 
-			symbolizer = sf.createLineSymbolizer(stroke, null);
+        /* fill */
+        Float fillOpacity = Css.fillOpacity.get(styleMapDefaultStyle,
+                (Float) null);
 
-			symbolizer
-					.setGeometry(createGeometryAccessor(styleMapDefaultStyle));
+        String strokeColor = Css.strokeColor.get(styleMapDefaultStyle);
+        String fillColor = Css.fillColor.get(styleMapDefaultStyle);
 
-			rule.symbolizers().add(symbolizer);
-		}
+        /* mark */
 
-		/* fill */
-		if (fillColor != null) {
-			Stroke stroke = null;
-			stroke = strokeWidth > 0 && strokeColor != null ? createStroke(
-					styleMapDefaultStyle, strokeWidth) : null;
-			if (dashStyle != null && stroke != null) {
-				stroke.setDashArray(dashStyle);
-			}
+        /* text */
+        Color fontColor = Css.fontColor.get(styleMapDefaultStyle, Color.BLACK);
+        String[] fontFamily = Css.fontFamily.getFontFamily(
+                styleMapDefaultStyle, "Lucida Sans", "sans-serif");
+        Float fontSize = Css.fontSize.getPx(styleMapDefaultStyle, 10f);
+        String fontWeight = Css.fontWeight.get(styleMapDefaultStyle);
 
-			Symbolizer symbolizer = null;
-			Fill fill = null;
+        boolean isItalic = fontWeight != null
+                && fontWeight.indexOf("italic") != -1;
+        boolean isBold = fontWeight != null && fontWeight.indexOf("bold") != -1;
 
-			fill = createFill(styleMapDefaultStyle, fillOpacity);
-			symbolizer = sf.createPolygonSymbolizer(stroke, fill, null);
-			symbolizer
-					.setGeometry(createGeometryAccessor(styleMapDefaultStyle));
+        String labelXOffset = Css.labelXOffset.get(styleMapDefaultStyle);
+        String labelYOffset = Css.labelYOffset.get(styleMapDefaultStyle);
 
-			rule.symbolizers().add(symbolizer);
+        Rule rule = sf.createRule();
 
-		}
+        /* stroke */
 
-		Mark mark = createMark(styleMapDefaultStyle, null);
-		if (mark != null) {
-			Stroke stroke = null;
-			stroke = strokeColor != null && strokeWidth > 0 ? createStroke(
-					styleMapDefaultStyle, strokeWidth) : null;
-			if (dashStyle != null && stroke != null) {
-				stroke.setDashArray(dashStyle);
-			}
+        if (strokeColor != null && strokeWidth > 0) {
+            Stroke stroke = null;
+            stroke = strokeColor != null ? createStroke(styleMapDefaultStyle,
+                    strokeWidth) : null;
+            if (dashStyle != null && stroke != null) {
+                stroke.setDashArray(dashStyle);
+            }
+            Symbolizer symbolizer = null;
 
-			Symbolizer symbolizer = null;
-			Fill fill = null;
+            symbolizer = sf.createLineSymbolizer(stroke, null);
 
-			fill = createFill(styleMapDefaultStyle, fillOpacity);
+            symbolizer
+                    .setGeometry(createGeometryAccessor(styleMapDefaultStyle));
 
-			mark.setFill(fill);
-			mark.setStroke(stroke);
+            rule.symbolizers().add(symbolizer);
+        }
 
-			Graphic graphic = sf.createDefaultGraphic();
-			graphic.graphicalSymbols().clear();
-			graphic.graphicalSymbols().add(mark);
+        /* fill */
+        if (fillColor != null) {
+            Stroke stroke = null;
+            stroke = strokeWidth > 0 && strokeColor != null ? createStroke(
+                    styleMapDefaultStyle, strokeWidth) : null;
+            if (dashStyle != null && stroke != null) {
+                stroke.setDashArray(dashStyle);
+            }
 
-			String graphicSize = Css.graphicSize
-					.get(styleMapDefaultStyle, "10");
-			graphic.setSize(createPropertyAccessor(graphicSize));
+            Symbolizer symbolizer = null;
+            Fill fill = null;
 
-			symbolizer = sf.createPointSymbolizer(graphic, null);
-			symbolizer
-					.setGeometry(createGeometryAccessor(styleMapDefaultStyle));
+            fill = createFill(styleMapDefaultStyle, fillOpacity);
+            symbolizer = sf.createPolygonSymbolizer(stroke, fill, null);
+            symbolizer
+                    .setGeometry(createGeometryAccessor(styleMapDefaultStyle));
 
-			rule.symbolizers().add(symbolizer);
-		}
+            rule.symbolizers().add(symbolizer);
 
-		String label = Css.label.get(styleMapDefaultStyle);
-		if (label != null) {
+        }
 
-			Function labelFunc = createPropertyAccessor(label);
+        Mark mark = createMark(styleMapDefaultStyle, null);
+        if (mark != null) {
+            Stroke stroke = null;
+            stroke = strokeColor != null && strokeWidth > 0 ? createStroke(
+                    styleMapDefaultStyle, strokeWidth) : null;
+            if (dashStyle != null && stroke != null) {
+                stroke.setDashArray(dashStyle);
+            }
 
-			PointPlacement pointPlacement = sb.createPointPlacement();
+            Symbolizer symbolizer = null;
+            Fill fill = null;
 
-			if (labelXOffset == null && labelYOffset == null) {
-				pointPlacement.setDisplacement(sb.createDisplacement(0, 0));
-			} else if (labelXOffset.indexOf('$') == -1
-					&& labelYOffset.indexOf('$') == -1) {
+            fill = createFill(styleMapDefaultStyle, fillOpacity);
 
-				Double xoffset = Double.valueOf(labelXOffset);
-				Double yoffset = Double.valueOf(labelYOffset);
+            mark.setFill(fill);
+            mark.setStroke(stroke);
 
-				pointPlacement.setDisplacement(sb.createDisplacement(xoffset,
-						yoffset));
+            Graphic graphic = sf.createDefaultGraphic();
+            graphic.graphicalSymbols().clear();
+            graphic.graphicalSymbols().add(mark);
 
-			} else {
-				Function labelXOffsetFunc = createPropertyAccessor(labelXOffset);
-				Function labelYOffsetFunc = createPropertyAccessor(labelYOffset);
+            String graphicSize = Css.graphicSize
+                    .get(styleMapDefaultStyle, "10");
+            graphic.setSize(createPropertyAccessor(graphicSize));
 
-				pointPlacement.setDisplacement(sb.createDisplacement(
-						labelXOffsetFunc, labelYOffsetFunc));
-			}
+            symbolizer = sf.createPointSymbolizer(graphic, null);
+            symbolizer
+                    .setGeometry(createGeometryAccessor(styleMapDefaultStyle));
 
-			Font[] fonts = new Font[fontFamily.length];
-			int f = 0;
-			for (String ff : fontFamily) {
-				fonts[f++] = sb.createFont(ff, isItalic, isBold, fontSize);
-			}
+            rule.symbolizers().add(symbolizer);
+        }
 
-			TextSymbolizer symbolizer = sb.createTextSymbolizer(
-					sb.createFill(fontColor), fonts, null, labelFunc,
-					pointPlacement, null);
+        String label = Css.label.get(styleMapDefaultStyle);
+        if (label != null) {
+
+            Function labelFunc = createPropertyAccessor(label);
+
+            PointPlacement pointPlacement = sb.createPointPlacement();
+
+            if (labelXOffset == null && labelYOffset == null) {
+                pointPlacement.setDisplacement(sb.createDisplacement(0, 0));
+            } else if (labelXOffset.indexOf('$') == -1
+                    && labelYOffset.indexOf('$') == -1) {
+
+                Double xoffset = Double.valueOf(labelXOffset);
+                Double yoffset = Double.valueOf(labelYOffset);
+
+                pointPlacement.setDisplacement(sb.createDisplacement(xoffset,
+                        yoffset));
+
+            } else {
+                Function labelXOffsetFunc = createPropertyAccessor(labelXOffset);
+                Function labelYOffsetFunc = createPropertyAccessor(labelYOffset);
+
+                pointPlacement.setDisplacement(sb.createDisplacement(
+                        labelXOffsetFunc, labelYOffsetFunc));
+            }
+
+            Font[] fonts = new Font[fontFamily.length];
+            int f = 0;
+            for (String ff : fontFamily) {
+                fonts[f++] = sb.createFont(ff, isItalic, isBold, fontSize);
+            }
+
+            TextSymbolizer symbolizer = sb.createTextSymbolizer(
+                    sb.createFill(fontColor), fonts, null, labelFunc,
+                    pointPlacement, null);
             // polygon labels are always display
             symbolizer.getOptions().put(symbolizer.GOODNESS_OF_FIT_KEY, "0.00");
 
-			symbolizer
-					.setGeometry(createGeometryAccessor(styleMapDefaultStyle));
+            symbolizer
+                    .setGeometry(createGeometryAccessor(styleMapDefaultStyle));
 
-			rule.symbolizers().add(symbolizer);
+            rule.symbolizers().add(symbolizer);
 
-		}
+        }
 
-		return rule;
-	}
+        return rule;
+    }
 
-	private Stroke createStroke(Map<String, ?> styleMapDefaultStyle,
-			Float strokeWidth) {
-		Stroke stroke = null;
-		String strokeColorStr = Css.strokeColor.get(styleMapDefaultStyle);
-		if (strokeColorStr != null && strokeColorStr.indexOf('$') != -1) {
-			Function colorFunc = createPropertyAccessor(strokeColorStr);
+    private Stroke createStroke(Map<String, ?> styleMapDefaultStyle,
+            Float strokeWidth) {
+        Stroke stroke = null;
+        String strokeColorStr = Css.strokeColor.get(styleMapDefaultStyle);
+        if (strokeColorStr != null && strokeColorStr.indexOf('$') != -1) {
+            Function colorFunc = createPropertyAccessor(strokeColorStr);
 
-			stroke = sf.createStroke(colorFunc, ff.literal(strokeWidth));
+            stroke = sf.createStroke(colorFunc, ff.literal(strokeWidth));
 
-		} else {
-			Color strokeColor = Css.strokeColor.get(styleMapDefaultStyle,
-					(Color) null);
+        } else {
+            Color strokeColor = Css.strokeColor.get(styleMapDefaultStyle,
+                    (Color) null);
 
-			if (strokeColor == null)
-				return null;
+            if (strokeColor == null)
+                return null;
 
-			stroke = sf.createStroke(ff.literal(strokeColor),
-					ff.literal(strokeWidth));
-		}
-		return stroke;
-	}
+            stroke = sf.createStroke(ff.literal(strokeColor),
+                    ff.literal(strokeWidth));
+        }
+        return stroke;
+    }
 
-	@SuppressWarnings("unchecked")
-	public Style extractLayerStyle(LayerDefinition layerDefinition)
-			throws URISyntaxException {
+    @SuppressWarnings("unchecked")
+    public Style extractLayerStyle(LayerDefinition layerDefinition)
+            throws URISyntaxException {
 
-		fi.nls.oskari.printout.input.layers.LayerDefinition.Style layerStyle = layerDefinition
-				.getStyle() != null ? layerDefinition.getStyles().get(
-				layerDefinition.getStyle()) : null;
-		Style style = null;
+        fi.nls.oskari.printout.input.layers.LayerDefinition.Style layerStyle = layerDefinition
+                .getStyle() != null ? layerDefinition.getStyles().get(
+                layerDefinition.getStyle()) : null;
+        Style style = null;
 
-		if (layerStyle != null && layerStyle.getStyleMap() != null) {
-			Map<String, ?> styleMap = layerStyle.getStyleMap();
+        if (layerStyle != null && layerStyle.getStyleMap() != null) {
+            Map<String, ?> styleMap = layerStyle.getStyleMap();
 
-			Map<String, ?> styleMapDefaultStyle = (Map<String, ?>) styleMap
-					.get("default");
+            Map<String, ?> styleMapDefaultStyle = (Map<String, ?>) styleMap
+                    .get("default");
 
-			Rule rule = createRule(styleMapDefaultStyle);
+            Rule rule = createRule(styleMapDefaultStyle);
 
-			FeatureTypeStyle fts = sf.createFeatureTypeStyle();
-			fts.rules().add(rule);
+            FeatureTypeStyle fts = sf.createFeatureTypeStyle();
+            fts.rules().add(rule);
 
-			style = sf.createStyle();
-			style.featureTypeStyles().add(fts);
+            style = sf.createStyle();
+            style.featureTypeStyles().add(fts);
 
-		} else {
+        } else {
 
-			Stroke stroke = sf.createStroke(ff.literal(Color.BLUE),
-					ff.literal(1));
+            Stroke stroke = sf.createStroke(ff.literal(Color.BLUE),
+                    ff.literal(1));
 
-			LineSymbolizer sym = sf.createLineSymbolizer(stroke, null);
+            LineSymbolizer sym = sf.createLineSymbolizer(stroke, null);
 
-			Rule rule = sf.createRule();
-			rule.symbolizers().add(sym);
-			FeatureTypeStyle fts = sf
-					.createFeatureTypeStyle(new Rule[] { rule });
-			style = sf.createStyle();
-			style.featureTypeStyles().add(fts);
-		}
+            Rule rule = sf.createRule();
+            rule.symbolizers().add(sym);
+            FeatureTypeStyle fts = sf
+                    .createFeatureTypeStyle(new Rule[] { rule });
+            style = sf.createStyle();
+            style.featureTypeStyles().add(fts);
+        }
 
-		return style;
-	}
+        return style;
+    }
 
-	public int getLayerOpacity() {
-		return layerOpacity;
-	}
+    public int getLayerOpacity() {
+        return layerOpacity;
+    }
 
-	public void setLayerOpacity(int layerOpacity) {
-		this.layerOpacity = layerOpacity;
-	}
+    public void setLayerOpacity(int layerOpacity) {
+        this.layerOpacity = layerOpacity;
+    }
 
 }

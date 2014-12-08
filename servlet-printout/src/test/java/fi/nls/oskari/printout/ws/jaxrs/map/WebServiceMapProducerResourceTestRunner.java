@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.Map;
 
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.stream.FactoryConfigurationError;
@@ -17,87 +18,96 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
 import fi.nls.oskari.printout.output.map.MapProducer;
+import fi.nls.oskari.printout.ws.ClientInfoSetup;
 import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
 
 public class WebServiceMapProducerResourceTestRunner {
 
-	private WebServiceMapProducerResource resource;
+    private ClientInfoSetup clientInfo;
+    private WebServiceMapProducerResource resource;
 
-	public WebServiceMapProducerResourceTestRunner() {
+    public WebServiceMapProducerResourceTestRunner() {
 
-	}
+    }
 
-	public WebServiceMapProducerResource getResource() {
-		return resource;
-	}
+    public WebServiceMapProducerResource getResource() {
+        return resource;
+    }
 
-	void run(final String testname,
-			WebServiceMapProducerResourceTestFileType input,
-			WebServiceMapProducerResourceTestFileType output)
-			throws NoSuchAuthorityCodeException, IOException,
-			GeoWebCacheException, FactoryException,
-			com.vividsolutions.jts.io.ParseException, ParseException,
-			XMLStreamException, FactoryConfigurationError,
-			RequestFilterException, TransformException, InterruptedException,
-			org.json.simple.parser.ParseException, URISyntaxException {
+    void run(final String testname,
+            WebServiceMapProducerResourceTestFileType input,
+            WebServiceMapProducerResourceTestFileType output)
+            throws NoSuchAuthorityCodeException, IOException,
+            GeoWebCacheException, FactoryException,
+            com.vividsolutions.jts.io.ParseException, ParseException,
+            XMLStreamException, FactoryConfigurationError,
+            RequestFilterException, TransformException, InterruptedException,
+            org.json.simple.parser.ParseException, URISyntaxException {
 
-		StreamingOutput result = null;
+        StreamingOutput result = null;
 
-		InputStream inp = MapProducer.class.getResourceAsStream(input
-				.getFilename(testname));
-		try {
-			switch (output) {
-			case PNG:
-				switch (input) {
-				case JSON:
-					result = resource.getMapPNG(inp, null);
-					break;
-				case GEOJSON:
-					result = resource.getGeoJsonMapPNG(inp, null);
-					break;
-				default:
-					throw new IOException("Invalid args for PNG test");
-				}
-				break;
-			case PDF:
-				switch (input) {
-				case JSON:
-					result = resource.getMapPDF(inp, null);
-					break;
-				case GEOJSON:
-					result = resource.getGeoJsonMapPDF(inp, null);
-					break;
-				default:
-					throw new IOException("Invalid args for PDF test");
-				}
-				break;
-			case PPTX:
-				switch (input) {
-				case GEOJSON:
-					result = resource.getGeoJsonMapPPTX(inp, null);
-					break;
-				default:
-					throw new IOException("Invalid args for PPTX test");
-				}
-				break;		
-			default:
-				throw new IOException("Invalid args for test");
-			}
+        Map<String, String> xClientInfo = clientInfo.getXClientInfo(resource.getProps());
 
-			FileOutputStream outs = new FileOutputStream(
-					output.getFilename(testname));
-			try {
-				result.write(outs);
-			} finally {
-				outs.close();
-			}
+        InputStream inp = MapProducer.class.getResourceAsStream(input
+                .getFilename(testname));
+        try {
+            switch (output) {
+            case PNG:
+                switch (input) {
+                case JSON:
+                    result = resource.getMapPNG(inp, null);
+                    break;
+                case GEOJSON:
+                    result = resource.getGeoJsonMapPNG(inp, xClientInfo);
+                    break;
+                default:
+                    throw new IOException("Invalid args for PNG test");
+                }
+                break;
+            case PDF:
+                switch (input) {
+                case JSON:
+                    result = resource.getMapPDF(inp, null);
+                    break;
+                case GEOJSON:
+                    result = resource.getGeoJsonMapPDF(inp, xClientInfo);
+                    break;
+                default:
+                    throw new IOException("Invalid args for PDF test");
+                }
+                break;
+            case PPTX:
+                switch (input) {
+                case GEOJSON:
+                    result = resource.getGeoJsonMapPPTX(inp, xClientInfo);
+                    break;
+                default:
+                    throw new IOException("Invalid args for PPTX test");
+                }
+                break;
+            default:
+                throw new IOException("Invalid args for test");
+            }
 
-		} finally {
-			inp.close();
-		}
-	}
+            FileOutputStream outs = new FileOutputStream(
+                    output.getFilename(testname));
+            try {
+                result.write(outs);
+            } finally {
+                outs.close();
+            }
 
-	public void setResource(WebServiceMapProducerResource rc) {
-		this.resource = rc;
-	}
+        } finally {
+            inp.close();
+        }
+    }
+
+    public void setResource(WebServiceMapProducerResource rc) {
+        this.resource = rc;
+    }
+
+    public void setClientInfo(ClientInfoSetup clientInfo) {
+        this.clientInfo = clientInfo;
+    }
+
 }
