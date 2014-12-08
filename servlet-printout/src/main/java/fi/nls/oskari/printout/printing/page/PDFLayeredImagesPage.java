@@ -323,8 +323,8 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
             PDOptionalContentProperties ocprops, PDPropertyList props,
             Envelope env, Point centre) throws IOException, TransformException {
 
-        float logoWidth = 16;
-        float logoHeight = 16;
+        float logoWidth = 24;
+        float logoHeight = 24;
 
         PDXObjectImage xlogo = null;
 
@@ -338,18 +338,17 @@ public class PDFLayeredImagesPage extends PDFAbstractPage implements PDFPage {
                     opts.getPageLogoResource());
             try {
                 BufferedImage imageBuf = ImageIO.read(inp);
-                int w = imageBuf.getWidth(null);
-                int h = imageBuf.getHeight(null);
-                BufferedImage bi = new BufferedImage(w, h,
-                        BufferedImage.TYPE_4BYTE_ABGR);
-                Graphics2D g = (Graphics2D) bi.getGraphics();
-                g.drawImage(imageBuf, 0, 0, null);
-                g.dispose();
-
-                bi = doScaleWithFilters(bi, (int) logoWidth * 4,
-                        (int) logoHeight * 4);
-
-                xlogo = new PDPixelMap(targetDoc, bi);
+                /*
+                 * int w = imageBuf.getWidth(null); int h =
+                 * imageBuf.getHeight(null); BufferedImage bi = new
+                 * BufferedImage(w, h, BufferedImage.TYPE_4BYTE_ABGR);
+                 * Graphics2D g = (Graphics2D) bi.getGraphics();
+                 * g.drawImage(imageBuf, 0, 0, null); g.dispose();
+                 * 
+                 * bi = doScaleWithFilters(bi, (int) logoWidth * 4, (int)
+                 * logoHeight * 4);
+                 */
+                xlogo = new PDPixelMap(targetDoc, imageBuf);
             } finally {
                 inp.close();
             }

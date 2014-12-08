@@ -9,6 +9,6 @@ public class ProxySetup {
         System.setProperty("http.proxyHost", "wwwp.nls.fi");
         System.setProperty("http.proxyPort", "800");
         System.setProperty("http.nonProxyHosts",
-                "*.nls.fi|127.0.0.1|*.paikkatietoikkuna.fi");
+                "*.nls.fi|127.0.0.1|*.paikkatietoikkuna.fi|karttamoottori.maanmittauslaitos.fi");
     }
 }

@@ -2,13 +2,11 @@ package fi.nls.oskari.printout.ws.jaxrs.map;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +23,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
-import fi.nls.oskari.printout.config.ConfigValue;
 import fi.nls.oskari.printout.ws.ClientInfoSetup;
 import fi.nls.oskari.printout.ws.ProxySetup;
 import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
@@ -36,10 +33,7 @@ import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 public class WebServiceMapProducerResourceTest {
 
     final WebServiceMapProducerResourceTestRunner runner = new WebServiceMapProducerResourceTestRunner();
-    final ClientInfoSetup clientInfo = new ClientInfoSetup(
-            "XX"
-            //"oskaristate=%7B%22currentViewId%22%3A%221%22%2C%22viewData%22%3A%7B%22mapfull%22%3A%7B%22state%22%3A%7B%22north%22%3A6885544%2C%22east%22%3A523072%2C%22zoom%22%3A1%2C%22srs%22%3A%22EPSG%3A3067%22%2C%22selectedLayers%22%3A%5B%7B%22id%22%3A%22base_35%22%2C%22opacity%22%3A100%2C%22style%22%3A%22default%22%7D%5D%2C%22plugins%22%3A%7B%22MainMapModuleMarkersPlugin%22%3A%7B%22markers%22%3A%5B%5D%7D%2C%22MainMapModuleManageStatsPlugin%22%3A%7B%22indicators%22%3A%5B%5D%2C%22layerId%22%3Anull%2C%22filterMethod%22%3A%22%22%2C%22cmode%22%3A%22%22%2C%22numberOfClasses%22%3A5%2C%22methodId%22%3A%221%22%2C%22filterInput%22%3A%5B%5D%2C%22filterRegion%22%3A%5B%5D%2C%22municipalities%22%3A%5B%5D%7D%7D%7D%7D%2C%22toolbar%22%3A%7B%22state%22%3A%7B%22selected%22%3A%7B%22id%22%3A%22select%22%2C%22group%22%3A%22default-basictools%22%7D%7D%7D%2C%22search%22%3A%7B%22state%22%3A%7B%7D%7D%2C%22layerselector2%22%3A%7B%22state%22%3A%7B%22tab%22%3A%22Aiheittain%22%2C%22filter%22%3A%22pelto%22%2C%22groups%22%3A%5B%5D%7D%7D%2C%22maplegend%22%3A%7B%22state%22%3A%7B%7D%7D%2C%22statsgrid%22%3A%7B%22state%22%3A%7B%22indicators%22%3A%5B%5D%2C%22layerId%22%3Anull%2C%22filterMethod%22%3A%22%22%2C%22cmode%22%3A%22%22%2C%22numberOfClasses%22%3A5%2C%22methodId%22%3A%221%22%2C%22filterInput%22%3A%5B%5D%2C%22filterRegion%22%3A%5B%5D%2C%22municipalities%22%3A%5B%5D%7D%7D%2C%22metadataflyout%22%3A%7B%7D%2C%22printout%22%3A%7B%22state%22%3A%7B%7D%7D%2C%22admin-layerrights%22%3A%7B%22state%22%3A%7B%7D%7D%7D%7D; LFR_SESSION_STATE_25529=1418029068812; JSESSIONID=D0FF2B40DE38339C6E48E271556BB284; COOKIE_SUPPORT=true; __utmt=1; GUEST_LANGUAGE_ID=fi_FI; __utmt=1; COMPANY_ID=10108; ID=6473694d302b2b72594f6b3d; PASSWORD=5971506b454f54324a727150417a66572f53516955773d3d; LOGIN=6a616e6e652e6b6f72686f6e656e406d61616e6d6974746175736c6169746f732e6669; SCREEN_NAME=51762f3749734c37446f413d; __utma=147817270.914057211.1418029040.1418029040.1418029040.1; __utmb=147817270.6.10.1418029040; __utmc=147817270; __utmz=147817270.1418029040.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utma=239348246.1787856735.1418028960.1418028960.1418028960.1; __utmb=239348246.5.10.1418028960; __utmc=239348246; __utmz=239348246.1418028960.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Snoop_testi=1; Snoobisession_paikkatietoikkuna_fi=749749; Snoobi30minute_paikkatietoikkuna_fi=749749; SnoobiID=1350733379"
-    );
+    final ClientInfoSetup clientInfo = new ClientInfoSetup("XX");
 
     {
         runner.setClientInfo(clientInfo);
