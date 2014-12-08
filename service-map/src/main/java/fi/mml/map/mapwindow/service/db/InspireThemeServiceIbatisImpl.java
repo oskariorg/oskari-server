@@ -78,6 +78,7 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
 
     public List<InspireTheme> findAll() {
         final List<InspireTheme> groups = super.findAll();
+        ID_CACHE.setLimit(groups.size() + 10);
         ID_CACHE.flush(true);
         for(InspireTheme group : groups) {
             ID_CACHE.put("" + group.getId(), group);
@@ -88,6 +89,7 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     private void findLayerMappings() {
         // setup link cache
         final List<Map<String,Object>> mappings = queryForListMap(getNameSpace() + ".findByMaplayerMappings");
+        LINK_CACHE.setLimit(mappings.size() + 10);
         LINK_CACHE.flush(true);
         for(Map<String,Object> result : mappings) {
             if(result.get("themeid") == null) {

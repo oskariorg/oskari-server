@@ -1,5 +1,33 @@
 # Release Notes
 
+## 1.26
+
+### service-base
+
+PropertyUtil now always trims property values for leading and trailing spaces.
+
+### control-base
+
+GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
+
+## 1.25.4
+
+Fixes an issues with caching. Issue only affects relatively large caches (over 1000 map layers etc)
+
+### service-base/Cache
+
+Fixed a concurrency issue when cache limit was reached. Also added support for configuring cache-limits with properties:
+
+    oskari.cache.limit.[cachename]=[limit]
+
+Limit configured with properties is always used if configured (prefer config over code-assumptions).
+If configuration doesn't exist code can try detecting reasonable limits automatically or use the default (1000).
+Also log-level changed to WARN when a cache overflows since it most likely affects performance negatively.
+
+### service-map/InspireThemeService
+
+Now calculates cache-limit automatically based on the amount of map layers/inspirethemes are present.
+
 ## 1.25.3
 
 ### control-base/GetWMSCapabilities
