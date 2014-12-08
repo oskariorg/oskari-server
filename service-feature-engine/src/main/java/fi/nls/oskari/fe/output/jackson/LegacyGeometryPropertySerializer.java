@@ -7,7 +7,9 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import fi.nls.oskari.fe.input.jackson.GeometryProperty;
+import fi.nls.oskari.fe.gml.util.GeometryProperty;
+
+
 
 public class LegacyGeometryPropertySerializer extends
         JsonSerializer<GeometryProperty> {

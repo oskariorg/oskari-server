@@ -2,15 +2,17 @@ package fi.nls.oskari.eu.elf.recipe.gn;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.elf.geographicalnames.masterlod1.NamedPlace;
+import fi.nls.oskari.eu.elf.geographicalnames.ELF_MasterLoD1_NamedPlace.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class ELF_GN_NamedPlace extends JacksonParserRecipe {
+public class ELF_MasterLoD1_NamedPlace_Parser extends JacksonParserRecipe {
 
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        
         getGeometryDeserializer().mapGeometryTypes(
                 "http://www.opengis.net/gml/3.2", "Point", "MultiPoint");
 
@@ -43,7 +45,7 @@ public class ELF_GN_NamedPlace extends JacksonParserRecipe {
                     namedPlace.geometry.geometry);
 
             outputFeature
-                    .addProperty(gn, namedPlace.name)
+                    .addProperty(gn, namedPlace.getName())
                     .addProperty(beginLifespanVersion,
                             namedPlace.beginLifespanVersion)
                     .addProperty(inspireId, namedPlace.inspireId)

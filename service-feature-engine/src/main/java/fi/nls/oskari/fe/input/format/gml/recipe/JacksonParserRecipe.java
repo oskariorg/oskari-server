@@ -177,6 +177,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
                     output_geoms);
             output_props.clear();
             output_geoms.clear();
+            feature = null;
             output_ID = null;
             return this;
 

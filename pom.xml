@@ -181,6 +181,13 @@
                 <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+            
+             <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>service-datamodel</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -703,6 +710,7 @@
         <module>service-control</module>
         <module>service-scheduler</module>
         <module>service-csw</module>
+        <module>service-datamodel</module>
 
         <module>control-base</module>
         <module>control-example</module>
@@ -715,6 +723,7 @@
         <module>webapp-map</module>
         <module>standalone-jetty</module>
         <module>elf-jetty</module>
+        
     </modules>
 
     <profiles>
@@ -727,6 +736,7 @@
                 <module>service-permissions</module>
                 <module>service-map</module>
                 <module>service-wfs</module>
+                <module>service-datamodel</module>
                 <module>shared-test-resources</module>
                 <module>geoserver-ext/OskariMarkFactory</module>
                 <module>service-feature-engine</module>

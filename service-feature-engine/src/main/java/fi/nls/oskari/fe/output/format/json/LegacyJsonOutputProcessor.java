@@ -22,7 +22,7 @@ import org.codehaus.jackson.map.module.SimpleModule;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import fi.nls.oskari.fe.input.jackson.GeometryProperty;
+import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
