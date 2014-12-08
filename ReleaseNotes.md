@@ -5,7 +5,7 @@
 ### service-base
 
 PropertyUtil now always trims property values for leading and trailing spaces.
-PropertyUtil now has convenience method to get numeric properties as double precission.
+PropertyUtil now has a convenience method to get numeric properties as double precision.
 
 ### control-base
 
@@ -95,6 +95,15 @@ Harcoded zoom levels were also removed from KTJ_KII_CHANNEL channel. To get simi
 using the channel, configure oskari-ext.properties with:
 
     search.channel.KTJ_KII_CHANNEL.scale=1400
+
+### servlet-printout
+
+New printout properties to support GetLayerTile action route for authorised map tiles
+
+    mapproducer.localurl.match=/web (prefixes to match as local resources)
+    mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
+    mapproducer.referer=referer info for maptile requests
+    mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
 
 ## 1.25.4
 

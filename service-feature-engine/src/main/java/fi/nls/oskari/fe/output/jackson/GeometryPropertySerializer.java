@@ -7,7 +7,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-import fi.nls.oskari.fe.input.jackson.GeometryProperty;
+import fi.nls.oskari.fe.gml.util.GeometryProperty;
+
+
 
 public class GeometryPropertySerializer extends
         JsonSerializer<GeometryProperty> {

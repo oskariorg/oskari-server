@@ -5,7 +5,6 @@ import java.io.IOException;
 import fi.nls.oskari.eu.elf.geographicalnames.masterlod1.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.schema.XSDDatatype;
 
 public class ELF_GN_NamedPlace extends JacksonParserRecipe {
 
@@ -25,7 +24,7 @@ public class ELF_GN_NamedPlace extends JacksonParserRecipe {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
-        
+
         outputContext.build();
 
         OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(

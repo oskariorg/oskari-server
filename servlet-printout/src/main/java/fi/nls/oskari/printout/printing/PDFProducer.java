@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -50,6 +49,7 @@ public class PDFProducer {
 		boolean pageDate = false;
 		boolean pageScale = false;
 		boolean pageLogo = false;
+		String pageLogoResource = "logo.png";
 		boolean pageLegend = false;
 		boolean pageCopyleft = false;
 		Float[] pageMapRect = null;
@@ -148,6 +148,16 @@ public class PDFProducer {
 		public void setContent(PrintoutContent content) {
 			this.content = content;
 		}
+
+        public String getPageLogoResource() {
+            return pageLogoResource;
+        }
+
+        public void setPageLogoResource(String pageLogoResource) {
+            this.pageLogoResource = pageLogoResource;
+        }
+		
+		
 
 	};
 
