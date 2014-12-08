@@ -10,6 +10,6 @@ public class WsTestResources {
 	public static URI getTestResource(String uri) throws URISyntaxException {
 		return new URI("http", null, "localhost", port,
 
-		"/oskari-printout-backend-1.0.3-SNAPSHOT" + uri, null, null);
+		"/oskari-printout-backend" + uri, null, null);
 	}
 }

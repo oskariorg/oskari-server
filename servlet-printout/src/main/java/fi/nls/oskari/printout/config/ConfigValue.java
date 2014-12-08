@@ -4,86 +4,103 @@ import java.util.Properties;
 
 public enum ConfigValue {
 
-	/* */
-	LAYER_URLTEMPLATE_MYPLACES("layer.urltemplate.myplaces"),
+    /* 1.26 */
+    
+    MAPPRODUCER_LOCALURL_MATCH("mapproducer.localurl.match"),
+    
+    MAPPRODUCER_LOCALURL_PREFIX("mapproducer.localurl.prefix"),
 
-	/* */
-	LAYER_URLTEMPLATE_MYPLACES_LAYERS("layer.urltemplate.myplaces.layers"),
+    MAPPRODUCER_USERAGENT("mapproducer.useragent"),
 
-	/* */
-	LAYER_URLTEMPLATE_WFSLAYER_LEGACY("layer.urltemplate.wfslayer.legacy"),
-	
-	/* */
-	LAYER_URLTEMPLATE_WFSLAYER("layer.urltemplate.wfslayer"),
+    MAPPRODUCER_REFERER("mapproducer.referer"),
 
-	/* */
-	LAYER_URLTEMPLATE_STATSLAYER("layer.urltemplate.statslayer"),
+    MAPPRODUCER_LOGO_RESOURCE("mapproducer.logo.resource"),
 
-	/* */
-	LAYER_CACHE_EXCLUDE("layer.cache.exclude"),
+    MAPPRODUCER_IMAGE_UPSCALE_ALGORITHM("mapproducer.image.upscale"),
 
-	/* */
-	LAYERDEFINITION_CREDENTIALS_MYPLACES("layer.credentials.myplaces"),
+    LAYER_URLTEMPLATE_LOCALHOST("layer.urltemplate.localhost"),
 
-	/* */
-	LAYER_TIMEOUT_SECONDS("layer.timeout.seconds"),
+    /* */
 
-	/* */
-	LAYER_TEMPLATE("layer.template"),
+    LAYER_URLTEMPLATE_MYPLACES("layer.urltemplate.myplaces"),
 
-	/* */
-	MAPPRODUCER_MAXEXTENT("mapproducer.maxextent"),
+    /* */
+    LAYER_URLTEMPLATE_MYPLACES_LAYERS("layer.urltemplate.myplaces.layers"),
 
-	/* */
-	LAYER_TILES_URL_WHITELIST("layer.tiles.url.whitelist"),
+    /* */
+    LAYER_URLTEMPLATE_WFSLAYER_LEGACY("layer.urltemplate.wfslayer.legacy"),
 
-	/* */
-	EPSGCODE("epsgCode"),
+    /* */
+    LAYER_URLTEMPLATE_WFSLAYER("layer.urltemplate.wfslayer"),
 
-	/* */
-	GRIDSUBSETNAME("gridSubsetName"),
+    /* */
+    LAYER_URLTEMPLATE_STATSLAYER("layer.urltemplate.statslayer"),
 
-	/* */
-	GRIDRESOURCE("gridResource"),
+    /* */
+    LAYER_CACHE_EXCLUDE("layer.cache.exclude"),
 
-	/* */
-	GEOJSON_DEBUG("geojson.debug"),
+    /* */
+    LAYERDEFINITION_CREDENTIALS_MYPLACES("layer.credentials.myplaces"),
 
-	/* */
-	SCALE_RESOLVER("scale.resolver"),
-	
-	/* */
-	LAYERSURL("layersURL"),
-	
-	REDIS_BLOB_CACHE("redis.blobcache"),
+    /* */
+    LAYER_TIMEOUT_SECONDS("layer.timeout.seconds"),
 
-	/* temp fix to 'support' ditching useless minor scale resolution maps */ 
-	MAPLINK_ZOOM_OFFSET("maplink.zoom.offset")
+    /* */
+    LAYER_TEMPLATE("layer.template"),
 
-	;
+    /* */
+    MAPPRODUCER_MAXEXTENT("mapproducer.maxextent"),
 
-	public static final String CONFIG_SYSTEM_PROPERTY = "fi.nls.oskari.imaging.config";
-	public static final String DEFAULT_PROPERTIES = "default.properties";
+    /* */
+    LAYER_TILES_URL_WHITELIST("layer.tiles.url.whitelist"),
 
-	private String key;
+    /* */
+    EPSGCODE("epsgCode"),
 
-	private ConfigValue(String key) {
-		this.key = key;
-	}
+    /* */
+    GRIDSUBSETNAME("gridSubsetName"),
 
-	public String getConfigProperty(Properties props, String defaultValue) {
-		return props.getProperty(key, defaultValue);
-	}
+    /* */
+    GRIDRESOURCE("gridResource"),
 
-	public String getConfigProperty(Properties props) {
-		return props.getProperty(key);
-	}
-	
-	public Integer getConfigProperty(Properties props, Integer defaultValue) {
-		String val = props.getProperty(key);
-		if( val == null ) {
-			return defaultValue;
-		}
-		return Integer.parseInt(val, 10);
-	}
+    /* */
+    GEOJSON_DEBUG("geojson.debug"),
+
+    /* */
+    SCALE_RESOLVER("scale.resolver"),
+
+    /* */
+    LAYERSURL("layersURL"),
+
+    REDIS_BLOB_CACHE("redis.blobcache"),
+
+    /* temp fix to 'support' ditching useless minor scale resolution maps */
+    MAPLINK_ZOOM_OFFSET("maplink.zoom.offset")
+
+    ;
+
+    public static final String CONFIG_SYSTEM_PROPERTY = "fi.nls.oskari.imaging.config";
+    public static final String DEFAULT_PROPERTIES = "default.properties";
+
+    private String key;
+
+    private ConfigValue(String key) {
+        this.key = key;
+    }
+
+    public String getConfigProperty(Properties props, String defaultValue) {
+        return props.getProperty(key, defaultValue);
+    }
+
+    public String getConfigProperty(Properties props) {
+        return props.getProperty(key);
+    }
+
+    public Integer getConfigProperty(Properties props, Integer defaultValue) {
+        String val = props.getProperty(key);
+        if (val == null) {
+            return defaultValue;
+        }
+        return Integer.parseInt(val, 10);
+    }
 }

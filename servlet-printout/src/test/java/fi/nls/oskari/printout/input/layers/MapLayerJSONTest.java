@@ -69,7 +69,7 @@ public class MapLayerJSONTest {
 	@Test
 	public void testMapLayerJSONParser() throws IOException, ParseException {
 
-		URL url = MapProducer.class.getResource("maplayer.json");
+		URL url = MapProducer.class.getResource("layers.json");
 
 		InputStream inp = url.openStream();
 
