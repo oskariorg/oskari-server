@@ -298,7 +298,7 @@
         oskari_maplayer l LEFT OUTER JOIN oskari_maplayer_metadata m
         ON  m.metadataid = l.metadataId
         WHERE
-        m.uuid = #id#
+        m.metadataid = #id#
         AND l.parentId = -1
 
     </select>
