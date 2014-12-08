@@ -8,7 +8,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             opacity,url,username, password, version, srs_name, locale)
   VALUES('wfslayer', 'oskari:my_places', (SELECT MAX(id) FROM oskari_layergroup),
   		 15000000, 1, 
-         50, 'http://localhost/geoserver/oskari/ows', 'admin', 'geoserver','3.1.1', 'EPSG:3857', '{ fi:{name:"Omat paikat",subtitle:""},sv:{name:"My places",subtitle:""},en:{name:"My places",subtitle:""}}');
+         50, 'http://localhost/geoserver/oskari/ows', 'admin', 'geoserver','1.1.0', 'EPSG:3857', '{ fi:{name:"Omat paikat",subtitle:""},sv:{name:"My places",subtitle:""},en:{name:"My places",subtitle:""}}');
 
 
 -- add wfs specific layer data;
@@ -17,7 +17,7 @@ INSERT INTO portti_wfs_layer (maplayer_id, layer_name, gml_geometry_property, gm
   selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id, feature_element, feature_namespace_uri, geometry_namespace_uri,
    get_highlight_image, wps_params, tile_buffer)
     VALUES ((select id from oskari_maplayer where name = 'oskari:my_places'),
-     'oskari:my_places',  'geometry',  false, '1.1.0', 1000, 'oskari', NULL, '', '{}',
+     'oskari:my_places',  'geometry',  false, true, 1000, 'oskari', NULL, '', '{}',
       '{"default": ["name", "place_desc","link", "image_url"],"fi": ["name", "place_desc","link", "image_url"]}', '{ "fi": ["nimi", "kuvaus","linkki", "kuva-linkki"]}',
        '2d', NULL, false, true, false, NULL,  'my_places', 'http://www.oskari.org', '', true, '{}', '{}');
 
