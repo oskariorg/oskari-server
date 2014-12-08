@@ -159,6 +159,11 @@ public class PropertyUtil {
         final String prop = getOptional(propertyName);
         return ConversionHelper.getInt(prop, defaultValue);
     }
+
+    public static double getOptional(final String propertyName, final double defaultValue) {
+        final String prop = getOptional(propertyName);
+        return ConversionHelper.getDouble(prop, defaultValue);
+    }
     public static boolean getOptional(final String propertyName, final boolean defaultValue) {
         final String prop = getOptional(propertyName);
         return ConversionHelper.getBoolean(prop, defaultValue);
