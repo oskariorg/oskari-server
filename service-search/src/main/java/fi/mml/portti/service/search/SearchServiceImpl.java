@@ -170,11 +170,14 @@ public class SearchServiceImpl implements SearchService {
             ChannelSearchResult result = actualChannel.doSearch(searchCriteria);
             
             List<SearchResultItem> items = result.getSearchResultItems();
-            
-            for(java.util.Iterator<SearchResultItem> iterator =  items.iterator() ; iterator.hasNext() ; ){
-            	log.debug("title from searc results: " + iterator.next().getTitle());
+
+            // calculate zoom scales etc common fields if we have an annotated (non-legacy) channel
+            if(actualChannel instanceof SearchChannel) {
+                SearchChannel channel = (SearchChannel) actualChannel;
+                for(SearchResultItem item : items) {
+                    channel.calculateCommonFields(item);
+                }
             }
-            
             return result;
         } catch (Exception e) {
             log.error(e, "Search query to", actualChannel.getId(),

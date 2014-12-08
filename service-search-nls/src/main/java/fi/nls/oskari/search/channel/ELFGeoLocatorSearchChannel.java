@@ -5,6 +5,7 @@ package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -101,8 +102,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(request.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8")));
         }
 
-        log.debug("/getData");
-
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -125,7 +124,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
-        	log.debug("doSearch");
             String data = getData(searchCriteria);
 
             // Clean xml version for geotools parser for faster parse

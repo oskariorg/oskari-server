@@ -39,6 +39,7 @@ public class SearchWorker {
     public static final String KEY_LAT = "lat";
     public static final String KEY_VILLAGE = "village";
     public static final String KEY_ZOOMLEVEL = "zoomLevel";
+    public static final String KEY_ZOOMSCALE = "zoomScale";
 
     public static final String ERR_EMPTY = "cannot_be_empty";
     public static final String ERR_TOO_SHORT = "too_short";
@@ -174,8 +175,11 @@ public class SearchWorker {
             String village = ConversionHelper.getString(sri.getVillage(), "");
             JSONHelper.putValue(itemJson, KEY_VILLAGE, Jsoup.clean(village, Whitelist.none()));
 
-            // Zoom level
+            // Zoom level - prefer scale, zoom level is deprecated
             JSONHelper.putValue(itemJson, KEY_ZOOMLEVEL, sri.getZoomLevel());
+            if(sri.getZoomScale() != -1) {
+                JSONHelper.putValue(itemJson, KEY_ZOOMSCALE, sri.getZoomScale());
+            }
             itemArray.put(itemJson);
 
             // Success

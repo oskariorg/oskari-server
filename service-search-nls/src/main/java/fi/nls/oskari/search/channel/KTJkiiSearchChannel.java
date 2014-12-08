@@ -91,7 +91,6 @@ public class KTJkiiSearchChannel extends SearchChannel {
                         SearchUtil.getLocaleCode(searchCriteria.getLocale())));
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
                 item.setVillage("");
-                item.setZoomLevel("11");
                 // resource id == feature id
                 item.setResourceId(rupsr.getGmlID());
                 item.setResourceNameSpace(serviceURL);
@@ -109,5 +108,4 @@ public class KTJkiiSearchChannel extends SearchChannel {
 
         return searchResultList;
     }
-
 }

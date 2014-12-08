@@ -42,7 +42,6 @@ public class SearchUtil {
 	public static final String LOCATION_TYPE_URL_PROPERTY = "search.locationtype.url";
 
 	private static final Map<String, String> localeMap = new HashMap<String, String>();
-	private static final Map<String, String> zoomLevel = new HashMap<String, String>();
 	
 	// KEY: locationTypeCode, VALUE: ranking
 	private static final Map<String, Integer> rankMap = new HashMap<String, Integer>();
@@ -66,65 +65,6 @@ public class SearchUtil {
             Locale loc = new Locale(lang);
             localeMap.put(lang, loc.getISO3Language());
         }
-		//Luontonimet, maasto	
-		zoomLevel.put("300","10");
-		zoomLevel.put("305","10");
-		zoomLevel.put("310","10");
-		zoomLevel.put("315","9");
-		zoomLevel.put("325","8");
-		zoomLevel.put("330","8");
-		zoomLevel.put("335","9");
-		zoomLevel.put("340","9");
-		zoomLevel.put("345","9");
-		zoomLevel.put("350","9");
-		zoomLevel.put("430","9");
-		zoomLevel.put("390","8");
-		//Luontonimet, vesistö	
-		zoomLevel.put("400","10");
-		zoomLevel.put("410","6");
-		zoomLevel.put("415","8");
-		zoomLevel.put("420","9");
-		zoomLevel.put("425","8");
-		zoomLevel.put("435","10");
-		zoomLevel.put("490","9");
-		//Kulttuurinimet, asutus
-		zoomLevel.put("540","6");
-		zoomLevel.put("550","6");
-		zoomLevel.put("560","8");
-		zoomLevel.put("570","10");
-		zoomLevel.put("590","10");
-		//Kulttuurinimet, muut	
-		zoomLevel.put("110","8");
-		zoomLevel.put("120","9");
-		zoomLevel.put("130","10");
-		zoomLevel.put("200","9");
-		zoomLevel.put("205","9");
-		zoomLevel.put("210","8");
-		zoomLevel.put("215","9");
-		zoomLevel.put("225","8");
-		zoomLevel.put("230","9");
-		zoomLevel.put("235","9");
-		zoomLevel.put("240","9");
-		zoomLevel.put("245","9");
-		zoomLevel.put("320","9");
-		zoomLevel.put("500","10");
-		zoomLevel.put("510","10");
-		zoomLevel.put("520","9");
-		zoomLevel.put("530","10");
-		zoomLevel.put("600","7");
-		zoomLevel.put("602","6");
-		zoomLevel.put("604","6");
-		zoomLevel.put("610","10");
-		zoomLevel.put("612","10");
-		zoomLevel.put("614","10");
-		zoomLevel.put("620","7");
-		zoomLevel.put("630","7");
-		zoomLevel.put("640","7");
-		zoomLevel.put("700","10");
-		zoomLevel.put("710","10");
-		zoomLevel.put("Tie","10");
-		zoomLevel.put("Rakennus","10");
-		zoomLevel.put("Kiinteistötunnus","10");
 	}
 	
 	public static final QName pnrPaikka = getQName("Paikka", "pnr");
@@ -151,22 +91,7 @@ public class SearchUtil {
     public static String getMapURL(String locale) {
         return PropertyUtil.get("map.url." + locale);
     }
-	
-	
-	/**
-	 * Returns the ZoomLevel by location type. 
-	 * @param type Location type
-	 * @return Zoom level
-	 */
-	
-	public static String getZoomLevel(String type) {
-		if (zoomLevel.containsKey(type)) {
-			return (zoomLevel.get(type));
-		} else {
-			return "5";
-		}
-	}
-	
+
 	/**
 	 * Returns the list rank by location type. 
 	 * @param locationTypeCode Location type code

@@ -5,10 +5,96 @@
 ### service-base
 
 PropertyUtil now always trims property values for leading and trailing spaces.
+PropertyUtil now has convenience method to get numeric properties as double precission.
 
 ### control-base
 
 GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
+
+### service-search
+
+Added support for search result scaling by type. Deprecated zoomLevel for search result item as level
+is dependent on number of zoom levels and service can be called from multiple maps having different number of
+ zoom levels available. Scale can be configured for search channel by search result item type
+
+    search.channel.[channel id].scale.[type]=1234
+
+ and a generic default scale
+
+    search.channel.[channel id].scale=4321
+
+If scale configurations are provided the search results will include scale hints for the frontend in it's response.
+Scale setup is automatic for search channels extending fi.nls.oskari.search.channel.SearchChannel and is based on
+ items type and properties mentioned above. To change how scale is calculated in custom channel
+ override the SearchChannel.calculateCommonFields(SearchResultItem item) method.
+
+### service-search-nls
+
+Removed the hardcoded zoom levels for channel REGISTER_OF_NOMENCLATURE_CHANNEL in service-search-nls.
+To get similar zoom functionalities for the search results using the channel, configure oskari-ext.properties with:
+
+    # Luontonimet, maasto
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.300=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.305=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.310=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.315=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.325=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.330=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.335=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.340=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.345=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.350=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.430=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.390=11300
+    # Luontonimet, vesistö
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.400=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.410=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.415=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.420=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.425=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.435=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.490=5650
+    # Kulttuurinimet, asutus
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.540=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.550=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.560=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.570=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.590=2800
+    # Kulttuurinimet, muut
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.110=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.120=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.130=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.200=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.205=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.210=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.215=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.225=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.230=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.235=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.240=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.245=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.320=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.500=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.510=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.520=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.530=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.600=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.602=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.604=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.610=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.612=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.614=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.620=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.630=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.640=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.700=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.710=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.Tie=2800
+
+Harcoded zoom levels were also removed from KTJ_KII_CHANNEL channel. To get similar zoom functionalities for the search results
+using the channel, configure oskari-ext.properties with:
+
+    search.channel.KTJ_KII_CHANNEL.scale=1400
 
 ## 1.25.4
 

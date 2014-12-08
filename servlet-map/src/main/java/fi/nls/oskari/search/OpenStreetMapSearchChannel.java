@@ -126,7 +126,6 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                     item.setLat("");
                     item.setContentURL("");
                 }
-                log.debug("ITEM: " + item.toString());
             }
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");

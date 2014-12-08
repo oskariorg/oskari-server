@@ -15,7 +15,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.*;
@@ -112,7 +111,6 @@ public abstract class BaseWfsAddressChannelSearchService extends SearchChannel {
                 String type = getType();
                 item.setType(SearchUtil.getLocationType(type + "_" + languageCode));
                 item.setActionURL(type);
-                item.setZoomLevel(SearchUtil.getZoomLevel(type));
                                 
                 item.setLon(String.valueOf(lon));
                 item.setLat(String.valueOf(lat));

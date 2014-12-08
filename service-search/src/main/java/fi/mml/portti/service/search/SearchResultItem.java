@@ -32,6 +32,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String northBoundLatitude;	
 	private String mapURL;
 	private String zoomLevel;
+    private double zoomScale = -1;
 	private String trunkateDescription;
 	private List<String> uuid;
 	private boolean downloadable = false;
@@ -66,6 +67,8 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 	
 	public int compareTo(SearchResultItem sri) {
+        // TODO: rank should be normalized and village -> type(?)
+        // streetname ranking should be done internally in the search channel impl which knows about the title content
 		if (this.rank == sri.getRank()) {
 			if (this.title.equals(sri.getTitle())) {
 				/* Same title, order is determined by village */
@@ -75,7 +78,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 				String[] streetName1 = this.getTitle().split("\\s");
 				String[] streetName2 = sri.getTitle().split("\\s");
 				
-				/* whitout street number */
+				/* without street number */
 				if (streetName1.length != streetName2.length) {
 					return streetName1.length - streetName2.length;
 				}
@@ -107,13 +110,42 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         this.type = type;
     }
 
+    /**
+     * @deprecated Use getZoomScale() instead
+     * @return zoomLevel
+     */
+    @Deprecated
     public String getZoomLevel() {
 		return zoomLevel;
 	}
 
+    /**
+     *
+     * @deprecated Use setZoomScale() instead
+     * @param zoomLevel
+     */
+    @Deprecated
 	public void setZoomLevel(String zoomLevel) {
 		this.zoomLevel = zoomLevel;
 	}
+
+    /**
+     * The scale in which the item should be shown.
+     * Map should show it in the closest zoom level available zooming out
+     * @param scale
+     */
+    public void setZoomScale(double scale) {
+        this.zoomScale = scale;
+    }
+
+    /**
+     * The scale in which the item should be shown.
+     * Map should show it in the closest zoom level available zooming out
+     * @return scale
+     */
+    public double getZoomScale() {
+        return this.zoomScale;
+    }
 
 	public String getMapURL() {
 		return mapURL;
