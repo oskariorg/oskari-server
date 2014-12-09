@@ -84,15 +84,15 @@ public class GeometryPropertyDeserializer extends
         XMLStreamReader reader = parser.getStaxReader();
 
         try {
-            geom = (Geometry) parseGeometry(handlers, reader);
-            parser.resume();
-            // parser.skipChildren();
+           //geom = (Geometry) parseGeometry(handlers, reader);
+           //parser.resume();
+            parser.skipChildren();
 
-        } catch (XMLStreamException e) {
+       /*} catch (XMLStreamException e) {
             throw new IOException(e);
         } catch (SAXException e) {
             throw new IOException(e);
-
+*/
         } finally {
         }
 

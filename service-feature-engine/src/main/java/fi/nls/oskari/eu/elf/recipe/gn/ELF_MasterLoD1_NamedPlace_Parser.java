@@ -3,10 +3,10 @@ package fi.nls.oskari.eu.elf.recipe.gn;
 import java.io.IOException;
 
 import fi.nls.oskari.eu.elf.geographicalnames.ELF_MasterLoD1_NamedPlace.NamedPlace;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class ELF_MasterLoD1_NamedPlace_Parser extends JacksonParserRecipe {
+public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
@@ -26,6 +26,9 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends JacksonParserRecipe {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+        
+        final Resource obj = outputContext
+                .addOutputStringProperty("obj");
 
         outputContext.build();
 
@@ -45,12 +48,14 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends JacksonParserRecipe {
                     namedPlace.geometry.geometry);
 
             outputFeature
-                    .addProperty(gn, namedPlace.getName())
+                    .addProperty(gn, namedPlace.name)
                     .addProperty(beginLifespanVersion,
                             namedPlace.beginLifespanVersion)
                     .addProperty(inspireId, namedPlace.inspireId)
                     .addProperty(endLifespanVersion,
                             namedPlace.endLifespanVersion);
+            
+            outputFeature.addProperty(obj,namedPlace);
 
             outputFeature.build();
 

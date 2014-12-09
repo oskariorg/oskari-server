@@ -20,7 +20,6 @@ import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
 import fi.nls.oskari.fe.xml.util.Nillable;
 import fi.nls.oskari.isotc211.gmd.MD_Resolution;
-import java.util.List;
 import fi.nls.oskari.fe.xml.util.Reference;
 
 public class ELF_MasterLoD1_NamedPlace
@@ -41,105 +40,83 @@ public class ELF_MasterLoD1_NamedPlace
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
+      public NillableType<String> endLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "leastDetailedViewingResolution")
       @XmlElement(required = false)
-      public List<MD_Resolution> leastDetailedViewingResolution;
-      private java.util.List<java.lang.String> localType = new java.util.ArrayList<java.lang.String>();
+      public A_1_leastDetailedViewingResolution leastDetailedViewingResolution;
+      @XmlElement(required = false)
+      public java.util.List<java.lang.String> localType = new java.util.ArrayList<java.lang.String>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "mostDetailedViewingResolution")
       @XmlElement(required = false)
-      public List<MD_Resolution> mostDetailedViewingResolution;
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<Identifier> relatedSpatialObject = new java.util.ArrayList<Identifier>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> type = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      public A_2_mostDetailedViewingResolution mostDetailedViewingResolution;
+      @XmlElement(required = false)
+      public java.util.List<_name> name = new java.util.ArrayList<_name>();
+      @XmlElement(required = false)
+      public java.util.List<A_4_relatedSpatialObject> relatedSpatialObject = new java.util.ArrayList<A_4_relatedSpatialObject>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> type = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "localType")
-      @XmlElement(required = false)
-      public void setLocalType(final java.util.List<java.lang.String> list)
+      public void setLocalType(final java.lang.String obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            localType.addAll(list);
-         }
-         else
-         {
-            localType.clear();
+            localType.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<java.lang.String> getLocalType()
+      java.util.List<java.lang.String> getLocalType()
       {
          return localType;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "name")
-      @XmlElement(required = true)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final _name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<GeographicalName> getName()
+      java.util.List<_name> getName()
       {
          return name;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "relatedSpatialObject")
-      @XmlElement(required = false)
-      public void setRelatedSpatialObject(
-            final java.util.List<Identifier> list)
+      public void setRelatedSpatialObject(final A_4_relatedSpatialObject obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            relatedSpatialObject.addAll(list);
-         }
-         else
-         {
-            relatedSpatialObject.clear();
+            relatedSpatialObject.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<Identifier> getRelatedSpatialObject()
+      java.util.List<A_4_relatedSpatialObject> getRelatedSpatialObject()
       {
          return relatedSpatialObject;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "type")
-      @XmlElement(required = false)
-      public void setType(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setType(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            type.addAll(list);
-         }
-         else
-         {
-            type.clear();
+            type.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getType()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getType()
       {
          return type;
       }
@@ -153,7 +130,7 @@ public class ELF_MasterLoD1_NamedPlace
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "MD_Resolution")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public MD_Resolution MD_Resolution;
    }
 
@@ -165,7 +142,7 @@ public class ELF_MasterLoD1_NamedPlace
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "MD_Resolution")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public MD_Resolution MD_Resolution;
    }
 
@@ -174,7 +151,7 @@ public class ELF_MasterLoD1_NamedPlace
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "name");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -196,8 +173,9 @@ public class ELF_MasterLoD1_NamedPlace
       public NillableType<String> sourceOfName;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "pronunciation")
       @XmlElement(required = false)
-      public PronunciationOfName pronunciation;
-      private java.util.List<SpellingOfName> spelling = new java.util.ArrayList<SpellingOfName>();
+      public A_3_pronunciation pronunciation;
+      @XmlElement(required = false)
+      public java.util.List<_spelling> spelling = new java.util.ArrayList<_spelling>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "grammaticalGender")
       @XmlElement(required = false)
       public Reference grammaticalGender;
@@ -206,21 +184,15 @@ public class ELF_MasterLoD1_NamedPlace
       public Reference grammaticalNumber;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "spelling")
-      @XmlElement(required = true)
-      public void setSpelling(final java.util.List<SpellingOfName> list)
+      public void setSpelling(final _spelling obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            spelling.addAll(list);
-         }
-         else
-         {
-            spelling.clear();
+            spelling.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<SpellingOfName> getSpelling()
+      java.util.List<_spelling> getSpelling()
       {
          return spelling;
       }
@@ -235,7 +207,7 @@ public class ELF_MasterLoD1_NamedPlace
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "PronunciationOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PronunciationOfName PronunciationOfName;
    }
 
@@ -256,7 +228,7 @@ public class ELF_MasterLoD1_NamedPlace
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "spelling");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "SpellingOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public SpellingOfName SpellingOfName;
    }
 
@@ -265,7 +237,7 @@ public class ELF_MasterLoD1_NamedPlace
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "SpellingOfName");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "text")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String text;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "script")
       @XmlElement(required = false)
@@ -284,7 +256,7 @@ public class ELF_MasterLoD1_NamedPlace
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base/3.3rc3/", localName = "Identifier")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier Identifier;
    }
 }
