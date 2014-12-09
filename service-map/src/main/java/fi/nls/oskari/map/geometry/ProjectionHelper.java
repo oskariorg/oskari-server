@@ -19,11 +19,29 @@ public class ProjectionHelper {
     public static Point transformPoint(final double x, final double y, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(x, y), sourceSRS, targetSRS);
     }
-
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {
             CoordinateReferenceSystem sourceCrs = CRS.decode(sourceSRS);
             CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            return transformPoint(point, sourceCrs, targetCrs);
+
+        } catch (Exception e) {
+            log.error(e, "Transform CRS decoding failed! Params: sourceSRS", sourceSRS, "targetSRS", targetSRS, "Point", point );
+        }
+        return null;
+    }
+    public static Point transformPoint(final double x, final double y, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
+        try {
+            CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
+            return transformPoint(new Point(x, y), sourceCrs, targetCrs);
+
+        } catch (Exception e) {
+            log.error(e, "Transform CRS decoding failed! Params: targetSRS", targetSRS, "Point: ",x,"  ",y );
+        }
+        return null;
+    }
+    public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
+        try {
 
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
@@ -38,7 +56,7 @@ public class ProjectionHelper {
             }
             return new Point(destDirectPosition2D.y, destDirectPosition2D.x);
         } catch (Exception e) {
-            log.error(e, "Transform failed! Params: sourceSRS", sourceSRS, "targetSRS", targetSRS, "Point", point );
+            log.error(e, "Transform failed! Params: sourceSRS", sourceCrs, "targetSRS", targetCrs, "Point", point );
         }
         return null;
     }
