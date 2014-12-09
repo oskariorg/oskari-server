@@ -1,11 +1,7 @@
 package fi.nls.oskari.search.channel;
-/**
- * Search channel for ELF Geolocator requests
- */
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
-import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -16,7 +12,9 @@ import fi.nls.oskari.util.PropertyUtil;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-
+/**
+ * Search channel for ELF Geolocator requests
+ */
 @Oskari(ELFGeoLocatorSearchChannel.ID)
 public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
@@ -70,7 +68,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
-
 
         StringBuffer buf = new StringBuffer(serviceURL);
         if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
