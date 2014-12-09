@@ -16,8 +16,8 @@ public class ProjectionHelper {
 
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
 
-    public static Point transformPoint(final double x, final double y, final String sourceSRS, final String targetSRS) {
-        return transformPoint(new Point(x, y), sourceSRS, targetSRS);
+    public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
+        return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
     }
     public static Point transformPoint(final Point point, final String sourceSRS, final String targetSRS) {
         try {
@@ -30,13 +30,13 @@ public class ProjectionHelper {
         }
         return null;
     }
-    public static Point transformPoint(final double x, final double y, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
+    public static Point transformPoint(final double lon, final double lat, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
         try {
             CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
-            return transformPoint(new Point(x, y), sourceCrs, targetCrs);
+            return transformPoint(new Point(lon, lat), sourceCrs, targetCrs);
 
         } catch (Exception e) {
-            log.error(e, "Transform CRS decoding failed! Params: targetSRS", targetSRS, "Point: ",x,"  ",y );
+            log.error(e, "Transform CRS decoding failed! Params: targetSRS", targetSRS, "Point: ",lon,"  ",lat);
         }
         return null;
     }
