@@ -2,6 +2,10 @@
 
 ## 1.26
 
+### service-map
+
+Added a helper class for projection transformations: fi.nls.oskari.map.geometry.ProjectionHelper.
+
 ### service-base
 
 PropertyUtil now always trims property values for leading and trailing spaces.
