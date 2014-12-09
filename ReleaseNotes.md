@@ -17,6 +17,8 @@ GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL
 
 ### service-search
 
+#### search channel changes
+
 Added support for search result scaling by type. Deprecated zoomLevel for search result item as level
 is dependent on number of zoom levels and service can be called from multiple maps having different number of
  zoom levels available. Scale can be configured for search channel by search result item type
@@ -31,6 +33,11 @@ If scale configurations are provided the search results will include scale hints
 Scale setup is automatic for search channels extending fi.nls.oskari.search.channel.SearchChannel and is based on
  items type and properties mentioned above. To change how scale is calculated in custom channel
  override the SearchChannel.calculateCommonFields(SearchResultItem item) method.
+
+#### search result improvements
+
+SearchWorker now adds zoomScale for results if it's present and a bbox if westboundlon is present. Search channels should
+set the bbox properties only if they make sense.
 
 ### service-search-nls
 
