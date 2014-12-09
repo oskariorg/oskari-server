@@ -2,6 +2,10 @@
 
 ## 1.26
 
+### control-admin
+
+Added a new ActionHandler for route 'SearchChannel'. This lists all annotated SearchChannels and their debug data.
+
 ### service-map
 
 Added a helper class for projection transformations: fi.nls.oskari.map.geometry.ProjectionHelper.
@@ -33,6 +37,11 @@ If scale configurations are provided the search results will include scale hints
 Scale setup is automatic for search channels extending fi.nls.oskari.search.channel.SearchChannel and is based on
  items type and properties mentioned above. To change how scale is calculated in custom channel
  override the SearchChannel.calculateCommonFields(SearchResultItem item) method.
+
+#### search channel debugging
+
+Added an interface method that can be used to query configuration for search channels. To add channel specific debug data,
+override the getDebugData() method and append the channel specific debug data to the map returned from super.getDebugData().
 
 #### search result improvements
 

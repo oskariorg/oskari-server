@@ -145,7 +145,6 @@ public class ELFGeoLocatorParser {
                     }
                 }
 
-
                 // Loop names - multiply items, if exomym true
                 int size = names.size();
                 if (size > 0 && !exonym) size = 1;   // 1st one when exonym false

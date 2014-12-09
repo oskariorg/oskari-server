@@ -3,7 +3,6 @@ package fi.mml.portti.service.search;
 import fi.nls.oskari.search.channel.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -11,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;

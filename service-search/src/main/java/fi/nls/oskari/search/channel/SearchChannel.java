@@ -20,6 +20,29 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     private double defaultScale = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
+
+    /**
+     * Returns debug data for search channels that can then be shown in UI.
+     * Not to be used by "production code", but for debugging only!
+     * @return
+     */
+    public Map<String, Object> getDebugData() {
+        Map<String, Double> configurables = new HashMap<String, Double>();
+        for(String type : types) {
+            Double configured = mapScalesForType.get(type);
+            // include all encountered types
+            // add -1 as value for those without config
+            if(configured == null) {
+                configured = -1d;
+            }
+            configurables.put(type, configured);
+        }
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("defaultScale", defaultScale);
+        data.put("scaleOptions", configurables);
+
+        return data;
+    }
     
     public String getId() {
         return getName();
