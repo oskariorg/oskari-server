@@ -8,12 +8,12 @@ package fi.nls.oskari.search.util;
  * To change this template use File | Settings | File Templates.
  */
 
-import com.vividsolutions.jts.geom.Point;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchResultItem;
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
@@ -21,8 +21,6 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
@@ -51,6 +49,8 @@ public class ELFGeoLocatorParser {
     public static final String KEY_LOCATIONTYPE_TITLE = "locationType_title";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
+
+    public final static String SERVICE_SRS = "EPSG:4258";
 
     /**
      * Parse ELF Geolocator  response to search item list
@@ -87,11 +87,9 @@ public class ELFGeoLocatorParser {
 
 
             //parse featurecollection
-
-            Object obj = null;
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc = null;
             try {
-                obj = parser.parse(xml);
+                Object obj = parser.parse(xml);
                 if (obj instanceof Map) {
                     log.error("parse error");
                     return null;
@@ -121,45 +119,33 @@ public class ELFGeoLocatorParser {
 
                 String lon = "";
                 String lat = "";
-
-
-                try {
-                    Point point = null;
-
-                    if (f.getDefaultGeometry() instanceof Point) {
-                        point = (Point) f.getDefaultGeometry();
-                    }
-                    if (point != null) {
-                        CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4258");
-                        CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:3067");
-                        if (epsg != null) targetCrs = CRS.decode(epsg);
-
-                        boolean lenient = false;
-                        MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-
-                        DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getY(), point.getX());
-                        DirectPosition2D destDirectPosition2D = new DirectPosition2D();
-                        mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-                        lon = String.valueOf(destDirectPosition2D.x);
-                        lat = String.valueOf(destDirectPosition2D.y);
-                        // Switch direction, if 1st coord is to the north
-                        if (targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.NORTH ||
-                                targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
-                                targetCrs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP) {
-                            lon = String.valueOf(destDirectPosition2D.y);
-                            lat = String.valueOf(destDirectPosition2D.x);
-                        }
-
-                    }
-
-
-                } catch (NoSuchAuthorityCodeException e) {
-                    log.error(e, "geotools pox");
-                    return null;
-                } catch (FactoryException e) {
-                    log.error(e, "geotools pox factory");
-                    return null;
+                Point lowerLeft = null;
+                Point upperRight = null;
+                /*
+                // The bounds doesn't seem to return anything useful with this service so ignore it.
+                // Enable once the results from the service are more promising...
+                // ATM the bounds for example "Finland" the country are a point to Helsinki the town...
+                if(f.getBounds() != null) {
+                    log.debug("Bounds:", f.getBounds(), "min y", f.getBounds().getMinY(), "min x", f.getBounds().getMinX(),
+                            "max y", f.getBounds().getMaxY(), "max x", f.getBounds().getMaxX());
+                    lowerLeft = ProjectionHelper.transformPoint(f.getBounds().getMinY(), f.getBounds().getMinX(), SERVICE_SRS, epsg); //"EPSG:3067"
+                    upperRight = ProjectionHelper.transformPoint(f.getBounds().getMaxY(), f.getBounds().getMaxX(), SERVICE_SRS, epsg); //"EPSG:3067"
+                    log.debug("Bounds:", f.getBounds());
                 }
+                */
+                if (f.getDefaultGeometry() instanceof com.vividsolutions.jts.geom.Point) {
+                    com.vividsolutions.jts.geom.Point point = (com.vividsolutions.jts.geom.Point) f.getDefaultGeometry();
+                    log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
+                    // since ProjectionHelper.isFirstAxisNorth(CRS.decode(SERVICE_SRS)) == true -> y first
+                    Point p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), SERVICE_SRS, epsg); //"EPSG:3067"
+                    log.debug("Transformed coordinates - x:", p2.getLon(), "y:", p2.getLat());
+                    if(p2 != null) {
+                        lon = "" + p2.getLon();
+                        lat = "" + p2.getLat();
+                    }
+                }
+
+
                 // Loop names - multiply items, if exomym true
                 int size = names.size();
                 if (size > 0 && !exonym) size = 1;   // 1st one when exonym false
@@ -185,6 +171,12 @@ public class ELFGeoLocatorParser {
 
                     item.setLon(lon);
                     item.setLat(lat);
+                    if(lowerLeft != null && upperRight != null) {
+                        item.setEastBoundLongitude("" + upperRight.getLon());
+                        item.setNorthBoundLatitude("" + upperRight.getLat());
+                        item.setWestBoundLongitude("" + lowerLeft.getLon());
+                        item.setSouthBoundLatitude("" + lowerLeft.getLat());
+                    }
                     searchResultList.addItem(item);
                 }
 
@@ -219,7 +211,6 @@ public class ELFGeoLocatorParser {
                 }
             }
         }
-
     }
 
     /**
