@@ -1,6 +1,7 @@
 package fi.nls.oskari.eu.elf.addresses;
 
 import java.net.URI;
+import fi.nls.oskari.fe.gml.util.CodeType;
 import fi.nls.oskari.isotc211.gco.Distance;
 import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,132 +40,106 @@ public class ELF_MasterLoD0_Address
       @XmlElement(required = false)
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "alternativeIdentifier")
       @XmlElement(required = false)
       public NillableType<String> alternativeIdentifier;
-      private java.util.List<GeographicPosition> position = new java.util.ArrayList<GeographicPosition>();
+      @XmlElement(required = false)
+      public java.util.List<_position> position = new java.util.ArrayList<_position>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "status")
       @XmlElement(required = false)
       public Reference status;
-      private java.util.List<AddressLocator> locator = new java.util.ArrayList<AddressLocator>();
+      @XmlElement(required = false)
+      public java.util.List<_locator> locator = new java.util.ArrayList<_locator>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "validFrom")
       @XmlElement(required = false)
-      public NillableType<Calendar> validFrom;
+      public NillableType<String> validFrom;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "validTo")
       @XmlElement(required = false)
-      public NillableType<Calendar> validTo;
+      public NillableType<String> validTo;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> parcel = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<A_1_component> component = new java.util.ArrayList<A_1_component>();
-      private java.util.List<AbstractConstruction> building = new java.util.ArrayList<AbstractConstruction>();
+      public NillableType<String> endLifespanVersion;
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> parcel = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_1_component> component = new java.util.ArrayList<A_1_component>();
+      @XmlElement(required = false)
+      public java.util.List<_building> building = new java.util.ArrayList<_building>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "parentAddress")
       @XmlElement(required = false)
       public Reference parentAddress;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "position")
-      @XmlElement(required = true)
-      public void setPosition(final java.util.List<GeographicPosition> list)
+      public void setPosition(final _position obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            position.addAll(list);
-         }
-         else
-         {
-            position.clear();
+            position.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<GeographicPosition> getPosition()
+      java.util.List<_position> getPosition()
       {
          return position;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "locator")
-      @XmlElement(required = true)
-      public void setLocator(final java.util.List<AddressLocator> list)
+      public void setLocator(final _locator obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            locator.addAll(list);
-         }
-         else
-         {
-            locator.clear();
+            locator.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<AddressLocator> getLocator()
+      java.util.List<_locator> getLocator()
       {
          return locator;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "parcel")
-      @XmlElement(required = false)
-      public void setParcel(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setParcel(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            parcel.addAll(list);
-         }
-         else
-         {
-            parcel.clear();
+            parcel.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getParcel()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getParcel()
       {
          return parcel;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "component")
-      @XmlElement(required = true)
-      public void setComponent(final java.util.List<A_1_component> list)
+      public void setComponent(final A_1_component obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            component.addAll(list);
-         }
-         else
-         {
-            component.clear();
+            component.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<A_1_component> getComponent()
+      java.util.List<A_1_component> getComponent()
       {
          return component;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "building")
-      @XmlElement(required = false)
-      public void setBuilding(final java.util.List<AbstractConstruction> list)
+      public void setBuilding(final _building obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            building.addAll(list);
-         }
-         else
-         {
-            building.clear();
+            building.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<AbstractConstruction> getBuilding()
+      java.util.List<_building> getBuilding()
       {
          return building;
       }
@@ -175,7 +150,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "position");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "GeographicPosition")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicPosition GeographicPosition;
    }
 
@@ -184,7 +159,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "GeographicPosition");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "specification")
       @XmlElement(required = false)
@@ -193,7 +168,7 @@ public class ELF_MasterLoD0_Address
       @XmlElement(required = false)
       public Reference method;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "default")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Boolean _default;
    }
 
@@ -202,7 +177,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "locator");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "AddressLocator")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public AddressLocator AddressLocator;
    }
 
@@ -210,51 +185,41 @@ public class ELF_MasterLoD0_Address
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "AddressLocator");
-      private java.util.List<LocatorDesignator> designator = new java.util.ArrayList<LocatorDesignator>();
-      private java.util.List<LocatorName> name = new java.util.ArrayList<LocatorName>();
+      @XmlElement(required = false)
+      public java.util.List<_designator> designator = new java.util.ArrayList<_designator>();
+      @XmlElement(required = false)
+      public java.util.List<_name> name = new java.util.ArrayList<_name>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "level")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference level;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "withinScopeOf")
       @XmlElement(required = false)
       public Reference withinScopeOf;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "designator")
-      @XmlElement(required = false)
-      public void setDesignator(final java.util.List<LocatorDesignator> list)
+      public void setDesignator(final _designator obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            designator.addAll(list);
-         }
-         else
-         {
-            designator.clear();
+            designator.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<LocatorDesignator> getDesignator()
+      java.util.List<_designator> getDesignator()
       {
          return designator;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "name")
-      @XmlElement(required = false)
-      public void setName(final java.util.List<LocatorName> list)
+      public void setName(final _name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<LocatorName> getName()
+      java.util.List<_name> getName()
       {
          return name;
       }
@@ -265,7 +230,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "designator");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "LocatorDesignator")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public LocatorDesignator LocatorDesignator;
    }
 
@@ -274,10 +239,10 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "LocatorDesignator");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "designator")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String designator;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "type")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference type;
    }
 
@@ -286,7 +251,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "name");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "LocatorName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public LocatorName LocatorName;
    }
 
@@ -294,27 +259,22 @@ public class ELF_MasterLoD0_Address
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "LocatorName");
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
+      @XmlElement(required = false)
+      public java.util.List<_name> name = new java.util.ArrayList<_name>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "type")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference type;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "name")
-      @XmlElement(required = true)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final _name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<GeographicalName> getName()
+      java.util.List<_name> getName()
       {
          return name;
       }
@@ -339,7 +299,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "AbstractConstruction")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public AbstractConstruction AbstractConstruction;
    }
 
@@ -357,108 +317,86 @@ public class ELF_MasterLoD0_Address
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "conditionOfConstruction")
       @XmlElement(required = false)
       public Reference conditionOfConstruction;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "dateOfConstruction")
       @XmlElement(required = false)
-      public DateOfEvent dateOfConstruction;
+      public A_2_dateOfConstruction dateOfConstruction;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "dateOfDemolition")
       @XmlElement(required = false)
-      public DateOfEvent dateOfDemolition;
+      public A_3_dateOfDemolition dateOfDemolition;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "dateOfRenovation")
       @XmlElement(required = false)
-      public DateOfEvent dateOfRenovation;
-      private java.util.List<Elevation> elevation = new java.util.ArrayList<Elevation>();
+      public A_4_dateOfRenovation dateOfRenovation;
+      @XmlElement(required = false)
+      public java.util.List<A_5_elevation> elevation = new java.util.ArrayList<A_5_elevation>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
-      private java.util.List<ExternalReference> externalReference = new java.util.ArrayList<ExternalReference>();
-      private java.util.List<HeightAboveGround> heightAboveGround = new java.util.ArrayList<HeightAboveGround>();
+      public NillableType<String> endLifespanVersion;
+      @XmlElement(required = false)
+      public java.util.List<A_6_externalReference> externalReference = new java.util.ArrayList<A_6_externalReference>();
+      @XmlElement(required = false)
+      public java.util.List<A_7_heightAboveGround> heightAboveGround = new java.util.ArrayList<A_7_heightAboveGround>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
+      @XmlElement(required = false)
+      public java.util.List<A_8_name> name = new java.util.ArrayList<A_8_name>();
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevation")
-      @XmlElement(required = false)
-      public void setElevation(final java.util.List<Elevation> list)
+      public void setElevation(final A_5_elevation obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            elevation.addAll(list);
-         }
-         else
-         {
-            elevation.clear();
+            elevation.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<Elevation> getElevation()
+      java.util.List<A_5_elevation> getElevation()
       {
          return elevation;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "externalReference")
-      @XmlElement(required = false)
-      public void setExternalReference(
-            final java.util.List<ExternalReference> list)
+      public void setExternalReference(final A_6_externalReference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            externalReference.addAll(list);
-         }
-         else
-         {
-            externalReference.clear();
+            externalReference.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<ExternalReference> getExternalReference()
+      java.util.List<A_6_externalReference> getExternalReference()
       {
          return externalReference;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "heightAboveGround")
-      @XmlElement(required = false)
-      public void setHeightAboveGround(
-            final java.util.List<HeightAboveGround> list)
+      public void setHeightAboveGround(final A_7_heightAboveGround obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            heightAboveGround.addAll(list);
-         }
-         else
-         {
-            heightAboveGround.clear();
+            heightAboveGround.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<HeightAboveGround> getHeightAboveGround()
+      java.util.List<A_7_heightAboveGround> getHeightAboveGround()
       {
          return heightAboveGround;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "name")
-      @XmlElement(required = false)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final A_8_name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<GeographicalName> getName()
+      java.util.List<A_8_name> getName()
       {
          return name;
       }
@@ -473,7 +411,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -483,13 +421,13 @@ public class ELF_MasterLoD0_Address
       public static final QName QN = new QName(NS, "DateOfEvent");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "anyPoint")
       @XmlElement(required = false)
-      public NillableType<Calendar> anyPoint;
+      public NillableType<String> anyPoint;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "beginning")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginning;
+      public NillableType<String> beginning;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "end")
       @XmlElement(required = false)
-      public NillableType<Calendar> end;
+      public NillableType<String> end;
    }
 
    public static class A_3_dateOfDemolition extends Nillable
@@ -501,7 +439,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -514,7 +452,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -527,7 +465,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "Elevation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Elevation Elevation;
    }
 
@@ -536,10 +474,10 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "Elevation");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevationReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference elevationReference;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevationValue")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DirectPositionType elevationValue;
    }
 
@@ -552,7 +490,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "ExternalReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ExternalReference ExternalReference;
    }
 
@@ -561,13 +499,13 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "ExternalReference");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "informationSystem")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public URI informationSystem;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "informationSystemName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public List<PT_FreeText> informationSystemName;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "reference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String reference;
    }
 
@@ -578,11 +516,17 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "nilReason")
       public String nilReason;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gco", localName = "CharacterString")
-      @XmlElement(required = true)
-      public String CharacterString;
+      @XmlElement(required = false)
+      public CharacterString CharacterString;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "PT_FreeText")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PT_FreeText PT_FreeText;
+   }
+
+   public static class CharacterString
+   {
+      public static final String NS = "http://www.isotc211.org/2005/gco";
+      public static final QName QN = new QName(NS, "CharacterString");
    }
 
    public static class PT_FreeText
@@ -593,25 +537,19 @@ public class ELF_MasterLoD0_Address
       public String id;
       @XmlAttribute(required = false, name = "uuid")
       public String uuid;
-      private java.util.List<LocalisedCharacterString> textGroup = new java.util.ArrayList<LocalisedCharacterString>();
+      @XmlElement(required = false)
+      public java.util.List<_textGroup> textGroup = new java.util.ArrayList<_textGroup>();
 
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "textGroup")
-      @XmlElement(required = true)
-      public void setTextGroup(
-            final java.util.List<LocalisedCharacterString> list)
+      public void setTextGroup(final _textGroup obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            textGroup.addAll(list);
-         }
-         else
-         {
-            textGroup.clear();
+            textGroup.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<LocalisedCharacterString> getTextGroup()
+      java.util.List<_textGroup> getTextGroup()
       {
          return textGroup;
       }
@@ -626,8 +564,8 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "nilReason")
       public String nilReason;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "LocalisedCharacterString")
-      @XmlElement(required = true)
-      public String LocalisedCharacterString;
+      @XmlElement(required = false)
+      public LocalisedCharacterString LocalisedCharacterString;
    }
 
    public static class A_7_heightAboveGround extends Nillable
@@ -639,7 +577,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "HeightAboveGround")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public HeightAboveGround HeightAboveGround;
    }
 
@@ -657,8 +595,8 @@ public class ELF_MasterLoD0_Address
       @XmlElement(required = false)
       public Reference status;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "value")
-      @XmlElement(required = true)
-      public Double value;
+      @XmlElement(required = false)
+      public String value;
    }
 
    public static class A_8_name extends Nillable
@@ -670,7 +608,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -692,8 +630,9 @@ public class ELF_MasterLoD0_Address
       public NillableType<String> sourceOfName;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "pronunciation")
       @XmlElement(required = false)
-      public PronunciationOfName pronunciation;
-      private java.util.List<SpellingOfName> spelling = new java.util.ArrayList<SpellingOfName>();
+      public A_9_pronunciation pronunciation;
+      @XmlElement(required = false)
+      public java.util.List<_spelling> spelling = new java.util.ArrayList<_spelling>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "grammaticalGender")
       @XmlElement(required = false)
       public Reference grammaticalGender;
@@ -702,21 +641,15 @@ public class ELF_MasterLoD0_Address
       public Reference grammaticalNumber;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "spelling")
-      @XmlElement(required = true)
-      public void setSpelling(final java.util.List<SpellingOfName> list)
+      public void setSpelling(final _spelling obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            spelling.addAll(list);
-         }
-         else
-         {
-            spelling.clear();
+            spelling.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<SpellingOfName> getSpelling()
+      java.util.List<_spelling> getSpelling()
       {
          return spelling;
       }
@@ -731,7 +664,7 @@ public class ELF_MasterLoD0_Address
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "PronunciationOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PronunciationOfName PronunciationOfName;
    }
 
@@ -752,7 +685,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "spelling");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "SpellingOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public SpellingOfName SpellingOfName;
    }
 
@@ -761,7 +694,7 @@ public class ELF_MasterLoD0_Address
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "SpellingOfName");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "text")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String text;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "script")
       @XmlElement(required = false)

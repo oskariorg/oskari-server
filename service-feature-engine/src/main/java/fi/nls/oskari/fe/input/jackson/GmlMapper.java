@@ -38,6 +38,9 @@ public class GmlMapper extends XmlMapper {
         super(new XmlFactory());
 
         JacksonXmlModule module = new JacksonXmlModule();
+        
+        // ?
+        module.setDefaultUseWrapper(false);
 
         parserAny = new FEPullParser(gml, null);
 

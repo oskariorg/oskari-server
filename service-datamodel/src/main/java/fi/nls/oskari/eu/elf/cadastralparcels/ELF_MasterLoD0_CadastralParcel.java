@@ -38,59 +38,54 @@ public class ELF_MasterLoD0_CadastralParcel
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "areaValue")
       @XmlElement(required = false)
-      public NillableType<Double> areaValue;
+      public NillableType<String> areaValue;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
+      public NillableType<String> endLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "label")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String label;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "nationalCadastralReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String nationalCadastralReference;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "referencePoint")
       @XmlElement(required = false)
       public GeometryProperty referencePoint;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "validFrom")
       @XmlElement(required = false)
-      public NillableType<Calendar> validFrom;
+      public NillableType<String> validFrom;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "validTo")
       @XmlElement(required = false)
-      public NillableType<Calendar> validTo;
+      public NillableType<String> validTo;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "zoning")
       @XmlElement(required = false)
       public Reference zoning;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> basicPropertyUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> basicPropertyUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "administrativeUnit")
       @XmlElement(required = false)
       public Reference administrativeUnit;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "basicPropertyUnit")
-      @XmlElement(required = false)
       public void setBasicPropertyUnit(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            basicPropertyUnit.addAll(list);
-         }
-         else
-         {
-            basicPropertyUnit.clear();
+            basicPropertyUnit.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBasicPropertyUnit()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBasicPropertyUnit()
       {
          return basicPropertyUnit;
       }

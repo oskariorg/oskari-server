@@ -2,16 +2,18 @@ package fi.nls.oskari.eu.elf.recipe.bu;
 
 import java.io.IOException;
 
+
+
 import fi.nls.oskari.eu.elf.buildings.ELF_MasterLoD0_Building.Building;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class ELF_MasterLoD0_Building_Parser extends JacksonParserRecipe {
+public class ELF_MasterLoD0_Building_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
 
-        setLenient(true);
+        //setLenient(true);
 
         getGeometryDeserializer().mapGeometryTypes(
                 "http://www.opengis.net/gml/3.2", "Polygon", "Surface",
@@ -28,6 +30,8 @@ public class ELF_MasterLoD0_Building_Parser extends JacksonParserRecipe {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+        final Resource obj = outputContext
+                .addOutputStringProperty("obj");
 
         outputContext.build();
 
@@ -43,21 +47,24 @@ public class ELF_MasterLoD0_Building_Parser extends JacksonParserRecipe {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            if (feature.geometry2D != null
+            /*if (feature.geometry2D != null
                     && feature.geometry2D.geometry != null) {
                 outputFeature
                         .addGeometryProperty(
                                 geom,
                                 feature.geometry2D.geometry.geometry);
             }
+            */
 
             outputFeature
-                    .addProperty(gn, feature.getName())
+                    .addProperty(gn, feature.name)
                     .addProperty(beginLifespanVersion,
                             feature.beginLifespanVersion)
                     .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion, feature.endLifespanVersion);
 
+            outputFeature.addProperty(obj, feature);
+            
             outputFeature.build();
 
         }

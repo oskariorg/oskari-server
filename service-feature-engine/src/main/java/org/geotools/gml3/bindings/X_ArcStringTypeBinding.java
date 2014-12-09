@@ -132,7 +132,7 @@ public class X_ArcStringTypeBinding extends AbstractComplexBinding {
                             + arcLineString);
         }
 
-        System.err.println("begin ARCPATCH ---------------------------------------- ");
+        //System.err.println("begin ARCPATCH ---------------------------------------- ");
         List<Coordinate> resultCoordinates = new LinkedList<Coordinate>();
         try {
         int arcs = (arcCoordinates.length - 1) / 2;
@@ -176,7 +176,7 @@ public class X_ArcStringTypeBinding extends AbstractComplexBinding {
         LineString resultLineString = gFactory
                 .createLineString(resultCoordinates.toArray(new Coordinate[0]));
 
-        System.err.println("end ARCPATCH ---------------------------------------- ");
+        //System.err.println("end ARCPATCH ---------------------------------------- ");
         
         return resultLineString;
     }

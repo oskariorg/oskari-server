@@ -3,12 +3,12 @@ package fi.nls.oskari.eu.elf.recipe.tn;
 import java.io.IOException;
 
 import fi.nls.oskari.eu.elf.roadtransportnetwork.masterlod1.RoadLink;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
 /* PoC Streaming Parser to Match Groovy Parser in Java 7 */
-public class ELF_TN_RoadLink extends JacksonParserRecipe {
+public class ELF_TN_RoadLink extends GML32 {
 
     @Override
     public void parse() throws IOException {
