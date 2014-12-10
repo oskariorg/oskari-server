@@ -1,4 +1,4 @@
-package fi.nls.oskari.eu.elf.buildings;
+package fi.nls.oskari.fi.rysp.kantakartta;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,30 +6,21 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.elf.recipe.bu.ELF_MasterLoD0_Building_Parser;
-import fi.nls.oskari.eu.elf.recipe.bu.ELF_MasterLoD0_Building_nls_fi_wfs_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
+import fi.nls.oskari.fi.rysp.recipe.kanta.RYSP_kanta_Liikennevayla_Parser;
+import fi.nls.oskari.fi.rysp.recipe.kanta.RYSP_kanta_Rakennus_Parser;
 
 public class TestJacksonParser {
 
-    /**
-     * 
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IOException
-     * @throws XMLStreamException
-     */
-    // @Ignore("Not ready")
     @Test
-    public void test_ELF_Master_LoD0_Building_nls_fi_wfs_GMLtoJSON()
+    public void test_RYSP_kanta_Liikennevayla_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
             XMLStreamException {
 
@@ -41,7 +32,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/bu/nls_fi-ELF-BU-wfs.xml");
+                        "/fi/nls/oskari/fe/input/format/gml/rysp/kanta_Liikennevayla.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -50,7 +41,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new ELF_MasterLoD0_Building_nls_fi_wfs_Parser();
+                ParserRecipe recipe = new RYSP_kanta_Liikennevayla_Parser();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -67,17 +58,9 @@ public class TestJacksonParser {
         }
 
     }
-    
-    /**
-     * 
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IOException
-     * @throws XMLStreamException
-     */
-    @Ignore("Not ready")
+
     @Test
-    public void test_ELF_Master_LoD0_Building_GMLtoJSON()
+    public void test_RYSP_kanta_Rakennus_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
             XMLStreamException {
 
@@ -87,9 +70,8 @@ public class TestJacksonParser {
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
-        InputStream inp = getClass()
-                .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/bu/nls_fi-ELF-BU-wfs.xml");
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/fe/input/format/gml/rysp/kanta_Rakennus.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -98,7 +80,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new ELF_MasterLoD0_Building_Parser();
+                ParserRecipe recipe = new RYSP_kanta_Rakennus_Parser();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -116,4 +98,3 @@ public class TestJacksonParser {
 
     }
 }
-

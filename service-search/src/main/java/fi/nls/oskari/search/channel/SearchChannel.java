@@ -30,6 +30,8 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         Map<String, Double> configurables = new HashMap<String, Double>();
         for(String type : types) {
             Double configured = mapScalesForType.get(type);
+            // include all encountered types
+            // add -1 as value for those without config
             if(configured == null) {
                 configured = -1d;
             }

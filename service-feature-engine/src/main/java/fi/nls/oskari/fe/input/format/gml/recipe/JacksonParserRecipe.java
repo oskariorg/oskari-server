@@ -17,6 +17,7 @@ import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.geotools.xml.Configuration;
 
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
@@ -27,11 +28,30 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     protected final List<Pair<Resource, Object>> O_linkProperties = new ArrayList<Pair<Resource, Object>>();
     protected final List<Pair<Resource, String>> O_geometryProperties = new ArrayList<Pair<Resource, String>>();
 
+    public static abstract class GML32 extends JacksonParserRecipe {
+        public GML32() {
+            super(new org.geotools.gml3.v3_2.GMLConfiguration(true));
+        }
+    }
+
+    public static abstract class GML31 extends JacksonParserRecipe {
+        public GML31() {
+            super(new GML31_Configuration());
+        }
+    }
+
     /* input */
     protected final GmlMapper mapper;
 
-    protected JacksonParserRecipe() {
-        gml = new org.geotools.gml3.v3_2.GMLConfiguration(true);
+    /*protected JacksonParserRecipe() {
+        
+          gml = new org.geotools.gml3.v3_2.GMLConfiguration(true); mapper = new
+          GmlMapper(gml, false);
+         
+    }*/
+
+    protected JacksonParserRecipe(Configuration conf) {
+        gml = conf;
         mapper = new GmlMapper(gml, false);
     }
 

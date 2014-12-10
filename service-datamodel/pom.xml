@@ -9,6 +9,17 @@
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>service-datamodel</artifactId>
 	<packaging>jar</packaging>
+	
+	<properties>
+        <commons-lang3.version>3.0</commons-lang3.version>
+        <stax-api.version>1.0-2</stax-api.version>
+        <stax2-api.version>3.1.1</stax2-api.version>
+        <woodstox.version>4.1.4</woodstox.version>
+        <jsonld-java.version>0.3</jsonld-java.version>
+        <blueprints.version>2.6.0</blueprints.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.roaster>2.10.0.Final</version.roaster>
+    </properties>
 
 	<dependencies>
 		<dependency>
@@ -61,6 +72,26 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.4.3</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+		      <dependency>
+  <groupId>org.jboss.forge.roaster</groupId>
+  <artifactId>roaster-api</artifactId>
+  <version>${version.roaster}</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.jboss.forge.roaster</groupId>
+  <artifactId>roaster-jdt</artifactId>
+  <version>${version.roaster}</version>
+  <scope>test</scope>
+</dependency>
+		
 
 	</dependencies>
 </project>
