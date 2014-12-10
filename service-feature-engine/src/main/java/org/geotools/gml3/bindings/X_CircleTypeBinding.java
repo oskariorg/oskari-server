@@ -75,7 +75,7 @@ public class X_CircleTypeBinding extends AbstractComplexBinding {
                     "GML3 parser exception: The number of coordinates of a Circle should be 3. It currently is: " + circleCoordinates.length + "; " + circleLineString);
         }
         
-        System.err.println("ARC PARSE HACK");
+        //System.err.println("ARC PARSE HACK");
 
         Coordinate c1 = circleCoordinates[0];
         Coordinate c2 = circleCoordinates[1];

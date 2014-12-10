@@ -18,7 +18,6 @@ import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.NillableType;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
-import fi.nls.oskari.fe.xml.util.Nillable;
 
 public class ELF_MasterLoD1_AdministrativeBoundary
 {
@@ -38,80 +37,57 @@ public class ELF_MasterLoD1_AdministrativeBoundary
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "country")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public CodeType country;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
+      public NillableType<String> endLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "legalStatus")
       @XmlElement(required = false)
-      public A_1_legalStatus legalStatus;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> nationalLevel = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      public NillableType<String> legalStatus;
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> nationalLevel = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "technicalStatus")
       @XmlElement(required = false)
-      public A_2_technicalStatus technicalStatus;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> admUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      public NillableType<String> technicalStatus;
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> admUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "nationalLevel")
-      @XmlElement(required = true)
       public void setNationalLevel(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            nationalLevel.addAll(list);
-         }
-         else
-         {
-            nationalLevel.clear();
+            nationalLevel.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getNationalLevel()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getNationalLevel()
       {
          return nationalLevel;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "admUnit")
-      @XmlElement(required = false)
-      public void setAdmUnit(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setAdmUnit(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            admUnit.addAll(list);
-         }
-         else
-         {
-            admUnit.clear();
+            admUnit.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getAdmUnit()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getAdmUnit()
       {
          return admUnit;
       }
-   }
-
-   public static class A_1_legalStatus extends Nillable
-   {
-      public static final String NS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
-      public static final QName QN = new QName(NS, "legalStatus");
-   }
-
-   public static class A_2_technicalStatus extends Nillable
-   {
-      public static final String NS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
-      public static final QName QN = new QName(NS, "technicalStatus");
    }
 }

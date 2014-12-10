@@ -1,5 +1,9 @@
 package fi.nls.oskari.eu.elf.buildings;
 
+import java.net.URI;
+import fi.nls.oskari.fe.gml.util.CodeType;
+import fi.nls.oskari.isotc211.gco.Distance;
+import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
 import javax.xml.bind.annotation.XmlElement;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -16,7 +20,6 @@ import fi.nls.oskari.fe.xml.util.Reference;
 import fi.nls.oskari.fe.xml.util.Nillable;
 import fi.nls.oskari.fe.gml.util.DirectPositionType;
 import java.util.List;
-import java.net.URI;
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 
@@ -38,7 +41,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "conditionOfConstruction")
       @XmlElement(required = false)
       public Reference conditionOfConstruction;
@@ -51,18 +54,24 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "dateOfRenovation")
       @XmlElement(required = false)
       public A_3_dateOfRenovation dateOfRenovation;
-      private java.util.List<Elevation> elevation = new java.util.ArrayList<Elevation>();
+      @XmlElement(required = false)
+      public java.util.List<A_4_elevation> elevation = new java.util.ArrayList<A_4_elevation>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
-      private java.util.List<ExternalReference> externalReference = new java.util.ArrayList<ExternalReference>();
-      private java.util.List<HeightAboveGround> heightAboveGround = new java.util.ArrayList<HeightAboveGround>();
+      public NillableType<String> endLifespanVersion;
+      @XmlElement(required = false)
+      public java.util.List<A_5_externalReference> externalReference = new java.util.ArrayList<A_5_externalReference>();
+      @XmlElement(required = false)
+      public java.util.List<A_6_heightAboveGround> heightAboveGround = new java.util.ArrayList<A_6_heightAboveGround>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> buildingNature = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<CurrentUse> currentUse = new java.util.ArrayList<CurrentUse>();
+      @XmlElement(required = false)
+      public java.util.List<A_7_name> name = new java.util.ArrayList<A_7_name>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> buildingNature = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_9_currentUse> currentUse = new java.util.ArrayList<A_9_currentUse>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "numberOfDwellings")
       @XmlElement(required = false)
       public NillableType<BigInteger> numberOfDwellings;
@@ -72,22 +81,29 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "numberOfFloorsAboveGround")
       @XmlElement(required = false)
       public NillableType<BigInteger> numberOfFloorsAboveGround;
-      private java.util.List<A_10_parts> parts = new java.util.ArrayList<A_10_parts>();
+      @XmlElement(required = false)
+      public java.util.List<A_10_parts> parts = new java.util.ArrayList<A_10_parts>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3", localName = "geometry2D")
-      @XmlElement(required = true)
-      public _geometry2D geometry2D;
+      @XmlElement(required = false)
+      public BuildingGeometry2D geometry2D;
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "heightBelowGround")
       @XmlElement(required = false)
-      public NillableType<Double> heightBelowGround;
+      public NillableType<String> heightBelowGround;
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "numberOfFloorsBelowGround")
       @XmlElement(required = false)
       public NillableType<BigInteger> numberOfFloorsBelowGround;
-      private java.util.List<FloorRange> floorDistribution = new java.util.ArrayList<FloorRange>();
-      private java.util.List<FloorDescription> floorDescription = new java.util.ArrayList<FloorDescription>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> roofType = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfFacade = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfRoof = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfStructure = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_19_floorDistribution> floorDistribution = new java.util.ArrayList<A_19_floorDistribution>();
+      @XmlElement(required = false)
+      public java.util.List<A_20_floorDescription> floorDescription = new java.util.ArrayList<A_20_floorDescription>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> roofType = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfFacade = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfRoof = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> materialOfStructure = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "connectionToElectricity")
       @XmlElement(required = false)
       public NillableType<Boolean> connectionToElectricity;
@@ -100,446 +116,322 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "connectionToWater")
       @XmlElement(required = false)
       public NillableType<Boolean> connectionToWater;
-      private java.util.List<Document> document = new java.util.ArrayList<Document>();
+      @XmlElement(required = false)
+      public java.util.List<A_22_document> document = new java.util.ArrayList<A_22_document>();
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "energyPerformance")
       @XmlElement(required = false)
       public A_23_energyPerformance energyPerformance;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> heatingSource = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> heatingSystem = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<AddressRepresentation> address = new java.util.ArrayList<AddressRepresentation>();
-      private java.util.List<OfficialArea> officialArea = new java.util.ArrayList<OfficialArea>();
-      private java.util.List<OfficialValue> officialValue = new java.util.ArrayList<OfficialValue>();
-      private java.util.List<AddressRepresentation> mixinaddress = new java.util.ArrayList<AddressRepresentation>();
-      private java.util.List<CadastralParcel> cadastralParcel = new java.util.ArrayList<CadastralParcel>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> heatingSource = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> heatingSystem = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_25_address> address = new java.util.ArrayList<A_25_address>();
+      @XmlElement(required = false)
+      public java.util.List<A_29_officialArea> officialArea = new java.util.ArrayList<A_29_officialArea>();
+      @XmlElement(required = false)
+      public java.util.List<A_30_officialValue> officialValue = new java.util.ArrayList<A_30_officialValue>();
+      @XmlElement(required = false)
+      public java.util.List<A_31_mixinaddress> mixinaddress = new java.util.ArrayList<A_31_mixinaddress>();
+      @XmlElement(required = false)
+      public java.util.List<_cadastralParcel> cadastralParcel = new java.util.ArrayList<_cadastralParcel>();
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevation")
-      @XmlElement(required = false)
-      public void setElevation(final java.util.List<Elevation> list)
+      public void setElevation(final A_4_elevation obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            elevation.addAll(list);
-         }
-         else
-         {
-            elevation.clear();
+            elevation.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Elevation> getElevation()
+      java.util.List<A_4_elevation> getElevation()
       {
          return elevation;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "externalReference")
-      @XmlElement(required = false)
-      public void setExternalReference(
-            final java.util.List<ExternalReference> list)
+      public void setExternalReference(final A_5_externalReference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            externalReference.addAll(list);
-         }
-         else
-         {
-            externalReference.clear();
+            externalReference.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<ExternalReference> getExternalReference()
+      java.util.List<A_5_externalReference> getExternalReference()
       {
          return externalReference;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "heightAboveGround")
-      @XmlElement(required = false)
-      public void setHeightAboveGround(
-            final java.util.List<HeightAboveGround> list)
+      public void setHeightAboveGround(final A_6_heightAboveGround obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            heightAboveGround.addAll(list);
-         }
-         else
-         {
-            heightAboveGround.clear();
+            heightAboveGround.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<HeightAboveGround> getHeightAboveGround()
+      java.util.List<A_6_heightAboveGround> getHeightAboveGround()
       {
          return heightAboveGround;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "name")
-      @XmlElement(required = false)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final A_7_name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getName()
+      java.util.List<A_7_name> getName()
       {
          return name;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "buildingNature")
-      @XmlElement(required = false)
       public void setBuildingNature(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            buildingNature.addAll(list);
-         }
-         else
-         {
-            buildingNature.clear();
+            buildingNature.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getBuildingNature()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBuildingNature()
       {
          return buildingNature;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "currentUse")
-      @XmlElement(required = false)
-      public void setCurrentUse(final java.util.List<CurrentUse> list)
+      public void setCurrentUse(final A_9_currentUse obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            currentUse.addAll(list);
-         }
-         else
-         {
-            currentUse.clear();
+            currentUse.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<CurrentUse> getCurrentUse()
+      java.util.List<A_9_currentUse> getCurrentUse()
       {
          return currentUse;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "parts")
-      @XmlElement(required = false)
-      public void setParts(final java.util.List<A_10_parts> list)
+      public void setParts(final A_10_parts obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            parts.addAll(list);
-         }
-         else
-         {
-            parts.clear();
+            parts.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<A_10_parts> getParts()
+      java.util.List<A_10_parts> getParts()
       {
          return parts;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "floorDistribution")
-      @XmlElement(required = false)
-      public void setFloorDistribution(final java.util.List<FloorRange> list)
+      public void setFloorDistribution(final A_19_floorDistribution obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            floorDistribution.addAll(list);
-         }
-         else
-         {
-            floorDistribution.clear();
+            floorDistribution.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<FloorRange> getFloorDistribution()
+      java.util.List<A_19_floorDistribution> getFloorDistribution()
       {
          return floorDistribution;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "floorDescription")
-      @XmlElement(required = false)
-      public void setFloorDescription(
-            final java.util.List<FloorDescription> list)
+      public void setFloorDescription(final A_20_floorDescription obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            floorDescription.addAll(list);
-         }
-         else
-         {
-            floorDescription.clear();
+            floorDescription.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<FloorDescription> getFloorDescription()
+      java.util.List<A_20_floorDescription> getFloorDescription()
       {
          return floorDescription;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "roofType")
-      @XmlElement(required = false)
-      public void setRoofType(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setRoofType(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            roofType.addAll(list);
-         }
-         else
-         {
-            roofType.clear();
+            roofType.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getRoofType()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getRoofType()
       {
          return roofType;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "materialOfFacade")
-      @XmlElement(required = false)
       public void setMaterialOfFacade(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            materialOfFacade.addAll(list);
-         }
-         else
-         {
-            materialOfFacade.clear();
+            materialOfFacade.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getMaterialOfFacade()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getMaterialOfFacade()
       {
          return materialOfFacade;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "materialOfRoof")
-      @XmlElement(required = false)
       public void setMaterialOfRoof(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            materialOfRoof.addAll(list);
-         }
-         else
-         {
-            materialOfRoof.clear();
+            materialOfRoof.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getMaterialOfRoof()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getMaterialOfRoof()
       {
          return materialOfRoof;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "materialOfStructure")
-      @XmlElement(required = false)
       public void setMaterialOfStructure(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            materialOfStructure.addAll(list);
-         }
-         else
-         {
-            materialOfStructure.clear();
+            materialOfStructure.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getMaterialOfStructure()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getMaterialOfStructure()
       {
          return materialOfStructure;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "document")
-      @XmlElement(required = false)
-      public void setDocument(final java.util.List<Document> list)
+      public void setDocument(final A_22_document obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            document.addAll(list);
-         }
-         else
-         {
-            document.clear();
+            document.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Document> getDocument()
+      java.util.List<A_22_document> getDocument()
       {
          return document;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "heatingSource")
-      @XmlElement(required = false)
       public void setHeatingSource(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            heatingSource.addAll(list);
-         }
-         else
-         {
-            heatingSource.clear();
+            heatingSource.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getHeatingSource()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getHeatingSource()
       {
          return heatingSource;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "heatingSystem")
-      @XmlElement(required = false)
       public void setHeatingSystem(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            heatingSystem.addAll(list);
-         }
-         else
-         {
-            heatingSystem.clear();
+            heatingSystem.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getHeatingSystem()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getHeatingSystem()
       {
          return heatingSystem;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "address")
-      @XmlElement(required = false)
-      public void setAddress(final java.util.List<AddressRepresentation> list)
+      public void setAddress(final A_25_address obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            address.addAll(list);
-         }
-         else
-         {
-            address.clear();
+            address.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<AddressRepresentation> getAddress()
+      java.util.List<A_25_address> getAddress()
       {
          return address;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "officialArea")
-      @XmlElement(required = false)
-      public void setOfficialArea(final java.util.List<OfficialArea> list)
+      public void setOfficialArea(final A_29_officialArea obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            officialArea.addAll(list);
-         }
-         else
-         {
-            officialArea.clear();
+            officialArea.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<OfficialArea> getOfficialArea()
+      java.util.List<A_29_officialArea> getOfficialArea()
       {
          return officialArea;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "officialValue")
-      @XmlElement(required = false)
-      public void setOfficialValue(final java.util.List<OfficialValue> list)
+      public void setOfficialValue(final A_30_officialValue obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            officialValue.addAll(list);
-         }
-         else
-         {
-            officialValue.clear();
+            officialValue.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<OfficialValue> getOfficialValue()
+      java.util.List<A_30_officialValue> getOfficialValue()
       {
          return officialValue;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "mixinaddress")
-      @XmlElement(required = false)
-      public void setMixinaddress(
-            final java.util.List<AddressRepresentation> list)
+      public void setMixinaddress(final A_31_mixinaddress obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            mixinaddress.addAll(list);
-         }
-         else
-         {
-            mixinaddress.clear();
+            mixinaddress.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<AddressRepresentation> getMixinaddress()
+      java.util.List<A_31_mixinaddress> getMixinaddress()
       {
          return mixinaddress;
       }
 
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "cadastralParcel")
-      @XmlElement(required = false)
-      public void setCadastralParcel(
-            final java.util.List<CadastralParcel> list)
+      public void setCadastralParcel(final _cadastralParcel obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            cadastralParcel.addAll(list);
-         }
-         else
-         {
-            cadastralParcel.clear();
+            cadastralParcel.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<CadastralParcel> getCadastralParcel()
+      java.util.List<_cadastralParcel> getCadastralParcel()
       {
          return cadastralParcel;
       }
@@ -554,7 +446,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -564,13 +456,13 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final QName QN = new QName(NS, "DateOfEvent");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "anyPoint")
       @XmlElement(required = false)
-      public NillableType<Calendar> anyPoint;
+      public NillableType<String> anyPoint;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "beginning")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginning;
+      public NillableType<String> beginning;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "end")
       @XmlElement(required = false)
-      public NillableType<Calendar> end;
+      public NillableType<String> end;
    }
 
    public static class A_2_dateOfDemolition extends Nillable
@@ -582,7 +474,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -595,7 +487,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -608,7 +500,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "Elevation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Elevation Elevation;
    }
 
@@ -617,10 +509,10 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "Elevation");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevationReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference elevationReference;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevationValue")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DirectPositionType elevationValue;
    }
 
@@ -633,7 +525,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "ExternalReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ExternalReference ExternalReference;
    }
 
@@ -642,13 +534,13 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "ExternalReference");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "informationSystem")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public URI informationSystem;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "informationSystemName")
-      @XmlElement(required = true)
-      public _informationSystemName informationSystemName;
+      @XmlElement(required = false)
+      public List<PT_FreeText> informationSystemName;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "reference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String reference;
    }
 
@@ -659,11 +551,17 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "nilReason")
       public String nilReason;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gco", localName = "CharacterString")
-      @XmlElement(required = true)
-      public String CharacterString;
+      @XmlElement(required = false)
+      public CharacterString CharacterString;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "PT_FreeText")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PT_FreeText PT_FreeText;
+   }
+
+   public static class CharacterString
+   {
+      public static final String NS = "http://www.isotc211.org/2005/gco";
+      public static final QName QN = new QName(NS, "CharacterString");
    }
 
    public static class PT_FreeText
@@ -674,24 +572,19 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public String id;
       @XmlAttribute(required = false, name = "uuid")
       public String uuid;
-      private java.util.List<_textGroup> textGroup = new java.util.ArrayList<_textGroup>();
+      @XmlElement(required = false)
+      public java.util.List<_textGroup> textGroup = new java.util.ArrayList<_textGroup>();
 
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "textGroup")
-      @XmlElement(required = true)
-      public void setTextGroup(final java.util.List<_textGroup> list)
+      public void setTextGroup(final _textGroup obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            textGroup.addAll(list);
-         }
-         else
-         {
-            textGroup.clear();
+            textGroup.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<_textGroup> getTextGroup()
+      java.util.List<_textGroup> getTextGroup()
       {
          return textGroup;
       }
@@ -706,8 +599,8 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "nilReason")
       public String nilReason;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "LocalisedCharacterString")
-      @XmlElement(required = true)
-      public String LocalisedCharacterString;
+      @XmlElement(required = false)
+      public LocalisedCharacterString LocalisedCharacterString;
    }
 
    public static class A_6_heightAboveGround extends Nillable
@@ -719,7 +612,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "HeightAboveGround")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public HeightAboveGround HeightAboveGround;
    }
 
@@ -737,8 +630,8 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlElement(required = false)
       public Reference status;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "value")
-      @XmlElement(required = true)
-      public Double value;
+      @XmlElement(required = false)
+      public String value;
    }
 
    public static class A_7_name extends Nillable
@@ -750,7 +643,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -773,7 +666,8 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "pronunciation")
       @XmlElement(required = false)
       public A_8_pronunciation pronunciation;
-      private java.util.List<SpellingOfName> spelling = new java.util.ArrayList<SpellingOfName>();
+      @XmlElement(required = false)
+      public java.util.List<_spelling> spelling = new java.util.ArrayList<_spelling>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "grammaticalGender")
       @XmlElement(required = false)
       public Reference grammaticalGender;
@@ -782,21 +676,15 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public Reference grammaticalNumber;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "spelling")
-      @XmlElement(required = true)
-      public void setSpelling(final java.util.List<SpellingOfName> list)
+      public void setSpelling(final _spelling obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            spelling.addAll(list);
-         }
-         else
-         {
-            spelling.clear();
+            spelling.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<SpellingOfName> getSpelling()
+      java.util.List<_spelling> getSpelling()
       {
          return spelling;
       }
@@ -811,7 +699,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "PronunciationOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PronunciationOfName PronunciationOfName;
    }
 
@@ -832,7 +720,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "spelling");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "SpellingOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public SpellingOfName SpellingOfName;
    }
 
@@ -841,7 +729,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "SpellingOfName");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "text")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String text;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "script")
       @XmlElement(required = false)
@@ -860,7 +748,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "CurrentUse")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public CurrentUse CurrentUse;
    }
 
@@ -869,7 +757,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "CurrentUse");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "currentUse")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference currentUse;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "percentage")
       @XmlElement(required = false)
@@ -883,7 +771,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "BuildingPart")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public BuildingPart BuildingPart;
    }
 
@@ -901,7 +789,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "conditionOfConstruction")
       @XmlElement(required = false)
       public Reference conditionOfConstruction;
@@ -914,18 +802,24 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "dateOfRenovation")
       @XmlElement(required = false)
       public A_13_dateOfRenovation dateOfRenovation;
-      private java.util.List<Elevation> elevation = new java.util.ArrayList<Elevation>();
+      @XmlElement(required = false)
+      public java.util.List<A_14_elevation> elevation = new java.util.ArrayList<A_14_elevation>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
-      private java.util.List<ExternalReference> externalReference = new java.util.ArrayList<ExternalReference>();
-      private java.util.List<HeightAboveGround> heightAboveGround = new java.util.ArrayList<HeightAboveGround>();
+      public NillableType<String> endLifespanVersion;
+      @XmlElement(required = false)
+      public java.util.List<A_15_externalReference> externalReference = new java.util.ArrayList<A_15_externalReference>();
+      @XmlElement(required = false)
+      public java.util.List<A_16_heightAboveGround> heightAboveGround = new java.util.ArrayList<A_16_heightAboveGround>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> buildingNature = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<CurrentUse> currentUse = new java.util.ArrayList<CurrentUse>();
+      @XmlElement(required = false)
+      public java.util.List<A_17_name> name = new java.util.ArrayList<A_17_name>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> buildingNature = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_18_currentUse> currentUse = new java.util.ArrayList<A_18_currentUse>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "numberOfDwellings")
       @XmlElement(required = false)
       public NillableType<BigInteger> numberOfDwellings;
@@ -937,124 +831,86 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public NillableType<BigInteger> numberOfFloorsAboveGround;
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "elevation")
-      @XmlElement(required = false)
-      public void setElevation(final java.util.List<Elevation> list)
+      public void setElevation(final A_14_elevation obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            elevation.addAll(list);
-         }
-         else
-         {
-            elevation.clear();
+            elevation.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Elevation> getElevation()
+      java.util.List<A_14_elevation> getElevation()
       {
          return elevation;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "externalReference")
-      @XmlElement(required = false)
-      public void setExternalReference(
-            final java.util.List<ExternalReference> list)
+      public void setExternalReference(final A_15_externalReference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            externalReference.addAll(list);
-         }
-         else
-         {
-            externalReference.clear();
+            externalReference.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<ExternalReference> getExternalReference()
+      java.util.List<A_15_externalReference> getExternalReference()
       {
          return externalReference;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "heightAboveGround")
-      @XmlElement(required = false)
-      public void setHeightAboveGround(
-            final java.util.List<HeightAboveGround> list)
+      public void setHeightAboveGround(final A_16_heightAboveGround obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            heightAboveGround.addAll(list);
-         }
-         else
-         {
-            heightAboveGround.clear();
+            heightAboveGround.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<HeightAboveGround> getHeightAboveGround()
+      java.util.List<A_16_heightAboveGround> getHeightAboveGround()
       {
          return heightAboveGround;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "name")
-      @XmlElement(required = false)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final A_17_name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getName()
+      java.util.List<A_17_name> getName()
       {
          return name;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "buildingNature")
-      @XmlElement(required = false)
       public void setBuildingNature(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            buildingNature.addAll(list);
-         }
-         else
-         {
-            buildingNature.clear();
+            buildingNature.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getBuildingNature()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBuildingNature()
       {
          return buildingNature;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "currentUse")
-      @XmlElement(required = false)
-      public void setCurrentUse(final java.util.List<CurrentUse> list)
+      public void setCurrentUse(final A_18_currentUse obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            currentUse.addAll(list);
-         }
-         else
-         {
-            currentUse.clear();
+            currentUse.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<CurrentUse> getCurrentUse()
+      java.util.List<A_18_currentUse> getCurrentUse()
       {
          return currentUse;
       }
@@ -1069,7 +925,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -1082,7 +938,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -1095,7 +951,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "DateOfEvent")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DateOfEvent DateOfEvent;
    }
 
@@ -1108,7 +964,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "Elevation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Elevation Elevation;
    }
 
@@ -1121,7 +977,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "ExternalReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ExternalReference ExternalReference;
    }
 
@@ -1134,7 +990,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "HeightAboveGround")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public HeightAboveGround HeightAboveGround;
    }
 
@@ -1147,7 +1003,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1160,7 +1016,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "CurrentUse")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public CurrentUse CurrentUse;
    }
 
@@ -1169,7 +1025,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3";
       public static final QName QN = new QName(NS, "geometry2D");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "BuildingGeometry2D")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public BuildingGeometry2D BuildingGeometry2D;
    }
 
@@ -1178,23 +1034,23 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "BuildingGeometry2D");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "referenceGeometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Boolean referenceGeometry;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "horizontalGeometryReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference horizontalGeometryReference;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "verticalGeometryReference")
       @XmlElement(required = false)
       public Reference verticalGeometryReference;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "horizontalGeometryEstimatedAccuracy")
       @XmlElement(required = false)
-      public NillableType<Double> horizontalGeometryEstimatedAccuracy;
+      public NillableType<String> horizontalGeometryEstimatedAccuracy;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "verticalGeometryEstimatedAccuracy")
       @XmlElement(required = false)
-      public NillableType<Double> verticalGeometryEstimatedAccuracy;
+      public NillableType<String> verticalGeometryEstimatedAccuracy;
    }
 
    public static class A_19_floorDistribution extends Nillable
@@ -1206,7 +1062,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "FloorRange")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public FloorRange FloorRange;
    }
 
@@ -1215,11 +1071,11 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3";
       public static final QName QN = new QName(NS, "FloorRange");
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "lowestFloor")
-      @XmlElement(required = true)
-      public Double lowestFloor;
+      @XmlElement(required = false)
+      public String lowestFloor;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "highestFloor")
-      @XmlElement(required = true)
-      public Double highestFloor;
+      @XmlElement(required = false)
+      public String highestFloor;
    }
 
    public static class A_20_floorDescription extends Nillable
@@ -1231,7 +1087,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "FloorDescription")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public FloorDescription FloorDescription;
    }
 
@@ -1241,77 +1097,61 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final QName QN = new QName(NS, "FloorDescription");
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "areaOfOpenings")
       @XmlElement(required = false)
-      public NillableType<Double> areaOfOpenings;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> currentUse = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<Document> document = new java.util.ArrayList<Document>();
+      public NillableType<String> areaOfOpenings;
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> currentUse = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_21_document> document = new java.util.ArrayList<A_21_document>();
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "floorArea")
       @XmlElement(required = false)
-      public NillableType<Double> floorArea;
-      private java.util.List<FloorRange> floorRange = new java.util.ArrayList<FloorRange>();
+      public NillableType<String> floorArea;
+      @XmlElement(required = false)
+      public java.util.List<_floorRange> floorRange = new java.util.ArrayList<_floorRange>();
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "height")
       @XmlElement(required = false)
-      public NillableType<Double> height;
+      public NillableType<String> height;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "numberOfDwellings")
       @XmlElement(required = false)
       public NillableType<BigInteger> numberOfDwellings;
 
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "currentUse")
-      @XmlElement(required = false)
-      public void setCurrentUse(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setCurrentUse(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            currentUse.addAll(list);
-         }
-         else
-         {
-            currentUse.clear();
+            currentUse.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getCurrentUse()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getCurrentUse()
       {
          return currentUse;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "document")
-      @XmlElement(required = false)
-      public void setDocument(final java.util.List<Document> list)
+      public void setDocument(final A_21_document obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            document.addAll(list);
-         }
-         else
-         {
-            document.clear();
+            document.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Document> getDocument()
+      java.util.List<A_21_document> getDocument()
       {
          return document;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "floorRange")
-      @XmlElement(required = true)
-      public void setFloorRange(final java.util.List<FloorRange> list)
+      public void setFloorRange(final _floorRange obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            floorRange.addAll(list);
-         }
-         else
-         {
-            floorRange.clear();
+            floorRange.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<FloorRange> getFloorRange()
+      java.util.List<_floorRange> getFloorRange()
       {
          return floorRange;
       }
@@ -1326,7 +1166,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "Document")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Document Document;
    }
 
@@ -1336,12 +1176,12 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final QName QN = new QName(NS, "Document");
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "date")
       @XmlElement(required = false)
-      public NillableType<Calendar> date;
+      public NillableType<String> date;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "documentDescription")
       @XmlElement(required = false)
-      public _documentDescription documentDescription;
+      public List<PT_FreeText> documentDescription;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "documentLink")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public URI documentLink;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "sourceStatus")
       @XmlElement(required = false)
@@ -1355,10 +1195,10 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "nilReason")
       public String nilReason;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gco", localName = "CharacterString")
-      @XmlElement(required = true)
-      public String CharacterString;
+      @XmlElement(required = false)
+      public CharacterString CharacterString;
       @JacksonXmlProperty(namespace = "http://www.isotc211.org/2005/gmd", localName = "PT_FreeText")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PT_FreeText PT_FreeText;
    }
 
@@ -1367,7 +1207,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3";
       public static final QName QN = new QName(NS, "floorRange");
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "FloorRange")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public FloorRange FloorRange;
    }
 
@@ -1380,7 +1220,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "Document")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Document Document;
    }
 
@@ -1393,7 +1233,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "EnergyPerformance")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public EnergyPerformance EnergyPerformance;
    }
 
@@ -1402,11 +1242,11 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3";
       public static final QName QN = new QName(NS, "EnergyPerformance");
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "energyPerformanceValue")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference energyPerformanceValue;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "dateOfAssessment")
       @XmlElement(required = false)
-      public NillableType<Calendar> dateOfAssessment;
+      public NillableType<String> dateOfAssessment;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "assessmentMethod")
       @XmlElement(required = false)
       public A_24_assessmentMethod assessmentMethod;
@@ -1419,7 +1259,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "DocumentCitation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public DocumentCitation DocumentCitation;
    }
 
@@ -1430,7 +1270,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = true, name = "id")
       public String id;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "name")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String name;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "shortName")
       @XmlElement(required = false)
@@ -1438,46 +1278,35 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "date")
       @XmlElement(required = false)
       public Object date;
-      private java.util.List<java.net.URI> link = new java.util.ArrayList<java.net.URI>();
-      private java.util.List<java.lang.String> specificReference = new java.util.ArrayList<java.lang.String>();
+      @XmlElement(required = false)
+      public java.util.List<java.net.URI> link = new java.util.ArrayList<java.net.URI>();
+      @XmlElement(required = false)
+      public java.util.List<java.lang.String> specificReference = new java.util.ArrayList<java.lang.String>();
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "link")
-      @XmlElement(required = false)
-      public void setLink(final java.util.List<java.net.URI> list)
+      public void setLink(final java.net.URI obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            link.addAll(list);
-         }
-         else
-         {
-            link.clear();
+            link.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<URI> getLink()
+      java.util.List<java.net.URI> getLink()
       {
          return link;
       }
 
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "specificReference")
-      @XmlElement(required = false)
-      public void setSpecificReference(
-            final java.util.List<java.lang.String> list)
+      public void setSpecificReference(final java.lang.String obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            specificReference.addAll(list);
-         }
-         else
-         {
-            specificReference.clear();
+            specificReference.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<String> getSpecificReference()
+      java.util.List<java.lang.String> getSpecificReference()
       {
          return specificReference;
       }
@@ -1492,7 +1321,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "AddressRepresentation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public AddressRepresentation AddressRepresentation;
    }
 
@@ -1500,136 +1329,105 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "AddressRepresentation");
-      private java.util.List<GeographicalName> adminUnit = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<java.lang.String> locatorDesignator = new java.util.ArrayList<java.lang.String>();
-      private java.util.List<GeographicalName> locatorName = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<GeographicalName> addressArea = new java.util.ArrayList<GeographicalName>();
-      private java.util.List<GeographicalName> postName = new java.util.ArrayList<GeographicalName>();
+      @XmlElement(required = false)
+      public java.util.List<_adminUnit> adminUnit = new java.util.ArrayList<_adminUnit>();
+      @XmlElement(required = false)
+      public java.util.List<java.lang.String> locatorDesignator = new java.util.ArrayList<java.lang.String>();
+      @XmlElement(required = false)
+      public java.util.List<_locatorName> locatorName = new java.util.ArrayList<_locatorName>();
+      @XmlElement(required = false)
+      public java.util.List<A_26_addressArea> addressArea = new java.util.ArrayList<A_26_addressArea>();
+      @XmlElement(required = false)
+      public java.util.List<A_27_postName> postName = new java.util.ArrayList<A_27_postName>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "postCode")
       @XmlElement(required = false)
       public NillableType<String> postCode;
-      private java.util.List<GeographicalName> thoroughfare = new java.util.ArrayList<GeographicalName>();
+      @XmlElement(required = false)
+      public java.util.List<A_28_thoroughfare> thoroughfare = new java.util.ArrayList<A_28_thoroughfare>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "addressFeature")
       @XmlElement(required = false)
       public Reference addressFeature;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "adminUnit")
-      @XmlElement(required = true)
-      public void setAdminUnit(final java.util.List<GeographicalName> list)
+      public void setAdminUnit(final _adminUnit obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            adminUnit.addAll(list);
-         }
-         else
-         {
-            adminUnit.clear();
+            adminUnit.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getAdminUnit()
+      java.util.List<_adminUnit> getAdminUnit()
       {
          return adminUnit;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "locatorDesignator")
-      @XmlElement(required = false)
-      public void setLocatorDesignator(
-            final java.util.List<java.lang.String> list)
+      public void setLocatorDesignator(final java.lang.String obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            locatorDesignator.addAll(list);
-         }
-         else
-         {
-            locatorDesignator.clear();
+            locatorDesignator.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<String> getLocatorDesignator()
+      java.util.List<java.lang.String> getLocatorDesignator()
       {
          return locatorDesignator;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "locatorName")
-      @XmlElement(required = false)
-      public void setLocatorName(final java.util.List<GeographicalName> list)
+      public void setLocatorName(final _locatorName obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            locatorName.addAll(list);
-         }
-         else
-         {
-            locatorName.clear();
+            locatorName.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getLocatorName()
+      java.util.List<_locatorName> getLocatorName()
       {
          return locatorName;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "addressArea")
-      @XmlElement(required = false)
-      public void setAddressArea(final java.util.List<GeographicalName> list)
+      public void setAddressArea(final A_26_addressArea obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            addressArea.addAll(list);
-         }
-         else
-         {
-            addressArea.clear();
+            addressArea.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getAddressArea()
+      java.util.List<A_26_addressArea> getAddressArea()
       {
          return addressArea;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "postName")
-      @XmlElement(required = false)
-      public void setPostName(final java.util.List<GeographicalName> list)
+      public void setPostName(final A_27_postName obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            postName.addAll(list);
-         }
-         else
-         {
-            postName.clear();
+            postName.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getPostName()
+      java.util.List<A_27_postName> getPostName()
       {
          return postName;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "thoroughfare")
-      @XmlElement(required = false)
-      public void setThoroughfare(final java.util.List<GeographicalName> list)
+      public void setThoroughfare(final A_28_thoroughfare obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            thoroughfare.addAll(list);
-         }
-         else
-         {
-            thoroughfare.clear();
+            thoroughfare.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<GeographicalName> getThoroughfare()
+      java.util.List<A_28_thoroughfare> getThoroughfare()
       {
          return thoroughfare;
       }
@@ -1640,7 +1438,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "adminUnit");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1649,7 +1447,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "locatorName");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1662,7 +1460,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1675,7 +1473,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1688,7 +1486,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -1701,7 +1499,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "OfficialArea")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public OfficialArea OfficialArea;
    }
 
@@ -1713,11 +1511,11 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlElement(required = false)
       public Reference officialAreaReference;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "value")
-      @XmlElement(required = true)
-      public Double value;
+      @XmlElement(required = false)
+      public String value;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "heightParameter")
       @XmlElement(required = false)
-      public NillableType<Double> heightParameter;
+      public NillableType<String> heightParameter;
    }
 
    public static class A_30_officialValue extends Nillable
@@ -1729,7 +1527,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "OfficialValue")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public OfficialValue OfficialValue;
    }
 
@@ -1745,7 +1543,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public NillableType<BigInteger> value;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "valuationDate")
       @XmlElement(required = false)
-      public NillableType<Calendar> valuationDate;
+      public NillableType<String> valuationDate;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "officialValueReference")
       @XmlElement(required = false)
       public Reference officialValueReference;
@@ -1754,7 +1552,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public NillableType<BigInteger> referencePercentage;
       @JacksonXmlProperty(namespace = "http://inspire.jrc.ec.europa.eu/schemas/bu-ext/3.0rc3", localName = "informationSystemName")
       @XmlElement(required = false)
-      public _informationSystemName informationSystemName;
+      public List<PT_FreeText> informationSystemName;
    }
 
    public static class A_31_mixinaddress extends Nillable
@@ -1766,7 +1564,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Addresses:3.0", localName = "AddressRepresentation")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public AddressRepresentation AddressRepresentation;
    }
 
@@ -1781,7 +1579,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       @XmlAttribute(required = false, name = "owns")
       public String owns;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "CadastralParcel")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public CadastralParcel CadastralParcel;
    }
 
@@ -1799,76 +1597,56 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "areaValue")
       @XmlElement(required = false)
-      public NillableType<Double> areaValue;
+      public NillableType<String> areaValue;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
+      public NillableType<String> endLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "label")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String label;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "nationalCadastralReference")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String nationalCadastralReference;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "referencePoint")
       @XmlElement(required = false)
-      public _referencePoint referencePoint;
+      public GeometryProperty referencePoint;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "validFrom")
       @XmlElement(required = false)
-      public NillableType<Calendar> validFrom;
+      public NillableType<String> validFrom;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "validTo")
       @XmlElement(required = false)
-      public NillableType<Calendar> validTo;
+      public NillableType<String> validTo;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "zoning")
       @XmlElement(required = false)
       public Reference zoning;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> basicPropertyUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> basicPropertyUnit = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "administrativeUnit")
       @XmlElement(required = false)
       public Reference administrativeUnit;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0", localName = "basicPropertyUnit")
-      @XmlElement(required = false)
       public void setBasicPropertyUnit(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            basicPropertyUnit.addAll(list);
-         }
-         else
-         {
-            basicPropertyUnit.clear();
+            basicPropertyUnit.add(obj);
          }
       }
 
-      @JsonGetter
-      public List<Reference> getBasicPropertyUnit()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBasicPropertyUnit()
       {
          return basicPropertyUnit;
       }
-   }
-
-   public static class _referencePoint extends Nillable
-   {
-      public static final String NS = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0";
-      public static final QName QN = new QName(NS, "referencePoint");
-      @XmlAttribute(required = false, name = "nilReason")
-      public String nilReason;
-      @XmlAttribute(required = false, name = "remoteSchema")
-      public String remoteSchema;
-      @XmlAttribute(required = false, name = "owns")
-      public String owns;
-      @JacksonXmlProperty(namespace = "http://www.opengis.net/gml/3.2", localName = "Point")
-      @XmlElement(required = true)
-      public GeometryProperty Point;
    }
 }

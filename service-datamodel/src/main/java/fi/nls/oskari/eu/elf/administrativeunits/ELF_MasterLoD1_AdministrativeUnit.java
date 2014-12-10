@@ -39,206 +39,161 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public LocationProperty location;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "beginLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> beginLifespanVersion;
+      public NillableType<String> beginLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "country")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public CodeType country;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "endLifespanVersion")
       @XmlElement(required = false)
-      public NillableType<Calendar> endLifespanVersion;
+      public NillableType<String> endLifespanVersion;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "geometry")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeometryProperty geometry;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "inspireId")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Identifier inspireId;
-      private java.util.List<GeographicalName> name = new java.util.ArrayList<GeographicalName>();
+      @XmlElement(required = false)
+      public java.util.List<_name> name = new java.util.ArrayList<_name>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "nationalCode")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String nationalCode;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "nationalLevel")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public Reference nationalLevel;
-      private java.util.List<java.lang.String> nationalLevelName = new java.util.ArrayList<java.lang.String>();
-      private java.util.List<ResidenceOfAuthority> residenceOfAuthority = new java.util.ArrayList<ResidenceOfAuthority>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> boundary = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<A_3_lowerLevelUnit> lowerLevelUnit = new java.util.ArrayList<A_3_lowerLevelUnit>();
+      @XmlElement(required = false)
+      public java.util.List<java.lang.String> nationalLevelName = new java.util.ArrayList<java.lang.String>();
+      @XmlElement(required = false)
+      public java.util.List<A_2_residenceOfAuthority> residenceOfAuthority = new java.util.ArrayList<A_2_residenceOfAuthority>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> boundary = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<A_3_lowerLevelUnit> lowerLevelUnit = new java.util.ArrayList<A_3_lowerLevelUnit>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "upperLevelUnit")
       @XmlElement(required = false)
       public Reference upperLevelUnit;
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> condominium = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> administeredBy = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
-      private java.util.List<fi.nls.oskari.fe.xml.util.Reference> coAdminister = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> condominium = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> administeredBy = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      @XmlElement(required = false)
+      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> coAdminister = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0", localName = "SHNcode")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ThematicIdentifier SHNcode;
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0", localName = "validFrom")
       @XmlElement(required = false)
-      public NillableType<Calendar> validFrom;
+      public NillableType<String> validFrom;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "name")
-      @XmlElement(required = true)
-      public void setName(final java.util.List<GeographicalName> list)
+      public void setName(final _name obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            name.addAll(list);
-         }
-         else
-         {
-            name.clear();
+            name.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<GeographicalName> getName()
+      java.util.List<_name> getName()
       {
          return name;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "nationalLevelName")
-      @XmlElement(required = false)
-      public void setNationalLevelName(
-            final java.util.List<java.lang.String> list)
+      public void setNationalLevelName(final java.lang.String obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            nationalLevelName.addAll(list);
-         }
-         else
-         {
-            nationalLevelName.clear();
+            nationalLevelName.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<java.lang.String> getNationalLevelName()
+      java.util.List<java.lang.String> getNationalLevelName()
       {
          return nationalLevelName;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "residenceOfAuthority")
-      @XmlElement(required = false)
-      public void setResidenceOfAuthority(
-            final java.util.List<ResidenceOfAuthority> list)
+      public void setResidenceOfAuthority(final A_2_residenceOfAuthority obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            residenceOfAuthority.addAll(list);
-         }
-         else
-         {
-            residenceOfAuthority.clear();
+            residenceOfAuthority.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<ResidenceOfAuthority> getResidenceOfAuthority()
+      java.util.List<A_2_residenceOfAuthority> getResidenceOfAuthority()
       {
          return residenceOfAuthority;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "boundary")
-      @XmlElement(required = false)
-      public void setBoundary(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setBoundary(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            boundary.addAll(list);
-         }
-         else
-         {
-            boundary.clear();
+            boundary.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBoundary()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getBoundary()
       {
          return boundary;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "lowerLevelUnit")
-      @XmlElement(required = false)
-      public void setLowerLevelUnit(
-            final java.util.List<A_3_lowerLevelUnit> list)
+      public void setLowerLevelUnit(final A_3_lowerLevelUnit obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            lowerLevelUnit.addAll(list);
-         }
-         else
-         {
-            lowerLevelUnit.clear();
+            lowerLevelUnit.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<A_3_lowerLevelUnit> getLowerLevelUnit()
+      java.util.List<A_3_lowerLevelUnit> getLowerLevelUnit()
       {
          return lowerLevelUnit;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "condominium")
-      @XmlElement(required = false)
-      public void setCondominium(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+      public void setCondominium(final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            condominium.addAll(list);
-         }
-         else
-         {
-            condominium.clear();
+            condominium.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getCondominium()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getCondominium()
       {
          return condominium;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "administeredBy")
-      @XmlElement(required = false)
       public void setAdministeredBy(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            administeredBy.addAll(list);
-         }
-         else
-         {
-            administeredBy.clear();
+            administeredBy.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getAdministeredBy()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getAdministeredBy()
       {
          return administeredBy;
       }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "coAdminister")
-      @XmlElement(required = false)
       public void setCoAdminister(
-            final java.util.List<fi.nls.oskari.fe.xml.util.Reference> list)
+            final fi.nls.oskari.fe.xml.util.Reference obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            coAdminister.addAll(list);
-         }
-         else
-         {
-            coAdminister.clear();
+            coAdminister.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> getCoAdminister()
+      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getCoAdminister()
       {
          return coAdminister;
       }
@@ -249,7 +204,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
       public static final QName QN = new QName(NS, "name");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "GeographicalName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName GeographicalName;
    }
 
@@ -271,8 +226,9 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public NillableType<String> sourceOfName;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "pronunciation")
       @XmlElement(required = false)
-      public PronunciationOfName pronunciation;
-      private java.util.List<SpellingOfName> spelling = new java.util.ArrayList<SpellingOfName>();
+      public A_1_pronunciation pronunciation;
+      @XmlElement(required = false)
+      public java.util.List<_spelling> spelling = new java.util.ArrayList<_spelling>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "grammaticalGender")
       @XmlElement(required = false)
       public Reference grammaticalGender;
@@ -281,21 +237,15 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public Reference grammaticalNumber;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "spelling")
-      @XmlElement(required = true)
-      public void setSpelling(final java.util.List<SpellingOfName> list)
+      public void setSpelling(final _spelling obj)
       {
-         if (list != null)
+         if (obj != null)
          {
-            spelling.addAll(list);
-         }
-         else
-         {
-            spelling.clear();
+            spelling.add(obj);
          }
       }
 
-      @JsonGetter
-      public java.util.List<SpellingOfName> getSpelling()
+      java.util.List<_spelling> getSpelling()
       {
          return spelling;
       }
@@ -310,7 +260,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "PronunciationOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public PronunciationOfName PronunciationOfName;
    }
 
@@ -331,7 +281,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "spelling");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "SpellingOfName")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public SpellingOfName SpellingOfName;
    }
 
@@ -340,7 +290,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "SpellingOfName");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "text")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String text;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "script")
       @XmlElement(required = false)
@@ -359,7 +309,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       @XmlAttribute(required = false, name = "remoteSchema")
       public String remoteSchema;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "ResidenceOfAuthority")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ResidenceOfAuthority ResidenceOfAuthority;
    }
 
@@ -368,7 +318,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
       public static final QName QN = new QName(NS, "ResidenceOfAuthority");
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "name")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public GeographicalName name;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "geometry")
       @XmlElement(required = false)
@@ -388,7 +338,7 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0";
       public static final QName QN = new QName(NS, "SHNcode");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "ThematicIdentifier")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public ThematicIdentifier ThematicIdentifier;
    }
 
@@ -397,10 +347,10 @@ public class ELF_MasterLoD1_AdministrativeUnit
       public static final String NS = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3";
       public static final QName QN = new QName(NS, "ThematicIdentifier");
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "identifier")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String identifier;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/schemas/base2/1.0rc3", localName = "identifierScheme")
-      @XmlElement(required = true)
+      @XmlElement(required = false)
       public String identifierScheme;
    }
 }
