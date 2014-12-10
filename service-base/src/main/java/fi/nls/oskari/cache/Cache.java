@@ -16,9 +16,10 @@ public class Cache<T> {
 
     private static final Logger log = LogFactory.getLogger(Cache.class);
 
+    // the items are sorted by key.compare(key) -> we should map the String to a "CacheKey" which compares insertion time
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
     private volatile int limit = 1000;
-    private volatile long expiration = 30 * 60 * 1000;
+    private volatile long expiration = 30L * 60L * 1000L;
     private volatile long lastFlush = currentTime();
     private String name;
     public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
@@ -155,7 +156,7 @@ public class Cache<T> {
 
     public boolean flush(final boolean force) {
         final long now = currentTime();
-        if(force || (lastFlush + expiration < now)) {
+        if(force || isTimeToFlush(now)) {
             // flushCache
             log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
@@ -163,6 +164,10 @@ public class Cache<T> {
             return true;
         }
         return false;
+    }
+
+    public boolean isTimeToFlush(long now) {
+        return (lastFlush + expiration < now);
     }
 
     private static long currentTime() {
