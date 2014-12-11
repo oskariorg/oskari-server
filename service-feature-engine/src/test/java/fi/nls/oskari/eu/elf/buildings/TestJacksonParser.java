@@ -75,7 +75,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    @Ignore("Not ready")
+    //@Ignore("Not ready")
     @Test
     public void test_ELF_Master_LoD0_Building_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,

@@ -11,7 +11,7 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        setLenient(true);
+//        setLenient(true);
         
         getGeometryDeserializer().mapGeometryTypes(
                 "http://www.opengis.net/gml/3.2", "Point", "MultiPoint");

@@ -45,14 +45,14 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-           /*if (feature.geometry2D != null
+            if (feature.geometry2D != null
                     && feature.geometry2D.BuildingGeometry2D != null
                     && feature.geometry2D.BuildingGeometry2D.geometry != null) {
                 outputFeature
                         .addGeometryProperty(
                                 geom,
                                 feature.geometry2D.BuildingGeometry2D.geometry.geometry);
-            }*/
+            }
 
             outputFeature
                     .addProperty(gn, feature.name)

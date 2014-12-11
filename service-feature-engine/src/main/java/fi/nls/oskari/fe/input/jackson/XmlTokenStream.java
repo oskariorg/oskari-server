@@ -513,14 +513,20 @@ public class XmlTokenStream
     public void resume() throws XMLStreamException {
         //_xmlReader.next();
         
-        while(_xmlReader.next() != XML_END_ELEMENT) {
+        _currentState = _skipUntilTag();
+        /*while(_xmlReader.next() != XML_END_ELEMENT) {
             //System.err.println(_xmlReader.getEventType());
-            /*if( _xmlReader.getEventType() == 1 || 
+            if( _xmlReader.getEventType() == 1 || 
                     _xmlReader.getEventType() == 2) {
                 System.err.println(_xmlReader.getName());
-            }*/
-        };
-        _currentState = XML_END_ELEMENT;
+            }
+        };*/
+        //_currentState = XML_END_ELEMENT;
+        _localName = _xmlReader.getLocalName();
+        _namespaceURI = _xmlReader.getNamespaceURI();
+        if (_currentWrapper != null) {
+            _currentWrapper = _currentWrapper.getParent();
+        }
         
         
     }

@@ -165,12 +165,15 @@ public class AsyncDirectTileLayer extends DirectTileLayer {
         }
         String cookie = (String) f.getProperty("cookie").getValue();
         if (cookie != null) {
-
+            request.setHeader("Cookie", cookie);
         }
 
         if (xClientInfo != null) {
 
             for (Entry<String, String> e : xClientInfo.entrySet()) {
+                if (e.getKey().equals("Cookie")) {
+                    continue;
+                }
                 request.setHeader(e.getKey(), e.getValue());
             }
         }

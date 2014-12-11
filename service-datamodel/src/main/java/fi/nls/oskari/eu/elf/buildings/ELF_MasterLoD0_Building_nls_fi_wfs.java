@@ -85,7 +85,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs
       public java.util.List<A_10_parts> parts = new java.util.ArrayList<A_10_parts>();
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3", localName = "geometry2D")
       @XmlElement(required = false)
-      public BuildingGeometry2D geometry2D;
+      public _geometry2D geometry2D;
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0", localName = "heightBelowGround")
       @XmlElement(required = false)
       public NillableType<String> heightBelowGround;
