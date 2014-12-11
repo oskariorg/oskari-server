@@ -6,6 +6,44 @@
 <gml:upperCorner>239772.208 6711672.046</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097120">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239434.069 6711259.998</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.2621</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097117">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239312.011 6711235.214</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">3.2413</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
 <kanta:Liikennevayla gml:id="Liikennevayla.81569408">
 <kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
 <kanta:luontitapa>digitointi</kanta:luontitapa>
@@ -2703,44 +2741,6 @@
 </kanta:reunaviiva>
 </kanta:Sijainti>
 </kanta:sijainnit>
-</kanta:Liikennevayla>
-</gml:featureMember><gml:featureMember>
-<kanta:Liikennevayla gml:id="Liikennevayla.185097120">
-<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
-<kanta:luontitapa>digitointi</kanta:luontitapa>
-<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
-<kanta:sijainnit>
-<kanta:Sijainti>
-<kanta:referenssipiste>
-<gml:Point>
-<gml:pos>239434.069 6711259.998</gml:pos>
-</gml:Point>
-<kanta:Suunta>
-<kanta:suuntakulma uom="rad">2.2621</kanta:suuntakulma>
-</kanta:Suunta>
-</kanta:referenssipiste>
-</kanta:Sijainti>
-</kanta:sijainnit>
-<kanta:pinta>kestopäällystetty</kanta:pinta>
-</kanta:Liikennevayla>
-</gml:featureMember><gml:featureMember>
-<kanta:Liikennevayla gml:id="Liikennevayla.185097117">
-<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
-<kanta:luontitapa>digitointi</kanta:luontitapa>
-<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
-<kanta:sijainnit>
-<kanta:Sijainti>
-<kanta:referenssipiste>
-<gml:Point>
-<gml:pos>239312.011 6711235.214</gml:pos>
-</gml:Point>
-<kanta:Suunta>
-<kanta:suuntakulma uom="rad">3.2413</kanta:suuntakulma>
-</kanta:Suunta>
-</kanta:referenssipiste>
-</kanta:Sijainti>
-</kanta:sijainnit>
-<kanta:pinta>kestopäällystetty</kanta:pinta>
 </kanta:Liikennevayla>
 </gml:featureMember><gml:featureMember>
 <kanta:Liikennevayla gml:id="Liikennevayla.185097118">

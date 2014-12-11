@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -146,7 +147,6 @@ public class FromXmlParser extends ParserMinimalBase {
      * data more than once.
      */
     protected byte[] _binaryValue;
-    
 
     /*
      * /********************************************************** /* Life-cycle
@@ -687,7 +687,7 @@ public class FromXmlParser extends ParserMinimalBase {
     @Override
     public BigInteger getBigIntegerValue() throws IOException,
             JsonParseException {
-       throw new IOException("NYI");
+        throw new IOException("NYI");
     }
 
     @Override
@@ -787,8 +787,13 @@ public class FromXmlParser extends ParserMinimalBase {
 
     public void resume() throws JsonParseException, IOException,
             XMLStreamException {
+
         _nextToken = null;
         _xmlTokens.resume();
         nextToken();
+    }
+
+    public QName getParentQName() {
+        return null;
     }
 }

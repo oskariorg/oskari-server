@@ -43,12 +43,14 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     /* input */
     protected final GmlMapper mapper;
 
-    /*protected JacksonParserRecipe() {
-        
-          gml = new org.geotools.gml3.v3_2.GMLConfiguration(true); mapper = new
-          GmlMapper(gml, false);
-         
-    }*/
+    /*
+     * protected JacksonParserRecipe() {
+     * 
+     * gml = new org.geotools.gml3.v3_2.GMLConfiguration(true); mapper = new
+     * GmlMapper(gml, false);
+     * 
+     * }
+     */
 
     protected JacksonParserRecipe(Configuration conf) {
         gml = conf;
@@ -230,6 +232,10 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             return this;
         }
 
+    }
+
+    public GmlMapper getMapper() {
+        return mapper;
     }
 
 }
