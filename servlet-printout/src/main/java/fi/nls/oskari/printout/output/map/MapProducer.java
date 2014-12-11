@@ -532,6 +532,8 @@ public class MapProducer {
 
             String urlTemplate = layerDefinition.getUrlTemplate();
             if (urlTemplate == null) {
+                log.debug("WMTS no urlTepmlate assuming png REST");
+                
                 String imageTypeExtension = "png";
 
                 /* REST */
@@ -546,6 +548,7 @@ public class MapProducer {
 
                 url = layerUrl + "/" + wmtsRestPart;
             } else {
+                log.debug("WMTS with urlTemplate");
                 // "template":
                 // "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
                 url = urlTemplate

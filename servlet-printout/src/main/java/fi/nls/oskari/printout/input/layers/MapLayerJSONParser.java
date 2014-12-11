@@ -425,7 +425,6 @@ public class MapLayerJSONParser {
             adjustData(layerDefinition, layerObj);
 
             /* format selection by default or by spec for wmts */
-            layerDefinition.setFormat("image/png");
 
             if (optionsMap != null && optionsMap.get("format") != null) {
                 layerDefinition.setFormat((String) optionsMap.get("format"));
@@ -439,6 +438,10 @@ public class MapLayerJSONParser {
             if ("wmtslayer".equals(type)) {
                 adjustTileMatrixSetInfo(layerDefinition,
                         (Map<String, ?>) layerObj.get("tileMatrixSetData"));
+            }
+            
+            if( layerDefinition.getFormat()== null) {
+                layerDefinition.setFormat("image/png");
             }
 
             layerDefs.put(layerDefinition.getLayerid(), layerDefinition);
