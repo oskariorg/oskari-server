@@ -1545,6 +1545,12 @@ public class SchemaRoaster {
                 String schemaLoc = schemaLocation.concat("");
 
                 if (schemaLoc
+                        .startsWith("http://www.locationframework.eu/ELF10/")) {
+                    schemaLoc = schemaLoc.replace(
+                            "http://www.locationframework.eu/ELF10/",
+                            "http://elfserver.kartverket.no/schemas/elf1.0/");
+                }
+                if (schemaLoc
                         .startsWith("http://www.locationframework.eu/ELF/")) {
                     schemaLoc = schemaLoc.replace(
                             "http://www.locationframework.eu/ELF/",
@@ -1666,7 +1672,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu?service=WFS&request=DescribeFeatureType&TYPENAMES=elf-lod0bu:Building&version=2.0.0&NAMESPACES=xmlns(elf-lod0bu,http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0)";
+        final String url = "http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu?service=WFS&request=DescribeFeatureType&TYPENAMES=elf-lod0bu:Building&version=2.0.0&NAMESPACES=xmlns(elf-lod0bu,http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0)";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1698,7 +1704,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Buildings.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Buildings.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1730,7 +1736,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1763,7 +1769,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_CadastralParcels.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_CadastralParcels.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1796,7 +1802,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1829,7 +1835,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1862,7 +1868,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_GeographicalNames.xsd";
+        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_GeographicalNames.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1896,7 +1902,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta/2.1.6/rakennusvalvonta.xsd";
+        final String url = "http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta/2.1.6/rakennusvalvonta.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1929,7 +1935,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
+        final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1962,7 +1968,7 @@ public class SchemaRoaster {
 
         org.apache.log4j.PropertyConfigurator.configure(log4jprops);
 
-        String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
+        final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
 
         logger.setLevel(Level.DEBUG);
 
@@ -1981,4 +1987,77 @@ public class SchemaRoaster {
 
     }
 
+    
+    @Ignore("Schema failture")
+    @Test
+    public void testInspireTnRoRoadLink()
+            throws MalformedURLException, IOException {
+        Properties log4jprops = new Properties();
+        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
+        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
+        log4jprops.put("log4j.appender.A1.layout",
+                "org.apache.log4j.PatternLayout");
+        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
+                "%-4r [%t] %-5p %c %x - %m%n");
+
+        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
+
+        final String url = "http://www.ign.es/wfs-inspire/transportes-btn100?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&TYPENAME=tn-ro:RoadLink&NAMESPACES=xmlns(tn-ro,urn%3Ax-inspire%3Aspecification%3Agmlas%3ARoadTransportNetwork%3A3.0)";
+
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        logger.debug("OUTPUT");
+        
+        final String feature = "RoadLink";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "roadtransportnetwork";
+        final String classname = "INSPIRE_tnro_RoadLink";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
+
+        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
+
+        
+        
+        
+    }
+    
+    @Test
+    public void testELFTnRoRoadLink()
+            throws MalformedURLException, IOException {
+        Properties log4jprops = new Properties();
+        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
+        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
+        log4jprops.put("log4j.appender.A1.layout",
+                "org.apache.log4j.PatternLayout");
+        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
+                "%-4r [%t] %-5p %c %x - %m%n");
+
+        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
+
+        final String url = "http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod1rdtn?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAME=elf_lod1rtn:RoadLink&NAMESPACES=xmlns(elf_lod1rtn,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FRoadTransportNetwork%2FMasterLoD1%2F1.0)";
+
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        logger.debug("OUTPUT");
+        
+        final String feature = "RoadLink";
+        final String packageName = "fi.nls.oskari.eu.elf.";
+        final String subPackage = "roadtransportnetwork";
+        final String classname = "ELF_TNRO_RoadLink";
+
+        final String targetNS = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0";
+
+        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
+
+        
+        
+        
+    }
+    
+    
 }

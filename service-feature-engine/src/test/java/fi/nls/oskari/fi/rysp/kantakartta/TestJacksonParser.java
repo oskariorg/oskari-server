@@ -60,7 +60,7 @@ public class TestJacksonParser {
 
     }
 
-    //@Ignore("Unfinished")
+    @Ignore("Unfinished")
     @Test
     public void test_RYSP_kanta_Rakennus_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
