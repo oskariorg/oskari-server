@@ -510,20 +510,27 @@ public class XmlTokenStream
         return sb.toString();
     }
     
-    public void resume() throws XMLStreamException {
-        //_xmlReader.next();
-        
-        _currentState = _skipUntilTag();
-        /*while(_xmlReader.next() != XML_END_ELEMENT) {
-            //System.err.println(_xmlReader.getEventType());
-            if( _xmlReader.getEventType() == 1 || 
-                    _xmlReader.getEventType() == 2) {
-                System.err.println(_xmlReader.getName());
+    private final int _skipUntilEndTag() throws XMLStreamException
+    {
+        while (_xmlReader.hasNext()) {
+            int type;
+            switch (type = _xmlReader.next()) {
+            case XMLStreamConstants.END_ELEMENT:
+            case XMLStreamConstants.END_DOCUMENT:
+                return type;
+            default:
+                // any other type (proc instr, comment etc) is just ignored
             }
-        };*/
-        //_currentState = XML_END_ELEMENT;
-        _localName = _xmlReader.getLocalName();
-        _namespaceURI = _xmlReader.getNamespaceURI();
+        }
+        throw new IllegalStateException("Expected to find a tag, instead reached end of input");
+    }
+    
+    public void resume() throws XMLStreamException {
+//        _xmlReader.next();
+        
+        _currentState = _skipUntilEndTag();
+        _xmlReader.next();
+       
         if (_currentWrapper != null) {
             _currentWrapper = _currentWrapper.getParent();
         }

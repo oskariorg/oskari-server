@@ -24,6 +24,7 @@ import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 public class GeometryPropertyDeserializer extends
         JsonDeserializer<GeometryProperty> {
 
+    protected boolean ignoreProps = false;
     protected Configuration gml;
     protected FEPullParser parserAny;
     protected final Map<QName, FEPullParser.PullParserHandler> handlers = new HashMap<QName, FEPullParser.PullParserHandler>();
@@ -56,6 +57,7 @@ public class GeometryPropertyDeserializer extends
 
     public Object parseGeometry(
             Map<QName, FEPullParser.PullParserHandler> handlers,
+            QName parentQn,
             XMLStreamReader reader) throws XMLStreamException, IOException,
             SAXException {
         QName qn = reader.getName();
@@ -67,6 +69,10 @@ public class GeometryPropertyDeserializer extends
 
             obj = parserAny.parse();
 
+        } else {
+            
+            System.err.println("NO HANDLER in CONTEXT already? "+qn+" / "+parentQn+" - "
+                    + reader.getElementText());
         }
 
         return obj;
@@ -78,19 +84,20 @@ public class GeometryPropertyDeserializer extends
             JsonProcessingException {
         // TODO Auto-generated method stub
         FromXmlParser parser = (FromXmlParser) ctxt.getParser();
-
         Geometry geom = null;
 
         XMLStreamReader reader = parser.getStaxReader();
 
         try {
-           geom = (Geometry) parseGeometry(handlers, reader);
-           parser.resume();
-           // parser.skipChildren();
-            
-           // System.out.println(parser.getCurrentToken());
+            if (isIgnoreProps()) {
+                parser.skipChildren();
+            } else {
+                QName parentQn = parser.getParentQName();
+                geom = (Geometry) parseGeometry(handlers, parentQn, reader);
+                parser.resume();
+            }
 
-       } catch (XMLStreamException e) {
+        } catch (XMLStreamException e) {
             throw new IOException(e);
         } catch (SAXException e) {
             throw new IOException(e);
@@ -100,4 +107,13 @@ public class GeometryPropertyDeserializer extends
 
         return new GeometryProperty(geom);
     }
+
+    public boolean isIgnoreProps() {
+        return ignoreProps;
+    }
+
+    public void setIgnoreProps(boolean ignoreProps) {
+        this.ignoreProps = ignoreProps;
+    }
+
 }

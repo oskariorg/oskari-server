@@ -82,7 +82,9 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new RYSP_kanta_Rakennus_Parser();
+                RYSP_kanta_Rakennus_Parser recipe = new RYSP_kanta_Rakennus_Parser();
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);                
+                //recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

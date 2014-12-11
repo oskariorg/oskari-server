@@ -11,8 +11,6 @@ public class RYSP_kanta_Rakennus_Parser extends GML31 {
     @Override
     public void parse() throws IOException {
         
-       //setLenient(true);
-        
         getGeometryDeserializer().mapGeometryTypes(
                 "http://www.opengis.net/gml", "Polygon", "Surface",
                 "PolyhedralSurface", "TriangulatedSurface", "Tin",
