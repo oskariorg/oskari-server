@@ -62,4 +62,14 @@ public class CacheTest {
         assertEquals("Cache size should be " + limit, limit, cache.getSize());
     }
 
+    @Test
+    public void testExpiration() {
+        final String cacheName = "Expiration";
+        final Cache<String> cache = CacheManager.getCache(cacheName);
+        final long last = cache.getLastFlush();
+        assertFalse("Newly created cache should not be ready to flush", cache.isTimeToFlush(last));
+        final long expiration = cache.getExpiration();
+        assertTrue("Cache lastFlush + expiration + 10 should be cleared for flush", cache.isTimeToFlush(last + expiration + 10));
+    }
+
 }
