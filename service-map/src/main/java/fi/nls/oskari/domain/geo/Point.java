@@ -39,5 +39,10 @@ public class Point {
     public String toString() {
         return String.valueOf(this.lon + "," + this.lat);
     }
+    public void switchLonLat() {
+        double dmp = this.lon;
+        this.lon = this.lat;
+        this.lat = dmp;
+    }
 
 }
