@@ -44,10 +44,6 @@ public class CSWService {
             .getLogger(CSWService.class);
 
     GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
-    // 2011-02-23T14:32:09
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss",
-            Locale.US);
-    // FIXME get default locale from properties?
 
     String baseURL;
     private CoordinateReferenceSystem targetCRS;
