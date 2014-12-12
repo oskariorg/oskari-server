@@ -5,6 +5,7 @@
 ### control-admin
 
 Added a new ActionHandler for route 'SearchChannel'. This lists all annotated SearchChannels and their debug data.
+Fixed an issue with Users action route where receiving empty password would update the password.
 
 ### service-map
 
