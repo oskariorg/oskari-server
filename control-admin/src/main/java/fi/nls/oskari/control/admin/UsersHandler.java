@@ -88,13 +88,13 @@ public class UsersHandler extends RestActionHandler {
                 //retUser = userService.modifyUser(user);
             	log.debug("roles size: " + roles.length);
             	retUser = userService.modifyUserwithRoles(user, roles);
-            	log.debug("done modyfing user");
-                if (password != null) {
+            	log.debug("done modifying user");
+                if (password != null && !"".equals(password.trim())) {
                     userService.updateUserPassword(retUser.getScreenname(), password);
                 }
             } else {
             	log.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
-                if (password == null || password.length() == 0) {
+                if (password == null || password.trim().isEmpty()) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
                 retUser = userService.createUser(user);
@@ -118,11 +118,8 @@ public class UsersHandler extends RestActionHandler {
         log.debug("handlePut");
         User user = new User();
         getUserParams(user, params);
-        String password = params.getHttpParam(PARAM_PASSWORD);
+        String password = params.getRequiredParam(PARAM_PASSWORD);
         String[] roles = params.getRequest().getParameterValues("roles");
-        if (password == null || password.length() == 0) {
-            throw new ActionException("Parameter 'password' not found.");
-        }
         User retUser = null;
         try {
             retUser = userService.createUser(user, roles);
