@@ -15,8 +15,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 public class CalendarDeserializer extends JsonDeserializer<Calendar> {
 
-    SimpleDateFormat sdf = new SimpleDateFormat();
-
     @Override
     public Calendar deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
