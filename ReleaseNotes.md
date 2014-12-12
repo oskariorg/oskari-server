@@ -14,6 +14,7 @@ Added a helper class for projection transformations: fi.nls.oskari.map.geometry.
 
 PropertyUtil now always trims property values for leading and trailing spaces.
 PropertyUtil now has a convenience method to get numeric properties as double precision.
+Cache now correctly removes oldest cached item when it's overflowing.
 
 ### control-base
 

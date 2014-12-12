@@ -1,5 +1,6 @@
 package fi.nls.oskari.cache;
 
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -26,13 +27,21 @@ public class CacheTest {
         cache.setLimit(limit);
         assertEquals("Cache limit should be " + limit, limit, cache.getLimit());
         for(int i = 0; i < limit + 5; i++) {
-            boolean overflow = cache.put("test" + i, "testing");
+            boolean overflow = cache.put("test" + i, "testing" + i);
             if(i < limit) {
                 assertFalse("Not overflowing", overflow);
             }
             else {
                 assertTrue("Overflowing", overflow);
             }
+        }
+        // Checking that the oldest elements have been removed and the remaining are test5-test14
+        for(String key : cache.getKeys()) {
+            final int num = ConversionHelper.getInt(key.substring(4), -1);
+            String value = cache.get(key);
+            final int num2 = ConversionHelper.getInt(value.substring(7), -1);
+            assertTrue("Keynumbers should be over 4/" + num + "/" + key, num > 4);
+            assertTrue("Values should be over 4/" + num2 + "/" + value, num2 > 4);
         }
         assertEquals("Cache size should be " + limit, limit, cache.getSize());
     }

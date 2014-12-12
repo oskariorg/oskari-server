@@ -5,7 +5,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -18,6 +20,7 @@ public class Cache<T> {
 
     // the items are sorted by key.compare(key) -> we should map the String to a "CacheKey" which compares insertion time
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
+    private final Queue<String> keys = new ConcurrentLinkedQueue<String>();
     private volatile int limit = 1000;
     private volatile long expiration = 30L * 60L * 1000L;
     private volatile long lastFlush = currentTime();
@@ -114,6 +117,7 @@ public class Cache<T> {
     public T remove(final String name) {
         flush(false);
         T value = items.remove(name);
+        keys.remove(name);
         return value;
     }
 
@@ -128,29 +132,13 @@ public class Cache<T> {
             // limit reached - remove oldest object
             log.warn("Cache", getName(), "overflowing! Limit is", limit);
             log.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
-            final int retrycount = 5;
-            int count  = 0;
-            // loop is meant to deal with concurrency issue where another thread modifies items.
-            while (count < retrycount) {
-                final Map.Entry<String, T> firstEntry = items.firstEntry();
-                if (null == firstEntry) {
-                    break; // was empty when checking for the first element
-                } else {
-                    if (items.remove(firstEntry.getKey(), firstEntry.getValue())) {
-                        break; // we made some space for ourselves
-                    } else if (items.isEmpty()) {
-                        break; // wasn't empty before, but is now
-                    }
-                }
-                // let's give it an another shot, maybe next time the entry
-                // will stick around long enough for us to remove it, looping...
-                count++;
-            }
-            if(count == retrycount) {
-                log.error("Error clearing overflowing cache", getName());
+            final String key = keys.poll();
+            if(key != null) {
+                items.remove(key);
             }
         }
         items.put(name, item);
+        keys.add(name);
         return overflowing;
     }
 
@@ -160,6 +148,7 @@ public class Cache<T> {
             // flushCache
             log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
+            keys.clear();
             lastFlush = now;
             return true;
         }
