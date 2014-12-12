@@ -74,7 +74,8 @@ public class GetLayerTileHandler extends ActionHandler {
         }
 
         // Create connection
-        final HttpURLConnection con = getConnection(params,layer);
+        final String url = getURL(params, layer);
+        final HttpURLConnection con = getConnection(url, layer);
         try {
             con.setRequestMethod("GET");
             con.setDoOutput(false);
@@ -82,12 +83,20 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setFollowRedirects(true);
             con.setUseCaches(false);
             con.connect();
+            final int responseCode = con.getResponseCode();
+            if(responseCode != HttpURLConnection.HTTP_OK) {
+                log.warn("URL", url, "returned HTTP response code", responseCode,
+                        "with message", con.getResponseMessage());
+                String msg = IOHelper.readString(con);
+                log.info("Response was:", msg);
+                throw new ActionParamsException("Couldn't proxy request to actual service");
+            }
 
             // read the image tile
             final byte[] presponse = IOHelper.readBytes(con);
             final HttpServletResponse response = params.getResponse();
             // TODO: check layer for content type!! don't assume png
-            response.setContentType("image/png");
+            response.setContentType(params.getHttpParam("FORMAT", "image/png"));
             response.getOutputStream().write(presponse, 0, presponse.length);
             response.getOutputStream().flush();
             response.getOutputStream().close();
@@ -140,15 +149,7 @@ public class GetLayerTileHandler extends ActionHandler {
         return resource;
     }
 
-    /**
-     * Creates connection
-     * @param params parameters
-     * @param layer layer
-     * @return connection
-     * @throws ActionException
-     */
-    private HttpURLConnection getConnection(final ActionParameters params, final OskariLayer layer)
-            throws ActionException {
+    private String getURL(final ActionParameters params, final OskariLayer layer) {
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();
         Map<String, String> urlParams = new HashMap<String, String>();
@@ -160,13 +161,25 @@ public class GetLayerTileHandler extends ActionHandler {
             }
         }
         final String url = IOHelper.constructUrl(layer.getUrl(),urlParams);
+        return url;
+    }
+
+    /**
+     * Creates connection
+     * @param url URL (with params) to call
+     * @param layer layer
+     * @return connection
+     * @throws ActionException
+     */
+    private HttpURLConnection getConnection(final String url, final OskariLayer layer)
+            throws ActionException {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
             log.debug("Getting layer tile from url:", url);
             return IOHelper.getConnection(url, username, password);
         } catch (Exception e) {
-            throw new ActionException("Couldn't get connection to geoserver", e);
+            throw new ActionException("Couldn't get connection to service", e);
         }
     }
 }
