@@ -5,13 +5,21 @@ import java.net.MalformedURLException;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.nls.oskari.fe.datamodel.SchemaRoaster;
+import fi.nls.oskari.fe.datamodel.TestHelper;
 
-public class TestSchemaRoaster {
+public class TestSchemaRoaster extends TestHelper {
     static final Logger logger = Logger.getLogger(TestSchemaRoaster.class);
+
+    @BeforeClass
+    public static void setUp() throws IOException {
+        setupProxy();
+
+    }
 
     @Ignore("Requires Web Service")
     @Test
