@@ -160,6 +160,6 @@ public class Cache<T> {
     }
 
     private static long currentTime() {
-        return System.nanoTime() / 1000L;
+        return System.nanoTime() / 1000000L;
     }
 }

@@ -112,6 +112,7 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         layer = layerService.find(id);
         if (layer != null) {
+            log.debug("Caching a layer with id ", id);
             layerCache.put(id, layer);
         }
         return layer;
