@@ -83,20 +83,21 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setFollowRedirects(true);
             con.setUseCaches(false);
             con.connect();
+
             final int responseCode = con.getResponseCode();
-            if(responseCode != HttpURLConnection.HTTP_OK) {
+            final String contentType = con.getContentType();
+            if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
                 log.warn("URL", url, "returned HTTP response code", responseCode,
-                        "with message", con.getResponseMessage());
+                        "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
                 log.info("Response was:", msg);
-                throw new ActionParamsException("Couldn't proxy request to actual service");
+                throw new ActionParamsException("Problematic response from actual service");
             }
 
             // read the image tile
             final byte[] presponse = IOHelper.readBytes(con);
             final HttpServletResponse response = params.getResponse();
-            // TODO: check layer for content type!! don't assume png
-            response.setContentType(params.getHttpParam("FORMAT", "image/png"));
+            response.setContentType(contentType);
             response.getOutputStream().write(presponse, 0, presponse.length);
             response.getOutputStream().flush();
             response.getOutputStream().close();
