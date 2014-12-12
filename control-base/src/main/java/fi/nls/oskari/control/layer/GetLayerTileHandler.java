@@ -79,12 +79,12 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setRequestMethod("GET");
             con.setDoOutput(false);
             con.setDoInput(true);
-            HttpURLConnection.setFollowRedirects(false);
+            con.setFollowRedirects(true);
             con.setUseCaches(false);
             con.connect();
 
             // read the image tile
-            final byte[] presponse = IOHelper.readBytes(con.getInputStream());
+            final byte[] presponse = IOHelper.readBytes(con);
             final HttpServletResponse response = params.getResponse();
             // TODO: check layer for content type!! don't assume png
             response.setContentType("image/png");
@@ -128,10 +128,13 @@ public class GetLayerTileHandler extends ActionHandler {
         if (resource != null) {
             return resource;
         }
-        log.debug("Caching a layer permission resource");
         resource = permissionsService.findResource(layerResource);
-        if (resource != null) {
+        if (resource != null && !resource.getPermissions().isEmpty()) {
+            log.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
             resourceCache.put(layerResource.getMapping(),resource);
+        }
+        else {
+            log.warn("Trying to cache layer with no resources");
         }
         return resource;
     }
