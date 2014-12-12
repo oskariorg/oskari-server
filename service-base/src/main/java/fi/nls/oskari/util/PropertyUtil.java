@@ -5,6 +5,8 @@ import fi.nls.oskari.log.NullLogger;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,7 +14,7 @@ import java.util.regex.Pattern;
 public class PropertyUtil {
 
     private final static Properties properties = new Properties();
-    private final static Map<Locale, Properties> localization = new HashMap<Locale, Properties>();
+    private final static ConcurrentMap<Locale, Properties> localization = new ConcurrentHashMap<Locale, Properties>();
 
     // this cannot be fetched from LogFactory on init since LogFactory uses PropertyUtil -> results a ExceptionInInitializerError
     private static Logger log = new NullLogger(PropertyUtil.class.getCanonicalName());

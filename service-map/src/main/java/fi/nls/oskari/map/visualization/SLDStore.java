@@ -4,8 +4,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Loads SLD files based on wmsname from resources (refactored from hard coded MapLayerServiceNoDbImpl)
@@ -14,7 +14,7 @@ import java.util.Map;
 public class SLDStore {
 
     private static final Logger log = LogFactory.getLogger(SLDStore.class);
-    private final static Map<String, String> sldCache = new HashMap<String, String>();
+    private final static ConcurrentMap<String, String> sldCache = new ConcurrentHashMap<String, String>();
     private static String defaultSLD = null;
     static {
         try {

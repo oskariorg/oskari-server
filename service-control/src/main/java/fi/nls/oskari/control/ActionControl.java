@@ -1,11 +1,12 @@
 package fi.nls.oskari.control;
 
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.ServiceLoader;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Router for Ajax Requests made by the Oskari Map Framework.
@@ -17,7 +18,7 @@ public class ActionControl {
     public final static String PARAM_ROUTE = "action_route";
     
     private final static Logger log = LogFactory.getLogger(ActionControl.class);
-	private static final HashMap<String, ActionHandler> actions = new HashMap<String, ActionHandler>();
+	private static final ConcurrentMap<String, ActionHandler> actions = new ConcurrentHashMap<String, ActionHandler>();
 
     /**
      * Adds an action route handler with given route key

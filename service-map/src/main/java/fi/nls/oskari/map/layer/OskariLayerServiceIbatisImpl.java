@@ -36,10 +36,8 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     private static InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
 
     // map different layer types
-    private static Map<String, Class<OskariLayer>> typeMapping = new HashMap<String, Class<OskariLayer>>();
-    static {
-        typeMapping.put(OskariLayer.TYPE_WMS, OskariLayer.class);
-    }
+    private static Map<String, Class<OskariLayer>> typeMapping =
+            Collections.singletonMap(OskariLayer.TYPE_WMS, OskariLayer.class);
 
     /**
      * Static setter to override default location
