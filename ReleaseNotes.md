@@ -125,6 +125,13 @@ New printout properties to support GetLayerTile action route for authorised map 
     mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
     mapproducer.referer=referer info for maptile requests
     mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
+    
+### Analysis  / Sector and zones method
+
+    Sector processing added to the "Sector and zones" method
+    - build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install  
+    - copy new ZoneSectorFeatureCollection2-2.5.2.jar to your geoserver/WEB-INF/lib path from the
+      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path    
 
 ## 1.25.4
 
