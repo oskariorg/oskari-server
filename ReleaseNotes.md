@@ -21,6 +21,9 @@ Cache now correctly removes oldest cached item when it's overflowing.
 
 GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
 
+Fixed an issue on password protected layers proxy GetLayerTileHandler where the layer resource was used as a
+class member. This caused random errors for loading layer tiles on protected layers.
+
 ### service-search
 
 #### search channel changes

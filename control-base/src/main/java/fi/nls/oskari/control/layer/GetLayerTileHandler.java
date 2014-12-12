@@ -9,9 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -27,8 +25,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.util.ServiceFactory;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.control.ActionDeniedException;
 
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {
@@ -37,12 +33,11 @@ public class GetLayerTileHandler extends ActionHandler {
     final private static String RESOURCE_CACHE_NAME = "permission_resources";
     final private static String LAYER_CACHE_NAME = "layer_resources";
     final private static String LAYER_ID = "id";
-    final private static List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, "action_route"});
+    final private static List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, ActionControl.PARAM_ROUTE});
     private OskariLayerService layerService = null;
     private PermissionsService permissionsService = null;
-    Resource layerResource = null;
-    Cache<Resource> resourceCache = CacheManager.getCache(RESOURCE_CACHE_NAME);
-    Cache<OskariLayer> layerCache = CacheManager.getCache(LAYER_CACHE_NAME);
+    private final Cache<Resource> resourceCache = CacheManager.getCache(RESOURCE_CACHE_NAME);
+    private final Cache<OskariLayer> layerCache = CacheManager.getCache(LAYER_CACHE_NAME);
 
     /**
      *  Init method
@@ -50,8 +45,6 @@ public class GetLayerTileHandler extends ActionHandler {
     public void init() {
         layerService = ServiceFactory.getMapLayerService();
         permissionsService = ServiceFactory.getPermissionsService();
-        Cache<Resource> resourceCache = CacheManager.getCache(RESOURCE_CACHE_NAME);
-        Cache<OskariLayer> layerCache = CacheManager.getCache(LAYER_CACHE_NAME);
     }
 
     /**
@@ -61,24 +54,23 @@ public class GetLayerTileHandler extends ActionHandler {
      */
     public void handleAction(final ActionParameters params)
             throws ActionException {
-        User user = params.getUser();
 
-        // Layer cache
-        OskariLayer layer = getLayer(params.getRequiredParam(LAYER_ID));
+        // Resolve layer
+        final String layerId = params.getRequiredParam(LAYER_ID);
+        final OskariLayer layer = getLayer(layerId);
         if (layer == null) {
-            throw new ActionParamsException("Layer not found");
+            throw new ActionParamsException("Layer not found for id: " + layerId);
         }
 
-        // Resource cache
-        layerResource = new OskariLayerResource(layer);
-        Resource resource = getResource();
-
-        // Permission check
-        final boolean hasPermission = ((resource.hasPermission(user, Permissions.PERMISSION_TYPE_VIEW_LAYER))||
-                (resource.hasPermission(user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED)));
+        // Check permissions
+        final Resource resource = getResource(layer);
+        final User user = params.getUser();
+        final boolean hasPermission =
+                resource.hasPermission(user, Permissions.PERMISSION_TYPE_VIEW_LAYER) ||
+                resource.hasPermission(user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
 
         if (!hasPermission) {
-            throw new ActionDeniedException("Session expired");
+            throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
 
         // Create connection
@@ -94,12 +86,13 @@ public class GetLayerTileHandler extends ActionHandler {
             // read the image tile
             final byte[] presponse = IOHelper.readBytes(con.getInputStream());
             final HttpServletResponse response = params.getResponse();
+            // TODO: check layer for content type!! don't assume png
             response.setContentType("image/png");
             response.getOutputStream().write(presponse, 0, presponse.length);
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new ActionException("Couldn't proxy request to geoserver", e);
+            throw new ActionException("Couldn't proxy request to actual service", e);
         } finally {
             if(con != null) {
                 con.disconnect();
@@ -112,16 +105,15 @@ public class GetLayerTileHandler extends ActionHandler {
      * @param id Layer id
      * @return layer
      */
-    private OskariLayer getLayer(String id) throws ActionParamsException {
+    private OskariLayer getLayer(final String id) {
         OskariLayer layer = layerCache.get(id);
         if (layer != null) {
             return layer;
         }
         layer = layerService.find(id);
-        if (layer == null) {
-            throw new ActionParamsException("Layer not found");
+        if (layer != null) {
+            layerCache.put(id, layer);
         }
-        layerCache.put(id, layer);
         return layer;
     }
 
@@ -129,7 +121,9 @@ public class GetLayerTileHandler extends ActionHandler {
      * Gets resource from cache
      * @return resource
      */
-    private Resource getResource() {
+    private Resource getResource(final OskariLayer layer) {
+
+        final Resource layerResource = new OskariLayerResource(layer);
         Resource resource = resourceCache.get(layerResource.getMapping());
         if (resource != null) {
             return resource;
