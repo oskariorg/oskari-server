@@ -101,6 +101,9 @@ public class GetLayerTileHandler extends ActionHandler {
             response.getOutputStream().write(presponse, 0, presponse.length);
             response.getOutputStream().flush();
             response.getOutputStream().close();
+        } catch(ActionException e) {
+            // just throw it as is if we already handled it
+            throw e;
         } catch (Exception e) {
             throw new ActionException("Couldn't proxy request to actual service", e);
         } finally {
