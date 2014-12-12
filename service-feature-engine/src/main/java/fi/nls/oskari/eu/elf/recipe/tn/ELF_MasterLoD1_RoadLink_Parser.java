@@ -11,14 +11,7 @@ public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        getGeometryDeserializer().mapGeometryTypes(
-                "http://www.opengis.net/gml/3.2", "Polygon", "Surface",
-                "PolyhedralSurface", "TriangulatedSurface", "Tin",
-                "OrientableSurface", "CompositeSurface", "LineString", "Curve",
-                "CompositeCurve", "OrientableCurve", "MultiCurve", "Point",
-                "MultiPoint");
-
-        FeatureOutputContext outputContext = new FeatureOutputContext(
+        final FeatureOutputContext outputContext = new FeatureOutputContext(
                 RoadLink.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
@@ -33,15 +26,15 @@ public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
 
         outputContext.build();
 
-        OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
+        final OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
                 outputContext);
 
-        InputFeature<RoadLink> iter = new InputFeature<RoadLink>(RoadLink.QN,
-                RoadLink.class);
+        final InputFeature<RoadLink> iter = new InputFeature<RoadLink>(
+                RoadLink.QN, RoadLink.class);
 
         while (iter.hasNext()) {
-            RoadLink feature = iter.next();
-            Resource output_ID = outputContext.uniqueId(feature.id);
+            final RoadLink feature = iter.next();
+            final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
 

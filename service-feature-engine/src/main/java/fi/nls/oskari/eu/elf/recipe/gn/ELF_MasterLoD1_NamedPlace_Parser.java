@@ -11,10 +11,7 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        getGeometryDeserializer().mapGeometryTypes(
-                "http://www.opengis.net/gml/3.2", "Point", "MultiPoint");
-
-        FeatureOutputContext outputContext = new FeatureOutputContext(
+        final FeatureOutputContext outputContext = new FeatureOutputContext(
                 NamedPlace.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
@@ -24,21 +21,20 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
-        
-        final Resource obj = outputContext
-                .addOutputStringProperty("obj");
+
+        final Resource obj = outputContext.addOutputStringProperty("obj");
 
         outputContext.build();
 
-        OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
+        final OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
                 outputContext);
 
-        InputFeature<NamedPlace> iter = new InputFeature<NamedPlace>(
+        final InputFeature<NamedPlace> iter = new InputFeature<NamedPlace>(
                 NamedPlace.QN, NamedPlace.class);
 
         while (iter.hasNext()) {
-            NamedPlace namedPlace = iter.next();
-            Resource output_ID = outputContext.uniqueId(namedPlace.id);
+            final NamedPlace namedPlace = iter.next();
+            final Resource output_ID = outputContext.uniqueId(namedPlace.id);
 
             outputFeature.setFeature(namedPlace).setId(output_ID);
 
@@ -52,8 +48,8 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
                     .addProperty(inspireId, namedPlace.inspireId)
                     .addProperty(endLifespanVersion,
                             namedPlace.endLifespanVersion);
-            
-            outputFeature.addProperty(obj,namedPlace);
+
+            outputFeature.addProperty(obj, namedPlace);
 
             outputFeature.build();
 

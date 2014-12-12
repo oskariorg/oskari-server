@@ -32,29 +32,49 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
         public GML32() {
             super(new org.geotools.gml3.v3_2.GMLConfiguration(true));
         }
+
+        @Override
+        public void setupGeometryMapper(
+                GeometryPropertyDeserializer geometryPropertyDeserializer) {
+            geometryPropertyDeserializer.mapGeometryTypes(
+                    "http://www.opengis.net/gml/3.2", "Polygon", "Surface",
+                    "PolyhedralSurface", "TriangulatedSurface", "Tin",
+                    "OrientableSurface", "CompositeSurface", "LineString",
+                    "Curve", "CompositeCurve", "OrientableCurve", "MultiCurve",
+                    "Point",
+
+                    "MultiPoint");
+        }
+
     }
 
     public static abstract class GML31 extends JacksonParserRecipe {
         public GML31() {
             super(new GML31_Configuration());
         }
+
+        @Override
+        public void setupGeometryMapper(
+                GeometryPropertyDeserializer geometryPropertyDeserializer) {
+
+            geometryPropertyDeserializer.mapGeometryTypes(
+                    "http://www.opengis.net/gml", "Polygon", "Surface",
+                    "PolyhedralSurface", "TriangulatedSurface", "Tin",
+                    "OrientableSurface", "CompositeSurface", "Curve",
+                    "LineString", "LinearRing", "MultiLineString",
+                    "MultiCurve", "Point", "MultiPoint");
+
+        }
+
     }
 
     /* input */
     protected final GmlMapper mapper;
 
-    /*
-     * protected JacksonParserRecipe() {
-     * 
-     * gml = new org.geotools.gml3.v3_2.GMLConfiguration(true); mapper = new
-     * GmlMapper(gml, false);
-     * 
-     * }
-     */
-
     protected JacksonParserRecipe(Configuration conf) {
         gml = conf;
         mapper = new GmlMapper(gml, false);
+        setupGeometryMapper(getGeometryDeserializer());
     }
 
     public void setLenient(boolean l) {
@@ -237,5 +257,8 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     public GmlMapper getMapper() {
         return mapper;
     }
+
+    public abstract void setupGeometryMapper(
+            GeometryPropertyDeserializer geometryPropertyDeserializer);
 
 }

@@ -11,10 +11,7 @@ public class ELF_GN_NamedPlace extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        getGeometryDeserializer().mapGeometryTypes(
-                "http://www.opengis.net/gml/3.2", "Point", "MultiPoint");
-
-        FeatureOutputContext outputContext = new FeatureOutputContext(
+        final FeatureOutputContext outputContext = new FeatureOutputContext(
                 NamedPlace.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
@@ -27,15 +24,15 @@ public class ELF_GN_NamedPlace extends GML32 {
 
         outputContext.build();
 
-        OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
+        final OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
                 outputContext);
 
-        InputFeature<NamedPlace> iter = new InputFeature<NamedPlace>(
+        final InputFeature<NamedPlace> iter = new InputFeature<NamedPlace>(
                 NamedPlace.QN, NamedPlace.class);
 
         while (iter.hasNext()) {
-            NamedPlace namedPlace = iter.next();
-            Resource output_ID = outputContext.uniqueId(namedPlace.id);
+            final NamedPlace namedPlace = iter.next();
+            final Resource output_ID = outputContext.uniqueId(namedPlace.id);
 
             outputFeature.setFeature(namedPlace).setId(output_ID);
 

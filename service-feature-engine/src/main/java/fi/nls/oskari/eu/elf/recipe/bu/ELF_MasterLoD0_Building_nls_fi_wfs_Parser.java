@@ -11,12 +11,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        getGeometryDeserializer().mapGeometryTypes(
-                "http://www.opengis.net/gml/3.2", "Polygon", "Surface",
-                "PolyhedralSurface", "TriangulatedSurface", "Tin",
-                "OrientableSurface", "CompositeSurface");
-
-        FeatureOutputContext outputContext = new FeatureOutputContext(
+        final FeatureOutputContext outputContext = new FeatureOutputContext(
                 Building.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
@@ -26,20 +21,19 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
-        final Resource obj = outputContext
-                .addOutputStringProperty("obj");
+        final Resource obj = outputContext.addOutputStringProperty("obj");
 
         outputContext.build();
 
-        OutputFeature<Building> outputFeature = new OutputFeature<Building>(
+        final OutputFeature<Building> outputFeature = new OutputFeature<Building>(
                 outputContext);
 
-        InputFeature<Building> iter = new InputFeature<Building>(Building.QN,
-                Building.class);
+        final InputFeature<Building> iter = new InputFeature<Building>(
+                Building.QN, Building.class);
 
         while (iter.hasNext()) {
-            Building feature = iter.next();
-            Resource output_ID = outputContext.uniqueId(feature.id);
+            final Building feature = iter.next();
+            final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
 
@@ -58,7 +52,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
                             feature.beginLifespanVersion)
                     .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion, feature.endLifespanVersion)
-                    .addProperty(obj,feature);
+                    .addProperty(obj, feature);
 
             outputFeature.build();
 

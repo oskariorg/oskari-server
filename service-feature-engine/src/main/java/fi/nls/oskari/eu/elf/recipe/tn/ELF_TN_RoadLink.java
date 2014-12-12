@@ -13,11 +13,7 @@ public class ELF_TN_RoadLink extends GML32 {
     @Override
     public void parse() throws IOException {
 
-        getGeometryDeserializer().mapGeometryTypes(
-                "http://www.opengis.net/gml/3.2", "LineString", "Curve",
-                "CompositeCurve", "OrientableCurve", "MultiCurve");
-
-        FeatureOutputContext outputContext = new FeatureOutputContext(
+        final FeatureOutputContext outputContext = new FeatureOutputContext(
                 RoadLink.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
@@ -33,34 +29,33 @@ public class ELF_TN_RoadLink extends GML32 {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
-        
+
         outputContext.build();
 
-        OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
+        final OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
                 outputContext);
 
-        InputFeature<RoadLink> iter = new InputFeature<RoadLink>(RoadLink.QN,
-                RoadLink.class);
+        final InputFeature<RoadLink> iter = new InputFeature<RoadLink>(
+                RoadLink.QN, RoadLink.class);
 
         while (iter.hasNext()) {
-            RoadLink roadLink = iter.next();
-            Resource output_ID = outputContext.uniqueId(roadLink.id);
+            final RoadLink feature = iter.next();
+            final Resource output_ID = outputContext.uniqueId(feature.id);
 
-            outputFeature.setFeature(roadLink).setId(output_ID);
+            outputFeature.setFeature(feature).setId(output_ID);
 
             outputFeature.addGeometryProperty(geom,
-                    roadLink.centrelineGeometry.geometry);
+                    feature.centrelineGeometry.geometry);
 
             outputFeature
-                    .addProperty(gn, roadLink.geographicalName)
-                    .addProperty(validFrom, roadLink.validFrom)
-                    .addProperty(validTo, roadLink.validTo)
-                    .addProperty(fictitious, roadLink.fictitious)
+                    .addProperty(gn, feature.geographicalName)
+                    .addProperty(validFrom, feature.validFrom)
+                    .addProperty(validTo, feature.validTo)
+                    .addProperty(fictitious, feature.fictitious)
                     .addProperty(beginLifespanVersion,
-                            roadLink.beginLifespanVersion)
-                    .addProperty(inspireId, roadLink.inspireId)
-                    .addProperty(endLifespanVersion,
-                            roadLink.endLifespanVersion);
+                            feature.beginLifespanVersion)
+                    .addProperty(inspireId, feature.inspireId)
+                    .addProperty(endLifespanVersion, feature.endLifespanVersion);
 
             outputFeature.build();
 
