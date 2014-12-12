@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.view.modifier.param;
 
-import java.util.*;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
@@ -9,14 +7,18 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  * Manages any ParamHandlers registrated on the classpath.
  */
 public class ParamControl {
     
     private final static Logger log = LogFactory.getLogger(ParamControl.class);
-	private static final HashMap<String, ParamHandler> actions = new HashMap<String, ParamHandler>();
-    private static final HashMap<String, List<ParamHandler>> preprocessors = new HashMap<String, List<ParamHandler>>();
+	private static final ConcurrentMap<String, ParamHandler> actions = new ConcurrentHashMap<String, ParamHandler>();
+    private static final ConcurrentMap<String, List<ParamHandler>> preprocessors = new ConcurrentHashMap<String, List<ParamHandler>>();
 
     /**
      * Registers a ParamHandler with the given key after instantiating a class with the given className.
