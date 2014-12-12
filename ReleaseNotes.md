@@ -128,10 +128,15 @@ New printout properties to support GetLayerTile action route for authorised map 
     
 ### Analysis  / Sector and zones method
 
-    Sector processing added to the "Sector and zones" method
+Sector processing added to the "Sector and zones" method
     - make build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install  
     - copy new ZoneSectorFeatureCollection2-2.5.2.jar to your geoserver/WEB-INF/lib path from the
-      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path    
+      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path  
+   
+Check that analysis intersection methods have uptodate .jar  in geoserver/WEB-INF/lib path
+    - IntersectionFeatureCollection2-2.5.2.jar is the current version
+    - if not, build a new version oskari-server/geoserver-exp/wps/IntersectionFeatureCollection2 path as above
+      and copy to ...lib path
 
 ## 1.25.4
 
