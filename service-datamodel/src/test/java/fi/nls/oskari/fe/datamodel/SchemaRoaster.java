@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,10 +58,13 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
-import org.junit.BeforeClass;
 import org.xml.sax.InputSource;
 
 import fi.nls.oskari.fe.schema.XSDDatatype;
+
+/* PoC Schema to Jackson Mappings */
+/* - implicit ELF, INSPIRE, RYSP assumptions */
+/* - will never validate anything - assuming valid XML from quality WFS services.. */
 
 public class SchemaRoaster {
 
@@ -116,7 +120,6 @@ public class SchemaRoaster {
 
     }
 
-  
     void roastType(final RoastContext roast,
             final XmlSchemaComplexContentRestriction ccrs) {
         logger.debug("roastType:" + ccrs);
@@ -753,45 +756,8 @@ public class SchemaRoaster {
             String memberName = member.getLocalPart().replaceAll("-", "_");
             String UmemberName = Character.toUpperCase(memberName.charAt(0))
                     + memberName.substring(1).replaceAll("-", "_");
-            ;
 
-            /* SUHT OK ELFiin */
-            /*
-             * MethodSource<JavaClassSource> setter = roast.javaClass
-             * .addMethod("void set" + UmemberName + "(final " + memType +
-             * " list) {}"); // setter.setName("set" + UmemberName);
-             * setter.setPublic().setReturnTypeVoid(); //
-             * setter.addParameter(memType, "list");
-             * setter.setBody("if( list != null ) { " + memberName +
-             * ".addAll(  list ); } else { " + memberName + ".clear();}");
-             * setter.addAnnotation("JacksonXmlProperty")
-             * .setStringValue("namespace", memEl.getQName().getNamespaceURI())
-             * .setStringValue("localName", memEl.getQName().getLocalPart());
-             * 
-             * // ! WE DO NOT require ANYTHING...
-             * setter.addAnnotation("XmlElement").setLiteralValue("required",
-             * "false"); // required ? "true" : "false");
-             * 
-             * String fldInitializer = "new java.util.ArrayList<" + elType +
-             * ">();"; FieldSource<JavaClassSource> fld =
-             * roast.javaClass.addField(memType + " " + memberName + " = " +
-             * fldInitializer); fld.setPrivate();
-             */
-
-            /* SUHT OK RYSPiin */
-            /*
-             * public java.util.List<_metatieto> metatieto = new
-             * java.util.ArrayList<_metatieto>();
-             * 
-             * @JacksonXmlProperty(namespace =
-             * "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName =
-             * "metatieto") public void setMetatieto(_metatieto obj) {
-             * metatieto.add(obj); //System.err.println(obj); }
-             */
-
-            // ! WE DO NOT require ANYTHING...
-
-            // required ? "true" : "false");
+            // note: roast has some issues with generics
 
             String fldInitializer = "new java.util.ArrayList<" + elType
                     + ">();";
@@ -804,29 +770,16 @@ public class SchemaRoaster {
             MethodSource<JavaClassSource> setter = roast.javaClass
                     .addMethod("void set" + UmemberName + "(final " + elType
                             + " obj) {}");
-            // setter.setName("set" + UmemberName);
             setter.setPublic().setReturnTypeVoid();
-            // setter.addParameter(memType, "list");
             setter.setBody("if( obj != null ) { " + memberName
                     + ".add(  obj ); }");
             setter.addAnnotation("JacksonXmlProperty")
                     .setStringValue("namespace", member.getNamespaceURI())
                     .setStringValue("localName", member.getLocalPart());
 
-            /*
-             * OLD roast.javaClass.addField("private " + memType + " " +
-             * memberName + " = new java.util.ArrayList<" + elType + ">();");
-             */
+            roast.javaClass.addMethod(memType + " get" + UmemberName
+                    + "() { return " + memberName + "; }");
 
-            MethodSource<JavaClassSource> getter = roast.javaClass
-                    .addMethod(memType + " get" + UmemberName + "() { return "
-                            + memberName + "; }");
-
-            // getter.setName("get" + UmemberName).setReturnType(memType)
-            /*
-             * getter.setPublic()// .setBody("return " + memberName + ";")
-             * .addAnnotation("JsonGetter");
-             */
         } else {
             QName member = memEl.getQName() != null ? memEl.getQName() : memEl
                     .getRef().getTargetQName();
@@ -982,8 +935,6 @@ public class SchemaRoaster {
 
             }
 
-            // }
-
         }
 
         return null;
@@ -1125,17 +1076,21 @@ public class SchemaRoaster {
         logger.debug("roastNamedMember:" + memEl.getQName());
         // String memType = memEl.getQName().getLocalPart();
 
-        String listMemType = figureOutListElType(memEl, null, isNillable,
-                minOccurs, maxOccurs);
-        String elMemType = figureOutElType(memEl, null, isNillable, minOccurs,
-                maxOccurs);
+        /*
+         * String listMemType = figureOutListElType(memEl, null, isNillable,
+         * minOccurs, maxOccurs);
+         */
+        /*
+         * String elMemType = figureOutElType(memEl, null, isNillable,
+         * minOccurs, maxOccurs);
+         */
 
         String memType = roastSchemaElement(roast, null, memEl, isNillable,
                 false);
 
-        if (elMemType != null) {
-            memType = elMemType;
-        }
+        /*
+         * if (elMemType != null) { memType = elMemType; }
+         */
 
         /*
          * if (listMemType != null) { memType = listMemType; }
@@ -1151,20 +1106,13 @@ public class SchemaRoaster {
 
         QName name = new QName("Anon", "A_" + (++anonTypeIndex));
 
-        String listMemType = figureOutListElType(memEl, name, isNillable,
-                minOccurs, maxOccurs);
-        String elMemType = figureOutElType(memEl, name, isNillable, minOccurs,
-                maxOccurs);
-
+        /*
+         * String listMemType = figureOutListElType(memEl, name, isNillable,
+         * minOccurs, maxOccurs); String elMemType = figureOutElType(memEl,
+         * name, isNillable, minOccurs, maxOccurs);
+         */
         String memType = roastSchemaElement(roast, name, memEl, isNillable,
                 false);
-
-        /*
-         * if (elMemType != null) { memType = elMemType; }
-         */
-        /*
-         * if (listMemType != null) { memType = listMemType; }
-         */
 
         return memType;
 
@@ -1225,10 +1173,11 @@ public class SchemaRoaster {
                             el.getQName().getNamespaceURI());
         }
 
-        if (isNillable) {
-            nestedRoast.javaClass
-                    .setSuperType("fi.nls.oskari.fe.xml.util.Nillable");
-        }
+        // we're always ready to get nilled
+        // if (isNillable) {
+        nestedRoast.javaClass
+                .setSuperType("fi.nls.oskari.fe.xml.util.Nillable");
+        // }
 
         FieldSource<JavaClassSource> fldNS = nestedRoast.javaClass.addField();
         fldNS.setName("NS").setPublic().setStatic(true).setFinal(true)
@@ -1490,6 +1439,12 @@ public class SchemaRoaster {
 
     }
 
+    protected final Map<String, String> defaultResolvers = new HashMap<String, String>();
+
+    public Map<String, String> getDefaultResolvers() {
+        return defaultResolvers;
+    }
+
     public void roastSchema(final String packageName, final String subPackage,
             final String classname, final String feature,
             final String targetNS, String url) throws MalformedURLException,
@@ -1526,17 +1481,13 @@ public class SchemaRoaster {
 
                 String schemaLoc = schemaLocation.concat("");
 
-                if (schemaLoc
-                        .startsWith("http://www.locationframework.eu/ELF10/")) {
-                    schemaLoc = schemaLoc.replace(
-                            "http://www.locationframework.eu/ELF10/",
-                            "http://elfserver.kartverket.no/schemas/elf1.0/");
-                }
-                if (schemaLoc
-                        .startsWith("http://www.locationframework.eu/ELF/")) {
-                    schemaLoc = schemaLoc.replace(
-                            "http://www.locationframework.eu/ELF/",
-                            "http://elfserver.kartverket.no/schemas/elf1.0/");
+                for (Entry<String, String> kv : defaultResolvers.entrySet()) {
+
+                    if (schemaLoc.startsWith(kv.getKey())) {
+                        schemaLoc = schemaLoc.replace(kv.getKey(),
+                                kv.getValue());
+                        break;
+                    }
                 }
 
                 if (!isAbsolute(schemaLocation)
@@ -1569,7 +1520,7 @@ public class SchemaRoaster {
             for (XmlSchema schema : schemaCol.getXmlSchemas()) {
 
                 exportElements(packageName, subPackage, classname, feature,
-                        targetNS, schema.getElements());
+                        targetNS, schema.getElements(), url);
             }
         } finally {
             is.close();
@@ -1597,7 +1548,7 @@ public class SchemaRoaster {
     protected void exportElements(final String packageName,
             final String subPackage, final String classname,
             final String feature, final String targetNS,
-            Map<QName, XmlSchemaElement> elements) {
+            Map<QName, XmlSchemaElement> elements, String url) {
 
         for (Entry<QName, XmlSchemaElement> kv : elements.entrySet()) {
 
@@ -1621,8 +1572,23 @@ public class SchemaRoaster {
             logger.debug("Process " + kv.getKey());
 
             RoastContext roast = new RoastContext();
+
+            final StringBuffer javaDoc = new StringBuffer();
+            final String timestamp = new Date().toString();
+
+            javaDoc.append("\n- URL " + url);
+            javaDoc.append("\n- timestamp " + timestamp);
+
+            roast.javaClass.getJavaDoc().setText(javaDoc.toString());
             roast.javaClass.setPackage(packageName + subPackage);
             roast.javaClass.setName(classname);
+
+            roast.javaClass.addField().setPublic().setStatic(true)
+                    .setFinal(true).setType("java.lang.String")
+                    .setName("TIMESTAMP").setStringInitializer(timestamp);
+            roast.javaClass.addField().setPublic().setStatic(true)
+                    .setFinal(true).setType("java.lang.String")
+                    .setName("SCHEMASOURCE").setStringInitializer(url);
 
             for (String i : defaultImports) {
                 roast.javaClass.addImport(i);
@@ -1638,5 +1604,4 @@ public class SchemaRoaster {
         }
 
     }
-
 }

@@ -1,12 +1,12 @@
-package fi.nls.oskari.eu.elf.recipe.gn;
+package fi.nls.oskari.eu.elf.recipe.geographicalnames;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.elf.geographicalnames.masterlod1.NamedPlace;
+import fi.nls.oskari.eu.elf.geographicalnames.ELF_MasterLoD1_NamedPlace.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class ELF_GN_NamedPlace extends GML32 {
+public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
@@ -21,6 +21,8 @@ public class ELF_GN_NamedPlace extends GML32 {
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+
+        final Resource obj = outputContext.addOutputStringProperty("obj");
 
         outputContext.build();
 
@@ -46,6 +48,8 @@ public class ELF_GN_NamedPlace extends GML32 {
                     .addProperty(inspireId, namedPlace.inspireId)
                     .addProperty(endLifespanVersion,
                             namedPlace.endLifespanVersion);
+
+            outputFeature.addProperty(obj, namedPlace);
 
             outputFeature.build();
 

@@ -1,5 +1,6 @@
 package fi.nls.oskari.eu.inspire.roadtransportnetwork;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,8 @@ import javax.xml.stream.XMLStreamException;
 import org.geotools.styling.Style;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.inspire.recipe.tn.Inspire_TN_RoadLink;
+import fi.nls.oskari.eu.inspire.recipe.roadtransportnetwork.Inspire_TN_RoadLink;
+import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
@@ -21,7 +23,10 @@ import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 
-public class TestJacksonParser {
+import org.apache.log4j.Logger;
+
+public class TestJacksonParser extends TestHelper {
+    static final Logger logger = Logger.getLogger(TestJacksonParser.class);
 
     /**
      * 
@@ -46,13 +51,15 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+                        "/fi/nls/oskari/eu/inspire/roadtransportnetwork/ign_es-inspire-TN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream(
-                    "TN-BasicParser-ign_es.png");
+            File f = getTempFile("TN-BasicParser-ign_es", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
+
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -93,7 +100,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+                        "/fi/nls/oskari/eu/inspire/roadtransportnetwork/ign_es-inspire-TN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -140,7 +147,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+                        "/fi/nls/oskari/eu/inspire/roadtransportnetwork/ign_es-inspire-TN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -188,7 +195,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/tn/ign_es-inspire-TN-wfs.xml");
+                        "/fi/nls/oskari/eu/inspire/roadtransportnetwork/ign_es-inspire-TN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);

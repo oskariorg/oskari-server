@@ -1,4 +1,4 @@
-package fi.nls.oskari.eu.inspire.geographicalnames;
+package fi.nls.oskari.eu.elf.administrativeunits;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,12 +8,11 @@ import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
-import fi.nls.oskari.eu.inspire.recipe.geographicalnames.Inspire_GN_NamedPlace;
+import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
-import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -28,8 +27,10 @@ public class TestJacksonParser {
      */
     // @Ignore("Not ready")
     @Test
-    public void test_IgnEs_GN_WFS_GMLtoJSON() throws InstantiationException,
-            IllegalAccessException, IOException, XMLStreamException {
+    // urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0
+    public void test_ELF_Master_LoD0_AU_geonorge_no_wfs_GMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
 
         BasicFeatureEngine engine = new BasicFeatureEngine();
 
@@ -39,7 +40,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/eu/inspire/geographicalnames/ign_es-INSPIRE-GN-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/administrativeunits/geonorge_no-ELF-AU-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -48,8 +49,10 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new Inspire_GN_NamedPlace();
+                JacksonParserRecipe recipe = new ELF_MasterLoD0_AdministrativeUnit_Parser();
                 recipe.setLenient(true);
+                recipe.getGeometryDeserializer().setIgnoreProps(true);
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -58,7 +61,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
@@ -66,5 +69,4 @@ public class TestJacksonParser {
         }
 
     }
-
 }

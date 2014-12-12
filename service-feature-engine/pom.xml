@@ -51,10 +51,10 @@
 			<artifactId>oskari-base</artifactId>
 		</dependency>
 
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>service-datamodel</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>service-datamodel</artifactId>
+		</dependency>
 
 
 		<dependency>
@@ -118,7 +118,7 @@
 		<dependency>
 			<groupId>org.geotools.xsd</groupId>
 			<artifactId>gt-xsd-sld</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-impl</artifactId>
@@ -189,5 +189,12 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.4.3</version>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

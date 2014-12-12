@@ -1,4 +1,4 @@
-package fi.nls.oskari.eu.inspire.geographicalnames;
+package fi.nls.oskari.eu.elf.addresses;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,14 +6,14 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.inspire.recipe.geographicalnames.Inspire_GN_NamedPlace;
+import fi.nls.oskari.eu.elf.recipe.addresses.ELF_MasterLoD0_Address_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
-import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -28,8 +28,9 @@ public class TestJacksonParser {
      */
     // @Ignore("Not ready")
     @Test
-    public void test_IgnEs_GN_WFS_GMLtoJSON() throws InstantiationException,
-            IllegalAccessException, IOException, XMLStreamException {
+    public void test_ELF_Master_LoD0_Address_ign_fr_wfs_GMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
 
         BasicFeatureEngine engine = new BasicFeatureEngine();
 
@@ -37,9 +38,8 @@ public class TestJacksonParser {
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
-        InputStream inp = getClass()
-                .getResourceAsStream(
-                        "/fi/nls/oskari/eu/inspire/geographicalnames/ign_es-INSPIRE-GN-wfs.xml");
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/eu/elf/addresses/ign_fr-ELF-AD-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -48,8 +48,10 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new Inspire_GN_NamedPlace();
-                recipe.setLenient(true);
+                JacksonParserRecipe recipe = new ELF_MasterLoD0_Address_Parser();
+                // recipe.setLenient(true);
+                recipe.getGeometryDeserializer().setIgnoreProps(true);
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -58,7 +60,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
@@ -66,5 +68,4 @@ public class TestJacksonParser {
         }
 
     }
-
 }

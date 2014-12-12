@@ -15,12 +15,6 @@ import fi.nls.oskari.fe.datamodel.TestHelper;
 public class TestSchemaRoaster extends TestHelper {
     static final Logger logger = Logger.getLogger(TestSchemaRoaster.class);
 
-    @BeforeClass
-    public static void setUp() throws IOException {
-        setupProxy();
-
-    }
-
     @Ignore("Requires Web Service")
     @Test
     public void testRYSPKantakarttaLiikennevayla()
@@ -28,7 +22,7 @@ public class TestSchemaRoaster extends TestHelper {
 
         final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
-
+        setupProxy(roaster);
         logger.setLevel(Level.DEBUG);
         logger.debug(url);
 
@@ -51,6 +45,8 @@ public class TestSchemaRoaster extends TestHelper {
 
         final String url = "http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta/2.1.6/rakennusvalvonta.xsd";
         final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+
         logger.setLevel(Level.DEBUG);
         logger.debug(url);
 
@@ -72,8 +68,8 @@ public class TestSchemaRoaster extends TestHelper {
             IOException {
 
         final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
-
         final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
         logger.setLevel(Level.DEBUG);
         logger.debug(url);
 
