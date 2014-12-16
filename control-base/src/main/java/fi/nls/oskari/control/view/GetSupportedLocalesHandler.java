@@ -7,7 +7,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
