@@ -18,7 +18,7 @@ public class Point {
         return lat;
     }
     public String getLatToString() {
-        return Double.toString(lat);
+        return Double.toString(this.lat);
     }
 
     public void setLat(final double lat) {
@@ -29,7 +29,7 @@ public class Point {
         return lon;
     }
     public String getLonToString() {
-        return Double.toString(lon);
+        return Double.toString(this.lon);
     }
 
     public void setLon(final double lon) {
