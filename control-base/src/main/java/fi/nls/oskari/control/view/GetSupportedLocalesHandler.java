@@ -36,7 +36,7 @@ public class GetSupportedLocalesHandler extends ActionHandler {
         DecimalFormatSymbols dfs;
 
         for (int i = 0; i < locales.length; i++) {
-            try {
+            //try {
                 localeParts = locales[i].split("_");
                 if (localeParts.length > 1) {
                     l = new Locale(localeParts[0], localeParts[1]);
@@ -49,13 +49,6 @@ public class GetSupportedLocalesHandler extends ActionHandler {
                         locales[i],
                         Character.toString(dfs.getDecimalSeparator())
                 );
-            } catch(Throwable t) {
-                JSONHelper.putValue(
-                        separators,
-                        locales[i],
-                        t.toString()
-                );
-            }
         }
         try {
             ret.put(
