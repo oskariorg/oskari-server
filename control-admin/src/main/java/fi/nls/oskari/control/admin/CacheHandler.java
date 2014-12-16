@@ -34,7 +34,7 @@ public class CacheHandler extends RestActionHandler {
             JSONHelper.putValue(json, "size", cache.getSize());
             JSONHelper.putValue(json, "limit", cache.getLimit());
             JSONHelper.putValue(json, "expiration", (cache.getExpiration() / 1000));
-            JSONHelper.putValue(json, "lastFlush", new Date(cache.getLastFlush()));
+            JSONHelper.putValue(json, "lastFlush", (cache.getLastFlush() / 1000));
             list.put(json);
         }
         JSONHelper.putValue(response, "caches", list);
