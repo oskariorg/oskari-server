@@ -46,7 +46,7 @@ public class OskariContextInitializer implements ServletContextListener {
                 log.error(e, "Failed to close locally created data source");
             }
         }
-        System.out.println("Context destroy");
+        info("Context destroy");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class OskariContextInitializer implements ServletContextListener {
         }
         catch (Exception ex) {
             error("!!! Error initializing context for Oskari !!!");
-            ex.printStackTrace();
+            log.error(ex);
         }
 
         this.schedulerService = new SchedulerService();
@@ -136,7 +136,7 @@ public class OskariContextInitializer implements ServletContextListener {
         try {
             return new InitialContext();
         } catch (Exception ex) {
-            System.err.println("Couldn't get context: " + ex.getMessage());
+            error("Couldn't get context: " + ex.getMessage());
         }
         return null;
     }
@@ -149,8 +149,7 @@ public class OskariContextInitializer implements ServletContextListener {
             constructContext(ctx, "comp", "env", "jdbc");
             ctx.bind("java:comp/env/" + name, ds);
         } catch (Exception ex) {
-            System.err.println("Couldn't add pool with name '" + name +"': " + ex.getMessage());
-            ex.printStackTrace();
+            log.error(ex, "Couldn't add pool with name '" + name +"': ", ex.getMessage());
         }
     }
 
