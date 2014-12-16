@@ -6,6 +6,8 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.io.Serializable;
+
 /**
  * Internal model for user role.
  * Admin role name can be configured with property "oskari.user.role.admin" in PropertyUtil
@@ -13,7 +15,7 @@ import fi.nls.oskari.util.PropertyUtil;
  * Default logged in user role name can be configured with property "oskari.user.role.loggedIn" in PropertyUtil
  * and defaults to "User".
  */
-public class Role {
+public class Role implements Serializable {
 
     private static final Logger log = LogFactory.getLogger(Role.class);
     private static Role ADMIN_ROLE = null;
