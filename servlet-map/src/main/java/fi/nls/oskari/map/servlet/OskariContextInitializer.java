@@ -118,6 +118,8 @@ public class OskariContextInitializer implements ServletContextListener {
         final BasicDataSource ds = getDataSource(ctx, poolName);
         boolean success = (ds != null);
         if (!success) {
+            // FIXME: change logging so this isn't an error, but log some info if we are
+            // using container provided datasource rather than one created by us
             warn("!!! Couldn't find DataSource with name: " + poolName);
             warn("!!! Please edit webapps XML (web.xml/context.xml etc) to provide database connection resource !!!");
             //  + " - creating one with defaults."
