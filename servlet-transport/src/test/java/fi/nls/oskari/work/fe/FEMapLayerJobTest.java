@@ -1,3 +1,4 @@
+
 package fi.nls.oskari.work.fe;
 
 import static org.junit.Assert.assertTrue;
@@ -146,7 +147,7 @@ public class FEMapLayerJobTest {
 
     }
     
-    //@org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testNamedPlaceJavaRequest() throws IOException {
 
