@@ -5,6 +5,7 @@
 ### control-admin
 
 Added a new ActionHandler for route 'SearchChannel'. This lists all annotated SearchChannels and their debug data.
+Fixed an issue with Users action route where receiving empty password would update the password.
 
 ### service-map
 
@@ -14,10 +15,14 @@ Added a helper class for projection transformations: fi.nls.oskari.map.geometry.
 
 PropertyUtil now always trims property values for leading and trailing spaces.
 PropertyUtil now has a convenience method to get numeric properties as double precision.
+Cache now correctly removes oldest cached item when it's overflowing.
 
 ### control-base
 
 GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
+
+Fixed an issue on password protected layers proxy GetLayerTileHandler where the layer resource was used as a
+class member. This caused random errors for loading layer tiles on protected layers.
 
 ### service-search
 
@@ -124,6 +129,18 @@ New printout properties to support GetLayerTile action route for authorised map 
     mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
     mapproducer.referer=referer info for maptile requests
     mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
+    
+### Analysis  / Sector and zones method
+
+Sector processing added to the "Sector and zones" method
+    - make build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install  
+    - copy new ZoneSectorFeatureCollection2-2.5.2.jar to your geoserver/WEB-INF/lib path from the
+      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path  
+   
+Check that analysis intersection methods have uptodate .jar  in geoserver/WEB-INF/lib path
+    - IntersectionFeatureCollection2-2.5.2.jar is the current version
+    - if not, build a new version oskari-server/geoserver-exp/wps/IntersectionFeatureCollection2 path as above
+      and copy to ...lib path
 
 ## 1.25.4
 

@@ -1,5 +1,6 @@
 package fi.nls.oskari.domain;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Set;
 /**
  * Internal model for a user.
  */
-public class User {
+public class User implements Serializable {
 
     private long id = -1;
     private String lastname = "guest";

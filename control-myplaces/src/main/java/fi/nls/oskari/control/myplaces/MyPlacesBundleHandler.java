@@ -46,7 +46,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
     private AXIOMXPath XPATH_GETFEATURE_PROPERTY_FILTER = null;
 
     private MyPlacesService service = null;
-    private static GeoServerProxyService proxyService = null;
+    private GeoServerProxyService proxyService = null;
 
     private final String MY_PLACES_NAMESPACE = PropertyUtil.get("myplaces.xmlns", "http://www.oskari.org");
 

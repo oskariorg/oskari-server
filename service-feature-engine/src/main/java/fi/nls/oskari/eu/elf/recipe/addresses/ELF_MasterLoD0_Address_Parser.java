@@ -1,47 +1,48 @@
-package fi.nls.oskari.eu.inspire.recipe.gn;
+package fi.nls.oskari.eu.elf.recipe.addresses;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.inspire.gmlas.geographicalnames.NamedPlace;
+import fi.nls.oskari.eu.elf.addresses.ELF_MasterLoD0_Address.Address;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class Inspire_GN_NamedPlace extends GML32 {
+public class ELF_MasterLoD0_Address_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
-                NamedPlace.QN);
+                Address.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
-        final Resource gn = outputContext.addOutputProperty("name");
         final Resource beginLifespanVersion = outputContext
                 .addOutputStringProperty("beginLifespanVersion");
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+        final Resource obj = outputContext.addOutputStringProperty("obj");
 
-        final OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
+        outputContext.build();
+
+        final OutputFeature<Address> outputFeature = new OutputFeature<Address>(
                 outputContext);
 
-        final InputFeature<NamedPlace> iter = new InputFeature<NamedPlace>(
-                NamedPlace.QN, NamedPlace.class);
+        final InputFeature<Address> iter = new InputFeature<Address>(
+                Address.QN, Address.class);
 
         while (iter.hasNext()) {
-            final NamedPlace feature = iter.next();
+            final Address feature = iter.next();
             final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom, feature.geometry.geometry);
-
             outputFeature
-                    .addProperty(gn, feature.name)
                     .addProperty(beginLifespanVersion,
                             feature.beginLifespanVersion)
                     .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion, feature.endLifespanVersion);
+
+            outputFeature.addProperty(obj, feature);
 
             outputFeature.build();
 

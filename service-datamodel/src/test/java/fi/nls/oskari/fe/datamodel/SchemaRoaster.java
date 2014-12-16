@@ -5,18 +5,17 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
@@ -59,12 +58,13 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.xml.sax.InputSource;
 
 import fi.nls.oskari.fe.schema.XSDDatatype;
+
+/* PoC Schema to Jackson Mappings */
+/* - implicit ELF, INSPIRE, RYSP assumptions */
+/* - will never validate anything - assuming valid XML from quality WFS services.. */
 
 public class SchemaRoaster {
 
@@ -117,21 +117,6 @@ public class SchemaRoaster {
             this.parent = parent;
             this.base = parent.base;
         }
-
-    }
-
-    protected static void setupProxy() {
-
-        System.setProperty("http.proxyHost", "wwwp.nls.fi");
-        System.setProperty("http.proxyPort", "800");
-        System.setProperty("http.nonProxyHosts",
-                "*.nls.fi|127.0.0.1|*.paikkatietoikkuna.fi|*.maanmittauslaitos.fi");
-
-    }
-
-    @BeforeClass
-    public static void setUp() throws IOException {
-        setupProxy();
 
     }
 
@@ -771,45 +756,8 @@ public class SchemaRoaster {
             String memberName = member.getLocalPart().replaceAll("-", "_");
             String UmemberName = Character.toUpperCase(memberName.charAt(0))
                     + memberName.substring(1).replaceAll("-", "_");
-            ;
 
-            /* SUHT OK ELFiin */
-            /*
-             * MethodSource<JavaClassSource> setter = roast.javaClass
-             * .addMethod("void set" + UmemberName + "(final " + memType +
-             * " list) {}"); // setter.setName("set" + UmemberName);
-             * setter.setPublic().setReturnTypeVoid(); //
-             * setter.addParameter(memType, "list");
-             * setter.setBody("if( list != null ) { " + memberName +
-             * ".addAll(  list ); } else { " + memberName + ".clear();}");
-             * setter.addAnnotation("JacksonXmlProperty")
-             * .setStringValue("namespace", memEl.getQName().getNamespaceURI())
-             * .setStringValue("localName", memEl.getQName().getLocalPart());
-             * 
-             * // ! WE DO NOT require ANYTHING...
-             * setter.addAnnotation("XmlElement").setLiteralValue("required",
-             * "false"); // required ? "true" : "false");
-             * 
-             * String fldInitializer = "new java.util.ArrayList<" + elType +
-             * ">();"; FieldSource<JavaClassSource> fld =
-             * roast.javaClass.addField(memType + " " + memberName + " = " +
-             * fldInitializer); fld.setPrivate();
-             */
-
-            /* SUHT OK RYSPiin */
-            /*
-             * public java.util.List<_metatieto> metatieto = new
-             * java.util.ArrayList<_metatieto>();
-             * 
-             * @JacksonXmlProperty(namespace =
-             * "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName =
-             * "metatieto") public void setMetatieto(_metatieto obj) {
-             * metatieto.add(obj); //System.err.println(obj); }
-             */
-
-            // ! WE DO NOT require ANYTHING...
-
-            // required ? "true" : "false");
+            // note: roast has some issues with generics
 
             String fldInitializer = "new java.util.ArrayList<" + elType
                     + ">();";
@@ -822,29 +770,16 @@ public class SchemaRoaster {
             MethodSource<JavaClassSource> setter = roast.javaClass
                     .addMethod("void set" + UmemberName + "(final " + elType
                             + " obj) {}");
-            // setter.setName("set" + UmemberName);
             setter.setPublic().setReturnTypeVoid();
-            // setter.addParameter(memType, "list");
             setter.setBody("if( obj != null ) { " + memberName
                     + ".add(  obj ); }");
             setter.addAnnotation("JacksonXmlProperty")
                     .setStringValue("namespace", member.getNamespaceURI())
                     .setStringValue("localName", member.getLocalPart());
 
-            /*
-             * OLD roast.javaClass.addField("private " + memType + " " +
-             * memberName + " = new java.util.ArrayList<" + elType + ">();");
-             */
+            roast.javaClass.addMethod(memType + " get" + UmemberName
+                    + "() { return " + memberName + "; }");
 
-            MethodSource<JavaClassSource> getter = roast.javaClass
-                    .addMethod(memType + " get" + UmemberName + "() { return "
-                            + memberName + "; }");
-
-            // getter.setName("get" + UmemberName).setReturnType(memType)
-            /*
-             * getter.setPublic()// .setBody("return " + memberName + ";")
-             * .addAnnotation("JsonGetter");
-             */
         } else {
             QName member = memEl.getQName() != null ? memEl.getQName() : memEl
                     .getRef().getTargetQName();
@@ -1000,8 +935,6 @@ public class SchemaRoaster {
 
             }
 
-            // }
-
         }
 
         return null;
@@ -1143,17 +1076,21 @@ public class SchemaRoaster {
         logger.debug("roastNamedMember:" + memEl.getQName());
         // String memType = memEl.getQName().getLocalPart();
 
-        String listMemType = figureOutListElType(memEl, null, isNillable,
-                minOccurs, maxOccurs);
-        String elMemType = figureOutElType(memEl, null, isNillable, minOccurs,
-                maxOccurs);
+        /*
+         * String listMemType = figureOutListElType(memEl, null, isNillable,
+         * minOccurs, maxOccurs);
+         */
+        /*
+         * String elMemType = figureOutElType(memEl, null, isNillable,
+         * minOccurs, maxOccurs);
+         */
 
         String memType = roastSchemaElement(roast, null, memEl, isNillable,
                 false);
 
-        if (elMemType != null) {
-            memType = elMemType;
-        }
+        /*
+         * if (elMemType != null) { memType = elMemType; }
+         */
 
         /*
          * if (listMemType != null) { memType = listMemType; }
@@ -1169,20 +1106,13 @@ public class SchemaRoaster {
 
         QName name = new QName("Anon", "A_" + (++anonTypeIndex));
 
-        String listMemType = figureOutListElType(memEl, name, isNillable,
-                minOccurs, maxOccurs);
-        String elMemType = figureOutElType(memEl, name, isNillable, minOccurs,
-                maxOccurs);
-
+        /*
+         * String listMemType = figureOutListElType(memEl, name, isNillable,
+         * minOccurs, maxOccurs); String elMemType = figureOutElType(memEl,
+         * name, isNillable, minOccurs, maxOccurs);
+         */
         String memType = roastSchemaElement(roast, name, memEl, isNillable,
                 false);
-
-        /*
-         * if (elMemType != null) { memType = elMemType; }
-         */
-        /*
-         * if (listMemType != null) { memType = listMemType; }
-         */
 
         return memType;
 
@@ -1243,10 +1173,11 @@ public class SchemaRoaster {
                             el.getQName().getNamespaceURI());
         }
 
-        if (isNillable) {
-            nestedRoast.javaClass
-                    .setSuperType("fi.nls.oskari.fe.xml.util.Nillable");
-        }
+        // we're always ready to get nilled
+        // if (isNillable) {
+        nestedRoast.javaClass
+                .setSuperType("fi.nls.oskari.fe.xml.util.Nillable");
+        // }
 
         FieldSource<JavaClassSource> fldNS = nestedRoast.javaClass.addField();
         fldNS.setName("NS").setPublic().setStatic(true).setFinal(true)
@@ -1508,7 +1439,13 @@ public class SchemaRoaster {
 
     }
 
-    void roastSchema(final String packageName, final String subPackage,
+    protected final Map<String, String> defaultResolvers = new HashMap<String, String>();
+
+    public Map<String, String> getDefaultResolvers() {
+        return defaultResolvers;
+    }
+
+    public void roastSchema(final String packageName, final String subPackage,
             final String classname, final String feature,
             final String targetNS, String url) throws MalformedURLException,
             IOException {
@@ -1544,17 +1481,13 @@ public class SchemaRoaster {
 
                 String schemaLoc = schemaLocation.concat("");
 
-                if (schemaLoc
-                        .startsWith("http://www.locationframework.eu/ELF10/")) {
-                    schemaLoc = schemaLoc.replace(
-                            "http://www.locationframework.eu/ELF10/",
-                            "http://elfserver.kartverket.no/schemas/elf1.0/");
-                }
-                if (schemaLoc
-                        .startsWith("http://www.locationframework.eu/ELF/")) {
-                    schemaLoc = schemaLoc.replace(
-                            "http://www.locationframework.eu/ELF/",
-                            "http://elfserver.kartverket.no/schemas/elf1.0/");
+                for (Entry<String, String> kv : defaultResolvers.entrySet()) {
+
+                    if (schemaLoc.startsWith(kv.getKey())) {
+                        schemaLoc = schemaLoc.replace(kv.getKey(),
+                                kv.getValue());
+                        break;
+                    }
                 }
 
                 if (!isAbsolute(schemaLocation)
@@ -1587,7 +1520,7 @@ public class SchemaRoaster {
             for (XmlSchema schema : schemaCol.getXmlSchemas()) {
 
                 exportElements(packageName, subPackage, classname, feature,
-                        targetNS, schema.getElements());
+                        targetNS, schema.getElements(), url);
             }
         } finally {
             is.close();
@@ -1595,10 +1528,27 @@ public class SchemaRoaster {
 
     }
 
+    protected static final List<String> defaultImports = Arrays
+            .asList(new String[] {
+                    "java.net.URI",
+                    "fi.nls.oskari.fe.gml.util.CodeType",
+                    "fi.nls.oskari.isotc211.gco.Distance",
+                    "fi.nls.oskari.isotc211.gmd.LocalisedCharacterString",
+                    "javax.xml.bind.annotation.XmlElement",
+                    "com.fasterxml.jackson.annotation.JsonGetter",
+                    "com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty",
+                    "com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement",
+                    "javax.xml.namespace.QName",
+                    "javax.xml.bind.annotation.XmlAttribute",
+                    "com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText",
+                    "java.util.Calendar", "java.math.BigInteger"
+
+            });
+
     protected void exportElements(final String packageName,
             final String subPackage, final String classname,
             final String feature, final String targetNS,
-            Map<QName, XmlSchemaElement> elements) {
+            Map<QName, XmlSchemaElement> elements, String url) {
 
         for (Entry<QName, XmlSchemaElement> kv : elements.entrySet()) {
 
@@ -1623,441 +1573,35 @@ public class SchemaRoaster {
 
             RoastContext roast = new RoastContext();
 
+            final StringBuffer javaDoc = new StringBuffer();
+            final String timestamp = new Date().toString();
+
+            javaDoc.append("\n- URL " + url);
+            javaDoc.append("\n- timestamp " + timestamp);
+
+            roast.javaClass.getJavaDoc().setText(javaDoc.toString());
             roast.javaClass.setPackage(packageName + subPackage);
-            roast.javaClass.addImport("java.net.URI");
-            roast.javaClass.addImport("fi.nls.oskari.fe.gml.util.CodeType");
-            roast.javaClass.addImport("fi.nls.oskari.isotc211.gco.Distance");
-            roast.javaClass
-                    .addImport("fi.nls.oskari.isotc211.gmd.LocalisedCharacterString");
-            roast.javaClass.addImport("javax.xml.bind.annotation.XmlElement");
-            roast.javaClass
-                    .addImport("com.fasterxml.jackson.annotation.JsonGetter");
-            roast.javaClass
-                    .addImport("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty");
-            roast.javaClass
-                    .addImport("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement");
-            roast.javaClass.addImport("javax.xml.namespace.QName");
-            roast.javaClass.addImport("javax.xml.bind.annotation.XmlAttribute");
-            roast.javaClass
-                    .addImport("com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText");
-            roast.javaClass.addImport("java.util.Calendar");
-            roast.javaClass.addImport("java.math.BigInteger");
-            // final String classname = "ELF_Buildings";
             roast.javaClass.setName(classname);
+
+            roast.javaClass.addField().setPublic().setStatic(true)
+                    .setFinal(true).setType("java.lang.String")
+                    .setName("TIMESTAMP").setStringInitializer(timestamp);
+            roast.javaClass.addField().setPublic().setStatic(true)
+                    .setFinal(true).setType("java.lang.String")
+                    .setName("SCHEMASOURCE").setStringInitializer(url);
+
+            for (String i : defaultImports) {
+                roast.javaClass.addImport(i);
+            }
 
             roastSchemaElement(roast, null, el, false, true);
 
             logger.debug("Processed " + kv.getKey());
             logger.debug("OUTPUT" + kv.getKey());
-            // String formattedCode =
-            // Roaster.format(roast.javaClass.toString());
             System.out.println(roast.javaClass.toString());
 
             logger.debug("Done." + kv.getKey());
         }
 
     }
-
-    @Test
-    public void testElfLoD0Building_WFS() throws MalformedURLException,
-            IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu?service=WFS&request=DescribeFeatureType&TYPENAMES=elf-lod0bu:Building&version=2.0.0&NAMESPACES=xmlns(elf-lod0bu,http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0)";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Building";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "buildings";
-        final String classname = "ELF_MasterLoD0_Building_nls_fi_wfs";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0";
-
-        roastSchema(packageName, subPackage, feature, classname, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD0Building() throws MalformedURLException, IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Buildings.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Building";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "buildings";
-        final String classname = "ELF_MasterLoD0_Building";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD0Address() throws MalformedURLException, IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Address";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "addresses";
-        final String classname = "ELF_MasterLoD0_Address";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD0CadastralParcels() throws MalformedURLException,
-            IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_CadastralParcels.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "CadastralParcel";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "cadastralparcels";
-        final String classname = "ELF_MasterLoD0_CadastralParcel";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/CadastralParcels/MasterLoD0/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD1AdministrativeUnit() throws MalformedURLException,
-            IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "AdministrativeUnit";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "administrativeunits";
-        final String classname = "ELF_MasterLoD1_AdministrativeUnit";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD1AdministrativeBoundary()
-            throws MalformedURLException, IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_AdministrativeUnits.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "AdministrativeBoundary";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "administrativeunits";
-        final String classname = "ELF_MasterLoD1_AdministrativeBoundary";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testElfLoD1GeographicalNames() throws MalformedURLException,
-            IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elfserver.kartverket.no/schemas/elf1.0/LoD1_GeographicalNames.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "NamedPlace";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "geographicalnames";
-        final String classname = "ELF_MasterLoD1_NamedPlace";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Ignore("Incomplete")
-    @Test
-    public void testRYSPRakennusvalvontaRakennusvalvonta()
-            throws MalformedURLException, IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta/2.1.6/rakennusvalvonta.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Rakennusvalvonta";
-        final String packageName = "fi.nls.oskari.fi.rysp.";
-        final String subPackage = "rakennusvalvonta";
-        final String classname = "RYSP_rakennusvalvonta_Rakennusvalvonta";
-
-        final String targetNS = "http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testRYSPKantakarttaRakennus() throws MalformedURLException,
-            IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Rakennus";
-        final String packageName = "fi.nls.oskari.fi.rysp.";
-        final String subPackage = "kantakartta";
-        final String classname = "RYSP_kanta_Rakennus";
-
-        final String targetNS = "http://www.paikkatietopalvelu.fi/gml/kantakartta";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    @Test
-    public void testRYSPKantakarttaLiikennevayla()
-            throws MalformedURLException, IOException {
-
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://www.paikkatietopalvelu.fi/gml/kantakartta/2.0.1/kantakartta.xsd";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-
-        final String feature = "Liikennevayla";
-        final String packageName = "fi.nls.oskari.fi.rysp.";
-        final String subPackage = "kantakartta";
-        final String classname = "RYSP_kanta_Liikennevayla";
-
-        final String targetNS = "http://www.paikkatietopalvelu.fi/gml/kantakartta";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-    }
-
-    
-    @Ignore("Schema failture")
-    @Test
-    public void testInspireTnRoRoadLink()
-            throws MalformedURLException, IOException {
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://www.ign.es/wfs-inspire/transportes-btn100?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&TYPENAME=tn-ro:RoadLink&NAMESPACES=xmlns(tn-ro,urn%3Ax-inspire%3Aspecification%3Agmlas%3ARoadTransportNetwork%3A3.0)";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-        
-        final String feature = "RoadLink";
-        final String packageName = "fi.nls.oskari.eu.inspire.";
-        final String subPackage = "roadtransportnetwork";
-        final String classname = "INSPIRE_tnro_RoadLink";
-
-        final String targetNS = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-        
-        
-        
-    }
-    
-    @Test
-    public void testELFTnRoRoadLink()
-            throws MalformedURLException, IOException {
-        Properties log4jprops = new Properties();
-        log4jprops.put("log4jprops.log4j.rootLogger", "DEBUG, A1");
-        log4jprops.put("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        log4jprops.put("log4j.appender.A1.layout",
-                "org.apache.log4j.PatternLayout");
-        log4jprops.put("log4j.appender.A1.layout.ConversionPattern",
-                "%-4r [%t] %-5p %c %x - %m%n");
-
-        org.apache.log4j.PropertyConfigurator.configure(log4jprops);
-
-        final String url = "http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod1rdtn?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAME=elf_lod1rtn:RoadLink&NAMESPACES=xmlns(elf_lod1rtn,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FRoadTransportNetwork%2FMasterLoD1%2F1.0)";
-
-        logger.setLevel(Level.DEBUG);
-
-        logger.debug(url);
-
-        logger.debug("OUTPUT");
-        
-        final String feature = "RoadLink";
-        final String packageName = "fi.nls.oskari.eu.elf.";
-        final String subPackage = "roadtransportnetwork";
-        final String classname = "ELF_TNRO_RoadLink";
-
-        final String targetNS = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0";
-
-        roastSchema(packageName, subPackage, classname, feature, targetNS, url);
-
-        
-        
-        
-    }
-    
-    
 }

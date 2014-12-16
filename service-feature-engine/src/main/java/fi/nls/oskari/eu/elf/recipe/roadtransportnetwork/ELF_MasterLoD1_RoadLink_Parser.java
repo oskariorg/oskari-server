@@ -1,14 +1,12 @@
-package fi.nls.oskari.eu.inspire.recipe.tn;
+package fi.nls.oskari.eu.elf.recipe.roadtransportnetwork;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.inspire.gmlas.roadtransportnetwork.RoadLink;
+import fi.nls.oskari.eu.elf.roadtransportnetwork.ELF_TNRO_RoadLink.RoadLink;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.schema.XSDDatatype;
 
-/* PoC Streaming Parser to Match Groovy Parser in Java 7 */
-public class Inspire_TN_RoadLink extends GML32 {
+public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
@@ -17,18 +15,16 @@ public class Inspire_TN_RoadLink extends GML32 {
                 RoadLink.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
-        final Resource gn = outputContext.addOutputProperty("geographicalName");
-        final Resource validFrom = outputContext
-                .addOutputStringProperty("validFrom");
-        final Resource validTo = outputContext
-                .addOutputStringProperty("validTo");
-        final Resource fictitious = outputContext.addOutputProperty(
-                XSDDatatype.XSDboolean, "fictitious");
+        final Resource gn = outputContext.addOutputProperty("name");
         final Resource beginLifespanVersion = outputContext
                 .addOutputStringProperty("beginLifespanVersion");
         final Resource inspireId = outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
+
+        final Resource obj = outputContext.addOutputStringProperty("obj");
+
+        outputContext.build();
 
         final OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
                 outputContext);
@@ -42,23 +38,23 @@ public class Inspire_TN_RoadLink extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom,
-                    feature.centrelineGeometry.geometry);
+            if (feature.centrelineGeometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.centrelineGeometry.geometry);
+            }
 
             outputFeature
                     .addProperty(gn, feature.geographicalName)
-                    .addProperty(validFrom, feature.validFrom)
-                    .addProperty(validTo, feature.validTo)
-                    .addProperty(fictitious, feature.fictitious)
                     .addProperty(beginLifespanVersion,
                             feature.beginLifespanVersion)
                     .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion, feature.endLifespanVersion);
+
+            outputFeature.addProperty(obj, feature);
 
             outputFeature.build();
 
         }
 
     }
-
 }

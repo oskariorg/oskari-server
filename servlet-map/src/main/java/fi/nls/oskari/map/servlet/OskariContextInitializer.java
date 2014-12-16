@@ -46,7 +46,7 @@ public class OskariContextInitializer implements ServletContextListener {
                 log.error(e, "Failed to close locally created data source");
             }
         }
-        System.out.println("Context destroy");
+        info("Context destroy");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class OskariContextInitializer implements ServletContextListener {
         }
         catch (Exception ex) {
             error("!!! Error initializing context for Oskari !!!");
-            ex.printStackTrace();
+            log.error(ex);
         }
 
         this.schedulerService = new SchedulerService();
@@ -118,6 +118,8 @@ public class OskariContextInitializer implements ServletContextListener {
         final BasicDataSource ds = getDataSource(ctx, poolName);
         boolean success = (ds != null);
         if (!success) {
+            // FIXME: change logging so this isn't an error, but log some info if we are
+            // using container provided datasource rather than one created by us
             warn("!!! Couldn't find DataSource with name: " + poolName);
             warn("!!! Please edit webapps XML (web.xml/context.xml etc) to provide database connection resource !!!");
             //  + " - creating one with defaults."
@@ -136,7 +138,7 @@ public class OskariContextInitializer implements ServletContextListener {
         try {
             return new InitialContext();
         } catch (Exception ex) {
-            System.err.println("Couldn't get context: " + ex.getMessage());
+            error("Couldn't get context: " + ex.getMessage());
         }
         return null;
     }
@@ -149,8 +151,7 @@ public class OskariContextInitializer implements ServletContextListener {
             constructContext(ctx, "comp", "env", "jdbc");
             ctx.bind("java:comp/env/" + name, ds);
         } catch (Exception ex) {
-            System.err.println("Couldn't add pool with name '" + name +"': " + ex.getMessage());
-            ex.printStackTrace();
+            log.error(ex, "Couldn't add pool with name '" + name +"': ", ex.getMessage());
         }
     }
 

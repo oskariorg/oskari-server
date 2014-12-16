@@ -9,8 +9,8 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.elf.recipe.bu.ELF_MasterLoD0_Building_Parser;
-import fi.nls.oskari.eu.elf.recipe.bu.ELF_MasterLoD0_Building_nls_fi_wfs_Parser;
+import fi.nls.oskari.eu.elf.recipe.buildings.ELF_MasterLoD0_Building_Parser;
+import fi.nls.oskari.eu.elf.recipe.buildings.ELF_MasterLoD0_Building_nls_fi_wfs_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
@@ -27,7 +27,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    //@Ignore("Not ready")
+    // @Ignore("Not ready")
     @Test
     public void test_ELF_Master_LoD0_Building_nls_fi_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -39,9 +39,8 @@ public class TestJacksonParser {
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
-        InputStream inp = getClass()
-                .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/bu/nls_fi-ELF-BU-wfs.xml");
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/eu/elf/buildings/nls_fi-ELF-BU-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -52,7 +51,7 @@ public class TestJacksonParser {
 
                 ELF_MasterLoD0_Building_nls_fi_wfs_Parser recipe = new ELF_MasterLoD0_Building_nls_fi_wfs_Parser();
                 recipe.setLenient(true);
-                
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -61,7 +60,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
@@ -69,7 +68,7 @@ public class TestJacksonParser {
         }
 
     }
-    
+
     /**
      * 
      * @throws InstantiationException
@@ -77,7 +76,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    //@Ignore("Not ready")
+    // @Ignore("Not ready")
     @Test
     public void test_ELF_Master_LoD0_Building_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -89,9 +88,8 @@ public class TestJacksonParser {
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
-        InputStream inp = getClass()
-                .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/bu/nls_fi-ELF-BU-wfs.xml");
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/eu/elf/buildings/nls_fi-ELF-BU-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -109,7 +107,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
@@ -118,4 +116,3 @@ public class TestJacksonParser {
 
     }
 }
-

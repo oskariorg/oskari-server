@@ -1,12 +1,13 @@
-package fi.nls.oskari.eu.elf.recipe.gn;
+package fi.nls.oskari.eu.inspire.recipe.geographicalnames;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.elf.geographicalnames.ELF_MasterLoD1_NamedPlace.NamedPlace;
+//import fi.nls.oskari.eu.inspire.gmlas.geographicalnames.NamedPlace;
+import fi.nls.oskari.eu.inspire.geographicalnames.INSPIRE_gn_NamedPlace.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
+public class Inspire_GN_NamedPlace extends GML32 {
 
     @Override
     public void parse() throws IOException {
@@ -22,10 +23,6 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
 
-        final Resource obj = outputContext.addOutputStringProperty("obj");
-
-        outputContext.build();
-
         final OutputFeature<NamedPlace> outputFeature = new OutputFeature<NamedPlace>(
                 outputContext);
 
@@ -33,23 +30,19 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
                 NamedPlace.QN, NamedPlace.class);
 
         while (iter.hasNext()) {
-            final NamedPlace namedPlace = iter.next();
-            final Resource output_ID = outputContext.uniqueId(namedPlace.id);
+            final NamedPlace feature = iter.next();
+            final Resource output_ID = outputContext.uniqueId(feature.id);
 
-            outputFeature.setFeature(namedPlace).setId(output_ID);
+            outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom,
-                    namedPlace.geometry.geometry);
+            outputFeature.addGeometryProperty(geom, feature.geometry.geometry);
 
             outputFeature
-                    .addProperty(gn, namedPlace.name)
+                    .addProperty(gn, feature.name)
                     .addProperty(beginLifespanVersion,
-                            namedPlace.beginLifespanVersion)
-                    .addProperty(inspireId, namedPlace.inspireId)
-                    .addProperty(endLifespanVersion,
-                            namedPlace.endLifespanVersion);
-
-            outputFeature.addProperty(obj, namedPlace);
+                            feature.beginLifespanVersion)
+                    .addProperty(inspireId, feature.inspireId)
+                    .addProperty(endLifespanVersion, feature.endLifespanVersion);
 
             outputFeature.build();
 

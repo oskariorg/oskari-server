@@ -33,7 +33,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/rysp/kanta_Liikennevayla.xml");
+                        "/fi/nls/oskari/fi/rysp/kanta_Liikennevayla.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -51,7 +51,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
@@ -73,7 +73,7 @@ public class TestJacksonParser {
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
         InputStream inp = getClass().getResourceAsStream(
-                "/fi/nls/oskari/fe/input/format/gml/rysp/kanta_Rakennus.xml");
+                "/fi/nls/oskari/fi/rysp/kanta_Rakennus.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -83,8 +83,8 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 RYSP_kanta_Rakennus_Parser recipe = new RYSP_kanta_Rakennus_Parser();
-                //recipe.getGeometryDeserializer().setIgnoreProps(true);                
-                //recipe.setLenient(true);
+                // recipe.getGeometryDeserializer().setIgnoreProps(true);
+                // recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -93,7 +93,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                fouts.close();
+                // fouts.close();
             }
 
         } finally {
