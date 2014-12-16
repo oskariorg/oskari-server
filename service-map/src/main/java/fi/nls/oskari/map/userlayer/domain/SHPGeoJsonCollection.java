@@ -88,7 +88,7 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             return true;
 
         } catch (Exception e) {
-            log.error("Couldn't create geoJSON from the shp file",
+            log.error("Couldn't create geoJSON from the shp file ", file.getName(),
                     e);
             return false;
         }
