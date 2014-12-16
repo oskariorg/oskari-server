@@ -1,8 +1,6 @@
 package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.cache.Cache;
-import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -18,7 +16,6 @@ import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Note this lists search channels that are annotated and found in the classpath.
@@ -36,10 +33,10 @@ public class SearchChannelHandler extends RestActionHandler {
         final JSONObject response = new JSONObject();
         final JSONArray list = new JSONArray();
         final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
-        for (String name : annotatedChannels.keySet()) {
+        for (Map.Entry<String, SearchChannel> entry : annotatedChannels.entrySet()) {
             final JSONObject json = new JSONObject();
-            final SearchChannel channel = annotatedChannels.get(name);
-            JSONHelper.putValue(json, "name", name);
+            final SearchChannel channel = entry.getValue();
+            JSONHelper.putValue(json, "name", entry.getKey());
             final Map<String, Object> data = channel.getDebugData();
             for(String key : data.keySet()) {
                 JSONHelper.putValue(json, key, data.get(key));
