@@ -238,7 +238,7 @@ public class SchemaRoaster {
 
     XmlSchemaType findXSElBaseType(XmlSchemaElement memEl) {
         if (memEl == null) {
-            System.err.println("memEl NULL");
+            logger.error("memEl NULL");
             return null;
         }
         logger.debug("findXSElBaseType:" + memEl);
@@ -546,6 +546,7 @@ public class SchemaRoaster {
     private String mapToXSDType(final QName schemaTypeQn) {
         // return "Object /* + " + schemaTypeQn.getLocalPart() + "*/";
         logger.debug("mapToXSDType:" + schemaTypeQn);
+        System.out.println(schemaTypeQn.toString());
         return XSDDatatype.QNAME.get(schemaTypeQn).getType().getCanonicalName();
 
     }
@@ -1128,14 +1129,15 @@ public class SchemaRoaster {
 
         XmlSchemaType type = el.getSchemaType();
 
-        String classname = el.getQName().getLocalPart();
+        String classname = el.getQName() != null ? el.getQName().getLocalPart()
+                : context.getLocalPart();
 
         logger.debug("nested Type:" + classname);
         JavaClassSource nested = null;
 
         if (isRootElement) {
             if (roast.roasttedClasses.get(classname) != null) {
-                System.err.println(classname + " ALREADY DEFINED");
+                logger.warn(classname + " ALREADY DEFINED");
                 return classname;
             }
 
@@ -1155,7 +1157,7 @@ public class SchemaRoaster {
             }
 
             if (roast.base.roasttedClasses.get(classname) != null) {
-                System.err.println(classname + " ALREADY DEFINED");
+                logger.warn(classname + " ALREADY DEFINED");
                 return classname;
             }
 
@@ -1179,15 +1181,18 @@ public class SchemaRoaster {
                 .setSuperType("fi.nls.oskari.fe.xml.util.Nillable");
         // }
 
-        FieldSource<JavaClassSource> fldNS = nestedRoast.javaClass.addField();
-        fldNS.setName("NS").setPublic().setStatic(true).setFinal(true)
-                .setType("String")
-                .setStringInitializer(el.getQName().getNamespaceURI());
+        if (el.getQName() != null) {
+            FieldSource<JavaClassSource> fldNS = nestedRoast.javaClass
+                    .addField();
+            fldNS.setName("NS").setPublic().setStatic(true).setFinal(true)
+                    .setType("String")
+                    .setStringInitializer(el.getQName().getNamespaceURI());
+            FieldSource<JavaClassSource> fldQN = nestedRoast.javaClass
 
-        FieldSource<JavaClassSource> fldQN = nestedRoast.javaClass
-                .addField("QName QN = new QName(NS, \""
-                        + el.getQName().getLocalPart() + "\");");
-        fldQN.setPublic().setStatic(true).setFinal(true);
+            .addField("QName QN = new QName(NS, \""
+                    + el.getQName().getLocalPart() + "\");");
+            fldQN.setPublic().setStatic(true).setFinal(true);
+        }
 
         roastSchemaType(nestedRoast, type);
 

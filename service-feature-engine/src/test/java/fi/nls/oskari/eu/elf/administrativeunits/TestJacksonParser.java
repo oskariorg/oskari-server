@@ -28,7 +28,7 @@ public class TestJacksonParser {
     // @Ignore("Not ready")
     @Test
     // urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0
-    public void test_ELF_Master_LoD0_AU_geonorge_no_wfs_GMLtoJSON()
+    public void test_ELF_Master_LoD1_AU_geonorge_no_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
             XMLStreamException {
 

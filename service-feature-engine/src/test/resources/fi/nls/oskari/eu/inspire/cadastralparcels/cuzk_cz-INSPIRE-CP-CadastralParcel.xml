@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:GN="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:CP="urn:x-inspire:specification:gmlas:CadastralParcels:3.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/deprecatedTypes.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd urn:x-inspire:specification:gmlas:GeographicalNames:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/GeographicalNames.xsd urn:x-inspire:specification:gmlas:CadastralParcels:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/CadastralParcels.xsd" timeStamp="2014-12-17T12:12:20" numberMatched="10" numberReturned="10" xmlns="http://www.opengis.net/wfs/2.0">
+  <boundedBy>
+    <gml:Envelope srsName="EPSG:900913" srsDimension="2">
+      <gml:lowerCorner>1612869.01504569 6314498.31243463</gml:lowerCorner>
+      <gml:upperCorner>1614336.99414107 6317203.96714005</gml:upperCorner>
+    </gml:Envelope>
+  </boundedBy>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452437308">
+      <CP:areaValue uom="m2">530</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452437308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1613796.974 6315583.612 1613804.989 6315585.715 1613827.928 6315591.982 1613825.769 6315599.903 1613817.921 6315628.647 1613786.514 6315621.343 1613796.974 6315583.612</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452437308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>81</CP:label>
+      <CP:nationalCadastralReference>619477-st. 81</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452437308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1613810.11 6315589.71</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452439308">
+      <CP:areaValue uom="m2">328</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452439308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614305.551 6314516.96 1614304.149 6314513.55 1614303.479 6314511.895 1614306.791 6314514.314 1614314.184 6314511.566 1614314.83 6314513.279 1614323.21 6314511.223 1614326.806 6314521.525 1614330.392 6314534.393 1614336.994 6314554.126 1614328.92 6314555.527 1614321.519 6314556.974 1614317.65 6314546.403 1614308.014 6314522.217 1614307.736 6314522.334 1614305.551 6314516.96</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452439308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>88</CP:label>
+      <CP:nationalCadastralReference>619477-st. 88</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452439308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614327.77 6314541.4</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452440308">
+      <CP:areaValue uom="m2">431</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452440308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614283.665 6314531.431 1614307.736 6314522.334 1614308.014 6314522.217 1614317.65 6314546.403 1614321.519 6314556.974 1614322.102 6314558.694 1614314.516 6314561.044 1614314.145 6314561.163 1614306.645 6314563.447 1614306.114 6314563.607 1614306.017 6314563.299 1614296.744 6314566.254 1614296.551 6314565.748 1614290.25 6314549.135 1614283.635 6314531.876 1614283.665 6314531.431</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452440308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>89</CP:label>
+      <CP:nationalCadastralReference>619477-st. 89</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452440308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614307.07 6314536.41</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452441308">
+      <CP:areaValue uom="m2">25</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452441308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614168.686 6314737.698 1614166.952 6314735.588 1614167.197 6314728.35 1614173.872 6314728.614 1614173.649 6314735.577 1614171.891 6314737.61 1614168.686 6314737.698</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452441308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>96</CP:label>
+      <CP:nationalCadastralReference>619477-st. 96</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452441308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614168.73 6314730.12</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452445308">
+      <CP:areaValue uom="m2">170</CP:areaValue>
+      <CP:beginLifespanVersion>2011-08-26T09:03:48Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452445308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1613998.334 6315250.036 1613981.183 6315246.48 1613983.873 6315233.975 1614014.559 6315240.559 1614012.953 6315248.045 1614011.916 6315252.947 1613998.334 6315250.036</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452445308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>105</CP:label>
+      <CP:nationalCadastralReference>619477-st. 105</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452445308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1613995.29 6315241.54</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452451308">
+      <CP:areaValue uom="m2">20</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452451308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614298.401 6314498.312 1614300.931 6314501.939 1614292.15 6314508.194 1614289.652 6314504.448 1614298.401 6314498.312</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452451308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>110</CP:label>
+      <CP:nationalCadastralReference>619477-st. 110</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452451308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614293.79 6314502.72</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452452308">
+      <CP:areaValue uom="m2">98</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452452308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614237.35 6314563.523 1614232.968 6314547.544 1614245.614 6314543.953 1614250.069 6314559.957 1614245.626 6314561.206 1614246.309 6314563.667 1614241.808 6314565 1614241.103 6314562.474 1614237.35 6314563.523</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452452308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>111</CP:label>
+      <CP:nationalCadastralReference>619477-st. 111</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452452308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614240.8 6314552.67</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452455308">
+      <CP:areaValue uom="m2">199</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452455308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1613641.56 6315880.411 1613667.84 6315887.307 1613678.072 6315890.008 1613674.537 6315903.729 1613655.062 6315898.648 1613656.07 6315894.762 1613639.013 6315890.275 1613641.104 6315882.175 1613641.56 6315880.411</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452455308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>114</CP:label>
+      <CP:nationalCadastralReference>619477-st. 114</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452455308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1613663.02 6315891.21</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452456308">
+      <CP:areaValue uom="m2">161</CP:areaValue>
+      <CP:beginLifespanVersion>2014-02-09T11:46:22Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452456308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1614113.074 6314532.074 1614109.175 6314531.927 1614109.432 6314513.273 1614129.878 6314513.689 1614129.714 6314522.145 1614127.915 6314522.1 1614127.773 6314532.323 1614120.388 6314532.178 1614120.27 6314534.174 1614113.127 6314534.062 1614113.074 6314532.074</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452456308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>115</CP:label>
+      <CP:nationalCadastralReference>619477-st. 115</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452456308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1614118.04 6314520.98</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <member>
+    <CP:CadastralParcel gml:id="CP.2452457308">
+      <CP:areaValue uom="m2">5492</CP:areaValue>
+      <CP:beginLifespanVersion>2012-11-08T07:16:25Z</CP:beginLifespanVersion>
+      <CP:geometry>
+        <gml:Polygon gml:id="P.CP.2452457308" srsName="EPSG:900913" srsDimension="2">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>1612971.182 6317191.011 1612945.576 6317197.825 1612929.754 6317203.967 1612925.126 6317202.822 1612928.129 6317184.414 1612923.067 6317183.395 1612923.05 6317182.835 1612922.647 6317165.523 1612911.838 6317155.715 1612930.532 6317124.306 1612892.011 6317070.073 1612890.29 6317067.64 1612869.015 6317037.361 1612919.337 6317046.332 1612939.784 6317055.619 1612982.632 6317078.671 1612994.506 6317073.751 1613014.162 6317098.02 1613034.147 6317132.223 1612971.182 6317191.011</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CP.2452457308</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:label>1364/1</CP:label>
+      <CP:nationalCadastralReference>619477-1364/1</CP:nationalCadastralReference>
+      <CP:referencePoint>
+        <gml:Point gml:id="R.CP.2452457308" srsName="EPSG:900913" srsDimension="2">
+          <gml:pos>1612966.08 6317118.85</gml:pos>
+        </gml:Point>
+      </CP:referencePoint>
+      <CP:administrativeUnit xlink:type="simple" xlink:href="http://services.cuzk.cz/gml/inspire/au/epsg-900913/CZ.xml#598976" />
+      <CP:zoning xlink:type="simple" xlink:href="#CZ.619477" />
+    </CP:CadastralParcel>
+  </member>
+  <truncatedResponse>
+    <ExceptionReport version="1.0.0" xmlns="http://www.opengis.net/ows/1.1">
+      <Exception exceptionCode="NoApplicableCode">
+        <ExceptionText>Response truncated due to too many objects in requested area (max. 10 for this feature)!</ExceptionText>
+      </Exception>
+    </ExceptionReport>
+  </truncatedResponse>
+</FeatureCollection>

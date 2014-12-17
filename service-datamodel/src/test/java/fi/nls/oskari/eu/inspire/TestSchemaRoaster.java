@@ -42,7 +42,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
 
-    @Ignore("Requires backend")
+    @Ignore("Requires web service")
     @Test
     public void testInspireGnNamedPlace_cuzk_cz() throws MalformedURLException,
             IOException {
@@ -65,7 +65,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
 
-    @Ignore("Requires backend")
+    @Ignore("Requires web service")
     @Test
     public void testInspireGnNamedPlace() throws MalformedURLException,
             IOException {
@@ -88,7 +88,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
     
-    @Ignore("Requires backend")
+    @Ignore("Requires web service")
     @Test
     public void testInspireAdAddress() throws MalformedURLException,
             IOException {
@@ -110,5 +110,123 @@ public class TestSchemaRoaster extends TestHelper {
                 targetNS, url);
 
     }
+    
+    
+    @Ignore("Requires web service")
+    @Test
+    public void testInspireHyPStandingWater() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
 
+        logger.debug(url);
+
+        final String feature = "StandingWater";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "hydrophysicalwaters";
+        final String classname = "INSPIRE_hyp_StandingWater";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+
+    @Ignore("Requires web service")
+    @Test
+    public void testInspireHyPWatercourse() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "Watercourse";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "hydrophysicalwaters";
+        final String classname = "INSPIRE_hyp_Watercourse";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
+    @Ignore("Requires web service")
+    @Test
+    public void testInspireHyPLandWaterBoundary() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "LandWaterBoundary";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "hydrophysicalwaters";
+        final String classname = "INSPIRE_hyp_LandWaterBoundary";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
+    @Ignore("Requires web service")
+    @Test
+    public void testInspireCPCadastralParcel() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/cp/3.0/CadastralParcels.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "CadastralParcel";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "cadastralparcels";
+        final String classname = "INSPIRE_cp_CadastralParcel";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
+    @Ignore("Requires web service")
+    @Test
+    public void testInspireCPCadastralBoundary() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/cp/3.0/CadastralParcels.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "CadastralBoundary";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "cadastralparcels";
+        final String classname = "INSPIRE_cp_CadastralBoundary";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:CadastralParcels:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
 }
+
+
