@@ -17,6 +17,7 @@ import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -148,9 +149,7 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_HYp_Watercourse_Parser();
-
-                recipe.setLenient(true);
+                ParserRecipe recipe = new INSPIRE_HYp_Watercourse_Parser();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -190,9 +189,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_HYp_StandingWater_Parser();
+                ParserRecipe recipe = new INSPIRE_HYp_StandingWater_Parser();
 
-                recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -232,9 +230,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_HYp_LandWaterBoundary_Parser();
+                ParserRecipe recipe = new INSPIRE_HYp_LandWaterBoundary_Parser();
 
-                recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

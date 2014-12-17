@@ -8,6 +8,7 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.log4j.Logger;
 import org.geotools.styling.Style;
 import org.junit.Test;
 
@@ -16,15 +17,12 @@ import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
-
-import org.apache.log4j.Logger;
 
 public class TestJacksonParser extends TestHelper {
     static final Logger logger = Logger.getLogger(TestJacksonParser.class);
@@ -64,8 +62,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_TN_RoadLink();
-                recipe.setLenient(true);
+                ParserRecipe recipe = new INSPIRE_TN_RoadLink();
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -111,8 +109,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_TN_RoadLink();
-                recipe.setLenient(true);
+                ParserRecipe recipe = new INSPIRE_TN_RoadLink();
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -159,8 +157,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_TN_RoadLink();
-                recipe.setLenient(true);
+                ParserRecipe recipe = new INSPIRE_TN_RoadLink();
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -208,8 +206,7 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_TN_RoadLink();
-                recipe.setLenient(true);
+                ParserRecipe recipe = new INSPIRE_TN_RoadLink();
 
                 engine.setRecipe(recipe);
 

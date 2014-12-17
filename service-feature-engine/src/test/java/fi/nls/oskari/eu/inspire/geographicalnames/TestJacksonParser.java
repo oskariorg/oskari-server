@@ -12,7 +12,6 @@ import fi.nls.oskari.eu.inspire.recipe.geographicalnames.INSPIRE_GN_NamedPlace;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
@@ -48,9 +47,8 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_GN_NamedPlace();
-                recipe.setLenient(true);
-                //recipe.getGeometryDeserializer().setIgnoreProps(true);
+                ParserRecipe recipe = new INSPIRE_GN_NamedPlace();
+                
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

@@ -14,7 +14,7 @@ import fi.nls.oskari.eu.inspire.recipe.administrativeunits.INSPIRE_AU_Administra
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -49,9 +49,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_AU_AdministrativeBoundary_Parser();
-                recipe.setLenient(true);
-                // recipe.getGeometryDeserializer().setIgnoreProps(true);
+                ParserRecipe recipe = new INSPIRE_AU_AdministrativeBoundary_Parser();
 
                 engine.setRecipe(recipe);
 
@@ -100,9 +98,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_AU_AdministrativeUnit_Parser();
-                recipe.setLenient(true);
-                recipe.getGeometryDeserializer().setIgnoreProps(true);
+                ParserRecipe recipe = new INSPIRE_AU_AdministrativeUnit_Parser();
 
                 engine.setRecipe(recipe);
 
@@ -120,7 +116,7 @@ public class TestJacksonParser {
         }
 
     }
-    
+
     /**
      * 
      * @throws InstantiationException
@@ -151,10 +147,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new INSPIRE_AU_AdministrativeUnit_Parser();
-                recipe.setLenient(true);
-                recipe.getGeometryDeserializer().setIgnoreProps(true);
-
+                ParserRecipe recipe = new INSPIRE_AU_AdministrativeUnit_Parser();
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

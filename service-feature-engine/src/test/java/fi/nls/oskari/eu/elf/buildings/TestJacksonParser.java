@@ -50,7 +50,6 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 ELF_MasterLoD0_Building_nls_fi_wfs_Parser recipe = new ELF_MasterLoD0_Building_nls_fi_wfs_Parser();
-                recipe.setLenient(true);
 
                 engine.setRecipe(recipe);
 

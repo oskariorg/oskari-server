@@ -11,6 +11,9 @@ public class INSPIRE_AU_AdministrativeBoundary_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        // getGeometryDeserializer().setIgnoreProps(true);
+
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 AdministrativeBoundary.QN);
 
@@ -38,10 +41,8 @@ public class INSPIRE_AU_AdministrativeBoundary_Parser extends GML32 {
 
             if (feature.geometry != null) {
 
-                if (feature.geometry.geometry != null) {
-                    outputFeature.addGeometryProperty(geom,
-                            feature.geometry.geometry);
-                }
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry.getGeometry());
             }
 
             outputFeature

@@ -11,6 +11,9 @@ public class ELF_MasterLoD0_Address_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        //getGeometryDeserializer().setIgnoreProps(true);
+        
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 Address.QN);
 

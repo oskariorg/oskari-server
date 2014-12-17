@@ -13,7 +13,7 @@ import fi.nls.oskari.eu.elf.recipe.addresses.ELF_MasterLoD0_Address_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -48,9 +48,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new ELF_MasterLoD0_Address_Parser();
-                recipe.setLenient(true);
-                //recipe.getGeometryDeserializer().setIgnoreProps(true);
+                ParserRecipe recipe = new ELF_MasterLoD0_Address_Parser();
 
                 engine.setRecipe(recipe);
 

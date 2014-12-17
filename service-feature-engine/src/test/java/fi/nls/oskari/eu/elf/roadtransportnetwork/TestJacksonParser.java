@@ -14,7 +14,7 @@ import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
@@ -51,8 +51,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new ELF_MasterLoD1_RoadLink_Parser();
-                recipe.setLenient(true);
+                ParserRecipe recipe = new ELF_MasterLoD1_RoadLink_Parser();
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

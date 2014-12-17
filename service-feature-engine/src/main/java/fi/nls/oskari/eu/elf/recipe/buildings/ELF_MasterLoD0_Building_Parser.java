@@ -40,10 +40,9 @@ public class ELF_MasterLoD0_Building_Parser extends GML32 {
             if (feature.geometry2D != null
                     && feature.geometry2D.BuildingGeometry2D != null
                     && feature.geometry2D.BuildingGeometry2D.geometry != null) {
-                outputFeature
-                        .addGeometryProperty(
-                                geom,
-                                feature.geometry2D.BuildingGeometry2D.geometry.geometry);
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry2D.BuildingGeometry2D.geometry
+                                .getGeometry());
             }
 
             outputFeature

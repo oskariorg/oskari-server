@@ -10,6 +10,7 @@ public class INSPIRE_CP_CadastralParcel_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 CadastralParcel.QN);
@@ -36,9 +37,9 @@ public class INSPIRE_CP_CadastralParcel_Parser extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            if (feature.geometry != null && feature.geometry.geometry != null) {
+            if (feature.geometry != null) {
                 outputFeature.addGeometryProperty(geom,
-                        feature.geometry.geometry);
+                        feature.geometry.getGeometry());
             }
 
             outputFeature

@@ -10,6 +10,7 @@ public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 RoadLink.QN);
@@ -40,7 +41,7 @@ public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
 
             if (feature.centrelineGeometry != null) {
                 outputFeature.addGeometryProperty(geom,
-                        feature.centrelineGeometry.geometry);
+                        feature.centrelineGeometry.getGeometry());
             }
 
             outputFeature

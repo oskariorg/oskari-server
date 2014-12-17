@@ -11,6 +11,8 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 Building.QN);
 
@@ -43,7 +45,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
                 outputFeature
                         .addGeometryProperty(
                                 geom,
-                                feature.geometry2D.BuildingGeometry2D.geometry.geometry);
+                                feature.geometry2D.BuildingGeometry2D.geometry.getGeometry());
             }
 
             outputFeature

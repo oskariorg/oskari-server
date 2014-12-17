@@ -12,6 +12,7 @@ public class INSPIRE_TN_RoadLink extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 RoadLink.QN);
@@ -30,6 +31,8 @@ public class INSPIRE_TN_RoadLink extends GML32 {
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
 
+        final Resource obj = outputContext.addOutputStringProperty("obj");
+
         final OutputFeature<RoadLink> outputFeature = new OutputFeature<RoadLink>(
                 outputContext);
 
@@ -42,8 +45,10 @@ public class INSPIRE_TN_RoadLink extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom,
-                    feature.centrelineGeometry.geometry);
+            if (feature.centrelineGeometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.centrelineGeometry.getGeometry());
+            }
 
             outputFeature
                     .addProperty(gn, feature.geographicalName)
@@ -55,10 +60,11 @@ public class INSPIRE_TN_RoadLink extends GML32 {
                     .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion, feature.endLifespanVersion);
 
+            outputFeature.addProperty(obj, feature);
+
             outputFeature.build();
 
         }
 
     }
-
 }

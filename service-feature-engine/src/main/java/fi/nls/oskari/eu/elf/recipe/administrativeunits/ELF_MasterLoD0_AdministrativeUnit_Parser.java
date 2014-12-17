@@ -11,6 +11,10 @@ public class ELF_MasterLoD0_AdministrativeUnit_Parser extends GML32 {
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        getGeometryDeserializer().setIgnoreProps(true);
+
+        
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 AdministrativeUnit.QN);
 

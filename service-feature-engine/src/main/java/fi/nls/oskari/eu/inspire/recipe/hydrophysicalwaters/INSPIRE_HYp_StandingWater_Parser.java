@@ -1,7 +1,5 @@
 package fi.nls.oskari.eu.inspire.recipe.hydrophysicalwaters;
 
-
-
 import java.io.IOException;
 
 import fi.nls.oskari.eu.inspire.hydrophysicalwaters.INSPIRE_hyp_StandingWater.StandingWater;
@@ -12,6 +10,7 @@ public class INSPIRE_HYp_StandingWater_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 StandingWater.QN);
@@ -38,9 +37,9 @@ public class INSPIRE_HYp_StandingWater_Parser extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            if (feature.geometry != null && feature.geometry.geometry != null) {
+            if (feature.geometry != null) {
                 outputFeature.addGeometryProperty(geom,
-                        feature.geometry.geometry);
+                        feature.geometry.getGeometry());
             }
 
             outputFeature

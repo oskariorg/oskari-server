@@ -48,7 +48,6 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 ELF_MasterLoD1_NamedPlace_Parser recipe = new ELF_MasterLoD1_NamedPlace_Parser();
-                recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -97,7 +96,6 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 ELF_MasterLoD1_NamedPlace_Parser recipe = new ELF_MasterLoD1_NamedPlace_Parser();
-                recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

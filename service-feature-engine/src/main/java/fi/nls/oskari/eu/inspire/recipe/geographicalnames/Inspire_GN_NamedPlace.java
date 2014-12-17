@@ -12,6 +12,9 @@ public class INSPIRE_GN_NamedPlace extends GML32 {
     @Override
     public void parse() throws IOException {
 
+        setLenient(true);
+        // getGeometryDeserializer().setIgnoreProps(true);
+
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 NamedPlace.QN);
 
@@ -35,7 +38,10 @@ public class INSPIRE_GN_NamedPlace extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom, feature.geometry.geometry);
+            if (feature.geometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry.getGeometry());
+            }
 
             outputFeature
                     .addProperty(gn, feature.name)

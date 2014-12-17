@@ -9,8 +9,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 
-
-
 public class GeometryPropertySerializer extends
         JsonSerializer<GeometryProperty> {
 
@@ -19,13 +17,13 @@ public class GeometryPropertySerializer extends
             SerializerProvider provider) throws IOException,
             JsonProcessingException {
 
-        if (value.geometry == null) {
+        if (value.getGeometry() == null) {
             provider.defaultSerializeNull(jgen);
             return;
         }
 
         // Todo support at least GeoJSON and WKT
-        provider.defaultSerializeValue(value.geometry.toText(), jgen);
+        provider.defaultSerializeValue(value.getGeometry().toText(), jgen);
 
     }
 
@@ -34,7 +32,5 @@ public class GeometryPropertySerializer extends
         // TODO Auto-generated method stub
         return GeometryProperty.class;
     }
-    
-    
 
 }

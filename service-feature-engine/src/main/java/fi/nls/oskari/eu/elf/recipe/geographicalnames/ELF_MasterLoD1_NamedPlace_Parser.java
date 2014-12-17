@@ -10,6 +10,7 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 NamedPlace.QN);
@@ -33,23 +34,25 @@ public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
                 NamedPlace.QN, NamedPlace.class);
 
         while (iter.hasNext()) {
-            final NamedPlace namedPlace = iter.next();
-            final Resource output_ID = outputContext.uniqueId(namedPlace.id);
+            final NamedPlace feature = iter.next();
+            final Resource output_ID = outputContext.uniqueId(feature.id);
 
-            outputFeature.setFeature(namedPlace).setId(output_ID);
+            outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addGeometryProperty(geom,
-                    namedPlace.geometry.geometry);
+            if (feature.geometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry.getGeometry());
+            }
 
             outputFeature
-                    .addProperty(gn, namedPlace.name)
+                    .addProperty(gn, feature.name)
                     .addProperty(beginLifespanVersion,
-                            namedPlace.beginLifespanVersion)
-                    .addProperty(inspireId, namedPlace.inspireId)
+                            feature.beginLifespanVersion)
+                    .addProperty(inspireId, feature.inspireId)
                     .addProperty(endLifespanVersion,
-                            namedPlace.endLifespanVersion);
+                            feature.endLifespanVersion);
 
-            outputFeature.addProperty(obj, namedPlace);
+            outputFeature.addProperty(obj, feature);
 
             outputFeature.build();
 

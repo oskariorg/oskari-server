@@ -40,10 +40,8 @@ public class INSPIRE_AD_Address_Parser extends GML32 {
 
                 if (feature.position.get(0).GeographicPosition != null
                         && feature.position.get(0).GeographicPosition.geometry != null) {
-                    outputFeature
-                            .addGeometryProperty(
-                                    geom,
-                                    feature.position.get(0).GeographicPosition.geometry.geometry);
+                    outputFeature.addGeometryProperty(geom, feature.position
+                            .get(0).GeographicPosition.geometry.getGeometry());
 
                 }
             }

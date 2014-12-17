@@ -10,6 +10,7 @@ public class ELF_MasterLoD1_WatercourseLink_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
+        setLenient(true);
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 WatercourseLink.QN);
@@ -38,10 +39,10 @@ public class ELF_MasterLoD1_WatercourseLink_Parser extends GML32 {
             outputFeature.setFeature(feature).setId(output_ID);
 
             if (feature.centrelineGeometry != null
-                    && feature.centrelineGeometry.geometry != null) {
+                    && feature.centrelineGeometry.getGeometry() != null) {
 
                 outputFeature.addGeometryProperty(geom,
-                        feature.centrelineGeometry.geometry);
+                        feature.centrelineGeometry.getGeometry());
 
             }
             outputFeature
