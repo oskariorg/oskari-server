@@ -77,7 +77,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    //@Ignore("Too slow for regular builds")
+    @Ignore("Too slow for regular builds")
     @Test
     public void test_Inspire_AdministrativeUnit_ign_es_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
