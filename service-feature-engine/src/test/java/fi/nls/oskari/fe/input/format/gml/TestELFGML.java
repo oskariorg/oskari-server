@@ -415,7 +415,7 @@ public class TestELFGML extends TestHelper {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/hy/fgi_fi_wfs_ELF-HY-WatercourseLink-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/hydronetwork/fgi_fi_wfs_ELF-HY-WatercourseLink-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
