@@ -17,7 +17,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     @Ignore("Schema failure")
     @Test
-    public void testInspireTnRoRoadLink() throws MalformedURLException,
+    public void testInspireTnRoWFSRoadLink() throws MalformedURLException,
             IOException {
         final String url = "http://www.ign.es/wfs-inspire/transportes-btn100?"
                 + "SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&"
@@ -65,6 +65,30 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
 
+    
+    //
+    @Ignore("Requires web service")
+    public void testInspireTnRoRoadLink() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/tn-ro/3.0/RoadTransportNetwork.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "RoadLink";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "roadtransportnetwork";
+        final String classname = "INSPIRE_TN_RoadLink";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
     @Ignore("Requires web service")
     @Test
     public void testInspireGnNamedPlace() throws MalformedURLException,

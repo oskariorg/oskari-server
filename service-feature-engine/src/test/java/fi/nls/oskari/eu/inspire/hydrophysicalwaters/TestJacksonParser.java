@@ -125,7 +125,7 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
-    
+
     @Test
     public void test_INSPIRE_GeonorgeNoWFS_WatercourseGMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -167,7 +167,7 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
-    
+
     @Test
     public void test_INSPIRE_GeonorgeNoWFS_StandingWaterGMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -209,7 +209,7 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
-    
+
     @Test
     public void test_INSPIRE_GeonorgeNoWFS_LandWaterBoundaryGMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -252,5 +252,3 @@ public class TestJacksonParser extends TestHelper {
 
     }
 }
-
-

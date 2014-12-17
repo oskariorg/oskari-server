@@ -43,7 +43,7 @@ public class TestELFGML extends TestHelper {
     public Class<GroovyParserRecipe> setupGroovyScript(final String recipePath) {
 
         InputStreamReader reader = new InputStreamReader(
-                TestInspireGML.class.getResourceAsStream(recipePath));
+                TestELFGML.class.getResourceAsStream(recipePath));
 
         GroovyCodeSource codeSource = new GroovyCodeSource(reader, recipePath,
                 ".");

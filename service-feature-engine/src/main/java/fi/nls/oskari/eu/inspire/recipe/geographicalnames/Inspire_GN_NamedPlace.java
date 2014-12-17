@@ -7,7 +7,7 @@ import fi.nls.oskari.eu.inspire.geographicalnames.INSPIRE_gn_NamedPlace.NamedPla
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class Inspire_GN_NamedPlace extends GML32 {
+public class INSPIRE_GN_NamedPlace extends GML32 {
 
     @Override
     public void parse() throws IOException {
