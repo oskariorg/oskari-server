@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.nls.oskari.eu.inspire.recipe.administrativeunits.INSPIRE_AU_AdministrativeBoundary_Parser;
@@ -26,7 +27,6 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    // @Ignore("Not ready")
     @Test
     public void test_Inspire_AdministrativeBoundary_ign_es_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -77,7 +77,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    // @Ignore("Not ready")
+    //@Ignore("Too slow for regular builds")
     @Test
     public void test_Inspire_AdministrativeUnit_ign_es_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -101,8 +101,8 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 JacksonParserRecipe recipe = new INSPIRE_AU_AdministrativeUnit_Parser();
-                // recipe.setLenient(true);
-                // recipe.getGeometryDeserializer().setIgnoreProps(true);
+                recipe.setLenient(true);
+                recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 engine.setRecipe(recipe);
 
@@ -128,7 +128,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    // @Ignore("Not ready")
+    @Ignore("Too slow for regular builds")
     @Test
     public void test_Inspire_AdministrativeUnit_ign_fr_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,

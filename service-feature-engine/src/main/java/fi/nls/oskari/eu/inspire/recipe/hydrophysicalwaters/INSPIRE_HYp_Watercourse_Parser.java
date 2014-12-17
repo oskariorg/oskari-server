@@ -1,18 +1,20 @@
-package fi.nls.oskari.eu.inspire.recipe.administrativeunits;
+package fi.nls.oskari.eu.inspire.recipe.hydrophysicalwaters;
+
+
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.inspire.administrativeunits.INSPIRE_au_AdministrativeUnit.AdministrativeUnit;
+import fi.nls.oskari.eu.inspire.hydrophysicalwaters.INSPIRE_hyp_Watercourse.Watercourse;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
-public class INSPIRE_AU_AdministrativeUnit_Parser extends GML32 {
+public class INSPIRE_HYp_Watercourse_Parser extends GML32 {
 
     @Override
     public void parse() throws IOException {
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(
-                AdministrativeUnit.QN);
+                Watercourse.QN);
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
         final Resource beginLifespanVersion = outputContext
@@ -24,17 +26,22 @@ public class INSPIRE_AU_AdministrativeUnit_Parser extends GML32 {
 
         outputContext.build();
 
-        final OutputFeature<AdministrativeUnit> outputFeature = new OutputFeature<AdministrativeUnit>(
+        final OutputFeature<Watercourse> outputFeature = new OutputFeature<Watercourse>(
                 outputContext);
 
-        final InputFeature<AdministrativeUnit> iter = new InputFeature<AdministrativeUnit>(
-                AdministrativeUnit.QN, AdministrativeUnit.class);
+        final InputFeature<Watercourse> iter = new InputFeature<Watercourse>(
+                Watercourse.QN, Watercourse.class);
 
         while (iter.hasNext()) {
-            final AdministrativeUnit feature = iter.next();
+            final Watercourse feature = iter.next();
             final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
+
+            if (feature.geometry != null && feature.geometry.geometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry.geometry);
+            }
 
             outputFeature
                     .addProperty(beginLifespanVersion,
