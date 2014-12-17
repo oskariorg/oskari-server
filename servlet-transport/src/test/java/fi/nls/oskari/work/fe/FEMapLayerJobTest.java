@@ -130,7 +130,7 @@ public class FEMapLayerJobTest {
 
     }
 
-    // @org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testNamedPlaceJavaRequestWithDefaultJson() throws IOException {
 
@@ -165,7 +165,7 @@ public class FEMapLayerJobTest {
 
     }
     
-    // @org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testNamedPlaceJavaRequestWithLegacyJson() throws IOException {
 
