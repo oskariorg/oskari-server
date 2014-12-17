@@ -237,7 +237,7 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             File newFile = File.createTempFile(parts0, "." + parts[1]);
 
-            log.info("file unzip : " + newFile.getAbsoluteFile());
+            log.debug("file unzip : " + newFile.getAbsoluteFile());
 
             FileOutputStream fos = new FileOutputStream(newFile);
 
@@ -260,8 +260,8 @@ public class CreateUserLayerHandler extends ActionHandler {
                 i = newFile.getPath().lastIndexOf(".");
                 String[] parts3 = {newFile.getPath().substring(0, i), newFile.getPath().substring(i)};
                boolean success = newFile.renameTo(new File(filename + parts3[1]));
-               if(!success) log.info("Rename failed in temp directory",newFile.getName(), " ->  ",filename + parts3[1] );
-               else log.info("File renamed ",newFile.getName(), " ->  ",filename + parts3[1] );
+               if(!success) log.debug("Rename failed in temp directory",newFile.getName(), " ->  ",filename + parts3[1] );
+               else log.debug("File renamed ",newFile.getName(), " ->  ",filename + parts3[1] );
             }
             newFile.deleteOnExit();
             ze = zis.getNextEntry();

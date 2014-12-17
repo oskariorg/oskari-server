@@ -43,7 +43,7 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "GPX");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
-        DataStore store;
+        DataStore store = null;
         SimpleFeatureSource source;
         SimpleFeatureCollection collection;
         SimpleFeatureIterator it;
@@ -94,8 +94,11 @@ public class GPXGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
                 setTypeName("GPX_");
             }
         } catch (Exception e) {
-             log.error("Couldn't create geoJSON from the GPX file",e);
+             log.error("Couldn't create geoJSON from the GPX file ", file.getName(), e);
              return false;
+        }
+        finally {
+            store.dispose();
         }
         return true;
     }
