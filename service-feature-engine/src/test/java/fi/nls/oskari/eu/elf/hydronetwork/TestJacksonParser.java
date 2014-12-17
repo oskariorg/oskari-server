@@ -42,7 +42,7 @@ public class TestJacksonParser extends TestHelper {
      */
     // @Ignore("Not ready")
     @Test
-    public void test_IgnEs_TN_WFS_GMLtoJSON() throws InstantiationException,
+    public void test_ELF_HyP_WFS_GMLtoJSON() throws InstantiationException,
             IllegalAccessException, IOException, XMLStreamException {
 
         BasicFeatureEngine engine = new BasicFeatureEngine();

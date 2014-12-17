@@ -227,6 +227,52 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
     
+    //@Ignore("Requires web service")
+    @Test
+    public void testInspireAUAdministrativeBoundary() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/au/3.0/AdministrativeUnits.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "AdministrativeBoundary";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "administrativeunits";
+        final String classname = "INSPIRE_au_AdministrativeBoundary";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
+    //@Ignore("Requires web service")
+    @Test
+    public void testInspireAUAdministrativeUnit() throws MalformedURLException,
+            IOException {
+        final String url = "http://inspire.ec.europa.eu/schemas/au/3.0/AdministrativeUnits.xsd";
+        final SchemaRoaster roaster = new SchemaRoaster();
+        setupProxy(roaster);
+        logger.setLevel(Level.DEBUG);
+
+        logger.debug(url);
+
+        final String feature = "AdministrativeUnit";
+        final String packageName = "fi.nls.oskari.eu.inspire.";
+        final String subPackage = "administrativeunits";
+        final String classname = "INSPIRE_au_AdministrativeUnit";
+
+        final String targetNS = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0";
+
+        roaster.roastSchema(packageName, subPackage, classname, feature,
+                targetNS, url);
+
+    }
+    
 }
 
 
