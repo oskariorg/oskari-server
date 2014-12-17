@@ -2,8 +2,6 @@ package fi.nls.oskari.eu.inspire.recipe.addresses;
 
 import java.io.IOException;
 
-import com.vividsolutions.jts.geomgraph.Position;
-
 import fi.nls.oskari.eu.inspire.addresses.INSPIRE_ad_Address.Address;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
