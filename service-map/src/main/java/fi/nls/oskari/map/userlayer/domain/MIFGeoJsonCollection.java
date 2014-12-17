@@ -45,7 +45,7 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
         Map<String, String> connectionParams = new HashMap<String, String>();
         connectionParams.put("DriverName", "MapInfo File");
         connectionParams.put("DatasourceName", file.getAbsolutePath());
-        DataStore store;
+        DataStore store = null;
         String typeName = null;
         SimpleFeatureSource source;
         SimpleFeatureCollection collection;
@@ -101,8 +101,11 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             setTypeName(typeName);
             return true;
         } catch (Exception e) {
-            log.error("Couldn't create geoJSON from the MapInfo file",e);
+            log.error("Couldn't create geoJSON from the MapInfo file ", file.getName(), e);
             return false;
+        }
+        finally {
+            store.dispose();
         }
     }
 }

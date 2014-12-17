@@ -38,10 +38,10 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
      * @return
      */
     public boolean parseGeoJSON(File file, String target_epsg) {
-
+        ShapefileDataStore dataStore = null;
         try {
 
-            ShapefileDataStore dataStore = new ShapefileDataStore(file.toURI().toURL());
+            dataStore = new ShapefileDataStore(file.toURI().toURL());
             String typeName = dataStore.getTypeNames()[0];
 
             FeatureSource source = dataStore.getFeatureSource(typeName);
@@ -88,9 +88,12 @@ public class SHPGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
             return true;
 
         } catch (Exception e) {
-            log.error("Couldn't create geoJSON from the shp file",
+            log.error("Couldn't create geoJSON from the shp file ", file.getName(),
                     e);
             return false;
+        }
+        finally {
+            dataStore.dispose();
         }
     }
 }
