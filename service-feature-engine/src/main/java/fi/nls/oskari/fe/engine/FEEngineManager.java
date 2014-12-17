@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
-import fi.nls.oskari.fe.input.format.gml.recipe.PullParserGMLParserRecipe;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import groovy.lang.GroovyClassLoader;
@@ -44,9 +44,12 @@ public class FEEngineManager {
             ClassNotFoundException {
 
         BasicFeatureEngine engine = new BasicFeatureEngine();
-        Class<PullParserGMLParserRecipe> recipeClazz = (Class<PullParserGMLParserRecipe>) Class
+        Class<ParserRecipe> recipeClazz = (Class<ParserRecipe>) Class
                 .forName(recipePath);
-        engine.setRecipe(recipeClazz.newInstance());
+        log.debug("[fe] Java recipe Lookup " + recipePath + " / " + recipeClazz);
+        ParserRecipe instance = recipeClazz.newInstance();
+        log.debug("[fe] Java recipe instance " + instance);
+        engine.setRecipe(instance);
         return engine;
     }
 
@@ -58,8 +61,8 @@ public class FEEngineManager {
 
             synchronized (gcl) {
                 try {
-                    log.debug("[fe] recipe compiling " + recipePath + " / "
-                            + recipePath);
+                    log.debug("[fe] Groovy recipe compiling " + recipePath
+                            + " / " + recipePath);
 
                     InputStreamReader reader = new InputStreamReader(
                             FEEngineManager.class
@@ -73,16 +76,16 @@ public class FEEngineManager {
 
                     recipeClazzes.put(recipePath, recipeClazz);
 
-                    log.debug("[fe] caching recipe " + recipePath);
+                    log.debug("[fe] Groovy caching recipe " + recipePath);
 
                 } catch (RuntimeException e) {
 
-                    log.debug("[fe] recipe setup FAILURE");
+                    log.debug("[fe] Groovy recipe setup FAILURE");
                     e.printStackTrace(System.err);
 
                 } finally {
 
-                    log.debug("[fe] recipe setup finalized");
+                    log.debug("[fe] Groovy recipe setup finalized");
 
                 }
             }

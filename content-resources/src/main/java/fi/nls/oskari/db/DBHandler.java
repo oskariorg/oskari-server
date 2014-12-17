@@ -8,7 +8,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,7 +32,7 @@ import java.util.jar.JarFile;
 public class DBHandler {
 
     private static Logger log = LogFactory.getLogger(DBHandler.class);
-    private static boolean startedAsStandalone = false;
+    private static volatile boolean startedAsStandalone = false;
 
     public static boolean isCommandLineUsage() {
         return startedAsStandalone;

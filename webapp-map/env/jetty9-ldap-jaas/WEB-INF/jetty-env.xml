@@ -2,7 +2,7 @@
     <New id="oskaridb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>${db.jndi.name}</Arg>
         <Arg>
-            <New class="org.apache.commons.dbcp.BasicDataSource">
+            <New class="org.apache.commons.dbcp2.BasicDataSource">
                 <Set name="driverClassName">${db.jndi.driverClassName}</Set>
                 <Set name="url">${db.url}</Set>
                 <Set name="username">${db.username}</Set>
@@ -13,7 +13,7 @@
     <New id="myplacesdb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>${db.myplaces.jndi.name}</Arg>
         <Arg>
-            <New class="org.apache.commons.dbcp.BasicDataSource">
+            <New class="org.apache.commons.dbcp2.BasicDataSource">
                 <Set name="driverClassName">${db.jndi.driverClassName}</Set>
                 <Set name="url">${db.myplaces.url}</Set>
                 <Set name="username">${db.myplaces.username}</Set>
@@ -24,7 +24,7 @@
     <New id="analysisdb" class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>${db.analysis.jndi.name}</Arg>
         <Arg>
-            <New class="org.apache.commons.dbcp.BasicDataSource">
+            <New class="org.apache.commons.dbcp2.BasicDataSource">
                 <Set name="driverClassName">${db.jndi.driverClassName}</Set>
                 <Set name="url">${db.analysis.url}</Set>
                 <Set name="username">${db.analysis.username}</Set>

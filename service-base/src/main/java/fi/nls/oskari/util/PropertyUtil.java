@@ -159,6 +159,11 @@ public class PropertyUtil {
         final String prop = getOptional(propertyName);
         return ConversionHelper.getInt(prop, defaultValue);
     }
+
+    public static double getOptional(final String propertyName, final double defaultValue) {
+        final String prop = getOptional(propertyName);
+        return ConversionHelper.getDouble(prop, defaultValue);
+    }
     public static boolean getOptional(final String propertyName, final boolean defaultValue) {
         final String prop = getOptional(propertyName);
         return ConversionHelper.getBoolean(prop, defaultValue);
@@ -251,7 +256,7 @@ public class PropertyUtil {
                         ". Tried to overwrite with value: " + value);
             }
         }
-        properties.put(key, value);
+        properties.put(key, value.trim());
     }
     
     private static void addProperty(final Properties props, final String key, final String value, final boolean overwrite) throws DuplicateException {
@@ -264,7 +269,7 @@ public class PropertyUtil {
                         ". Tried to overwrite with value: " + value);
             }
         }
-        props.put(key, value);
+        props.put(key, value.trim());
     }
 
     public static void addProperty(final String key, final String value, final Locale locale) throws DuplicateException {

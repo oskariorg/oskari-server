@@ -41,7 +41,6 @@ public class GML31_Configuration extends org.geotools.gml3.GMLConfiguration {
     /**
      * @see Configuration#configureBindings(java.util.Map)
      */
-    @SuppressWarnings("unchecked")
     @Override
     protected void registerBindings(MutablePicoContainer container) {
         super.registerBindings(container);

@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-		<version>1.25</version>
+		<version>1.26</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>oskari-feature-engine</artifactId>
 	<packaging>jar</packaging>
-    <name>Feature Engine Service</name>
+	<name>Feature Engine Service</name>
 
 	<properties>
 		<titan.version>0.4.2</titan.version>
@@ -17,22 +17,22 @@
 		<commons-lang3.version>3.0</commons-lang3.version>
 		<stax-api.version>1.0-2</stax-api.version>
 		<stax2-api.version>3.1.1</stax2-api.version>
-		<woodstox.version>4.1.4</woodstox.version>
+		<woodstox.version>4.4.1</woodstox.version>
 		<jsonld-java.version>0.3</jsonld-java.version>
 	</properties>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/example/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-    </build>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/example/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -45,18 +45,24 @@
 			<artifactId>staxmate</artifactId>
 			<version>2.2.0</version>
 		</dependency>
-		
+
 		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-base</artifactId>
+		</dependency>
+
+        <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-base</artifactId>
+            <artifactId>service-datamodel</artifactId>
         </dependency>
+
 
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-metadata</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
@@ -69,7 +75,7 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-image</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -78,22 +84,22 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-coverage</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-data</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-cql</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -102,18 +108,17 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-render</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-render</artifactId>
-            <version>${geotools.version}</version>
+			<version>${geotools.version}</version>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>org.geotools.xsd</groupId>
 			<artifactId>gt-xsd-sld</artifactId>
-            <version>${geotools.version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-impl</artifactId>
@@ -123,7 +128,7 @@
 			<artifactId>groovy</artifactId>
 			<version>${groovy.version}</version>
 		</dependency>
-	
+
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -155,7 +160,7 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -167,11 +172,22 @@
 			<artifactId>picocontainer</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java</artifactId>
 			<version>${jsonld-java.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.4.3</version>
 		</dependency>
 	</dependencies>
 </project>

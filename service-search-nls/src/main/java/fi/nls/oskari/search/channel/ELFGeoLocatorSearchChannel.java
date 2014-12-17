@@ -1,7 +1,4 @@
 package fi.nls.oskari.search.channel;
-/**
- * Search channel for ELF Geolocator requests
- */
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
@@ -15,7 +12,9 @@ import fi.nls.oskari.util.PropertyUtil;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-
+/**
+ * Search channel for ELF Geolocator requests
+ */
 @Oskari(ELFGeoLocatorSearchChannel.ID)
 public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
@@ -70,7 +69,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
 
-
         StringBuffer buf = new StringBuffer(serviceURL);
         if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
             // reverse geocoding
@@ -101,8 +99,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(request.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8")));
         }
 
-        log.debug("/getData");
-
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -125,14 +121,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
-        	log.debug("doSearch");
             String data = getData(searchCriteria);
 
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
             log.debug("DATA: " + data);
-
-            return elfParser.parse(data, searchCriteria.getSRS(), searchCriteria.getParam(PARAM_EXONYM).toString().equals("true"));
+            boolean exonym = false;
+            if(hasParam(searchCriteria,PARAM_EXONYM)) exonym = searchCriteria.getParam(PARAM_EXONYM).toString().equals("true");
+            return elfParser.parse(data, searchCriteria.getSRS(), exonym);
 
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of ELF GeoLocator");

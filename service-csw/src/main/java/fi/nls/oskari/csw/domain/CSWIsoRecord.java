@@ -554,11 +554,7 @@ public class CSWIsoRecord {
             public JSONObject toJSON() {
                 JSONObject ret = new JSONObject();
                 // TODO fix format
-                SimpleDateFormat sdf =
-                        new SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.US
-                        );
+                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 JSONHelper.putValue(ret, "date", sdf.format(date));
                 JSONHelper.putValue(ret, "dateType", dateType);
                 return ret;

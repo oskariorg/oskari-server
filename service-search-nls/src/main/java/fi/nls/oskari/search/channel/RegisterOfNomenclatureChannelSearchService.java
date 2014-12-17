@@ -146,8 +146,6 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
                 item.setLon(lonLat[0]);
                 item.setLat(lonLat[1]);
                 item.setMapURL(SearchUtil.getMapURL(searchCriteria.getLocale()));
-                item.setZoomLevel(SearchUtil.getZoomLevel(paikkatyyppiKoodi));
-                
                 if(villageFound && searchVillages){
                 	//log.debug("verrataan: " + villageName + "-" + SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode));
                 	if(villageName.equals(SearchUtil.getVillageName(kuntaKoodi+"_"+ currentLocaleCode))){
@@ -164,6 +162,14 @@ public class RegisterOfNomenclatureChannelSearchService extends SearchChannel {
         }
 
         return searchResultList;
+    }
+
+    @Override
+    public void calculateCommonFields(final SearchResultItem item) {
+        super.calculateCommonFields(item);
+        // override basic zoomscale and configure by locationTypeCode instead of type.
+        item.setZoomScale(getZoomScale(item.getLocationTypeCode()));
+        // item.setZoomLevel(SearchUtil.getZoomLevel(item.getLocationTypeCode()));
     }
 
     private String getType(final String language, final String paikkatyyppiKoodi) {

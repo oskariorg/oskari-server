@@ -375,7 +375,6 @@ public abstract class BaseIbatisService<E> implements BaseService<E> {
      * Parameterized type for finding all Objects
      */
     public List<E> findAll() {
-    	System.out.println("IBATIS: " + getNameSpace() + ".findAll");
         return queryForList(getNameSpace() + ".findAll");
     }
     

@@ -112,12 +112,12 @@ public class AggregateMethodParams extends AnalysisMethodParams {
 
         if (this.getNoDataValue() != null) {
             if(isDoNoDataCount()){
-            // No data count filter  - use WPS count aggregate method
-            // and calculate the count of no data value items
+                // No data count filter  - use WPS count aggregate method
+                // and calculate the count of no data value items
                 wfsfilter = this.appendNoDataCountFilter(wfsfilter);
             } else {
-            // Append no_data filter
-            wfsfilter = this.appendNoDataFilter(wfsfilter);
+                // Append no_data filter
+                wfsfilter = this.appendNoDataFilter(wfsfilter);
             }
         }
 

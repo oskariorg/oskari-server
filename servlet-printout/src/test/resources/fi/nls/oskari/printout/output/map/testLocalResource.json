@@ -1,0 +1,453 @@
+{
+    "layers": [{
+        "wmsName": "taustakartta",
+        "geom": "POLYGON ((20.3480106 19.08886999, 20.3480106 31.58671339, 70.09229321 31.58671339, 70.09229321 19.08886999, 20.3480106 19.08886999))",
+        "tileMatrixSetId": "ETRS-TM35FIN",
+        "layerName": "taustakartta",
+        "type": "wmtslayer",
+        "baseLayerId": -1,
+        "legendImage": "",
+        "refreshRate": 0,
+        "id": "base_35",
+        "style": "default",
+        "created": "nullTnullZ",
+        "updated": "nullTnullZ",
+        "name": {
+            "fi": "Taustakarttasarja",
+            "sv": "Backgrundskartserie",
+            "en": "Background map serie"
+        },
+        "permissions": {
+            "edit": true,
+            "publish": "publication_permission_ok"
+        },
+        "opacity": 100,
+        "tileMatrixSetData": {
+            "contents": {
+                "tileMatrixSets": {
+                    "ETRS-TM35FIN": {
+                        "bounds": {
+                            "bottom": 6291456,
+                            "left": -548576,
+                            "right": 1548576,
+                            "top": 8388608
+                        },
+                        "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                        "projection": "urn:ogc:def:crs:EPSG:6.3:3067",
+                        "matrixIds": [{
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 1,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "0",
+                            "matrixHeight": 1,
+                            "scaleDenominator": 2.925714285714286E7
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 2,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "1",
+                            "matrixHeight": 2,
+                            "scaleDenominator": 1.462857142857143E7
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 4,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "2",
+                            "matrixHeight": 4,
+                            "scaleDenominator": 7314285.714285715
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 8,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "3",
+                            "matrixHeight": 8,
+                            "scaleDenominator": 3657142.8571428573
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 16,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "4",
+                            "matrixHeight": 16,
+                            "scaleDenominator": 1828571.4285714286
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 32,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "5",
+                            "matrixHeight": 32,
+                            "scaleDenominator": 914285.7142857143
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 64,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "6",
+                            "matrixHeight": 64,
+                            "scaleDenominator": 457142.85714285716
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 128,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "7",
+                            "matrixHeight": 128,
+                            "scaleDenominator": 228571.42857142858
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 256,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "8",
+                            "matrixHeight": 256,
+                            "scaleDenominator": 114285.71428571429
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 512,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "9",
+                            "matrixHeight": 512,
+                            "scaleDenominator": 57142.857142857145
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 1024,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "10",
+                            "matrixHeight": 1024,
+                            "scaleDenominator": 28571.428571428572
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 2048,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "11",
+                            "matrixHeight": 2048,
+                            "scaleDenominator": 14285.714285714286
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 4096,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "12",
+                            "matrixHeight": 4096,
+                            "scaleDenominator": 7142.857142857143
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 8192,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "13",
+                            "matrixHeight": 8192,
+                            "scaleDenominator": 3571.4285714285716
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 16384,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "14",
+                            "matrixHeight": 16384,
+                            "scaleDenominator": 1785.7142857142858
+                        }, {
+                            "topLeftCorner": {
+                                "lon": -548576,
+                                "lat": 8388608
+                            },
+                            "supportedCRS": "urn:ogc:def:crs:EPSG:6.3:3067",
+                            "matrixWidth": 32768,
+                            "tileHeight": 256,
+                            "tileWidth": 256,
+                            "identifier": "15",
+                            "matrixHeight": 32768,
+                            "scaleDenominator": 892.8571428571429
+                        }],
+                        "identifier": "ETRS-TM35FIN"
+                    }
+                },
+                "layers": [{
+                    "resourceUrls": [{
+                        "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                        "format": "image/png",
+                        "resourceType": "tile"
+                    }],
+                    "tileMatrixSetLinks": [{
+                        "tileMatrixSet": "ETRS-TM35FIN"
+                    }],
+                    "title": "Taustakartta",
+                    "layers": [],
+                    "dimensions": [],
+                    "styles": [{
+                        "isDefault": true,
+                        "identifier": "default"
+                    }],
+                    "resourceUrl": {
+                        "tile": {
+                            "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                            "format": "image/png",
+                            "resourceType": "tile"
+                        }
+                    },
+                    "identifier": "taustakartta",
+                    "formats": ["image/png"]
+                }, {
+                    "resourceUrls": [{
+                        "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/ortokuva/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg",
+                        "format": "image/jpeg",
+                        "resourceType": "tile"
+                    }],
+                    "tileMatrixSetLinks": [{
+                        "tileMatrixSet": "ETRS-TM35FIN"
+                    }],
+                    "title": "Ortokuva",
+                    "layers": [],
+                    "dimensions": [],
+                    "styles": [{
+                        "isDefault": true,
+                        "identifier": "default"
+                    }],
+                    "resourceUrl": {
+                        "tile": {
+                            "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/ortokuva/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg",
+                            "format": "image/jpeg",
+                            "resourceType": "tile"
+                        }
+                    },
+                    "identifier": "ortokuva",
+                    "formats": ["image/jpeg"]
+                }, {
+                    "resourceUrls": [{
+                        "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/maastokartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                        "format": "image/png",
+                        "resourceType": "tile"
+                    }],
+                    "tileMatrixSetLinks": [{
+                        "tileMatrixSet": "ETRS-TM35FIN"
+                    }],
+                    "title": "Maastokartta",
+                    "layers": [],
+                    "dimensions": [],
+                    "styles": [{
+                        "isDefault": true,
+                        "identifier": "default"
+                    }],
+                    "resourceUrl": {
+                        "tile": {
+                            "template": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/maastokartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+                            "format": "image/png",
+                            "resourceType": "tile"
+                        }
+                    },
+                    "identifier": "maastokartta",
+                    "formats": ["image/png"]
+                }]
+            },
+            "operationsMetadata": {
+                "GetTile": {
+                    "dcp": {
+                        "http": {
+                            "get": [{
+                                "constraints": {
+                                    "GetEncoding": {
+                                        "allowedValues": {
+                                            "KVP": true
+                                        }
+                                    }
+                                },
+                                "url": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts?"
+                            }]
+                        }
+                    }
+                },
+                "GetCapabilities": {
+                    "dcp": {
+                        "http": {
+                            "get": [{
+                                "constraints": {
+                                    "GetEncoding": {
+                                        "allowedValues": {
+                                            "KVP": true
+                                        }
+                                    }
+                                },
+                                "url": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts?"
+                            }]
+                        }
+                    }
+                },
+                "GetFeatureInfo": {
+                    "dcp": {
+                        "http": {
+                            "get": [{
+                                "constraints": {
+                                    "GetEncoding": {
+                                        "allowedValues": {
+                                            "KVP": true
+                                        }
+                                    }
+                                },
+                                "url": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts?"
+                            }]
+                        }
+                    }
+                }
+            },
+            "version": "1.0.0"
+        },
+        "maxScale": 1,
+        "inspire": "Taustakartat",
+        "options": {},
+        "dataUrl_uuid": "c22da116-5095-4878-bb04-dd7db3a1a341",
+        "styles": [{
+            "title": "default",
+            "name": "default"
+        }],
+        "params": {},
+        "orgName": "Taustakartat",
+        "url": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts",
+        "minScale": 1.5E7,
+        "realtime": false,
+        "wmsUrl": "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts",      
+        "subtitle": {
+            "fi": "(WMTS)",
+            "sv": "(WMTS)",
+            "en": "(WMTS)"
+        }
+    }, {
+        "wmsName": "Peltolohkot2008",
+        "layerName": "Peltolohkot2008",
+        "type": "wmslayer",
+        "baseLayerId": -1,
+        "legendImage": "",
+        "refreshRate": 0,
+        "formats": {
+            "available": []
+        },
+        "version": "1.1.0",
+        "id": 34,
+        "style": "",
+        "created": "2014-10-01T11:02Z",
+        "updated": "2014-11-04T16:08Z",
+        "name": {
+            "fi": "Peltolohkot2008 med password",
+            "sv": "Peltolohkot2008 med password",
+            "en": "Peltolohkot2008 med password"
+        },
+        "permissions": {
+            "edit": true,
+            "publish": "publication_permission_ok"
+        },
+        "opacity": 100,
+        "inspire": "Aluesuunnittelu ja rajoitukset",
+        "options": {},
+        "styles": [],
+        "params": {},
+        "orgName": "aa_salattuja",
+        "url": "/web/fi/kartta?p_p_id=Portti2Map_WAR_portti2mapportlet&p_p_lifecycle=2&id=34&action_route=GetLayerTile",
+        "isQueryable": false,
+        "realtime": false,
+        "wmsUrl": "https://karttakuva.mmmtike.fi/cgi-bin/mavi_paikkatietoikkuna",
+        "gfiContent": "",
+        "subtitle": {
+            "fi": "",
+            "sv": "",
+            "en": ""
+        }
+    }],
+    "maplink": {
+        "pageDate": "true",
+        "p_p_lifecycle": "2",
+        "showMarker": "false",
+        "p_p_id": "Portti2Map_WAR_portti2mapportlet",
+        "p_l_id": "272605",
+        "pageSize": "A4",
+        "format": "application/pdf",
+        "action_route": "GetPreview",
+        "coord": "315844.5_6817959.5",
+        "mapLayers": "base_35 100 default,34 100",
+        "forceCache": "false",
+        "pageLogo": "true",
+        "pageTitle": "",
+        "zoomLevel": "11",
+        "noSavedState": "false",
+        "pageScale": "true"
+    },
+    "state": {
+        "selectedLayers": [{
+            "id": "base_35",
+            "style": "default",
+            "opacity": "100"
+        }, {
+            "id": "34",
+            "opacity": "100"
+        }],
+        "zoom": 11,
+        "north": 6817959.5,
+        "east": 315844.5
+    }
+}

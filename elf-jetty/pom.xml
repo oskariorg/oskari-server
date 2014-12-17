@@ -3,13 +3,13 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-		<version>1.25</version>
+		<version>1.26</version>
 	</parent>
 	<groupId>fi.nls.oskari</groupId>
 	<artifactId>elf-jetty</artifactId>
 	<packaging>jar</packaging>
 	<name>ELF Jetty Server</name>
-  
+
 	<dependencies>
 		<dependency>
 			<groupId>fi.nls.oskari</groupId>
@@ -18,11 +18,11 @@
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-search-nls</artifactId>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>fi.nls.oskari</groupId>
 			<artifactId>standalone-jetty</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
@@ -44,8 +44,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
 		</dependency>
 
 		<dependency>
@@ -59,7 +59,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
 			<dependency>
@@ -114,8 +114,8 @@
 					<finalName>oskari-jetty-${project.version}</finalName>
 					<outputDirectory>${basedir}/dist</outputDirectory>
 					<transformers>
-						<!-- annotation processing using SPI needs services transformer or 
-							only the last SPI with same name is used. This means multiple dependencies 
+						<!-- annotation processing using SPI needs services transformer or
+							only the last SPI with same name is used. This means multiple dependencies
 							with OskariActionRoutes won't work without ServicesResourceTransformer -->
 						<transformer
 							implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
@@ -132,7 +132,7 @@
 					<filters>
 						<filter>
 							<artifact>*:*</artifact>
-							<!-- Exclude any manifest files in dependencies since java doesn't 
+							<!-- Exclude any manifest files in dependencies since java doesn't
 								like the jar signature if we do -->
 							<excludes>
 								<exclude>META-INF/MANIFEST.MF</exclude>

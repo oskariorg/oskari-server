@@ -171,6 +171,13 @@ public class GetStatsTileHandler extends ActionHandler {
         final StringBuffer queryString = new StringBuffer();
         for (Object key : httpRequest.getParameterMap().keySet()) {
             String keyStr = (String) key;
+            if(keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_NAME) ||
+                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY) ||
+                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES) ||
+                    keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS)) {
+                // ignore SLD-paremeters
+                continue;
+            }
             queryString.append("&");
             queryString.append(keyStr);
             queryString.append("=");

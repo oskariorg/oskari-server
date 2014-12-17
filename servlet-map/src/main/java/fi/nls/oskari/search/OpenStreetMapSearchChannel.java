@@ -4,8 +4,11 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
+import fi.nls.oskari.domain.geo.Point;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.SearchChannel;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.log.Logger;
@@ -16,12 +19,6 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-import org.geotools.geometry.DirectPosition2D;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 @Oskari(OpenStreetMapSearchChannel.ID)
 public class OpenStreetMapSearchChannel extends SearchChannel {
@@ -30,6 +27,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
     public static final String ID = "OPENSTREETMAP_CHANNEL";
+    public final static String SERVICE_SRS = "EPSG:4326";
 
     private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
 
@@ -101,32 +99,20 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                     item.setRank(0);
                 }
                 searchResultList.addItem(item);
-                try {
-                    CoordinateReferenceSystem sourceCrs = CRS.decode("EPSG:4326");
-                    CoordinateReferenceSystem targetCrs = CRS.decode(srs);
-                    boolean lenient = false;
-                    MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-                    double srcLon = Double.parseDouble(dataItem.getString("lon"));
-                    double srcLat = Double.parseDouble(dataItem.getString("lat"));
-                    DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, srcLat, srcLon);
-                    DirectPosition2D destDirectPosition2D = new DirectPosition2D();
-                    mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
-                    String lon = String.valueOf(destDirectPosition2D.x);
-                    String lat = String.valueOf(destDirectPosition2D.y);
-                    item.setLon(lon);
-                    item.setLat(lat);
-                } catch(NoSuchAuthorityCodeException e) {
-                    log.error(e, "geotools pox");
-                    return null;
-                } catch(FactoryException e) {
-                    log.error(e, "geotools pox factory");
-                    return null;
-                } catch(JSONException e) {
+                // convert to map projection, give lat first because of service srs
+                final Point point = ProjectionHelper.transformPoint(
+                        ConversionHelper.getDouble(item.getLat(), -1),
+                        ConversionHelper.getDouble(item.getLon(), -1),
+                        SERVICE_SRS,
+                        srs);
+                if(point != null) {
+                    item.setLon("" + point.getLon());
+                    item.setLat("" + point.getLat());
+                }
+                else {
                     item.setLon("");
                     item.setLat("");
-                    item.setContentURL("");
                 }
-                log.debug("ITEM: " + item.toString());
             }
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");

@@ -1,5 +1,147 @@
 # Release Notes
 
+## 1.26
+
+### control-admin
+
+Added a new ActionHandler for route 'SearchChannel'. This lists all annotated SearchChannels and their debug data.
+Fixed an issue with Users action route where receiving empty password would update the password.
+
+### service-map
+
+Added a helper class for projection transformations: fi.nls.oskari.map.geometry.ProjectionHelper.
+
+### service-base
+
+PropertyUtil now always trims property values for leading and trailing spaces.
+PropertyUtil now has a convenience method to get numeric properties as double precision.
+Cache now correctly removes oldest cached item when it's overflowing.
+
+### control-base
+
+GetStatsTile no longer passes SLD-parameters twice. This makes the geoserver URL significantly shorter.
+
+Fixed an issue on password protected layers proxy GetLayerTileHandler where the layer resource was used as a
+class member. This caused random errors for loading layer tiles on protected layers.
+
+### service-search
+
+#### search channel changes
+
+Added support for search result scaling by type. Deprecated zoomLevel for search result item as level
+is dependent on number of zoom levels and service can be called from multiple maps having different number of
+ zoom levels available. Scale can be configured for search channel by search result item type
+
+    search.channel.[channel id].scale.[type]=1234
+
+ and a generic default scale
+
+    search.channel.[channel id].scale=4321
+
+If scale configurations are provided the search results will include scale hints for the frontend in it's response.
+Scale setup is automatic for search channels extending fi.nls.oskari.search.channel.SearchChannel and is based on
+ items type and properties mentioned above. To change how scale is calculated in custom channel
+ override the SearchChannel.calculateCommonFields(SearchResultItem item) method.
+
+#### search channel debugging
+
+Added an interface method that can be used to query configuration for search channels. To add channel specific debug data,
+override the getDebugData() method and append the channel specific debug data to the map returned from super.getDebugData().
+
+#### search result improvements
+
+SearchWorker now adds zoomScale for results if it's present and a bbox if westboundlon is present. Search channels should
+set the bbox properties only if they make sense.
+
+### service-search-nls
+
+Removed the hardcoded zoom levels for channel REGISTER_OF_NOMENCLATURE_CHANNEL in service-search-nls.
+To get similar zoom functionalities for the search results using the channel, configure oskari-ext.properties with:
+
+    # Luontonimet, maasto
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.300=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.305=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.310=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.315=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.325=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.330=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.335=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.340=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.345=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.350=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.430=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.390=11300
+    # Luontonimet, vesistö
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.400=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.410=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.415=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.420=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.425=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.435=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.490=5650
+    # Kulttuurinimet, asutus
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.540=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.550=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.560=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.570=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.590=2800
+    # Kulttuurinimet, muut
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.110=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.120=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.130=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.200=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.205=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.210=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.215=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.225=11300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.230=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.235=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.240=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.245=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.320=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.500=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.510=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.520=5650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.530=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.600=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.602=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.604=56650
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.610=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.612=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.614=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.620=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.630=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.640=28300
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.700=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.710=2800
+    search.channel.REGISTER_OF_NOMENCLATURE_CHANNEL.scale.Tie=2800
+
+Harcoded zoom levels were also removed from KTJ_KII_CHANNEL channel. To get similar zoom functionalities for the search results
+using the channel, configure oskari-ext.properties with:
+
+    search.channel.KTJ_KII_CHANNEL.scale=1400
+
+### servlet-printout
+
+New printout properties to support GetLayerTile action route for authorised map tiles
+
+    mapproducer.localurl.match=/web (prefixes to match as local resources)
+    mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
+    mapproducer.referer=referer info for maptile requests
+    mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
+    
+### Analysis  / Sector and zones method
+
+Sector processing added to the "Sector and zones" method
+    - make build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install  
+    - copy new ZoneSectorFeatureCollection2-2.5.2.jar to your geoserver/WEB-INF/lib path from the
+      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path  
+   
+Check that analysis intersection methods have uptodate .jar  in geoserver/WEB-INF/lib path
+    - IntersectionFeatureCollection2-2.5.2.jar is the current version
+    - if not, build a new version oskari-server/geoserver-exp/wps/IntersectionFeatureCollection2 path as above
+      and copy to ...lib path
+
 ## 1.25.4
 
 Fixes an issues with caching. Issue only affects relatively large caches (over 1000 map layers etc)

@@ -4,8 +4,10 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.util.GeonetworkSpatialOperation;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.domain.geo.Point;
 import org.deegree.datatypes.QualifiedName;
 import org.deegree.model.crs.CRSFactory;
 import org.deegree.model.crs.CoordinateSystem;
@@ -16,7 +18,11 @@ import org.deegree.model.spatialschema.WKTAdapter;
 import org.deegree.ogcbase.PropertyPath;
 import org.deegree.ogcbase.SortProperty;
 import org.deegree.ogcwebservices.csw.discovery.*;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.*;
@@ -28,6 +34,9 @@ public class MetadataCatalogueQueryHelper {
 
     private static final String GCO_NAMESPACE = "gco";
     private static final String GMD_NAMESPACE = "gmd";
+    public final static String TARGET_SRS = "EPSG:4326";
+    public final static String SPATIAL_OPERATOR = "INTERSECTS";
+    public final static Boolean FORCE_TARGET_CRS_4326_XY = true;
 
     private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelper.class);
     private final static char WILDCARD_CHARACTER = '*';
@@ -210,6 +219,9 @@ public class MetadataCatalogueQueryHelper {
         if(field.getFilterOp() == null) {
             return getLikeOperation(value, field.getFilter());
         }
+        else if(field.getFilterOp().equals(SPATIAL_OPERATOR)) {
+            return getSpatialOperation(value, field.getFilter(), field.getFilterOp());
+        }
         else {
             return getCompOperation(value, field.getFilter(), opMap.get(field.getFilterOp()));
         }
@@ -242,19 +254,20 @@ public class MetadataCatalogueQueryHelper {
     }
 
     private Operation getSpatialOperation(final String searchCriterion,
-                                          final String searchElementName) {
+                                          final String searchElementName, final String operation ) {
         if (searchCriterion == null || searchCriterion.isEmpty()) {
             return null;
         }
-        // FIXME: really create for each call?
-        final CoordinateSystem crs = CRSFactory.createDummyCRS("EPSG:4326");
+
+        final CoordinateSystem crs = CRSFactory.createDummyCRS(TARGET_SRS);
         try {
-            Geometry geom = WKTAdapter.wrap(searchCriterion, crs);
+            String polygon = parseWKTPolygon(searchCriterion);
+            Geometry geom = WKTAdapter.wrap(polygon, crs);
             GeonetworkSpatialOperation op = new GeonetworkSpatialOperation(
                     OperationDefines.INTERSECTS,
                     new PropertyName(new QualifiedName(searchElementName)),
                     geom,
-                    searchCriterion);
+                    polygon);
             return op;
         } catch (GeometryException e) {
             log.error(e, "Error creating spatial operation!");
@@ -266,5 +279,46 @@ public class MetadataCatalogueQueryHelper {
         if(op != null) {
             list.add(op);
         }
+    }
+    /* "{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[382186.81433571,6677985.8855768],[382186.81433571,6682065.8855768],[391446.81433571,6682065.8855768],[391446.81433571,6677985.8855768],[382186.81433571,6677985.8855768]]]}}],"crs":{"type":"name","properties":{"name":"EPSG:3067"}}}" */
+    private String parseWKTPolygon(final String searchCriterion) {
+        try {
+            FeatureCollection fc = null;
+            StringBuilder sb = new StringBuilder("POLYGON((");
+            FeatureJSON fjs = new FeatureJSON();
+            fc = fjs.readFeatureCollection(new ByteArrayInputStream(
+                    searchCriterion.getBytes("utf-8")));
+            ReferencedEnvelope env = fc.getBounds();
+            //Transform to target crs
+            Point minb = ProjectionHelper.transformPoint(env.getMinX(), env.getMinY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
+            Point maxb = ProjectionHelper.transformPoint(env.getMaxX(), env.getMaxY(), env.getCoordinateReferenceSystem(), TARGET_SRS);
+            if(FORCE_TARGET_CRS_4326_XY){
+                minb.switchLonLat();
+                maxb.switchLonLat();
+
+            }
+            sb.append(minb.getLonToString()+" ");
+            sb.append(minb.getLatToString());
+            sb.append(",");
+            sb.append(minb.getLonToString()+" ");
+            sb.append(maxb.getLatToString());
+            sb.append(",");
+            sb.append(maxb.getLonToString()+" ");
+            sb.append(maxb.getLatToString());
+            sb.append(",");
+            sb.append(maxb.getLonToString()+" ");
+            sb.append(minb.getLatToString());
+            sb.append(",");
+            sb.append(minb.getLonToString()+" ");
+            sb.append(minb.getLatToString());
+            sb.append("))");
+            return sb.toString();
+
+        }
+        catch (Exception e){
+            log.error(e, "Error parsing coverage geometry");
+        }
+
+       return null;
     }
 }

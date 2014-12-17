@@ -5,7 +5,7 @@ import fi.nls.oskari.map.servlet.OskariRequestFilter;
 import fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter;
 import fi.nls.oskari.map.servlet.MapFullServlet;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
 import org.eclipse.jetty.jaas.JAASLoginService;
 import org.eclipse.jetty.plus.jndi.EnvEntry;
@@ -43,12 +43,6 @@ public class JettyLauncher {
         WebAppContext webapp = createServletContext(oskariClientVersion, jndiDriverClassName, jndiDbUrl, jndiDbUsername, jndiDbPassword, jndiDbPoolName);
         HandlerList handlerList = new HandlerList();
         handlerList.addHandler(webapp);
-        try {
-            Handler logHandler = getRequestLogHandler(webapp);
-            handlerList.addHandler(logHandler);
-        } catch (Exception ex) {
-            System.err.println("Couldn't setup request log:" + ex.getMessage());
-        }
 
         server.setHandler(handlerList);
         return server;
@@ -179,20 +173,5 @@ public class JettyLauncher {
                             AppConfigurationEntry.LoginModuleControlFlag.REQUIRED, loginModuleOptions)
             };
         }
-    }
-
-    private static Handler getRequestLogHandler(final WebAppContext webapp) {
-
-        // Bonus ... request logs.
-        RequestLogHandler logHandler = new RequestLogHandler();
-        NCSARequestLog requestLog = new NCSARequestLog("./jetty-yyyy_mm_dd.request.log");
-        requestLog.setRetainDays(5);
-        requestLog.setAppend(true);
-        requestLog.setExtended(false);
-        requestLog.setLogTimeZone("GMT");
-        logHandler.setRequestLog(requestLog);
-        logHandler.setHandler(webapp);
-
-        return logHandler;
     }
 }

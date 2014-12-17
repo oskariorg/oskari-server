@@ -1,6 +1,6 @@
 package fi.nls.oskari.jetty;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

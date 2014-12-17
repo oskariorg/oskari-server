@@ -29,8 +29,8 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 public abstract class StaxMateXMLParserRecipeBase {
 
     public class InputEvent {
-        SMEvent next;
-        SMInputCursor crsr;
+        public SMEvent next;
+        public SMInputCursor crsr;
         public QName qn;
 
         public InputEvent(SMEvent next, SMInputCursor crsr)

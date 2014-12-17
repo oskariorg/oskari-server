@@ -39,6 +39,13 @@ public class SearchWorker {
     public static final String KEY_LAT = "lat";
     public static final String KEY_VILLAGE = "village";
     public static final String KEY_ZOOMLEVEL = "zoomLevel";
+    public static final String KEY_ZOOMSCALE = "zoomScale";
+
+    public static final String KEY_BBOX = "bbox";
+    public static final String KEY_LEFT = "left";
+    public static final String KEY_TOP = "top";
+    public static final String KEY_RIGHT = "right";
+    public static final String KEY_BOTTOM = "bottom";
 
     public static final String ERR_EMPTY = "cannot_be_empty";
     public static final String ERR_TOO_SHORT = "too_short";
@@ -174,8 +181,20 @@ public class SearchWorker {
             String village = ConversionHelper.getString(sri.getVillage(), "");
             JSONHelper.putValue(itemJson, KEY_VILLAGE, Jsoup.clean(village, Whitelist.none()));
 
-            // Zoom level
+            // Zoom level - prefer scale, zoom level is deprecated
             JSONHelper.putValue(itemJson, KEY_ZOOMLEVEL, sri.getZoomLevel());
+            if(sri.getZoomScale() != -1) {
+                JSONHelper.putValue(itemJson, KEY_ZOOMSCALE, sri.getZoomScale());
+            }
+            // do the bbox if we have any of the bbox values (Should have all if has any one of these)
+            if(sri.getWestBoundLongitude() != null) {
+                JSONObject bbox = new JSONObject();
+                JSONHelper.putValue(bbox, KEY_RIGHT, sri.getEastBoundLongitude());
+                JSONHelper.putValue(bbox, KEY_TOP, sri.getNorthBoundLatitude());
+                JSONHelper.putValue(bbox, KEY_LEFT, sri.getWestBoundLongitude());
+                JSONHelper.putValue(bbox, KEY_BOTTOM, sri.getSouthBoundLatitude());
+                JSONHelper.putValue(itemJson, KEY_BBOX, bbox);
+            }
             itemArray.put(itemJson);
 
             // Success

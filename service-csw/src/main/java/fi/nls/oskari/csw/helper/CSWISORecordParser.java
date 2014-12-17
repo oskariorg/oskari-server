@@ -24,18 +24,16 @@ public class CSWISORecordParser {
     private static final Logger log = LogFactory.getLogger(CSWISORecordParser.class);
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
-    // 2011-02-23T14:32:09
-    SimpleDateFormat df =
-            new SimpleDateFormat(
-                    "yyyy-MM-dd'T'kk:mm:ss",
-                    Locale.US
-            );
-    // 2011-02-23
-    SimpleDateFormat sdf =
-            new SimpleDateFormat(
-                    "yyyy-MM-dd",
-                    Locale.US
-            );
+
+    private static SimpleDateFormat dateTimeFormat() {
+        // 2011-02-23T14:32:09
+        return new SimpleDateFormat("yyyy-MM-dd'T'kk:mm:ss", Locale.US);
+    }
+
+    private static SimpleDateFormat dateFormat() {
+        // 2011-02-23
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    }
 
     GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
     private XPath xpath = XPathFactory.newInstance().newXPath();
@@ -339,7 +337,7 @@ public class CSWISORecordParser {
         node = (Node) XPATH_METADATA_DATE.evaluate(elem, XPathConstants.NODE);
         if (node != null) {
             value = getLocalizedContent(node, pathToLocalizedValue);
-            record.setMetadataDateStamp(df.parse(value));
+            record.setMetadataDateStamp(dateTimeFormat().parse(value));
         }
 
         return record;
@@ -534,7 +532,7 @@ public class CSWISORecordParser {
         }
         node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
         if (node != null) {
-            dateWithType.setDate(sdf.parse(getText(node)));
+            dateWithType.setDate(dateFormat().parse(getText(node)));
         }
         citation.setDate(dateWithType);
         nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);

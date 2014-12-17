@@ -1,0 +1,3752 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kanta="http://www.paikkatietopalvelu.fi/gml/kantakartta" xmlns:yht="http://www.paikkatietopalvelu.fi/gml/yhteiset" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd http://www.tekla.com/schemas/kuntagml http://opaskartta.turku.fi/TeklaOGCWeb/WFS.ashx?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;typeName=kanta:Liikennevayla " timeStamp="2014-12-09T14:05:46+02:00" numberOfFeatures="97">
+<gml:boundedBy>
+<gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+<gml:lowerCorner>239046.110 6710799.350</gml:lowerCorner>
+<gml:upperCorner>239772.208 6711672.046</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097120">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239434.069 6711259.998</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.2621</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097117">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239312.011 6711235.214</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">3.2413</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81569408">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-08T10:34:08</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239402.849 6711527.506</gml:pos>
+<gml:pos>239403.084 6711526.622</gml:pos>
+<gml:pos>239403.395 6711525.762</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239403.395 6711525.762</gml:pos>
+<gml:pos>239403.468 6711525.589</gml:pos>
+<gml:pos>239403.544 6711525.418</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239403.544 6711525.418</gml:pos>
+<gml:pos>239419.355 6711499.202</gml:pos>
+<gml:pos>239434.305 6711474.392</gml:pos>
+<gml:pos>239434.467 6711474.123</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239434.467 6711474.123</gml:pos>
+<gml:pos>239434.714 6711473.741</gml:pos>
+<gml:pos>239435.022 6711473.405</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239435.022 6711473.405</gml:pos>
+<gml:pos>239436.315 6711472.735</gml:pos>
+<gml:pos>239437.769 6711472.820</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239437.769 6711472.820</gml:pos>
+<gml:pos>239437.924 6711472.878</gml:pos>
+<gml:pos>239438.076 6711472.946</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239438.076 6711472.946</gml:pos>
+<gml:pos>239683.808 6711616.813</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239683.808 6711616.813</gml:pos>
+<gml:pos>239686.015 6711618.954</gml:pos>
+<gml:pos>239686.783 6711621.932</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239686.783 6711621.932</gml:pos>
+<gml:pos>239686.267 6711623.945</gml:pos>
+<gml:pos>239685.061 6711625.637</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239685.061 6711625.637</gml:pos>
+<gml:pos>239685.058 6711625.641</gml:pos>
+<gml:pos>239678.569 6711636.265</gml:pos>
+<gml:pos>239678.212 6711636.850</gml:pos>
+<gml:pos>239673.804 6711644.068</gml:pos>
+<gml:pos>239673.719 6711644.205</gml:pos>
+<gml:pos>239657.735 6711670.376</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239657.735 6711670.376</gml:pos>
+<gml:pos>239657.249 6711671.060</gml:pos>
+<gml:pos>239656.707 6711671.701</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239656.707 6711671.701</gml:pos>
+<gml:pos>239656.543 6711671.875</gml:pos>
+<gml:pos>239656.375 6711672.046</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.32353686">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2005-11-30T08:25:42</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239440.151 6711448.567</gml:pos>
+<gml:pos>239436.382 6711454.840</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239436.382 6711454.840</gml:pos>
+<gml:pos>239436.312 6711454.979</gml:pos>
+<gml:pos>239436.236 6711455.114</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239436.236 6711455.114</gml:pos>
+<gml:pos>239435.452 6711455.956</gml:pos>
+<gml:pos>239434.399 6711456.421</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239434.399 6711456.421</gml:pos>
+<gml:pos>239433.342 6711456.448</gml:pos>
+<gml:pos>239432.347 6711456.089</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239432.347 6711456.089</gml:pos>
+<gml:pos>239431.123 6711455.373</gml:pos>
+<gml:pos>239361.924 6711415.004</gml:pos>
+<gml:pos>239160.241 6711297.146</gml:pos>
+<gml:pos>239159.070 6711296.462</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239159.070 6711296.462</gml:pos>
+<gml:pos>239157.161 6711294.293</gml:pos>
+<gml:pos>239156.751 6711291.432</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.78273100">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2006-12-04T09:02:17</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239147.422 6711304.201</gml:pos>
+<gml:pos>239149.058 6711304.133</gml:pos>
+<gml:pos>239150.642 6711304.544</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239150.642 6711304.544</gml:pos>
+<gml:pos>239151.000 6711304.711</gml:pos>
+<gml:pos>239151.345 6711304.903</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239151.345 6711304.903</gml:pos>
+<gml:pos>239423.539 6711464.725</gml:pos>
+<gml:pos>239424.778 6711465.613</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239424.778 6711465.613</gml:pos>
+<gml:pos>239424.939 6711465.744</gml:pos>
+<gml:pos>239425.090 6711465.887</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239425.090 6711465.887</gml:pos>
+<gml:pos>239425.600 6711466.603</gml:pos>
+<gml:pos>239425.863 6711467.442</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239425.863 6711467.442</gml:pos>
+<gml:pos>239425.849 6711468.342</gml:pos>
+<gml:pos>239425.551 6711469.190</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239425.551 6711469.190</gml:pos>
+<gml:pos>239396.479 6711518.014</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239396.479 6711518.014</gml:pos>
+<gml:pos>239395.458 6711519.244</gml:pos>
+<gml:pos>239394.298 6711520.345</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239394.298 6711520.345</gml:pos>
+<gml:pos>239393.478 6711520.983</gml:pos>
+<gml:pos>239392.611 6711521.557</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.195608893">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-12-18T10:08:45</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239611.844 6711482.769</gml:pos>
+<gml:pos>239620.442 6711468.412</gml:pos>
+<gml:pos>239636.056 6711442.319</gml:pos>
+<gml:pos>239631.508 6711439.547</gml:pos>
+<gml:pos>239636.443 6711431.090</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239636.443 6711431.090</gml:pos>
+<gml:pos>239636.874 6711430.413</gml:pos>
+<gml:pos>239637.408 6711429.812</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239637.408 6711429.812</gml:pos>
+<gml:pos>239638.043 6711429.295</gml:pos>
+<gml:pos>239638.753 6711428.887</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239638.753 6711428.887</gml:pos>
+<gml:pos>239639.414 6711428.668</gml:pos>
+<gml:pos>239640.109 6711428.617</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239640.109 6711428.617</gml:pos>
+<gml:pos>239640.776 6711428.733</gml:pos>
+<gml:pos>239641.396 6711429.004</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239641.396 6711429.004</gml:pos>
+<gml:pos>239643.932 6711430.560</gml:pos>
+<gml:pos>239646.535 6711432.138</gml:pos>
+<gml:pos>239643.872 6711436.492</gml:pos>
+<gml:pos>239666.062 6711449.776</gml:pos>
+<gml:pos>239690.010 6711464.107</gml:pos>
+<gml:pos>239711.487 6711476.972</gml:pos>
+<gml:pos>239714.877 6711479.013</gml:pos>
+<gml:pos>239745.931 6711497.680</gml:pos>
+<gml:pos>239748.368 6711493.862</gml:pos>
+<gml:pos>239750.895 6711495.503</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239750.895 6711495.503</gml:pos>
+<gml:pos>239752.696 6711497.053</gml:pos>
+<gml:pos>239753.743 6711499.186</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239753.743 6711499.186</gml:pos>
+<gml:pos>239753.818 6711501.846</gml:pos>
+<gml:pos>239752.722 6711504.270</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239752.722 6711504.270</gml:pos>
+<gml:pos>239750.445 6711508.024</gml:pos>
+<gml:pos>239743.804 6711519.294</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239743.804 6711519.294</gml:pos>
+<gml:pos>239742.957 6711520.613</gml:pos>
+<gml:pos>239742.704 6711522.161</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239742.704 6711522.161</gml:pos>
+<gml:pos>239742.803 6711525.086</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239742.803 6711525.086</gml:pos>
+<gml:pos>239742.751 6711526.391</gml:pos>
+<gml:pos>239742.236 6711527.590</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239742.236 6711527.590</gml:pos>
+<gml:pos>239714.828 6711572.772</gml:pos>
+<gml:pos>239707.891 6711584.319</gml:pos>
+<gml:pos>239703.513 6711586.025</gml:pos>
+<gml:pos>239698.450 6711594.095</gml:pos>
+<gml:pos>239699.328 6711598.215</gml:pos>
+<gml:pos>239695.232 6711604.970</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239695.232 6711604.970</gml:pos>
+<gml:pos>239692.825 6711606.177</gml:pos>
+<gml:pos>239690.270 6711605.325</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239690.270 6711605.325</gml:pos>
+<gml:pos>239667.565 6711591.958</gml:pos>
+<gml:pos>239662.298 6711586.317</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239662.298 6711586.317</gml:pos>
+<gml:pos>239661.767 6711585.822</gml:pos>
+<gml:pos>239661.162 6711585.419</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239661.162 6711585.419</gml:pos>
+<gml:pos>239646.677 6711576.698</gml:pos>
+<gml:pos>239641.215 6711578.597</gml:pos>
+<gml:pos>239602.207 6711555.590</gml:pos>
+<gml:pos>239600.933 6711550.275</gml:pos>
+<gml:pos>239574.075 6711534.693</gml:pos>
+<gml:pos>239573.931 6711533.815</gml:pos>
+<gml:pos>239575.087 6711531.887</gml:pos>
+<gml:pos>239588.638 6711509.276</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239588.638 6711509.276</gml:pos>
+<gml:pos>239589.301 6711508.417</gml:pos>
+<gml:pos>239590.117 6711507.701</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239590.117 6711507.701</gml:pos>
+<gml:pos>239591.199 6711507.093</gml:pos>
+<gml:pos>239592.389 6711506.738</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239592.389 6711506.738</gml:pos>
+<gml:pos>239597.281 6711506.110</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239597.281 6711506.110</gml:pos>
+<gml:pos>239597.705 6711505.888</gml:pos>
+<gml:pos>239598.080 6711505.591</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239598.080 6711505.591</gml:pos>
+<gml:pos>239598.379 6711505.248</gml:pos>
+<gml:pos>239598.613 6711504.857</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239598.613 6711504.857</gml:pos>
+<gml:pos>239599.697 6711503.050</gml:pos>
+<gml:pos>239610.198 6711485.516</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.32353693">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-07-04T08:04:38</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239446.141 6711452.164</gml:pos>
+<gml:pos>239442.236 6711458.623</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239442.236 6711458.623</gml:pos>
+<gml:pos>239441.956 6711459.593</gml:pos>
+<gml:pos>239442.018 6711460.600</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239442.018 6711460.600</gml:pos>
+<gml:pos>239442.435 6711461.561</gml:pos>
+<gml:pos>239443.161 6711462.317</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239443.161 6711462.317</gml:pos>
+<gml:pos>239445.249 6711463.606</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239445.249 6711463.606</gml:pos>
+<gml:pos>239446.084 6711463.981</gml:pos>
+<gml:pos>239446.968 6711464.217</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239446.968 6711464.217</gml:pos>
+<gml:pos>239448.095 6711464.307</gml:pos>
+<gml:pos>239449.216 6711464.172</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239449.216 6711464.172</gml:pos>
+<gml:pos>239451.514 6711463.025</gml:pos>
+<gml:pos>239456.483 6711465.990</gml:pos>
+<gml:pos>239498.201 6711490.572</gml:pos>
+<gml:pos>239499.109 6711493.594</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239499.109 6711493.594</gml:pos>
+<gml:pos>239500.335 6711495.646</gml:pos>
+<gml:pos>239502.252 6711497.076</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239502.252 6711497.076</gml:pos>
+<gml:pos>239557.819 6711529.547</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239557.819 6711529.547</gml:pos>
+<gml:pos>239561.192 6711529.957</gml:pos>
+<gml:pos>239564.091 6711528.185</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239564.091 6711528.185</gml:pos>
+<gml:pos>239589.864 6711485.135</gml:pos>
+<gml:pos>239605.321 6711459.317</gml:pos>
+<gml:pos>239629.845 6711418.354</gml:pos>
+<gml:pos>239634.153 6711410.877</gml:pos>
+<gml:pos>239641.351 6711399.152</gml:pos>
+<gml:pos>239644.269 6711394.307</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239644.269 6711394.307</gml:pos>
+<gml:pos>239644.326 6711394.086</gml:pos>
+<gml:pos>239644.310 6711393.859</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239644.310 6711393.859</gml:pos>
+<gml:pos>239644.213 6711393.634</gml:pos>
+<gml:pos>239644.046 6711393.455</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239644.046 6711393.455</gml:pos>
+<gml:pos>239641.649 6711392.024</gml:pos>
+<gml:pos>239638.420 6711390.096</gml:pos>
+<gml:pos>239632.495 6711386.656</gml:pos>
+<gml:pos>239628.638 6711384.549</gml:pos>
+<gml:pos>239585.980 6711358.798</gml:pos>
+<gml:pos>239585.168 6711358.918</gml:pos>
+<gml:pos>239539.791 6711434.747</gml:pos>
+<gml:pos>239539.697 6711434.905</gml:pos>
+<gml:pos>239534.892 6711442.934</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239534.892 6711442.934</gml:pos>
+<gml:pos>239534.813 6711443.086</gml:pos>
+<gml:pos>239534.760 6711443.249</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239534.760 6711443.249</gml:pos>
+<gml:pos>239534.916 6711444.066</gml:pos>
+<gml:pos>239535.628 6711444.497</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6034549">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-12-18T10:08:45</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239611.844 6711482.769</gml:pos>
+<gml:pos>239610.260 6711481.809</gml:pos>
+<gml:pos>239608.630 6711482.465</gml:pos>
+<gml:pos>239607.731 6711483.996</gml:pos>
+<gml:pos>239610.198 6711485.516</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.195608894">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-12-18T10:08:45</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239611.844 6711482.769</gml:pos>
+<gml:pos>239610.198 6711485.516</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.64222686">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2005-04-26T07:55:11</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239373.513 6711527.873</gml:pos>
+<gml:pos>239371.224 6711526.354</gml:pos>
+<gml:pos>239338.629 6711507.493</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239338.629 6711507.493</gml:pos>
+<gml:pos>239336.746 6711506.349</gml:pos>
+<gml:pos>239334.890 6711505.162</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239334.890 6711505.162</gml:pos>
+<gml:pos>239331.831 6711503.074</gml:pos>
+<gml:pos>239328.852 6711500.872</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239328.852 6711500.872</gml:pos>
+<gml:pos>239322.072 6711495.494</gml:pos>
+<gml:pos>239313.872 6711489.643</gml:pos>
+<gml:pos>239268.113 6711462.934</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239268.113 6711462.934</gml:pos>
+<gml:pos>239267.076 6711462.296</gml:pos>
+<gml:pos>239265.959 6711462.779</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239265.959 6711462.779</gml:pos>
+<gml:pos>239266.932 6711464.770</gml:pos>
+<gml:pos>239268.613 6711466.213</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239268.613 6711466.213</gml:pos>
+<gml:pos>239284.292 6711475.298</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239284.292 6711475.298</gml:pos>
+<gml:pos>239287.929 6711477.488</gml:pos>
+<gml:pos>239291.494 6711479.794</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239291.494 6711479.794</gml:pos>
+<gml:pos>239294.792 6711482.078</gml:pos>
+<gml:pos>239298.018 6711484.462</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239298.018 6711484.462</gml:pos>
+<gml:pos>239300.110 6711486.240</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239300.110 6711486.240</gml:pos>
+<gml:pos>239302.820 6711488.476</gml:pos>
+<gml:pos>239305.612 6711490.609</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239305.612 6711490.609</gml:pos>
+<gml:pos>239309.367 6711493.227</gml:pos>
+<gml:pos>239313.246 6711495.658</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239313.246 6711495.658</gml:pos>
+<gml:pos>239368.796 6711528.033</gml:pos>
+<gml:pos>239372.306 6711529.942</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45914952">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-13T07:50:48</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239114.573 6711361.396</gml:pos>
+<gml:pos>239115.211 6711362.730</gml:pos>
+<gml:pos>239116.042 6711363.954</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239116.042 6711363.954</gml:pos>
+<gml:pos>239117.352 6711364.953</gml:pos>
+<gml:pos>239118.548 6711365.865</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239118.548 6711365.865</gml:pos>
+<gml:pos>239121.984 6711368.380</gml:pos>
+<gml:pos>239125.453 6711370.850</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239125.453 6711370.850</gml:pos>
+<gml:pos>239126.553 6711371.619</gml:pos>
+<gml:pos>239127.657 6711372.384</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239127.657 6711372.384</gml:pos>
+<gml:pos>239128.986 6711373.296</gml:pos>
+<gml:pos>239130.320 6711374.202</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239130.320 6711374.202</gml:pos>
+<gml:pos>239131.639 6711375.116</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239131.639 6711375.116</gml:pos>
+<gml:pos>239133.222 6711376.203</gml:pos>
+<gml:pos>239134.820 6711377.267</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239134.820 6711377.267</gml:pos>
+<gml:pos>239137.117 6711378.739</gml:pos>
+<gml:pos>239139.444 6711380.163</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239139.444 6711380.163</gml:pos>
+<gml:pos>239140.075 6711380.537</gml:pos>
+<gml:pos>239140.708 6711380.908</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239140.708 6711380.908</gml:pos>
+<gml:pos>239141.905 6711381.592</gml:pos>
+<gml:pos>239145.001 6711383.400</gml:pos>
+<gml:pos>239147.732 6711384.994</gml:pos>
+<gml:pos>239152.994 6711388.066</gml:pos>
+<gml:pos>239173.026 6711399.761</gml:pos>
+<gml:pos>239192.462 6711411.108</gml:pos>
+<gml:pos>239194.108 6711412.066</gml:pos>
+<gml:pos>239201.084 6711416.128</gml:pos>
+<gml:pos>239212.586 6711422.825</gml:pos>
+<gml:pos>239220.189 6711427.251</gml:pos>
+<gml:pos>239245.783 6711442.152</gml:pos>
+<gml:pos>239250.967 6711445.170</gml:pos>
+<gml:pos>239261.601 6711451.362</gml:pos>
+<gml:pos>239266.958 6711454.480</gml:pos>
+<gml:pos>239295.580 6711471.144</gml:pos>
+<gml:pos>239326.822 6711489.334</gml:pos>
+<gml:pos>239330.998 6711491.765</gml:pos>
+<gml:pos>239336.768 6711495.125</gml:pos>
+<gml:pos>239357.012 6711506.911</gml:pos>
+<gml:pos>239370.704 6711514.882</gml:pos>
+<gml:pos>239378.640 6711519.503</gml:pos>
+<gml:pos>239382.718 6711521.877</gml:pos>
+<gml:pos>239382.720 6711521.878</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239382.720 6711521.878</gml:pos>
+<gml:pos>239384.137 6711522.403</gml:pos>
+<gml:pos>239385.604 6711522.769</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239385.604 6711522.769</gml:pos>
+<gml:pos>239387.515 6711523.000</gml:pos>
+<gml:pos>239389.439 6711522.961</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239389.439 6711522.961</gml:pos>
+<gml:pos>239389.654 6711522.896</gml:pos>
+<gml:pos>239389.869 6711522.826</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45948088">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-18T15:37:25</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239197.690 6711438.086</gml:pos>
+<gml:pos>239199.091 6711438.005</gml:pos>
+<gml:pos>239200.482 6711438.193</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239200.482 6711438.193</gml:pos>
+<gml:pos>239201.541 6711438.528</gml:pos>
+<gml:pos>239202.537 6711439.020</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239202.537 6711439.020</gml:pos>
+<gml:pos>239340.471 6711519.400</gml:pos>
+<gml:pos>239368.607 6711535.755</gml:pos>
+<gml:pos>239370.559 6711536.883</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239370.559 6711536.883</gml:pos>
+<gml:pos>239372.449 6711538.177</gml:pos>
+<gml:pos>239374.079 6711539.786</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239374.079 6711539.786</gml:pos>
+<gml:pos>239375.434 6711541.721</gml:pos>
+<gml:pos>239376.412 6711543.872</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239376.412 6711543.872</gml:pos>
+<gml:pos>239377.659 6711547.847</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239377.659 6711547.847</gml:pos>
+<gml:pos>239377.883 6711548.567</gml:pos>
+<gml:pos>239377.914 6711549.321</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.60794773">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2004-10-18T15:01:16</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239718.986 6711265.708</gml:pos>
+<gml:pos>239717.590 6711260.445</gml:pos>
+<gml:pos>239722.026 6711253.030</gml:pos>
+<gml:pos>239727.662 6711243.622</gml:pos>
+<gml:pos>239733.965 6711233.137</gml:pos>
+<gml:pos>239739.007 6711224.741</gml:pos>
+<gml:pos>239744.276 6711215.933</gml:pos>
+<gml:pos>239745.016 6711214.748</gml:pos>
+<gml:pos>239748.062 6711209.584</gml:pos>
+<gml:pos>239753.007 6711201.350</gml:pos>
+<gml:pos>239758.206 6711192.733</gml:pos>
+<gml:pos>239760.591 6711188.752</gml:pos>
+<gml:pos>239764.415 6711187.231</gml:pos>
+<gml:pos>239765.116 6711186.227</gml:pos>
+<gml:pos>239765.324 6711185.634</gml:pos>
+<gml:pos>239767.779 6711181.413</gml:pos>
+<gml:pos>239768.904 6711179.641</gml:pos>
+<gml:pos>239770.381 6711177.004</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239770.381 6711177.004</gml:pos>
+<gml:pos>239770.881 6711175.977</gml:pos>
+<gml:pos>239771.316 6711174.920</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239771.316 6711174.920</gml:pos>
+<gml:pos>239771.841 6711173.283</gml:pos>
+<gml:pos>239772.208 6711171.604</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239772.208 6711171.604</gml:pos>
+<gml:pos>239772.140 6711168.691</gml:pos>
+<gml:pos>239771.256 6711165.914</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239771.256 6711165.914</gml:pos>
+<gml:pos>239769.587 6711163.454</gml:pos>
+<gml:pos>239767.283 6711161.576</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239767.283 6711161.576</gml:pos>
+<gml:pos>239752.979 6711153.128</gml:pos>
+<gml:pos>239676.555 6711108.114</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239676.555 6711108.114</gml:pos>
+<gml:pos>239676.371 6711107.993</gml:pos>
+<gml:pos>239676.209 6711107.845</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239676.209 6711107.845</gml:pos>
+<gml:pos>239676.073 6711107.674</gml:pos>
+<gml:pos>239675.965 6711107.485</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239675.965 6711107.485</gml:pos>
+<gml:pos>239674.504 6711104.685</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239674.504 6711104.685</gml:pos>
+<gml:pos>239673.035 6711103.071</gml:pos>
+<gml:pos>239671.177 6711101.925</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239671.177 6711101.925</gml:pos>
+<gml:pos>239668.848 6711101.310</gml:pos>
+<gml:pos>239666.441 6711101.434</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239666.441 6711101.434</gml:pos>
+<gml:pos>239665.299 6711101.565</gml:pos>
+<gml:pos>239664.205 6711101.920</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239664.205 6711101.920</gml:pos>
+<gml:pos>239663.147 6711102.523</gml:pos>
+<gml:pos>239662.239 6711103.335</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239662.239 6711103.335</gml:pos>
+<gml:pos>239661.914 6711103.726</gml:pos>
+<gml:pos>239661.626 6711104.144</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239661.626 6711104.144</gml:pos>
+<gml:pos>239658.456 6711109.376</gml:pos>
+<gml:pos>239653.987 6711116.678</gml:pos>
+<gml:pos>239649.188 6711124.581</gml:pos>
+<gml:pos>239644.450 6711132.373</gml:pos>
+<gml:pos>239639.670 6711140.277</gml:pos>
+<gml:pos>239634.901 6711148.126</gml:pos>
+<gml:pos>239632.996 6711151.247</gml:pos>
+<gml:pos>239630.036 6711156.136</gml:pos>
+<gml:pos>239629.737 6711156.615</gml:pos>
+<gml:pos>239629.072 6711157.712</gml:pos>
+<gml:pos>239603.681 6711199.586</gml:pos>
+<gml:pos>239601.110 6711200.462</gml:pos>
+<gml:pos>239598.285 6711205.105</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239598.285 6711205.105</gml:pos>
+<gml:pos>239597.254 6711207.636</gml:pos>
+<gml:pos>239597.236 6711210.369</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239597.236 6711210.369</gml:pos>
+<gml:pos>239598.626 6711213.474</gml:pos>
+<gml:pos>239601.281 6711215.600</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239601.281 6711215.600</gml:pos>
+<gml:pos>239658.564 6711249.334</gml:pos>
+<gml:pos>239692.768 6711269.319</gml:pos>
+<gml:pos>239698.545 6711272.704</gml:pos>
+<gml:pos>239702.643 6711275.084</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239702.643 6711275.084</gml:pos>
+<gml:pos>239703.760 6711275.699</gml:pos>
+<gml:pos>239704.949 6711276.157</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239704.949 6711276.157</gml:pos>
+<gml:pos>239706.417 6711276.489</gml:pos>
+<gml:pos>239707.918 6711276.593</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239707.918 6711276.593</gml:pos>
+<gml:pos>239709.386 6711276.460</gml:pos>
+<gml:pos>239710.818 6711276.113</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239710.818 6711276.113</gml:pos>
+<gml:pos>239712.234 6711275.537</gml:pos>
+<gml:pos>239713.557 6711274.771</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239713.557 6711274.771</gml:pos>
+<gml:pos>239713.788 6711274.610</gml:pos>
+<gml:pos>239714.016 6711274.444</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239714.016 6711274.444</gml:pos>
+<gml:pos>239715.336 6711273.204</gml:pos>
+<gml:pos>239716.402 6711271.740</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239716.402 6711271.740</gml:pos>
+<gml:pos>239718.656 6711267.937</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239718.656 6711267.937</gml:pos>
+<gml:pos>239719.045 6711266.855</gml:pos>
+<gml:pos>239718.986 6711265.708</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.70652408">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1994-10-13T09:02:15</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239588.048 6711227.387</gml:pos>
+<gml:pos>239588.582 6711227.002</gml:pos>
+<gml:pos>239589.816 6711226.384</gml:pos>
+<gml:pos>239591.135 6711226.001</gml:pos>
+<gml:pos>239592.217 6711225.902</gml:pos>
+<gml:pos>239593.807 6711226.106</gml:pos>
+<gml:pos>239595.402 6711226.354</gml:pos>
+<gml:pos>239596.217 6711226.672</gml:pos>
+<gml:pos>239597.441 6711227.171</gml:pos>
+<gml:pos>239598.551 6711227.856</gml:pos>
+<gml:pos>239600.195 6711228.872</gml:pos>
+<gml:pos>239611.535 6711235.507</gml:pos>
+<gml:pos>239642.908 6711253.865</gml:pos>
+<gml:pos>239676.463 6711273.481</gml:pos>
+<gml:pos>239700.682 6711287.795</gml:pos>
+<gml:pos>239704.275 6711289.617</gml:pos>
+<gml:pos>239705.445 6711290.652</gml:pos>
+<gml:pos>239705.990 6711291.476</gml:pos>
+<gml:pos>239706.439 6711292.711</gml:pos>
+<gml:pos>239706.355 6711293.995</gml:pos>
+<gml:pos>239706.200 6711294.503</gml:pos>
+<gml:pos>239705.786 6711295.861</gml:pos>
+<gml:pos>239704.430 6711297.934</gml:pos>
+<gml:pos>239701.936 6711301.521</gml:pos>
+<gml:pos>239699.217 6711302.643</gml:pos>
+<gml:pos>239672.290 6711347.569</gml:pos>
+<gml:pos>239667.585 6711355.434</gml:pos>
+<gml:pos>239666.219 6711362.176</gml:pos>
+<gml:pos>239652.241 6711385.570</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239652.241 6711385.570</gml:pos>
+<gml:pos>239651.236 6711386.572</gml:pos>
+<gml:pos>239649.896 6711387.041</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239649.896 6711387.041</gml:pos>
+<gml:pos>239648.712 6711386.955</gml:pos>
+<gml:pos>239647.641 6711386.443</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239647.641 6711386.443</gml:pos>
+<gml:pos>239642.336 6711383.265</gml:pos>
+<gml:pos>239636.497 6711379.889</gml:pos>
+<gml:pos>239602.096 6711359.397</gml:pos>
+<gml:pos>239579.269 6711345.710</gml:pos>
+<gml:pos>239553.288 6711330.079</gml:pos>
+<gml:pos>239534.581 6711319.141</gml:pos>
+<gml:pos>239533.549 6711318.330</gml:pos>
+<gml:pos>239532.640 6711317.497</gml:pos>
+<gml:pos>239532.098 6711316.588</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6400732">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-18T09:04:55</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239473.618 6711408.125</gml:pos>
+<gml:pos>239474.932 6711408.174</gml:pos>
+<gml:pos>239477.110 6711409.358</gml:pos>
+<gml:pos>239494.925 6711419.044</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239494.925 6711419.044</gml:pos>
+<gml:pos>239497.196 6711419.395</gml:pos>
+<gml:pos>239499.009 6711417.982</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239499.009 6711417.982</gml:pos>
+<gml:pos>239500.158 6711416.548</gml:pos>
+<gml:pos>239521.833 6711429.087</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239521.833 6711429.087</gml:pos>
+<gml:pos>239524.070 6711429.759</gml:pos>
+<gml:pos>239526.399 6711429.924</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239526.399 6711429.924</gml:pos>
+<gml:pos>239528.988 6711429.612</gml:pos>
+<gml:pos>239531.274 6711428.356</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239531.274 6711428.356</gml:pos>
+<gml:pos>239533.275 6711430.406</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239533.275 6711430.406</gml:pos>
+<gml:pos>239533.802 6711430.802</gml:pos>
+<gml:pos>239534.425 6711431.020</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239534.425 6711431.020</gml:pos>
+<gml:pos>239534.468 6711431.028</gml:pos>
+<gml:pos>239534.512 6711431.034</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239534.512 6711431.034</gml:pos>
+<gml:pos>239534.921 6711431.053</gml:pos>
+<gml:pos>239535.327 6711430.993</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239535.327 6711430.993</gml:pos>
+<gml:pos>239536.914 6711430.064</gml:pos>
+<gml:pos>239538.062 6711428.626</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239538.062 6711428.626</gml:pos>
+<gml:pos>239540.781 6711424.004</gml:pos>
+<gml:pos>239542.236 6711421.530</gml:pos>
+<gml:pos>239576.611 6711365.055</gml:pos>
+<gml:pos>239579.757 6711359.701</gml:pos>
+<gml:pos>239580.226 6711358.994</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239580.226 6711358.994</gml:pos>
+<gml:pos>239580.971 6711357.514</gml:pos>
+<gml:pos>239581.218 6711355.876</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239581.218 6711355.876</gml:pos>
+<gml:pos>239580.953 6711353.935</gml:pos>
+<gml:pos>239579.966 6711352.244</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239579.966 6711352.244</gml:pos>
+<gml:pos>239578.812 6711351.295</gml:pos>
+<gml:pos>239577.534 6711350.519</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239577.534 6711350.519</gml:pos>
+<gml:pos>239575.187 6711348.997</gml:pos>
+<gml:pos>239572.729 6711347.661</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239572.729 6711347.661</gml:pos>
+<gml:pos>239545.771 6711331.589</gml:pos>
+<gml:pos>239531.833 6711323.282</gml:pos>
+<gml:pos>239524.458 6711318.791</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239524.458 6711318.791</gml:pos>
+<gml:pos>239522.219 6711314.785</gml:pos>
+<gml:pos>239522.884 6711310.243</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239522.884 6711310.243</gml:pos>
+<gml:pos>239523.633 6711308.581</gml:pos>
+<gml:pos>239547.918 6711268.579</gml:pos>
+<gml:pos>239548.874 6711267.131</gml:pos>
+<gml:pos>239549.353 6711266.327</gml:pos>
+<gml:pos>239549.624 6711265.507</gml:pos>
+<gml:pos>239549.683 6711264.638</gml:pos>
+<gml:pos>239549.508 6711263.859</gml:pos>
+<gml:pos>239549.140 6711263.236</gml:pos>
+<gml:pos>239548.661 6711262.413</gml:pos>
+<gml:pos>239547.167 6711261.309</gml:pos>
+<gml:pos>239510.242 6711239.509</gml:pos>
+<gml:pos>239498.181 6711232.388</gml:pos>
+<gml:pos>239466.230 6711213.524</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239466.230 6711213.524</gml:pos>
+<gml:pos>239465.114 6711213.211</gml:pos>
+<gml:pos>239463.961 6711213.328</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239463.961 6711213.328</gml:pos>
+<gml:pos>239462.973 6711213.827</gml:pos>
+<gml:pos>239462.222 6711214.640</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239462.222 6711214.640</gml:pos>
+<gml:pos>239458.745 6711220.722</gml:pos>
+<gml:pos>239437.608 6711256.211</gml:pos>
+<gml:pos>239437.460 6711256.461</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.4512661">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1994-10-12T10:34:10</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239532.098 6711316.588</gml:pos>
+<gml:pos>239531.876 6711315.525</gml:pos>
+<gml:pos>239531.812 6711314.364</gml:pos>
+<gml:pos>239531.980 6711313.016</gml:pos>
+<gml:pos>239532.588 6711311.460</gml:pos>
+<gml:pos>239534.089 6711308.939</gml:pos>
+<gml:pos>239540.334 6711298.722</gml:pos>
+<gml:pos>239550.895 6711281.225</gml:pos>
+<gml:pos>239558.009 6711269.371</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.4512679">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1994-10-12T10:34:10</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239558.009 6711269.371</gml:pos>
+<gml:pos>239562.467 6711267.674</gml:pos>
+<gml:pos>239569.341 6711256.304</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.237524299">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-08-14T10:12:15</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239352.330 6711327.946</gml:pos>
+<gml:pos>239345.870 6711323.742</gml:pos>
+<gml:pos>239338.943 6711320.362</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239338.943 6711320.362</gml:pos>
+<gml:pos>239334.806 6711318.962</gml:pos>
+<gml:pos>239330.601 6711317.785</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239330.601 6711317.785</gml:pos>
+<gml:pos>239326.951 6711316.786</gml:pos>
+<gml:pos>239323.421 6711315.424</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239323.421 6711315.424</gml:pos>
+<gml:pos>239322.821 6711315.075</gml:pos>
+<gml:pos>239322.369 6711314.547</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239322.369 6711314.547</gml:pos>
+<gml:pos>239321.002 6711311.529</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239321.002 6711311.529</gml:pos>
+<gml:pos>239320.774 6711310.882</gml:pos>
+<gml:pos>239320.710 6711310.200</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239320.710 6711310.200</gml:pos>
+<gml:pos>239320.837 6711309.434</gml:pos>
+<gml:pos>239321.168 6711308.731</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239321.168 6711308.731</gml:pos>
+<gml:pos>239321.766 6711308.124</gml:pos>
+<gml:pos>239309.102 6711295.639</gml:pos>
+<gml:pos>239305.830 6711297.766</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239305.830 6711297.766</gml:pos>
+<gml:pos>239304.446 6711298.209</gml:pos>
+<gml:pos>239303.006 6711298.013</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239303.006 6711298.013</gml:pos>
+<gml:pos>239301.790 6711297.216</gml:pos>
+<gml:pos>239301.035 6711295.974</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239301.035 6711295.974</gml:pos>
+<gml:pos>239296.411 6711269.530</gml:pos>
+<gml:pos>239294.183 6711257.646</gml:pos>
+<gml:pos>239293.509 6711254.049</gml:pos>
+<gml:pos>239292.203 6711247.082</gml:pos>
+<gml:pos>239292.165 6711244.472</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239292.165 6711244.472</gml:pos>
+<gml:pos>239292.794 6711243.187</gml:pos>
+<gml:pos>239294.133 6711242.683</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239294.133 6711242.683</gml:pos>
+<gml:pos>239297.026 6711242.477</gml:pos>
+<gml:pos>239298.018 6711237.395</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.237524083">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-08-14T10:12:15</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239443.443 6711388.321</gml:pos>
+<gml:pos>239444.709 6711389.438</gml:pos>
+<gml:pos>239446.128 6711390.351</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239446.128 6711390.351</gml:pos>
+<gml:pos>239461.366 6711399.670</gml:pos>
+<gml:pos>239471.608 6711406.452</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.92725499">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2008-09-30T08:16:01</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239526.005 6711444.539</gml:pos>
+<gml:pos>239526.601 6711444.327</gml:pos>
+<gml:pos>239527.051 6711443.881</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239527.051 6711443.881</gml:pos>
+<gml:pos>239527.141 6711442.471</gml:pos>
+<gml:pos>239525.993 6711441.648</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239525.993 6711441.648</gml:pos>
+<gml:pos>239522.076 6711441.272</gml:pos>
+<gml:pos>239518.386 6711439.902</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239518.386 6711439.902</gml:pos>
+<gml:pos>239474.367 6711414.049</gml:pos>
+<gml:pos>239471.118 6711412.142</gml:pos>
+<gml:pos>239470.575 6711410.692</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.70722970">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2005-11-30T08:25:42</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239468.543 6711408.567</gml:pos>
+<gml:pos>239460.800 6711404.141</gml:pos>
+<gml:pos>239454.490 6711400.534</gml:pos>
+<gml:pos>239450.927 6711398.231</gml:pos>
+<gml:pos>239449.873 6711397.590</gml:pos>
+<gml:pos>239438.538 6711390.891</gml:pos>
+<gml:pos>239437.244 6711390.163</gml:pos>
+<gml:pos>239425.512 6711383.509</gml:pos>
+<gml:pos>239424.188 6711382.776</gml:pos>
+<gml:pos>239422.949 6711382.108</gml:pos>
+<gml:pos>239416.505 6711379.201</gml:pos>
+<gml:pos>239413.636 6711378.479</gml:pos>
+<gml:pos>239411.758 6711377.932</gml:pos>
+<gml:pos>239403.823 6711373.141</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.32353691">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-07-04T08:04:38</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239443.114 6711450.394</gml:pos>
+<gml:pos>239442.887 6711450.366</gml:pos>
+<gml:pos>239442.708 6711450.509</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239442.708 6711450.509</gml:pos>
+<gml:pos>239440.418 6711454.269</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239440.418 6711454.269</gml:pos>
+<gml:pos>239440.395 6711454.493</gml:pos>
+<gml:pos>239440.533 6711454.673</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239440.533 6711454.673</gml:pos>
+<gml:pos>239440.765 6711454.707</gml:pos>
+<gml:pos>239440.953 6711454.566</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239440.953 6711454.566</gml:pos>
+<gml:pos>239443.221 6711450.806</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239443.221 6711450.806</gml:pos>
+<gml:pos>239443.255 6711450.577</gml:pos>
+<gml:pos>239443.114 6711450.394</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6545942">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-23T11:31:01</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239436.524 6711385.680</gml:pos>
+<gml:pos>239435.824 6711385.472</gml:pos>
+<gml:pos>239423.108 6711377.473</gml:pos>
+<gml:pos>239421.723 6711375.510</gml:pos>
+<gml:pos>239421.835 6711371.682</gml:pos>
+<gml:pos>239397.200 6711357.408</gml:pos>
+<gml:pos>239394.705 6711356.993</gml:pos>
+<gml:pos>239394.124 6711359.537</gml:pos>
+<gml:pos>239386.780 6711354.202</gml:pos>
+<gml:pos>239375.528 6711347.246</gml:pos>
+<gml:pos>239374.128 6711346.330</gml:pos>
+<gml:pos>239373.408 6711345.398</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6540499">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-03-17T12:15:57</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239401.176 6711371.599</gml:pos>
+<gml:pos>239395.601 6711368.412</gml:pos>
+<gml:pos>239390.677 6711365.581</gml:pos>
+<gml:pos>239387.843 6711364.164</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6540471">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-22T11:56:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239375.309 6711357.888</gml:pos>
+<gml:pos>239375.705 6711357.656</gml:pos>
+<gml:pos>239376.309 6711357.551</gml:pos>
+<gml:pos>239376.892 6711357.744</gml:pos>
+<gml:pos>239383.877 6711361.647</gml:pos>
+<gml:pos>239383.920 6711361.799</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6540448">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-22T11:56:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239372.316 6711355.686</gml:pos>
+<gml:pos>239372.193 6711355.106</gml:pos>
+<gml:pos>239371.734 6711354.644</gml:pos>
+<gml:pos>239369.219 6711352.980</gml:pos>
+<gml:pos>239366.540 6711351.626</gml:pos>
+<gml:pos>239365.920 6711351.492</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.78648074">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-01-03T14:23:34</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239362.349 6711342.289</gml:pos>
+<gml:pos>239360.903 6711341.195</gml:pos>
+<gml:pos>239360.588 6711340.059</gml:pos>
+<gml:pos>239359.922 6711339.256</gml:pos>
+<gml:pos>239356.315 6711336.280</gml:pos>
+<gml:pos>239350.562 6711331.592</gml:pos>
+<gml:pos>239348.438 6711329.998</gml:pos>
+<gml:pos>239344.244 6711327.307</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239344.244 6711327.307</gml:pos>
+<gml:pos>239341.163 6711325.693</gml:pos>
+<gml:pos>239337.989 6711324.272</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239337.989 6711324.272</gml:pos>
+<gml:pos>239334.883 6711323.101</gml:pos>
+<gml:pos>239331.714 6711322.113</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239331.714 6711322.113</gml:pos>
+<gml:pos>239326.472 6711320.593</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239326.472 6711320.593</gml:pos>
+<gml:pos>239324.065 6711319.852</gml:pos>
+<gml:pos>239321.695 6711319.000</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239321.695 6711319.000</gml:pos>
+<gml:pos>239321.360 6711318.870</gml:pos>
+<gml:pos>239321.027 6711318.738</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239321.027 6711318.738</gml:pos>
+<gml:pos>239319.078 6711317.913</gml:pos>
+<gml:pos>239317.163 6711317.014</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239317.163 6711317.014</gml:pos>
+<gml:pos>239313.807 6711315.242</gml:pos>
+<gml:pos>239310.607 6711313.203</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239310.607 6711313.203</gml:pos>
+<gml:pos>239307.299 6711310.673</gml:pos>
+<gml:pos>239304.231 6711307.858</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239304.231 6711307.858</gml:pos>
+<gml:pos>239302.444 6711306.136</gml:pos>
+<gml:pos>239300.790 6711304.285</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239300.790 6711304.285</gml:pos>
+<gml:pos>239299.539 6711302.673</gml:pos>
+<gml:pos>239298.389 6711300.988</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239298.389 6711300.988</gml:pos>
+<gml:pos>239297.733 6711299.963</gml:pos>
+<gml:pos>239295.464 6711299.748</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6741907">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1996-01-31T09:33:45</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239360.726 6711343.398</gml:pos>
+<gml:pos>239361.130 6711344.420</gml:pos>
+<gml:pos>239360.931 6711345.500</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239360.931 6711345.500</gml:pos>
+<gml:pos>239360.548 6711346.524</gml:pos>
+<gml:pos>239360.677 6711347.193</gml:pos>
+<gml:pos>239361.341 6711347.746</gml:pos>
+<gml:pos>239362.601 6711348.858</gml:pos>
+<gml:pos>239362.909 6711349.988</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6534140">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-21T09:01:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239368.945 6711342.459</gml:pos>
+<gml:pos>239367.187 6711340.855</gml:pos>
+<gml:pos>239363.096 6711336.890</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45948089">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-18T15:37:25</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239257.054 6711462.839</gml:pos>
+<gml:pos>239257.373 6711462.288</gml:pos>
+<gml:pos>239257.644 6711461.710</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239257.644 6711461.710</gml:pos>
+<gml:pos>239257.901 6711460.993</gml:pos>
+<gml:pos>239258.083 6711460.254</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239258.083 6711460.254</gml:pos>
+<gml:pos>239258.127 6711458.210</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239258.127 6711458.210</gml:pos>
+<gml:pos>239258.113 6711457.842</gml:pos>
+<gml:pos>239258.011 6711457.488</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239258.011 6711457.488</gml:pos>
+<gml:pos>239257.795 6711457.124</gml:pos>
+<gml:pos>239257.489 6711456.832</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239257.489 6711456.832</gml:pos>
+<gml:pos>239211.406 6711429.991</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239211.406 6711429.991</gml:pos>
+<gml:pos>239208.249 6711428.624</gml:pos>
+<gml:pos>239204.886 6711427.895</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239204.886 6711427.895</gml:pos>
+<gml:pos>239202.431 6711427.782</gml:pos>
+<gml:pos>239199.984 6711428.011</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239199.984 6711428.011</gml:pos>
+<gml:pos>239199.325 6711428.162</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239199.325 6711428.162</gml:pos>
+<gml:pos>239199.080 6711428.273</gml:pos>
+<gml:pos>239198.923 6711428.490</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239198.923 6711428.490</gml:pos>
+<gml:pos>239198.918 6711428.854</gml:pos>
+<gml:pos>239199.152 6711429.132</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239199.152 6711429.132</gml:pos>
+<gml:pos>239257.054 6711462.839</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81456509">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-08T10:34:08</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239113.842 6711370.864</gml:pos>
+<gml:pos>239130.145 6711382.285</gml:pos>
+<gml:pos>239135.968 6711385.982</gml:pos>
+<gml:pos>239139.509 6711388.130</gml:pos>
+<gml:pos>239150.243 6711394.443</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239150.243 6711394.443</gml:pos>
+<gml:pos>239152.227 6711395.545</gml:pos>
+<gml:pos>239154.159 6711396.737</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239154.159 6711396.737</gml:pos>
+<gml:pos>239156.247 6711398.170</gml:pos>
+<gml:pos>239158.258 6711399.708</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239158.258 6711399.708</gml:pos>
+<gml:pos>239163.156 6711404.715</gml:pos>
+<gml:pos>239163.921 6711405.388</gml:pos>
+<gml:pos>239167.166 6711407.704</gml:pos>
+<gml:pos>239188.429 6711420.046</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239188.429 6711420.046</gml:pos>
+<gml:pos>239189.244 6711420.845</gml:pos>
+<gml:pos>239189.732 6711421.877</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239189.732 6711421.877</gml:pos>
+<gml:pos>239189.657 6711422.317</gml:pos>
+<gml:pos>239189.257 6711422.515</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239189.257 6711422.515</gml:pos>
+<gml:pos>239188.045 6711422.398</gml:pos>
+<gml:pos>239186.922 6711421.930</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239186.922 6711421.930</gml:pos>
+<gml:pos>239165.275 6711409.278</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239165.275 6711409.278</gml:pos>
+<gml:pos>239163.939 6711408.424</gml:pos>
+<gml:pos>239162.652 6711407.498</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239162.652 6711407.498</gml:pos>
+<gml:pos>239157.866 6711402.662</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239157.866 6711402.662</gml:pos>
+<gml:pos>239155.601 6711400.499</gml:pos>
+<gml:pos>239153.016 6711398.730</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239153.016 6711398.730</gml:pos>
+<gml:pos>239137.483 6711389.667</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239137.483 6711389.667</gml:pos>
+<gml:pos>239127.658 6711383.453</gml:pos>
+<gml:pos>239118.076 6711376.870</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239118.076 6711376.870</gml:pos>
+<gml:pos>239112.670 6711372.852</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45948069">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-08T10:34:08</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239179.786 6711426.080</gml:pos>
+<gml:pos>239180.840 6711427.311</gml:pos>
+<gml:pos>239181.701 6711428.683</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45914989">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-13T07:50:48</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239072.312 6711383.190</gml:pos>
+<gml:pos>239073.912 6711383.653</gml:pos>
+<gml:pos>239075.578 6711383.645</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239075.578 6711383.645</gml:pos>
+<gml:pos>239076.791 6711383.328</gml:pos>
+<gml:pos>239077.909 6711382.759</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239077.909 6711382.759</gml:pos>
+<gml:pos>239087.225 6711378.011</gml:pos>
+<gml:pos>239090.445 6711376.370</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239090.445 6711376.370</gml:pos>
+<gml:pos>239092.858 6711375.562</gml:pos>
+<gml:pos>239095.395 6711375.355</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239095.395 6711375.355</gml:pos>
+<gml:pos>239098.470 6711375.941</gml:pos>
+<gml:pos>239101.238 6711377.402</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239101.238 6711377.402</gml:pos>
+<gml:pos>239106.509 6711381.040</gml:pos>
+<gml:pos>239107.897 6711381.998</gml:pos>
+<gml:pos>239121.450 6711391.358</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239121.450 6711391.358</gml:pos>
+<gml:pos>239124.119 6711393.091</gml:pos>
+<gml:pos>239126.807 6711394.796</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239126.807 6711394.796</gml:pos>
+<gml:pos>239131.102 6711397.437</gml:pos>
+<gml:pos>239135.441 6711400.005</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239135.441 6711400.005</gml:pos>
+<gml:pos>239178.200 6711424.889</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239178.200 6711424.889</gml:pos>
+<gml:pos>239179.020 6711425.449</gml:pos>
+<gml:pos>239179.786 6711426.080</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.78648346">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-06-18T08:20:28</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239294.779 6711296.014</gml:pos>
+<gml:pos>239296.557 6711295.354</gml:pos>
+<gml:pos>239291.035 6711262.963</gml:pos>
+<gml:pos>239288.294 6711248.827</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239288.294 6711248.827</gml:pos>
+<gml:pos>239287.455 6711247.355</gml:pos>
+<gml:pos>239285.848 6711246.820</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81207572">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-05-30T10:35:49</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239529.238 6711114.488</gml:pos>
+<gml:pos>239511.708 6711143.636</gml:pos>
+<gml:pos>239505.232 6711145.322</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239505.232 6711145.322</gml:pos>
+<gml:pos>239503.731 6711146.015</gml:pos>
+<gml:pos>239502.551 6711147.172</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239502.551 6711147.172</gml:pos>
+<gml:pos>239487.092 6711173.079</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239487.092 6711173.079</gml:pos>
+<gml:pos>239486.705 6711174.948</gml:pos>
+<gml:pos>239487.643 6711176.610</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239487.643 6711176.610</gml:pos>
+<gml:pos>239477.729 6711193.143</gml:pos>
+<gml:pos>239476.599 6711192.497</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239476.599 6711192.497</gml:pos>
+<gml:pos>239474.474 6711192.339</gml:pos>
+<gml:pos>239472.826 6711193.691</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239472.826 6711193.691</gml:pos>
+<gml:pos>239470.101 6711198.417</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239470.101 6711198.417</gml:pos>
+<gml:pos>239470.064 6711198.612</gml:pos>
+<gml:pos>239470.035 6711198.808</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239470.035 6711198.808</gml:pos>
+<gml:pos>239470.064 6711200.253</gml:pos>
+<gml:pos>239470.514 6711201.626</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239470.514 6711201.626</gml:pos>
+<gml:pos>239471.048 6711202.465</gml:pos>
+<gml:pos>239471.740 6711203.179</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239471.740 6711203.179</gml:pos>
+<gml:pos>239473.495 6711204.491</gml:pos>
+<gml:pos>239475.660 6711205.183</gml:pos>
+<gml:pos>239478.276 6711204.529</gml:pos>
+<gml:pos>239479.195 6711204.406</gml:pos>
+<gml:pos>239497.643 6711215.240</gml:pos>
+<gml:pos>239508.821 6711221.763</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239508.821 6711221.763</gml:pos>
+<gml:pos>239509.134 6711222.023</gml:pos>
+<gml:pos>239509.422 6711222.310</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239509.422 6711222.310</gml:pos>
+<gml:pos>239512.432 6711226.979</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239512.432 6711226.979</gml:pos>
+<gml:pos>239512.904 6711227.522</gml:pos>
+<gml:pos>239513.465 6711227.972</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239513.465 6711227.972</gml:pos>
+<gml:pos>239522.702 6711233.395</gml:pos>
+<gml:pos>239550.449 6711249.804</gml:pos>
+<gml:pos>239551.690 6711250.322</gml:pos>
+<gml:pos>239552.572 6711250.635</gml:pos>
+<gml:pos>239553.246 6711250.836</gml:pos>
+<gml:pos>239554.040 6711250.895</gml:pos>
+<gml:pos>239554.619 6711250.776</gml:pos>
+<gml:pos>239555.253 6711250.522</gml:pos>
+<gml:pos>239555.862 6711250.007</gml:pos>
+<gml:pos>239556.285 6711249.613</gml:pos>
+<gml:pos>239556.303 6711249.584</gml:pos>
+<gml:pos>239559.025 6711245.211</gml:pos>
+<gml:pos>239561.098 6711241.878</gml:pos>
+<gml:pos>239561.482 6711241.262</gml:pos>
+<gml:pos>239563.501 6711237.841</gml:pos>
+<gml:pos>239564.738 6711235.744</gml:pos>
+<gml:pos>239568.228 6711229.829</gml:pos>
+<gml:pos>239572.638 6711222.428</gml:pos>
+<gml:pos>239575.455 6711221.053</gml:pos>
+<gml:pos>239577.013 6711218.324</gml:pos>
+<gml:pos>239577.660 6711217.191</gml:pos>
+<gml:pos>239577.087 6711215.049</gml:pos>
+<gml:pos>239577.208 6711214.850</gml:pos>
+<gml:pos>239580.062 6711210.143</gml:pos>
+<gml:pos>239584.478 6711202.862</gml:pos>
+<gml:pos>239586.499 6711199.529</gml:pos>
+<gml:pos>239586.947 6711198.791</gml:pos>
+<gml:pos>239589.330 6711194.251</gml:pos>
+<gml:pos>239607.858 6711163.883</gml:pos>
+<gml:pos>239623.949 6711137.044</gml:pos>
+<gml:pos>239625.003 6711135.302</gml:pos>
+<gml:pos>239627.080 6711131.888</gml:pos>
+<gml:pos>239630.664 6711125.949</gml:pos>
+<gml:pos>239634.321 6711119.905</gml:pos>
+<gml:pos>239637.818 6711114.124</gml:pos>
+<gml:pos>239639.670 6711111.038</gml:pos>
+<gml:pos>239639.743 6711110.913</gml:pos>
+<gml:pos>239642.211 6711106.841</gml:pos>
+<gml:pos>239645.582 6711101.260</gml:pos>
+<gml:pos>239646.185 6711100.291</gml:pos>
+<gml:pos>239649.499 6711098.587</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239649.499 6711098.587</gml:pos>
+<gml:pos>239650.196 6711097.730</gml:pos>
+<gml:pos>239650.747 6711096.773</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239650.747 6711096.773</gml:pos>
+<gml:pos>239650.822 6711096.649</gml:pos>
+<gml:pos>239661.092 6711079.621</gml:pos>
+<gml:pos>239663.434 6711075.737</gml:pos>
+<gml:pos>239663.464 6711075.687</gml:pos>
+<gml:pos>239679.076 6711049.991</gml:pos>
+<gml:pos>239682.861 6711046.421</gml:pos>
+<gml:pos>239697.532 6711019.272</gml:pos>
+<gml:pos>239702.097 6711014.485</gml:pos>
+<gml:pos>239711.764 6710998.522</gml:pos>
+<gml:pos>239715.863 6710995.484</gml:pos>
+<gml:pos>239723.250 6710983.277</gml:pos>
+<gml:pos>239725.698 6710979.191</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239725.698 6710979.191</gml:pos>
+<gml:pos>239727.143 6710976.506</gml:pos>
+<gml:pos>239728.303 6710973.685</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239728.303 6710973.685</gml:pos>
+<gml:pos>239728.707 6710972.014</gml:pos>
+<gml:pos>239728.896 6710970.305</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239728.896 6710970.305</gml:pos>
+<gml:pos>239728.843 6710968.315</gml:pos>
+<gml:pos>239728.499 6710966.355</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239728.499 6710966.355</gml:pos>
+<gml:pos>239728.020 6710964.864</gml:pos>
+<gml:pos>239727.352 6710963.448</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239727.352 6710963.448</gml:pos>
+<gml:pos>239726.014 6710961.533</gml:pos>
+<gml:pos>239724.266 6710959.986</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239724.266 6710959.986</gml:pos>
+<gml:pos>239720.214 6710957.266</gml:pos>
+<gml:pos>239706.544 6710949.083</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239706.544 6710949.083</gml:pos>
+<gml:pos>239706.189 6710948.885</gml:pos>
+<gml:pos>239705.818 6710948.717</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239705.818 6710948.717</gml:pos>
+<gml:pos>239705.471 6710948.594</gml:pos>
+<gml:pos>239705.115 6710948.498</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239705.115 6710948.498</gml:pos>
+<gml:pos>239696.674 6710945.853</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239696.674 6710945.853</gml:pos>
+<gml:pos>239696.114 6710945.688</gml:pos>
+<gml:pos>239695.568 6710945.483</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239695.568 6710945.483</gml:pos>
+<gml:pos>239694.876 6710945.158</gml:pos>
+<gml:pos>239694.217 6710944.769</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239694.217 6710944.769</gml:pos>
+<gml:pos>239662.081 6710925.694</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239662.081 6710925.694</gml:pos>
+<gml:pos>239661.575 6710925.264</gml:pos>
+<gml:pos>239661.104 6710924.797</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239661.104 6710924.797</gml:pos>
+<gml:pos>239660.636 6710924.251</gml:pos>
+<gml:pos>239660.215 6710923.668</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239660.215 6710923.668</gml:pos>
+<gml:pos>239658.764 6710921.496</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239658.764 6710921.496</gml:pos>
+<gml:pos>239658.405 6710921.041</gml:pos>
+<gml:pos>239658.007 6710920.620</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239658.007 6710920.620</gml:pos>
+<gml:pos>239657.491 6710920.173</gml:pos>
+<gml:pos>239656.931 6710919.784</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239656.931 6710919.784</gml:pos>
+<gml:pos>239574.478 6710870.629</gml:pos>
+<gml:pos>239573.675 6710870.209</gml:pos>
+<gml:pos>239572.716 6710869.708</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239572.716 6710869.708</gml:pos>
+<gml:pos>239571.272 6710869.084</gml:pos>
+<gml:pos>239569.721 6710868.826</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239569.721 6710868.826</gml:pos>
+<gml:pos>239569.549 6710868.821</gml:pos>
+<gml:pos>239569.378 6710868.821</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239569.378 6710868.821</gml:pos>
+<gml:pos>239566.369 6710869.599</gml:pos>
+<gml:pos>239564.071 6710871.692</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239564.071 6710871.692</gml:pos>
+<gml:pos>239563.781 6710872.114</gml:pos>
+<gml:pos>239563.503 6710872.544</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239563.503 6710872.544</gml:pos>
+<gml:pos>239544.965 6710903.117</gml:pos>
+<gml:pos>239523.193 6710938.931</gml:pos>
+<gml:pos>239518.480 6710936.057</gml:pos>
+<gml:pos>239533.810 6710910.877</gml:pos>
+<gml:pos>239556.270 6710874.015</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239556.270 6710874.015</gml:pos>
+<gml:pos>239557.408 6710871.221</gml:pos>
+<gml:pos>239557.416 6710868.204</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239557.416 6710868.204</gml:pos>
+<gml:pos>239556.590 6710865.904</gml:pos>
+<gml:pos>239555.100 6710863.966</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239555.100 6710863.966</gml:pos>
+<gml:pos>239555.024 6710863.895</gml:pos>
+<gml:pos>239554.948 6710863.826</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239554.948 6710863.826</gml:pos>
+<gml:pos>239554.370 6710863.357</gml:pos>
+<gml:pos>239553.751 6710862.944</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239553.751 6710862.944</gml:pos>
+<gml:pos>239548.364 6710859.618</gml:pos>
+<gml:pos>239547.170 6710858.874</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239547.170 6710858.874</gml:pos>
+<gml:pos>239546.342 6710858.457</gml:pos>
+<gml:pos>239545.451 6710858.197</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239545.451 6710858.197</gml:pos>
+<gml:pos>239544.837 6710858.115</gml:pos>
+<gml:pos>239544.217 6710858.109</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239544.217 6710858.109</gml:pos>
+<gml:pos>239543.856 6710858.126</gml:pos>
+<gml:pos>239543.495 6710858.114</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239543.495 6710858.114</gml:pos>
+<gml:pos>239543.125 6710858.073</gml:pos>
+<gml:pos>239542.761 6710858.001</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239542.761 6710858.001</gml:pos>
+<gml:pos>239505.883 6710835.914</gml:pos>
+<gml:pos>239503.667 6710833.062</gml:pos>
+<gml:pos>239467.463 6710811.473</gml:pos>
+<gml:pos>239456.779 6710805.140</gml:pos>
+<gml:pos>239452.645 6710801.459</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239452.645 6710801.459</gml:pos>
+<gml:pos>239450.713 6710800.133</gml:pos>
+<gml:pos>239448.476 6710799.438</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239448.476 6710799.438</gml:pos>
+<gml:pos>239447.158 6710799.350</gml:pos>
+<gml:pos>239445.843 6710799.485</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239445.843 6710799.485</gml:pos>
+<gml:pos>239445.433 6710799.573</gml:pos>
+<gml:pos>239445.029 6710799.684</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239445.029 6710799.684</gml:pos>
+<gml:pos>239441.397 6710801.502</gml:pos>
+<gml:pos>239438.283 6710804.109</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239438.283 6710804.109</gml:pos>
+<gml:pos>239436.948 6710805.700</gml:pos>
+<gml:pos>239435.812 6710807.438</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239435.812 6710807.438</gml:pos>
+<gml:pos>239433.383 6710811.528</gml:pos>
+<gml:pos>239408.353 6710853.456</gml:pos>
+<gml:pos>239405.633 6710858.008</gml:pos>
+<gml:pos>239400.156 6710867.221</gml:pos>
+<gml:pos>239397.709 6710871.487</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239397.709 6710871.487</gml:pos>
+<gml:pos>239397.358 6710872.088</gml:pos>
+<gml:pos>239397.017 6710872.694</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239397.017 6710872.694</gml:pos>
+<gml:pos>239396.098 6710874.468</gml:pos>
+<gml:pos>239395.270 6710876.286</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239395.270 6710876.286</gml:pos>
+<gml:pos>239391.625 6710886.927</gml:pos>
+<gml:pos>239379.800 6710906.979</gml:pos>
+<gml:pos>239377.723 6710910.624</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.92632879">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2005-11-23T09:29:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239569.341 6711256.304</gml:pos>
+<gml:pos>239571.530 6711252.684</gml:pos>
+<gml:pos>239573.472 6711249.454</gml:pos>
+<gml:pos>239575.463 6711246.141</gml:pos>
+<gml:pos>239584.852 6711230.758</gml:pos>
+<gml:pos>239586.437 6711228.549</gml:pos>
+<gml:pos>239586.684 6711228.371</gml:pos>
+<gml:pos>239588.048 6711227.387</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81208107">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-05-30T10:35:49</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239531.067 6711111.545</gml:pos>
+<gml:pos>239534.227 6711106.461</gml:pos>
+<gml:pos>239532.418 6711100.927</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239532.418 6711100.927</gml:pos>
+<gml:pos>239532.021 6711099.588</gml:pos>
+<gml:pos>239532.060 6711098.192</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239532.060 6711098.192</gml:pos>
+<gml:pos>239549.266 6711069.176</gml:pos>
+<gml:pos>239550.503 6711067.086</gml:pos>
+<gml:pos>239551.765 6711065.012</gml:pos>
+<gml:pos>239549.193 6711063.455</gml:pos>
+<gml:pos>239546.806 6711062.060</gml:pos>
+<gml:pos>239543.781 6711060.248</gml:pos>
+<gml:pos>239541.505 6711058.900</gml:pos>
+<gml:pos>239538.806 6711063.389</gml:pos>
+<gml:pos>239513.902 6711104.914</gml:pos>
+<gml:pos>239509.180 6711105.948</gml:pos>
+<gml:pos>239479.067 6711156.418</gml:pos>
+<gml:pos>239462.435 6711184.299</gml:pos>
+<gml:pos>239464.987 6711185.887</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239464.987 6711185.887</gml:pos>
+<gml:pos>239465.756 6711187.316</gml:pos>
+<gml:pos>239465.599 6711188.932</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239465.599 6711188.932</gml:pos>
+<gml:pos>239463.549 6711192.211</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239463.549 6711192.211</gml:pos>
+<gml:pos>239461.988 6711194.067</gml:pos>
+<gml:pos>239459.742 6711194.983</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239459.742 6711194.983</gml:pos>
+<gml:pos>239457.891 6711194.911</gml:pos>
+<gml:pos>239456.180 6711194.201</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239456.180 6711194.201</gml:pos>
+<gml:pos>239455.202 6711193.468</gml:pos>
+<gml:pos>239454.436 6711192.517</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239454.436 6711192.517</gml:pos>
+<gml:pos>239453.910 6711190.693</gml:pos>
+<gml:pos>239452.778 6711186.170</gml:pos>
+<gml:pos>239451.458 6711184.320</gml:pos>
+<gml:pos>239450.635 6711183.554</gml:pos>
+<gml:pos>239346.650 6711121.870</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239346.650 6711121.870</gml:pos>
+<gml:pos>239344.695 6711121.326</gml:pos>
+<gml:pos>239342.685 6711121.604</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239342.685 6711121.604</gml:pos>
+<gml:pos>239338.360 6711122.553</gml:pos>
+<gml:pos>239334.045 6711121.555</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239334.045 6711121.555</gml:pos>
+<gml:pos>239325.452 6711116.431</gml:pos>
+<gml:pos>239321.143 6711113.858</gml:pos>
+<gml:pos>239280.405 6711089.575</gml:pos>
+<gml:pos>239276.182 6711087.074</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239276.182 6711087.074</gml:pos>
+<gml:pos>239275.263 6711086.268</gml:pos>
+<gml:pos>239274.750 6711085.158</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239274.750 6711085.158</gml:pos>
+<gml:pos>239274.703 6711083.973</gml:pos>
+<gml:pos>239275.149 6711082.874</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239275.149 6711082.874</gml:pos>
+<gml:pos>239277.701 6711078.534</gml:pos>
+<gml:pos>239284.297 6711067.376</gml:pos>
+<gml:pos>239291.242 6711055.590</gml:pos>
+<gml:pos>239297.932 6711044.324</gml:pos>
+<gml:pos>239302.749 6711039.227</gml:pos>
+<gml:pos>239304.706 6711037.279</gml:pos>
+<gml:pos>239306.198 6711035.724</gml:pos>
+<gml:pos>239307.388 6711034.221</gml:pos>
+<gml:pos>239311.659 6711027.046</gml:pos>
+<gml:pos>239314.003 6711023.048</gml:pos>
+<gml:pos>239314.621 6711022.010</gml:pos>
+<gml:pos>239314.640 6711021.655</gml:pos>
+<gml:pos>239315.112 6711021.077</gml:pos>
+<gml:pos>239316.711 6711018.497</gml:pos>
+<gml:pos>239317.026 6711015.504</gml:pos>
+<gml:pos>239317.054 6711015.324</gml:pos>
+<gml:pos>239317.491 6711013.698</gml:pos>
+<gml:pos>239318.120 6711011.657</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239318.120 6711011.657</gml:pos>
+<gml:pos>239318.844 6711010.580</gml:pos>
+<gml:pos>239319.921 6711009.858</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239319.921 6711009.858</gml:pos>
+<gml:pos>239320.577 6711009.596</gml:pos>
+<gml:pos>239321.244 6711009.361</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239321.244 6711009.361</gml:pos>
+<gml:pos>239325.840 6711008.542</gml:pos>
+<gml:pos>239330.222 6711001.126</gml:pos>
+<gml:pos>239333.252 6710995.986</gml:pos>
+<gml:pos>239336.068 6710991.245</gml:pos>
+<gml:pos>239364.194 6710943.760</gml:pos>
+<gml:pos>239362.150 6710940.232</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239362.150 6710940.232</gml:pos>
+<gml:pos>239361.852 6710938.601</gml:pos>
+<gml:pos>239362.313 6710937.009</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239362.313 6710937.009</gml:pos>
+<gml:pos>239363.044 6710935.675</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6544915">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-23T11:31:01</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239294.364 6711233.899</gml:pos>
+<gml:pos>239292.100 6711234.774</gml:pos>
+<gml:pos>239289.698 6711234.429</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239289.698 6711234.429</gml:pos>
+<gml:pos>239215.540 6711190.346</gml:pos>
+<gml:pos>239213.678 6711189.239</gml:pos>
+<gml:pos>239213.124 6711188.280</gml:pos>
+<gml:pos>239254.904 6711117.367</gml:pos>
+<gml:pos>239258.735 6711110.859</gml:pos>
+<gml:pos>239263.106 6711103.470</gml:pos>
+<gml:pos>239263.107 6711103.469</gml:pos>
+<gml:pos>239265.581 6711099.251</gml:pos>
+<gml:pos>239266.313 6711098.006</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239266.313 6711098.006</gml:pos>
+<gml:pos>239267.041 6711097.109</gml:pos>
+<gml:pos>239268.071 6711096.585</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239268.071 6711096.585</gml:pos>
+<gml:pos>239269.287 6711096.535</gml:pos>
+<gml:pos>239270.412 6711096.999</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239270.412 6711096.999</gml:pos>
+<gml:pos>239273.079 6711098.556</gml:pos>
+<gml:pos>239275.245 6711099.851</gml:pos>
+<gml:pos>239298.205 6711113.540</gml:pos>
+<gml:pos>239303.014 6711116.407</gml:pos>
+<gml:pos>239422.376 6711187.571</gml:pos>
+<gml:pos>239449.684 6711204.017</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239449.684 6711204.017</gml:pos>
+<gml:pos>239451.289 6711205.604</gml:pos>
+<gml:pos>239452.072 6711207.722</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239452.072 6711207.722</gml:pos>
+<gml:pos>239452.108 6711208.114</gml:pos>
+<gml:pos>239452.114 6711208.507</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239452.114 6711208.507</gml:pos>
+<gml:pos>239451.913 6711209.822</gml:pos>
+<gml:pos>239451.382 6711211.042</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239451.382 6711211.042</gml:pos>
+<gml:pos>239427.332 6711250.081</gml:pos>
+<gml:pos>239427.239 6711250.232</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.78274577">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-05-05T09:31:55</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239200.484 6711181.780</gml:pos>
+<gml:pos>239107.491 6711127.394</gml:pos>
+<gml:pos>239105.942 6711126.439</gml:pos>
+<gml:pos>239105.223 6711125.996</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239105.223 6711125.996</gml:pos>
+<gml:pos>239104.555 6711124.139</gml:pos>
+<gml:pos>239105.188 6711122.269</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239105.188 6711122.269</gml:pos>
+<gml:pos>239107.611 6711118.365</gml:pos>
+<gml:pos>239117.446 6711101.596</gml:pos>
+<gml:pos>239135.062 6711071.244</gml:pos>
+<gml:pos>239139.598 6711071.138</gml:pos>
+<gml:pos>239158.243 6711038.804</gml:pos>
+<gml:pos>239158.348 6711038.624</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239158.348 6711038.624</gml:pos>
+<gml:pos>239159.223 6711037.638</gml:pos>
+<gml:pos>239160.377 6711037.001</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239160.377 6711037.001</gml:pos>
+<gml:pos>239161.770 6711036.787</gml:pos>
+<gml:pos>239163.149 6711037.083</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239163.149 6711037.083</gml:pos>
+<gml:pos>239234.181 6711078.829</gml:pos>
+<gml:pos>239241.213 6711082.980</gml:pos>
+<gml:pos>239248.412 6711087.231</gml:pos>
+<gml:pos>239251.605 6711089.193</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239251.605 6711089.193</gml:pos>
+<gml:pos>239252.054 6711089.643</gml:pos>
+<gml:pos>239252.402 6711090.175</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239252.402 6711090.175</gml:pos>
+<gml:pos>239252.704 6711090.899</gml:pos>
+<gml:pos>239252.821 6711091.675</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239252.821 6711091.675</gml:pos>
+<gml:pos>239252.688 6711092.887</gml:pos>
+<gml:pos>239252.154 6711093.982</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239252.154 6711093.982</gml:pos>
+<gml:pos>239250.968 6711095.936</gml:pos>
+<gml:pos>239243.290 6711109.009</gml:pos>
+<gml:pos>239233.408 6711126.211</gml:pos>
+<gml:pos>239235.067 6711129.062</gml:pos>
+<gml:pos>239203.129 6711182.889</gml:pos>
+<gml:pos>239202.887 6711183.039</gml:pos>
+<gml:pos>239202.630 6711183.037</gml:pos>
+<gml:pos>239200.484 6711181.780</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6529016">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-21T09:01:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239156.751 6711291.432</gml:pos>
+<gml:pos>239164.510 6711278.091</gml:pos>
+<gml:pos>239163.849 6711272.124</gml:pos>
+<gml:pos>239199.822 6711211.213</gml:pos>
+<gml:pos>239206.190 6711200.602</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239206.190 6711200.602</gml:pos>
+<gml:pos>239207.298 6711199.607</gml:pos>
+<gml:pos>239208.788 6711199.573</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239208.788 6711199.573</gml:pos>
+<gml:pos>239210.033 6711200.308</gml:pos>
+<gml:pos>239283.249 6711243.557</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239283.249 6711243.557</gml:pos>
+<gml:pos>239284.849 6711244.949</gml:pos>
+<gml:pos>239285.848 6711246.820</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6483526">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-07T09:03:46</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:LineStringSegment>
+<gml:pos>239167.458 6711234.356</gml:pos>
+<gml:pos>239190.142 6711195.544</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239190.142 6711195.544</gml:pos>
+<gml:pos>239190.352 6711193.554</gml:pos>
+<gml:pos>239189.136 6711191.964</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239189.136 6711191.964</gml:pos>
+<gml:pos>239103.148 6711141.502</gml:pos>
+<gml:pos>239101.557 6711140.658</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239101.557 6711140.658</gml:pos>
+<gml:pos>239100.100 6711140.366</gml:pos>
+<gml:pos>239098.640 6711140.643</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239098.640 6711140.643</gml:pos>
+<gml:pos>239097.599 6711141.260</gml:pos>
+<gml:pos>239096.798 6711142.168</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239096.798 6711142.168</gml:pos>
+<gml:pos>239047.230 6711225.523</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239047.230 6711225.523</gml:pos>
+<gml:pos>239046.286 6711227.950</gml:pos>
+<gml:pos>239046.110 6711230.548</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239046.110 6711230.548</gml:pos>
+<gml:pos>239046.710 6711233.057</gml:pos>
+<gml:pos>239048.025 6711235.275</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239048.025 6711235.275</gml:pos>
+<gml:pos>239067.563 6711246.823</gml:pos>
+<gml:pos>239069.120 6711247.623</gml:pos>
+<gml:pos>239096.939 6711264.075</gml:pos>
+<gml:pos>239127.421 6711282.059</gml:pos>
+<gml:pos>239128.742 6711282.837</gml:pos>
+<gml:pos>239130.867 6711283.668</gml:pos>
+</gml:LineStringSegment>
+<gml:Arc>
+<gml:pos>239130.867 6711283.668</gml:pos>
+<gml:pos>239132.220 6711283.857</gml:pos>
+<gml:pos>239133.587 6711283.861</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239133.587 6711283.861</gml:pos>
+<gml:pos>239134.816 6711283.705</gml:pos>
+<gml:pos>239136.016 6711283.398</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239136.016 6711283.398</gml:pos>
+<gml:pos>239136.808 6711283.021</gml:pos>
+<gml:pos>239137.569 6711282.583</gml:pos>
+</gml:Arc>
+<gml:Arc>
+<gml:pos>239137.569 6711282.583</gml:pos>
+<gml:pos>239138.895 6711281.610</gml:pos>
+<gml:pos>239140.067 6711280.456</gml:pos>
+</gml:Arc>
+<gml:LineStringSegment>
+<gml:pos>239140.067 6711280.456</gml:pos>
+<gml:pos>239141.542 6711278.131</gml:pos>
+<gml:pos>239167.458 6711234.356</gml:pos>
+</gml:LineStringSegment>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.233868368">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2014-06-18T08:20:28</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:Curve>
+<gml:segments>
+<gml:Arc>
+<gml:pos>239285.848 6711246.820</gml:pos>
+<gml:pos>239286.066 6711247.784</gml:pos>
+<gml:pos>239286.119 6711248.771</gml:pos>
+</gml:Arc>
+</gml:segments>
+</gml:Curve>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.87377532">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-11-26T08:34:26</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239451.862 6711419.229</gml:pos>
+<gml:pos>239453.193 6711419.908</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.87377120">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-11-26T08:34:26</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:reunaviiva>
+<gml:LineString>
+<gml:pos>239453.202 6711416.923</gml:pos>
+<gml:pos>239455.539 6711418.123</gml:pos>
+</gml:LineString>
+</kanta:reunaviiva>
+</kanta:Sijainti>
+</kanta:sijainnit>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097118">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239357.183 6711230.632</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.8776</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097119">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239395.221 6711242.990</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.4828</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097104">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239391.959 6711182.788</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">4.1333</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097105">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239380.038 6711202.407</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">4.0836</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.185097116">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2012-09-27T12:44:52</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239387.355 6711212.816</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5170</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6561499">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-27T08:48:27</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239461.938 6711478.201</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5864</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564955">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239366.418 6711497.323</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9599</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564953">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239385.964 6711482.992</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9415</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6561498">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-27T08:48:27</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239427.909 6711473.919</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9879</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81572092">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-19T08:48:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239327.931 6711485.225</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5416</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564875">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-19T08:48:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239323.865 6711492.099</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5138</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432118">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-03T08:48:39</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239529.591 6711437.417</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">3.0575</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432117">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-05-22T07:21:43</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239556.104 6711402.908</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">4.1477</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564951">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239462.332 6711403.082</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5530</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6431960">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239486.443 6711417.931</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5336</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564952">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239399.328 6711461.072</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9401</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564930">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239418.512 6711376.059</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5621</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564903">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2003-05-09T08:32:22</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239340.064 6711408.042</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5758</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6561500">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239388.338 6711437.240</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5305</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81572091">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-19T08:48:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239283.665 6711459.419</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5548</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45950000">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-19T07:52:54</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239272.856 6711474.878</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">5.6337</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564876">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-19T07:52:54</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239279.414 6711465.674</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5136</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.81571595">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2007-06-19T08:48:36</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239212.274 6711417.928</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5359</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.45950001">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2002-12-19T07:52:54</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239200.750 6711434.273</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">5.5958</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564877">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239208.070 6711423.315</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5640</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432308">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239542.263 6711286.632</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9900</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432136">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239533.476 6711321.584</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5029</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432120">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239575.299 6711346.495</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5246</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432116">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239579.910 6711363.285</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">4.0711</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564929">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2004-12-31T07:42:03</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239370.678 6711349.149</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5517</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564928">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239339.966 6711323.790</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.7287</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6565343">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239288.009 6711295.700</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5900</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564927">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2008-09-29T07:29:38</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239310.157 6711303.041</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">5.4268</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564902">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239241.494 6711350.908</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5268</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564958">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239193.424 6711367.481</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5163</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564957">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239192.129 6711342.812</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9757</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564901">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239182.406 6711315.941</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5821</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6510202">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-15T08:26:54</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239363.012 6711142.398</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5517</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6508649">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>2010-01-15T07:31:43</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239180.915 6711177.787</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5314</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432309">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239615.684 6711164.656</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9744</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432289">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239616.430 6711231.331</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5141</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432290">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239537.228 6711248.868</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5573</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432288">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239579.804 6711224.974</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">1.0163</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6565173">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239438.447 6711243.472</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">1.0053</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6508644">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-14T09:28:19</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239422.038 6711177.417</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5198</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432307">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239470.630 6711187.617</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9644</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6432306">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-10-26T09:03:59</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239478.732 6711213.415</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5341</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6565367">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239278.185 6711252.608</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9926</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6565366">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239262.765 6711277.096</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">0.9785</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564926">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239291.657 6711252.249</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">1.6599</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564905">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239223.414 6711201.967</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5567</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6564904">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239284.645 6711237.975</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">2.5599</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember><gml:featureMember>
+<kanta:Liikennevayla gml:id="Liikennevayla.6510203">
+<kanta:sijaintiepavarmuus>0.15</kanta:sijaintiepavarmuus>
+<kanta:luontitapa>digitointi</kanta:luontitapa>
+<kanta:alkuPvm>1995-11-28T09:07:05</kanta:alkuPvm>
+<kanta:sijainnit>
+<kanta:Sijainti>
+<kanta:referenssipiste>
+<gml:Point>
+<gml:pos>239191.046 6711211.695</gml:pos>
+</gml:Point>
+<kanta:Suunta>
+<kanta:suuntakulma uom="rad">1.0083</kanta:suuntakulma>
+</kanta:Suunta>
+</kanta:referenssipiste>
+</kanta:Sijainti>
+</kanta:sijainnit>
+<kanta:pinta>kestopäällystetty</kanta:pinta>
+</kanta:Liikennevayla>
+</gml:featureMember></wfs:FeatureCollection>
