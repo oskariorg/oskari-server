@@ -19,6 +19,7 @@
     <module>service-wfs</module>
     <module>shared-test-resources</module>
     <module>geoserver-ext/OskariMarkFactory</module>
+    <module>service-datamodel</module>
     <module>service-feature-engine</module>
     <module>servlet-transport</module>
     <module>webapp-transport</module>
