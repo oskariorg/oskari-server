@@ -36,6 +36,11 @@ public class INSPIRE_CP_CadastralBoundary_Parser extends GML32 {
 
             outputFeature.setFeature(feature).setId(output_ID);
 
+            if (feature.geometry != null && feature.geometry.geometry != null) {
+                outputFeature.addGeometryProperty(geom,
+                        feature.geometry.geometry);
+            }
+
             outputFeature
                     .addProperty(beginLifespanVersion,
                             feature.beginLifespanVersion)

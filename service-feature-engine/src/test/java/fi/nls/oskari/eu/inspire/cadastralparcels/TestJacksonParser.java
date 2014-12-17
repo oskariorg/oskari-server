@@ -101,7 +101,7 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 JacksonParserRecipe recipe = new INSPIRE_CP_CadastralBoundary_Parser();
-                // recipe.setLenient(true);
+                recipe.setLenient(true);
                 // recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 engine.setRecipe(recipe);
