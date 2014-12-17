@@ -1,0 +1,375 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:Addresses:3.0 http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=ad:Address&amp;NAMESPACES=xmlns(ad,urn%3Ax-inspire%3Aspecification%3Agmlas%3AAddresses%3A3.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-12-17T10:25:12Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="10" numberReturned="10">
+  <wfs:boundedBy>
+    <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4258">
+      <gml:lowerCorner>37.613259 -1.046536</gml:lowerCorner>
+      <gml:upperCorner>37.614527 -1.023625</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160013571">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160013571</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160013571_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613808 -1.023949</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>18</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160013572">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160013572</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160013572_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613860 -1.023783</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>16</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160013573">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160013573</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160013573_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.614527 -1.023625</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>3</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002586#AD_THOROUGHFARENAME_VIA_300160002586"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002586#AD_THOROUGHFARENAME_VIA_300160002586"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160013574">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160013574</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160013574_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613487 -1.024963</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>24</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>D</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumberExtension</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002587#AD_THOROUGHFARENAME_VIA_300160002587"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015219">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015219</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015219_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613259 -1.046252</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>6</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160003107#AD_THOROUGHFARENAME_VIA_300160003107"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160003107#AD_THOROUGHFARENAME_VIA_300160003107"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015220">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015220</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015220_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613422 -1.046060</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>1</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015221">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015221</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015221_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613393 -1.046264</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>3</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015222">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015222</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015222_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613383 -1.046309</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>5</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015223">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015223</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015223_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613356 -1.046428</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>7</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+  <wfs:member>
+    <ad:Address xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" gml:id="AD_ADDRESS_PPK_300160015224">
+      <ad:inspireId>
+        <base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
+          <base:localId>PPK_300160015224</base:localId>
+          <base:namespace>ES.CNIG.CARTOCIUDAD</base:namespace>
+        </base:Identifier>
+      </ad:inspireId>
+      <ad:position>
+        <ad:GeographicPosition>
+          <ad:geometry>
+            <gml:Point gml:id="AD_ADDRESS_PPK_300160015224_AD_POSITION" srsName="urn:ogc:def:crs:EPSG::4258">
+              <gml:pos>37.613324 -1.046536</gml:pos>
+            </gml:Point>
+          </ad:geometry>
+          <ad:default>true</ad:default>
+        </ad:GeographicPosition>
+      </ad:position>
+      <ad:locator>
+        <ad:AddressLocator>
+          <ad:designator>
+            <ad:LocatorDesignator>
+              <ad:designator>9</ad:designator>
+              <ad:type codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorDesignatorTypeValue">addressNumber</ad:type>
+            </ad:LocatorDesignator>
+          </ad:designator>
+          <ad:level codeSpace="urn:x-inspire:specification:gmlas:Addresses:3.0/LocatorLevelValue">siteLevel</ad:level>
+          <ad:withinScopeOf xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+        </ad:AddressLocator>
+      </ad:locator>
+      <ad:beginLifespanVersion>2006-12-31T00:00:00</ad:beginLifespanVersion>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_ADMINUNITNAME_MUN_300160000000#AD_ADMINUNITNAME_MUN_300160000000"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_THOROUGHFARENAME_VIA_300160002335#AD_THOROUGHFARENAME_VIA_300160002335"/>
+      <ad:component xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.cartociudad.es/wfs-inspire/direcciones?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=AD_POSTALDESCRIPTOR_CP_300160000022#AD_POSTALDESCRIPTOR_CP_300160000022"/>
+    </ad:Address>
+  </wfs:member>
+</wfs:FeatureCollection>

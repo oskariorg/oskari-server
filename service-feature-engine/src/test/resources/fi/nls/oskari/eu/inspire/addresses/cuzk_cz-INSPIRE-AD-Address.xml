@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:GN="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2" xmlns:AD="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:gco="http://www.isotc211.org/2005/gco" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/deprecatedTypes.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd urn:x-inspire:specification:gmlas:GeographicalNames:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/GeographicalNames.xsd urn:x-inspire:specification:gmlas:Addresses:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/Addresses.xsd" timeStamp="2014-12-17T12:15:33" numberMatched="10" numberReturned="10" xmlns="http://www.opengis.net/wfs/2.0">
+  <boundedBy>
+    <gml:Envelope srsName="EPSG:900913" srsDimension="2">
+      <gml:lowerCorner>1614836.19933644 6603705.87089415</gml:lowerCorner>
+      <gml:upperCorner>1615554.2475394 6604664.39765153</gml:upperCorner>
+    </gml:Envelope>
+  </boundedBy>
+  <member>
+    <AD:Address gml:id="AD.271390">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271390</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Dukelská 709/4, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271390" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615394.91 6603897.45</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>709</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>4</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479847531" />
+      <AD:building xlink:href="#BU.57436" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92568" xlink:title="Dukelská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271403">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271403</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Dukelská 712/18, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271403" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615317.66 6603717.7</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>712</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>18</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479853531" />
+      <AD:building xlink:href="#BU.57444" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92568" xlink:title="Dukelská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271411">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271411</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Rooseveltova 714/9, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271411" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1614836.2 6604664.4</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>714</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>9</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.480127531" />
+      <AD:building xlink:href="#BU.57452" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92851" xlink:title="Rooseveltova" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271438">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271438</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Pražská 719/62, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271438" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615441.65 6604050.63</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>719</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>62</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479842531" />
+      <AD:building xlink:href="#BU.57479" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92843" xlink:title="Pražská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271446">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271446</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Dukelská 725/12, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271446" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615351.87 6603793.34</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>725</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>12</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479953531" />
+      <AD:building xlink:href="#BU.57487" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92568" xlink:title="Dukelská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271454">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271454</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Pražská 726/73, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271454" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615443.76 6603705.87</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>726</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>73</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479835531" />
+      <AD:building xlink:href="#BU.57495" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92843" xlink:title="Pražská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271471">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271471</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Pražská 731/63, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271471" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615463.37 6603840.16</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>731</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>63</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479830531" />
+      <AD:building xlink:href="#BU.57517" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92843" xlink:title="Pražská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271489">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271489</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Pražská 732/61, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271489" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615463.92 6603865.57</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>732</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>61</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479829531" />
+      <AD:building xlink:href="#BU.57525" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92843" xlink:title="Pražská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271497">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271497</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Pražská 733/59, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271497" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615467.16 6603893.68</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>733</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>59</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479828531" />
+      <AD:building xlink:href="#BU.57533" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92843" xlink:title="Pražská" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <member>
+    <AD:Address gml:id="AD.271519">
+      <AD:inspireId>
+        <base:Identifier>
+          <base:localId>AD.271519</base:localId>
+          <base:namespace>CZ-00025712-CUZK_AD</base:namespace>
+        </base:Identifier>
+      </AD:inspireId>
+      <AD:alternativeIdentifier>Malátova 735/4, 40746 Krásná Lípa</AD:alternativeIdentifier>
+      <AD:position>
+        <AD:GeographicPosition>
+          <AD:geometry>
+            <gml:Point gml:id="P.AD.271519" srsName="EPSG:900913" srsDimension="2">
+              <gml:pos>1615554.25 6603887.78</gml:pos>
+            </gml:Point>
+          </AD:geometry>
+          <AD:specification>entrance</AD:specification>
+          <AD:method>byAdministrator</AD:method>
+          <AD:default>true</AD:default>
+        </AD:GeographicPosition>
+      </AD:position>
+      <AD:status />
+      <AD:locator>
+        <AD:AddressLocator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>č.p.</AD:designator>
+              <AD:type>buildingIdentifierPrefix</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>735</AD:designator>
+              <AD:type>buildingIdentifier</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:designator>
+            <AD:LocatorDesignator>
+              <AD:designator>4</AD:designator>
+              <AD:type>addressNumber</AD:type>
+            </AD:LocatorDesignator>
+          </AD:designator>
+          <AD:level>siteLevel</AD:level>
+        </AD:AddressLocator>
+      </AD:locator>
+      <AD:validFrom>2013-12-28T19:57:14Z</AD:validFrom>
+      <AD:beginLifespanVersion>2013-12-28T19:57:14Z</AD:beginLifespanVersion>
+      <AD:endLifespanVersion xsi:nil="true" />
+      <AD:parcel xlink:href="#CP.479825531" />
+      <AD:building xlink:href="#BU.57550" />
+      <AD:component xlink:href="#AU.1.1" xlink:title="Česká Republika" />
+      <AD:component xlink:href="#AU.4.562611" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#AA.73610" xlink:title="Krásná Lípa" />
+      <AD:component xlink:href="#TF.92711" xlink:title="Malátova" />
+      <AD:component xlink:href="#PD.40746" xlink:title="40746" />
+    </AD:Address>
+  </member>
+  <truncatedResponse>
+    <ExceptionReport version="1.0.0" xmlns="http://www.opengis.net/ows/1.1">
+      <Exception exceptionCode="NoApplicableCode">
+        <ExceptionText>Response truncated due to too many objects in requested area (max. 10 for this feature)!</ExceptionText>
+      </Exception>
+    </ExceptionReport>
+  </truncatedResponse>
+</FeatureCollection>

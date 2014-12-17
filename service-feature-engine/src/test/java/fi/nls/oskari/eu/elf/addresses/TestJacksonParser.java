@@ -26,7 +26,7 @@ public class TestJacksonParser {
      * @throws IOException
      * @throws XMLStreamException
      */
-    // @Ignore("Not ready")
+    @Ignore("Not ready")
     @Test
     public void test_ELF_Master_LoD0_Address_ign_fr_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -49,8 +49,8 @@ public class TestJacksonParser {
                 outputProcessor.setOutput(fouts);
 
                 JacksonParserRecipe recipe = new ELF_MasterLoD0_Address_Parser();
-                // recipe.setLenient(true);
-                recipe.getGeometryDeserializer().setIgnoreProps(true);
+                recipe.setLenient(true);
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 engine.setRecipe(recipe);
 

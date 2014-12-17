@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:GN="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:CP="urn:x-inspire:specification:gmlas:CadastralParcels:3.0" xmlns:gmd="http://www.isotc211.org/2005/gmd" xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/deprecatedTypes.xsd http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd urn:x-inspire:specification:gmlas:GeographicalNames:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/GeographicalNames.xsd urn:x-inspire:specification:gmlas:CadastralParcels:3.0 http://services.cuzk.cz/xsd/inspire/specification/3.0rc3/CadastralParcels.xsd" timeStamp="2014-12-17T12:13:21" numberMatched="10" numberReturned="10" xmlns="http://www.opengis.net/wfs/2.0">
+  <boundedBy>
+    <gml:Envelope srsName="EPSG:900913" srsDimension="2">
+      <gml:lowerCorner>1612777.9874371 6316019.25503298</gml:lowerCorner>
+      <gml:upperCorner>1613311.3190619 6316130.29717187</gml:upperCorner>
+    </gml:Envelope>
+  </boundedBy>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512647">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512647" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612777.987 6316111.796 1612783.161 6316118.107 1612791.263 6316128.177 1612793.264 6316130.138 1612795.665 6316130.297 1612798.516 6316130.208 1612807.122 6316118.126 1612820.693 6316099.048 1612822.071 6316097.427</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512647</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105202308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512648">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512648" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612822.071 6316097.427 1612841.059 6316075.177 1612868.56 6316056.353 1612884.513 6316046.515</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512648</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105203308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512649">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512649" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612884.513 6316046.515 1612893.492 6316040.983 1612938.631 6316026.449</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512649</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105204308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512650">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512650" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612938.631 6316026.449 1612941.954 6316025.388 1612955.7 6316023.713</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512650</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105205308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512652">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512652" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612955.7 6316023.713 1612978.342 6316020.951</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512652</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105206308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512653">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512653" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1612978.342 6316020.951 1612992.276 6316019.255 1613026.27 6316019.813</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512653</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105207308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512654">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512654" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1613026.27 6316019.813 1613040.896 6316020.053 1613047.077 6316020.668</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512654</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105208308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512656">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512656" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1613047.077 6316020.668 1613118.229 6316027.788 1613148.02 6316034.052</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512656</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105209308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512658">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512658" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1613148.02 6316034.052 1613153.015 6316035.108 1613187.188 6316039.45 1613243.77 6316046.367 1613282.223 6316049.083</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512658</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452474308" />
+    </CP:CadastralBoundary>
+  </member>
+  <member>
+    <CP:CadastralBoundary gml:id="CB.7512659">
+      <CP:beginLifespanVersion>2011-08-26T09:03:49Z</CP:beginLifespanVersion>
+      <CP:estimatedAccuracy uom="m">0.14</CP:estimatedAccuracy>
+      <CP:geometry>
+        <gml:Curve gml:id="C.CB.7512659" srsName="EPSG:900913" srsDimension="2">
+          <gml:segments>
+            <gml:LineStringSegment>
+              <gml:posList>1613282.223 6316049.083 1613295.565 6316050.028 1613311.319 6316052.636</gml:posList>
+            </gml:LineStringSegment>
+          </gml:segments>
+        </gml:Curve>
+      </CP:geometry>
+      <CP:inspireId>
+        <base:Identifier>
+          <base:localId>CB.7512659</base:localId>
+          <base:namespace>CZ-00025712-CUZK_CP</base:namespace>
+        </base:Identifier>
+      </CP:inspireId>
+      <CP:parcel xlink:type="simple" xlink:href="#CP.2452473308" />
+      <CP:parcel xlink:type="simple" xlink:href="#CP.3105210308" />
+    </CP:CadastralBoundary>
+  </member>
+  <truncatedResponse>
+    <ExceptionReport version="1.0.0" xmlns="http://www.opengis.net/ows/1.1">
+      <Exception exceptionCode="NoApplicableCode">
+        <ExceptionText>Response truncated due to too many objects in requested area (max. 10 for this feature)!</ExceptionText>
+      </Exception>
+    </ExceptionReport>
+  </truncatedResponse>
+</FeatureCollection>
