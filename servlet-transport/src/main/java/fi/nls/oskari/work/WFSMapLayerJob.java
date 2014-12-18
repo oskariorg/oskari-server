@@ -558,7 +558,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 log.debug("Requested geometry", fid);
                 List<Object> gvalues = new ArrayList<Object>();
                 gvalues.add(fid);
-                gvalues.add(geometry); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+                if( geometry != null ) {
+                gvalues.add(geometry.toText()); //feature.getAttribute(this.layer.getGMLGeometryProperty()));
+                } else {
+                    gvalues.add(null);
+                }
                 this.geomValuesList.add(gvalues);
             }
 

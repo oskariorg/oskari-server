@@ -29,6 +29,10 @@ import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.ResultProcessor;
 
+import org.eclipse.jetty.util.ajax.JSON;
+import org.eclipse.jetty.util.ajax.JSON.Output;
+import org.eclipse.jetty.util.ajax.JSONObjectConvertor;
+
 public class FEMapLayerJobTest {
     protected static final Logger log = LogFactory
             .getLogger(FEMapLayerJobTest.class);
@@ -108,7 +112,7 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestResultProcessor resultProcessor = new TestResultProcessor();
+        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
                 session, FEMapLayerJobTest.groovyLayerJSON);
@@ -143,7 +147,7 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestResultProcessor resultProcessor = new TestResultProcessor();
+        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
                 session, FEMapLayerJobTest.javaLayerJSON);
@@ -164,7 +168,7 @@ public class FEMapLayerJobTest {
                 && results.get("/wfs/image") == 30);
 
     }
-    
+
     @org.junit.Ignore("Requires Backend")
     @Test
     public void testNamedPlaceJavaRequestWithLegacyJson() throws IOException {
@@ -178,7 +182,42 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestResultProcessor resultProcessor = new TestLegacyJsonResultProcessor();
+        TestJsonResultProcessor resultProcessor = new TestLegacyJsonResultProcessor();
+
+        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
+                session, FEMapLayerJobTest.javaLayerJSON);
+
+        job.run();
+
+        HashMap<String, Integer> results = resultProcessor.getResults();
+        for (Entry<String, Integer> entry : results.entrySet()) {
+
+            log.debug(entry.getKey(), entry.getValue());
+        }
+
+        assertTrue(results.get("/wfs/properties") != null
+                && results.get("/wfs/properties") > 0);
+        assertTrue(results.get("/wfs/feature") != null
+                && results.get("/wfs/feature") > 0);
+        assertTrue(results.get("/wfs/image") != null
+                && results.get("/wfs/image") == 30);
+
+    }
+
+    //@org.junit.Ignore("Requires Backend")
+    @Test
+    public void testNamedPlaceJavaRequestWithJettyJson() throws IOException {
+
+        SessionStore session = SessionStore.setJSON(sessionJSON);
+
+        Map<String, Layer> layers = session.getLayers();
+        for (Layer layer : layers.values()) {
+            layer.setTiles(session.getGrid().getBounds()); // init bounds to
+                                                           // tiles (render
+                                                           // all)
+        }
+
+        TestJsonResultProcessor resultProcessor = new TestJettyJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
                 session, FEMapLayerJobTest.javaLayerJSON);
@@ -213,7 +252,7 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestResultProcessor resultProcessor = new TestResultProcessor();
+        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
 
         int nThreads = 5;
         int nJobs = 10;
@@ -245,30 +284,34 @@ public class FEMapLayerJobTest {
 
     }
 
-    class TestResultProcessor implements ResultProcessor {
+    abstract class TestJsonResultProcessor implements ResultProcessor {
 
-        // let's use one used by transport
+        protected TestJsonResultProcessor() {
+
+        }
+
+        protected long resultsCounter = 0;
+        protected final HashMap<String, Integer> results = new HashMap<String, Integer>();
+
+        public HashMap<String, Integer> getResults() {
+            return results;
+        }
+    }
+
+    public class TestDefaultJsonResultProcessor extends TestJsonResultProcessor {
+
         protected ObjectMapper json = new ObjectMapper();
         protected ObjectWriter writer;
 
-        protected TestResultProcessor() {
+        public TestDefaultJsonResultProcessor() {
             SerializationConfig x = json.getSerializationConfig()
                     .withSerializationInclusion(Inclusion.NON_NULL);
             json.setSerializationConfig(x);
             writer = json.writer(new DefaultPrettyPrinter());
         }
 
-        long resultsCounter = 0;
-        final HashMap<String, Integer> results = new HashMap<String, Integer>();
-
-        public HashMap<String, Integer> getResults() {
-            return results;
-        }
-
         @Override
         public void addResults(String clientId, String channel, Object data) {
-            // TODO Auto-generated method stub
-
             // display a snapshot
             if (resultsCounter < 10) {
 
@@ -298,9 +341,9 @@ public class FEMapLayerJobTest {
             }
         }
 
-    };
+    }
 
-    class TestLegacyJsonResultProcessor extends TestResultProcessor {
+    class TestLegacyJsonResultProcessor extends TestDefaultJsonResultProcessor {
         protected TestLegacyJsonResultProcessor() {
             super();
 
@@ -308,6 +351,30 @@ public class FEMapLayerJobTest {
 
             json.registerModule(simpleModule);
 
+        }
+    }
+
+    class TestJettyJsonResultProcessor extends TestJsonResultProcessor {
+
+        protected JSON json = new JSON();
+
+        @Override
+        public void addResults(String clientId, String channel, Object data) {
+            // display a snapshot
+            if (resultsCounter < 10) {
+
+                String result = json.toJSON(data);
+
+                log.debug("JettyJSON",result);
+            }
+            resultsCounter++;
+
+            // log.debug(clientId, channel, data);
+            if (results.get(channel) == null) {
+                results.put(channel, 1);
+            } else {
+                results.put(channel, results.get(channel) + 1);
+            }
         }
     }
 

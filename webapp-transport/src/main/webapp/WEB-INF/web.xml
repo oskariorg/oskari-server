@@ -21,6 +21,11 @@
             <param-value>org.cometd.websocket.server.WebSocketTransport</param-value>
         </init-param>
         <init-param>
+            <param-name>jsonContext</param-name>
+            <param-value>org.cometd.server.JacksonJSONContextServer</param-value>
+        </init-param>
+        
+        <init-param>
             <param-name>maxSessionsPerBrowser</param-name>
             <param-value>-1</param-value>
         </init-param>
