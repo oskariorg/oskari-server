@@ -2,7 +2,9 @@ package fi.nls.oskari.fe.gml.util;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class GeometryProperty {
+import fi.nls.oskari.fe.xml.util.Reference;
+
+public class GeometryProperty extends Reference {
 
     private Geometry geometry;
 

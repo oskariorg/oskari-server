@@ -7,7 +7,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 public class Reference extends Associable {
 
-    @JacksonXmlProperty(isAttribute = true, namespace = "http://www.w3.org/1999/xlink")
+    
+    //@JacksonXmlProperty(localName="owns", isAttribute = true)
+    @XmlAttribute(name = "owns", required = false)
     public String owns;
 
     @JacksonXmlText

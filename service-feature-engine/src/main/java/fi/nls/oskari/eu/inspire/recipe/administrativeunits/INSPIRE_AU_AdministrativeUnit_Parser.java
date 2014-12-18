@@ -12,7 +12,7 @@ public class INSPIRE_AU_AdministrativeUnit_Parser extends GML32 {
     public void parse() throws IOException {
 
         setLenient(true);
-        getGeometryDeserializer().setIgnoreProps(true);
+        
         
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 AdministrativeUnit.QN);

@@ -90,7 +90,6 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
 
-    // @Ignore("Requires Web Service")
     @Ignore("Requires Web Service")
     @Test
     public void testElfLoD0Address() throws MalformedURLException, IOException {
