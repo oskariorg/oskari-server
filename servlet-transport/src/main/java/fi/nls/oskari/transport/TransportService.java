@@ -2,85 +2,49 @@ package fi.nls.oskari.transport;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.List;
-
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputModule;
-import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.*;
-import fi.nls.oskari.worker.Job;
-import fi.nls.oskari.worker.JobQueue;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.wfs.CachingSchemaLocator;
-import fi.nls.oskari.work.fe.FEMapLayerJob;
-import java.io.IOException;
-
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
-
-import com.vividsolutions.jts.geom.Geometry;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.module.SimpleModule;
 import org.cometd.server.JacksonJSONContextServer;
 import org.cometd.server.JettyJSONContextServer;
 
-class GeometrySerializer extends
-JsonSerializer<Geometry> {
+import com.vividsolutions.jts.geom.Coordinate;
 
-@Override
-public void serialize(Geometry value, JsonGenerator jgen,
-    SerializerProvider provider) throws IOException,
-    JsonProcessingException {
-if (value == null) {
-    provider.defaultSerializeNull(jgen);
-    return;
-}
+import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.GeoJSONFilter;
+import fi.nls.oskari.pojo.Grid;
+import fi.nls.oskari.pojo.Layer;
+import fi.nls.oskari.pojo.Location;
+import fi.nls.oskari.pojo.PropertyFilter;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.pojo.Tile;
+import fi.nls.oskari.pojo.WFSCustomStyleStore;
+import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
+import fi.nls.oskari.wfs.CachingSchemaLocator;
+import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.work.OWSMapLayerJob;
+import fi.nls.oskari.work.ResultProcessor;
+import fi.nls.oskari.work.WFSCustomParserMapLayerJob;
+import fi.nls.oskari.work.WFSMapLayerJob;
+import fi.nls.oskari.work.fe.FEMapLayerJob;
+import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.worker.JobQueue;
 
-// Todo support at least GeoJSON and WKT
-provider.defaultSerializeValue(value.toText(), jgen);
 
-}
-
-@Override
-public Class<Geometry> handledType() {
-return Geometry.class;
-}
-
-}
-
-class GeometryJsonOutputModule extends SimpleModule {
-
-    GeometryJsonOutputModule() {
-        super("SimpleModule", new Version(1, 0, 0, null));
-    }
-
-    @Override
-    public void setupModule(SetupContext context) {
-        addSerializer(new GeometrySerializer());
-
-        super.setupModule(context);
-    }
-};
 
 
 
@@ -201,7 +165,7 @@ public class TransportService extends AbstractService implements ResultProcessor
             
         } else if( jsonContext instanceof JacksonJSONContextServer ) {
             ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
-            transportMapper.registerModule(new GeometryJsonOutputModule());
+            transportMapper.registerModule(new GeometryJSONOutputModule());
             
         }
 
