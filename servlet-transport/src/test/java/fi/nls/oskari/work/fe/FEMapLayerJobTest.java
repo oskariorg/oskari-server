@@ -204,7 +204,7 @@ public class FEMapLayerJobTest {
 
     }
 
-    //@org.junit.Ignore("Requires Backend")
+    @org.junit.Ignore("Requires Backend")
     @Test
     public void testNamedPlaceJavaRequestWithJettyJson() throws IOException {
 
