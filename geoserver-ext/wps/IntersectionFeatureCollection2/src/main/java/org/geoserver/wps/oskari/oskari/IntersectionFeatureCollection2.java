@@ -42,6 +42,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.MultiValuedFilter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -520,14 +521,10 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                         Geometry currentGeom = (Geometry) attribute;
 
                         if (intersectedGeometries == null && !added) {
-                            if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
-                                 intersectedGeometries = filteredCollection2(currentGeom,
+
+                            intersectedGeometries = filteredCollection(currentGeom,
                                     subFeatureCollection);
-                            }
-                            else {
-                                intersectedGeometries = filteredCollection(currentGeom,
-                                    subFeatureCollection);
-                            }
+
                             iterator = intersectedGeometries.features();
                         }
                         try {
@@ -550,7 +547,10 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                                     } else if (intersectionMode == IntersectionMode.SECOND) {
                                         attribute = (Geometry) second.getDefaultGeometry();
                                     } else if (intersectionMode == IntersectionMode.SECOND_CONTAINS) {
-                                        attribute = (Geometry) second.getDefaultGeometry();
+                                        // Only contains
+                                        attribute = null;
+                                        if (currentGeom.contains(((Geometry) second.getDefaultGeometry())))
+                                            attribute = (Geometry) second.getDefaultGeometry();
                                     } else if (intersectionMode == IntersectionMode.SECOND_CLIP) {
                                         attribute = (Geometry) currentGeom.intersection((Geometry) second.getDefaultGeometry());
                                     }
@@ -670,18 +670,6 @@ public class IntersectionFeatureCollection2 implements GSProcess {
             return subFeatureCollectionIntersection;
         }
 
-        private SimpleFeatureCollection filteredCollection2(Geometry currentGeom,
-                                                           SimpleFeatureCollection subFeatureCollection) {
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-            Filter containsFilter = ff.within(ff.property(dataGeomName),
-                    ff.literal(currentGeom));
-            SimpleFeatureCollection subFeatureCollectionIntersection = this.subFeatureCollection
-                    .subCollection(containsFilter);
-            if (subFeatureCollectionIntersection.size() == 0) {
-                subFeatureCollectionIntersection = subFeatureCollection;
-            }
-            return subFeatureCollectionIntersection;
-        }
     }
 
     static class GeometryFilterImpl implements GeometryFilter {
