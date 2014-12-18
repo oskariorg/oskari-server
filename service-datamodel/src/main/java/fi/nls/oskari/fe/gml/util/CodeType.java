@@ -3,7 +3,9 @@ package fi.nls.oskari.fe.gml.util;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-public class CodeType {
+import fi.nls.oskari.fe.xml.util.Nillable;
+
+public class CodeType extends Nillable {
 
     @JacksonXmlProperty(isAttribute = true)
     public String codeSpace;

@@ -71,8 +71,7 @@ public class GeometryPropertyDeserializer extends
 
         } else {
             
-            System.err.println("NO HANDLER in CONTEXT already? "+qn+" / "+parentQn+" - "
-                    + reader.getElementText());
+            System.err.println("NO HANDLER in CONTEXT already? "+qn+" / "+parentQn+" - ");
         }
 
         return obj;

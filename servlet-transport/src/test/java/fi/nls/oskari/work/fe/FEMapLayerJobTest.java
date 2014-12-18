@@ -26,6 +26,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Layer;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.ResultProcessor;
 
@@ -171,7 +172,7 @@ public class FEMapLayerJobTest {
 
     @org.junit.Ignore("Requires Backend")
     @Test
-    public void testNamedPlaceJavaRequestWithLegacyJson() throws IOException {
+    public void testNamedPlaceJavaRequestWithhGeometryJSONOutputModule() throws IOException {
 
         SessionStore session = SessionStore.setJSON(sessionJSON);
 
@@ -182,7 +183,7 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestLegacyJsonResultProcessor();
+        TestJsonResultProcessor resultProcessor = new TestWithGeometryJSONOutputModuleResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
                 session, FEMapLayerJobTest.javaLayerJSON);
@@ -343,11 +344,12 @@ public class FEMapLayerJobTest {
 
     }
 
-    class TestLegacyJsonResultProcessor extends TestDefaultJsonResultProcessor {
-        protected TestLegacyJsonResultProcessor() {
+    class TestWithGeometryJSONOutputModuleResultProcessor extends
+            TestDefaultJsonResultProcessor {
+        protected TestWithGeometryJSONOutputModuleResultProcessor() {
             super();
 
-            LegacyJsonOutputModule simpleModule = new LegacyJsonOutputModule();
+            GeometryJSONOutputModule simpleModule = new GeometryJSONOutputModule();
 
             json.registerModule(simpleModule);
 
@@ -365,7 +367,7 @@ public class FEMapLayerJobTest {
 
                 String result = json.toJSON(data);
 
-                log.debug("JettyJSON",result);
+                log.debug("JettyJSON", result);
             }
             resultsCounter++;
 
