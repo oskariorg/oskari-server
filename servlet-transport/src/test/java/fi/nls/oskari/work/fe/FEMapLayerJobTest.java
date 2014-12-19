@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,10 +17,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputModule;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Layer;
@@ -30,16 +29,89 @@ import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.ResultProcessor;
 
-import org.eclipse.jetty.util.ajax.JSON;
-import org.eclipse.jetty.util.ajax.JSON.Output;
-import org.eclipse.jetty.util.ajax.JSONObjectConvertor;
-
 public class FEMapLayerJobTest {
     protected static final Logger log = LogFactory
             .getLogger(FEMapLayerJobTest.class);
 
-    private static final String sessionJSON = "{\"client\":\"d1mkrsnwpwuj6310e8opd9erzmu\",\"session\":\"15qirincz105v1dopee0nsigit\",\"route\":\"\",\"uuid\":\"\",\"language\":\"en\",\"browser\":\"safari\",\"browserVersion\":537,\"location\":{\"srs\":\"EPSG:3857\",\"bbox\":[2754620.0241455,8417996.6562588,2799641.4337993,8450291.3007048],\"zoom\":9},\"grid\":{\"rows\":5,\"columns\":6,\"bounds\":[[2749287.0329785,8443539.8913184,2759070.9725977,8453323.8309375],[2759070.9725977,8443539.8913184,2768854.9122168,8453323.8309375],[2768854.9122168,8443539.8913184,2778638.8518359,8453323.8309375],[2778638.8518359,8443539.8913184,2788422.7914551,8453323.8309375],[2788422.7914551,8443539.8913184,2798206.7310742,8453323.8309375],[2798206.7310742,8443539.8913184,2807990.6706934,8453323.8309375],[2749287.0329785,8433755.9516992,2759070.9725977,8443539.8913184],[2759070.9725977,8433755.9516992,2768854.9122168,8443539.8913184],[2768854.9122168,8433755.9516992,2778638.8518359,8443539.8913184],[2778638.8518359,8433755.9516992,2788422.7914551,8443539.8913184],[2788422.7914551,8433755.9516992,2798206.7310742,8443539.8913184],[2798206.7310742,8433755.9516992,2807990.6706934,8443539.8913184],[2749287.0329785,8423972.0120801,2759070.9725977,8433755.9516992],[2759070.9725977,8423972.0120801,2768854.9122168,8433755.9516992],[2768854.9122168,8423972.0120801,2778638.8518359,8433755.9516992],[2778638.8518359,8423972.0120801,2788422.7914551,8433755.9516992],[2788422.7914551,8423972.0120801,2798206.7310742,8433755.9516992],[2798206.7310742,8423972.0120801,2807990.6706934,8433755.9516992],[2749287.0329785,8414188.0724609,2759070.9725977,8423972.0120801],[2759070.9725977,8414188.0724609,2768854.9122168,8423972.0120801],[2768854.9122168,8414188.0724609,2778638.8518359,8423972.0120801],[2778638.8518359,8414188.0724609,2788422.7914551,8423972.0120801],[2788422.7914551,8414188.0724609,2798206.7310742,8423972.0120801],[2798206.7310742,8414188.0724609,2807990.6706934,8423972.0120801],[2749287.0329785,8404404.1328418,2759070.9725977,8414188.0724609],[2759070.9725977,8404404.1328418,2768854.9122168,8414188.0724609],[2768854.9122168,8404404.1328418,2778638.8518359,8414188.0724609],[2778638.8518359,8404404.1328418,2788422.7914551,8414188.0724609],[2788422.7914551,8404404.1328418,2798206.7310742,8414188.0724609],[2798206.7310742,8404404.1328418,2807990.6706934,8414188.0724609]]},\"tileSize\":{\"width\":256,\"height\":256},\"mapSize\":{\"width\":1178,\"height\":845},\"mapScales\":[5.546789320400156E7,2.773394660200078E7,1.386697330100039E7,6933486.6505002,3466743.3252501,1733371.66262505,866685.83131252,433342.91565626,216671.45782813,108335.72891407,54167.86445703,27083.93222852,13541.96611426,6770.98305713,3385.49152856,1692.74576428,846.37288214,423.18644107,211.59322054],\"layers\":{\"4\":{\"id\":\"4\",\"styleName\":\"default\",\"visible\":true}}}";
-    private static final String groovyLayerJSON = "{\"selectedFeatureParams\":{},"
+    private static final String ELFsessionJSON = "{\"client\":\"d1mkrsnwpwuj6310e8opd9erzmu\","
+            + "\"session\":\"15qirincz105v1dopee0nsigit\","
+            + "\"route\":\"\",\"uuid\":\"\","
+            + "\"language\":\"en\",\"browser\":\"safari\","
+            + "\"browserVersion\":537,"
+            + "\"location\":{\"srs\":\"EPSG:3857\","
+            + "\"bbox\":[2754620.0241455,8417996.6562588,2799641.4337993,8450291.3007048],\"zoom\":9},"
+            + "\"grid\":{\"rows\":4,\"columns\":6,\"bounds\":["
+            + "[2749287.0329785,8443539.8913184,2759070.9725977,8453323.8309375],"
+            + "[2759070.9725977,8443539.8913184,2768854.9122168,8453323.8309375],"
+            + "[2768854.9122168,8443539.8913184,2778638.8518359,8453323.8309375],"
+            + "[2778638.8518359,8443539.8913184,2788422.7914551,8453323.8309375],"
+            + "[2788422.7914551,8443539.8913184,2798206.7310742,8453323.8309375],"
+            + "[2798206.7310742,8443539.8913184,2807990.6706934,8453323.8309375],"
+            + "[2749287.0329785,8433755.9516992,2759070.9725977,8443539.8913184],"
+            + "[2759070.9725977,8433755.9516992,2768854.9122168,8443539.8913184],"
+            + "[2768854.9122168,8433755.9516992,2778638.8518359,8443539.8913184],"
+            + "[2778638.8518359,8433755.9516992,2788422.7914551,8443539.8913184],"
+            + "[2788422.7914551,8433755.9516992,2798206.7310742,8443539.8913184],"
+            + "[2798206.7310742,8433755.9516992,2807990.6706934,8443539.8913184],"
+            + "[2749287.0329785,8423972.0120801,2759070.9725977,8433755.9516992],"
+            + "[2759070.9725977,8423972.0120801,2768854.9122168,8433755.9516992],"
+            + "[2768854.9122168,8423972.0120801,2778638.8518359,8433755.9516992],"
+            + "[2778638.8518359,8423972.0120801,2788422.7914551,8433755.9516992],"
+            + "[2788422.7914551,8423972.0120801,2798206.7310742,8433755.9516992],"
+            + "[2798206.7310742,8423972.0120801,2807990.6706934,8433755.9516992],"
+            + "[2749287.0329785,8414188.0724609,2759070.9725977,8423972.0120801],"
+            + "[2759070.9725977,8414188.0724609,2768854.9122168,8423972.0120801],"
+            + "[2768854.9122168,8414188.0724609,2778638.8518359,8423972.0120801],"
+            + "[2778638.8518359,8414188.0724609,2788422.7914551,8423972.0120801],"
+            + "[2788422.7914551,8414188.0724609,2798206.7310742,8423972.0120801],"
+            + "[2798206.7310742,8414188.0724609,2807990.6706934,8423972.0120801],"
+            + "[2749287.0329785,8404404.1328418,2759070.9725977,8414188.0724609],"
+            + "[2759070.9725977,8404404.1328418,2768854.9122168,8414188.0724609],"
+            + "[2768854.9122168,8404404.1328418,2778638.8518359,8414188.0724609],"
+            + "[2778638.8518359,8404404.1328418,2788422.7914551,8414188.0724609],"
+            + "[2788422.7914551,8404404.1328418,2798206.7310742,8414188.0724609],"
+            + "[2798206.7310742,8404404.1328418,2807990.6706934,8414188.0724609]"
+            + "]},"
+            + "\"tileSize\":{\"width\":256,\"height\":256},"
+            + "\"mapSize\":{\"width\":1178,\"height\":845},"
+            + "\"mapScales\":[5.546789320400156E7,2.773394660200078E7,1.386697330100039E7,6933486.6505002,3466743.3252501,1733371.66262505,866685.83131252,433342.91565626,216671.45782813,108335.72891407,54167.86445703,27083.93222852,13541.96611426,6770.98305713,3385.49152856,1692.74576428,846.37288214,423.18644107,211.59322054],"
+            + "\"layers\":{\"4\":{\"id\":\"4\",\"styleName\":\"default\",\"visible\":true}}}";
+
+    private static final String RYSPsessionJSON = "{\"client\":\"jd1msc64ns1lbsj1j1r9pgpit0n7\","
+            + "\"session\":\"08A31430DF0E847D6DE50A07E9FBB075\","
+            + "\"route\":\".node1\",\"uuid\":\"\",\"language\":\"fi\",\"browser\":\"safari\",\"browserVersion\":537,"
+            + "\"location\":{\"srs\":\"EPSG:3067\",\"bbox\":[237241.061,6709202.633,237818.061,6709549.633],\"zoom\":12},"
+            + "\"grid\":{\"rows\":4,\"columns\":6,\"bounds\":["
+            + "[237216.0,6709504.0,237344.0,6709632.0],"
+            + "[237344.0,6709504.0,237472.0,6709632.0],"
+            + "[237472.0,6709504.0,237600.0,6709632.0],"
+            + "[237600.0,6709504.0,237728.0,6709632.0],"
+            + "[237728.0,6709504.0,237856.0,6709632.0],"
+            + "[237856.0,6709504.0,237984.0,6709632.0],"
+            + "[237216.0,6709376.0,237344.0,6709504.0],"
+            + "[237344.0,6709376.0,237472.0,6709504.0],"
+            + "[237472.0,6709376.0,237600.0,6709504.0],"
+            + "[237600.0,6709376.0,237728.0,6709504.0],"
+            + "[237728.0,6709376.0,237856.0,6709504.0],"
+            + "[237856.0,6709376.0,237984.0,6709504.0],"
+            + "[237216.0,6709248.0,237344.0,6709376.0],"
+            + "[237344.0,6709248.0,237472.0,6709376.0],"
+            + "[237472.0,6709248.0,237600.0,6709376.0],"
+            + "[237600.0,6709248.0,237728.0,6709376.0],"
+            + "[237728.0,6709248.0,237856.0,6709376.0],"
+            + "[237856.0,6709248.0,237984.0,6709376.0],"
+            + "[237216.0,6709120.0,237344.0,6709248.0],"
+            + "[237344.0,6709120.0,237472.0,6709248.0],"
+            + "[237472.0,6709120.0,237600.0,6709248.0],"
+            + "[237600.0,6709120.0,237728.0,6709248.0],"
+            + "[237728.0,6709120.0,237856.0,6709248.0],"
+            + "[237856.0,6709120.0,237984.0,6709248.0]]},"
+            + "\"tileSize\":{\"width\":256,\"height\":256},"
+            + "\"mapSize\":{\"width\":1154,\"height\":694},"
+            + "\"mapScales\":[5805342.72,2902671.36,1451335.68,725667.84,362833.92,181416.96,90708.48,45354.24,22677.12,11338.56,5669.28,2834.64,1417.32,708.66],"
+            + "\"layers\":{\"4\":{\"id\":\"4\",\"styleName\":\"default\",\"visible\":true}}}";
+
+    private static final String ELFNamedPlaceGroovyLayerJSON = "{\"selectedFeatureParams\":{},"
             + "\"jobType\":\"oskari-feature-engine\","
             + "\"getMapTiles\":true,\"layerName\":\"ELF_GN_nls_fi\","
             + "\"featureElement\":\"NamedPlace\",\"getHighlightImage\":true,\"templateType\":\"mah taip\","
@@ -53,14 +125,16 @@ public class FEMapLayerJobTest {
             + "\"isPublished\":false,"
             + "\"featureParamsLocales\":{},\"getFeatureInfo\":true,"
             + "\"tileRequest\":false,"
-            + "\"styles\":{\"2\":{\"SLDStyle\":\"/fi/nls/oskari/fe/output/style/inspire/gn/nls_fi.xml\",\"id\":\"2\",\"name\":\"oskari-feature-engine\"}},\"layerId\":\"4\",\"WFSVersion\":\"2.0.0\","
+            + "\"styles\":{\"2\":{\"SLDStyle\":\"/fi/nls/oskari/fe/output/style/inspire/gn/nls_fi.xml\",\"id\":\"2\","
+            + "\"name\":\"oskari-feature-engine\"}},\"layerId\":\"4\",\"WFSVersion\":\"2.0.0\","
             + "\"responseTemplate\":\"/fi/nls/oskari/fe/input/format/gml/gn/ELF_generic_GN.groovy\",\"GML2Separator\":false,\"minScale\":120000,"
             + "\"featureNamespace\":\"elf-lod1gn\","
             + "\"SRSName\":\"EPSG:3857\","
             + "\"GMLVersion\":\"3.2.1\","
             + "\"featureNamespaceURI\":\"http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0\","
             + "\"templateDescription\":\"ELF GN PoC\",\"templateName\":\"ELF GN\",\"uiName\":\"GN Geographical Names - nls.fi\",\"geometryType\":\"2d\"}";
-    private static final String javaLayerJSON = "{\"selectedFeatureParams\":{},"
+
+    private static final String ELFNamedPlaceJavaLayerJSON = "{\"selectedFeatureParams\":{},"
             + "\"jobType\":\"oskari-feature-engine\","
             + "\"getMapTiles\":true,"
             + "\"layerName\":\"ELF_GN_nls_fi\",\"featureElement\":\"NamedPlace\",\"getHighlightImage\":true,"
@@ -83,7 +157,38 @@ public class FEMapLayerJobTest {
             + "\"featureNamespaceURI\":\"http://www.locationframework.eu/schemas/GeographicalNames/MasterLoD1/1.0\","
             + "\"templateDescription\":\"ELF GN PoC\","
             + "\"templateName\":\"ELF GN\",\"uiName\":\"GN Geographical Names - nls.fi\",\"geometryType\":\"2d\"}";
-    private static final String permJSON = "{\"layerIds\":[34,32,12,8,17,28,36,15,10,26,11,38,4,18,30,16,33,6,19,29,2,21,3,23,31,35,20,5,13,22,9,7,37,14,27,1]}";
+
+    private static final String RYSPkantaLiikennevaylajavaLayerJSON = "{\"selectedFeatureParams\":{},"
+            + "\"jobType\":\"oskari-feature-engine\","
+            + "\"getMapTiles\":true,"
+            + "\"layerName\":\"RYSPkantaLiikennevayla\",\"featureElement\":\"Liikennevayla\",\"getHighlightImage\":true,"
+            + "\"templateType\":\"mah taip\",\"GMLGeometryProperty\":\"geometry\",\"geometryNamespaceURI\":\"\","
+            + "\"featureType\":{"
+            + "\"default\":\""
+            + "         *geometry:Geometry,name:String,beginLifespanVersion:String,endLifespanVersion:String"
+            + "\"},"
+            + "\"tileBuffer\":{\"default\":1,\"oskari_custom\":1},\"maxFeatures\":5000,\"maxScale\":1,"
+            + "\"URL\":\"http://opaskartta.turku.fi/TeklaOGCWeb/WFS.ashx\","
+            + "\"requestTemplate\":\"/fi/nls/oskari/fe/input/format/gml/krysp/kanta_Liikennevayla_wfs_template.xml\","
+            + "\"isPublished\":false,\"featureParamsLocales\":{},"
+            + "\"getFeatureInfo\":true,\"tileRequest\":false,"
+            + "\"styles\":{\"2\":{\"SLDStyle\":\"/fi/nls/oskari/fe/output/style/inspire/gn/nls_fi.xml\","
+            + "\"id\":\"2\","
+            + "\"name\":\"oskari-feature-engine\"}},"
+            + "\"layerId\":\"4\","
+            + "\"WFSVersion\":\"2.0.0\","
+            + "\"responseTemplate\":\"fi.nls.oskari.fi.rysp.recipe.kanta.RYSP_kanta_Liikennevayla_Parser\","
+            + "\"GML2Separator\":false,"
+            + "\"minScale\":50000,"
+            + "\"featureNamespace\":\"kanta\","
+            + "\"SRSName\":\"EPSG:3067\","
+            + "\"GMLVersion\":\"3.1.1\","
+            + "\"featureNamespaceURI\":\"http://www.paikkatietopalvelu.fi/gml/kantakartta\","
+            + "\"templateDescription\":\"RYSP Liikennevayla PoC\","
+            + "\"templateName\":\"RYSP Liikennevayla\",\"uiName\":\"RYSP Liikennevayla - Turku\",\"geometryType\":\"2d\"}";
+
+    private static final String permJSON = 
+            "{\"layerIds\":[34,32,12,8,17,28,36,15,10,26,11,38,4,18,30,16,33,6,19,29,2,21,3,23,31,35,20,5,13,22,9,7,37,14,27,1]}";
 
     protected static void setupProxy() {
 
@@ -104,7 +209,7 @@ public class FEMapLayerJobTest {
     @Test
     public void testNamedPlaceGroovyRequest() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
+        SessionStore session = SessionStore.setJSON(ELFsessionJSON);
 
         Map<String, Layer> layers = session.getLayers();
         for (Layer layer : layers.values()) {
@@ -113,10 +218,10 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
+        CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, FEMapLayerJobTest.groovyLayerJSON);
+                session, FEMapLayerJobTest.ELFNamedPlaceGroovyLayerJSON);
 
         job.run();
 
@@ -139,7 +244,7 @@ public class FEMapLayerJobTest {
     @Test
     public void testNamedPlaceJavaRequestWithDefaultJson() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
+        SessionStore session = SessionStore.setJSON(ELFsessionJSON);
 
         Map<String, Layer> layers = session.getLayers();
         for (Layer layer : layers.values()) {
@@ -148,10 +253,10 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
+        CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, FEMapLayerJobTest.javaLayerJSON);
+                session, FEMapLayerJobTest.ELFNamedPlaceJavaLayerJSON);
 
         job.run();
 
@@ -172,9 +277,10 @@ public class FEMapLayerJobTest {
 
     @org.junit.Ignore("Requires Backend")
     @Test
-    public void testNamedPlaceJavaRequestWithhGeometryJSONOutputModule() throws IOException {
+    public void testNamedPlaceJavaRequestWithhGeometryJSONOutputModule()
+            throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
+        SessionStore session = SessionStore.setJSON(ELFsessionJSON);
 
         Map<String, Layer> layers = session.getLayers();
         for (Layer layer : layers.values()) {
@@ -183,10 +289,10 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestWithGeometryJSONOutputModuleResultProcessor();
+        CounterJsonResultProcessor resultProcessor = new GeometryJacksonJSONOutputModuleResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, FEMapLayerJobTest.javaLayerJSON);
+                session, FEMapLayerJobTest.ELFNamedPlaceJavaLayerJSON);
 
         job.run();
 
@@ -209,7 +315,7 @@ public class FEMapLayerJobTest {
     @Test
     public void testNamedPlaceJavaRequestWithJettyJson() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
+        SessionStore session = SessionStore.setJSON(ELFsessionJSON);
 
         Map<String, Layer> layers = session.getLayers();
         for (Layer layer : layers.values()) {
@@ -218,10 +324,10 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestJettyJsonResultProcessor();
+        CounterJsonResultProcessor resultProcessor = new JettyJsonResultProcessor();
 
         TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, FEMapLayerJobTest.javaLayerJSON);
+                session, FEMapLayerJobTest.ELFNamedPlaceJavaLayerJSON);
 
         job.run();
 
@@ -244,7 +350,7 @@ public class FEMapLayerJobTest {
     @Test
     public void testConcurrentRequests() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
+        SessionStore session = SessionStore.setJSON(ELFsessionJSON);
 
         Map<String, Layer> layers = session.getLayers();
         for (Layer layer : layers.values()) {
@@ -253,7 +359,7 @@ public class FEMapLayerJobTest {
                                                            // all)
         }
 
-        TestJsonResultProcessor resultProcessor = new TestDefaultJsonResultProcessor();
+        CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
         int nThreads = 5;
         int nJobs = 10;
@@ -264,7 +370,8 @@ public class FEMapLayerJobTest {
 
         for (int i = 0; i < nJobs; i++) {
             TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(
-                    resultProcessor, session, FEMapLayerJobTest.groovyLayerJSON);
+                    resultProcessor, session,
+                    FEMapLayerJobTest.ELFNamedPlaceGroovyLayerJSON);
             jobs[i] = job;
             executor.execute(job);
 
@@ -285,9 +392,9 @@ public class FEMapLayerJobTest {
 
     }
 
-    abstract class TestJsonResultProcessor implements ResultProcessor {
+    abstract class CounterJsonResultProcessor implements ResultProcessor {
 
-        protected TestJsonResultProcessor() {
+        protected CounterJsonResultProcessor() {
 
         }
 
@@ -297,14 +404,26 @@ public class FEMapLayerJobTest {
         public HashMap<String, Integer> getResults() {
             return results;
         }
+
+        protected void logResults(String channel) {
+            resultsCounter++;
+
+            // log.debug(clientId, channel, data);
+            if (results.get(channel) == null) {
+                results.put(channel, 1);
+            } else {
+                results.put(channel, results.get(channel) + 1);
+            }
+
+        }
     }
 
-    public class TestDefaultJsonResultProcessor extends TestJsonResultProcessor {
+    class JacksonCounterJsonResultProcessor extends CounterJsonResultProcessor {
 
         protected ObjectMapper json = new ObjectMapper();
         protected ObjectWriter writer;
 
-        public TestDefaultJsonResultProcessor() {
+        public JacksonCounterJsonResultProcessor() {
             SerializationConfig x = json.getSerializationConfig()
                     .withSerializationInclusion(Inclusion.NON_NULL);
             json.setSerializationConfig(x);
@@ -332,21 +451,14 @@ public class FEMapLayerJobTest {
 
                 log.debug(new String(outs.toByteArray()));
             }
-            resultsCounter++;
-
-            // log.debug(clientId, channel, data);
-            if (results.get(channel) == null) {
-                results.put(channel, 1);
-            } else {
-                results.put(channel, results.get(channel) + 1);
-            }
+            logResults(channel);
         }
 
     }
 
-    class TestWithGeometryJSONOutputModuleResultProcessor extends
-            TestDefaultJsonResultProcessor {
-        protected TestWithGeometryJSONOutputModuleResultProcessor() {
+    class GeometryJacksonJSONOutputModuleResultProcessor extends
+            JacksonCounterJsonResultProcessor {
+        protected GeometryJacksonJSONOutputModuleResultProcessor() {
             super();
 
             GeometryJSONOutputModule simpleModule = new GeometryJSONOutputModule();
@@ -356,7 +468,7 @@ public class FEMapLayerJobTest {
         }
     }
 
-    class TestJettyJsonResultProcessor extends TestJsonResultProcessor {
+    class JettyJsonResultProcessor extends CounterJsonResultProcessor {
 
         protected JSON json = new JSON();
 
@@ -369,14 +481,8 @@ public class FEMapLayerJobTest {
 
                 log.debug("JettyJSON", result);
             }
-            resultsCounter++;
-
-            // log.debug(clientId, channel, data);
-            if (results.get(channel) == null) {
-                results.put(channel, 1);
-            } else {
-                results.put(channel, results.get(channel) + 1);
-            }
+           
+            logResults(channel);
         }
     }
 
@@ -406,6 +512,41 @@ public class FEMapLayerJobTest {
             }
             return null;
         }
+
+    }
+
+    @org.junit.Ignore("Requires Backend")
+    @Test
+    public void testRYSPkantaLiikennevaylaParser() throws IOException {
+
+        SessionStore session = SessionStore.setJSON(RYSPsessionJSON);
+
+        Map<String, Layer> layers = session.getLayers();
+        for (Layer layer : layers.values()) {
+            layer.setTiles(session.getGrid().getBounds()); // init bounds to
+                                                           // tiles (render
+                                                           // all)
+        }
+
+        CounterJsonResultProcessor resultProcessor = new GeometryJacksonJSONOutputModuleResultProcessor();
+
+        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
+                session, FEMapLayerJobTest.RYSPkantaLiikennevaylajavaLayerJSON);
+
+        job.run();
+
+        HashMap<String, Integer> results = resultProcessor.getResults();
+        for (Entry<String, Integer> entry : results.entrySet()) {
+
+            log.debug(entry.getKey(), entry.getValue());
+        }
+
+        assertTrue(results.get("/wfs/properties") != null
+                && results.get("/wfs/properties") > 0);
+        assertTrue(results.get("/wfs/feature") != null
+                && results.get("/wfs/feature") > 0);
+        assertTrue(results.get("/wfs/image") != null
+                && results.get("/wfs/image") == 24);
 
     }
 

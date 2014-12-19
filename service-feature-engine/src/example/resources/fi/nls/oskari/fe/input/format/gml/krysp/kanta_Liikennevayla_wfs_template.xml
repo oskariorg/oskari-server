@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wfs:GetFeature xmlns:wfs="http://www.opengis.net/wfs"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kanta="http://www.paikkatietopalvelu.fi/gml/kantakartta"
+    xmlns:yht="http://www.paikkatietopalvelu.fi/gml/yhteiset"
+    xmlns:mkos="http://www.paikkatietopalvelu.fi/gml/opastavattiedot/osoitteet"
+    xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+    version="1.1.0" service="WFS" maxFeatures="1000">
+    <wfs:Query typeName="kanta:Liikennevayla" srsName="EPSG:3067">
+        <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"
+            xmlns:gml="http://www.opengis.net/gml">
+            <ogc:BBOX>
+                <ogc:PropertyName>yht:sijainti</ogc:PropertyName>
+                <gml:Envelope srsName="EPSG:3067">
+                    <gml:lowerCorner>[LOWER_CORNER]</gml:lowerCorner>
+                    <gml:upperCorner>[UPPER_CORNER]</gml:upperCorner>
+                </gml:Envelope>
+            </ogc:BBOX>
+        </ogc:Filter>
+    </wfs:Query>
+</wfs:GetFeature>

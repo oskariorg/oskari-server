@@ -92,7 +92,7 @@ public class TestJacksonParser extends TestHelper {
 
                 JacksonParserRecipe recipe = new RYSP_kanta_Rakennus_Parser();
                 // recipe.getGeometryDeserializer().setIgnoreProps(true);
-                recipe.setLenient(true);
+                
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
