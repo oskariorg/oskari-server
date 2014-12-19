@@ -378,6 +378,10 @@ public class SchemaRoaster {
 
             // GML 3.2
 
+             
+            put(new QName("http://www.opengis.net/gml/3.2", "Null"),
+                    "fi.nls.oskari.fe.gml.util.Null");
+            
             put(new QName("http://www.opengis.net/gml/3.2", "ReferenceType"),
                     "fi.nls.oskari.fe.xml.util.Reference");
 
@@ -459,7 +463,10 @@ public class SchemaRoaster {
                     "fi.nls.oskari.fe.gml.util.DirectPositionType");
 
             // GML 3.1
+            put(new QName("http://www.opengis.net/gml", "Null"),
+                    "fi.nls.oskari.fe.gml.util.Null");
 
+            
             put(new QName("http://www.opengis.net/gml", "ReferenceType"),
                     "fi.nls.oskari.fe.xml.util.Reference");
 

@@ -1,21 +1,30 @@
 package fi.nls.oskari.fi.rysp.kantakartta;
 
 import java.net.URI;
+
 import fi.nls.oskari.fe.gml.util.CodeType;
 import fi.nls.oskari.isotc211.gco.Distance;
 import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
+
 import javax.xml.bind.annotation.XmlElement;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 import javax.xml.namespace.QName;
 import javax.xml.bind.annotation.XmlAttribute;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
 import java.util.Calendar;
 import java.math.BigInteger;
+
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
+import fi.nls.oskari.fi.rysp.kantakartta.util.RYSP_kanta_referenssipiste;
+import fi.nls.oskari.fi.rysp.kantakartta.util.RYSP_kanta_siirtymasijainti;
 
 public class RYSP_kanta_Liikennevayla
 {
@@ -131,7 +140,8 @@ public class RYSP_kanta_Liikennevayla
       public String kohta;
       @JacksonXmlProperty(namespace = "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName = "siirtymasijainti")
       @XmlElement(required = false)
-      public GeometryProperty siirtymasijainti;
+      //public GeometryProperty siirtymasijainti;
+      public RYSP_kanta_siirtymasijainti siirtymasijainti;
    }
 
    public static class _sijainnit
@@ -168,7 +178,8 @@ public class RYSP_kanta_Liikennevayla
       public GeometryProperty keskilinja;
       @JacksonXmlProperty(namespace = "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName = "referenssipiste")
       @XmlElement(required = false)
-      public _referenssipiste referenssipiste;
+      //public _referenssipiste referenssipiste;
+      public RYSP_kanta_referenssipiste referenssipiste;
       @JacksonXmlProperty(namespace = "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName = "reunaviiva")
       @XmlElement(required = false)
       public GeometryProperty reunaviiva;
@@ -207,7 +218,8 @@ public class RYSP_kanta_Liikennevayla
       public static final QName QN = new QName(NS, "Siirtyma");
       @JacksonXmlProperty(namespace = "http://www.paikkatietopalvelu.fi/gml/kantakartta", localName = "siirtymasijainti")
       @XmlElement(required = false)
-      public GeometryProperty siirtymasijainti;
+//      public GeometryProperty siirtymasijainti;
+      public RYSP_kanta_siirtymasijainti siirtymasijainti;
    }
 
    public static class Null

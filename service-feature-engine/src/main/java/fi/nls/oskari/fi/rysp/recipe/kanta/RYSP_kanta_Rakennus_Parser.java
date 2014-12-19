@@ -33,6 +33,7 @@ public class RYSP_kanta_Rakennus_Parser extends GML31 {
 
         while (iter.hasNext()) {
             final Rakennus feature = iter.next();
+            
             final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
