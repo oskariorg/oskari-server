@@ -5,6 +5,7 @@ import java.io.IOException;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML31;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Liikennevayla.Liikennevayla;
+import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Liikennevayla.Sijainti;
 
 public class RYSP_kanta_Liikennevayla_Parser extends GML31 {
 
@@ -33,34 +34,42 @@ public class RYSP_kanta_Liikennevayla_Parser extends GML31 {
 
         while (iter.hasNext()) {
             final Liikennevayla feature = iter.next();
-            final Resource output_ID = outputContext.uniqueId(feature.id);
 
-            outputFeature.setFeature(feature).setId(output_ID);
+            if (!(feature.sijainnit != null
+                    && feature.sijainnit.Sijainti != null && !feature.sijainnit.Sijainti
+                        .isEmpty())) {
+                continue;
+            }
 
-            /*
-             * if (feature.sijainnit != null && feature.sijainnit.Sijainti !=
-             * null) { if (feature.sijainnit.Sijainti.alue != null) {
-             * outputFeature.addGeometryProperty(geom,
-             * feature.sijainnit.Sijainti.alue.geometry); } else if
-             * (feature.sijainnit.Sijainti.keskilinja != null) {
-             * outputFeature.addGeometryProperty(geom,
-             * feature.sijainnit.Sijainti.keskilinja.geometry);
-             * 
-             * } else if (feature.sijainnit.Sijainti.reunaviiva != null) {
-             * outputFeature.addGeometryProperty(geom,
-             * feature.sijainnit.Sijainti.reunaviiva.geometry); } }
-             */
+            // there may be unbounded Sijaint with a choice of geometry
+            for (Sijainti s : feature.sijainnit.Sijainti) {
 
-            outputFeature.addProperty(gn, feature.id)
-                    .addProperty(beginLifespanVersion, feature.alkuPvm)
-                    .addProperty(endLifespanVersion, feature.loppuPvm);
+                final Resource output_ID = outputContext.uniqueId(feature.id);
+                outputFeature.setFeature(feature).setId(output_ID);
 
-            outputFeature.addProperty(obj, feature);
+                // referenssipiste has some issues ATM
+                if (s.alue != null) {
+                    outputFeature.addGeometryProperty(geom,
+                            s.alue.getGeometry());
+                } else if (s.keskilinja != null) {
+                    outputFeature.addGeometryProperty(geom,
+                            s.keskilinja.getGeometry());
 
-            outputFeature.build();
+                } else if (s.reunaviiva != null) {
+                    outputFeature.addGeometryProperty(geom,
+                            s.reunaviiva.getGeometry());
+                }
+
+                outputFeature.addProperty(gn, feature.id)
+                        .addProperty(beginLifespanVersion, feature.alkuPvm)
+                        .addProperty(endLifespanVersion, feature.loppuPvm);
+
+                outputFeature.addProperty(obj, feature);
+
+                outputFeature.build();
+            }
 
         }
 
     }
-
 }
