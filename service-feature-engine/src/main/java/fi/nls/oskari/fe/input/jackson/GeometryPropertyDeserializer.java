@@ -24,6 +24,7 @@ import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 public class GeometryPropertyDeserializer extends
         JsonDeserializer<GeometryProperty> {
 
+    protected boolean goDeep = true;
     protected boolean ignoreProps = false;
     protected Configuration gml;
     protected FEPullParser parserAny;
@@ -57,9 +58,8 @@ public class GeometryPropertyDeserializer extends
 
     public Object parseGeometry(
             Map<QName, FEPullParser.PullParserHandler> handlers,
-            QName parentQn,
-            XMLStreamReader reader) throws XMLStreamException, IOException,
-            SAXException {
+            QName parentQn, XMLStreamReader reader) throws XMLStreamException,
+            IOException, SAXException {
         QName qn = reader.getName();
         PullParserHandler handler = handlers.get(qn);
         Object obj = null;
@@ -69,9 +69,24 @@ public class GeometryPropertyDeserializer extends
 
             obj = parserAny.parse();
 
+        } else if( goDeep ) {
+            // try one step deeper as we SHALL get a geometry...
+            reader.nextTag();
+            qn = reader.getName();
+            handler = handlers.get(qn);
+
+            if (handler != null) {
+                parserAny.setHandler(handler);
+                parserAny.setPp(reader);
+
+                obj = parserAny.parse();
+            } else {
+                System.err.println("NO HANDLER in deep CONTEXT? " + qn
+                        + " / " + parentQn + " - ");
+            }
         } else {
-            
-            System.err.println("NO HANDLER in CONTEXT already? "+qn+" / "+parentQn+" - ");
+            System.err.println("NO HANDLER at " + qn
+                    + " / " + parentQn + " - ");
         }
 
         return obj;
@@ -81,7 +96,6 @@ public class GeometryPropertyDeserializer extends
     public GeometryProperty deserialize(JsonParser jp,
             DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
-        // TODO Auto-generated method stub
         FromXmlParser parser = (FromXmlParser) ctxt.getParser();
         Geometry geom = null;
 
@@ -113,6 +127,14 @@ public class GeometryPropertyDeserializer extends
 
     public void setIgnoreProps(boolean ignoreProps) {
         this.ignoreProps = ignoreProps;
+    }
+
+    public boolean isGoDeep() {
+        return goDeep;
+    }
+
+    public void setGoDeep(boolean goDeep) {
+        this.goDeep = goDeep;
     }
 
 }
