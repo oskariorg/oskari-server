@@ -1,24 +1,29 @@
 package fi.nls.oskari.fi.rysp.kantakartta;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
+import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.fi.rysp.recipe.kanta.RYSP_kanta_Liikennevayla_Parser;
 import fi.nls.oskari.fi.rysp.recipe.kanta.RYSP_kanta_Rakennus_Parser;
 
-public class TestJacksonParser {
+public class TestJacksonParser extends TestHelper {
+    static final Logger logger = Logger.getLogger(TestJacksonParser.class);
 
     @Test
     public void test_RYSP_kanta_Liikennevayla_wfs_GMLtoJSON()
@@ -31,9 +36,8 @@ public class TestJacksonParser {
 
         OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
 
-        InputStream inp = getClass()
-                .getResourceAsStream(
-                        "/fi/nls/oskari/fi/rysp/kanta_Liikennevayla.xml");
+        InputStream inp = getClass().getResourceAsStream(
+                "/fi/nls/oskari/fi/rysp/kanta_Liikennevayla.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -42,7 +46,9 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new RYSP_kanta_Liikennevayla_Parser();
+                JacksonParserRecipe recipe = new RYSP_kanta_Liikennevayla_Parser();
+                // recipe.getGeometryDeserializer().setIgnoreProps(true);
+                // recipe.setLenient(true);
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -60,7 +66,7 @@ public class TestJacksonParser {
 
     }
 
-    @Ignore("Unfinished")
+    // @Ignore("Unfinished - ATM requires some manual tuning for Jackson mappers plus receives some non-schema data from Service")
     @Test
     public void test_RYSP_kanta_Rakennus_wfs_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
@@ -78,13 +84,15 @@ public class TestJacksonParser {
         try {
             inputProcessor.setInput(inp);
 
-            OutputStream fouts = System.out;
+            java.io.File f = getTempFile("RYSP_kanta_Rakennus", ".json");
+            logger.info(f.getAbsolutePath());
+            OutputStream fouts = new FileOutputStream(f);
             try {
                 outputProcessor.setOutput(fouts);
 
-                RYSP_kanta_Rakennus_Parser recipe = new RYSP_kanta_Rakennus_Parser();
+                JacksonParserRecipe recipe = new RYSP_kanta_Rakennus_Parser();
                 // recipe.getGeometryDeserializer().setIgnoreProps(true);
-                // recipe.setLenient(true);
+                
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);
@@ -93,7 +101,7 @@ public class TestJacksonParser {
                 engine.process();
 
             } finally {
-                // fouts.close();
+                fouts.close();
             }
 
         } finally {

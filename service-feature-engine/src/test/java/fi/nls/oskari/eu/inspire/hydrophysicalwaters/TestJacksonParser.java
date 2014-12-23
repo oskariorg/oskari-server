@@ -64,7 +64,7 @@ public class TestJacksonParser extends TestHelper {
                 outputProcessor.setOutput(fouts);
 
                 JacksonParserRecipe recipe = new INSPIRE_HYp_StandingWater_Parser();
-                recipe.getGeometryDeserializer().setIgnoreProps(true);
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 recipe.setLenient(true);
                 engine.setRecipe(recipe);
@@ -107,7 +107,7 @@ public class TestJacksonParser extends TestHelper {
                 outputProcessor.setOutput(fouts);
 
                 JacksonParserRecipe recipe = new INSPIRE_HYp_Watercourse_Parser();
-                recipe.getGeometryDeserializer().setIgnoreProps(true);
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 recipe.setLenient(true);
                 engine.setRecipe(recipe);

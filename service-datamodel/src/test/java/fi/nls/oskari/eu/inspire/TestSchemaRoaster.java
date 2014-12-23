@@ -251,7 +251,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
     
-    //@Ignore("Requires web service")
+    @Ignore("Requires web service")
     @Test
     public void testInspireAUAdministrativeBoundary() throws MalformedURLException,
             IOException {
@@ -274,7 +274,7 @@ public class TestSchemaRoaster extends TestHelper {
 
     }
     
-    //@Ignore("Requires web service")
+    @Ignore("Requires web service")
     @Test
     public void testInspireAUAdministrativeUnit() throws MalformedURLException,
             IOException {

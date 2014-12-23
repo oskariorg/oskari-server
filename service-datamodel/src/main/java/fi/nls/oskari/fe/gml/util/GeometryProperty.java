@@ -2,7 +2,12 @@ package fi.nls.oskari.fe.gml.util;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class GeometryProperty {
+import fi.nls.oskari.fe.xml.util.Reference;
+
+/*
+ * NOTE: CustomDeserializer means any attributes etc are lost by default
+ */
+public class GeometryProperty extends Reference {
 
     private Geometry geometry;
 

@@ -41,8 +41,9 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
                     "PolyhedralSurface", "TriangulatedSurface", "Tin",
                     "OrientableSurface", "CompositeSurface", "LineString",
                     "Curve", "CompositeCurve", "OrientableCurve", "MultiCurve",
+                    "Envelope",
                     "Point",
-
+                    "MultiSurface",
                     "MultiPoint");
         }
 
@@ -62,6 +63,8 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
                     "PolyhedralSurface", "TriangulatedSurface", "Tin",
                     "OrientableSurface", "CompositeSurface", "Curve",
                     "LineString", "LinearRing", "MultiLineString",
+                    "Envelope",
+                    "MultiSurface",
                     "MultiCurve", "Point", "MultiPoint");
 
         }
