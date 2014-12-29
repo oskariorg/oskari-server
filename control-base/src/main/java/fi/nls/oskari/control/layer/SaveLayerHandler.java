@@ -86,9 +86,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
         if (this.permissionFailure) {
             JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
+            log.debug("Permission failure");
         } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
+            log.debug("Metadata read failure");
         }
         ResponseHelper.writeResponse(params, layerJSON);
     }
