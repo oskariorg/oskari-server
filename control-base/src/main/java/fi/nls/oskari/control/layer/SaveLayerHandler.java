@@ -64,6 +64,7 @@ public class SaveLayerHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
+        log.debug("handleAction");
         final int layerId = saveLayer(params);
         final OskariLayer ml = mapLayerService.find(layerId);
         if(ml == null) {
