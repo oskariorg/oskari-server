@@ -419,6 +419,11 @@ public class IOHelper {
     public static String getURL(final String pUrl,final String userName, final String password,
                                 final Map<String, String> headers, final String charset) throws IOException {
         final HttpURLConnection con = getConnection(pUrl, userName, password);
+        final int responseCode = con.getResponseCode();
+        // Unauthorized
+        if (responseCode == 401) {
+            return Integer.toString(responseCode);
+        }
         return getURL(con, headers, charset);
     }
 

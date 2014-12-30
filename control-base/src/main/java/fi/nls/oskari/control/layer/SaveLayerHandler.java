@@ -64,7 +64,6 @@ public class SaveLayerHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
-        log.debug("handleAction");
         final int layerId = saveLayer(params);
         final OskariLayer ml = mapLayerService.find(layerId);
         if(ml == null) {
@@ -88,6 +87,7 @@ public class SaveLayerHandler extends ActionHandler {
         if (this.permissionFailure) {
             JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
             log.debug("Permission failure");
+            this.permissionFailure = false;
         } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
@@ -111,7 +111,6 @@ public class SaveLayerHandler extends ActionHandler {
                     throw new ActionException(ERROR_NO_LAYER_WITH_ID + layer_id);
                 }
                 if (!permissionsService.hasEditPermissionForLayerByLayerId(params.getUser(), ml.getId())) {
-                    this.permissionFailure = true;
                     throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
@@ -129,7 +128,6 @@ public class SaveLayerHandler extends ActionHandler {
             else {
 
                 if (!permissionsService.hasAddLayerPermission(params.getUser())) {
-                    this.permissionFailure = true;
                     throw new ActionDeniedException(ERROR_OPERATION_NOT_PERMITTED + layer_id);
                 }
 
@@ -203,6 +201,10 @@ public class SaveLayerHandler extends ActionHandler {
             cc.setVersion(version);
             if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
                 final String capabilitiesXML = GetWMSCapabilities.getResponse(url, ml.getUsername(), ml.getPassword());
+                if (capabilitiesXML.equals("401")) {
+                    this.permissionFailure = true;
+                    throw new ActionException("Incorrect username or password");
+                }
                 cc.setData(capabilitiesXML);
             }
             else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
