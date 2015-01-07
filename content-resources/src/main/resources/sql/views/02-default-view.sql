@@ -1091,3 +1091,32 @@ UPDATE portti_view_bundle_seq set config = '{
     "flyoutClazz": "Oskari.mapframework.bundle.routesearch.Flyout"
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'routesearch')
          AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
+--------------------------------------------
+-- 25. Geolocator
+--------------------------------------------
+
+-- add bundle to view
+INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
+       VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'), 
+        (SELECT id FROM portti_bundle WHERE name = 'geolocator'), 
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')), 
+        '{}','{}', '{}');
+
+-- update proper startup for view
+UPDATE portti_view_bundle_seq set startup = '{
+    "title" : "Geolocator",
+    "bundlename" : "geolocator",
+    "bundleinstancename" : "geolocator",
+    "metadata" : {
+    "Import-Bundle" : {
+    "geolocator" : {
+    "bundlePath" : "/Oskari/packages/framework/bundle/"
+    }
+    },
+    "Require-Bundle-Instance" : []
+    },
+    "instanceProps" : {}
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'geolocator') 
+    AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
