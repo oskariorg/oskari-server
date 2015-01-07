@@ -45,15 +45,9 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
 
 
     public void handleAction(final ActionParameters params) throws ActionException {
-        final String lon = params.getHttpParam(PARAM_LON);
-        final String lat = params.getHttpParam(PARAM_LAT);
-        final String epsg = params.getHttpParam(PARAM_EPSG_KEY);
-        if (lon == null || lat == null) {
-            throw new ActionParamsException("Geolocation point(lon/lat) was null");
-        }
-        if (epsg == null) {
-            throw new ActionParamsException("SRS name (epsg) was null");
-        }
+        final String lon = params.getRequiredParam(PARAM_LON);
+        final String lat = params.getRequiredParam(PARAM_LAT);
+        final String epsg = params.getRequiredParam(PARAM_EPSG_KEY);
         final Locale locale = params.getLocale();
         final SearchCriteria sc = new SearchCriteria();
         // No search string in reverse geocoding
