@@ -12,7 +12,7 @@ for getting actual results. Configure the channel to use with property (supports
 ### service-search-nls
 
 Added a new search channel "NLSNearestFeatureSearchChannel" that supports reverse geocoding.
-Uses the service at https://ws.nls.fi/maasto/nearestfeature that should be configured with properties:
+Uses the service at https://ws.nls.fi/maasto/nearestfeature and should be configured with properties:
 
     search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.url=https://ws.nls.fi/maasto/nearestfeature
     search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.user=<username>
