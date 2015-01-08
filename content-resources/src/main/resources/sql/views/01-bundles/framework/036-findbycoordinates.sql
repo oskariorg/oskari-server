@@ -1,10 +1,10 @@
 INSERT INTO portti_bundle (name, startup) 
-       VALUES ('geolocator','{}');
+       VALUES ('findbycoordinates','{}');
 
 UPDATE portti_bundle set startup = '{
-    "title": "Geolocator",
-    "bundleinstancename": "geolocator",
-    "bundlename": "geolocator",
+    "title": "FindByCoordinates",
+    "bundleinstancename": "findbycoordinates",
+    "bundlename": "findbycoordinates",
     "metadata": {
         "Import-Bundle": {
             "rpc": {
@@ -12,4 +12,4 @@ UPDATE portti_bundle set startup = '{
             }
         }
     }
-}' WHERE name = 'geolocator';
+}' WHERE name = 'findbycoordinates';

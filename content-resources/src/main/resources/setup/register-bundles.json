@@ -33,7 +33,7 @@
             "033-admin-users.sql",
             "034-routesearch.sql",
             "035-rpc.sql",
-            "036-geolocator.sql"
+            "036-findbycoordinates.sql"
         ],
         "integration" : [
             "001-admin-layerselector.sql"

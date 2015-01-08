@@ -1166,29 +1166,29 @@ UPDATE portti_view_bundle_seq set config = '{
          AND  view_id=[VIEW_ID];
 
 --------------------------------------------
--- 24. Geolocator
+-- 24. FindByCoordinates
 --------------------------------------------
 
 -- add bundle to view
 INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, config, state, startup) 
        VALUES ([VIEW_ID],
-        (SELECT id FROM portti_bundle WHERE name = 'geolocator'), 
+        (SELECT id FROM portti_bundle WHERE name = 'findbycoordinates'), 
         (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = [VIEW_ID]),
         '{}','{}', '{}');
 
 -- update proper startup for view
 UPDATE portti_view_bundle_seq set startup = '{
-    "title" : "Geolocator",
-    "bundlename" : "geolocator",
-    "bundleinstancename" : "geolocator",
+    "title" : "FindByCoordinates",
+    "bundlename" : "findbycoordinates",
+    "bundleinstancename" : "findbycoordinates",
     "metadata" : {
     "Import-Bundle" : {
-    "geolocator" : {
+    "findbycoordinates" : {
     "bundlePath" : "/Oskari/packages/framework/bundle/"
     }
     },
     "Require-Bundle-Instance" : []
     },
     "instanceProps" : {}
-}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'geolocator') 
+}' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'findbycoordinates') 
     AND  view_id=[VIEW_ID];
