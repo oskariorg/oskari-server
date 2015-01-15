@@ -24,8 +24,10 @@ import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
+import javax.naming.SizeLimitExceededException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,7 +55,8 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String IMPORT_MIF = ".MIF";
     private static final String IMPORT_KML = ".KML";
     private static final String PARAM_EPSG_KEY = "epsg";
-
+    private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
+    final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
 
     @Override
     public void init() {
@@ -75,6 +78,8 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             // Only 1st file item is handled
             RawUpLoadItem loadItem = getZipFiles(params);
+
+            // Checks file size
 
             File file = unZip(loadItem.getFileitem());
 
@@ -153,15 +158,17 @@ public class CreateUserLayerHandler extends ActionHandler {
 
                 DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
 
-            /*
-             * Set the file size limit in bytes. This should be set as an
-             * initialization parameter
-             */
-                // diskFileItemFactory.setSizeThreshold(1024 * 1024 * 10); //10MB.
-
+                /*
+                * Set the file size limit in bytes. This should be set as an
+                * initialization parameter
+                */
+                // diskFileItemFactory.setSizeThreshold(1024 * 1024 * 10);
 
                 // Create a new file upload handler
                 ServletFileUpload upload = new ServletFileUpload(diskFileItemFactory);
+
+                // Set size limit
+                upload.setSizeMax(userlayerMaxFileSizeMb * 1024 * 1024);
 
                 List items = null;
 
@@ -213,7 +220,6 @@ public class CreateUserLayerHandler extends ActionHandler {
 
         while (ze != null) {
 
-
             if (ze.isDirectory()) {
                 ze = zis.getNextEntry();
                 continue;
@@ -259,9 +265,9 @@ public class CreateUserLayerHandler extends ActionHandler {
 
                 i = newFile.getPath().lastIndexOf(".");
                 String[] parts3 = {newFile.getPath().substring(0, i), newFile.getPath().substring(i)};
-               boolean success = newFile.renameTo(new File(filename + parts3[1]));
-               if(!success) log.debug("Rename failed in temp directory",newFile.getName(), " ->  ",filename + parts3[1] );
-               else log.debug("File renamed ",newFile.getName(), " ->  ",filename + parts3[1] );
+                boolean success = newFile.renameTo(new File(filename + parts3[1]));
+                if(!success) log.debug("Rename failed in temp directory",newFile.getName(), " ->  ",filename + parts3[1] );
+                else log.debug("File renamed ",newFile.getName(), " ->  ",filename + parts3[1] );
             }
             newFile.deleteOnExit();
             ze = zis.getNextEntry();

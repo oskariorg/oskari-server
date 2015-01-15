@@ -79,48 +79,49 @@ public class UserLayerDataService {
             }
 
 
-        // Insert user_layer row
-        // --------------------
-        userLayer.setLayer_name(gjsWorker.getTypeName());
-        userLayer.setLayer_desc("");
-        userLayer.setLayer_source("");
-        userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
-        userLayer.setUuid(user.getUuid());
-        userLayer.setStyle_id(style.getId());
-        if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
-        if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
-        if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
+            // Insert user_layer row
+            // --------------------
+            userLayer.setLayer_name(gjsWorker.getTypeName());
+            userLayer.setLayer_desc("");
+            userLayer.setLayer_source("");
+            userLayer.setFields(parseFields(gjsWorker.getFeatureType()));
+            userLayer.setUuid(user.getUuid());
+            userLayer.setStyle_id(style.getId());
+            if (fparams.containsKey(KEY_NAME)) userLayer.setLayer_name(fparams.get(KEY_NAME));
+            if (fparams.containsKey(KEY_DESC)) userLayer.setLayer_desc(fparams.get(KEY_DESC));
+            if (fparams.containsKey(KEY_SOURCE)) userLayer.setLayer_source(fparams.get(KEY_SOURCE));
 
-        log.debug("Adding user_layer row", userLayer);
-        userLayerService.insertUserLayerRow(userLayer);
+            log.debug("Adding user_layer row", userLayer);
+            userLayerService.insertUserLayerRow(userLayer);
 
-        // Insert user_layer data rows
-        // --------------------
+            // Insert user_layer data rows
+            // --------------------
 
-        int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
-        log.info("stored ", count, " rows");
+            int count = this.storeUserLayerData(gjsWorker.getGeoJson(), user, userLayer.getId());
+            log.info("stored ", count, " rows");
 
-        if (count == 0) {
-            return null;
-            //TODO:  delete user_layer row if no rows
+            if (count == 0) {
+                return null;
+                //TODO:  delete user_layer row if no rows
+            }
+
         }
 
+        catch(
+                Exception e
+                )
+
+        {
+            log
+                    .info(
+                            "Unable to store user layer data",
+                            e);
+            return null;
+        }
+
+        return userLayer;
     }
 
-    catch(
-    Exception e
-    )
-
-    {
-        log
-                .info(
-                        "Unable to store user layer data",
-                        e);
-        return null;
-    }
-
-    return userLayer;
-}
 
     /**
      * @param geoJson import data in geojson format
