@@ -45,7 +45,7 @@ public class UserLayerDataService {
     private static final String KEY_STYLE = "layer-style";
 
     final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
-    final int userlayerMaxFeaturesCount = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, 2000);
+    final int userlayerMaxFeaturesCount = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
 
     /**
      * @param gjsWorker geoJSON and featurecollection items
@@ -156,7 +156,7 @@ public class UserLayerDataService {
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
 
                 count++;
-                if (count > userlayerMaxFeaturesCount) break;
+                if (count > userlayerMaxFeaturesCount && userlayerMaxFeaturesCount != -1) break;
 
             }
         } catch (Exception e) {
