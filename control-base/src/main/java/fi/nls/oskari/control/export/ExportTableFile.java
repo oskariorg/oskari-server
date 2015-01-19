@@ -98,10 +98,12 @@ public class ExportTableFile extends ActionHandler {
         }
         Map<String, Object> additionalFields = new HashMap<String, Object>();
         if (dataSource != null) {
-            additionalFields.put("Data source", dataSource);
+            String[] datas = dataSource.split(":");
+            if(datas.length > 1) additionalFields.put(datas[0], datas[1]);
         }
         if (metadata != null) {
-            additionalFields.put("Metadata link", metadata);
+            String[] metas = metadata.split(":");
+            if(metas.length > 1) additionalFields.put(metas[0], metas[1]);
         }
 
         try {

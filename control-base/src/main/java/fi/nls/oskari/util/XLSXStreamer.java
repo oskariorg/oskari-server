@@ -28,8 +28,8 @@ public class XLSXStreamer implements TabularFileStreamer {
             cell = row.createCell(cellNum);
             fillCell(cell, headers[cellNum]);
         }
-        for (rowNum = 1; rowNum < data.length; rowNum++) {
-            rowArray = data[rowNum];
+        for (rowNum = 1; rowNum < data.length+1; rowNum++) {
+            rowArray = data[rowNum-1];
             row = sh.createRow(rowNum);
             for (cellNum = 0; cellNum < rowArray.length; cellNum++) {
                 value = rowArray[cellNum];

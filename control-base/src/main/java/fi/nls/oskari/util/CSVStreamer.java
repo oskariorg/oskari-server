@@ -38,7 +38,7 @@ public class CSVStreamer implements TabularFileStreamer {
                 CSVFormat.DEFAULT.withDelimiter(getDelimiter())
         );
         printer.printRecord(headers);
-        for (i = 1; i < data.length; i++) {
+        for (i = 0; i < data.length; i++) {
             printer.printRecord(data[i]);
         }
 
