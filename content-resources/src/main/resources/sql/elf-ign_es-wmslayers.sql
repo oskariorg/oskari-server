@@ -19,7 +19,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Geographical names%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/ign-base+GN.GeographicalNames');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/ign-base+GN.GeographicalNames');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -73,7 +73,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Hydrography%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/ign-base+HY.Hydrography');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/ign-base+HY.Hydrography');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -122,7 +122,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Transport networks%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/ign-base+TN.TransportNetwork');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/ign-base+TN.TransportNetwork');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -174,7 +174,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Administrative units%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/unidades-administrativas+AU.AdministrativeBoundary');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/unidades-administrativas+AU.AdministrativeBoundary');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -224,7 +224,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Administrative units%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/unidades-administrativas+AU.AdministrativeUnit');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/unidades-administrativas+AU.AdministrativeUnit');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -273,7 +273,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Administrative units%'));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/unidades-administrativas+AU.NUTSRegion');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/unidades-administrativas+AU.NUTSRegion');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values
@@ -322,7 +322,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Elevation%' LIMIT 1));
 
 -- add layer as resource for mapping permissions;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://www.ign.es/wms-inspire/mdt+EL.GridCoverage');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmslayer+http://www.ign.es/wms-inspire/mdt+EL.GridCoverage');
 
 -- give view_layer permission for the resource to ROLE 10110 (guest);
 INSERT INTO oskari_permission(oskari_resource_id, external_type, permission, external_id) values

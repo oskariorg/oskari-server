@@ -2,10 +2,12 @@
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
-                            url, locale) 
+                            url, username, password,  srs_name, version,
+                            locale) 
   VALUES('wfslayer', 'elf_tn_fgifi', 905, 
          120000, 1, 
-         'wfs', '{fi:{name:"TN Road Link - fgi.fi", subtitle:""},sv:{name:"TN Road Link - fgi.fi", subtitle:""},en:{name:"TN Road Link - fgi.fi", subtitle:""}}');
+         'http://54.228.221.191/ELFcascadingWFS/service', null, null, 'EPSG:900913', '2.0.0',
+         '{fi:{name:"TN Road Link - fgi.fi", subtitle:""},sv:{name:"TN Road Link - fgi.fi", subtitle:""},en:{name:"TN Road Link - fgi.fi", subtitle:""}}');
          
 
          
@@ -27,9 +29,8 @@ VALUES (
 INSERT INTO portti_wfs_layer ( 
     maplayer_id, 
     layer_name, 
-    url, username, password, 
     gml_geometry_property, gml_version, gml2_separator, 
-    wfs_version, max_features, 
+    max_features, 
     feature_namespace, 
     properties, 
     feature_type, 
@@ -37,7 +38,6 @@ INSERT INTO portti_wfs_layer (
     feature_params_locales, 
     geometry_type, 
     selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id, 
-    srs_name, 
     feature_element, feature_namespace_uri, 
     geometry_namespace_uri, 
     get_highlight_image, 
@@ -47,9 +47,8 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_TN_fgi_fi', 
-       'http://54.228.221.191/ELFcascadingWFS/service', null, null, 
        'geom', '3.2.1', false, 
-       '2.0.0', 5000, 
+        5000, 
        'elf_lod1rtn', 
        '', 
        '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
@@ -57,7 +56,6 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-    'EPSG:900913', 
     'RoadLink', 'urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0', 
     '', 
     true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
@@ -76,7 +74,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
     
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_tn_fgifi');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfslayer+http://54.228.221.191/ELFcascadingWFS/service+elf_tn_fgifi');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;

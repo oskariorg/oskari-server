@@ -2,10 +2,12 @@
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, groupId, 
                             minscale, maxscale, 
-                            url, locale) 
+                            url, username, password, srs_name, version,
+                            locale) 
   VALUES('wfslayer', 'elf_gn_ign_es', 901, 
          100000, 1, 
-         'wfs', '{fi:{name:"GN Geographical Names - ign.es", subtitle:""},sv:{name:"GN Geographical Names - ign.es", subtitle:""},en:{name:"GN Geographical Names - ign.es", subtitle:""}}');
+         'http://www.ign.es/wfs-inspire/ngbe', null, null, 'urn:ogc:def:crs:EPSG::3857', '2.0.0',
+         '{fi:{name:"GN Geographical Names - ign.es", subtitle:""},sv:{name:"GN Geographical Names - ign.es", subtitle:""},en:{name:"GN Geographical Names - ign.es", subtitle:""}}');
          
 
          
@@ -27,9 +29,8 @@ VALUES (
 INSERT INTO portti_wfs_layer ( 
     maplayer_id, 
     layer_name, 
-    url, username, password, 
     gml_geometry_property, gml_version, gml2_separator, 
-    wfs_version, max_features, 
+    max_features, 
     feature_namespace, 
     properties, 
     feature_type, 
@@ -37,7 +38,6 @@ INSERT INTO portti_wfs_layer (
     feature_params_locales, 
     geometry_type, 
     selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id, 
-    srs_name, 
     feature_element, feature_namespace_uri, 
     geometry_namespace_uri, 
     get_highlight_image, 
@@ -47,9 +47,8 @@ INSERT INTO portti_wfs_layer (
     wfs_template_model_id) 
     VALUES ( (select max(id) from oskari_maplayer), 
       'ELF_GN_ign_es', 
-       'http://www.ign.es/wfs-inspire/ngbe', null, null, 
        'geom', '3.2.1', false, 
-       '2.0.0', 5000, 
+        5000, 
        'elf-lod1gn', 
        '', 
        '{"default" : "*geometry:Geometry,text:String,script:String,sourceOfName:String,nameStatus:String,nativeness:String,language:String,beginLifespanVersion:String,endLifespanVersion:String,localType:String"}', 
@@ -57,7 +56,6 @@ INSERT INTO portti_wfs_layer (
        '{}', 
        '2d', 
        NULL, true, true, false, NULL, 
-	'urn:ogc:def:crs:EPSG::3857', 
 	'NamedPlace', 'urn:x-inspire:specification:gmlas:GeographicalNames:3.0', 
 	'', 
 	true, '{}', '{ "default" : 1, "oskari_custom" : 1}', 
@@ -76,7 +74,7 @@ INSERT INTO portti_wfs_layers_styles (wfs_layer_id,wfs_layer_style_id) VALUES(
 	
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfs+elf_gn_ign_es');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wfslayer+http://www.ign.es/wfs-inspire/ngbe+elf_gn_ign_es');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
