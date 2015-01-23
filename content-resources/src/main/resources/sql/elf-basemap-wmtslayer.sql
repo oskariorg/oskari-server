@@ -1009,7 +1009,7 @@ INSERT INTO oskari_maplayer_themes(maplayerid,
          (SELECT id FROM portti_inspiretheme WHERE locale LIKE '%Background maps%'));
 
 -- setup permissions for guest user;
-INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts+elf_basemap');
+INSERT INTO oskari_resource(resource_type, resource_mapping) values ('maplayer', 'wmtslayer+http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts+elf_basemap');
 
 -- permissions;
 -- adding permissions to roles with id 10110, 2, and 3;
