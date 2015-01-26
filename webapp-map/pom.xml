@@ -70,20 +70,6 @@
             </properties>
         </profile>
         <profile>
-            <id>elf-jetty-jaas</id>
-            <properties>
-                <env>elf-jetty-jaas</env>
-                <profile-filter>${basedir}/env/${env}/elf-filter.properties</profile-filter>
-            </properties>
-            <dependencies>
-                <!-- Adding additional search channels to servlet build -->
-                <dependency>
-                    <groupId>fi.nls.oskari.service</groupId>
-                    <artifactId>oskari-search-nls</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>asdi-jetty-jaas</id>
             <properties>
                 <env>asdi-jetty-jaas</env>
