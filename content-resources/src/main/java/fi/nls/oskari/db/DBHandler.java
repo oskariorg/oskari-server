@@ -142,7 +142,16 @@ public class DBHandler {
 
     public static void createContentIfNotCreated() {
         try {
-            Connection conn = getConnection();
+            createContentIfNotCreated(getDataSource());
+        }
+        catch (Exception ex) {
+            log.error(ex, "Couldnt ge connection to db!");
+        }
+    }
+
+    public static void createContentIfNotCreated(DataSource ds) {
+        try {
+            Connection conn = ds.getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
 
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
