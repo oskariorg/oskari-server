@@ -153,9 +153,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.geoserver</groupId>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>OskariMarkFactory</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>xml-apis</groupId>

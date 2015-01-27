@@ -604,6 +604,21 @@
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- Nice to know info about the build -->
+                            <Application-Name>Oskari</Application-Name>
+                            <Project-Version>${project.version}</Project-Version>
+                            <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+                            <!-- build.commit.id is set by git-commit-id-plugin -->
+                            <Git-Revision>${build.commit.id}</Git-Revision>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <!-- explicitly define maven-deploy-plugin after other to force exec order -->
@@ -618,6 +633,25 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- initialize git revision info -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <prefix>build</prefix>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <skipPoms>false</skipPoms>
+                    <verbose>false</verbose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
