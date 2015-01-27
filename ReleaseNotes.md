@@ -20,6 +20,10 @@ Uses the service at https://ws.nls.fi/maasto/nearestfeature and should be config
     search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.buffer=5000
     search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.maxfeatures=1
 
+### servlet-transport
+
+Fixed an issue with default SLD. Added geometry type rules.
+
 ## 1.26
 
 ### control-admin
