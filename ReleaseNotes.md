@@ -2,6 +2,15 @@
 
 ## 1.27
 
+### generic
+
+Manifest.mf inside jars now include version, git commit id and timestamp of build.
+ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-server-extensions
+
+### geoserver-ext/OskariMarkFactory
+
+OskariMarkFactory now follows Oskari versioning so changes are updated correctly when building a new version.
+
 ### control-base
 
 New action route "GetReverseGeocodingResult" works as a generic reverse geocoding handler that uses search implementation
