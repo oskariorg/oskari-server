@@ -28,7 +28,7 @@
                             <Mark>
                                 <WellKnownName>circle</WellKnownName>
                                 <Fill>
-                                    <CssParameter name="fill">#f5af3c</CssParameter>
+                                    <CssParameter name="fill">#e19b28</CssParameter>
                                 </Fill>
                                 <Stroke>
                                     <CssParameter name="stroke">#000000</CssParameter>
@@ -54,7 +54,7 @@
                     </ogc:Filter>
                     <LineSymbolizer>
                         <Stroke>
-                            <CssParameter name="stroke">#f5af3c</CssParameter>
+                            <CssParameter name="stroke">#e19b28</CssParameter>
                             <CssParameter name="stroke-width">2</CssParameter>
                             <CssParameter name="stroke-linecap">round</CssParameter>
                         </Stroke>
@@ -75,7 +75,7 @@
                     </ogc:Filter>
                     <PolygonSymbolizer>
                         <Fill>
-                            <CssParameter name="fill">#f5af3c</CssParameter>
+                            <CssParameter name="fill">#e19b28</CssParameter>
                             <CssParameter name="fill-opacity">
                                 <ogc:Literal>0.5</ogc:Literal>
                             </CssParameter>
