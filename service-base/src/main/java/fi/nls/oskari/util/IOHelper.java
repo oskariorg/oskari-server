@@ -26,7 +26,9 @@ This needs to be checked
 public class IOHelper {
 
     private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_CONTENTTYPE = "Content-Type";
     public static final String DEFAULT_CHARSET = "UTF-8";
+    public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
 
     private static SSLSocketFactory TRUSTED_FACTORY;
@@ -456,6 +458,19 @@ public class IOHelper {
     }
 
     /**
+     * Writes Content-type header to the connection.
+     * @param con       connection to write to
+     * @param value     content type
+     * @throws IOException
+     */
+    public static void setContentType(final HttpURLConnection con,
+                                   final String value) throws IOException {
+        if (value != null) {
+            con.setRequestProperty(HEADER_CONTENTTYPE, value);
+        }
+    }
+
+    /**
      * Encodes the given String with base64
      * @param in
      * @return
@@ -726,7 +741,20 @@ public class IOHelper {
                 urlBuilder.append("&");
             }
         }
+        final String queryString = getParams(params);
+        if(queryString.isEmpty()) {
+            // drop last character ('?' or '&')
+            return urlBuilder.substring(0, urlBuilder.length()-1);
+        }
+        return urlBuilder.append(queryString).toString();
+    }
 
+    public static String getParams(Map<String, String> params) {
+        if(params == null || params.isEmpty()) {
+            return "";
+        }
+
+        final StringBuilder urlBuilder = new StringBuilder();
         for(Map.Entry<String,String> entry : params.entrySet()) {
             final String value = entry.getValue();
             if(entry.getValue() == null) {
