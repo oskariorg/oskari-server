@@ -39,6 +39,7 @@ Uses the service at https://ws.nls.fi/maasto/nearestfeature and should be config
 ### servlet-transport
 
 Fixed an issue with default SLD. Added geometry type rules.
+Feature engine parser factories are now syncronized (WFS feature parsing failed in some cases).
 
 ## 1.26
 
