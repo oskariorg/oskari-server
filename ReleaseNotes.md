@@ -7,6 +7,11 @@
 Manifest.mf inside jars now include version, git commit id and timestamp of build.
 ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-server-extensions
 
+### service-base
+
+IOHelper now has convenience method to write the Content-type header.
+HTTP params can now be generated to properly encoded string for encoding POST payload or GET querystring with IOHelper.getParams().
+
 ### geoserver-ext/OskariMarkFactory
 
 OskariMarkFactory now follows Oskari versioning so changes are updated correctly when building a new version.
