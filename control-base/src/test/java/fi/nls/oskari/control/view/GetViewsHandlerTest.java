@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.view;
 
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -12,6 +13,7 @@ import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.*;
 
+import javax.swing.*;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -49,8 +51,8 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         PropertyUtil.clearProperties();
     }
 
-    @Test
-    public void testEmptyViews() throws Exception {
+    @Test(expected = ActionDeniedException.class)
+    public void tesGetWithGuest() throws Exception {
 
         // mock returned views
         doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
@@ -64,17 +66,19 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
-        // test that response was written once
-        verifyResponseWritten(params);
-
-        verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-empty-views.json", this));
     }
-
     @Test
-    public void testWithNoParams() throws Exception {
+    public void testEmptyViews() throws Exception {
+
         // mock returned views
         doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
-        final ActionParameters params = createActionParams();
+
+        // setup params
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
+
+        final ActionParameters params = createActionParams(parameters,getLoggedInUser());
+        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -84,6 +88,47 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-empty-views.json", this));
     }
 
+
+    @Test(expected = ActionDeniedException.class)
+    public void testWithNoParamsGuest() throws Exception {
+        // mock returned views
+        doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
+        final ActionParameters params = createActionParams();
+
+        verifyResponseNotWritten(params);
+        handler.handleAction(params);
+    }
+    @Test
+    public void testWithNoParams() throws Exception {
+        // mock returned views
+        doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
+        final ActionParameters params = createActionParams(getLoggedInUser());
+
+        verifyResponseNotWritten(params);
+        handler.handleAction(params);
+        // test that response was written once
+        verifyResponseWritten(params);
+
+        verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-empty-views.json", this));
+    }
+
+    @Test(expected = ActionDeniedException.class)
+    public void testViewListingGuest() throws Exception {
+        // mock returned views
+        final List<View> views = new ArrayList<View>();
+        views.add(ViewTestHelper.createMockView("framework.mapfull"));
+        doReturn(views).when(viewService).getViewsForUser(anyLong());
+
+        // setup params
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
+
+        final ActionParameters params = createActionParams(parameters);
+        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+
+        verifyResponseNotWritten(params);
+        handler.handleAction(params);
+    }
     @Test
     public void testViewListing() throws Exception {
         // mock returned views
@@ -95,7 +140,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
-        final ActionParameters params = createActionParams(parameters);
+        final ActionParameters params = createActionParams(parameters,getLoggedInUser());
         assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
 
         verifyResponseNotWritten(params);
@@ -106,6 +151,18 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-has-views.json", this));
     }
 
+    @Test(expected = ActionDeniedException.class)
+    public void testViewListingWithNoParamsGuest() throws Exception {
+        // mock returned views
+        final List<View> views = new ArrayList<View>();
+        views.add(ViewTestHelper.createMockView("framework.mapfull"));
+        doReturn(views).when(viewService).getViewsForUser(anyLong());
+
+        final ActionParameters params = createActionParams();
+
+        verifyResponseNotWritten(params);
+        handler.handleAction(params);
+    }
     @Test
     public void testViewListingWithNoParams() throws Exception {
         // mock returned views
@@ -113,7 +170,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         views.add(ViewTestHelper.createMockView("framework.mapfull"));
         doReturn(views).when(viewService).getViewsForUser(anyLong());
 
-        final ActionParameters params = createActionParams();
+        final ActionParameters params = createActionParams(getLoggedInUser());
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
