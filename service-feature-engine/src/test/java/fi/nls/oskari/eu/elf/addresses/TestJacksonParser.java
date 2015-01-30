@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.elf.recipe.addresses.ELF_MasterLoD0_Address_Parser;
+import fi.nls.oskari.eu.elf.recipe.addresses.ELF_MasterLoD0_Address_nls_fi_wfs_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
@@ -48,7 +48,7 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new ELF_MasterLoD0_Address_Parser();
+                ParserRecipe recipe = new ELF_MasterLoD0_Address_nls_fi_wfs_Parser();
 
                 engine.setRecipe(recipe);
 

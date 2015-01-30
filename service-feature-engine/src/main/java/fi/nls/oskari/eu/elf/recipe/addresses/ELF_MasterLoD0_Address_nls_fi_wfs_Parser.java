@@ -1,10 +1,11 @@
 package fi.nls.oskari.eu.elf.recipe.addresses;
 
-import java.io.IOException;
-
+import fi.nls.oskari.eu.elf.addresses.ELF_MasterLoD0_Address;
 import fi.nls.oskari.eu.elf.addresses.ELF_MasterLoD0_Address.Address;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class ELF_MasterLoD0_Address_nls_fi_wfs_Parser extends GML32 {
 
@@ -37,6 +38,15 @@ public class ELF_MasterLoD0_Address_nls_fi_wfs_Parser extends GML32 {
             final Resource output_ID = outputContext.uniqueId(feature.id);
 
             outputFeature.setFeature(feature).setId(output_ID);
+
+            if (feature.position.get(0) != null
+                    && feature.position.get(0).GeographicPosition != null
+                    && feature.position.get(0).GeographicPosition.geometry != null) {
+                outputFeature
+                        .addGeometryProperty(
+                                geom,
+                                feature.position.get(0).GeographicPosition.geometry.getGeometry());
+            }
 
             outputFeature
                     .addProperty(beginLifespanVersion,
