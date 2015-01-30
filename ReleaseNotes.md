@@ -23,6 +23,8 @@ for getting actual results. Configure the channel to use with property (supports
 
     actionhandler.GetReverseGeocodingResult.channels=<search channel id e.g. NLS_NEAREST_FEATURE_CHANNEL>
 
+GetViews action route now requires a non-guest user.
+
 ### service-search-nls
 
 Added a new search channel "NLSNearestFeatureSearchChannel" that supports reverse geocoding.
