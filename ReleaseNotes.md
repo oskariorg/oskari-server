@@ -38,6 +38,7 @@ Uses the service at https://ws.nls.fi/maasto/nearestfeature and should be config
 
 Fixed an issue with default SLD. Added geometry type rules.
 Feature engine parser factories are now syncronized (WFS feature parsing failed in some cases).
+Feature engine GFI search tolerance fix.
 
 ## 1.26
 
