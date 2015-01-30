@@ -6,7 +6,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.util.PropertyUtil;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -197,6 +196,47 @@ public class DatabaseUserService extends UserService {
     public String modifyRole(String roleId, String userID) throws ServiceException {
     	log.debug("modifyRole");
     	return null;
+    }
+
+    public User updateOrAddUser(final User user) throws ServiceException {
+        if(user == null) {
+            return null;
+        }
+
+        ensureRolesInDB(user.getRoles());
+        // check user
+        final User dbUser = getUser(user.getScreenname());
+        if(dbUser == null) {
+            // not found from db -> add user
+            return createUser(user);
+        }
+        // update user in database
+        // TODO: Check the modifyUser implementation
+        // it should update roles as well, but doesn't seem to
+        return modifyUser(user);
+    }
+
+    private void ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
+        Role[] systemRoles = getRoles();
+        Set<Role> rolesToInsert = new HashSet<Role>(userRoles.size());
+        for(Role userRole : userRoles) {
+            boolean found = false;
+            for(Role role : systemRoles) {
+                if(role.getName().equals(userRole.getName())) {
+                    // assign ID from role with same name in db
+                    userRole.setId(role.getId());
+                    found = true;
+                }
+            }
+            if(!found) {
+                rolesToInsert.add(userRole);
+            }
+        }
+        // insert missing roles to DB and assign ID
+        for(Role role : rolesToInsert) {
+            Role dbRole = insertRole(role.getName());
+            role.setId(dbRole.getId());
+        }
     }
     
 }
