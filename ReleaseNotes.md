@@ -7,15 +7,27 @@
 Manifest.mf inside jars now include version, git commit id and timestamp of build.
 ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-server-extensions
 
+### DB upgrades
+
+#### Allowing more data to be stored for users longer usernames
+
+* Usernames in external systems can be longer than current column size - adjusted to 128 characters.
+* User UUID should be unique - added constraint.
+* User can now store additional attribute data as JSON.
+
+    content-resources/src/main/resources/sql/upgrade/1.27/03_alter_table_oskari_users.sql
+
 ### service-users
 
-DatabaseUserService now has a method (updateOrAddUser) to ensure the user and his/her roles are up-to-date in the database.
+DatabaseUserService now has a method (saveUser) to ensure the user and his/her roles are up-to-date in the database (inserting if missing).
 Usable when combined with external login service which should populate users to Oskari based on external user data (for example SAML-message).
+Added support for saving and loading additional user attributes to/from database.
 
 ### service-base
 
 IOHelper now has convenience method to write the Content-type header.
 HTTP params can now be generated to properly encoded string for encoding POST payload or GET querystring with IOHelper.getParams().
+User class now has methods to attach additional attributes for the user.
 
 ### geoserver-ext/OskariMarkFactory
 

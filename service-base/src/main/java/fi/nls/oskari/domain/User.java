@@ -1,10 +1,10 @@
 package fi.nls.oskari.domain;
 
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONObject;
+
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Internal model for a user.
@@ -16,12 +16,63 @@ public class User implements Serializable {
     private String firstname = "guest";
     private String screenname = "guest";
     private String email = "";
+    private JSONObject attributes = new JSONObject();
 
     private String uuid = "";
     private Set<Role> roles = new HashSet<Role>();
 
     public void clearRoles() {
         roles = new HashSet<Role>();
+    }
+
+    /**
+     * Returns attributes as string (for easier DB handling)
+     * @return
+     */
+    public String getAttributes() {
+        try {
+            return attributes.toString(2);
+        } catch (Exception ignored) {}
+        return "{}";
+    }
+    /**
+     * Set attributes as string (for easier DB handling)
+     * @return
+     */
+    public void setAttributes(String attribs) {
+        setAttributes(JSONHelper.createJSONObject(attribs));
+    }
+
+    /**
+     * Adds additional attribute data for the user
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean setAttribute(String key, String value) {
+        return JSONHelper.putValue(attributes, key, value);
+    }
+    /**
+     * Get additional attribute data for the user
+     * @param key
+     * @return value of the key or null
+     */
+    public Object getAttribute(String key) {
+        try {
+            return attributes.get(key);
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    public JSONObject getAttributesJSON() {
+        return attributes;
+    }
+
+    public void setAttributes(JSONObject attribs) {
+        if(attribs == null) {
+            attribs = new JSONObject();
+        }
+        attributes = attribs;
     }
 
     public void addRole(final Role role) {

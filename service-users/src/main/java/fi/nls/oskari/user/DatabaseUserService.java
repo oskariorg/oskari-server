@@ -9,11 +9,7 @@ import fi.nls.oskari.service.UserService;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
@@ -116,9 +112,14 @@ public class DatabaseUserService extends UserService {
         
         return userService.find(id);
     }
-    
-    
 
+
+    /**
+     * Only updates user information, NOT roles!
+     * @param user Modified user
+     * @return
+     * @throws ServiceException
+     */
     @Override
     public User modifyUser(User user) throws ServiceException {
         log.debug("modifyUser");
@@ -127,6 +128,42 @@ public class DatabaseUserService extends UserService {
         List<Role> roles = roleService.findByUserId(user.getId());
         retUser.setRoles(new HashSet<Role>(roles));
         return retUser;
+    }
+    /**
+     * Updates user information AND roles based on screenname! Creating both roles and user if they are not found in database.
+     * @param user User details
+     * @return saved user with populated role/user IDs.
+     * @throws ServiceException if given user is null or something went wrong while updating the database
+     */
+    public User saveUser(final User user) throws ServiceException {
+        log.debug("Saving user:", user, "with roles:", user.getRoles());
+        if(user == null) {
+            throw new ServiceException("User was null");
+        }
+        // ensure roles are in DB
+        final Set<Role> roles = ensureRolesInDB(user.getRoles());
+        user.setRoles(roles);
+        // check if user details exist in DB
+        final User dbUser = getUser(user.getScreenname());
+        if(dbUser == null) {
+            // not found from DB -> add user
+            return createUser(user);
+        }
+        user.setId(dbUser.getId());
+        // existing user -> update details in database
+        final User savedUser = modifyUserwithRoles(user, roles);
+        log.debug("Saved user:", user, "with roles:", user.getRoles());
+        return savedUser;
+    }
+
+    private User modifyUserwithRoles(User user, Set<Role> roles) throws ServiceException {
+        final String[] roleIds = new String[roles.size()];
+        final Iterator<Role> it = roles.iterator();
+        for(int i = 0; i < roleIds.length; ++i) {
+            Role role = it.next();
+            roleIds[i] = "" + role.getId();
+        }
+        return modifyUserwithRoles(user, roleIds);
     }
 
     @Override
@@ -198,27 +235,9 @@ public class DatabaseUserService extends UserService {
     	return null;
     }
 
-    public User updateOrAddUser(final User user) throws ServiceException {
-        if(user == null) {
-            return null;
-        }
-
-        ensureRolesInDB(user.getRoles());
-        // check user
-        final User dbUser = getUser(user.getScreenname());
-        if(dbUser == null) {
-            // not found from db -> add user
-            return createUser(user);
-        }
-        // update user in database
-        // TODO: Check the modifyUser implementation
-        // it should update roles as well, but doesn't seem to
-        return modifyUser(user);
-    }
-
-    private void ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
-        Role[] systemRoles = getRoles();
-        Set<Role> rolesToInsert = new HashSet<Role>(userRoles.size());
+    private Set<Role> ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
+        final Role[] systemRoles = getRoles();
+        final Set<Role> rolesToInsert = new HashSet<Role>(userRoles.size());
         for(Role userRole : userRoles) {
             boolean found = false;
             for(Role role : systemRoles) {
@@ -237,6 +256,7 @@ public class DatabaseUserService extends UserService {
             Role dbRole = insertRole(role.getName());
             role.setId(dbRole.getId());
         }
+        return userRoles;
     }
     
 }
