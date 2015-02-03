@@ -1,6 +1,8 @@
 package fi.nls.oskari.eu.elf.geographicalnames;
 
 import java.net.URI;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import fi.nls.oskari.fe.gml.util.CodeType;
 import fi.nls.oskari.isotc211.gco.Distance;
 import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
@@ -13,6 +15,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import java.util.Calendar;
 import java.math.BigInteger;
+import java.util.logging.Logger;
+
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.NillableType;
@@ -64,6 +68,12 @@ public class ELF_MasterLoD1_NamedPlace
       public java.util.List<A_4_relatedSpatialObject> relatedSpatialObject = new java.util.ArrayList<A_4_relatedSpatialObject>();
       @XmlElement(required = false)
       public java.util.List<fi.nls.oskari.fe.xml.util.Reference> type = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+
+      // Handle unknown deserialization parameters
+      @JsonAnySetter
+      protected void handleUnknown(String key, Object value) {
+         Logger.getLogger(this.getClass().getName()).info("Unknown property: "+key);
+      }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0", localName = "localType")
       public void setLocalType(final java.lang.String obj)

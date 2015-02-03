@@ -2,7 +2,7 @@ package fi.nls.oskari.eu.elf.recipe.buildings;
 
 import java.io.IOException;
 
-import fi.nls.oskari.eu.elf.buildings.ELF_MasterLoD0_Building_nls_fi_wfs.Building;
+import fi.nls.oskari.eu.elf.buildings.ELF_MasterLoD0_Building.Building;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
 
@@ -32,7 +32,7 @@ public class ELF_MasterLoD0_Building_nls_fi_wfs_Parser extends GML32 {
 
         final InputFeature<Building> iter = new InputFeature<Building>(
                 Building.QN, Building.class);
-
+        // Iterate features
         while (iter.hasNext()) {
             final Building feature = iter.next();
             final Resource output_ID = outputContext.uniqueId(feature.id);

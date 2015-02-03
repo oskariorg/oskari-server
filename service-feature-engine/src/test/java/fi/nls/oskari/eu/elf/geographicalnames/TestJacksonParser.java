@@ -1,8 +1,6 @@
 package fi.nls.oskari.eu.elf.geographicalnames;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -38,7 +36,9 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/eu/elf/geographicalnames/nls_fi-ELF-GN-wfs.xml");
+                     //   "/fi/nls/oskari/eu/elf/geographicalnames/nls_fi-ELF-GN-wfs.xml");
+                          "/fi/nls/oskari/eu/elf/geographicalnames/geonorge_no-ELF-GN-wfs.xml");
+
 
         try {
             inputProcessor.setInput(inp);

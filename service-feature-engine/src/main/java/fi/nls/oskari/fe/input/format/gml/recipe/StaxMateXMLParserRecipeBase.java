@@ -48,6 +48,12 @@ public abstract class StaxMateXMLParserRecipeBase {
             return crsr.getAttrValue(localName);
         }
 
+        public String getEventName() {
+            if( crsr.getCurrEvent() == null) return null;
+            if( crsr.getCurrEvent().hasLocalName()) return crsr.getCurrEvent().name();
+            return null;
+        }
+
         public String attr(String ns, String localName)
                 throws XMLStreamException {
             return crsr.getAttrValue(ns, localName);

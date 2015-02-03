@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0 http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod0bu:Building&amp;NAMESPACES=xmlns(elf-lod0bu,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FBuildings%2FMasterLoD0%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-12-02T10:57:24Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="50" numberReturned="50">
   <wfs:boundedBy>
     <gml:Envelope srsName="EPSG:3035">
@@ -39,7 +39,7 @@ xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wf
                         </gn:SpellingOfName>
                     </gn:spelling>
                 </gn:GeographicalName>
-      </bu-base:name> 
+      </bu-base:name>
       <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
         <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
           <bu-base:geometry>
@@ -69,7 +69,7 @@ xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wf
           <base:versionId xsi:nil="true" nilReason="unpopulated"/>
         </base:Identifier>
       </bu-base:inspireId>
-      
+
        <bu-base:name xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
       <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
                     <gn:language>fin</gn:language>
@@ -99,8 +99,8 @@ xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wf
                         </gn:SpellingOfName>
                     </gn:spelling>
                 </gn:GeographicalName>
-      </bu-base:name>  
-      
+      </bu-base:name>
+
       <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
         <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
           <bu-base:geometry>

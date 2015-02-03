@@ -7,7 +7,7 @@
 	xmlns:elf-lod1au="http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0"
 	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 
  http://schemas.opengis.net/wfs/2.0.0/wfs.xsd">
-	<wfs:Query typeNames="elf-lod1au:AdministrativeUnit" srsName="EPSG:900913">
+	<wfs:Query typeNames="elf-lod1au:AdministrativeBoundary" srsName="EPSG:900913">
 		<fes:Filter>
 			<fes:BBOX>
 				<gml:Envelope srsName="EPSG:900913">

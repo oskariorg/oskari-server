@@ -6,9 +6,10 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeBoundary_nls_fi_wfs_Parser;
 import org.junit.Test;
 
-import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_Parser;
+import fi.nls.oskari.eu.elf.recipe.administrativeunits.ELF_MasterLoD0_AdministrativeUnit_nls_fi_wfs_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
@@ -50,7 +51,50 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                JacksonParserRecipe recipe = new ELF_MasterLoD0_AdministrativeUnit_Parser();
+                JacksonParserRecipe recipe = new ELF_MasterLoD0_AdministrativeUnit_nls_fi_wfs_Parser();
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);
+
+
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                // fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }
+    @Test
+    // urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0
+    public void test_ELF_Master_LoD1_AU_boundary_geonorge_no_wfs_GMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/elf/administrativeBoundary/geonorge_no-ELF-AU-wfs.xml");
+
+        try {
+            inputProcessor.setInput(inp);
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                JacksonParserRecipe recipe = new ELF_MasterLoD0_AdministrativeBoundary_nls_fi_wfs_Parser();
                 //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
 

@@ -7,7 +7,9 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.log4j.Logger;
+
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,7 +26,7 @@ import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 
 public class TestJacksonParser extends TestHelper {
-    static final Logger logger = Logger.getLogger(TestJacksonParser.class);
+    final static Logger logger = LogFactory.getLogger(TestJacksonParser.class);
 
     /**
      * 
@@ -50,10 +52,7 @@ public class TestJacksonParser extends TestHelper {
 
         try {
             inputProcessor.setInput(inp);
-
-            java.io.File f = getTempFile("AU-Boundary-ign_es", ".json");
-            logger.info(f.getAbsolutePath());
-            OutputStream fouts = new FileOutputStream(f);
+            OutputStream fouts = System.out;
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -103,9 +102,8 @@ public class TestJacksonParser extends TestHelper {
             inputProcessor.setInput(inp);
 
 
-            java.io.File f = getTempFile("AU-ign_es", ".json");
-            logger.info(f.getAbsolutePath());
-            OutputStream fouts = new FileOutputStream(f);
+
+            OutputStream fouts = System.out;
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -155,9 +153,8 @@ public class TestJacksonParser extends TestHelper {
         try {
             inputProcessor.setInput(inp);
 
-            java.io.File f = getTempFile("AU-ign_fr", ".json");
-            logger.info(f.getAbsolutePath());
-            OutputStream fouts = new FileOutputStream(f);
+
+            OutputStream fouts = System.out;
             try {
                 outputProcessor.setOutput(fouts);
 
