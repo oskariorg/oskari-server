@@ -9,10 +9,11 @@ ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-s
 
 ### DB upgrades
 
-#### Allowing more data to be stored for users longer usernames
+#### Allowing more data to be stored for users
 
 * Usernames in external systems can be longer than current column size - adjusted to 128 characters.
 * User UUID should be unique - added constraint.
+* Added column for users email.
 * User can now store additional attribute data as JSON.
 
     content-resources/src/main/resources/sql/upgrade/1.27/03_alter_table_oskari_users.sql
