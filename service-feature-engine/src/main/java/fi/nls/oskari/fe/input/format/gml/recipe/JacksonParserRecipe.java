@@ -179,15 +179,8 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             }
         }
 
-        public boolean hasNext() throws IOException {
-            boolean hasN = iterFeature.hasNext();
-            if (!hasN) return false;
-            if (iterFeature.next().getEventName().equals("END_ELEMENT"))
-                return iterFeature.hasNext();
-
-            return hasN;
-
-
+        public boolean hasNext() {
+            return iterFeature.hasNext();
         }
 
         public T next() throws IOException {

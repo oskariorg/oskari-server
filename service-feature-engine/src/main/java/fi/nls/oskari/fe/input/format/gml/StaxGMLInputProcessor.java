@@ -35,7 +35,7 @@ public class StaxGMLInputProcessor implements XMLInputProcessor {
     }
 
     public void close() throws XMLStreamException, IOException {
-        // TODO: fix later / END_ELEMENT event rootC.getStreamReader().closeCompletely();
+        rootC.getStreamReader().closeCompletely();
         inp.close();
     }
 

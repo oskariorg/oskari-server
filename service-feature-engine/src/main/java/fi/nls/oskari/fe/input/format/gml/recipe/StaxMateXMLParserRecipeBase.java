@@ -38,7 +38,12 @@ public abstract class StaxMateXMLParserRecipeBase {
             this.next = next;
             this.crsr = crsr;
             if (next != null && next.hasQName()) {
-                this.qn = crsr.getQName();
+                // Temporay fix  because of unexpected cursor position ? should be "START_ELEMENT"
+                if (next.name().equals("END_ELEMENT")){
+                    this.next = crsr.getNext();
+                    this.crsr = crsr;
+                }
+                if (this.next != null && this.next.hasQName()) this.qn = crsr.getQName();
             } else if (next == null) {
 
             }
@@ -46,12 +51,6 @@ public abstract class StaxMateXMLParserRecipeBase {
 
         public String attr(String localName) throws XMLStreamException {
             return crsr.getAttrValue(localName);
-        }
-
-        public String getEventName() {
-            if( crsr.getCurrEvent() == null) return null;
-            if( crsr.getCurrEvent().hasLocalName()) return crsr.getCurrEvent().name();
-            return null;
         }
 
         public String attr(String ns, String localName)
