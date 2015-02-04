@@ -102,9 +102,23 @@ public class PropertyUtil {
     }
 
     public static String getNecessary(final String propertyName) {
+        return getNecessary(propertyName, null);
+    }
+
+    /**
+     * Returns a property value or throws an exception if it doesn't exist.
+     * @param propertyName  property to find
+     * @param detailMessage if not null, message is attached to the exception that is thrown. Use it to describe why the property is necessary.
+     * @return
+     */
+    public static String getNecessary(final String propertyName, final String detailMessage) {
         String prop = getOptional(propertyName);
         if (prop == null) {
-            throw new RuntimeException("Missing necessary property: " + propertyName);
+            String msg = "Missing necessary property: " + propertyName;
+            if(detailMessage != null) {
+                msg = msg + ". Message: " + detailMessage;
+            }
+            throw new RuntimeException(msg);
         }
         return prop;
     }

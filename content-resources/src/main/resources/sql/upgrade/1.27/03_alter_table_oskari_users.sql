@@ -1,6 +1,10 @@
 ﻿-- allow longer usernames;
 ALTER TABLE oskari_users
-   ALTER COLUMN  user_name TYPE character varying(128);
+   ALTER COLUMN user_name TYPE character varying(128);
+
+-- add email column;
+ALTER TABLE oskari_users
+   ADD COLUMN email character varying(256);
 
 -- add constraint on uuid
 ALTER TABLE oskari_users

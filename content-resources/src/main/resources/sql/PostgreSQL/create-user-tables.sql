@@ -9,6 +9,7 @@ CREATE TABLE oskari_users (
   user_name character varying(128) NOT NULL,
   first_name character varying(128),
   last_name character varying(128),
+  email character varying(256),
   uuid character varying(64),
   attributes text DEFAULT '{}',
   CONSTRAINT oskari_users_pkey PRIMARY KEY (id),
