@@ -23,12 +23,15 @@ ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-s
 DatabaseUserService now has a method (saveUser) to ensure the user and his/her roles are up-to-date in the database (inserting if missing).
 Usable when combined with external login service which should populate users to Oskari based on external user data (for example SAML-message).
 Added support for saving and loading additional user attributes to/from database.
+User email is now saved to the database.
 
 ### service-base
 
 IOHelper now has convenience method to write the Content-type header.
 HTTP params can now be generated to properly encoded string for encoding POST payload or GET querystring with IOHelper.getParams().
 User class now has methods to attach additional attributes for the user.
+PropertyUtil.getNecessary() has a new overloaded version that takes an optional detailed message. The message is attached to the
+exception so it is shown in the server logs. Message should be used to tell why the property is necessary.
 
 ### geoserver-ext/OskariMarkFactory
 
