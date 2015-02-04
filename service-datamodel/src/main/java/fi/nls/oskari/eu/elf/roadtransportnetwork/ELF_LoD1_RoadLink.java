@@ -1,33 +1,27 @@
 package fi.nls.oskari.eu.elf.roadtransportnetwork;
 
-import java.net.URI;
-import fi.nls.oskari.fe.gml.util.CodeType;
-import fi.nls.oskari.isotc211.gco.Distance;
-import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
-import javax.xml.bind.annotation.XmlElement;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import javax.xml.namespace.QName;
-import javax.xml.bind.annotation.XmlAttribute;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-import java.util.Calendar;
-import java.math.BigInteger;
-import fi.nls.oskari.fe.gml.util.BoundingProperty;
-import fi.nls.oskari.fe.gml.util.LocationProperty;
-import fi.nls.oskari.fe.xml.util.NillableType;
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
+import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
-import fi.nls.oskari.fe.xml.util.Reference;
+import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.Nillable;
+import fi.nls.oskari.fe.xml.util.NillableType;
+import fi.nls.oskari.fe.xml.util.Reference;
 
-public class ELF_TNRO_RoadLink
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
+import java.net.URI;
+
+public class ELF_LoD1_RoadLink
 {
 
-   @JacksonXmlRootElement(namespace = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0")
+   @JacksonXmlRootElement(namespace = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0")
    public static class RoadLink
    {
-      public static final String NS = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
+      public static final String NS = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0";
       public static final QName QN = new QName(NS, "RoadLink");
       @XmlAttribute(required = true, name = "id")
       public String id;
@@ -47,7 +41,7 @@ public class ELF_TNRO_RoadLink
       @XmlElement(required = false)
       public NillableType<String> endLifespanVersion;
       @XmlElement(required = false)
-      public java.util.List<fi.nls.oskari.fe.xml.util.Reference> inNetwork = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
+      public java.util.List<Reference> inNetwork = new java.util.ArrayList<Reference>();
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Network:3.2", localName = "centrelineGeometry")
       @XmlElement(required = false)
       public GeometryProperty centrelineGeometry;
@@ -71,7 +65,7 @@ public class ELF_TNRO_RoadLink
       public NillableType<String> validTo;
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Network:3.2", localName = "inNetwork")
-      public void setInNetwork(final fi.nls.oskari.fe.xml.util.Reference obj)
+      public void setInNetwork(final Reference obj)
       {
          if (obj != null)
          {
@@ -79,7 +73,7 @@ public class ELF_TNRO_RoadLink
          }
       }
 
-      java.util.List<fi.nls.oskari.fe.xml.util.Reference> getInNetwork()
+      java.util.List<Reference> getInNetwork()
       {
          return inNetwork;
       }

@@ -69,5 +69,45 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
+  /*  @Test
+    public void test_ELF_Master_tnro_cascading_RoadLink_GMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/elf/roadtransportnetwork/fgi_fi-ELF-TN-wfs.xml");
+
+        try {
+            inputProcessor.setInput(inp);
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                ParserRecipe recipe = new ELF_MasterLoD1_RoadLink_Parser();
+
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                // fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }  */
 
 }
