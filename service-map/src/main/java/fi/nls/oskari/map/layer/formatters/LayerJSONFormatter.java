@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -188,33 +189,25 @@ public class LayerJSONFormatter {
         if(metadataId == null || metadataId.isEmpty()) {
             return null;
         }
-        //layerJson.put("dataUrl", metadataId);
-        final int indexOf = metadataId.indexOf("uuid=");
-        if (indexOf > 0) {
-            // parse uuid from URL
-            return metadataId.substring(indexOf + 5);
-        }
-        if(metadataId.startsWith("http")) {
+        if(metadataId.toLowerCase().startsWith("http")) {
+            try {
+                URL url = new URL(metadataId);
+
+                String[] parameters = url.getQuery().split("&");
+                for (String param : parameters) {
+                    String[] keyvalue = param.split("=");
+                    if("uuid".equalsIgnoreCase(keyvalue[0]) || "id".equalsIgnoreCase(keyvalue[0])) {
+                        return keyvalue[1];
+                    }
+                }
+            } catch (Exception ignored) {
+                // propably just not valid URL
+            }
             log.debug("Couldn't parse uuid from metadata url:", metadataId);
             return null;
         }
         return metadataId;
     }
-/*
-    "type":"arcgislayer",
-    "url":"http://aineistot.esri.fi/arcgis/rest/services/Taustakartat/Taustakartta/MapServer",
-    "name":"Taustakartta",
-    "organization": "Demo",
-    "inspiretheme": "Demo",
-    "locale": {
-        "fi": {
-            "name": "Arcgis test"
-        },
-        "en": {
-            "name": "Arcgis test"
-        }
-    }
- */
 
     /**
      * Minimal implementation for parsing layer in json format.
