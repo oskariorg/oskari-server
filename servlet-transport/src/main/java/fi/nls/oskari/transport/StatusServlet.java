@@ -38,6 +38,14 @@ public class StatusServlet extends HttpServlet {
         final String session = ConversionHelper.getString(request.getParameter(PARAM_SESSION), request.getRequestedSessionId());
         final User user = getOskariUser(session, request.getParameter("route"));
         if (user == null || !user.isAdmin()) {
+            /*
+            For this to work in envinronment without database access - add these properties to transport-ext.properties:
+            # Needed by status servlet if other than "Admin"
+            oskari.user.role.admin = Administrator
+            # User service implementation
+            oskari.user.service=fi.nls.oskari.service.DummyUserService
+            */
+
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Couldn't get user information");
             return;
         }
