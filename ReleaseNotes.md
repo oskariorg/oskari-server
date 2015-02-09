@@ -46,6 +46,7 @@ for getting actual results. Configure the channel to use with property (supports
     actionhandler.GetReverseGeocodingResult.channels=<search channel id e.g. NLS_NEAREST_FEATURE_CHANNEL>
 
 GetViews action route now requires a non-guest user.
+GetCurrentUser now returns user data in response in addition to the UUID in the header.
 
 ### service-search-nls
 

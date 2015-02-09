@@ -10,7 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
- * Response Oskari user uid in response header data
+ * Response Oskari user uuid in response header data and user data as JSON in response body.
  */
 @OskariActionRoute("GetCurrentUser")
 public class GetCurrentUserHandler extends ActionHandler {
