@@ -76,7 +76,7 @@
                 }],
                 "userUUID": "my uuid is secrets",
                 "firstName": "Test",
-                "loginName": "test@oskari.org"
+                "email": "test@oskari.org"
             }
         }
     }
