@@ -164,7 +164,7 @@ public class JobQueue
                         avgRuntime = runTimeMS;
                     }
                     else {
-                        avgRuntime = (avgRuntime + runTimeMS) / 2;
+                        avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
                     }
                 }
             }

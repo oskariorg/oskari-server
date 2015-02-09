@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
- * Serves images from cache (also temp)
+ * Shows some status data for admin users
  */
 public class StatusServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
