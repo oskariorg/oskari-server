@@ -107,4 +107,18 @@ public class Role implements Serializable {
         }
         return null;
     }
+
+    public static Role parse(JSONObject json) {
+
+        try {
+            Role role = new Role();
+            role.setId(json.optInt(KEY_ROLE_ID));
+            role.setName(json.optString(KEY_ROLE_NAME));
+
+            return role;
+        } catch (Exception jsonex) {
+            log.warn("Unable to parse role from JSON:", json);
+        }
+        return null;
+    }
 }
