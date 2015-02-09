@@ -145,7 +145,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	private ServerSession local;
 	
 	// JobQueue singleton
-	private JobQueue jobs;
+	private static JobQueue jobs;
 
 	/**
 	 * Constructs TransportService with BayeuxServer instance
@@ -198,6 +198,10 @@ public class TransportService extends AbstractService implements ResultProcessor
         addService(CHANNEL_SET_PROPERTY_FILTER, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_VISIBILITY, "processRequest");
         addService(CHANNEL_HIGHLIGHT_FEATURES, "processRequest");
+    }
+
+    public static JobQueue getQueue() {
+        return jobs;
     }
 
     /**
