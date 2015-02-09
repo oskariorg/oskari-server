@@ -5,6 +5,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 
@@ -22,6 +24,8 @@ public class Role implements Serializable {
     private static Role USER_ROLE = null;
     public static final String DEFAULT_ADMIN_ROLE_NAME = "Admin";
     public static final String DEFAULT_USER_ROLE_NAME = "User";
+    private final static String KEY_ROLE_ID = "id";
+    private final static String KEY_ROLE_NAME = "name";
 
     private long id;
     private String name;
@@ -89,5 +93,18 @@ public class Role implements Serializable {
 
     public boolean isAdminRole() {
         return (getAdminRoleName().equals(getName()));
+    }
+
+    public JSONObject toJSON() {
+        try {
+            JSONObject roleData = new JSONObject();
+            roleData.put(KEY_ROLE_ID, getId());
+            roleData.put(KEY_ROLE_NAME, getName());
+
+            return roleData;
+        } catch (JSONException jsonex) {
+            log.warn("Unable to construct JSON role data:", this);
+        }
+        return null;
     }
 }

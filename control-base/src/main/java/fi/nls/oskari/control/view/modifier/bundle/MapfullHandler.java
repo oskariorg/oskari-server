@@ -10,7 +10,6 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -49,23 +48,11 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_ID = "id";
 
     private static final String KEY_USER = "user";
-    private static final String KEY_FIRSTNAME = "firstName";
-    private static final String KEY_LASTNAME = "lastName";
-    private static final String KEY_LOGINNAME = "loginName";
-    private static final String KEY_NICKNAME = "nickName";
-    private static final String KEY_USERUUID = "userUUID";
-    private static final String KEY_USERID = "userID";
 
 
     private static final String KEY_MAP_OPTIONS = "mapOptions";
     private static final String KEY_SRS = "srsName";
 
-
-    private final static String KEY_ROLE_ID = "id";
-    private final static String KEY_ROLE_NAME = "name";
-    private final static String KEY_ROLES = "roles";
-
-    
     private static final String KEY_PLUGINS = "plugins";
     public static final String KEY_CONFIG = "config";
     private static final String KEY_BASELAYERS = "baseLayers";
@@ -103,7 +90,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         // setup user data
-        JSONHelper.putValue(mapfullConfig, KEY_USER, getUserJSON(params.getUser()));
+        JSONHelper.putValue(mapfullConfig, KEY_USER, params.getUser().toJSON());
 
         // Any layer referenced in state.selectedLayers array NEEDS to 
         // be in conf.layers otherwise it cant be added to map on startup
@@ -413,36 +400,6 @@ public class MapfullHandler extends BundleHandler {
                         stateLayerId, "vs confLayerId:", confLayerId);
             }
         }
-    }
-
-    private JSONObject getUserJSON(final User user) {
-        try {
-            JSONObject userData = new JSONObject();
-            userData.put(KEY_FIRSTNAME, user.getFirstname());
-            userData.put(KEY_LASTNAME, user.getLastname());
-            userData.put(KEY_LOGINNAME, user.getEmail());
-            userData.put(KEY_NICKNAME, user.getScreenname());
-            userData.put(KEY_USERUUID, user.getUuid());
-            userData.put(KEY_USERID, user.getId());
-
-            JSONArray roles = getUserRolesJSON(user);
-            userData.put(KEY_ROLES, roles);
-            return userData;
-        } catch (JSONException jsonex) {
-            log.warn("Unable to populate user data:", user);
-        }
-        return null;
-    }
-
-    private JSONArray getUserRolesJSON(final User user) throws JSONException {
-        JSONArray userRoles = new JSONArray();
-        for (Role role: user.getRoles()) {
-            JSONObject roleData = new JSONObject();
-            roleData.put(KEY_ROLE_ID, role.getId());
-            roleData.put(KEY_ROLE_NAME, role.getName());
-            userRoles.put(roleData);
-        }
-        return userRoles;
     }
 
     public static JSONObject getPlugin(final String pluginClassName,

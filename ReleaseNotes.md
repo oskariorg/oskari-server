@@ -32,6 +32,7 @@ HTTP params can now be generated to properly encoded string for encoding POST pa
 User class now has methods to attach additional attributes for the user.
 PropertyUtil.getNecessary() has a new overloaded version that takes an optional detailed message. The message is attached to the
 exception so it is shown in the server logs. Message should be used to tell why the property is necessary.
+Added User.toJSON() and Role.toJSON() methods.
 
 ### geoserver-ext/OskariMarkFactory
 

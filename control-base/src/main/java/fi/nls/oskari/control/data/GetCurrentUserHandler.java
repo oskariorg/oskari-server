@@ -9,7 +9,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
-
 /**
  * Response Oskari user uid in response header data
  */
@@ -22,6 +21,6 @@ public class GetCurrentUserHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         params.getResponse().setHeader(KEY_UID, params.getUser().getUuid());
-        ResponseHelper.writeResponse(params, "{}");
+        ResponseHelper.writeResponse(params, params.getUser().toJSON());
     }
 }
