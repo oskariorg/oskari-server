@@ -2,6 +2,7 @@ package fi.nls.oskari.service;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class DummyUserService extends UserService {
 
     public User getGuestUser() {
         final User user = super.getGuestUser();
-        user.addRole(GUEST_ROLE, "Guest");
+        user.addRole(GUEST_ROLE, PropertyUtil.get("oskari.user.role.guest", "Guest"));
         return user;
     }
 
@@ -26,10 +27,10 @@ public class DummyUserService extends UserService {
         User user = new User();
 
         if (username.equals("user")) {
-            user.addRole(USER_ROLE, "User");
+            user.addRole(USER_ROLE, PropertyUtil.get("oskari.user.role.user", "User"));
         } else if (username.equals("admin")) {
-            user.addRole(USER_ROLE, "User");
-            user.addRole(ADMIN_ROLE, "Administrator");
+            user.addRole(USER_ROLE, PropertyUtil.get("oskari.user.role.user", "User"));
+            user.addRole(ADMIN_ROLE, PropertyUtil.get("oskari.user.role.admin", "Admin"));
         } else {
             return getGuestUser();
         }
@@ -39,7 +40,18 @@ public class DummyUserService extends UserService {
     @Override
     public Role[] getRoles(Map<Object, Object> platformSpecificParams)
             throws ServiceException {
-        return new Role[0];
+        Role guest = new Role();
+        guest.setId(GUEST_ROLE);
+        guest.setName(PropertyUtil.get("oskari.user.role.guest", "Guest"));
+
+        Role user = new Role();
+        user.setId(USER_ROLE);
+        user.setName(PropertyUtil.get("oskari.user.role.user", "User"));
+
+        Role admin = new Role();
+        admin.setId(ADMIN_ROLE);
+        admin.setName(PropertyUtil.get("oskari.user.role.admin", "Admin"));
+        return new Role[] {guest, user, admin};
     }
 
     @Override

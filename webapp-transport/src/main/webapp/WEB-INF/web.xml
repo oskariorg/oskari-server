@@ -71,10 +71,20 @@
         <servlet-name>image</servlet-name>
         <servlet-class>fi.nls.oskari.image.ImageServlet</servlet-class>
     </servlet>
+
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
+    </servlet>
     
     <servlet-mapping>
         <servlet-name>image</servlet-name>
         <url-pattern>/image/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
     </servlet-mapping>
     
     <filter>
@@ -89,5 +99,9 @@
     <filter-mapping>
         <filter-name>cross-origin</filter-name>
         <url-pattern>/image/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>cross-origin</filter-name>
+        <url-pattern>/status</url-pattern>
     </filter-mapping>
 </web-app>

@@ -42,7 +42,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         if (!params.getUser().hasAnyRoleIn(permittedRoles)) {
             throw new ActionDeniedException("Unauthorized user tried to proxy via capabilities");
         }
-        final String url = params.getRequiredParam(PARM_URL);
+        final String url = params.getRequiredParam(PARM_URL).trim();
         final String layerType = params.getHttpParam(PARM_TYPE, OskariLayer.TYPE_WMS);
         final String version = params.getHttpParam(PARM_VERSION, "");
         final String user = params.getHttpParam(PARM_USER, "");

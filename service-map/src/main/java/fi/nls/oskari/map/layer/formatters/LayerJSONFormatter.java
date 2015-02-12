@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,20 +117,15 @@ public class LayerJSONFormatter {
             }
         }
 
-        //log.debug("name", layer.getName(lang));
         JSONHelper.putValue(layerJson, "name", layer.getName(lang));
-        //log.debug("subtitle", layer.getTitle(lang));
         JSONHelper.putValue(layerJson, "subtitle", layer.getTitle(lang));
-        //log.debug("getGroup", layer.getGroup());
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
-        //log.debug("getInspireTheme", layer.getInspireTheme());
         if(layer.getInspireTheme() != null) {
             JSONHelper.putValue(layerJson, "inspire", layer.getInspireTheme().getName(lang));
         }
 
-        //log.debug("opacity", layer.getOpacity());
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
             JSONHelper.putValue(layerJson, "opacity", layer.getOpacity());
         }
@@ -150,16 +146,12 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "srs_name", layer.getSrs_name());
         JSONHelper.putValue(layerJson, "version", layer.getVersion());
 
-        //log.debug("getLegendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());
 
-        //log.debug("getCreated", layer.getCreated());
         JSONHelper.putValue(layerJson, "created", layer.getCreated());
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
-        //log.debug("dataUrl_uuid", getFixedDataUrl(layer));
-        JSONHelper.putValue(layerJson, "dataUrl", layer.getMetadataId());
         JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
 
         // sublayer handling
@@ -188,33 +180,25 @@ public class LayerJSONFormatter {
         if(metadataId == null || metadataId.isEmpty()) {
             return null;
         }
-        //layerJson.put("dataUrl", metadataId);
-        final int indexOf = metadataId.indexOf("uuid=");
-        if (indexOf > 0) {
-            // parse uuid from URL
-            return metadataId.substring(indexOf + 5);
-        }
-        if(metadataId.startsWith("http")) {
+        if(metadataId.toLowerCase().startsWith("http")) {
+            try {
+                URL url = new URL(metadataId);
+
+                String[] parameters = url.getQuery().split("&");
+                for (String param : parameters) {
+                    String[] keyvalue = param.split("=");
+                    if("uuid".equalsIgnoreCase(keyvalue[0]) || "id".equalsIgnoreCase(keyvalue[0])) {
+                        return keyvalue[1];
+                    }
+                }
+            } catch (Exception ignored) {
+                // propably just not valid URL
+            }
             log.debug("Couldn't parse uuid from metadata url:", metadataId);
             return null;
         }
         return metadataId;
     }
-/*
-    "type":"arcgislayer",
-    "url":"http://aineistot.esri.fi/arcgis/rest/services/Taustakartat/Taustakartta/MapServer",
-    "name":"Taustakartta",
-    "organization": "Demo",
-    "inspiretheme": "Demo",
-    "locale": {
-        "fi": {
-            "name": "Arcgis test"
-        },
-        "en": {
-            "name": "Arcgis test"
-        }
-    }
- */
 
     /**
      * Minimal implementation for parsing layer in json format.

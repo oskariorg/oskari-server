@@ -32,6 +32,7 @@ HTTP params can now be generated to properly encoded string for encoding POST pa
 User class now has methods to attach additional attributes for the user.
 PropertyUtil.getNecessary() has a new overloaded version that takes an optional detailed message. The message is attached to the
 exception so it is shown in the server logs. Message should be used to tell why the property is necessary.
+Added User.toJSON()/parse() and Role.toJSON()/parse() methods.
 
 ### geoserver-ext/OskariMarkFactory
 
@@ -45,6 +46,7 @@ for getting actual results. Configure the channel to use with property (supports
     actionhandler.GetReverseGeocodingResult.channels=<search channel id e.g. NLS_NEAREST_FEATURE_CHANNEL>
 
 GetViews action route now requires a non-guest user.
+GetCurrentUser now returns user data in response in addition to the UUID in the header.
 
 ### service-search-nls
 
