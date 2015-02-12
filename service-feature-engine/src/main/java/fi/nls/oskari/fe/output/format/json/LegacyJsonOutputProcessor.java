@@ -12,13 +12,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.module.SimpleModule;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -26,7 +20,6 @@ import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.output.jackson.LegacyGeometryPropertySerializer;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 
 public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
@@ -37,23 +30,6 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
 
     final JsonFactory jsonFactory = new JsonFactory();
     final ObjectMapper json = new ObjectMapper();
-
-    static class PairSerializer extends JsonSerializer<Pair<Resource, ?>> {
-
-        @Override
-        public void serialize(Pair<Resource, ?> value, JsonGenerator jgen,
-                SerializerProvider provider) throws IOException,
-                JsonProcessingException {
-
-            jgen.writeStartObject();
-            jgen.writeFieldName(value.getKey().toString());
-            jgen.writeObject(value.getValue());
-            jgen.writeEndObject();
-            
-
-        }
-
-    }
 
     static class OpenBufferedWriter extends BufferedWriter {
 
@@ -70,26 +46,6 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
 
     }
 
-    static class JsonOutputModule extends SimpleModule {
-        static <T> Class getClazz(T... param) {
-            return param.getClass().getComponentType();
-        }
-
-        JsonOutputModule() {
-            super("SimpleModule", new Version(1, 0, 0, null));
-        }
-
-        private static final long serialVersionUID = -4278178835803000867L;
-
-        @Override
-        public void setupModule(SetupContext context) {
-            addSerializer(new LegacyGeometryPropertySerializer());
-            addSerializer(JsonOutputModule.<Pair<Resource, Object>> getClazz(),
-                    new PairSerializer());
-            super.setupModule(context);
-        }
-    };
-
     public void setOutput(OutputStream out) {
         outs = out;
         ps = new OpenBufferedWriter(new OutputStreamWriter(outs, Charset
@@ -98,7 +54,7 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
 
     public LegacyJsonOutputProcessor() {
 
-        JsonOutputModule simpleModule = new JsonOutputModule();
+        LegacyJsonOutputModule simpleModule = new LegacyJsonOutputModule();
 
         json.registerModule(simpleModule);
     }

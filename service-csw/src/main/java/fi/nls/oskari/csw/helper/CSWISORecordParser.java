@@ -22,8 +22,16 @@ import java.util.*;
 public class CSWISORecordParser {
 
     private static final Logger log = LogFactory.getLogger(CSWISORecordParser.class);
+
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
+
+    static {
+        for (final String language : Locale.getISOLanguages()) {
+            final Locale locale = new Locale(language);
+            ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
+        }
+    }
 
     private static SimpleDateFormat dateTimeFormat() {
         // 2011-02-23T14:32:09
@@ -262,13 +270,6 @@ public class CSWISORecordParser {
         // From root
         XPATH_METADATA_DATE = xpath.compile(
                 "./gmd:dateStamp/gco:DateTime");
-        if (ISO3letterOskariLangMapping.isEmpty()) {
-            final String[] languages = Locale.getISOLanguages();
-            for (String language : languages) {
-                Locale locale = new Locale(language);
-                ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
-            }
-        }
     }
 
     public CSWIsoRecord parse(final Node elem, final Locale locale, MathTransform transform) throws XPathExpressionException, ParseException, TransformException {

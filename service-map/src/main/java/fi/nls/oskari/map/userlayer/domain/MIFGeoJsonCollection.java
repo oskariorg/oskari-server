@@ -29,6 +29,7 @@ import java.util.Map;
 public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWorker {
 
     final FeatureJSON io = new FeatureJSON();
+    static final String DEFAULT_EPSG = "EPSG:2393";
     private static final Logger log = LogFactory
             .getLogger(MIFGeoJsonCollection.class);
 
@@ -71,7 +72,10 @@ public class MIFGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
                 sourceCrs = bounds.getCoordinateReferenceSystem();
             }
             if (sourceCrs == null) {
-                sourceCrs = schema.getCoordinateReferenceSystem();
+                 sourceCrs = schema.getCoordinateReferenceSystem();
+            }
+            if (sourceCrs == null) {
+                sourceCrs = CRS.decode(DEFAULT_EPSG, true);
             }
 
             // Oskari crs

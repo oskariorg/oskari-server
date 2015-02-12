@@ -64,7 +64,8 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         final WFSLayerConfiguration lc = getLayerInfoForRedis(id, sid);
 
         if (lc == null) {
-            throw new ActionParamsException("Couldn't find matching layer for id " + PARAMS_ID);
+            throw new ActionParamsException("Couldn't find matching layer for id " + id +
+                    ". Requested layer: " + sid);
         }
 
         // lc.save() saves the layer info to redis as JSON so transport can use this

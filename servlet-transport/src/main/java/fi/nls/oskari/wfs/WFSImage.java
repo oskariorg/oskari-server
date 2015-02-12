@@ -465,7 +465,9 @@ public class WFSImage {
                 style = createDefaultHighlightSLDStyle(layer.getGMLGeometryPropertyNoNamespace());
             }
             else {
-                style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
+                // style = createSLDStyle(WFSImage.class.getResourceAsStream(DEFAULT_SLD)); // getClass() (non-static)
+                // TODO: check if we really always want to use without namespace
+                style = createDefaultSLDStyle(layer.getGMLGeometryPropertyNoNamespace());
             }
         }
         if(style == null) {
@@ -551,6 +553,25 @@ public class WFSImage {
             return createSLDStyle(xml);
         } catch(Exception e) {
             log.error(e, "Failed to get Default highlight SLD Style - geom type ", geom_type);
+            log.error(resource);
+        }
+        return null;
+    }
+
+    /**
+     * Creates default sld style by replacing geomtype
+     *
+     * @return sld
+     */
+    public Style createDefaultSLDStyle(String geom_type) {
+        log.debug("Creating default highlight SLD for:", geom_type);
+        InputStream resource = WFSImage.class.getResourceAsStream(DEFAULT_SLD);
+        try {
+            String xml = IOHelper.readString(resource, "ISO-8859-1");
+            xml = xml.replaceAll(GEOM_TYPE_PLACEHOLDER, geom_type);
+            return createSLDStyle(xml);
+        } catch(Exception e) {
+            log.error(e, "Failed to get Default SLD Style - geom type ", geom_type);
             log.error(resource);
         }
         return null;

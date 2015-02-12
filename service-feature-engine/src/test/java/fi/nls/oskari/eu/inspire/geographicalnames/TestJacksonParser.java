@@ -8,7 +8,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
-import fi.nls.oskari.eu.inspire.recipe.gn.Inspire_GN_NamedPlace;
+import fi.nls.oskari.eu.inspire.recipe.geographicalnames.INSPIRE_GN_NamedPlace;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
@@ -38,7 +38,7 @@ public class TestJacksonParser {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/gn/ign_es-INSPIRE-GN-wfs.xml");
+                        "/fi/nls/oskari/eu/inspire/geographicalnames/ign_es-INSPIRE-GN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -47,7 +47,8 @@ public class TestJacksonParser {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new Inspire_GN_NamedPlace();
+                ParserRecipe recipe = new INSPIRE_GN_NamedPlace();
+                
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

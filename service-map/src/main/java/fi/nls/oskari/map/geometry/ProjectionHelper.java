@@ -30,6 +30,18 @@ public class ProjectionHelper {
         }
         return null;
     }
+
+    public static Point transformPoint(final String lon, final String lat, final String sourceSRS, final String targetSRS) {
+        try {
+            double dlon = Double.parseDouble(lon);
+            double dlat = Double.parseDouble(lat);
+            return transformPoint(new Point(dlon, dlat), sourceSRS, targetSRS);
+
+        } catch (Exception e) {
+            log.error(e, "Transform parsing lon,lat double  failed! Params:: sourceSRS: ", sourceSRS, "targetSRS: ", targetSRS, "Point: ", lon, "  ", lat);
+        }
+        return null;
+    }
     public static Point transformPoint(final double lon, final double lat, final CoordinateReferenceSystem sourceCrs, final String targetSRS) {
         try {
             CoordinateReferenceSystem targetCrs = CRS.decode(targetSRS);
@@ -42,6 +54,8 @@ public class ProjectionHelper {
     }
     public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
         try {
+
+            if(sourceCrs.getName().equals(targetCrs.getName())) return point;
 
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);

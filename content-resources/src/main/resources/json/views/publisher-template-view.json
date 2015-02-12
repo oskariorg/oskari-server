@@ -31,14 +31,14 @@
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
                         "config":{
                             "termsUrl":{
-                                "fi":"http://www.elfproject.eu/content/terms-service",
-                                "sv":"http://www.elfproject.eu/content/terms-service",
-                                "en":"http://www.elfproject.eu/content/terms-service"
+                                "fi":"",
+                                "sv":"",
+                                "en":""
                             },
                             "mapUrlPrefix":{
-                                "fi":"?",
-                                "sv":"?",
-                                "en":"?"
+                                "fi":"",
+                                "sv":"",
+                                "en":""
                             }
                         }
                     },

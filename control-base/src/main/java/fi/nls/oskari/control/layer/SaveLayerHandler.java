@@ -45,6 +45,7 @@ public class SaveLayerHandler extends ActionHandler {
     private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
 
+    private boolean permissionFailure = false;
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARAM_LAYER_ID = "layer_id";
     private static final String PARAM_LAYER_NAME = "layerName";
@@ -83,9 +84,14 @@ public class SaveLayerHandler extends ActionHandler {
             // handle error getting JSON failed
             throw new ActionException("Error constructing JSON for layer");
         }
-        if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
+        if (this.permissionFailure) {
+            JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
+            log.debug("Permission failure");
+            this.permissionFailure = false;
+        } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
+            log.debug("Metadata read failure");
         }
         ResponseHelper.writeResponse(params, layerJSON);
     }
@@ -195,6 +201,10 @@ public class SaveLayerHandler extends ActionHandler {
             cc.setVersion(version);
             if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
                 final String capabilitiesXML = GetWMSCapabilities.getResponse(url, ml.getUsername(), ml.getPassword());
+                if (capabilitiesXML.equals("401")) {
+                    this.permissionFailure = true;
+                    throw new ActionException("Incorrect username or password");
+                }
                 cc.setData(capabilitiesXML);
             }
             else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {

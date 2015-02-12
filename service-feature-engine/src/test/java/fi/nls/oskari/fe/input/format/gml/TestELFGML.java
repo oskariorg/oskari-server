@@ -1,6 +1,27 @@
 package fi.nls.oskari.fe.input.format.gml;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
+import org.geotools.styling.Style;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
+
+import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
@@ -12,32 +33,17 @@ import fi.nls.oskari.fe.schema.XSDDatatype;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
+@Deprecated
+public class TestELFGML extends TestHelper {
 
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.geotools.styling.Style;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
-
-public class TestELFGML {
-
+    static final Logger logger = Logger.getLogger(TestELFGML.class);
     static GroovyClassLoader gcl = new GroovyClassLoader();
 
     @SuppressWarnings("unchecked")
     public Class<GroovyParserRecipe> setupGroovyScript(final String recipePath) {
 
         InputStreamReader reader = new InputStreamReader(
-                TestInspireGML.class.getResourceAsStream(recipePath));
+                TestELFGML.class.getResourceAsStream(recipePath));
 
         GroovyCodeSource codeSource = new GroovyCodeSource(reader, recipePath,
                 ".");
@@ -73,12 +79,14 @@ public class TestELFGML {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/au/geonorge_no-ELF-AU-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/administrativeunits/geonorge_no-ELF-AU-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream("AU-geonorge_no.png");
+            File f = getTempFile("AU-geonorge_no", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -126,13 +134,15 @@ public class TestELFGML {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/au/lantmateriet_se-ELF-AU-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/administrativeunits/lantmateriet_se-ELF-AU-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream(
-                    "AU-lantmateriet_se.png");
+            File f = getTempFile("AU-lantmateriet_se", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
+
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -176,12 +186,14 @@ public class TestELFGML {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/gn/geonorge_no-ELF-GN-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/geographicalnames/geonorge_no-ELF-GN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream("GN-geonorge_no.png");
+            File f = getTempFile("GN-geonorge_no", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -222,13 +234,16 @@ public class TestELFGML {
         OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
                 "EPSG:3785");
 
-        InputStream inp = getClass().getResourceAsStream(
-                "/fi/nls/oskari/fe/input/format/gml/gn/ign_fr-ELF-GN-wfs.xml");
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/elf/geographicalnames/ign_fr-ELF-GN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream("GN-ELF-ign_fr.png");
+            File f = getTempFile("GN-ELF-ign_fr", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -352,7 +367,7 @@ public class TestELFGML {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/gn/geonorge_no-ELF-GN-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/geographicalnames/geonorge_no-ELF-GN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -400,13 +415,15 @@ public class TestELFGML {
 
         InputStream inp = getClass()
                 .getResourceAsStream(
-                        "/fi/nls/oskari/fe/input/format/gml/hy/fgi_fi_wfs_ELF-HY-WatercourseLink-wfs.xml");
+                        "/fi/nls/oskari/eu/elf/hydronetwork/fgi_fi_wfs_ELF-HY-WatercourseLink-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream(
-                    "HY-fgi_fi-WatercourseLink.png");
+            File f = getTempFile("HY-fgi_fi-WatercourseLink", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
+
             try {
                 outputProcessor.setOutput(fouts);
 
@@ -520,8 +537,9 @@ public class TestELFGML {
 
         };
 
-        InputStream inp = getClass().getResourceAsStream(
-                "/fi/nls/oskari/fe/input/format/gml/gn/ign_fr-ELF-GN-wfs.xml");
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/elf/geographicalnames/ign_fr-ELF-GN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
@@ -566,13 +584,17 @@ public class TestELFGML {
         OutputStreamProcessor outputProcessor = new MapContentOutputProcessor(
                 "EPSG:3857", sldStyle);
 
-        InputStream inp = getClass().getResourceAsStream(
-                "/fi/nls/oskari/fe/input/format/gml/tn/nls_fi-ELF-TN-wfs.xml");
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/elf/roadtransportnetwork/nls_fi-ELF-TN-wfs.xml");
 
         try {
             inputProcessor.setInput(inp);
 
-            FileOutputStream fouts = new FileOutputStream("TN-nls_fi.png");
+            File f = getTempFile("TN-nls_fi", ".png");
+            logger.info(f.getAbsolutePath());
+            FileOutputStream fouts = new FileOutputStream(f);
+
             try {
                 outputProcessor.setOutput(fouts);
 

@@ -1,5 +1,70 @@
 # Release Notes
 
+## 1.27
+
+### generic
+
+Manifest.mf inside jars now include version, git commit id and timestamp of build.
+ELF-specific artifacts have been moved to https://github.com/elf-oskari/oskari-server-extensions
+
+### DB upgrades
+
+#### Allowing more data to be stored for users
+
+* Usernames in external systems can be longer than current column size - adjusted to 128 characters.
+* User UUID should be unique - added constraint.
+* Added column for users email.
+* User can now store additional attribute data as JSON.
+
+    content-resources/src/main/resources/sql/upgrade/1.27/03_alter_table_oskari_users.sql
+
+### service-users
+
+DatabaseUserService now has a method (saveUser) to ensure the user and his/her roles are up-to-date in the database (inserting if missing).
+Usable when combined with external login service which should populate users to Oskari based on external user data (for example SAML-message).
+Added support for saving and loading additional user attributes to/from database.
+User email is now saved to the database.
+
+### service-base
+
+IOHelper now has convenience method to write the Content-type header.
+HTTP params can now be generated to properly encoded string for encoding POST payload or GET querystring with IOHelper.getParams().
+User class now has methods to attach additional attributes for the user.
+PropertyUtil.getNecessary() has a new overloaded version that takes an optional detailed message. The message is attached to the
+exception so it is shown in the server logs. Message should be used to tell why the property is necessary.
+Added User.toJSON()/parse() and Role.toJSON()/parse() methods.
+
+### geoserver-ext/OskariMarkFactory
+
+OskariMarkFactory now follows Oskari versioning so changes are updated correctly when building a new version.
+
+### control-base
+
+New action route "GetReverseGeocodingResult" works as a generic reverse geocoding handler that uses search implementation
+for getting actual results. Configure the channel to use with property (supports multiple channels as comma-separated list):
+
+    actionhandler.GetReverseGeocodingResult.channels=<search channel id e.g. NLS_NEAREST_FEATURE_CHANNEL>
+
+GetViews action route now requires a non-guest user.
+GetCurrentUser now returns user data in response in addition to the UUID in the header.
+
+### service-search-nls
+
+Added a new search channel "NLSNearestFeatureSearchChannel" that supports reverse geocoding.
+Uses the service at https://ws.nls.fi/maasto/nearestfeature and should be configured with properties:
+
+    search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.url=https://ws.nls.fi/maasto/nearestfeature
+    search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.user=<username>
+    search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.pass=<password>
+    search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.buffer=5000
+    search.channel.NLS_NEAREST_FEATURE_CHANNEL.service.maxfeatures=1
+
+### servlet-transport
+
+Fixed an issue with default SLD. Added geometry type rules.
+Feature engine parser factories are now syncronized (WFS feature parsing failed in some cases).
+Feature engine GFI search tolerance fix.
+
 ## 1.26
 
 ### control-admin
@@ -129,14 +194,14 @@ New printout properties to support GetLayerTile action route for authorised map 
     mapproducer.localurl.prefix=http://localhost:8080 (prefix to be added to local resource urls)
     mapproducer.referer=referer info for maptile requests
     mapproducer.logo=<resource-name-without-path> (relative-to fi/nls/oskari/printout/printing/page)
-    
+
 ### Analysis  / Sector and zones method
 
 Sector processing added to the "Sector and zones" method
-    - make build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install  
+    - make build under ..oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection path; mvn clean install
     - copy new ZoneSectorFeatureCollection2-2.5.2.jar to your geoserver/WEB-INF/lib path from the
-      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path  
-   
+      oskari-server/geoserver-exp/wps/ZoneSectorFeatureCollection/target path
+
 Check that analysis intersection methods have uptodate .jar  in geoserver/WEB-INF/lib path
     - IntersectionFeatureCollection2-2.5.2.jar is the current version
     - if not, build a new version oskari-server/geoserver-exp/wps/IntersectionFeatureCollection2 path as above
@@ -677,15 +742,15 @@ WFSLayerStore now extends WFSLayerConfiguration instead of copy-paste methods. A
 
 Removed build profiles, custom resources for transport can now be given with maven property "transport.resourceDir" (via maven profile etc)
 
-### servlet-transport (feature-engine) 
+### servlet-transport (feature-engine)
 
-WFS/feature-engine Fixed map click to return features to frontend. 
+WFS/feature-engine Fixed map click to return features to frontend.
 WFS: 1st Attempt to use GeoTools forceXy for CRS only when drawing PNG result images.
 WFS/feature-engine Finished feature engine groovy script configuration from database.
 ELF: Included INSPIRE SLD resources to servlet-transport/src/main/resources.
 ELF: Included a PoC groovy scripts for AU and GN reading to servlet-transport/src/main/resources.
 ELF: Added database setup JSON and SQL scripts for 3 GN and 1 AU layer
-ELF: SLD, groovy and db setup script placement may change to some app specific resources module in the future. 
+ELF: SLD, groovy and db setup script placement may change to some app specific resources module in the future.
 
 ## 1.20
 
@@ -798,7 +863,7 @@ CreateAnalysisLayer action route now returns a proper analysislayer json (same a
 
 JSON for analysislayer is now created based on Analysis object with the help of AnalysisHelper. This will propably be refactored in the future to use the LayerJSONFormatter and the misleading AnalysisLayer class will propably be removed in favor of the Analysis class.
 
-AnalysisDataService refactored a bit and to 
+AnalysisDataService refactored a bit and to
 
 ### control-base/PublishHandler
 
@@ -842,10 +907,10 @@ Updated GeoTools can't parse empty Abstract-tags for WFSLayer SLDs. Script to up
 database (portti_wfs_layer_style table) can be run with the command SCRIPT=remove-empty-abstract-from-SLD node app.js in content-resources/db-upgrade
 (check the config.js first for database settings).
 
-Removed some hardcodings: 
+Removed some hardcodings:
 * fi.nls.oskari.control.view.modifier.bundle.MapfullHandler
 
-Previously hardcoded myplaces layer wmsurl: "/karttatiili/myplaces?myCat=" 
+Previously hardcoded myplaces layer wmsurl: "/karttatiili/myplaces?myCat="
 can now be configured with property 'myplaces.client.wmsurl'
 
 * fi.nls.oskari.control.view.GetAppSetupHandler
@@ -865,7 +930,7 @@ The deprecated modules can still be found inside oskari-server/deprecated folder
 
 ### Transport
 
-Added override properties handling. Tries to search for file 'transport-ext.properties' in classpath and if found, overrides default values loaded from config.properties if 
+Added override properties handling. Tries to search for file 'transport-ext.properties' in classpath and if found, overrides default values loaded from config.properties if
 
 ### GetAppSetup/ParamHandlers
 
@@ -920,7 +985,7 @@ Added ibatis caching for Inspire-themes, views, wfs-layers and backendstatus ope
 
 ### servlet-map
 
-Added oskariui style classes to index.jsp to fix layout. 
+Added oskariui style classes to index.jsp to fix layout.
 
 Removed Guest user role hardcoding and now uses UserService.getGuestUser() to create a guest user.
 

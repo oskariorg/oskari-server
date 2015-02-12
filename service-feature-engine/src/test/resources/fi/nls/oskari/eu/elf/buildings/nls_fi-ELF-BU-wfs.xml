@@ -1,0 +1,1857 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0 http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0bu?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod0bu:Building&amp;NAMESPACES=xmlns(elf-lod0bu,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FBuildings%2FMasterLoD0%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-12-02T10:57:24Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="50" numberReturned="50">
+  <wfs:boundedBy>
+    <gml:Envelope srsName="EPSG:3035">
+      <gml:lowerCorner>5092594.864 4173716.272</gml:lowerCorner>
+      <gml:upperCorner>5094765.936 4174878.060</gml:upperCorner>
+    </gml:Envelope>
+  </wfs:boundedBy>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270564781">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">2023</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270564781</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-base:name xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+      <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                    <gn:language>fin</gn:language>
+                    <gn:nativeness>false</gn:nativeness>
+                    <gn:nameStatus>official</gn:nameStatus>
+                    <gn:sourceOfName></gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Urjansaari</gn:text>
+                            <gn:script></gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </gn:GeographicalName>
+      </bu-base:name>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270564781_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093262.707 4174482.073 5093260.621 4174488.000 5093272.755 4174492.150 5093274.841 4174486.226 5093262.707 4174482.073</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270564793">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270564793</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+
+       <bu-base:name xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+      <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                    <gn:language>fin</gn:language>
+                    <gn:nativeness>false</gn:nativeness>
+                    <gn:nameStatus>official</gn:nameStatus>
+                    <gn:sourceOfName></gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Joku vaan</gn:text>
+                            <gn:script></gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </gn:GeographicalName>
+      </bu-base:name>
+      <bu-base:name xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+      <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                    <gn:language>fin</gn:language>
+                    <gn:nativeness>false</gn:nativeness>
+                    <gn:nameStatus>official</gn:nameStatus>
+                    <gn:sourceOfName></gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Toinen nimi</gn:text>
+                            <gn:script></gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </gn:GeographicalName>
+      </bu-base:name>
+
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270564793_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093147.939 4174416.627 5093145.216 4174411.515 5093141.688 4174413.409 5093144.410 4174418.521 5093147.939 4174416.627</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">11137</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582401">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582401</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582401_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093071.456 4174428.445 5093082.320 4174432.995 5093085.164 4174426.359 5093083.028 4174425.464 5093084.585 4174421.830 5093080.542 4174420.137 5093079.498 4174422.575 5093074.813 4174420.614 5093071.456 4174428.445</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">3228</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582413">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582413</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582413_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093102.231 4174418.559 5093098.756 4174415.983 5093095.728 4174420.026 5093099.204 4174422.602 5093102.231 4174418.559</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8222</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582425">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582425</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582425_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093034.740 4174406.376 5093027.753 4174405.292 5093026.843 4174410.812 5093033.829 4174411.895 5093034.740 4174406.376</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">547</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.1276328832">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>1276328832</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.1276328832_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5092834.987 4174345.983 5092831.610 4174354.470 5092837.244 4174356.657 5092840.621 4174348.167 5092834.987 4174345.983</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">5533</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582437">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582437</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582437_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5092853.128 4174339.186 5092844.396 4174335.819 5092842.326 4174341.052 5092851.057 4174344.420 5092853.128 4174339.186</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">5040</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582497">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582497</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582497_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5092619.953 4174324.519 5092617.628 4174332.574 5092625.899 4174334.878 5092628.223 4174326.822 5092619.953 4174324.519</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>8000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">2647</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582509">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582509</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582509_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5092623.840 4174285.943 5092632.419 4174280.394 5092629.272 4174275.510 5092620.694 4174281.058 5092623.840 4174285.943</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">3146</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270582953">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270582953</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270582953_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094594.652 4174875.415 5094592.125 4174859.153 5094585.300 4174860.272 5094587.828 4174876.533 5094594.652 4174875.415</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">2852</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583037">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583037</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583037_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094601.145 4174825.431 5094595.274 4174820.236 5094591.174 4174824.836 5094597.045 4174830.031 5094601.145 4174825.431</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">4556</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583049">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583049</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583049_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094608.064 4174791.020 5094613.170 4174787.934 5094607.643 4174778.736 5094602.535 4174781.822 5094608.064 4174791.020</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">6977</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.474304950">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>474304950</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.474304950_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094503.652 4174799.145 5094510.550 4174792.834 5094505.341 4174787.159 5094498.443 4174793.468 5094503.652 4174799.145</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">850</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.987370496">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>987370496</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.987370496_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094482.710 4174777.088 5094487.886 4174779.089 5094491.152 4174770.852 5094485.976 4174768.851 5094482.710 4174777.088</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">1183</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583061">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583061</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583061_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093962.934 4174635.893 5093958.580 4174631.682 5093956.286 4174634.041 5093954.474 4174632.290 5093952.185 4174634.645 5093954.566 4174636.945 5093952.951 4174638.608 5093956.741 4174642.270 5093962.934 4174635.893</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">12547</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583073">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583073</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583073_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093914.529 4174664.080 5093908.986 4174668.691 5093915.468 4174676.472 5093921.012 4174671.861 5093914.529 4174664.080</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">1133</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.1277524750">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>1277524750</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.1277524750_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093887.890 4174630.970 5093891.732 4174637.935 5093897.329 4174634.828 5093893.487 4174627.861 5093887.890 4174630.970</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">3212</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583085">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583085</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583085_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093852.662 4174557.091 5093847.521 4174552.525 5093840.660 4174560.197 5093845.801 4174564.762 5093852.662 4174557.091</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">7977</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583097">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583097</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583097_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093778.750 4174555.604 5093781.274 4174548.045 5093775.847 4174546.288 5093776.674 4174543.810 5093771.137 4174542.018 5093770.354 4174544.364 5093765.630 4174542.834 5093763.062 4174550.525 5093778.750 4174555.604</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">9646</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583109">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583109</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583109_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093803.259 4174558.021 5093797.683 4174563.507 5093801.239 4174567.104 5093806.815 4174561.620 5093803.259 4174558.021</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8779</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583121">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583121</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583121_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093749.394 4174527.116 5093748.879 4174522.743 5093741.351 4174523.695 5093741.866 4174528.068 5093749.394 4174527.116</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">6958</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583133">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583133</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583133_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093988.635 4174587.686 5093982.515 4174581.249 5093979.885 4174583.741 5093982.269 4174586.248 5093978.615 4174589.707 5093982.349 4174593.636 5093988.635 4174587.686</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">13564</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583145">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583145</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583145_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094024.303 4174569.951 5094020.503 4174567.069 5094016.433 4174572.381 5094020.234 4174575.264 5094024.303 4174569.951</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">15502</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583157">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583157</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583157_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094040.173 4174508.491 5094039.728 4174505.350 5094035.742 4174505.948 5094036.187 4174509.090 5094040.173 4174508.491</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">14343</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583169">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583169</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583169_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094068.557 4174532.042 5094067.904 4174519.054 5094062.172 4174519.394 5094062.825 4174532.381 5094068.557 4174532.042</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">16590</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.474305075">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>474305075</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.474305075_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094078.101 4174522.479 5094081.031 4174523.172 5094081.850 4174519.851 5094080.197 4174519.460 5094079.964 4174520.405 5094078.687 4174520.102 5094078.101 4174522.479</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">17520</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.474304939">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>474304939</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.474304939_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094065.768 4174514.485 5094072.500 4174516.800 5094073.849 4174512.990 5094067.115 4174510.673 5094065.768 4174514.485</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">16428</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583181">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583181</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583181_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094212.930 4174227.220 5094205.479 4174226.274 5094204.859 4174230.800 5094212.311 4174231.746 5094212.930 4174227.220</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8753</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583193">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583193</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583193_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094223.898 4174207.426 5094216.901 4174206.346 5094214.593 4174220.388 5094221.590 4174221.469 5094223.898 4174207.426</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8467</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.983099487">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>983099487</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.983099487_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094232.063 4174210.634 5094237.269 4174212.377 5094238.748 4174208.086 5094233.543 4174206.344 5094232.063 4174210.634</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">9269</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583205">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583205</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583205_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094235.106 4174218.096 5094234.005 4174222.420 5094238.212 4174223.449 5094239.313 4174219.126 5094235.106 4174218.096</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">9489</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583217">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583217</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583217_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094240.305 4174095.997 5094233.901 4174100.205 5094245.207 4174117.468 5094251.611 4174113.260 5094240.305 4174095.997</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">10870</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583229">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583229</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583229_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094274.677 4174121.630 5094258.638 4174132.649 5094261.804 4174137.269 5094277.845 4174126.253 5094274.677 4174121.630</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">13174</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583241">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583241</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583241_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094306.400 4174105.665 5094303.026 4174101.460 5094299.119 4174104.590 5094302.492 4174108.797 5094306.400 4174105.665</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">11978</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583253">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583253</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583253_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094269.207 4174097.828 5094262.592 4174088.266 5094254.633 4174093.786 5094261.248 4174103.349 5094269.207 4174097.828</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">10219</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583265">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583265</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583265_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5093824.743 4174253.546 5093831.553 4174259.160 5093836.257 4174253.501 5093829.446 4174247.887 5093824.743 4174253.546</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">1734</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583277">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583277</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583277_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094121.305 4174102.941 5094114.964 4174096.504 5094096.602 4174114.512 5094102.941 4174120.949 5094121.305 4174102.941</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">5996</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583289">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583289</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583289_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094124.264 4174154.376 5094115.721 4174144.565 5094092.803 4174164.478 5094101.346 4174174.289 5094124.264 4174154.376</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">5983</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583301">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583301</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583301_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094049.812 4174190.117 5094046.242 4174186.065 5094048.362 4174184.201 5094043.945 4174179.191 5094042.300 4174180.638 5094037.880 4174175.623 5094026.859 4174185.312 5094039.266 4174199.390 5094049.812 4174190.117</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">11558</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583313">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583313</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583313_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094171.399 4174081.822 5094165.207 4174084.204 5094167.633 4174090.615 5094173.825 4174088.233 5094171.399 4174081.822</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">9930</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583325">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583325</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583325_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094157.146 4174123.682 5094162.437 4174118.749 5094160.703 4174116.896 5094163.316 4174114.459 5094159.626 4174110.516 5094157.475 4174112.522 5094153.689 4174108.478 5094147.936 4174113.839 5094157.146 4174123.682</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">10405</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583337">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583337</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583337_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094195.440 4174102.771 5094191.087 4174098.367 5094188.722 4174100.695 5094193.075 4174105.100 5094195.440 4174102.771</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">10144</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583349">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583349</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583349_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094030.471 4174113.397 5094025.857 4174118.225 5094022.039 4174114.597 5094015.652 4174121.282 5094023.649 4174128.878 5094031.476 4174120.687 5094033.778 4174122.875 5094036.952 4174119.552 5094030.471 4174113.397</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8863</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.987370486">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>987370486</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.987370486_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094535.367 4174709.808 5094529.846 4174717.355 5094540.133 4174724.798 5094545.655 4174717.249 5094535.367 4174709.808</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">8367</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583361">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583361</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583361_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094558.408 4174733.401 5094552.290 4174729.133 5094546.405 4174737.473 5094552.521 4174741.740 5094558.408 4174733.401</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">6914</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583385">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583385</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583385_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094734.858 4174219.402 5094729.300 4174217.503 5094728.376 4174220.131 5094733.933 4174222.030 5094734.858 4174219.402</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">15297</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583373">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583373</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583373_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094727.979 4174222.657 5094726.888 4174227.156 5094733.088 4174228.597 5094734.179 4174224.098 5094727.979 4174222.657</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">15376</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.270583397">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>270583397</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.270583397_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094736.010 4174217.534 5094737.335 4174213.904 5094731.123 4174211.701 5094729.799 4174215.331 5094736.010 4174217.534</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>2000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">15103</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.474810234">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>474810234</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.474810234_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094715.575 4174208.942 5094727.216 4174212.268 5094729.110 4174205.865 5094717.298 4174203.119 5094715.575 4174208.942</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">14838</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+  <wfs:member>
+    <elf-lod0bu:Building xmlns:elf-lod0bu="http://www.locationframework.eu/schemas/Buildings/MasterLoD0/1.0" gml:id="FI.Rakennus.474810224">
+      <bu-base:beginLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">2013-09-11T00:00:00</bu-base:beginLifespanVersion>
+      <bu-base:endLifespanVersion xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3" xsi:nil="true" nilReason="unpopulated"/>
+      <bu-base:inspireId xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+          <base:localId>474810224</base:localId>
+          <base:namespace>http://paikkatiedot.fi/so/1000007/</base:namespace>
+          <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+        </base:Identifier>
+      </bu-base:inspireId>
+      <bu-core2d:geometry2D xmlns:bu-core2d="http://inspire.ec.europa.eu/draft-schemas/bu-core2d/3.0rc3">
+        <bu-base:BuildingGeometry2D xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+          <bu-base:geometry>
+            <gml:Polygon gml:id="FI.Rakennus.474810224_BU-CORE2D_GEOMETRY2D" srsName="EPSG:3035">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>5094710.694 4174228.426 5094713.369 4174220.797 5094699.227 4174215.777 5094696.490 4174223.593 5094710.694 4174228.426</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </bu-base:geometry>
+          <bu-base:referenceGeometry>true</bu-base:referenceGeometry>
+          <bu-base:horizontalGeometryReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/HorizontalGeometryReferenceValue/footPrint/"/>
+          <bu-base:horizontalGeometryEstimatedAccuracy>3000</bu-base:horizontalGeometryEstimatedAccuracy>
+        </bu-base:BuildingGeometry2D>
+      </bu-core2d:geometry2D>
+      <bu-base:conditionOfConstruction xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3"/>
+      <bu-base:elevation xmlns:bu-base="http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3">
+        <bu-base:Elevation>
+          <bu-base:elevationReference xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/ElevationReferenceValue/lowestGroundPoint/"/>
+          <bu-base:elevationValue axisLabels="z" srsName="urn:x-ogc:def:crs:EPSG::5717" uomLabels="m" srsDimension="1">16016</bu-base:elevationValue>
+        </bu-base:Elevation>
+      </bu-base:elevation>
+    </elf-lod0bu:Building>
+  </wfs:member>
+</wfs:FeatureCollection>

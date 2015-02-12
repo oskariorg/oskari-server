@@ -36,9 +36,9 @@ import java.util.List;
 public class SystemViewsHandler extends RestActionHandler {
 
     private Logger log = LogFactory.getLogger(SystemViewsHandler.class);
-    private static ViewService viewService;
-    private static OskariLayerService layerService;
-    private static PermissionsService permissionsService;
+    private ViewService viewService;
+    private OskariLayerService layerService;
+    private PermissionsService permissionsService;
 
     private static final String ERROR_CODE_GUEST_NOT_AVAILABLE = "guest_not_available";
 

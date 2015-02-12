@@ -69,6 +69,10 @@ public class CachingSchemaLocator implements XSDSchemaLocator {
         errorTracker.clear();
         JedisManager.del(cacheHashKey);
     }
+
+	public static long getCacheSize() {
+		return cache.size();
+	}
 	
 	/**
 	 * Loads schema from given location and caches it

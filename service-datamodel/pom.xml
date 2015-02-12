@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-		<version>1.26</version>
+		<version>1.27.0</version>
 	</parent>
 	<groupId>fi.nls.oskari.service</groupId>
 	<artifactId>service-datamodel</artifactId>
@@ -85,7 +85,7 @@
             <version>2.1.0</version>
             <scope>test</scope>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.12</version>

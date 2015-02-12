@@ -13,21 +13,28 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import java.util.Calendar;
 import java.math.BigInteger;
+import fi.nls.oskari.fe.xml.util.Nillable;
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
 import fi.nls.oskari.fe.xml.util.NillableType;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.xml.util.Reference;
-import fi.nls.oskari.fe.xml.util.Nillable;
 import fi.nls.oskari.fe.gml.util.DirectPositionType;
-import java.util.List;
 
+/**
+ * 
+- URL http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd
+- timestamp Thu Dec 18 13:30:21 EET 2014
+ */
 public class ELF_MasterLoD0_Address
 {
 
+   public static final String TIMESTAMP = "Thu Dec 18 13:30:21 EET 2014";
+   public static final String SCHEMASOURCE = "http://elfserver.kartverket.no/schemas/elf1.0/LoD0_Addresses.xsd";
+
    @JacksonXmlRootElement(namespace = "http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0")
-   public static class Address
+   public static class Address extends Nillable
    {
       public static final String NS = "http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0";
       public static final QName QN = new QName(NS, "Address");
@@ -145,7 +152,7 @@ public class ELF_MasterLoD0_Address
       }
    }
 
-   public static class _position
+   public static class _position extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "position");
@@ -154,7 +161,7 @@ public class ELF_MasterLoD0_Address
       public GeographicPosition GeographicPosition;
    }
 
-   public static class GeographicPosition
+   public static class GeographicPosition extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "GeographicPosition");
@@ -172,7 +179,7 @@ public class ELF_MasterLoD0_Address
       public Boolean _default;
    }
 
-   public static class _locator
+   public static class _locator extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "locator");
@@ -181,7 +188,7 @@ public class ELF_MasterLoD0_Address
       public AddressLocator AddressLocator;
    }
 
-   public static class AddressLocator
+   public static class AddressLocator extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "AddressLocator");
@@ -225,7 +232,7 @@ public class ELF_MasterLoD0_Address
       }
    }
 
-   public static class _designator
+   public static class _designator extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "designator");
@@ -234,7 +241,7 @@ public class ELF_MasterLoD0_Address
       public LocatorDesignator LocatorDesignator;
    }
 
-   public static class LocatorDesignator
+   public static class LocatorDesignator extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "LocatorDesignator");
@@ -246,7 +253,7 @@ public class ELF_MasterLoD0_Address
       public Reference type;
    }
 
-   public static class _name
+   public static class _name extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "name");
@@ -255,7 +262,7 @@ public class ELF_MasterLoD0_Address
       public LocatorName LocatorName;
    }
 
-   public static class LocatorName
+   public static class LocatorName extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "LocatorName");
@@ -280,7 +287,7 @@ public class ELF_MasterLoD0_Address
       }
    }
 
-   public static class A_1_component
+   public static class A_1_component extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:Addresses:3.0";
       public static final QName QN = new QName(NS, "component");
@@ -303,7 +310,7 @@ public class ELF_MasterLoD0_Address
       public AbstractConstruction AbstractConstruction;
    }
 
-   public static class AbstractConstruction
+   public static class AbstractConstruction extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "AbstractConstruction");
@@ -415,7 +422,7 @@ public class ELF_MasterLoD0_Address
       public DateOfEvent DateOfEvent;
    }
 
-   public static class DateOfEvent
+   public static class DateOfEvent extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "DateOfEvent");
@@ -469,7 +476,7 @@ public class ELF_MasterLoD0_Address
       public Elevation Elevation;
    }
 
-   public static class Elevation
+   public static class Elevation extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "Elevation");
@@ -494,7 +501,7 @@ public class ELF_MasterLoD0_Address
       public ExternalReference ExternalReference;
    }
 
-   public static class ExternalReference
+   public static class ExternalReference extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "ExternalReference");
@@ -503,13 +510,13 @@ public class ELF_MasterLoD0_Address
       public URI informationSystem;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "informationSystemName")
       @XmlElement(required = false)
-      public List<PT_FreeText> informationSystemName;
+      public _informationSystemName informationSystemName;
       @JacksonXmlProperty(namespace = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3", localName = "reference")
       @XmlElement(required = false)
       public String reference;
    }
 
-   public static class _informationSystemName
+   public static class _informationSystemName extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "informationSystemName");
@@ -523,13 +530,13 @@ public class ELF_MasterLoD0_Address
       public PT_FreeText PT_FreeText;
    }
 
-   public static class CharacterString
+   public static class CharacterString extends Nillable
    {
       public static final String NS = "http://www.isotc211.org/2005/gco";
       public static final QName QN = new QName(NS, "CharacterString");
    }
 
-   public static class PT_FreeText
+   public static class PT_FreeText extends Nillable
    {
       public static final String NS = "http://www.isotc211.org/2005/gmd";
       public static final QName QN = new QName(NS, "PT_FreeText");
@@ -555,7 +562,7 @@ public class ELF_MasterLoD0_Address
       }
    }
 
-   public static class _textGroup
+   public static class _textGroup extends Nillable
    {
       public static final String NS = "http://www.isotc211.org/2005/gmd";
       public static final QName QN = new QName(NS, "textGroup");
@@ -581,7 +588,7 @@ public class ELF_MasterLoD0_Address
       public HeightAboveGround HeightAboveGround;
    }
 
-   public static class HeightAboveGround
+   public static class HeightAboveGround extends Nillable
    {
       public static final String NS = "http://inspire.ec.europa.eu/draft-schemas/bu/3.0rc3";
       public static final QName QN = new QName(NS, "HeightAboveGround");
@@ -612,7 +619,7 @@ public class ELF_MasterLoD0_Address
       public GeographicalName GeographicalName;
    }
 
-   public static class GeographicalName
+   public static class GeographicalName extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "GeographicalName");
@@ -668,7 +675,7 @@ public class ELF_MasterLoD0_Address
       public PronunciationOfName PronunciationOfName;
    }
 
-   public static class PronunciationOfName
+   public static class PronunciationOfName extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "PronunciationOfName");
@@ -680,7 +687,7 @@ public class ELF_MasterLoD0_Address
       public NillableType<String> pronunciationIPA;
    }
 
-   public static class _spelling
+   public static class _spelling extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "spelling");
@@ -689,7 +696,7 @@ public class ELF_MasterLoD0_Address
       public SpellingOfName SpellingOfName;
    }
 
-   public static class SpellingOfName
+   public static class SpellingOfName extends Nillable
    {
       public static final String NS = "urn:x-inspire:specification:gmlas:GeographicalNames:3.0";
       public static final QName QN = new QName(NS, "SpellingOfName");

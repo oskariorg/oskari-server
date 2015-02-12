@@ -2,33 +2,51 @@ package fi.nls.oskari.transport;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.*;
-import fi.nls.oskari.worker.Job;
-import fi.nls.oskari.worker.JobQueue;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
+import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.server.JettyJSONContextServer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.GeoJSONFilter;
+import fi.nls.oskari.pojo.Grid;
+import fi.nls.oskari.pojo.Layer;
+import fi.nls.oskari.pojo.Location;
+import fi.nls.oskari.pojo.PropertyFilter;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.pojo.Tile;
+import fi.nls.oskari.pojo.WFSCustomStyleStore;
+import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
+import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.work.OWSMapLayerJob;
+import fi.nls.oskari.work.ResultProcessor;
+import fi.nls.oskari.work.WFSCustomParserMapLayerJob;
+import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.oskari.work.fe.FEMapLayerJob;
+import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.worker.JobQueue;
+
+
+
+
 
 /**
  * Handles all incoming requests (channels) and manages Job queues
@@ -127,7 +145,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	private ServerSession local;
 	
 	// JobQueue singleton
-	private JobQueue jobs;
+	private static JobQueue jobs;
 
 	/**
 	 * Constructs TransportService with BayeuxServer instance
@@ -140,6 +158,16 @@ public class TransportService extends AbstractService implements ResultProcessor
     public TransportService(BayeuxServer bayeux)
     {
         super(bayeux, "transport");
+        
+        Object jsonContext = bayeux.getOption("jsonContext");
+        
+        if( jsonContext instanceof JettyJSONContextServer ) {
+            
+        } else if( jsonContext instanceof JacksonJSONContextServer ) {
+            ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
+            transportMapper.registerModule(new GeometryJSONOutputModule());
+            
+        }
 
         int workerCount = ConversionHelper.getInt(PropertyUtil
                 .get("workerCount"), 10);
@@ -170,6 +198,10 @@ public class TransportService extends AbstractService implements ResultProcessor
         addService(CHANNEL_SET_PROPERTY_FILTER, "processRequest");
         addService(CHANNEL_SET_MAP_LAYER_VISIBILITY, "processRequest");
         addService(CHANNEL_HIGHLIGHT_FEATURES, "processRequest");
+    }
+
+    public static JobQueue getQueue() {
+        return jobs;
     }
 
     /**
@@ -440,20 +472,22 @@ public class TransportService extends AbstractService implements ResultProcessor
     		return;
     	}
 
-    	Object[] tmpbbox = (Object[]) location.get(PARAM_LOCATION_BBOX);
+    	Object tmpbbox_fld = location.get(PARAM_LOCATION_BBOX);
+    	Object[] tmpbbox = tmpbbox_fld  instanceof List ? ((List)tmpbbox_fld).toArray() : (Object[]) tmpbbox_fld;
     	List<Double> bbox = new ArrayList<Double>();
     	for(Object obj : tmpbbox) {
     		if(obj instanceof Double) {
     			bbox.add((Double) obj);
     		} else {
-    			bbox.add(((Long) obj).doubleValue());
+    			bbox.add(((Number) obj).doubleValue());
     		}
     	}
     	
     	Location mapLocation = new Location();
     	mapLocation.setSrs((String)location.get(PARAM_LOCATION_SRS));
     	mapLocation.setBbox(bbox);
-    	mapLocation.setZoom((Long)location.get(PARAM_LOCATION_ZOOM));
+    	
+    	mapLocation.setZoom(((Number)location.get(PARAM_LOCATION_ZOOM)).longValue());
     	store.setLocation(mapLocation);
     	
 
@@ -463,7 +497,9 @@ public class TransportService extends AbstractService implements ResultProcessor
     	this.save(store);
 
         String layerId = location.get(PARAM_LAYER_ID).toString();
-        Object[] tmptiles = (Object[])location.get(PARAM_TILES);
+        
+        Object tmptiles_fld = location.get(PARAM_TILES);
+        Object[] tmptiles = tmptiles_fld instanceof List ? ((List) tmptiles_fld).toArray() : (Object[])tmptiles_fld;
         List<List<Double>> tiles = parseBounds(tmptiles);
 
         Layer layer = store.getLayers().get(layerId);
@@ -490,8 +526,8 @@ public class TransportService extends AbstractService implements ResultProcessor
         }
 
         Tile newMapSize = new Tile();
-        newMapSize.setWidth(((Long) mapSize.get(PARAM_WIDTH)).intValue());
-        newMapSize.setHeight(((Long) mapSize.get(PARAM_HEIGHT)).intValue());
+        newMapSize.setWidth(((Number) mapSize.get(PARAM_WIDTH)).intValue());
+        newMapSize.setHeight(((Number) mapSize.get(PARAM_HEIGHT)).intValue());
         store.setMapSize(newMapSize);
 
         this.save(store);
@@ -564,21 +600,21 @@ public class TransportService extends AbstractService implements ResultProcessor
         customStyle.setClient(store.getClient());
 
         customStyle.setFillColor(style.get(PARAM_FILL_COLOR).toString());
-        customStyle.setFillPattern(((Long)style.get(PARAM_FILL_PATTERN)).intValue());
+        customStyle.setFillPattern(((Number)style.get(PARAM_FILL_PATTERN)).intValue());
         customStyle.setBorderColor(style.get(PARAM_BORDER_COLOR).toString());
         customStyle.setBorderLinejoin(style.get(PARAM_BORDER_LINEJOIN).toString());
         customStyle.setBorderDasharray(style.get(PARAM_BORDER_DASHARRAY).toString());
-        customStyle.setBorderWidth(((Long)style.get(PARAM_BORDER_WIDTH)).intValue());
+        customStyle.setBorderWidth(((Number)style.get(PARAM_BORDER_WIDTH)).intValue());
 
         customStyle.setStrokeLinecap(style.get(PARAM_STROKE_LINECAP).toString());
         customStyle.setStrokeColor(style.get(PARAM_STROKE_COLOR).toString());
         customStyle.setStrokeLinejoin(style.get(PARAM_STROKE_LINEJOIN).toString());
         customStyle.setStrokeDasharray(style.get(PARAM_STROKE_DASHARRAY).toString());
-        customStyle.setStrokeWidth(((Long)style.get(PARAM_STROKE_WIDTH)).intValue());
+        customStyle.setStrokeWidth(((Number)style.get(PARAM_STROKE_WIDTH)).intValue());
 
         customStyle.setDotColor(style.get(PARAM_DOT_COLOR).toString());
-        customStyle.setDotShape(((Long)style.get(PARAM_DOT_SHAPE)).intValue());
-        customStyle.setDotSize(((Long)style.get(PARAM_DOT_SIZE)).intValue());
+        customStyle.setDotShape(((Number)style.get(PARAM_DOT_SHAPE)).intValue());
+        customStyle.setDotSize(((Number)style.get(PARAM_DOT_SIZE)).intValue());
 
         customStyle.save();
     }
@@ -606,12 +642,12 @@ public class TransportService extends AbstractService implements ResultProcessor
         if (point.get(PARAM_LONGITUDE) instanceof Double) {
             longitude = (Double) point.get(PARAM_LONGITUDE);
         } else {
-            longitude = ((Long) point.get(PARAM_LONGITUDE)).doubleValue();
+            longitude = ((Number) point.get(PARAM_LONGITUDE)).doubleValue();
         }
         if (point.get(PARAM_LATITUDE) instanceof Double) {
             latitude = (Double) point.get(PARAM_LATITUDE);
         } else {
-            latitude = ((Long) point.get(PARAM_LATITUDE)).doubleValue();
+            latitude = ((Number) point.get(PARAM_LATITUDE)).doubleValue();
         }
 
         keepPrevious = (Boolean) point.get(PARAM_KEEP_PREVIOUS);
@@ -736,7 +772,8 @@ public class TransportService extends AbstractService implements ResultProcessor
     	boolean keepPrevious;
         boolean geomRequest;
     	
-    	Object[] tmpfids = (Object[])layer.get(PARAM_FEATURE_IDS);
+        Object tmpfids_fld = layer.get(PARAM_FEATURE_IDS);
+    	Object[] tmpfids = tmpfids_fld instanceof List ? ((List) tmpfids_fld).toArray() : (Object[])tmpfids_fld;
     	for(Object obj : tmpfids) {
 			featureIds.add((String) obj);
     	}
@@ -767,11 +804,12 @@ public class TransportService extends AbstractService implements ResultProcessor
     	Grid grid = new Grid();
     	
     	Map<String, Object> tmpgrid = (Map<String, Object>) params.get(PARAM_GRID);
-    	Object[] tmpbounds = (Object[])tmpgrid.get(PARAM_BOUNDS);
+    	Object tmpbounds_fld = tmpgrid.get(PARAM_BOUNDS);
+    	Object[] tmpbounds = tmpbounds_fld instanceof List ? ((List) tmpbounds_fld).toArray(): (Object[])tmpbounds_fld;
     	List<List<Double>> bounds = parseBounds(tmpbounds);
 
-    	grid.setRows(((Long)tmpgrid.get(PARAM_ROWS)).intValue());
-    	grid.setColumns(((Long)tmpgrid.get(PARAM_COLUMNS)).intValue());
+    	grid.setRows(((Number)tmpgrid.get(PARAM_ROWS)).intValue());
+    	grid.setColumns(((Number)tmpgrid.get(PARAM_COLUMNS)).intValue());
     	grid.setBounds(bounds);
     	
     	return grid;
@@ -786,13 +824,16 @@ public class TransportService extends AbstractService implements ResultProcessor
         List<Double> tile = null;
 
         for(Object obj : params) {
-            if(obj instanceof Object[]) {
+            
+            if(obj instanceof Object[] || obj instanceof List) {
                 tile = new ArrayList<Double>();
-                for(Object bound : (Object[])obj) {
+                
+                Object[] objs = obj instanceof List ? ((List) obj).toArray():(Object[])obj;                
+                for(Object bound : objs ) {
                     if(bound instanceof Double) {
                         tile.add((Double)bound);
                     } else {
-                        tile.add(((Long)bound).doubleValue());
+                        tile.add(((Number)bound).doubleValue());
                     }
                 }
                 bounds.add(tile);

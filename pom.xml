@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.26</version>
+    <version>1.27.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -604,6 +604,21 @@
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <!-- Nice to know info about the build -->
+                            <Application-Name>Oskari</Application-Name>
+                            <Project-Version>${project.version}</Project-Version>
+                            <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+                            <!-- build.commit.id is set by git-commit-id-plugin -->
+                            <Git-Revision>${build.commit.id}</Git-Revision>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <!-- explicitly define maven-deploy-plugin after other to force exec order -->
@@ -618,6 +633,25 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- initialize git revision info -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <prefix>build</prefix>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <skipPoms>false</skipPoms>
+                    <verbose>false</verbose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -719,31 +753,15 @@
         <module>control-statistics</module>
         <module>content-resources</module>
 
+        <module>geoserver-ext/OskariMarkFactory</module>
+        <module>service-feature-engine</module>
+
         <module>servlet-map</module>
         <module>webapp-map</module>
         <module>standalone-jetty</module>
-        <module>elf-jetty</module>
+        <module>servlet-transport</module>
+        <module>webapp-transport</module>
         
     </modules>
-
-    <profiles>
-        <profile>
-            <id>transport</id>
-            <modules>
-                <module>service-base</module>
-                <module>service-control</module>
-                <module>service-search</module>
-                <module>service-permissions</module>
-                <module>service-map</module>
-                <module>service-wfs</module>
-                <module>service-datamodel</module>
-                <module>shared-test-resources</module>
-                <module>geoserver-ext/OskariMarkFactory</module>
-                <module>service-feature-engine</module>
-                <module>servlet-transport</module>
-                <module>webapp-transport</module>
-            </modules>
-        </profile>
-    </profiles>
 
 </project>

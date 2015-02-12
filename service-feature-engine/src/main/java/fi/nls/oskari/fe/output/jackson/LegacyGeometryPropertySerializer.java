@@ -9,8 +9,6 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 
-
-
 public class LegacyGeometryPropertySerializer extends
         JsonSerializer<GeometryProperty> {
 
@@ -18,16 +16,16 @@ public class LegacyGeometryPropertySerializer extends
     public void serialize(GeometryProperty value, JsonGenerator jgen,
             SerializerProvider provider) throws IOException,
             JsonProcessingException {
-        if (value.geometry == null) {
+        if (value.getGeometry() == null) {
             provider.defaultSerializeNull(jgen);
             return;
         }
 
         // Todo support at least GeoJSON and WKT
-        provider.defaultSerializeValue(value.geometry.toText(), jgen);
+        provider.defaultSerializeValue(value.getGeometry().toText(), jgen);
 
     }
-    
+
     @Override
     public Class<GeometryProperty> handledType() {
         return GeometryProperty.class;

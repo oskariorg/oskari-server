@@ -4,6 +4,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Manages any ViewModifiers registrated on the classpath.
@@ -11,7 +13,7 @@ import java.util.*;
 public class ViewModifierManager {
 
     private final static Logger log = LogFactory.getLogger(ViewModifierManager.class);
-    private static final HashMap<String, ViewModifier> actions = new HashMap<String, ViewModifier>();
+    private static final ConcurrentMap<String, ViewModifier> actions = new ConcurrentHashMap<String, ViewModifier>();
 
     /**
      * Registers a ViewModifier with the given key after instantiating a class with the given className.

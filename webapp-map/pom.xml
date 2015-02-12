@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.26</version>
+        <version>1.27.0</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -68,20 +68,6 @@
             <properties>
                 <env>jetty9-jaas</env>
             </properties>
-        </profile>
-        <profile>
-            <id>elf-jetty-jaas</id>
-            <properties>
-                <env>elf-jetty-jaas</env>
-                <profile-filter>${basedir}/env/${env}/elf-filter.properties</profile-filter>
-            </properties>
-            <dependencies>
-                <!-- Adding additional search channels to servlet build -->
-                <dependency>
-                    <groupId>fi.nls.oskari.service</groupId>
-                    <artifactId>oskari-search-nls</artifactId>
-                </dependency>
-            </dependencies>
         </profile>
         <profile>
             <id>asdi-jetty-jaas</id>

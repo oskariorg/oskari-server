@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.26</version>
+        <version>1.27.0</version>
 	</parent>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>transport-servlet</artifactId>
@@ -105,10 +105,11 @@
 		    <groupId>org.geotools.xsd</groupId>
 		    <artifactId>gt-xsd-sld</artifactId>
 		</dependency>
-		<dependency>
-		   <groupId>org.geotools</groupId>
-		   <artifactId>gt-epsg-hsql</artifactId>
-		</dependency>
+        <dependency>
+           <groupId>org.geotools</groupId>
+           <artifactId>gt-epsg-extension</artifactId>
+           <version>${geotools.version}</version>
+        </dependency>
 		<dependency>
 		   <groupId>org.geotools</groupId>
 		   <artifactId>gt-referencing</artifactId>
@@ -152,9 +153,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.geoserver</groupId>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>OskariMarkFactory</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>xml-apis</groupId>

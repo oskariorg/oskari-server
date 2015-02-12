@@ -19,6 +19,14 @@ public class JobQueue
     private final Map<String, Job> jobs;
     private final LinkedList<Job> queue;
 
+    private long maxQueueLength = 0;
+    private long maxJobLength = 0;
+    private long minJobLength = Long.MAX_VALUE;
+    private long jobCount = 0;
+    private long avgRuntime = 0;
+    private String firstCrashedJob = null;
+    private long crashedJobCount = 0;
+
     /**
      * Initializes a queue and workers
      * 
@@ -36,6 +44,36 @@ public class JobQueue
         	workers[i].start();
         }
     }
+    public long getMaxQueueLength() {
+        return maxQueueLength;
+    }
+
+    public long getMaxJobLength() {
+        return maxJobLength;
+    }
+
+    public long getMinJobLength() {
+        return minJobLength;
+    }
+
+    public long getJobCount() {
+        return jobCount;
+    }
+
+    public long getAvgRuntime() {
+        return avgRuntime;
+    }
+    public long getQueueSize() {
+        return queue.size();
+    }
+
+    public String getFirstCrashedJob() {
+        return firstCrashedJob;
+    }
+
+    public long getCrashedJobCount() {
+        return crashedJobCount;
+    }
 
     /**
      * Adds a new job into queue and notifies workers
@@ -48,6 +86,9 @@ public class JobQueue
         synchronized(queue) {
             queue.addLast(job);
             queue.notify();
+        }
+        if(maxQueueLength < queue.size()) {
+            maxQueueLength = queue.size();
         }
         log.debug("Added", key);
     }
@@ -92,19 +133,39 @@ public class JobQueue
                     }
                     r = queue.removeFirst();
                 }
-
+                final long startTime = System.nanoTime();
+                jobCount++;
                 try {
                     r.run();
                 } catch (Exception e) {
                     log.error("Exception while running job:", e.getMessage());
                     log.debug(e, "Here's the stacktrace");
-                    e.printStackTrace();
-                    
+                }
+                catch (OutOfMemoryError e) {
+                    crashedJobCount++;
+                    log.error("OutOfMemory while running job:",((Job) r).getKey(), "- message", e.getMessage());
+                    if(firstCrashedJob == null) {
+                        firstCrashedJob = ((Job) r).getKey();
+                    }
+                    throw e;
                 }
                 finally {
                     ((Job) r).teardown();
                     jobs.remove(((Job) r).getKey());
                     log.debug("Finished", ((Job) r).getKey());
+                    final long runTimeMS = (System.nanoTime() - startTime) / 1000000L;
+                    if(runTimeMS > maxJobLength) {
+                        maxJobLength = runTimeMS;
+                    }
+                    if(runTimeMS < minJobLength) {
+                        minJobLength = runTimeMS;
+                    }
+                    if(avgRuntime == 0) {
+                        avgRuntime = runTimeMS;
+                    }
+                    else {
+                        avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
+                    }
                 }
             }
         }

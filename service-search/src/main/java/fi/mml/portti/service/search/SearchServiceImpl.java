@@ -10,9 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class SearchServiceImpl implements SearchService {
 
@@ -20,14 +18,14 @@ public class SearchServiceImpl implements SearchService {
     private static Logger log = LogFactory.getLogger(SearchServiceImpl.class);
 
     /** Available channels */
-    private Map<String, SearchableChannel> availableChannels = null;
+    private volatile Map<String, SearchableChannel> availableChannels = null;
 
     /**
      * Inits channels
      */
     protected void initChannels() {
+        final TreeMap<String, SearchableChannel> newChannels = new TreeMap<String, SearchableChannel>();
         log.debug("Initializing search channels");
-        availableChannels = new TreeMap<String, SearchableChannel>();
         final Map<String, SearchChannel> annotatedChannels = OskariComponentManager.getComponentsOfType(SearchChannel.class);
         // get comma separated active channel IDs
         String[] activeChannelIDs = PropertyUtil.getCommaSeparatedList("search.channels");
@@ -38,21 +36,22 @@ public class SearchServiceImpl implements SearchService {
         }
         log.info("Instantiating search channels:", activeChannelIDs);
 
-        for(String channelID : activeChannelIDs) {
+        for (String channelID : activeChannelIDs) {
             String cid = channelID.trim();
             SearchableChannel channel = annotatedChannels.get(cid);
-            if(channel == null) {
+            if (channel == null) {
                 log.warn("Couldn't find annotated search channel for ID:", cid,
                         "- Change the searchchannel to extend fi.nls.oskari.search.channelSearchChannel with",
                         "@Oskari(\"[channel id]\") annotation");
                 channel = getLegacyChannel(cid);
             }
-            if(channel == null) {
+            if (channel == null) {
                 log.warn("Couldn't create search channel for ID:", cid);
                 continue;
             }
-            addChannel(channel.getId(), channel);
+            newChannels.put(channel.getId(), channel);
         }
+        availableChannels = Collections.synchronizedSortedMap(newChannels);
     }
 
     /**
@@ -113,12 +112,10 @@ public class SearchServiceImpl implements SearchService {
         log.debug("Search string is", searchString);
         searchCriteria.setSearchString(searchString);
 
-        synchronized (this) {
-            if (availableChannels == null) {
-                initChannels();
-            } else {
-                log.debug("Search channels already initialized");
-            }
+        if (availableChannels == null) {
+            initChannels();
+        } else {
+            log.debug("Search channels already initialized");
         }
 
         long fullQueryStartTime = System.currentTimeMillis();
@@ -161,14 +158,12 @@ public class SearchServiceImpl implements SearchService {
      * @return
      */
     private ChannelSearchResult handleChannelSearch(
-            SearchCriteria searchCriteria, SearchableChannel actualChannel) {
+            SearchCriteria searchCriteria, SearchableChannel actualChannel)
+    {
     	log.debug("handleChannelSearch");
-    	
         try {
             ChannelSearchResult result = actualChannel.doSearch(searchCriteria);
-            
             List<SearchResultItem> items = result.getSearchResultItems();
-
             // calculate zoom scales etc common fields if we have an annotated (non-legacy) channel
             if(actualChannel instanceof SearchChannel) {
                 SearchChannel channel = (SearchChannel) actualChannel;
@@ -193,78 +188,67 @@ public class SearchServiceImpl implements SearchService {
      * @param channel
      */
     public void addChannel(String channel, SearchableChannel searchableChannel) {
-        synchronized (this) {
-            if (availableChannels == null) {
-                initChannels();
-            }
+        if (availableChannels == null) {
+            initChannels();
         }
         availableChannels.put(channel, searchableChannel);
     }
 
     public Map<String, SearchableChannel> getAvailableChannels() {
-        synchronized (this) {
-            if (availableChannels == null) {
-                if (availableChannels == null) {
-                    initChannels();
-                }
-            }
+        if (availableChannels == null) {
+            initChannels();
         }
         // TODO: return immutable map
         return availableChannels;
     }
-    
-    private void printsc(SearchCriteria searchCriteria){
-    	
-    	
-    	log.debug("printing SearchCriteria");
-    	
-    	try{
-	        log.debug("SearchString: " + searchCriteria.getSearchString());
-    		
-    		if(searchCriteria.getFromDate() == null){
-    			log.debug("from date = null");
-    		}else{
-    	        log.debug("Datefrom: " + searchCriteria.getFromDate().toString());
-    		}
-    	
-    		if(searchCriteria.getToDate() == null){
-    			log.debug("from to = null");
-    		}else{
-        		log.debug("Dateto: " + searchCriteria.getToDate().toString());
-    		}
-    		
-	        for (String cha : searchCriteria.getChannels()){
-	        	log.debug("channel for searching: " + cha);
-	        }
-	        
-	        log.debug("printing parameters");
-	        java.util.Collection<String> set = searchCriteria.getParams().keySet();
-	
-	        for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-	            log.debug("parm key: " + (String) iterator.next());
-	
-	        }        
-    	}catch(Exception e){
-    		log.debug("sc error");
-    		e.printStackTrace();
-    	}
-   	
-    	log.debug("/printing SearchCriteria");
+
+    private void printsc(SearchCriteria searchCriteria) {
+        log.debug("printing SearchCriteria");
+
+        try {
+            log.debug("SearchString: " + searchCriteria.getSearchString());
+
+            if (searchCriteria.getFromDate() == null) {
+                log.debug("from date = null");
+            } else {
+                log.debug("Datefrom: " + searchCriteria.getFromDate().toString());
+            }
+
+            if (searchCriteria.getToDate() == null) {
+                log.debug("from to = null");
+            } else {
+                log.debug("Dateto: " + searchCriteria.getToDate().toString());
+            }
+
+            for (String cha : searchCriteria.getChannels()) {
+                log.debug("channel for searching: " + cha);
+            }
+
+            log.debug("printing parameters");
+            java.util.Collection<String> set = searchCriteria.getParams().keySet();
+
+            for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
+                log.debug("parm key: " + (String) iterator.next());
+
+            }
+        } catch (Exception e) {
+            log.debug("sc error");
+            e.printStackTrace();
+        }
+
+        log.debug("/printing SearchCriteria");
     }
-    
-    private void printAvailableChannels(){
-    	
-    	log.debug("printing AvailableChannels");
-    	
-    	try{
-	        java.util.Collection<String> set = availableChannels.keySet();
-	
-	        for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-	            log.debug("channel key: " + (String) iterator.next());
-	
-	        }
-    	}catch(Exception e){
-    		log.debug("a error");
-    	}
+
+    private void printAvailableChannels() {
+        log.debug("printing AvailableChannels");
+        try {
+            java.util.Collection<String> set = availableChannels.keySet();
+            for (java.util.Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
+                log.debug("channel key: " + (String) iterator.next());
+
+            }
+        } catch (Exception e) {
+            log.debug("a error");
+        }
     }
 }

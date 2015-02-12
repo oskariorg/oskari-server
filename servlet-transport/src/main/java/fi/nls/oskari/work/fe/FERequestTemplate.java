@@ -46,6 +46,8 @@ import fi.nls.oskari.work.WFSMapLayerJob;
 
 public class FERequestTemplate {
 
+    public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch
+
     class RequestNSContext implements NamespaceContext {
 
         Map<String, String> ns2prefix = new HashMap<String, String>();
@@ -113,7 +115,7 @@ public class FERequestTemplate {
     }
 
     protected void buildBBOXRequest_XPath(StringBuffer params, InputStream inp,
-            OutputStream outs, BoundingBox bbox)
+                                          OutputStream outs, BoundingBox bbox)
             throws ParserConfigurationException, SAXException, IOException,
             XPathExpressionException, TransformerException {
         String lowerCorner = Double.toString(bbox.getLowerCorner()
@@ -155,12 +157,12 @@ public class FERequestTemplate {
 
         if (srsName != null) {
             XPathExpression expr = xpath.compile("//*[@srsName='[SRSNAME]']");
-            
+
             String _srsName = srsName;
             if( srsName.indexOf("3857") != -1) {
-                  _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up 
+                _srsName = "EPSG:900913"; // GeoTools vs Deegree vs PostGIS interop - Google messed this up
             }
-                
+
             NodeList nds = (NodeList) expr
                     .evaluate(doc, XPathConstants.NODESET);
 
@@ -207,10 +209,10 @@ public class FERequestTemplate {
     }
 
     public void buildParams(StringBuffer params,
-            final OWSMapLayerJob.Type type, final WFSLayerStore layer,
-            final SessionStore session, final List<Double> bounds,
-            final MathTransform transformService,
-            final CoordinateReferenceSystem crs) throws TransformException,
+                            final OWSMapLayerJob.Type type, final WFSLayerStore layer,
+                            final SessionStore session, final List<Double> bounds,
+                            final MathTransform transformService,
+                            final CoordinateReferenceSystem crs) throws TransformException,
             IOException, XPathExpressionException,
             ParserConfigurationException, SAXException, TransformerException {
 
@@ -222,7 +224,7 @@ public class FERequestTemplate {
 
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
-            env.expandBy(400);
+            env.expandBy(GetSearchTolerance(session));
             bbox = env.toBounds(layer.getCrs());
 
         } else if (type == WFSMapLayerJob.Type.HIGHLIGHT) {
@@ -231,7 +233,7 @@ public class FERequestTemplate {
 
             ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
                     crs);
-            env.expandBy(400);
+            env.expandBy(GetSearchTolerance(session));
             bbox = env.toBounds(layer.getCrs());
 
         } else if (bounds != null) {
@@ -264,8 +266,8 @@ public class FERequestTemplate {
     }
 
     public void buildParams(URIBuilder builder, OWSMapLayerJob.Type type,
-            WFSLayerStore layer, SessionStore session, List<Double> bounds,
-            MathTransform transform, CoordinateReferenceSystem crs) {
+                            WFSLayerStore layer, SessionStore session, List<Double> bounds,
+                            MathTransform transform, CoordinateReferenceSystem crs) {
 
         argsBuilder.buildParams(builder, type, layer, session, bounds,
                 transform, crs);
@@ -273,7 +275,7 @@ public class FERequestTemplate {
     }
 
     public void setRequestFeatures(String srsName, String featureNs,
-            String featureName, String wFSver, String geomProp, String geomNs) {
+                                   String featureName, String wFSver, String geomProp, String geomNs) {
         this.srsName = srsName;
         this.featureNs = featureNs;
         this.featureName = featureName;
@@ -281,6 +283,9 @@ public class FERequestTemplate {
         this.geomProp = geomProp;
         this.geomNs = geomNs;
 
+    }
+    private double GetSearchTolerance(final SessionStore session){
+        return session.getMapScales().get((int) session.getLocation().getZoom())*CONVERSION_FACTOR;
     }
 
 }

@@ -46,6 +46,8 @@ public class GetViewsHandler extends ActionHandler {
 
         final String viewType = params.getHttpParam(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
+        // require a logged in user when requesting views
+        params.requireLoggedInUser();
         final long userId = params.getUser().getId();
 
         final List<View> views = viewService.getViewsForUser(userId);

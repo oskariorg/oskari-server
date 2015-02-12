@@ -10,6 +10,7 @@
         <UserStyle>
             <Title>MyPlaces</Title>
             <FeatureTypeStyle>
+                <!--  Polygons: no fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -86,6 +87,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: no fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -162,6 +164,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: no fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -239,6 +242,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: no fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -316,6 +320,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin slash fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -403,6 +408,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin slash fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -490,6 +496,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin slash fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -578,6 +585,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin slash fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -666,6 +674,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick slash fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -753,6 +762,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick slash fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -840,6 +850,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick slash fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -928,6 +939,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick slash fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1016,6 +1028,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin line fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1103,6 +1116,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin line fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1190,6 +1204,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin line fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1278,6 +1293,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thin line fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1366,6 +1382,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick line fill pattern, no border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1453,6 +1470,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick line fill pattern, no border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1540,6 +1558,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick line fill pattern, border dash, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1628,6 +1647,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  Polygons: thick line fill pattern, border dash, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1716,6 +1736,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  LineStrings: solid line, no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1790,6 +1811,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  LineStrings: solid line, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1864,6 +1886,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  LineStrings: double line (not implemented), no attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1877,12 +1900,162 @@
                                 </ogc:Function>
                                 <ogc:Literal>true</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
                                     <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
                                 </ogc:Function>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
                                 <ogc:Literal>0</ogc:Literal>
-                            </ogc:PropertyIsNotEqualTo>
+                            </ogc:PropertyIsEqualTo>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <LineSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-width"><ogc:PropertyName>stroke_width</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-linejoin"><ogc:PropertyName>stroke_linejoin</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-linecap"><ogc:PropertyName>stroke_linecap</ogc:PropertyName></CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>name</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                                <Displacement>
+                                    <DisplacementX>10</DisplacementX>
+                                    <DisplacementY>0</DisplacementY>
+                                </Displacement>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  LineStrings: double line (not implemented), attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>LineString</ogc:Literal>
+                                    <ogc:Literal>MultiLineString</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>attention_text</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>0</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
+                        </ogc:And>
+                    </ogc:Filter>
+                    <LineSymbolizer>
+                        <Stroke>
+                            <CssParameter name="stroke"><ogc:PropertyName>stroke_color</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-width"><ogc:PropertyName>stroke_width</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-linejoin"><ogc:PropertyName>stroke_linejoin</ogc:PropertyName></CssParameter>
+                            <CssParameter name="stroke-linecap"><ogc:PropertyName>stroke_linecap</ogc:PropertyName></CssParameter>
+                        </Stroke>
+                    </LineSymbolizer>
+                    <TextSymbolizer>
+                        <Geometry>
+                            <ogc:Function name="centroid">
+                                <ogc:PropertyName>geometry</ogc:PropertyName>
+                            </ogc:Function>
+                        </Geometry>
+                        <Label><ogc:PropertyName>attention_text</ogc:PropertyName></Label>
+                        <Font>
+                            <CssParameter name="font-family">SansSerif.plain</CssParameter>
+                            <CssParameter name="font-size">14</CssParameter>
+                            <CssParameter name="font-style">normal</CssParameter>
+                            <CssParameter name="font-weight">bold</CssParameter>
+                        </Font>
+                        <LabelPlacement>
+                            <PointPlacement>
+                                <AnchorPoint>
+                                    <AnchorPointX>0</AnchorPointX>
+                                    <AnchorPointY>0.5</AnchorPointY>
+                                </AnchorPoint>
+                                <Displacement>
+                                    <DisplacementX>10</DisplacementX>
+                                    <DisplacementY>0</DisplacementY>
+                                </Displacement>
+                            </PointPlacement>
+                        </LabelPlacement>
+                        <Fill>
+                            <CssParameter name="fill">F000000</CssParameter>
+                        </Fill>
+                        <Halo>
+                            <Radius>1</Radius>
+                            <Fill>
+                                <CssParameter name="fill">#FFFFFF</CssParameter>
+                            </Fill>
+                        </Halo>
+                        <VendorOption name="autoWrap">60</VendorOption>
+                        <VendorOption name="maxDisplacement">150</VendorOption>
+                    </TextSymbolizer>
+                </Rule>
+
+                <!--  LineStrings: thick line fill pattern, dash line, no attention text -->
+                <Rule>
+                    <ogc:Filter>
+                        <ogc:And>
+                            <ogc:PropertyIsEqualTo>
+                                <ogc:Function name="in2">
+                                    <ogc:Function name="geometryType">
+                                        <ogc:PropertyName>geometry</ogc:PropertyName>
+                                    </ogc:Function>
+                                    <ogc:Literal>LineString</ogc:Literal>
+                                    <ogc:Literal>MultiLineString</ogc:Literal>
+                                </ogc:Function>
+                                <ogc:Literal>true</ogc:Literal>
+                            </ogc:PropertyIsEqualTo>
+                            <ogc:PropertyIsGreaterThan>
+                                <ogc:Function name="strLength">
+                                    <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
+                                </ogc:Function>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
                             <ogc:PropertyIsEqualTo>
                                 <ogc:Function name="strLength">
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
@@ -1938,6 +2111,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!--  LineStrings: thick line fill pattern, dash line, attention text -->
                 <Rule>
                     <ogc:Filter>
                         <ogc:And>
@@ -1951,12 +2125,12 @@
                                 </ogc:Function>
                                 <ogc:Literal>true</ogc:Literal>
                             </ogc:PropertyIsEqualTo>
-                            <ogc:PropertyIsNotEqualTo>
+                            <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
                                     <ogc:PropertyName>stroke_dasharray</ogc:PropertyName>
                                 </ogc:Function>
-                                <ogc:Literal>0</ogc:Literal>
-                            </ogc:PropertyIsNotEqualTo>
+                                <ogc:Literal>1</ogc:Literal>
+                            </ogc:PropertyIsGreaterThan>
                             <ogc:PropertyIsGreaterThan>
                                 <ogc:Function name="strLength">
                                     <ogc:PropertyName>attention_text</ogc:PropertyName>
@@ -2013,7 +2187,6 @@
                 </Rule>
             </FeatureTypeStyle>
 
-
             <FeatureTypeStyle>
                 <Transformation>
                     <ogc:Function name="gs:OskariPointStacker">
@@ -2044,6 +2217,8 @@
                         </ogc:Function>
                     </ogc:Function>
                 </Transformation>
+
+                <!-- Points: no grouping, no attention text, scale 1 -->
                 <Rule>
                     <Name>PointScale1Name</Name>
                     <ogc:Filter>
@@ -2130,6 +2305,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 1 -->
                 <Rule>
                     <Name>PointScale1Attention</Name>
                     <ogc:Filter>
@@ -2216,6 +2392,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 2 -->
                 <Rule>
                     <Name>PointScale2Name</Name>
                     <ogc:Filter>
@@ -2303,6 +2480,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 2 -->
                 <Rule>
                     <Name>PointScale2Attention</Name>
                     <ogc:Filter>
@@ -2390,6 +2568,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 3 -->
                 <Rule>
                     <Name>PointScale3Name</Name>
                     <ogc:Filter>
@@ -2477,6 +2656,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 3 -->
                 <Rule>
                     <Name>PointScale3Attention</Name>
                     <ogc:Filter>
@@ -2564,6 +2744,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 4 -->
                 <Rule>
                     <Name>PointScale4Name</Name>
                     <ogc:Filter>
@@ -2651,6 +2832,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 4 -->
                 <Rule>
                     <Name>PointScale4Attention</Name>
                     <ogc:Filter>
@@ -2738,6 +2920,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 5 -->
                 <Rule>
                     <Name>PointScale5Name</Name>
                     <ogc:Filter>
@@ -2825,6 +3008,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 5 -->
                 <Rule>
                     <Name>PointScale5Attention</Name>
                     <ogc:Filter>
@@ -2912,6 +3096,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 6 -->
                 <Rule>
                     <Name>PointScale6Name</Name>
                     <ogc:Filter>
@@ -2999,6 +3184,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 6 -->
                 <Rule>
                     <Name>PointScale6Attention</Name>
                     <ogc:Filter>
@@ -3086,6 +3272,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 7 -->
                 <Rule>
                     <Name>PointScale7Name</Name>
                     <ogc:Filter>
@@ -3173,6 +3360,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 7 -->
                 <Rule>
                     <Name>PointScale7Attention</Name>
                     <ogc:Filter>
@@ -3260,6 +3448,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 8 -->
                 <Rule>
                     <Name>PointScale8Name</Name>
                     <ogc:Filter>
@@ -3347,6 +3536,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 8 -->
                 <Rule>
                     <Name>PointScale8Attention</Name>
                     <ogc:Filter>
@@ -3434,6 +3624,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 9 -->
                 <Rule>
                     <Name>PointScale9Name</Name>
                     <ogc:Filter>
@@ -3521,6 +3712,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 9 -->
                 <Rule>
                     <Name>PointScale9Attention</Name>
                     <ogc:Filter>
@@ -3608,6 +3800,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 10 -->
                 <Rule>
                     <Name>PointScale10Name</Name>
                     <ogc:Filter>
@@ -3695,6 +3888,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 10 -->
                 <Rule>
                     <Name>PointScale10Attention</Name>
                     <ogc:Filter>
@@ -3782,6 +3976,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 11 -->
                 <Rule>
                     <Name>PointScale11Name</Name>
                     <ogc:Filter>
@@ -3869,6 +4064,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 11 -->
                 <Rule>
                     <Name>PointScale11Attention</Name>
                     <ogc:Filter>
@@ -3956,6 +4152,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 12 -->
                 <Rule>
                     <Name>PointScale12Name</Name>
                     <ogc:Filter>
@@ -4043,6 +4240,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 12 -->
                 <Rule>
                     <Name>PointScale12Attention</Name>
                     <ogc:Filter>
@@ -4130,6 +4328,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, no attention text, scale 13 -->
                 <Rule>
                     <Name>PointScale13Name</Name>
                     <ogc:Filter>
@@ -4216,6 +4415,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: no grouping, attention text, scale 13 -->
                 <Rule>
                     <Name>PointScale13Attention</Name>
                     <ogc:Filter>
@@ -4302,6 +4502,7 @@
                     </TextSymbolizer>
                 </Rule>
 
+                <!-- Points: grouping 2-9 items -->
                 <Rule>
                     <Name>rule29</Name>
                     <Title>2-9 Places</Title>
@@ -4362,6 +4563,8 @@
                         </Fill>
                     </TextSymbolizer>
                 </Rule>
+
+                <!-- Points: grouping 10 or more items -->
                 <Rule>
                     <Name>rule10</Name>
                     <Title>10 Places</Title>

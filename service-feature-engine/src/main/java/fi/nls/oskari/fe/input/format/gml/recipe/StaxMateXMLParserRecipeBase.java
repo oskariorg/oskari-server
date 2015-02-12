@@ -38,7 +38,12 @@ public abstract class StaxMateXMLParserRecipeBase {
             this.next = next;
             this.crsr = crsr;
             if (next != null && next.hasQName()) {
-                this.qn = crsr.getQName();
+                // Temporay fix  because of unexpected cursor position ? should be "START_ELEMENT"
+                if (next.name().equals("END_ELEMENT")){
+                    this.next = crsr.getNext();
+                    this.crsr = crsr;
+                }
+                if (this.next != null && this.next.hasQName()) this.qn = crsr.getQName();
             } else if (next == null) {
 
             }

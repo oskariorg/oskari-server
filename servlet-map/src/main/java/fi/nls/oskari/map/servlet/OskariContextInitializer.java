@@ -115,9 +115,11 @@ public class OskariContextInitializer implements ServletContextListener {
         final String poolName = PropertyUtil.get("db." + poolToken + "jndi.name", "jdbc/OskariPool");
 
         info(" - checking existance of database pool: " + poolName);
-        final BasicDataSource ds = getDataSource(ctx, poolName);
+        final DataSource ds = getDataSource(ctx, poolName);
         boolean success = (ds != null);
         if (!success) {
+            // FIXME: change logging so this isn't an error, but log some info if we are
+            // using container provided datasource rather than one created by us
             warn("!!! Couldn't find DataSource with name: " + poolName);
             warn("!!! Please edit webapps XML (web.xml/context.xml etc) to provide database connection resource !!!");
             //  + " - creating one with defaults."
@@ -141,7 +143,7 @@ public class OskariContextInitializer implements ServletContextListener {
         return null;
     }
 
-    private void addDataSource(final InitialContext ctx, final String name, final BasicDataSource ds) {
+    private void addDataSource(final InitialContext ctx, final String name, final DataSource ds) {
         if(ctx == null) {
             return;
         }
@@ -164,12 +166,12 @@ public class OskariContextInitializer implements ServletContextListener {
         }
     }
 
-    private BasicDataSource getDataSource(final InitialContext ctx, final String name) {
+    private DataSource getDataSource(final InitialContext ctx, final String name) {
         if(ctx == null) {
             return null;
         }
         try {
-            return (BasicDataSource) ctx.lookup("java:comp/env/" + name);
+            return (DataSource) ctx.lookup("java:comp/env/" + name);
         } catch (Exception ex) {
             log.error("Couldn't find pool with name '" + name + "': " + ex.getMessage());
         }

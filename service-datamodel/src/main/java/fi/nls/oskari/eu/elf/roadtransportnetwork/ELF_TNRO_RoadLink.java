@@ -24,10 +24,10 @@ import fi.nls.oskari.fe.xml.util.Nillable;
 public class ELF_TNRO_RoadLink
 {
 
-   @JacksonXmlRootElement(namespace = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0")
+   @JacksonXmlRootElement(namespace = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0")
    public static class RoadLink
    {
-      public static final String NS = "http://www.locationframework.eu/schemas/RoadTransportNetwork/MasterLoD1/1.0";
+      public static final String NS = "urn:x-inspire:specification:gmlas:RoadTransportNetwork:3.0";
       public static final QName QN = new QName(NS, "RoadLink");
       @XmlAttribute(required = true, name = "id")
       public String id;

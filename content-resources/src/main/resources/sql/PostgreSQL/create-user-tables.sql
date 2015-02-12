@@ -6,12 +6,15 @@ DROP TABLE IF EXISTS oskari_users;
 -- contains user information;
 CREATE TABLE oskari_users (
   id serial NOT NULL,
-  user_name character varying(25) NOT NULL,
+  user_name character varying(128) NOT NULL,
   first_name character varying(128),
   last_name character varying(128),
+  email character varying(256),
   uuid character varying(64),
+  attributes text DEFAULT '{}',
   CONSTRAINT oskari_users_pkey PRIMARY KEY (id),
-  UNIQUE (user_name)
+  CONSTRAINT oskari_users_user_name_key UNIQUE (user_name),
+  CONSTRAINT oskari_users_uuid_key UNIQUE (uuid)
 );
 
 -- contains roles used in Oskari;

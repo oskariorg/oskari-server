@@ -1,0 +1,889 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/" xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/1.0rc3" xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:AD="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:elf-lod1ad="http://www.locationframework.eu/schemas/Address/MasterLoD1/1.0" xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" xmlns:GN="urn:x-inspire:specification:gmlas:GeographicalNames:3.0" timeStamp="2015-01-30T11:55:33+0200">
+	<wfs:boundedBy>
+		<gml:Envelope srsName="urn:ogc:def:crs:EPSG::EPSG:900913">
+			<gml:lowerCorner>2722279.7255979 8425732.4659674</gml:lowerCorner>
+			<gml:upperCorner>2723635.7888705 8425867.9254448</gml:upperCorner>
+		</gml:Envelope>
+	</wfs:boundedBy>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22676999">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22676999</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22676999_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723531.248 8425899.853</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>20</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22676998">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22676998</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22676998_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723531.248 8425899.853</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>20</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22676995">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22676995</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22676995_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723568.679 8425918.558</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>18</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22676994">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22676994</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22676994_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723568.679 8425918.558</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>18</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677007">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677007</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677007_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723443.479 8425876.694</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>24</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677006">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677006</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677006_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723443.479 8425876.694</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>24</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677002">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677002</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677002_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723489.744 8425883.187</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>22</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677003">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677003</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677003_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723489.744 8425883.187</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>22</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677011">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677011</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677011_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723400.167 8425880.014</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>26</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677010">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677010</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677010_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723400.167 8425880.014</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>26</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677014">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677014</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677014_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723357.657 8425886.930</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>28</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677015">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677015</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677015_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723357.657 8425886.930</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>28</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677018">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677018</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677018_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723319.365 8425893.932</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>30</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677019">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677019</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677019_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723319.365 8425893.932</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>30</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677030">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677030</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677030_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723236.157 8425808.092</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>36</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677031">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677031</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677031_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723236.157 8425808.092</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>36</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677027">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677027</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677027_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723264.566 8425877.992</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>34</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677026">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677026</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677026_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723264.566 8425877.992</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>34</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677022">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677022</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677022_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723277.531 8425898.173</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>32</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267040#TIENIMI_267040"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_267042#TIENIMI_267042"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_22677023">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>22677023</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_22677023_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2723277.531 8425898.173</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>32</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_26021494">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>26021494</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_26021494_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2722304.638 8425696.631</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>0</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2571#KUNTANIMI_2571"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=KUNTANIMI_2572#KUNTANIMI_2572"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_78719#TIENIMI_78719"></ad:component>
+			<ad:component xlink:href="http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=GetFeature&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;STOREDQUERY_ID=urn:ogc:def:query:OGC-WFS::GetFeatureById&amp;ID=TIENIMI_78720#TIENIMI_78720"></ad:component>
+		</elf-lod0ad:Address>
+	</wfs:member>
+	<wfs:member>
+		<elf-lod0ad:Address gml:id="FI_MTK_OSOITE_26021495">
+			<ad:inspireId>
+				<base:Identifier>
+					<base:localId>26021495</base:localId>
+					<base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+				</base:Identifier>
+			</ad:inspireId>
+			<ad:position>
+				<ad:GeographicPosition>
+					<ad:geometry>
+						<gml:Point gml:id="FI_MTK_OSOITE_26021495_AD_POSITION" srsName="EPSG:900913">
+							<gml:pos>2722304.638 8425696.631</gml:pos>
+						</gml:Point>
+					</ad:geometry>
+					<ad:specification xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"></ad:specification>
+					<ad:method xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"></ad:method>
+					<ad:default>true</ad:default>
+				</ad:GeographicPosition>
+			</ad:position>
+			<ad:locator>
+				<ad:AddressLocator>
+					<ad:designator>
+						<ad:LocatorDesignator>
+							<ad:designator>0</ad:designator>
+							<ad:type xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"></ad:type>
+						</ad:LocatorDesignator>
+					</ad:designator>
+					<ad:level xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"></ad:level>
+				</ad:AddressLocator>
+			</ad:locator>
+			<ad:validFrom xsi:nil="true" nilReason="unpopulated"></ad:validFrom>
+			<ad:validTo xsi:nil="true" nilReason="unpopulated"></ad:validTo>
+			<ad:beginLifespanVersion xsi:nil="true" nilReason="unpopulated"></ad:beginLifespanVersion>
+			<ad:endLifespanVersion xsi:nil="true" nilReason="UNKNOWN"></ad:endLifespanVersion>
+		</elf-lod0ad:Address>
+	</wfs:member>
+</wfs:FeatureCollection>

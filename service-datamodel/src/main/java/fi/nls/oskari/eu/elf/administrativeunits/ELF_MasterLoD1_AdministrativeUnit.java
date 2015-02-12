@@ -1,6 +1,8 @@
 package fi.nls.oskari.eu.elf.administrativeunits;
 
 import java.net.URI;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import fi.nls.oskari.fe.gml.util.CodeType;
 import fi.nls.oskari.isotc211.gco.Distance;
 import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
@@ -13,6 +15,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import java.util.Calendar;
 import java.math.BigInteger;
+import java.util.logging.Logger;
+
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.NillableType;
@@ -83,6 +87,12 @@ public class ELF_MasterLoD1_AdministrativeUnit
       @JacksonXmlProperty(namespace = "http://www.locationframework.eu/schemas/AdministrativeUnits/MasterLoD1/1.0", localName = "validFrom")
       @XmlElement(required = false)
       public NillableType<String> validFrom;
+
+      // Handle unknown deserialization parameters
+      @JsonAnySetter
+      protected void handleUnknown(String key, Object value) {
+         Logger.getLogger(this.getClass().getName()).info("Unknown property: "+key);
+      }
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:AdministrativeUnits:3.0", localName = "name")
       public void setName(final _name obj)
