@@ -19,6 +19,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Handles user's session (current state)
@@ -26,6 +27,7 @@ import fi.nls.oskari.transport.TransportService;
 public class SessionStore {
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
+	private static final ObjectMapper mapper = new ObjectMapper();
 	public static final String KEY = "Session_";
 
 	private String client; // bayeux session (used in redis key)
@@ -442,7 +444,7 @@ public class SessionStore {
 	@JsonIgnore
 	public String getAsJSON() {
 		try {
-			return TransportService.mapper.writeValueAsString(this);
+			return mapper.writeValueAsString(this);
 		} catch (JsonGenerationException e) {
 			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
