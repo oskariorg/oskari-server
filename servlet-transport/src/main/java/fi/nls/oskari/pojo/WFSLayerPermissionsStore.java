@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * handles user's permissions
@@ -25,6 +26,7 @@ import fi.nls.oskari.util.PropertyUtil;
  */
 public class WFSLayerPermissionsStore {
 	private static final Logger log = LogFactory.getLogger(WFSLayerPermissionsStore.class);
+	private static final ObjectMapper mapper = new ObjectMapper();
 
 	public static final String KEY = "Permission_";
 
@@ -75,7 +77,7 @@ public class WFSLayerPermissionsStore {
 	@JsonIgnore
 	public String getAsJSON() {
 		try {
-			return TransportService.mapper.writeValueAsString(this); // thread-safe
+			return mapper.writeValueAsString(this); // thread-safe
 		} catch (JsonGenerationException e) {
 			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
@@ -95,7 +97,7 @@ public class WFSLayerPermissionsStore {
 	@JsonIgnore
 	public static WFSLayerPermissionsStore setJSON(String json)
 			throws IOException {
-		return TransportService.mapper.readValue(json,
+		return mapper.readValue(json,
 				WFSLayerPermissionsStore.class);
 	}
 
