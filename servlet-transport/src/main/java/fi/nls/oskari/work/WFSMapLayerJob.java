@@ -1,7 +1,6 @@
 package fi.nls.oskari.work;
 
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.*;
 
@@ -21,30 +20,11 @@ import org.opengis.referencing.operation.MathTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 /**
  * Job for WFS Map Layer
  */
 public class WFSMapLayerJob extends OWSMapLayerJob {
-    class WFSRequestResponse implements RequestResponse {
-        BufferedReader response ;
-
-        public BufferedReader getResponse() {
-            return response;
-        }
-
-        public void setResponse(BufferedReader response) {
-            this.response = response;
-        }
-
-        public void flush() throws IOException {
-            if( response != null ) {
-                response.close();
-                response = null;
-            }
-        }
-    }
 
 
 	/**
