@@ -3,17 +3,32 @@ package fi.nls.oskari.pojo;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.opengis.feature.simple.SimpleFeature;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
 public class WFSCustomStyleStore {
+    // custom style params
+    public static final String PARAM_FILL_COLOR = "fill_color";
+    public static final String PARAM_FILL_PATTERN = "fill_pattern";
+    public static final String PARAM_BORDER_COLOR = "border_color";
+    public static final String PARAM_BORDER_LINEJOIN = "border_linejoin";
+    public static final String PARAM_BORDER_DASHARRAY = "border_dasharray";
+    public static final String PARAM_BORDER_WIDTH = "border_width";
+    public static final String PARAM_STROKE_LINECAP = "stroke_linecap";
+    public static final String PARAM_STROKE_COLOR = "stroke_color";
+    public static final String PARAM_STROKE_LINEJOIN = "stroke_linejoin";
+    public static final String PARAM_STROKE_DASHARRAY = "stroke_dasharray";
+    public static final String PARAM_STROKE_WIDTH = "stroke_width";
+    public static final String PARAM_DOT_COLOR = "dot_color";
+    public static final String PARAM_DOT_SHAPE = "dot_shape";
+    public static final String PARAM_DOT_SIZE = "dot_size";
     private static final Logger log = LogFactory.getLogger(WFSCustomStyleStore.class);
 
+    private static final ObjectMapper mapper = new ObjectMapper();
     public static final String KEY = "WFSCustomStyle_";
 
     public static final String HIGHLIGHT_FILL_COLOR = "#FAEBD7";
@@ -251,7 +266,7 @@ public class WFSCustomStyleStore {
 
         // all point scales
         for(int i = 18; i < 43; i+=2) {
-            template = template.replaceAll(TransportService.PARAM_DOT_SIZE + i, Integer.toString(dotSize*i));
+            template = template.replaceAll(PARAM_DOT_SIZE + i, Integer.toString(dotSize*i));
         }
 
         // line styles
@@ -304,29 +319,29 @@ public class WFSCustomStyleStore {
 
         // colors
         if(isHighlight) {
-            template = template.replaceAll(TransportService.PARAM_FILL_COLOR, HIGHLIGHT_FILL_COLOR);
-            template = template.replaceAll(TransportService.PARAM_BORDER_COLOR, HIGHLIGHT_BORDER_COLOR);
+            template = template.replaceAll(PARAM_FILL_COLOR, HIGHLIGHT_FILL_COLOR);
+            template = template.replaceAll(PARAM_BORDER_COLOR, HIGHLIGHT_BORDER_COLOR);
 
-            template = template.replaceAll(TransportService.PARAM_STROKE_COLOR, HIGHLIGHT_STROKE_COLOR);
+            template = template.replaceAll(PARAM_STROKE_COLOR, HIGHLIGHT_STROKE_COLOR);
 
-            template = template.replaceAll(TransportService.PARAM_DOT_COLOR, HIGHLIGHT_DOT_COLOR);
+            template = template.replaceAll(PARAM_DOT_COLOR, HIGHLIGHT_DOT_COLOR);
         } else {
-            template = template.replaceAll(TransportService.PARAM_FILL_COLOR, fillColor);
-            template = template.replaceAll(TransportService.PARAM_BORDER_COLOR, borderColor);
+            template = template.replaceAll(PARAM_FILL_COLOR, fillColor);
+            template = template.replaceAll(PARAM_BORDER_COLOR, borderColor);
 
-            template = template.replaceAll(TransportService.PARAM_STROKE_COLOR, strokeColor);
+            template = template.replaceAll(PARAM_STROKE_COLOR, strokeColor);
 
-            template = template.replaceAll(TransportService.PARAM_DOT_COLOR, dotColor);
+            template = template.replaceAll(PARAM_DOT_COLOR, dotColor);
         }
 
-        template = template.replaceAll(TransportService.PARAM_BORDER_LINEJOIN, borderLinejoin);
-        template = template.replaceAll(TransportService.PARAM_BORDER_WIDTH, Integer.toString(borderWidth));
+        template = template.replaceAll(PARAM_BORDER_LINEJOIN, borderLinejoin);
+        template = template.replaceAll(PARAM_BORDER_WIDTH, Integer.toString(borderWidth));
 
-        template = template.replaceAll(TransportService.PARAM_STROKE_LINECAP, strokeLinecap);
-        template = template.replaceAll(TransportService.PARAM_STROKE_LINEJOIN, strokeLinejoin);
-        template = template.replaceAll(TransportService.PARAM_STROKE_WIDTH, Integer.toString(strokeWidth));
+        template = template.replaceAll(PARAM_STROKE_LINECAP, strokeLinecap);
+        template = template.replaceAll(PARAM_STROKE_LINEJOIN, strokeLinejoin);
+        template = template.replaceAll(PARAM_STROKE_WIDTH, Integer.toString(strokeWidth));
 
-        template = template.replaceAll(TransportService.PARAM_DOT_SHAPE, Integer.toString(dotShape));
+        template = template.replaceAll(PARAM_DOT_SHAPE, Integer.toString(dotShape));
 
         template = template.replaceAll(GEOMETRY, geometry);
 
@@ -351,7 +366,7 @@ public class WFSCustomStyleStore {
     @JsonIgnore
     public String getAsJSON() {
         try {
-            return TransportService.mapper.writeValueAsString(this);
+            return mapper.writeValueAsString(this);
         } catch (JsonGenerationException e) {
             log.error(e, "JSON Generation failed");
         } catch (JsonMappingException e) {
@@ -389,7 +404,7 @@ public class WFSCustomStyleStore {
     @JsonIgnore
     public static WFSCustomStyleStore setJSON(String json)
             throws IOException {
-        return TransportService.mapper.readValue(json,
+        return mapper.readValue(json,
                 WFSCustomStyleStore.class);
     }
 

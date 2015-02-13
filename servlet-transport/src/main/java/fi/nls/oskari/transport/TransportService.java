@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.work.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
@@ -36,16 +38,9 @@ import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.work.OWSMapLayerJob;
-import fi.nls.oskari.work.ResultProcessor;
-import fi.nls.oskari.work.WFSCustomParserMapLayerJob;
-import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.oskari.work.fe.FEMapLayerJob;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
-
-
-
 
 
 /**
@@ -63,8 +58,6 @@ public class TransportService extends AbstractService implements ResultProcessor
         PropertyUtil.loadProperties("/transport-ext.properties");
     }
     private static Logger log = LogFactory.getLogger(TransportService.class);
-
-    public static ObjectMapper mapper = new ObjectMapper();
 
 	// params
 	public static final String PARAM_ID = "id"; // skipped param - coming from cometd
@@ -101,25 +94,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	public static final String PARAM_KEEP_PREVIOUS = "keepPrevious";
     public static final String PARAM_GEOM_REQUEST = "geomRequest";
 
-    // custom style params
-    public static final String PARAM_FILL_COLOR = "fill_color";
-    public static final String PARAM_FILL_PATTERN = "fill_pattern";
-    public static final String PARAM_BORDER_COLOR = "border_color";
-    public static final String PARAM_BORDER_LINEJOIN = "border_linejoin";
-    public static final String PARAM_BORDER_DASHARRAY = "border_dasharray";
-    public static final String PARAM_BORDER_WIDTH = "border_width";
-
-    public static final String PARAM_STROKE_LINECAP = "stroke_linecap";
-    public static final String PARAM_STROKE_COLOR = "stroke_color";
-    public static final String PARAM_STROKE_LINEJOIN = "stroke_linejoin";
-    public static final String PARAM_STROKE_DASHARRAY = "stroke_dasharray";
-    public static final String PARAM_STROKE_WIDTH = "stroke_width";
-
-    public static final String PARAM_DOT_COLOR = "dot_color";
-    public static final String PARAM_DOT_SHAPE = "dot_shape";
-    public static final String PARAM_DOT_SIZE = "dot_size";
-
-	public static final String CHANNEL_INIT = "/service/wfs/init";
+    public static final String CHANNEL_INIT = "/service/wfs/init";
 	public static final String CHANNEL_ADD_MAP_LAYER = "/service/wfs/addMapLayer";
 	public static final String CHANNEL_REMOVE_MAP_LAYER = "/service/wfs/removeMapLayer";
 	public static final String CHANNEL_SET_LOCATION = "/service/wfs/setLocation";
@@ -133,6 +108,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	public static final String CHANNEL_HIGHLIGHT_FEATURES = "/service/wfs/highlightFeatures";
 
 	public static final String CHANNEL_DISCONNECT = "/meta/disconnect";
+    private Map<String, MapLayerJobProvider> mapLayerJobProviders;
 
 
 
@@ -172,7 +148,8 @@ public class TransportService extends AbstractService implements ResultProcessor
         int workerCount = ConversionHelper.getInt(PropertyUtil
                 .get("workerCount"), 10);
 
-        log.debug("Transport STARTED with worker count", workerCount);
+        mapLayerJobProviders = OskariComponentManager.getComponentsOfType(MapLayerJobProvider.class);
+        log.debug("Transport STARTED with worker count", workerCount, "with providers for maplayer job types:", mapLayerJobProviders.keySet() );
 
         this.bayeux = bayeux;
         this.local = getServerSession();
@@ -572,22 +549,22 @@ public class TransportService extends AbstractService implements ResultProcessor
      */
     private void setMapLayerCustomStyle(SessionStore store, Map<String, Object> style) {
         if(!style.containsKey(PARAM_LAYER_ID) ||
-                !style.containsKey(PARAM_FILL_COLOR) ||
-                !style.containsKey(PARAM_FILL_PATTERN) ||
-                !style.containsKey(PARAM_BORDER_COLOR) ||
-                !style.containsKey(PARAM_BORDER_LINEJOIN) ||
-                !style.containsKey(PARAM_BORDER_DASHARRAY) ||
-                !style.containsKey(PARAM_BORDER_WIDTH) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_FILL_COLOR) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_FILL_PATTERN) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_BORDER_COLOR) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_BORDER_LINEJOIN) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_BORDER_DASHARRAY) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_BORDER_WIDTH) ||
 
-                !style.containsKey(PARAM_STROKE_LINECAP) ||
-                !style.containsKey(PARAM_STROKE_COLOR) ||
-                !style.containsKey(PARAM_STROKE_LINEJOIN) ||
-                !style.containsKey(PARAM_STROKE_DASHARRAY) ||
-                !style.containsKey(PARAM_STROKE_WIDTH) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_STROKE_LINECAP) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_STROKE_COLOR) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_STROKE_LINEJOIN) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_STROKE_DASHARRAY) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_STROKE_WIDTH) ||
 
-                !style.containsKey(PARAM_DOT_COLOR) ||
-                !style.containsKey(PARAM_DOT_SHAPE) ||
-                !style.containsKey(PARAM_DOT_SIZE)) {
+                !style.containsKey(WFSCustomStyleStore.PARAM_DOT_COLOR) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_DOT_SHAPE) ||
+                !style.containsKey(WFSCustomStyleStore.PARAM_DOT_SIZE)) {
             log.warn("Failed to set map layer custom style");
             return;
         }
@@ -599,22 +576,22 @@ public class TransportService extends AbstractService implements ResultProcessor
         customStyle.setLayerId(layerId);
         customStyle.setClient(store.getClient());
 
-        customStyle.setFillColor(style.get(PARAM_FILL_COLOR).toString());
-        customStyle.setFillPattern(((Number)style.get(PARAM_FILL_PATTERN)).intValue());
-        customStyle.setBorderColor(style.get(PARAM_BORDER_COLOR).toString());
-        customStyle.setBorderLinejoin(style.get(PARAM_BORDER_LINEJOIN).toString());
-        customStyle.setBorderDasharray(style.get(PARAM_BORDER_DASHARRAY).toString());
-        customStyle.setBorderWidth(((Number)style.get(PARAM_BORDER_WIDTH)).intValue());
+        customStyle.setFillColor(style.get(WFSCustomStyleStore.PARAM_FILL_COLOR).toString());
+        customStyle.setFillPattern(((Number)style.get(WFSCustomStyleStore.PARAM_FILL_PATTERN)).intValue());
+        customStyle.setBorderColor(style.get(WFSCustomStyleStore.PARAM_BORDER_COLOR).toString());
+        customStyle.setBorderLinejoin(style.get(WFSCustomStyleStore.PARAM_BORDER_LINEJOIN).toString());
+        customStyle.setBorderDasharray(style.get(WFSCustomStyleStore.PARAM_BORDER_DASHARRAY).toString());
+        customStyle.setBorderWidth(((Number)style.get(WFSCustomStyleStore.PARAM_BORDER_WIDTH)).intValue());
 
-        customStyle.setStrokeLinecap(style.get(PARAM_STROKE_LINECAP).toString());
-        customStyle.setStrokeColor(style.get(PARAM_STROKE_COLOR).toString());
-        customStyle.setStrokeLinejoin(style.get(PARAM_STROKE_LINEJOIN).toString());
-        customStyle.setStrokeDasharray(style.get(PARAM_STROKE_DASHARRAY).toString());
-        customStyle.setStrokeWidth(((Number)style.get(PARAM_STROKE_WIDTH)).intValue());
+        customStyle.setStrokeLinecap(style.get(WFSCustomStyleStore.PARAM_STROKE_LINECAP).toString());
+        customStyle.setStrokeColor(style.get(WFSCustomStyleStore.PARAM_STROKE_COLOR).toString());
+        customStyle.setStrokeLinejoin(style.get(WFSCustomStyleStore.PARAM_STROKE_LINEJOIN).toString());
+        customStyle.setStrokeDasharray(style.get(WFSCustomStyleStore.PARAM_STROKE_DASHARRAY).toString());
+        customStyle.setStrokeWidth(((Number)style.get(WFSCustomStyleStore.PARAM_STROKE_WIDTH)).intValue());
 
-        customStyle.setDotColor(style.get(PARAM_DOT_COLOR).toString());
-        customStyle.setDotShape(((Number)style.get(PARAM_DOT_SHAPE)).intValue());
-        customStyle.setDotSize(((Number)style.get(PARAM_DOT_SIZE)).intValue());
+        customStyle.setDotColor(style.get(WFSCustomStyleStore.PARAM_DOT_COLOR).toString());
+        customStyle.setDotShape(((Number)style.get(WFSCustomStyleStore.PARAM_DOT_SHAPE)).intValue());
+        customStyle.setDotSize(((Number)style.get(WFSCustomStyleStore.PARAM_DOT_SIZE)).intValue());
 
         customStyle.save();
     }
@@ -886,21 +863,16 @@ public class TransportService extends AbstractService implements ResultProcessor
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
         
-        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
-
-        if ("oskari-feature-engine".equals(layer.getJobType()) ) {
-            return new FEMapLayerJob(service, type, store, layerId,
-                    reqSendFeatures, reqSendImage, reqSendHighlight);
+        final WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+        MapLayerJobProvider provider = null;
+        if(layer.getJobType() != null) {
+            provider = mapLayerJobProviders.get(layer.getJobType());
         }
-        else if("oskari-custom-parser".equals(layer.getJobType())) {
-            new WFSCustomParserMapLayerJob(service, type, store, layerId,
+        if(provider != null) {
+            return provider.createJob(service, type, store, layerId,
                     reqSendFeatures, reqSendImage, reqSendHighlight);
         }
         return new WFSMapLayerJob(service, type, store, layerId,
-                    reqSendFeatures, reqSendImage, reqSendHighlight);
+                reqSendFeatures, reqSendImage, reqSendHighlight);
     }
-
-    private static final String JOB_TYPE_FEATURE_ENGINE = "oskari-feature-engine";
-    private static final String JOB_TYPE_CUSTOM_PARSER = "oskari-custom-parser";
-
 }
