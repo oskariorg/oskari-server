@@ -78,6 +78,9 @@ public class WFSImage {
     private boolean isHighlight = false;
     private boolean isTile = false;
 
+    protected WFSImage() {
+
+    }
     /**
      * Constructor for image of certain layer and style
      *
