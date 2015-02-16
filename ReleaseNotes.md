@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.28
+
+### servlet-transport
+
+Moved duplicated code from FEMaplayerJob and WFSMaplayerJob to common baseclass OWSMaplayerJob.
+Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
+be included with documentation to make it usable.
+
 ## 1.27
 
 ### generic
