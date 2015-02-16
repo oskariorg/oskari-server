@@ -15,6 +15,13 @@ public interface ResultProcessor {
     public static final String CHANNEL_RESET = "/wfs/reset";
     public static final String CHANNEL_FEATURE_GEOMETRIES = "/wfs/featureGeometries";
 
+    // Error messages
+    public static String ERROR_NO_PERMISSIONS = "wfs_no_permissions";
+    public static String ERROR_CONFIGURATION_FAILED = "wfs_configuring_layer_failed";
+    public static String ERROR_WFS_REQUEST_FAILED = "wfs_request_failed";
+    public static String ERROR_FEATURE_PARSING = "features_parsing_failed";
+    public static String ERROR_WFS_IMAGE_PARSING = "wfs_image_parsing_failed";
+
     /**
      * Adds results for given task
      * @param clientId the client that requested processing
