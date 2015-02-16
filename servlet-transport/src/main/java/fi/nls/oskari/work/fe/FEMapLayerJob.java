@@ -142,31 +142,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     }
 
     /**
-     * Check Scale in FRONT CRS
-     * 
-     * @return
-     */
-    boolean validateMapScalesInFrontSrs() {
-        double scale = this.session.getMapScales().get(
-                (int) this.session.getLocation().getZoom());
-        double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(),
-                session.getLocation().getSrs(), session.getLocation().getSrs());
-        double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(),
-                session.getLocation().getSrs(), session.getLocation().getSrs());
-
-        log.debug("[fe] Scale in:" + layer.getSRSName() + scale + "["
-                + layer.getMaxScale() + "," + layer.getMinScale() + "]");
-        log.debug("[fe] Scale in:" + session.getLocation().getSrs() + scale
-                + "[" + maxScaleInMapSrs + "," + minScaleInMapSrs + "]");
-        if (minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) {// min ==
-                                                                     // biggest
-                                                                     // value
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Builds the WFS request from template. Issues HTTP request with WFS
      * request Processes WFS response with 'feature-engine' i.e Groovy scripts.
      * 
@@ -180,7 +155,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         final FERequestResponse requestResponse = new FERequestResponse();
 
-        if (!validateMapScalesInFrontSrs()) {
+        if (!validateMapScales()) {
             log.debug("[fe] Map scale was not valid for layer " + this.layerId);
 
             return requestResponse;
@@ -620,7 +595,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         setResourceSending();
 
-        if (!validateMapScalesInFrontSrs()) {
+        if (!validateMapScales()) {
             log.debug("[fe] Map scale was not valid for layer " + this.layerId);
             return;
         }
