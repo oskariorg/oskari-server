@@ -1,12 +1,9 @@
 package fi.nls.oskari.arcgis.pojo;
 
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -36,10 +33,7 @@ public class ArcGisLayerStore extends WFSLayerStore {
     private String arcGisId;
     private String type;
     private ArrayList<String> subLayerIds;
-    private double maxScale;
-    private double minScale;
     private List<ArcGisLayerStore> subLayers;
-    private String geometryType;
 
     public List<ArcGisLayerStore> getSubLayers() {
         return subLayers;
@@ -71,51 +65,6 @@ public class ArcGisLayerStore extends WFSLayerStore {
 
     public void setSubLayerIds(ArrayList<String> subLayerIds) {
         this.subLayerIds = subLayerIds;
-    }
-
-    public double getMinScale() {
-        return minScale;
-    }
-
-    public void setMinScale(double minScale) {
-        this.minScale = minScale;
-    }
-
-    public double getMaxScale() {
-        return maxScale;
-    }
-
-    public void setMaxScale(double maxScale) {
-        this.maxScale = maxScale;
-    }
-
-    public String getGeometryType() {
-        return geometryType;
-    }
-
-    public void setGeometryType(String geometryType) {
-        this.geometryType = geometryType;
-    }
-
-    @JsonIgnore
-    public String getAsJSON() {
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (JsonGenerationException e) {
-            log.error(e, "JSON Generation failed");
-        } catch (JsonMappingException e) {
-            log.error(e, "Mapping from Object to JSON String failed");
-        } catch (IOException e) {
-            log.error(e, "IO failed");
-        }
-        return null;
-    }
-
-    /**
-     * Saves object to redis
-     */
-    public void save() {
-        JedisManager.setex(KEY + this.layerId, 86400, getAsJSON()); // expire in 1 day
     }
 
     @JsonIgnore
@@ -155,11 +104,5 @@ public class ArcGisLayerStore extends WFSLayerStore {
 
         return store;
     }
-
-    @JsonIgnore
-    public static String getCache(String layerId) {
-        return JedisManager.get(KEY + layerId);
-    }
-
 
 }
