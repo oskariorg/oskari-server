@@ -136,19 +136,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     }
 
-    /**
-     * Gets image from cache
-     *
-     * @param bbox
-     */
-    protected BufferedImage getImageCache(Double[] bbox) {
-        return WFSImage.getCache(this.layerId,
-                this.session.getLayers().get(this.layerId).getStyleName(),
-                this.session.getLocation().getSrs(), bbox, this.session
-                        .getLocation().getZoom());
-
-    }
-
     protected void propertiesHandler() {
         this.sendWFSProperties(selectedProperties,
                 this.layer.getFeatureParamsLocales(this.session.getLanguage()));
@@ -834,136 +821,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     }
 
     /**
-     * Sends one feature
-     *
-     * @param values
-     */
-    protected void sendWFSFeature(List<Object> values) {
-        if (values == null || values.size() == 0) {
-            log.debug("Failed to send feature");
-            return;
-        }
-
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
-        output.put(OUTPUT_FEATURE, values);
-
-        this.service.addResults(this.session.getClient(),
-                TransportService.CHANNEL_FEATURE, output);
-
-    }
-
-    /**
-     * Sends list of features
-     *
-     * @param features
-     * @param channel
-     */
-    protected void sendWFSFeatures(List<List<Object>> features, String channel) {
-        if (features == null || features.size() == 0) {
-            log.debug("No features to Send");
-            return;
-        }
-
-        log.debug("#### Sending " + features.size() + "  FEATURES");
-
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
-        output.put(OUTPUT_FEATURES, features);
-        if (channel.equals(TransportService.CHANNEL_MAP_CLICK)) {
-            output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
-        }
-
-        this.service.addResults(this.session.getClient(), channel, output);
-    }
-
-    /**
-     * Sends properties (fields and locales)
-     *
-     * @param fields
-     * @param locales
-     */
-    protected void sendWFSProperties(List<String> fields, List<String> locales) {
-        if (fields == null || fields.size() == 0) {
-            log.debug("Failed to send properties");
-            return;
-        }
-
-        if (locales != null) {
-            locales.add(0, "ID");
-            locales.add("x");
-            locales.add("y");
-        } else {
-            locales = new ArrayList<String>();
-        }
-
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
-        output.put(OUTPUT_FIELDS, fields);
-        output.put(OUTPUT_LOCALES, locales);
-
-        this.service.addResults(this.session.getClient(),
-                TransportService.CHANNEL_PROPERTIES, output);
-    }
-
-    /**
-     * Sets image to cache
-     *
-     * @param bufferedImage
-     * @param style
-     * @param bbox
-     * @param persistent
-     */
-    protected void setImageCache(BufferedImage bufferedImage,
-            final String style, Double[] bbox, boolean persistent) {
-
-        WFSImage.setCache(bufferedImage, this.layerId, style, this.session
-                .getLocation().getSrs(), bbox, this.session.getLocation()
-                .getZoom(), persistent);
-
-    }
-
-    protected boolean validateMapScales() {
-        double scale = this.session.getMapScales().get(
-                (int) this.session.getLocation().getZoom());
-        double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(),
-                session.getLocation().getSrs(), session.getLocation().getSrs());
-        double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(),
-                session.getLocation().getSrs(), session.getLocation().getSrs());
-
-        log.debug("Scale in:" + layer.getSRSName() + scale + "["
-                + layer.getMaxScale() + "," + layer.getMinScale() + "]");
-        log.debug("Scale in:" + session.getLocation().getSrs() + scale + "["
-                + maxScaleInMapSrs + "," + minScaleInMapSrs + "]");
-        if (minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) // min ==
-            // biggest
-            // value
-            return true;
-        return false;
-    }
-
-    /**
-     * Sets which resources will be sent (features, image)
-     */
-    protected void setResourceSending() {
-        // layer configuration is the default
-        this.sendFeatures = layer.isGetFeatureInfo();
-        this.sendImage = layer.isGetMapTiles();
-        this.sendHighlight = layer.isGetHighlightImage();
-
-        // if request defines false and layer configuration allows
-        if (!this.reqSendFeatures && this.sendFeatures)
-            this.sendFeatures = false;
-        if (!this.reqSendImage && this.sendImage)
-            this.sendImage = false;
-        if (!this.reqSendHighlight && this.sendHighlight)
-            this.sendHighlight = false;
-
-        log.debug("send - features:" + this.sendFeatures + "/ image:"
-                + this.sendImage + "/ highlight:" + this.sendHighlight);
-    }
-
-    /**
      * Sends image as an URL to IE 8 & 9, base64 data for others
      *
      * @param url
@@ -1023,44 +880,11 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      *         <code>false</code> otherwise.
      */
     protected boolean validateType() {
-        if (this.type == Type.HIGHLIGHT) {
-            if (this.sessionLayer.getHighlightedFeatureIds() != null
-                    && this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
-                return true;
-            }
-        } else if (this.type == Type.MAP_CLICK) {
-            if (session.getMapClick() != null) {
-                return true;
-            }
-        } else if (this.type == Type.GEOJSON) {
-            if (session.getFilter() != null) {
-                return true;
-            }
-        } else if (this.type == Type.NORMAL) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Wrapper for normal type job's handlers
-     */
-    protected boolean normalHandlers(List<Double> bounds, boolean first) {
-        if (!this.requestHandler(bounds)) {
-            log.debug("Cancelled by request handler");
+        // TODO: check if this was just forgotten or can't FE handle PROPERTY_FILTER at all
+        if(this.type == Type.PROPERTY_FILTER) {
             return false;
         }
-        if (first) {
-            propertiesHandler();
-            if (!goNext())
-                return false;
-        }
-        if (!goNext())
-            return false;
-        this.featuresHandler();
-        if (!goNext())
-            return false;
-        return true;
+        return super.validateType();
     }
 
     /**
