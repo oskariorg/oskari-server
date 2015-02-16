@@ -431,14 +431,23 @@ public abstract class OWSMapLayerJob extends Job {
      */
     protected boolean validateMapScales() {
         double scale = this.session.getMapScales().get((int)this.session.getLocation().getZoom());
-        double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(), layer.getSRSName(), session.getLocation().getSrs());
-        double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(), layer.getSRSName(), session.getLocation().getSrs());
-
         log.debug("Scale in:", layer.getSRSName(), scale, "[", layer.getMaxScale(), ",", layer.getMinScale(), "]");
-        log.debug("Scale in:", session.getLocation().getSrs(), scale, "[", maxScaleInMapSrs, ",", minScaleInMapSrs, "]");
-        if(minScaleInMapSrs >= scale && maxScaleInMapSrs <= scale) // min == biggest value
-            return true;
-        return false;
+        // if scale value is -1 -> ignore scale check on that boundary
+        boolean minScaleOk = (layer.getMinScale() == -1);
+        boolean maxScaleOk = (layer.getMaxScale() == -1);
+        // min == biggest value
+        if(!minScaleOk) {
+            double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(), layer.getSRSName(), session.getLocation().getSrs());
+            log.debug("Scale in:", session.getLocation().getSrs(), scale, "[min:", minScaleInMapSrs, "]");
+            minScaleOk = (minScaleInMapSrs >= scale);
+        }
+        if(!maxScaleOk) {
+            double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(), layer.getSRSName(), session.getLocation().getSrs());
+            log.debug("Scale in:", session.getLocation().getSrs(), scale, "[max:", maxScaleInMapSrs, "]");
+            maxScaleOk = maxScaleInMapSrs <= scale;
+        }
+
+        return minScaleOk && maxScaleOk;
     }
     /**
      * Creates image url
