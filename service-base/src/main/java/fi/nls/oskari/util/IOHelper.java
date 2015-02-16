@@ -25,10 +25,13 @@ This needs to be checked
  */
 public class IOHelper {
 
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_CONTENTTYPE = "Content-Type";
+    public static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_CONTENTTYPE = "Content-Type";
+    public static final String HEADER_ACCEPT = "Accept";
+
     public static final String DEFAULT_CHARSET = "UTF-8";
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    public static final String CONTENT_TYPE_JSON = "application/json";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
 
     private static SSLSocketFactory TRUSTED_FACTORY;
