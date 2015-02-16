@@ -7,6 +7,7 @@
 Moved duplicated code from FEMaplayerJob and WFSMaplayerJob to common baseclass OWSMaplayerJob.
 Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
 be included with documentation to make it usable.
+Layer scale limit of -1 is now handled as no limit like in other parts of Oskari.
 
 ## 1.27
 
