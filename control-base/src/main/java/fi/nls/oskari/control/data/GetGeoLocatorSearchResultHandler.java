@@ -23,6 +23,9 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
 
     private static final String PARAM_TERM = "term";
     private static final String PARAM_REGION = "region";
+    private static final String PARAM_COUNTRY = "country";
+    private static final String PARAM_FILTER = "filter";
+    private static final String PARAM_NORMAL = "normal";
     private static final String PARAM_FUZZY = "fuzzy";
     private static final String PARAM_EXONYM = "exonym";
     private static final String PARAM_EPSG_KEY = "epsg";
@@ -32,8 +35,10 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
 
     private String[] channels = new String[0];
 
-    public void init() {
+    public void init()
+    {
         channels = PropertyUtil.getCommaSeparatedList("actionhandler.GetSearchResult.channels");
+
     }
 
 
@@ -62,6 +67,9 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
 
                 sc.setLocale(locale.getLanguage());
                 sc.addParam(PARAM_REGION, params.getHttpParam(PARAM_REGION, ""));
+                sc.addParam(PARAM_COUNTRY, params.getHttpParam(PARAM_COUNTRY, ""));
+                sc.addParam(PARAM_FILTER, params.getHttpParam(PARAM_FILTER, "false"));
+                sc.addParam(PARAM_NORMAL, params.getHttpParam(PARAM_NORMAL, "false"));
                 sc.addParam(PARAM_FUZZY, params.getHttpParam(PARAM_FUZZY, "false"));
                 sc.addParam(PARAM_EXONYM, params.getHttpParam(PARAM_EXONYM, "false"));
                 sc.addParam(PARAM_LON, params.getHttpParam(PARAM_LON, ""));

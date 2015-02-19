@@ -33,8 +33,7 @@ public class JSONHelperTest {
         JSONObject obj = JSONHelper.createJSONObject("");
         assertTrue("JSONObject was not created", obj == null);
 
-        obj = JSONHelper.createJSONObject(null);
-        assertTrue("JSONObject was not created", obj == null);
+
         // TODO: more error cases
     }
 

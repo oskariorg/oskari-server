@@ -30,6 +30,7 @@ public class SearchWorker {
     public static final String KEY_TOTAL_COUNT = "totalCount";
     public static final String KEY_ERROR_TEXT = "errorText";
     public static final String KEY_LOCATIONS = "locations";
+    public static final String KEY_METHODS = "methods";
     public static final String KEY_HAS_MORE = "hasMore";
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
@@ -134,8 +135,10 @@ public class SearchWorker {
         Query query = searchService.doSearch(sc);
 
         List<SearchResultItem> items = new ArrayList<SearchResultItem>();
+        JSONArray methodArray = new JSONArray();
         for(String channelId : sc.getChannels()) {
             items.addAll(query.findResult(channelId).getSearchResultItems());
+            methodArray.put(JSONHelper.createJSONObject(channelId,query.findResult(channelId).getSearchMethod()));
         }
         Collections.sort(items);
 
@@ -205,6 +208,12 @@ public class SearchWorker {
             rootJson.put(KEY_LOCATIONS, itemArray);
         } catch (JSONException jsonex) {
             throw new RuntimeException("Could not set search items in JSON");
+        }
+
+        try {
+            rootJson.put(KEY_METHODS, methodArray);
+        } catch (JSONException jsonex) {
+            throw new RuntimeException("Could not set search method items in JSON");
         }
 
         try {

@@ -5,6 +5,7 @@ import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.*;
 
@@ -52,7 +53,14 @@ public class JSONHelper {
         }
         return null;
     }
-
+    public static final JSONObject createJSONObject(final JSONTokener content) {
+        try {
+            return new JSONObject(content);
+        } catch (Exception e) {
+            log.warn("Error generating JSONObject from", content);
+        }
+        return null;
+    }
     public static final JSONObject getJSONObject(final JSONObject content, String key) {
         if(content == null) {
             return null;
