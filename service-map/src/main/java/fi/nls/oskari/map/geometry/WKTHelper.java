@@ -95,4 +95,24 @@ public class WKTHelper {
         }
         return null;
     }
+
+    /**
+     * Creates bbox for defined coordinates.
+     * @param westBoundLongitude
+     * @param southBoundLatitude
+     * @param eastBoundLongitude
+     * @param northBoundLatitude
+     * @return WKT String bbox
+     */
+    public static String getBBOX(final double westBoundLongitude, final double southBoundLatitude, final double eastBoundLongitude, final double northBoundLatitude){
+        String bbox = "POLYGON ((" + Double.toString(westBoundLongitude) + " " + Double.toString(southBoundLatitude) + ", " +
+                Double.toString(westBoundLongitude) + " " + Double.toString(northBoundLatitude) + ", " +
+                Double.toString(eastBoundLongitude) + " " + Double.toString(northBoundLatitude) + ", " +
+                Double.toString(eastBoundLongitude) + " " + Double.toString(southBoundLatitude) + ", " +
+                Double.toString(westBoundLongitude) + " " + Double.toString(southBoundLatitude) +
+        "))";
+
+        log.debug("BBOX: " + bbox);
+        return bbox;
+    }
 }
