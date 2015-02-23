@@ -6,6 +6,13 @@
 
 Removed deprecated classes: MetadataCatalogueSearchCriteria and Csw202ResultsDoc.
 
+### service-search-nls
+
+Added a hook for custom result parser in MetadataCatalogueChannelSearchService. Result parser must extend/be assignable to
+fi.nls.oskari.search.channel.MetadataCatalogueResultParser and can be configured with property:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.resultparser=<fqcn extending fi.nls.oskari.search.channel.MetadataCatalogueResultParser>
+
 ### servlet-transport
 
 Moved duplicated code from FEMaplayerJob and WFSMaplayerJob to common baseclass OWSMaplayerJob.
