@@ -78,7 +78,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         if(inp != null) {
             InputStreamReader reader = new InputStreamReader(inp);
             JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject(tokenizer);
+            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
         }
         elfParser = new ELFGeoLocatorParser();
     }
