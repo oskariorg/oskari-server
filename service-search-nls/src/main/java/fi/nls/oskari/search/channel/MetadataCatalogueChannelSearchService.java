@@ -219,9 +219,15 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return channelSearchResult;
     }
 
-    private String getWKT(final SearchResultItem item, final String sourceSRS, final String targetSRS){
-        String wkt = null;
-
+    private String getWKT(final SearchResultItem item, final String sourceSRS, final String targetSRS) {
+        // check if we have values
+        if((item.getSouthBoundLatitude() == null) ||
+            (item.getWestBoundLongitude() == null) ||
+            (item.getEastBoundLongitude() == null) ||
+            (item.getNorthBoundLatitude() == null)) {
+            return null;
+        }
+        // transform points to map projection and create a WKT bbox
         try {
             Point p1 = null;
             Point p2 = null;
@@ -232,11 +238,11 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                 p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
                 p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
             }
-            wkt = WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
+            return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
         } catch(Exception e){
             log.error(e, "Cannot get BBOX");
         }
-        return wkt;
+        return null;
     }
 
     private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
