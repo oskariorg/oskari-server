@@ -8,11 +8,13 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -38,11 +40,13 @@ public class GetMetadataSearchHandler extends ActionHandler {
     private static final SearchService service = ServiceFactory.getSearchService();
 
     private static final String PARAM_USER_INPUT = "search";
+    private static final String PARAM_MAP_SRS = "srs";
 
     private static final String KEY_RESULTS = "results";
     private static final String KEY_RESULT_ID = "id";
     private static final String KEY_RESULT_UUID = "uuid";
     private static final String KEY_RESULT_NAME = "name";
+    private static final String KEY_GEOM = "geom";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -50,6 +54,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         final SearchCriteria sc = new SearchCriteria();
         final String language = params.getLocale().getLanguage();
         sc.setLocale(language);
+        sc.setSRS(params.getHttpParam(PARAM_MAP_SRS));
         for(MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             field.getHandler().handleParam(params.getHttpParam(field.getName()), sc);
         }
@@ -65,11 +70,15 @@ public class GetMetadataSearchHandler extends ActionHandler {
         final JSONArray results = new JSONArray();
         final Query query = service.doSearch(sc);
         final ChannelSearchResult searchResult = query.findResult(MetadataCatalogueChannelSearchService.ID);
+
         log.debug("done search... now creating json objects");
+
         for(SearchResultItem item : searchResult.getSearchResultItems()) {
             final JSONObject node = JSONHelper.createJSONObject(KEY_RESULT_NAME, item.getTitle());
             
             JSONHelper.putValue(node, KEY_RESULT_ID, item.getResourceId());
+            JSONHelper.putValue(node, KEY_GEOM, item.getValue("geom"));
+
             JSONArray jArray = new JSONArray();
             
             if(item.getUuId() != null && !item.getUuId().isEmpty()){
@@ -79,6 +88,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
             }
             
             JSONHelper.put(node, KEY_RESULT_UUID, jArray);
+
             JSONHelper.putValue(node, MetadataField.RESULT_KEY_ORGANIZATION, (String) item.getValue(MetadataField.RESULT_KEY_ORGANIZATION));
             results.put(node);
         }
