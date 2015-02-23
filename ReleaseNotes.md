@@ -5,6 +5,8 @@
 ### service-search
 
 Removed deprecated classes: MetadataCatalogueSearchCriteria and Csw202ResultsDoc.
+SearchResultItem now has toJSON() method to construct the response for searches in similar fashion all over Oskari.
+SearchWorker now uses SearchResultItem.toJSON() to create the response.
 
 ### service-search-nls
 
@@ -12,6 +14,8 @@ Added a hook for custom result parser in MetadataCatalogueChannelSearchService. 
 fi.nls.oskari.search.channel.MetadataCatalogueResultParser and can be configured with property:
 
     search.channel.METADATA_CATALOGUE_CHANNEL.resultparser=<fqcn extending fi.nls.oskari.search.channel.MetadataCatalogueResultParser>
+
+GetMetadataSearchHandler now uses SearchResultItem.toJSON() to create the response.
 
 ### servlet-transport
 
