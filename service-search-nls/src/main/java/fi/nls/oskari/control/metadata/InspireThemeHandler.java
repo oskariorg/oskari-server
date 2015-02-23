@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.metadata;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
-import fi.mml.portti.service.search.MetadataCatalogueSearchCriteria;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.util.ConversionHelper;

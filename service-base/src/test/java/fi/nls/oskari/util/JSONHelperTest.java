@@ -33,10 +33,19 @@ public class JSONHelperTest {
         JSONObject obj = JSONHelper.createJSONObject("");
         assertTrue("JSONObject was not created", obj == null);
 
-
+        obj = JSONHelper.createJSONObject(null);
+        assertTrue("JSONObject was not created", obj == null);
         // TODO: more error cases
     }
 
+    @Test
+    public void testCreateJSONObjectFromNullTokener() {
+
+        JSONObject obj = JSONHelper.createJSONObject4Tokener(null);
+        assertTrue("JSONObject was not created", obj == null);
+
+
+    }
     @Test
     public void testCreateJSONObjectFromKeyValue() throws Exception {
         JSONObject obj = JSONHelper.createJSONObject("key", "value");

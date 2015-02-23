@@ -62,13 +62,14 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private final static List<MetadataField> fields = new ArrayList<MetadataField>();
 
-    private final MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
+    private MetadataCatalogueResultParser RESULT_PARSER = null;
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
     
     private OskariLayerServiceIbatisImpl mapLayerService = (OskariLayerServiceIbatisImpl)ServiceFactory.getMapLayerService();
 
     private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
     private static final String PROPERTY_FETCHURL_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.";
+    private static final String PROPERTY_RESULTPARSER = "search.channel.METADATA_CATALOGUE_CHANNEL.resultparser";
 
     @Override
     public void init() {
@@ -84,6 +85,20 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         for(String key : urlKeys) {
             final String langCode = key.substring(urlPrefixLen);
             fetchPageURLs.put(langCode, PropertyUtil.get(key));
+        }
+
+        // hook for customized parsing
+        final String customResultParser = PropertyUtil.getOptional(PROPERTY_RESULTPARSER);
+        if(customResultParser != null) {
+            try {
+                final Class clazz = Class.forName(customResultParser);
+                RESULT_PARSER = (MetadataCatalogueResultParser) clazz.newInstance();
+            } catch (Exception e) {
+                log.error(e, "Error instantiating custom metadata result parser:", customResultParser);
+            }
+        }
+        if(RESULT_PARSER == null) {
+            RESULT_PARSER = new MetadataCatalogueResultParser();
         }
     }
 

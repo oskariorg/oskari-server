@@ -2,9 +2,24 @@
 
 ## 1.28
 
+### service-search
+
+Removed deprecated classes: `MetadataCatalogueSearchCriteria` and `Csw202ResultsDoc`.
+`SearchResultItem` now has toJSON() method to construct the response for searches in similar fashion all over Oskari.
+`SearchWorker` now uses SearchResultItem.toJSON() to create the response.
+
+### service-search-nls
+
+Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`. Result parser must extend/be assignable to
+`fi.nls.oskari.search.channel.MetadataCatalogueResultParser` and can be configured with property:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.resultparser=<fqcn extending fi.nls.oskari.search.channel.MetadataCatalogueResultParser>
+
+`GetMetadataSearchHandler` now uses SearchResultItem.toJSON() to create the response.
+
 ### servlet-transport
 
-Moved duplicated code from FEMaplayerJob and WFSMaplayerJob to common baseclass OWSMaplayerJob.
+Moved duplicated code from `FEMaplayerJob` and `WFSMaplayerJob` to common baseclass `OWSMaplayerJob`.
 Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
 be included with documentation to make it usable.
 Layer scale limit of -1 is now handled as no limit like in other parts of Oskari.

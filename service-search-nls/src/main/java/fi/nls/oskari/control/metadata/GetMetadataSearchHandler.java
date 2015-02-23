@@ -8,13 +8,11 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.search.channel.MetadataCatalogueChannelSearchService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -43,10 +41,6 @@ public class GetMetadataSearchHandler extends ActionHandler {
     private static final String PARAM_MAP_SRS = "srs";
 
     private static final String KEY_RESULTS = "results";
-    private static final String KEY_RESULT_ID = "id";
-    private static final String KEY_RESULT_UUID = "uuid";
-    private static final String KEY_RESULT_NAME = "name";
-    private static final String KEY_GEOM = "geom";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -74,23 +68,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         log.debug("done search... now creating json objects");
 
         for(SearchResultItem item : searchResult.getSearchResultItems()) {
-            final JSONObject node = JSONHelper.createJSONObject(KEY_RESULT_NAME, item.getTitle());
-            
-            JSONHelper.putValue(node, KEY_RESULT_ID, item.getResourceId());
-            JSONHelper.putValue(node, KEY_GEOM, item.getValue("geom"));
-
-            JSONArray jArray = new JSONArray();
-            
-            if(item.getUuId() != null && !item.getUuId().isEmpty()){
-                for(String uuid : item.getUuId()){
-                    jArray.put(uuid);
-                }
-            }
-            
-            JSONHelper.put(node, KEY_RESULT_UUID, jArray);
-
-            JSONHelper.putValue(node, MetadataField.RESULT_KEY_ORGANIZATION, (String) item.getValue(MetadataField.RESULT_KEY_ORGANIZATION));
-            results.put(node);
+            results.put(item.toJSON());
         }
 
         // write response

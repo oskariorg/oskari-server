@@ -49,15 +49,15 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.warn("Error generating JSONObject from", content);
+            log.warn("Error generating JSONObject from ", content);
         }
         return null;
     }
-    public static final JSONObject createJSONObject(final JSONTokener content) {
+    public static final JSONObject createJSONObject4Tokener(final JSONTokener content) {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.warn("Error generating JSONObject from", content);
+            log.warn("Error generating JSONObject from JSONTokener ", content);
         }
         return null;
     }
