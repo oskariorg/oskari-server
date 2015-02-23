@@ -37,7 +37,7 @@ public class MetadataCatalogueResultParser {
 
     private AXIOMXPath XPATH_LOCALE_MAP = null;
 
-    private SimpleNamespaceContext NAMESPACE_CTX = null;
+    protected SimpleNamespaceContext NAMESPACE_CTX = null;
 
     private final QName QNAME_ID = QName.valueOf("id");
     private final QName QNAME_CODELISTVALUE = QName.valueOf("codeListValue");
