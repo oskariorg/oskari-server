@@ -203,6 +203,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" }
        { "id" : "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",

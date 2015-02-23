@@ -33,7 +33,8 @@
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" }
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" }
                 ],
                 "layers": [
                     { "id": 1 }
