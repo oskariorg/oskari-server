@@ -2,6 +2,10 @@
 
 ## 1.28
 
+### service-search
+
+Removed deprecated classes: MetadataCatalogueSearchCriteria and Csw202ResultsDoc.
+
 ### servlet-transport
 
 Moved duplicated code from FEMaplayerJob and WFSMaplayerJob to common baseclass OWSMaplayerJob.
