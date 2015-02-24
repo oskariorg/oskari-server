@@ -568,7 +568,7 @@ public abstract class OWSMapLayerJob extends Job {
         output.put(OUTPUT_IMAGE_SRS, location.getSrs());
         output.put(OUTPUT_IMAGE_BBOX, bbox);
         output.put(OUTPUT_IMAGE_ZOOM, location.getZoom());
-        output.put(OUTPUT_IMAGE_TYPE, this.type); // "normal" | "highlight"
+        output.put(OUTPUT_IMAGE_TYPE, this.type.toString()); // "normal" | "highlight"
         output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
         output.put(OUTPUT_BOUNDARY_TILE, isboundaryTile);
         output.put(OUTPUT_IMAGE_WIDTH, tileSize.getWidth());
