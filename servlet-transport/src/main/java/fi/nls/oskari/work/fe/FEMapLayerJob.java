@@ -796,59 +796,6 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     }
 
     /**
-     * Sends image as an URL to IE 8 & 9, base64 data for others
-     *
-     * @param url
-     * @param bufferedImage
-     * @param bbox
-     * @param isTiled
-     */
-    protected void sendWFSImage(String url, BufferedImage bufferedImage,
-            Double[] bbox, boolean isTiled, boolean isboundaryTile) {
-        if (bufferedImage == null) {
-            log.warn("Failed to send image");
-            return;
-        }
-
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
-
-        Location location = this.session.getLocation();
-
-        Tile tileSize = null;
-        if (isTiled) {
-            tileSize = this.session.getTileSize();
-        } else {
-            tileSize = this.session.getMapSize();
-        }
-
-        output.put(OUTPUT_IMAGE_SRS, location.getSrs());
-        output.put(OUTPUT_IMAGE_BBOX, bbox);
-        output.put(OUTPUT_IMAGE_ZOOM, location.getZoom());
-        output.put(OUTPUT_IMAGE_TYPE, this.type); // "normal" | "highlight"
-        output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
-        output.put(OUTPUT_BOUNDARY_TILE, isboundaryTile);
-        output.put(OUTPUT_IMAGE_WIDTH, tileSize.getWidth());
-        output.put(OUTPUT_IMAGE_HEIGHT, tileSize.getHeight());
-        output.put(OUTPUT_IMAGE_URL, url);
-
-        byte[] byteImage = WFSImage.imageToBytes(bufferedImage);
-        String base64Image = WFSImage.bytesToBase64(byteImage);
-        int base64Size = (base64Image.length() * 2) / 1024;
-
-        // IE6 & IE7 doesn't support base64, max size in base64 for IE8 is 32KB
-        if (!(this.session.getBrowser().equals(BROWSER_MSIE)
-                && this.session.getBrowserVersion() < 8 || this.session
-                .getBrowser().equals(BROWSER_MSIE)
-                && this.session.getBrowserVersion() == 8 && base64Size >= 32)) {
-            output.put(OUTPUT_IMAGE_DATA, base64Image);
-        }
-
-        this.service.addResults(this.session.getClient(),
-                TransportService.CHANNEL_IMAGE, output);
-    }
-
-    /**
      * Checks if enough information for running the task type
      *
      * @return <code>true</code> if enough information for type;
