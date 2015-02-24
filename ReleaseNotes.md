@@ -2,6 +2,16 @@
 
 ## 1.28
 
+### control-example
+
+GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as
+parameter such as "map window,user guide". This is used as filename, but some characters are replaced with '_' and a
+file-extension '.json' is added. Replaced characters are ' ', ',', '/' and '\\'.
+To get an article (with example tags above) this way requires a file named "map_window_user_guide.json" in a classpath directory
+configured in oskari-ext.properties like this:
+
+    actionhandler.GetArticlesByTag.dir=/articlesByTag/
+
 ### service-search
 
 Removed deprecated classes: `MetadataCatalogueSearchCriteria` and `Csw202ResultsDoc`.
