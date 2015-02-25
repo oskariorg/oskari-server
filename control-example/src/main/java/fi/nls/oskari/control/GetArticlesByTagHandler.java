@@ -77,10 +77,12 @@ public class GetArticlesByTagHandler extends ActionHandler {
                 .replace('\\', '_');
         final String htmlContent = readInputFile(fileName + ".html");
         if(htmlContent != null) {
+            log.debug("Found HTML-file");
             return JSONHelper.createJSONObject("body", htmlContent);
         }
         final String jsonContent = readInputFile(fileName + ".json");
         if(jsonContent != null) {
+            log.debug("Found JSON-file");
             return JSONHelper.createJSONObject(jsonContent);
         }
         return null;
