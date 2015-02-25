@@ -14,7 +14,8 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * Example route handling CMS integration. Returns dummy responses.
+ * Example route handling CMS integration.
+ * Returns responses based on html/json files or responds with dummy content if not found.
  * @author SMAKINEN
  */
 @OskariActionRoute("GetArticlesByTag")
@@ -47,7 +48,8 @@ public class GetArticlesByTagHandler extends ActionHandler {
         final String commaSeparatedTags = params.getHttpParam(KEY_TAGS, "");
 
         log.debug("Getting articles for language:", lang, "with tags:", commaSeparatedTags);
-        JSONObject articleContent = JSONHelper.createJSONObject(readFile(commaSeparatedTags));
+        JSONObject articleContent = getContent(commaSeparatedTags);
+        // create dummy content since content files are not provided for these tags
         if(articleContent == null) {
             articleContent = JSONHelper.createJSONObject("static", "[no cms, dummy content]");
             JSONHelper.putValue(articleContent, KEY_TITLE, "[title]");
@@ -65,16 +67,32 @@ public class GetArticlesByTagHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, response);
     }
 
-    protected String readFile(final String commaSeparatedTags) {
+    protected JSONObject getContent(final String commaSeparatedTags) {
 
-        final String fileName = commaSeparatedTags.replace(',', '_').replace(' ', '_').replace('/', '_').replace('\\', '_') + ".json";
-        InputStream in = getClass().getResourceAsStream(fileLocation + fileName);
-        log.debug("Trying to read file from", fileLocation + fileName);
+        final String fileName = commaSeparatedTags
+                .replace(',', '_')
+                .replace(' ', '_')
+                .replace('/', '_')
+                .replace('.', '_')
+                .replace('\\', '_');
+        final String htmlContent = readInputFile(fileName + ".html");
+        if(htmlContent != null) {
+            return JSONHelper.createJSONObject("body", htmlContent);
+        }
+        final String jsonContent = readInputFile(fileName + ".json");
+        if(jsonContent != null) {
+            return JSONHelper.createJSONObject(jsonContent);
+        }
+        return null;
+    }
+
+    protected String readInputFile(final String filename) {
+        InputStream in = getClass().getResourceAsStream(fileLocation + filename);
         if(in != null) {
             try {
                 return IOHelper.readString(in);
             } catch (Exception ignore) {
-                log.info("Unable to read file from classpath:", fileLocation + fileName);
+                log.info("Unable to read file from classpath:", fileLocation + filename);
             }
             finally {
                 IOHelper.close(in);
