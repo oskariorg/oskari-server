@@ -27,7 +27,6 @@ public abstract class OWSMapLayerJob extends Job {
     protected static final Logger log = LogFactory
             .getLogger(OWSMapLayerJob.class);
 
-    private final static Map<String, Object> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<String, Object>(0));
     protected static Set<String> excludedProperties = new HashSet<String>();
     static {
         excludedProperties.add("metaDataProperty");
