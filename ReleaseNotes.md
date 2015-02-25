@@ -5,10 +5,10 @@
 ### control-example
 
 GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as
-parameter such as "userguide". This is used as filename, but characters ' ' (space), ',' (comma), '.' (dot), '/' (slash)
+parameter such as "userguide,en". This is used as filename, but characters ' ' (space), ',' (comma), '.' (dot), '/' (slash)
 and '\\' (backslash) are replaced with '_'. Initially tries to load filename with .html extension then with .json extension.
-To get an article (with example tags above) this way requires a file named "map_window_user_guide.html" or
-"map_window_user_guide.json" in a classpath under a directory configured in oskari-ext.properties like this:
+To get an article (with example tags above) this way requires a file named "userguide_en.html" or
+"userguide_en.json" in a classpath under a directory configured in oskari-ext.properties like this:
 
     actionhandler.GetArticlesByTag.dir=/articlesByTag/
 
