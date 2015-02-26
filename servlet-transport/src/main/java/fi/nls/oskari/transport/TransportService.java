@@ -255,7 +255,6 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param client
      * @param message
      */
-
     public void disconnect(ServerSession client, Message message)
     {
         String json = SessionStore.getCache(client.getId());

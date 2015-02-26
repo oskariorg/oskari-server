@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
+import fi.nls.oskari.util.IOHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -42,6 +43,9 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
@@ -298,7 +302,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
 
             /* Backend HTTP Executor */
-            DefaultHttpClient backendHttpClient = new DefaultHttpClient();
+            final HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, IOHelper.getConnectionTimeoutMs());
+            HttpConnectionParams.setSoTimeout(httpParams, IOHelper.getReadTimeoutMs());
+            DefaultHttpClient backendHttpClient = new DefaultHttpClient(httpParams);
             try {
                 HttpHost backendHttpHost = new HttpHost(url.getHost(),
                         url.getPort(), url.getProtocol());

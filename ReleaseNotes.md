@@ -33,6 +33,10 @@ Moved duplicated code from `FEMaplayerJob` and `WFSMaplayerJob` to common basecl
 Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
 be included with documentation to make it usable.
 Layer scale limit of -1 is now handled as no limit like in other parts of Oskari.
+FeatureEngine jobs http requests now respect the timeout limits set with properties (ms values):
+
+     oskari.connection.timeout=3000
+     oskari.read.timeout=60000
 
 ## 1.27
 
