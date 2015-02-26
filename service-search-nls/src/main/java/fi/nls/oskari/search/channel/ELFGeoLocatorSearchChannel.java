@@ -25,10 +25,6 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
-    private String reversegeocode_template = null;
-    private String fuzzy_template = null;
-    private String getfeatureau_template = null;
-    private String getfeature_template = null;
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
     private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
@@ -127,12 +123,14 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
         } else {
             // Exact search - case sensitive
-            String country = "";
-            if (hasParam(searchCriteria, PARAM_COUNTRY)) country = searchCriteria.getParam(PARAM_COUNTRY).toString();
-            String filter = (!country.isEmpty()) ? ADMIN_FILTER_TEMPLATE : GETFEATURE_FILTER_TEMPLATE;
+            String filter = GETFEATURE_FILTER_TEMPLATE;
+            if (hasParam(searchCriteria, PARAM_COUNTRY)) {
+                filter = ADMIN_FILTER_TEMPLATE;
+                String country = searchCriteria.getParam(PARAM_COUNTRY).toString();
+                //TODO add or filter, if there are many variations of admin names
+                filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(country)[0], "UTF-8"));
+            }
             filter = filter.replace(KEY_PLACE_HOLDER, URLEncoder.encode(searchCriteria.getSearchString(), "UTF-8"));
-            //TODO add or filter, if there are many variations of admin names
-            filter = filter.replace(KEY_ADMIN_HOLDER, URLEncoder.encode(elfParser.getAdminName(searchCriteria.getParam(PARAM_COUNTRY).toString())[0], "UTF-8"));
             String request = REQUEST_GETFEATURE_TEMPLATE.replace(KEY_LANG_HOLDER, lang3);
             buf.append(request);
             buf.append(filter);
