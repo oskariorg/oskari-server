@@ -95,7 +95,7 @@ public class MetadataCatalogueQueryHelper {
                     new HashMap<String, QualifiedName>());
 
             final GetRecords getRecs = new GetRecords("0", "2.0.2", null, nsmap,
-                    GetRecords.RESULT_TYPE.RESULTS, "application/xml", "csw:IsoRecord", 1,
+                    GetRecords.RESULT_TYPE.RESULTS, "application/xml", "http://www.isotc211.org/2005/gmd", 1,
                     10000, 0, null, query);
             return getRecs;
         } catch (Exception ex) {

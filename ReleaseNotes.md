@@ -27,6 +27,8 @@ Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`
 
 `GetMetadataSearchHandler` now uses SearchResultItem.toJSON() to create the response.
 
+MetadataCatalogueChannelSearchService now requests the output schema `http://www.isotc211.org/2005/gmd` instead of `csw:IsoRecord`.
+
 ### servlet-transport
 
 Moved duplicated code from `FEMaplayerJob` and `WFSMaplayerJob` to common baseclass `OWSMaplayerJob`.
