@@ -1,6 +1,8 @@
 package fi.nls.oskari.eu.elf.roadtransportnetwork;
 
 import java.net.URI;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import fi.nls.oskari.fe.gml.util.CodeType;
 import fi.nls.oskari.isotc211.gco.Distance;
 import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
@@ -13,6 +15,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import java.util.Calendar;
 import java.math.BigInteger;
+import java.util.logging.Logger;
+
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.NillableType;
@@ -45,6 +49,9 @@ public class ELF_TNRO_RoadLink
       public Identifier inspireId;
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Network:3.2", localName = "endLifespanVersion")
       @XmlElement(required = false)
+      public String identifier;
+      @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Network:3.2", localName = "identifier")
+      @XmlElement(required = false)
       public NillableType<String> endLifespanVersion;
       @XmlElement(required = false)
       public java.util.List<fi.nls.oskari.fe.xml.util.Reference> inNetwork = new java.util.ArrayList<fi.nls.oskari.fe.xml.util.Reference>();
@@ -69,6 +76,7 @@ public class ELF_TNRO_RoadLink
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:CommonTransportElements:3.0", localName = "validTo")
       @XmlElement(required = false)
       public NillableType<String> validTo;
+
 
       @JacksonXmlProperty(namespace = "urn:x-inspire:specification:gmlas:Network:3.2", localName = "inNetwork")
       public void setInNetwork(final fi.nls.oskari.fe.xml.util.Reference obj)

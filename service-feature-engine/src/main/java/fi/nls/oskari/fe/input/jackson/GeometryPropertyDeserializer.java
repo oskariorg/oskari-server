@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import org.geotools.xml.Configuration;
+
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -28,7 +28,7 @@ public class GeometryPropertyDeserializer extends
     protected boolean ignoreProps = false;
     protected Configuration gml;
     protected FEPullParser parserAny;
-    protected final Map<QName, FEPullParser.PullParserHandler> handlers = new HashMap<QName, FEPullParser.PullParserHandler>();
+    protected final Map<QName, PullParserHandler> handlers = new HashMap<QName, PullParserHandler>();
 
     public GeometryPropertyDeserializer(Configuration gml,
             FEPullParser parserAny) {
@@ -36,9 +36,9 @@ public class GeometryPropertyDeserializer extends
         this.parserAny = parserAny;
     }
 
-    public Map<QName, FEPullParser.PullParserHandler> mapGeometryType(
+    public Map<QName, PullParserHandler> mapGeometryType(
             final QName qname) {
-        Map<QName, FEPullParser.PullParserHandler> handlers = new HashMap<QName, FEPullParser.PullParserHandler>();
+        Map<QName, PullParserHandler> handlers = new HashMap<QName, PullParserHandler>();
         handlers.put(qname, new FEPullParser.ElementPullParserHandler(qname,
                 gml));
         return handlers;
@@ -57,7 +57,7 @@ public class GeometryPropertyDeserializer extends
     }
 
     public Object parseGeometry(
-            Map<QName, FEPullParser.PullParserHandler> handlers,
+            Map<QName, PullParserHandler> handlers,
             QName parentQn, XMLStreamReader reader) throws XMLStreamException,
             IOException, SAXException {
         QName qn = reader.getName();
@@ -92,34 +92,40 @@ public class GeometryPropertyDeserializer extends
         return obj;
     }
 
+
     @Override
     public GeometryProperty deserialize(JsonParser jp,
             DeserializationContext ctxt) throws IOException,
             JsonProcessingException {
-        FromXmlParser parser = (FromXmlParser) ctxt.getParser();
         Geometry geom = null;
+
+        FromXmlParser parser = (FromXmlParser) ctxt.getParser();
 
         XMLStreamReader reader = parser.getStaxReader();
 
         try {
-            if (isIgnoreProps()) {
-                parser.skipChildren();
+
+            if(isIgnoreProps()){
+              parser.skipChildren();
             } else {
-                QName parentQn = parser.getParentQName();
+
+               QName parentQn = parser.getParentQName();
                 geom = (Geometry) parseGeometry(handlers, parentQn, reader);
                 parser.resume();
             }
 
-        } catch (XMLStreamException e) {
+        } catch (IOException e) {
             throw new IOException(e);
-        } catch (SAXException e) {
+        } catch (Exception e) {
             throw new IOException(e);
 
         } finally {
+
         }
 
         return new GeometryProperty(geom);
     }
+
 
     public boolean isIgnoreProps() {
         return ignoreProps;
@@ -136,5 +142,6 @@ public class GeometryPropertyDeserializer extends
     public void setGoDeep(boolean goDeep) {
         this.goDeep = goDeep;
     }
+
 
 }
