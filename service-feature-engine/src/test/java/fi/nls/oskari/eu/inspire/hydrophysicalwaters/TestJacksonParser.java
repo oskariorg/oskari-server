@@ -248,4 +248,47 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
+
+    @Test
+    public void test_INSPIRE_HYP_CascadingWFS_WatercourseGMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/inspire/hydrophysicalwaters/fgi_fi-INSPIRE-HYP-Watercourse-wfs.xml");
+
+        try {
+            inputProcessor.setInput(inp);
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                JacksonParserRecipe recipe = new INSPIRE_HYp_Watercourse_Parser();
+                //recipe.getGeometryDeserializer().setIgnoreProps(true);
+
+                recipe.setLenient(true);
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                // fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }
 }

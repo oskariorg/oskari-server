@@ -1,17 +1,17 @@
 
 -- add map layer; 
 INSERT INTO oskari_maplayer(type, name, url,
-            srs_name,
+            srs_name,  username, password,
             groupid, 
             minscale, maxscale, 
-            url, locale) 
+            locale) 
   VALUES('wfslayer', 'rysp_liikennevayla_turku',
-        'EPSG:3067',
-        'http://opaskartta.turku.fi/TeklaOGCWeb/WFS.ashx',
+         'http://kuntienpaikkatietopalvelu.fi/KartioProxy/wfs/v2',
+        'EPSG:3067','xxx', 'xxx',
         
         (select id from oskari_layergroup where locale like '%Turku%'), 
          10000, 1, 
-         'wfs', '{fi:{name:"Liikenneväylä - Turku", subtitle:"RYSP - kantakartta"},sv:{name:"Liikenneväylä - Turku", subtitle:"RYSP - kantakartta"},en:{name:"Liikenneväylä - Turku", subtitle:"RYSP - kantakartta"}}'
+         '{fi:{name:"Liikenneväylä - Turku (RYSP)", subtitle:"RYSP - kantakartta"},sv:{name:"Liikenneväylä - Turku", subtitle:"RYSP - kantakartta"},en:{name:"Liikenneväylä - Turku", subtitle:"RYSP - kantakartta"}}'
   );
          
 
