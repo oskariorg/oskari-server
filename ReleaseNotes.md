@@ -2,6 +2,24 @@
 
 ## 1.28
 
+### control-base
+
+GetReverseGeocodingResult configuration changed. Previously used search channel based properties for buffer and maxfeatures,
+now they are configured for the actionhandler:
+
+OLD:
+
+    search.channel.<channel id>service.buffer=1000
+    search.channel.<channel id>service.maxfeatures=1
+
+NEW:
+
+    actionhandler.GetReverseGeocodingResult.maxfeatures=1
+    actionhandler.GetReverseGeocodingResult.buffer=1000
+
+The maxfeatures is channel based currently so you will end up with a result count of (maxfeatures * channels configured).
+This will most propably be changed to an enforced limit across channels in the future.
+
 ### control-example
 
 GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as

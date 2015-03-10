@@ -6,8 +6,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
@@ -23,24 +21,19 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private static final String PARAM_MAXFEATURES = "maxfeatures";
     private static final String PARAM_EPSG_KEY = "epsg";
 
-    private static final String KEY_CHANNELS = "actionhandler.GetReverseGeocodingResult.channels";
-    private static final String KEY_PREFIX = "search.channel.";
-    private static final String KEY_MAXFEATURES = "service.maxfeatures";
-    private static final String KEY_BUFFER = "service.buffer";
+    private static final String PROPERTY_CHANNELS = "actionhandler.GetReverseGeocodingResult.channels";
+    private static final String PROPERTY_MAXFEATURES = "actionhandler.GetReverseGeocodingResult.maxfeatures";
+    private static final String PROPERTY_BUFFER = "actionhandler.GetReverseGeocodingResult.buffer";
 
-    private static final String defaultMaxFeatures = "1";
-    private static final String defaultBuffer = "1000";
-    private static String maxFeatures = "1";
-    private static String buffer = "1000";
+    private static int maxFeatures = 1;
+    private static int buffer = 1000;
 
     private String[] channels = new String[0];
 
     public void init() {
-        channels = PropertyUtil.getCommaSeparatedList(KEY_CHANNELS);
-        if(channels.length > 0) {
-            maxFeatures = PropertyUtil.get(KEY_PREFIX + channels[0] + KEY_MAXFEATURES, defaultMaxFeatures);
-            buffer = PropertyUtil.get(KEY_PREFIX + channels[0] +KEY_BUFFER, defaultBuffer);
-        }
+        channels = PropertyUtil.getCommaSeparatedList(PROPERTY_CHANNELS);
+        maxFeatures = PropertyUtil.getOptional(PROPERTY_MAXFEATURES, maxFeatures);
+        buffer = PropertyUtil.getOptional(PROPERTY_BUFFER, buffer);
     }
 
 
@@ -66,6 +59,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
         for (String channelId : channels) {
             sc.addChannel(channelId);
         }
+        // TODO: enforce max features if there are multiple channels!
         final JSONObject result = SearchWorker.doSearch(sc);
         ResponseHelper.writeResponse(params, result);
     }
