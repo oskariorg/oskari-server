@@ -10,7 +10,7 @@ INSERT INTO portti_bundle(
     "bundleinstancename" : "elf-license",
     "metadata" : {
         "Import-Bundle" : {
-            "elf-geolocator" : {
+            "elf-license" : {
                 "bundlePath" : "/Oskari/packages/elf/bundle/"
             }
         },
