@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes(OskariComponentAnnotationProcessor.ANNOTATION_TYPE)
 public class OskariComponentAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**

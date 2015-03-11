@@ -20,7 +20,6 @@ import java.util.Set;
  * If it isn't the compilation will fail. If it is an entry is written to an SPI services file to be used on runtime.
  * The file is created if it didn't exist and duplicates aren't written.
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_5)
 @SupportedAnnotationTypes(OskariActionRouteAnnotationProcessor.ANNOTATION_TYPE)
 public class OskariActionRouteAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
