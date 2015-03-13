@@ -13,13 +13,13 @@ import java.io.IOException;
 /**
  * Job for WFS Map Layer
  */
-public class WFSCustomParserMapLayerJob extends WFSMapLayerJob {
+public class WFSCustomParserMapLayerJob extends  WFSMapLayerJob {
 
-    public WFSCustomParserMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId) {
-        super(service, type, store, layerId, true, true, true);
+    public WFSCustomParserMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId) {
+        this(service, type, store, layerId, true, true, true);
     }
 
-    public WFSCustomParserMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId,
+    public WFSCustomParserMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId,
                           boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
         super(service,type,store,layerId,reqSendFeatures,reqSendImage,reqSendHighlight);
 

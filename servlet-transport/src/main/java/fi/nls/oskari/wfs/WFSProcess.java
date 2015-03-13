@@ -4,6 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -23,8 +24,8 @@ public class WFSProcess {
     public static BufferedImage highlight(String session, String layerId, List<String> featureIds, Double[] bbox, String srs, long zoom, long width, long height) {
         BufferedImage bufferedImage;
 
-        String style = WFSMapLayerJob.Type.HIGHLIGHT.toString();
-        WFSMapLayerJob.Type processType = WFSMapLayerJob.Type.HIGHLIGHT;
+        String style = JobType.HIGHLIGHT.toString();
+        JobType processType = JobType.HIGHLIGHT;
 
         // get layer configuration
         WFSLayerStore layer = WFSMapLayerJob.getLayerConfiguration(layerId, session, null);

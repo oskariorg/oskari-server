@@ -2,6 +2,7 @@ package fi.nls.oskari.work.fe;
 
 import java.util.List;
 
+import fi.nls.oskari.work.JobType;
 import org.apache.http.client.utils.URIBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.geometry.DirectPosition;
@@ -13,14 +14,12 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.WFSMapLayerJob;
-import fi.nls.oskari.work.OWSMapLayerJob.Type;
 
 /* A PoC WFS GET Builder */
 public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
 
     @Override
-    public void buildParams(URIBuilder builder, Type type, WFSLayerStore layer,
+    public void buildParams(URIBuilder builder, JobType type, WFSLayerStore layer,
             SessionStore session, List<Double> bounds, MathTransform transform,
             CoordinateReferenceSystem crs) {
     	
@@ -56,7 +55,7 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
          */
 
         StringBuffer coordsAsSpaceSeparatedString = new StringBuffer();
-        if (type == WFSMapLayerJob.Type.MAP_CLICK) {
+        if (type == JobType.MAP_CLICK) {
 
             Coordinate c = session.getMapClick();
 

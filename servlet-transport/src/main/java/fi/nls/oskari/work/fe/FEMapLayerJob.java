@@ -20,7 +20,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.hystrix.HystrixMapLayerJob;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -82,19 +85,19 @@ import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.RequestResponse;
 import fi.nls.oskari.work.ResultProcessor;
 
-public class FEMapLayerJob extends OWSMapLayerJob {
+public class FEMapLayerJob extends HystrixMapLayerJob {
 
     final ArrayList<String> selectedProperties = new ArrayList<String>();
 
     final Map<Resource, Integer> selectedPropertiesIndex = new HashMap<Resource, Integer>();
 
-    public FEMapLayerJob(ResultProcessor service, Type type,
+    public FEMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId) {
         super(service, type, store, layerId);
 
     }
 
-    public FEMapLayerJob(ResultProcessor service, Type type,
+    public FEMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
         super(service, type, store, layerId, reqSendFeatures, reqSendImage,
@@ -107,7 +110,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final Style style = getSLD();
 
         return new WFSImage(this.layer, this.session.getClient(),
-                WFSImage.STYLE_DEFAULT, Type.HIGHLIGHT.toString()) {
+                WFSImage.STYLE_DEFAULT, JobType.HIGHLIGHT.toString()) {
             protected Style getSLDStyle(WFSLayerStore layer, String styleName) {
                 return style;
             }
@@ -150,7 +153,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      * request Processes WFS response with 'feature-engine' i.e Groovy scripts.
      * 
      */
-    public RequestResponse request(final Type type, final WFSLayerStore layer,
+    public RequestResponse request(final JobType type, final WFSLayerStore layer,
             final SessionStore session, final List<Double> bounds,
             final MathTransform transformService) {
 
@@ -555,18 +558,18 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      * Duplicated to enable refactoring in the near future.
      * 
      */
-    public void run() {
+    public String run() {
         log.debug(PROCESS_STARTED + " " + getKey());
 
         if (!this.validateType()) {
             log.debug("[fe] Not enough information to continue the task ("
                     + this.type + ")");
-            return;
+            throw new HystrixBadRequestException("Not enough information to continue the task (" +  this.type + ")");
         }
 
         if (!goNext()) {
             log.debug("[fe] Cancelled");
-            return;
+            return STATUS_CANCELED;
         }
 
         this.layerPermission = hasPermissionsForJob();
@@ -580,12 +583,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_MESSAGE, "wfs_no_permissions");
             this.service.addResults(session.getClient(),
                     TransportService.CHANNEL_ERROR, output);
-            return;
+            throw new HystrixBadRequestException("Session (" +  this.session.getSession() + ") has no permissions for getting the layer (" + this.layerId + ")");
         }
 
         if (!goNext()) {
             log.debug("FE Cancelled");
-            return;
+            return STATUS_CANCELED;
         }
         this.layer = getLayerForJob();
         if (this.layer == null) {
@@ -597,14 +600,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_MESSAGE, "wfs_configuring_layer_failed");
             this.service.addResults(session.getClient(),
                     TransportService.CHANNEL_ERROR, output);
-            return;
+            throw new RuntimeException("Layer (" +  this.layerId + ") configurations couldn't be fetched");
         }
 
         setResourceSending();
 
         if (!validateMapScales()) {
             log.debug("[fe] Map scale was not valid for layer " + this.layerId);
-            return;
+            throw new HystrixBadRequestException("Map scale was not valid for layer (" + this.layerId + ")");
         }
 
         // if different SRS, create transforms for geometries
@@ -630,15 +633,15 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         if (!goNext()) {
             log.debug("[fe] Cancelled");
-            return;
+            return STATUS_CANCELED;
         }
 
-        if (this.type == Type.NORMAL) { // tiles for grid
+        if (this.type == JobType.NORMAL) { // tiles for grid
             if (!this.layer.isTileRequest()) { // make single request
                 log.debug("[fe] single request");
                 if (!this.normalHandlers(null, true)) {
                     log.debug("[fe] !normalHandlers leaving");
-                    return;
+                    return STATUS_CANCELED;
                 } else {
                     log.debug("[fe] single request - continue");
                 }
@@ -653,7 +656,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 log.debug("[fe] ... " + bounds);
                 if (!goNext()) {
                     log.debug("[fe] JOB cancelled - leaving");
-                    return;
+                    return STATUS_CANCELED;
                 }
 
                 if (this.layer.isTileRequest()) { // make a request per tile
@@ -666,7 +669,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
                 if (!goNext()) {
                     log.debug("[fe] JOB cancelled - leaving");
-                    return;
+                    return STATUS_CANCELED;
                 }
 
                 boolean isThisTileNeeded = true;
@@ -708,7 +711,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                                 this.features);
                         if (bufferedImage == null) {
                             this.imageParsingFailed();
-                            return;
+                            throw new RuntimeException("Image parsing failed!");
                         }
 
                         // set to cache
@@ -736,18 +739,18 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 }
                 index++;
             }
-        } else if (this.type == Type.HIGHLIGHT) {
+        } else if (this.type == JobType.HIGHLIGHT) {
 
             /* NOPE */
 
-        } else if (this.type == Type.MAP_CLICK) {
+        } else if (this.type == JobType.MAP_CLICK) {
             if (!this.requestHandler(null)) {
-                return;
+                return STATUS_CANCELED;
             }
             this.featuresHandler();
             if (!goNext()) {
                 log.debug("[fe] Cancelled");
-                return;
+                return STATUS_CANCELED;
             }
 
             Double[] bounds = session.getLocation().getBboxArray();
@@ -761,13 +764,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             bufferedImage = this.image.draw(this.session.getMapSize(),
                     this.session.getLocation(), this.features);
             if (bufferedImage == null) {
-                return;
+                this.imageParsingFailed();
+                throw new RuntimeException("Image parsing failed!");
             }
 
             String imageURL = createImageURL(
                     this.session.getLayers().get(this.layerId).getStyleName(),
                     bounds);
-            this.type = Type.HIGHLIGHT;
+            this.type = JobType.HIGHLIGHT;
             this.sendWFSImage(imageURL, bufferedImage, bounds, false, false);
 
             bufferedImage.flush();
@@ -782,14 +786,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 log.debug("[fe] NOT sending features for map click");
             }
 
-        } else if (this.type == Type.GEOJSON) {
+        } else if (this.type == JobType.GEOJSON) {
             if (!this.requestHandler(null)) {
-                return;
+                return STATUS_CANCELED;
             }
             this.featuresHandler();
             if (!goNext()) {
                 log.debug("[fe] Cancelled");
-                return;
+                return STATUS_CANCELED;
             }
             if (this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList,
@@ -800,6 +804,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         }
 
         log.debug("[fe] " + PROCESS_ENDED + " " + getKey());
+        return "success";
     }
 
     /**
@@ -810,7 +815,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      */
     protected boolean validateType() {
         // TODO: check if this was just forgotten or can't FE handle PROPERTY_FILTER at all
-        if(this.type == Type.PROPERTY_FILTER) {
+        if(this.type == JobType.PROPERTY_FILTER) {
             return false;
         }
         return super.validateType();
@@ -867,7 +872,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             }
 
             // 0 features found - send size
-            if (this.type == Type.MAP_CLICK && this.features.size() == 0) {
+            if (this.type == JobType.MAP_CLICK && this.features.size() == 0) {
                 log.debug("Empty result for map click" + this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
@@ -876,7 +881,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                         TransportService.CHANNEL_MAP_CLICK, output);
                 log.debug(PROCESS_ENDED + getKey());
                 return false;
-            } else if (this.type == Type.GEOJSON && this.features.size() == 0) {
+            } else if (this.type == JobType.GEOJSON && this.features.size() == 0) {
                 log.debug("Empty result for filter" + this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");

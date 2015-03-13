@@ -153,7 +153,6 @@ public class FEStyledLayerDescriptorManager {
     /**
      * 
      * @param sldPath
-     * @param layerId
      * @return
      */
     public static Style getSLD(String sldPath) {

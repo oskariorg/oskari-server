@@ -12,6 +12,7 @@ import fi.nls.oskari.worker.JobQueue;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ public class StatusServlet extends HttpServlet {
     private static final Logger log = LogFactory.getLogger(StatusServlet.class);
 
     public static final String PARAM_SESSION = "session";
+    public static final String PARAM_CLEANUP = "clean";
     // action user uid API
     private static final String UID_API = "GetCurrentUser";
 
@@ -35,7 +37,7 @@ public class StatusServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // params
-        final String session = ConversionHelper.getString(request.getParameter(PARAM_SESSION), request.getRequestedSessionId());
+        final String session = getSessionId(request);
         final User user = getOskariUser(session, request.getParameter("route"));
         if (user == null || !user.isAdmin()) {
             /*
@@ -50,9 +52,26 @@ public class StatusServlet extends HttpServlet {
             return;
         }
         response.getWriter().write("Logged in as: " + user.toJSON());
+        // force clean up
+        final String cleanup = request.getParameter(PARAM_CLEANUP);
+        if(cleanup != null && "true".equalsIgnoreCase(cleanup)) {
+            final JobQueue q = TransportService.getQueue();
+            q.cleanup(true);
+        }
         response.getWriter().write("\n\nStatus\n\n");
         response.getWriter().write(getStatusMessage());
 
+    }
+
+    public String getSessionId(HttpServletRequest request) {
+        final String sessionCookieName = "JSESSIONID";
+        final Cookie[] cookies = request.getCookies();
+        if(cookies != null && sessionCookieName != null) {
+            for (int i=0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals(sessionCookieName)) return cookies[i].getValue();
+            }
+        }
+        return ConversionHelper.getString(request.getParameter(PARAM_SESSION), request.getRequestedSessionId());
     }
 
     public static String getStatusMessage() {
@@ -65,6 +84,8 @@ public class StatusServlet extends HttpServlet {
         w.append("Queue job length(ms) min: " + q.getMinJobLength() + "/ max:" + q.getMaxJobLength() + "/ avg:" + q.getAvgRuntime());
         w.append("\n");
         w.append("Queue jobs processed: " + q.getJobCount());
+        w.append("\n");
+        w.append("Queued jobs: " + log.getAsString(q.getQueuedJobNames()));
         w.append("\n");
         w.append("Crashed jobs: " + q.getCrashedJobCount() + "/ first was: " + q.getFirstCrashedJob());
         return w.toString();

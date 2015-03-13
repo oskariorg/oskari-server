@@ -2,6 +2,33 @@
 
 ## 1.28
 
+### service-base
+
+Changed Job from abstract class to an interface and added AbstractJob to be a drop-in replacement for Job.
+
+### servlet-transport
+
+Moved OWSLayerJob.Type enum to own file as JobType.
+
+Maplayer jobs are now managed as Hystrix Commands (https://github.com/Netflix/Hystrix/wiki) instead of the custom
+threaded approach using JobQueue in service-base. This should put less strain on overloaded services as requests are
+short-circuited when problems occur.
+
+Properties to configure job execution are:
+
+    oskari.transport.job.pool.size=100
+    oskari.transport.job.pool.limit=100
+    oskari.transport.job.timeoutms=15000
+
+Where pool size is the thread pool size, limit is queue to keep when all threads are in use after which jobs will be
+rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
+Any errors occuring on job execution will trigger a message to the websocket error-channel.
+
+### webapp-transport
+
+Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
+ to disable this.
+
 ### control-base
 
 GetReverseGeocodingResult configuration changed. Previously used search channel based properties for buffer and maxfeatures,

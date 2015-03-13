@@ -1,33 +1,34 @@
-package fi.nls.oskari.work;
+package fi.nls.oskari.work.hystrix;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.*;
-
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.worker.AbstractJob;
+import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.RequestResponse;
+import fi.nls.oskari.work.ResultProcessor;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.operation.MathTransform;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.wfs.WFSImage;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Job for WFS Map Layer
  */
-public abstract class OWSMapLayerJob extends AbstractJob<String> {
+public abstract class HystrixMapLayerJob extends HystrixJob {
 
     public static final String STATUS_CANCELED = "canceled";
 
     protected static final Logger log = LogFactory
-            .getLogger(OWSMapLayerJob.class);
+            .getLogger(HystrixMapLayerJob.class);
 
     protected static Set<String> excludedProperties = new HashSet<String>();
     static {
@@ -106,26 +107,26 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
     /**
      * Creates a new runnable job with own Jedis instance
-     * 
+     *
      * Parameters define client's service (communication channel), session and
      * layer's id. Sends all resources that the layer configuration allows.
-     * 
+     *
      * @param service
      * @param store
      * @param layerId
      */
-    public OWSMapLayerJob(ResultProcessor service, JobType type,
-            SessionStore store, String layerId) {
+    public HystrixMapLayerJob(ResultProcessor service, JobType type,
+                              SessionStore store, String layerId) {
         this(service, type, store, layerId, true, true, true);
     }
 
     /**
      * Creates a new runnable job with own Jedis instance
-     * 
+     *
      * Parameters define client's service (communication channel), session and
      * layer's id. Also sets resources that will be sent if the layer
      * configuration allows.
-     * 
+     *
      * @param service
      * @param store
      * @param layerId
@@ -133,9 +134,10 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      * @param reqSendImage
      * @param reqSendHighlight
      */
-    public OWSMapLayerJob(ResultProcessor service, JobType type,
-            SessionStore store, String layerId, boolean reqSendFeatures,
-            boolean reqSendImage, boolean reqSendHighlight) {
+    public HystrixMapLayerJob(ResultProcessor service, JobType type,
+                              SessionStore store, String layerId, boolean reqSendFeatures,
+                              boolean reqSendImage, boolean reqSendHighlight) {
+        super("transport", "LayerJob_" + layerId + "_" + type.toString());
         setupAPIUrl();
         this.service = service;
         this.type = type;
@@ -271,7 +273,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     /**
      * Unique key definition
      */
-    @Override
     public String getKey() {
         return this.getClass().getSimpleName() + "_" + this.session.getClient()
                 + "_" + this.layerId + "_" + this.type;
@@ -279,11 +280,10 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
     /**
      * Process of the job
-     * 
+     *
      * Worker calls this when starts the job.
-     * 
+     *
      */
-    @Override
     public abstract String run() ;
 
     /**
@@ -335,8 +335,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      * Parses features values
      */
     protected abstract void featuresHandler() ;
-
-
 
     /**
      * Send image parsing error
@@ -642,5 +640,27 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         return new WFSImage(this.layer, this.session.getClient(), this.session
                 .getLayers().get(this.layerId).getStyleName(),
                 JobType.HIGHLIGHT.toString());
+    }
+
+    public void notifyError() {
+        notifyError(null);
+    }
+
+    public void notifyError(String error) {
+        if (error == null) {
+            error = "Something went wrong";
+        }
+        log.error("On Error", error);
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_MESSAGE, error);
+        this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR,
+                output);
+    }
+
+    // TODO: check if this actually works!
+    public String getFallback() {
+        notifyError();
+        return "success";
     }
 }

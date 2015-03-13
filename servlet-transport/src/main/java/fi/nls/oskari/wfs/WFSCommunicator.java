@@ -8,6 +8,7 @@ import java.util.Map;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
@@ -46,7 +47,7 @@ public class WFSCommunicator {
 	 * @return xml payload
 	 */
 	@SuppressWarnings("unchecked")
-	public static String createRequestPayload(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
+	public static String createRequestPayload(final JobType type, final WFSLayerStore layer, final SessionStore session, final List<Double> bounds, final MathTransform transform) {
 
 
 		OMFactory factory = OMAbstractFactory.getOMFactory();

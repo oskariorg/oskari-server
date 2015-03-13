@@ -14,6 +14,7 @@ import fi.nls.oskari.arcgis.pojo.ArcGisProperty;
 import fi.nls.oskari.log.LogFactory;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.OWSMapLayerJob;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -45,7 +46,7 @@ public class ArcGisCommunicator {
 	 * @return xml payload
 	 */
 	@SuppressWarnings("unchecked")
-	public static String createQueryRequestPayload(final OWSMapLayerJob.Type type,
+	public static String createQueryRequestPayload(final JobType type,
 			final WFSLayerStore layer, final SessionStore session,
 			final List<Double> bounds,
 			final String token) {

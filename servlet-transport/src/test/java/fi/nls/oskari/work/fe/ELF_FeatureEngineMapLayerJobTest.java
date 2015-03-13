@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import fi.nls.oskari.work.JobType;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.impl.DefaultPrettyPrinter;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -234,10 +235,15 @@ public class ELF_FeatureEngineMapLayerJobTest {
         TestRunFEMapLayerJob[] jobs = new TestRunFEMapLayerJob[nJobs];
 
         for (int i = 0; i < nJobs; i++) {
-            TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(
+            final TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(
                     resultProcessor, session, ELFNamedPlaceGroovyLayerJSON);
             jobs[i] = job;
-            executor.execute(job);
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    job.run();
+                }
+            });
 
         }
 
@@ -263,7 +269,7 @@ public class ELF_FeatureEngineMapLayerJobTest {
 
         TestRunFEMapLayerJob(ResultProcessor resultProcessor,
                 SessionStore session, String layerjson) {
-            super(resultProcessor, Type.NORMAL, session, "4", true, true, true);
+            super(resultProcessor, JobType.NORMAL, session, "4", true, true, true);
             this.layerjson = layerjson;
         }
 

@@ -1,11 +1,13 @@
 package fi.nls.oskari.work;
 
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.*;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.hystrix.HystrixMapLayerJob;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -24,8 +26,9 @@ import java.util.*;
 /**
  * Job for WFS Map Layer
  */
-public class WFSMapLayerJob extends OWSMapLayerJob {
+public class WFSMapLayerJob extends HystrixMapLayerJob {
 
+    public static final String STATUS_CANCELED = "canceled";
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
@@ -37,7 +40,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	 * @param store
 	 * @param layerId
 	 */
-	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId) {
+	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId) {
 		this(service, type, store, layerId, true, true, true);
     }
 
@@ -54,7 +57,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	 * @param reqSendImage
      * @param reqSendHighlight
 	 */
-	public WFSMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId,
+	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId,
 			boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
 	    super(service,type,store,layerId,reqSendFeatures,reqSendImage,reqSendHighlight);
 
@@ -75,7 +78,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
      * @param transformService
      * @return response
      */
-    public RequestResponse request(Type type, WFSLayerStore layer,
+    public RequestResponse request(JobType type, WFSLayerStore layer,
             SessionStore session, List<Double> bounds,
             MathTransform transformService) {
         BufferedReader response = null;
@@ -137,15 +140,16 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 	 *
 	 */
 	@Override
-	public final void run() {
+	public final String run() {
         log.debug(PROCESS_STARTED, getKey());
 
         if(!this.validateType()) {
             log.warn("Not enough information to continue the task (" +  this.type + ")");
-            return;
+            throw new HystrixBadRequestException("Not enough information to continue the task (" +  this.type + ")");
+            //return "error";
         }
 
-    	if(!goNext()) return;
+    	if(!goNext()) return STATUS_CANCELED;
 
         this.layerPermission = getPermissions(layerId, this.session.getSession(), this.session.getRoute());
         if(!this.layerPermission) {
@@ -155,10 +159,10 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_NO_PERMISSIONS);
             this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-            return;
+            throw new HystrixBadRequestException("Session (" +  this.session.getSession() + ") has no permissions for getting the layer (" + this.layerId + ")");
         }
 
-    	if(!goNext()) return;
+    	if(!goNext()) return null;
     	this.layer = getLayerConfiguration(this.layerId, this.session.getSession(), this.session.getRoute());
         if(this.layer == null) {
             log.warn("Layer (" +  this.layerId + ") configurations couldn't be fetched");
@@ -167,14 +171,14 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_CONFIGURATION_FAILED);
             this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-            return;
+            throw new RuntimeException("Layer (" +  this.layerId + ") configurations couldn't be fetched");
         }
 
 		setResourceSending();
 
 		if(!validateMapScales()) {
             log.debug("Map scale was not valid for layer",  this.layerId);
-			return;
+            throw new HystrixBadRequestException("Map scale was not valid for layer (" + this.layerId + ")");
 		}
 
         // if different SRS, create transforms for geometries
@@ -194,14 +198,14 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             this.session.getLocation().setEnlargedEnvelope(grid.get(0));
         }
 
-        if(!goNext()) return;
+        if(!goNext()) return STATUS_CANCELED;
 
         log.debug(this.type);
 
-        if(this.type == Type.NORMAL) { // tiles for grid
+        if(this.type == JobType.NORMAL) { // tiles for grid
             if(!this.layer.isTileRequest()) { // make single request
                 if(!this.normalHandlers(null, true)) {
-                    return;
+                    return STATUS_CANCELED;
                 }
             }
 
@@ -212,11 +216,11 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 			for(List<Double> bounds : grid) {
                 if(this.layer.isTileRequest()) { // make a request per tile
                     if(!this.normalHandlers(bounds, first)) {
-                        return;
+                        return STATUS_CANCELED;
                     }
                 }
 
-				if(!goNext()) return;
+				if(!goNext()) return STATUS_CANCELED;
 
 				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
 		   	 		Double[] bbox = new Double[4];
@@ -242,7 +246,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                                 this.features);
                         if(bufferedImage == null) {
                             this.imageParsingFailed();
-                            return;
+                            throw new RuntimeException("Image parsing failed!");
                         }
 
 					    // set to cache
@@ -263,13 +267,13 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 				}
 				index++;
 			}
-		} else if(this.type == Type.HIGHLIGHT) {
+		} else if(this.type == JobType.HIGHLIGHT) {
             if(this.sendHighlight) {
                 if(!this.requestHandler(null)) {
-                    return;
+                    return STATUS_CANCELED;
                 }
                 this.featuresHandler();
-                if(!goNext()) return;
+                if(!goNext()) return STATUS_CANCELED;
 
                 // Send geometries, if requested as well
                 if(this.session.isGeomRequest()){
@@ -284,31 +288,32 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                     this.image = new WFSImage(this.layer,
                             this.session.getClient(),
                             this.session.getLayers().get(this.layerId).getStyleName(),
-                            Type.HIGHLIGHT.toString());
+                            JobType.HIGHLIGHT.toString());
                 }
                 BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
                         location,
                         this.features);
                 if(bufferedImage == null) {
                     this.imageParsingFailed();
-                    return;
+                    throw new RuntimeException("Image parsing failed!");
                 }
 
                 Double[] bbox = location.getBboxArray();
 
                 // cache (non-persistant)
-                setImageCache(bufferedImage, Type.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
+                setImageCache(bufferedImage, JobType.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
 
-                String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
+                String url = createImageURL(JobType.HIGHLIGHT.toString(), bbox);
                 this.sendWFSImage(url, bufferedImage, bbox, false, false);
             }
-        } else if(this.type == Type.MAP_CLICK) {
+        } else if(this.type == JobType.MAP_CLICK) {
             if(!this.requestHandler(null)) {
                 this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
-                return;
+                // success, just no hits
+                return null;
             }
             this.featuresHandler();
-            if(!goNext()) return;
+            if(!goNext()) return STATUS_CANCELED;
             if(this.sendFeatures) {
                 log.debug("Feature values list", this.featureValuesList);
                 this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_MAP_CLICK);
@@ -316,12 +321,12 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                 log.debug("No feature data!");
                 this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
             }
-        } else if(this.type == Type.GEOJSON || this.type == Type.PROPERTY_FILTER) {
+        } else if(this.type == JobType.GEOJSON || this.type == JobType.PROPERTY_FILTER) {
             if(!this.requestHandler(null)) {
-                return;
+                return STATUS_CANCELED;
             }
             this.featuresHandler();
-            if(!goNext()) return;
+            if(!goNext()) return STATUS_CANCELED;
             if(this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_FILTER);
             }
@@ -330,6 +335,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
         }
 
         log.debug(PROCESS_ENDED, getKey());
+        return "success";
 	}
 
 
@@ -374,7 +380,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
 		}
 
         // 0 features found - send size
-        if(this.type == Type.MAP_CLICK && this.features.size() == 0) {
+        if(this.type == JobType.MAP_CLICK && this.features.size() == 0) {
             log.debug("Empty result for map click",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
@@ -382,7 +388,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_MAP_CLICK, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
-        } else if((this.type == Type.GEOJSON && this.features.size() == 0) || (this.type == Type.PROPERTY_FILTER && this.features.size() == 0)) {
+        } else if((this.type == JobType.GEOJSON && this.features.size() == 0) || (this.type == JobType.PROPERTY_FILTER && this.features.size() == 0)) {
             log.debug("Empty result for filter",  this.layerId);
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_FEATURES, "empty");
@@ -548,7 +554,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             WFSParser.parseValuesForJSON(values);
             log.debug("Transformed property values:", values);
 
-            if(this.type == Type.NORMAL) {
+            if(this.type == JobType.NORMAL) {
                 this.sendWFSFeature(values);
             } else {
                 this.featureValuesList.add(values);

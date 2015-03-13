@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fi.nls.oskari.work.JobType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -207,7 +208,7 @@ public class RYSP_FeatureEngineMapLayerJobTest {
 
         TestRunFEMapLayerJob(ResultProcessor resultProcessor,
                 SessionStore session, String layerjson) {
-            super(resultProcessor, Type.NORMAL, session, "4", true, true, true);
+            super(resultProcessor, JobType.NORMAL, session, "4", true, true, true);
             this.layerjson = layerjson;
         }
 
