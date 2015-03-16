@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import java.util.List;
+import java.util.ArrayList;
 /**
  * Example implementation for oskari-server endpoint.
  * Assumes PropertyUtil has been populated in ContextInitializer!!
@@ -51,6 +53,8 @@ public class MapFullServlet extends HttpServlet {
 
     private final static String KEY_AJAX_URL = "ajaxUrl";
     private final static String KEY_CONTROL_PARAMS = "controlParams";
+
+    private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header";
 
     private final ViewService viewService = new ViewServiceIbatisImpl();
     private boolean isDevelopmentMode = false;
@@ -110,6 +114,14 @@ public class MapFullServlet extends HttpServlet {
                     // view not found
                     return;
                 }
+                ArrayList<String> propertyList = (ArrayList)PropertyUtil.getPropertyNamesStartingWith(KEY_RESPONSE_HEADER_PREFIX);
+                for (int i = 0; i < propertyList.size(); i++) {
+                    String key = propertyList.get(i);
+                    String value = PropertyUtil.get(key);
+                    key = key.substring(key.lastIndexOf('.') + 1, key.length());
+//                    log.debug("MAPFULLSERVLET: "+ i +" "+key+" "+value);
+                    response.addHeader(key, value);
+                }        
                 log.debug("Forward to", viewJSP);
                 request.getRequestDispatcher(viewJSP).forward(request, response);
             }
