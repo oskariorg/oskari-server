@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import java.util.List;
-import java.util.ArrayList;
 /**
  * Example implementation for oskari-server endpoint.
  * Assumes PropertyUtil has been populated in ContextInitializer!!
@@ -119,10 +118,10 @@ public class MapFullServlet extends HttpServlet {
                 for (String key : propertyList) {
                     final String value = PropertyUtil.get(key, "");
                     final String headerName = key.substring(prefixLength);
-                    if(!value.trim().isEmpty()) {
+                    if(!value.isEmpty()) {
                         response.addHeader(headerName, value);
                     }
-                }        
+                }
                 log.debug("Forward to", viewJSP);
                 request.getRequestDispatcher(viewJSP).forward(request, response);
             }
