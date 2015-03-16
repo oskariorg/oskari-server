@@ -85,6 +85,14 @@ FeatureEngine jobs http requests now respect the timeout limits set with propert
      oskari.connection.timeout=3000
      oskari.read.timeout=60000
 
+
+### servlet-map
+
+Added functionality for additional response headers when serving jsp pages.
+
+    oskari.page.header.X-UA-Compatible = IE=edge
+
+
 ## 1.27
 
 ### generic
