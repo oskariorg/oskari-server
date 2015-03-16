@@ -54,7 +54,7 @@ public class MapFullServlet extends HttpServlet {
     private final static String KEY_AJAX_URL = "ajaxUrl";
     private final static String KEY_CONTROL_PARAMS = "controlParams";
 
-    private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header";
+    private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header.";
 
     private final ViewService viewService = new ViewServiceIbatisImpl();
     private boolean isDevelopmentMode = false;
@@ -114,13 +114,12 @@ public class MapFullServlet extends HttpServlet {
                     // view not found
                     return;
                 }
-                ArrayList<String> propertyList = (ArrayList)PropertyUtil.getPropertyNamesStartingWith(KEY_RESPONSE_HEADER_PREFIX);
-                for (int i = 0; i < propertyList.size(); i++) {
-                    String key = propertyList.get(i);
-                    String value = PropertyUtil.get(key);
-                    key = key.substring(key.lastIndexOf('.') + 1, key.length());
-//                    log.debug("MAPFULLSERVLET: "+ i +" "+key+" "+value);
-                    response.addHeader(key, value);
+                final List<String> propertyList = PropertyUtil.getPropertyNamesStartingWith(KEY_RESPONSE_HEADER_PREFIX);
+                final int prefixLength = KEY_RESPONSE_HEADER_PREFIX.length();
+                for (String key : propertyList) {
+                    final String value = PropertyUtil.get(key);
+                    final String headerName = key.substring(prefixLength);
+                    response.addHeader(headerName, value);
                 }        
                 log.debug("Forward to", viewJSP);
                 request.getRequestDispatcher(viewJSP).forward(request, response);
