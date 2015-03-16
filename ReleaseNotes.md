@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.27.1
+
+Fixed ZoomParamHandler in control-base to use parameter as is without any special handling. The code previously
+changed zoomLevel 8 to 7 if parameter "ver" was not included in the url. This kind of application specific parameter handling
+ should be implemented as param-preprocessor functionality:
+
+    http://www.oskari.org/documentation/backend/adding-action-routes (search for preprocessor)
+
 ## 1.27
 
 ### generic
