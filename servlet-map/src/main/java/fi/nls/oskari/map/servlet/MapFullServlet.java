@@ -117,9 +117,11 @@ public class MapFullServlet extends HttpServlet {
                 final List<String> propertyList = PropertyUtil.getPropertyNamesStartingWith(KEY_RESPONSE_HEADER_PREFIX);
                 final int prefixLength = KEY_RESPONSE_HEADER_PREFIX.length();
                 for (String key : propertyList) {
-                    final String value = PropertyUtil.get(key);
+                    final String value = PropertyUtil.get(key, "");
                     final String headerName = key.substring(prefixLength);
-                    response.addHeader(headerName, value);
+                    if(!value.trim().isEmpty()) {
+                        response.addHeader(headerName, value);
+                    }
                 }        
                 log.debug("Forward to", viewJSP);
                 request.getRequestDispatcher(viewJSP).forward(request, response);
