@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.27.0</version>
+    <version>1.27.1</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -760,6 +760,7 @@
         <module>webapp-map</module>
         <module>standalone-jetty</module>
         <module>servlet-transport</module>
+        <module>servlet-printout</module>
         <module>webapp-transport</module>
         
     </modules>
