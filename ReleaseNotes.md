@@ -99,7 +99,6 @@ changed zoomLevel 8 to 7 if parameter "ver" was not included in the url. This ki
  should be implemented as param-preprocessor functionality:
 
     http://www.oskari.org/documentation/backend/adding-action-routes (search for preprocessor)
->>>>>>> hotfix/1.27.1
 
 ## 1.27
 
