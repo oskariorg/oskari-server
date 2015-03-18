@@ -119,6 +119,7 @@ public class MapFullServlet extends HttpServlet {
                     final String value = PropertyUtil.get(key, "");
                     final String headerName = key.substring(prefixLength);
                     if(!value.isEmpty()) {
+                        log.debug("Adding header", headerName, "=", value);
                         response.addHeader(headerName, value);
                     }
                 }
