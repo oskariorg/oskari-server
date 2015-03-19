@@ -10,7 +10,7 @@ INSERT INTO portti_bundle(
     "bundleinstancename" : "elf-lang-overrides",
     "metadata" : {
         "Import-Bundle" : {
-            "elf-license" : {
+            "elf-lang-overrides" : {
                 "bundlePath" : "/Oskari/packages/elf/bundle/"
             }
         },
