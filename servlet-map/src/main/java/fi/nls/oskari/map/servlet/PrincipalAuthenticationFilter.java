@@ -103,6 +103,7 @@ public class PrincipalAuthenticationFilter implements Filter {
         if(useLowerCaseUsernames) {
             username = username.toLowerCase();
         }
+        username = username.trim();
         log.debug("Getting user from service with principal name:", username);
         User loadedUser = userService.getUser(username);
         log.debug("Got user from service:", loadedUser);
@@ -127,7 +128,7 @@ public class PrincipalAuthenticationFilter implements Filter {
 
     public User addUser(final HttpServletRequest httpRequest, final String username) throws Exception {
         final User user = new User();
-        user.setScreenname(username);
+        user.setScreenname(username.trim());
         user.setFirstname(null);
         user.setLastname(null);
         user.setUuid(userService.generateUuid(username));

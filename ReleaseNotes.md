@@ -2,6 +2,10 @@
 
 ## 1.28
 
+### servlet-map
+
+PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
+
 ### service-base
 
 Changed Job from abstract class to an interface and added AbstractJob to be a drop-in replacement for Job.
