@@ -10,6 +10,10 @@ PrincipalAuthenticationFilter now always trims usernames before using them (remo
 
 Changed Job from abstract class to an interface and added AbstractJob to be a drop-in replacement for Job.
 
+JSONLocalized class now tries to get the value with default language if requested language is not available. This
+ helps when a language is added to Oskari installation and all data producers, Inspire-themes and maplayers lack
+ the localized name.
+
 ### servlet-transport
 
 Moved OWSLayerJob.Type enum to own file as JobType.
