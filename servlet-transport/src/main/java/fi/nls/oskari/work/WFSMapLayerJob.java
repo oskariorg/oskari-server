@@ -141,6 +141,7 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
 	 */
 	@Override
 	public final String run() {
+        setStartTime();
         log.debug(PROCESS_STARTED, getKey());
 
         if(!this.validateType()) {

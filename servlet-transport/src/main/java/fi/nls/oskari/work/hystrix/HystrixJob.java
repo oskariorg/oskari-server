@@ -14,6 +14,7 @@ import fi.nls.oskari.worker.Job;
 public abstract class HystrixJob extends HystrixCommand<String> implements Job<String> {
 
     private volatile boolean running = true;
+    private long startTime = System.nanoTime();
 
     public HystrixJob(final String groupName, final String commandName) {
         // Check http://www.nurkiewicz.com/2014/12/benchmarking-impact-of-batching-in.html
@@ -31,6 +32,13 @@ public abstract class HystrixJob extends HystrixCommand<String> implements Job<S
         );
     }
 
+
+    public void setStartTime() {
+        startTime = System.nanoTime();
+    }
+    public long getStartTime() {
+        return startTime;
+    }
     /**
      * Terminates the job
      */

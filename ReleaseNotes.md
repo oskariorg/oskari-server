@@ -32,10 +32,25 @@ Where pool size is the thread pool size, limit is queue to keep when all threads
 rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
 Any errors occuring on job execution will trigger a message to the websocket error-channel.
 
+Added metrics indicators with https://dropwizard.github.io/. Metrics can be accessed as JSON by
+adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user to access the servlet).
+
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+
+
 ### webapp-transport
 
 Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
  to disable this.
+
+Added StatusServlet to expose metrics as JSON. It can be removed from the web.xml to disable the functionality.
 
 ### control-base
 

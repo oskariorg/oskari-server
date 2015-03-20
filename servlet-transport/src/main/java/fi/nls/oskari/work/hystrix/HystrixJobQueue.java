@@ -1,11 +1,19 @@
 package fi.nls.oskari.work.hystrix;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Histogram;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.netflix.hystrix.HystrixInvokable;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.executionhook.HystrixCommandExecutionHook;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.work.hystrix.metrics.AvgJobLengthGauge;
+import fi.nls.oskari.work.hystrix.metrics.MaxJobLengthGauge;
+import fi.nls.oskari.work.hystrix.metrics.MinJobLengthGauge;
+import fi.nls.oskari.work.hystrix.metrics.TimingGauge;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
 
@@ -21,8 +29,10 @@ import java.util.concurrent.Future;
 public class HystrixJobQueue extends JobQueue {
     private static final Logger log = LogFactory.getLogger(HystrixJobQueue.class);
     private Map<String, Future<String>> commandsMapping = new ConcurrentHashMap<String, Future<String>>(100);
+    private MetricRegistry metrics = new MetricRegistry();
 
     private long mapSize = 0;
+    private Map<String, TimingGauge> customMetrics = new ConcurrentHashMap<String, TimingGauge>();
 
     public HystrixJobQueue(int nWorkers) {
         super(nWorkers);
@@ -76,13 +86,48 @@ public class HystrixJobQueue extends JobQueue {
         else {
             log.warn(args);
         }
-        // statistics
-        setupTimingStatistics(job.getExecutionTimeInMilliseconds());
 
-        commandsMapping.get(job.getKey());
+        // NOTE! job.getExecutionTimeInMilliseconds() doesn't seem to provide correct values
+        // maybe because we use futures/queue() instead of execute()?
+        final long runtimeMS = (System.nanoTime() - job.getStartTime()) / 1000000L;
+        // statistics
+        if(job instanceof HystrixMapLayerJob) {
+            HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
+            final String jobId = getJobId(mlJob);
+            final Histogram timing = metrics.histogram(
+                    MetricRegistry.name(HystrixMapLayerJob.class, "exec.time." + jobId));
+            timing.update(runtimeMS);
+
+            TimingGauge gauge = customMetrics.get(jobId);
+            if(gauge == null) {
+                gauge = new TimingGauge();
+                customMetrics.put(jobId, gauge);
+                // first run
+                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.max." + jobId), new MaxJobLengthGauge(gauge));
+                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.min." + jobId), new MinJobLengthGauge(gauge));
+                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.avg." + jobId), new AvgJobLengthGauge(gauge));
+            }
+            log.debug("Job completed in", runtimeMS);
+            gauge.setupTimingStatistics(runtimeMS);
+
+            if(!success) {
+                final Counter failCounter = metrics.counter(
+                        MetricRegistry.name(HystrixJobQueue.class, "jobs.fails." + jobId));
+                failCounter.inc();
+            }
+        }
+        setupTimingStatistics(runtimeMS);
         job.teardown();
         // jobs stick around for some reason, clean the map when job has ended
         cleanup(false);
+    }
+
+    private String getJobId(HystrixMapLayerJob mlJob) {
+        return mlJob.layerId + "." + mlJob.type.toString();
+    }
+
+    public MetricRegistry getMetricsRegistry() {
+        return metrics;
     }
 
     public void cleanup(boolean force) {
@@ -119,6 +164,12 @@ public class HystrixJobQueue extends JobQueue {
      */
     public void add(Job job) {
         if(job instanceof HystrixJob) {
+            if(job instanceof HystrixMapLayerJob) {
+                HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
+                Meter addMeter = metrics.meter(
+                        MetricRegistry.name(HystrixJobQueue.class, "job.added." + getJobId(mlJob)));
+                addMeter.mark();
+            }
             final HystrixJob j = (HystrixJob) job;
             Future<String> existing = commandsMapping.get(j.getKey());
             if (existing != null) {
