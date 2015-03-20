@@ -355,9 +355,11 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
                 log.debug("[fe] execute response " + succee + " for " + url);
 
             } catch (ClientProtocolException e) {
-                log.error("Error parsing response:", e.getMessage());
+                log.error("Error parsing response:", log.getCauseMessages(e));
+                log.debug(e);
             } catch (IOException e) {
-                log.error(e);
+                log.error("Error fetching response:", log.getCauseMessages(e));
+                log.debug(e);
             } finally {
                 // When HttpClient instance is no longer needed,
                 // shut down the connection manager to ensure
