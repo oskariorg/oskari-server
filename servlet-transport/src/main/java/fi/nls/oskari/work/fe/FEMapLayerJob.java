@@ -355,7 +355,7 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
                 log.debug("[fe] execute response " + succee + " for " + url);
 
             } catch (ClientProtocolException e) {
-                log.error(e);
+                log.error("Error parsing response:", e.getMessage());
             } catch (IOException e) {
                 log.error(e);
             } finally {
@@ -559,6 +559,7 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
      * 
      */
     public String run() {
+        setStartTime();
         log.debug(PROCESS_STARTED + " " + getKey());
 
         if (!this.validateType()) {
