@@ -46,7 +46,9 @@ public class Log4JLogger extends fi.nls.oskari.log.Logger {
         }
         catch(Exception e)
         {
-            System.err.println("Error reading properties from 'log4j.properties'");
+            if(inStream != null) {
+                System.err.println("Error reading properties from 'log4j.properties'");
+            }
         }
         finally {
             IOHelper.close(inStream);

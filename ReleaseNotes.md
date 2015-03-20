@@ -2,9 +2,9 @@
 
 ## 1.28
 
-### servlet-map
+### service-logging
 
-PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
+Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
 
 ### service-base
 
@@ -13,44 +13,6 @@ Changed Job from abstract class to an interface and added AbstractJob to be a dr
 JSONLocalized class now tries to get the value with default language if requested language is not available. This
  helps when a language is added to Oskari installation and all data producers, Inspire-themes and maplayers lack
  the localized name.
-
-### servlet-transport
-
-Moved OWSLayerJob.Type enum to own file as JobType.
-
-Maplayer jobs are now managed as Hystrix Commands (https://github.com/Netflix/Hystrix/wiki) instead of the custom
-threaded approach using JobQueue in service-base. This should put less strain on overloaded services as requests are
-short-circuited when problems occur.
-
-Properties to configure job execution are:
-
-    oskari.transport.job.pool.size=100
-    oskari.transport.job.pool.limit=100
-    oskari.transport.job.timeoutms=15000
-
-Where pool size is the thread pool size, limit is queue to keep when all threads are in use after which jobs will be
-rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
-Any errors occuring on job execution will trigger a message to the websocket error-channel.
-
-Added metrics indicators with https://dropwizard.github.io/. Metrics can be accessed as JSON by
-adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user to access the servlet).
-
-    <servlet>
-        <servlet-name>status</servlet-name>
-        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>status</servlet-name>
-        <url-pattern>/status</url-pattern>
-    </servlet-mapping>
-
-
-### webapp-transport
-
-Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
- to disable this.
-
-Added StatusServlet to expose metrics as JSON. It can be removed from the web.xml to disable the functionality.
 
 ### control-base
 
@@ -108,12 +70,51 @@ FeatureEngine jobs http requests now respect the timeout limits set with propert
      oskari.connection.timeout=3000
      oskari.read.timeout=60000
 
+Moved OWSLayerJob.Type enum to own file as JobType.
+
+Maplayer jobs are now managed as Hystrix Commands (https://github.com/Netflix/Hystrix/wiki) instead of the custom
+threaded approach using JobQueue in service-base. This should put less strain on overloaded services as requests are
+short-circuited when problems occur.
+
+Properties to configure job execution are:
+
+    oskari.transport.job.pool.size=100
+    oskari.transport.job.pool.limit=100
+    oskari.transport.job.timeoutms=15000
+
+Where pool size is the thread pool size, limit is queue to keep when all threads are in use after which jobs will be
+rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
+Any errors occuring on job execution will trigger a message to the websocket error-channel.
+
+Added metrics indicators with https://dropwizard.github.io/. Metrics can be accessed as JSON by
+adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user to access the servlet).
+
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+
+### webapp-transport
+
+Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
+ to disable this.
+
+Added StatusServlet to expose metrics as JSON. It can be removed from the web.xml to disable the functionality.
+
 
 ### servlet-map
 
 Added functionality for additional response headers when serving jsp pages.
 
     oskari.page.header.X-UA-Compatible = IE=edge
+
+Log4JLogger is now accessible to servlet-map (new dependency service-logging).
+
+PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
 
 ## 1.27.1
 

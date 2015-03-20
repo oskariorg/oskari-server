@@ -37,6 +37,11 @@
 			<artifactId>service-scheduler</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>service-logging</artifactId>
+        </dependency>
+
 		<!-- artifactId "oskari-control-base" is implied by adding extended actions -->
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>

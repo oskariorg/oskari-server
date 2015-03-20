@@ -179,6 +179,10 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
+            <artifactId>service-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
