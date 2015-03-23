@@ -92,6 +92,7 @@ CREATE TABLE oskari_maplayer
   password character varying(256),
   srs_name character varying,
   version character varying(64),
+  attributes text DEFAULT '{}',
   CONSTRAINT oskari_maplayer_pkey PRIMARY KEY (id),
   CONSTRAINT oskari_maplayer_groupId_fkey FOREIGN KEY (groupId)
   REFERENCES oskari_layergroup (id) MATCH SIMPLE

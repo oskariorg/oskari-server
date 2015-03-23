@@ -2,6 +2,22 @@
 
 ## 1.28
 
+### DB upgrades
+
+#### Generic attributes field added for maplayers
+
+* Typed as 'text', contains JSON describing the layer.
+* Enables heatmap-enabling parameters to be saved for layer:
+
+    {
+        geometryProperty : 'geom',
+        heatmap : ['property1', 'property2', 'similar to wfs selected properties']
+    }
+
+Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/01_alter_table_oskari_maplayer.sql
+
 ### service-logging
 
 Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
