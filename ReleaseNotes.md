@@ -89,7 +89,7 @@ MetadataCatalogueChannelSearchService now requests the output schema `http://www
 ### service-feature-engine
 
 Added new generic WFS path parser for complex featuretypes
-Instruction under oskari.org / WFS_path_parser.md
+Instruction under oskari.org\md\documentation\backend\configuring-wfs-path-parser.md
 
 ### servlet-transport
 
