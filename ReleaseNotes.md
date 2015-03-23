@@ -18,6 +18,13 @@ Run on oskaridb:
 
     content-resources/src/main/resources/sql/upgrade/1.28/01_alter_table_oskari_maplayer.sql
 
+#### Parse config field added for WFS FE generic path parser
+
+
+Run on oskaridb or pgAdmin/psql:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/02_alter_table_portti_wfs_template_model.sql
+
 ### service-map
 
 OskariLayers will now load the attributes value from DB and expose it with the same name in JSON-presentation.
@@ -78,6 +85,11 @@ Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`
 `GetMetadataSearchHandler` now uses SearchResultItem.toJSON() to create the response.
 
 MetadataCatalogueChannelSearchService now requests the output schema `http://www.isotc211.org/2005/gmd` instead of `csw:IsoRecord`.
+
+### service-feature-engine
+
+Added new generic WFS path parser for complex featuretypes
+Instruction under oskari.org / WFS_path_parser.md
 
 ### servlet-transport
 
