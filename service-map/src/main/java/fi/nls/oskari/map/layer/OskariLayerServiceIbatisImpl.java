@@ -144,6 +144,7 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         // map implementation parameters
         result.setParams(JSONHelper.createJSONObject((String) data.get("params")));
         result.setOptions(JSONHelper.createJSONObject((String) data.get("options")));
+        result.setAttributes(JSONHelper.createJSONObject((String) data.get("attributes")));
 
         // gfi configurations
         result.setGfiType((String) data.get("gfi_type"));

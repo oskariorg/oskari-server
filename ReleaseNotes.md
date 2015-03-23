@@ -18,6 +18,10 @@ Run on oskaridb:
 
     content-resources/src/main/resources/sql/upgrade/1.28/01_alter_table_oskari_maplayer.sql
 
+### service-map
+
+OskariLayers will now load the attributes value from DB and expose it with the same name in JSON-presentation.
+
 ### service-logging
 
 Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
