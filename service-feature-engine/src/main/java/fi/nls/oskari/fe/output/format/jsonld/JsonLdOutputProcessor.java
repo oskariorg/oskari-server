@@ -17,6 +17,7 @@ import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.json.JSONObject;
 
 /* PoC that builds JSON-LD output */
 public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor
@@ -223,5 +224,7 @@ public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor
         GRAPH.add(feat);
 
     }
+    public void merge(List<JSONObject> list, Resource res) {
 
+    }
 }

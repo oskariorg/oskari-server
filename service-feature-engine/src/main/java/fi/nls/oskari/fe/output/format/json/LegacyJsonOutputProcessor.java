@@ -21,6 +21,7 @@ import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.json.JSONObject;
 
 public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
@@ -171,6 +172,9 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
 
     public ImmutablePair<Resource, Object> pair(Resource rc, Object val) {
         return new ImmutablePair<Resource, Object>(rc, val);
+    }
+    public void merge(List<JSONObject> list, Resource res) {
+
     }
 
 }

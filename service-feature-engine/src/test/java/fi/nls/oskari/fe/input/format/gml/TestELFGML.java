@@ -14,6 +14,7 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.geotools.styling.Style;
+import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -317,6 +318,10 @@ public class TestELFGML extends TestHelper {
 
             }
 
+            public void merge(List<JSONObject> list, Resource res) throws IOException {
+
+            }
+
             @Override
             public void prefix(String prefix, String ns) throws IOException {
 
@@ -485,6 +490,11 @@ public class TestELFGML extends TestHelper {
 
             @Override
             public void flush() throws IOException {
+
+            }
+
+
+            public void merge(List<JSONObject> list, Resource res) throws IOException {
 
             }
 

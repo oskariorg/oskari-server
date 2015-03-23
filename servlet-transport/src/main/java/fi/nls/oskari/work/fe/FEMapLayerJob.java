@@ -20,7 +20,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
+import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -51,6 +55,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
@@ -184,6 +189,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String geomNs = layer.getGeometryNamespaceURI();
 
         JSONObject selectedFeatureParams = layer.getSelectedFeatureParams();
+        JSONObject parseConfig = JSONHelper.createJSONObject(layer.getParseConfig());
 
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {
@@ -208,6 +214,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if (featureEngine == null) {
             log.error("NO FeatureEngine available");
             return requestResponse;
+        }
+
+        // Is parsing based on parse config
+        if(parseConfig != null){
+            ELF_path_parse_worker worker = new ELF_path_parse_worker(parseConfig);
+            featureEngine.getRecipe().setParseWorker(worker);
         }
 
         final FeatureEngine engine = featureEngine;

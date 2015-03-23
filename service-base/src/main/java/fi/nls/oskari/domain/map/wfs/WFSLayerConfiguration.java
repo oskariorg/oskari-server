@@ -74,6 +74,7 @@ public class WFSLayerConfiguration {
     protected final static String TEMPLATE_TYPE = "templateType";
     protected final static String REQUEST_TEMPLATE = "requestTemplate";
     protected final static String RESPONSE_TEMPLATE = "responseTemplate";
+    protected final static String PARSE_CONFIG = "parseConfig";
 
     protected final static String SELECTION_SLD_STYLE = "selectionSLDStyle";
 
@@ -106,6 +107,7 @@ public class WFSLayerConfiguration {
 	private JSONObject featureType;
 	private JSONObject selectedFeatureParams; // if needed?
 	private JSONObject featureParamsLocales;
+    private String parseConfig;
 	private String geometryType; // 2D/3D
 	private boolean getMapTiles; // if tile images are drawn and send
     private boolean getHighlightImage; // if highlight image is drawn and send
@@ -371,7 +373,8 @@ public class WFSLayerConfiguration {
 		this.featureParamsLocales = JSONHelper.createJSONObject(featureParamsLocales);
 	}
 
-	public String getGeometryType() {
+
+    public String getGeometryType() {
 		return geometryType;
 	}
 
@@ -647,6 +650,13 @@ public class WFSLayerConfiguration {
 		SLDStyles = sLDStyles;
 	}
 
+    public String getParseConfig() {
+        return this.parseConfig;
+    }
+
+    public void setParseConfig(String parseConfig) {
+        this.parseConfig = parseConfig;
+    }
 
 	public void save() {
         final String key = KEY + this.layerId;
@@ -715,8 +725,8 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, TEMPLATE_TYPE, this.getTemplateType());
 		JSONHelper.putValue(root, REQUEST_TEMPLATE, this.getRequestTemplate());
 		JSONHelper.putValue(root, RESPONSE_TEMPLATE, this.getResponseTemplate());
-
 		JSONHelper.putValue(root, SELECTION_SLD_STYLE, this.getSelectionSLDStyle());
+        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig());
 
     	// styles
 		final JSONObject styleList = new JSONObject();
