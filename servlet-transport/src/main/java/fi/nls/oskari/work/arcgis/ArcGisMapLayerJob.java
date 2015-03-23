@@ -17,10 +17,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.work.OWSMapLayerJob;
-import fi.nls.oskari.work.RequestResponse;
-import fi.nls.oskari.work.ResultProcessor;
-import fi.nls.oskari.work.WFSRequestResponse;
+import fi.nls.oskari.work.*;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -37,7 +34,7 @@ import java.util.Map;
 /**
  * Job for Arcgis REST Map Layer
  */
-public class ArcGisMapLayerJob extends OWSMapLayerJob {
+public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
 
     private static final Logger log = LogFactory.getLogger(ArcGisMapLayerJob.class);
     private static final List<List<Object>> EMPTY_LIST = new ArrayList();
@@ -70,11 +67,11 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
     //private Job parentJob = null;
     private String token = null;
 
-    public ArcGisMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId) {
+    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId) {
         super(service, type, store, layerId, true, true, true);
     }
 
-    public ArcGisMapLayerJob(ResultProcessor service, Type type, SessionStore store, String layerId,
+    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId,
                              boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
         super(service, type, store, layerId, reqSendFeatures, reqSendImage, reqSendHighlight);
 
@@ -89,7 +86,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
      * @param bounds
      * @return response
      */
-    public static BufferedReader sendQueryRequest(Type type,
+    public static BufferedReader sendQueryRequest(JobType type,
                                                   WFSLayerStore layer, ArcGisLayerStore arcGisLayer,
                                                   SessionStore session, List<Double> bounds,
                                                   String token) {
@@ -187,8 +184,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
      * <p/>
      * Worker calls this when starts the job.
      */
-    @Override
-    public final void run() {
+    public final void runasdf() {
 
         setResourceSending();
 
@@ -235,7 +231,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
         this.arcGisLayers = getArcGisLayersDependingOnScale();
         this.arcGisLayerScaled = this.arcGisLayers.get(0);
 
-        if (this.type == Type.NORMAL) { // tiles for grid
+        if (this.type == JobType.NORMAL) { // tiles for grid
 
             if (!this.layer.isTileRequest()) { // make single request
                 if (!this.normalHandlers(null, true)) {
@@ -308,7 +304,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
                 }
                 index++;
             }
-        } else if (this.type == Type.HIGHLIGHT) {
+        } else if (this.type == JobType.HIGHLIGHT) {
             if (this.sendHighlight) {
                 if (!this.requestHandler(null)) {
                     return;
@@ -330,7 +326,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
                             this.arcGisLayers,
                             this.session.getClient(),
                             this.session.getLayers().get(this.layerId).getStyleName(),
-                            Type.HIGHLIGHT.toString(),
+                            JobType.HIGHLIGHT.toString(),
                             this.token);
                 }
                 BufferedImage bufferedImage = null;
@@ -345,12 +341,12 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
                 Double[] bbox = location.getBboxArray();
 
                 // cache (non-persistant)
-                setImageCache(bufferedImage, Type.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
+                setImageCache(bufferedImage, JobType.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
 
-                String url = createImageURL(Type.HIGHLIGHT.toString(), bbox);
+                String url = createImageURL(JobType.HIGHLIGHT.toString(), bbox);
                 this.sendWFSImage(url, bufferedImage, bbox, false, false);
             }
-        } else if (this.type == Type.MAP_CLICK) {
+        } else if (this.type == JobType.MAP_CLICK) {
             if (!this.requestHandler(null)) {
                 this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
                 return;
@@ -364,7 +360,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
                 log.debug("No feature data!");
                 this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
             }
-        } else if (this.type == Type.GEOJSON) {
+        } else if (this.type == JobType.GEOJSON) {
             if (!this.requestHandler(null)) {
                 return;
             }
@@ -464,7 +460,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
             log.info("Got", this.features.size(), "features for layer", layer.getLayerId());
 
             // 0 features found - send size
-            if (this.type == Type.MAP_CLICK && this.features.size() == 0) {
+            if (this.type == JobType.MAP_CLICK && this.features.size() == 0) {
                 log.debug("Empty result for map click", this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
@@ -472,7 +468,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
                 this.service.send(session.getClient(), TransportService.CHANNEL_MAP_CLICK, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
-            } else if (this.type == Type.GEOJSON && this.features.size() == 0) {
+            } else if (this.type == JobType.GEOJSON && this.features.size() == 0) {
                 log.debug("Empty result for filter", this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
@@ -628,7 +624,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
 
                     WFSParser.parseValuesForJSON(values);
 
-                    if (this.type == Type.NORMAL) {
+                    if (this.type == JobType.NORMAL) {
                         this.sendWFSFeature(values);
                     } else {
                         this.featureValuesList.add(values);
@@ -648,7 +644,7 @@ public class ArcGisMapLayerJob extends OWSMapLayerJob {
     }
 
     @Override
-    public RequestResponse request(Type type, WFSLayerStore layer, SessionStore session, List<Double> bounds, MathTransform transformService) {
+    public RequestResponse request(JobType type, WFSLayerStore layer, SessionStore session, List<Double> bounds, MathTransform transformService) {
         throw new RuntimeException("Not implemented!");
     }
 }

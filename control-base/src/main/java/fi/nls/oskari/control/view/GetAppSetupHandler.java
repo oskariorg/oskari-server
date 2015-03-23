@@ -20,6 +20,8 @@ import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
 
+import java.net.URLDecoder;
+
 import org.json.Cookie;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -359,7 +361,7 @@ public class GetAppSetupHandler extends ActionHandler {
         }
         // cookie view data
         try {
-            String value = Cookie.unescape(cookie.getValue());
+            String value = URLDecoder.decode(cookie.getValue());
             if (!value.isEmpty()) {
                 log.debug("Using cookie state:", value);
                 return new JSONObject(value);

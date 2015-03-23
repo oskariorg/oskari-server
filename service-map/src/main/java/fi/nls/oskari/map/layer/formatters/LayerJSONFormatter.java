@@ -139,6 +139,7 @@ public class LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, "params", layer.getParams());
         JSONHelper.putValue(layerJson, "options", layer.getOptions());
+        JSONHelper.putValue(layerJson, "attributes", layer.getAttributes());
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
         JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());

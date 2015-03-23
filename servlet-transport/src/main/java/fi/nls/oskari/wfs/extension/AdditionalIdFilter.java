@@ -8,6 +8,7 @@ import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSFilter;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.opengis.filter.Filter;
@@ -47,7 +48,7 @@ public class AdditionalIdFilter extends WFSFilter {
      * @param transform
      */
     @Override
-    public String create(final WFSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+    public String create(final JobType type, final WFSLayerStore layer, final SessionStore session,
                          final List<Double> bounds, final MathTransform transform) {
         if(type == null || layer == null || session == null) {
             log.error("Parameters not set (type, layer, session)", type, layer, session);
@@ -56,11 +57,11 @@ public class AdditionalIdFilter extends WFSFilter {
         super.create(type, layer, session, bounds, transform, false);
 
         Filter filter = null;
-        if(type == WFSMapLayerJob.Type.HIGHLIGHT) {
+        if(type == JobType.HIGHLIGHT) {
             log.debug("Filter: highlight");
             List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
             filter = super.initFeatureIdFilter(featureIds);
-        } else if(type == WFSMapLayerJob.Type.MAP_CLICK) {
+        } else if(type == JobType.MAP_CLICK) {
             log.debug("Filter: map click");
             super.setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             Coordinate coordinate = session.getMapClick();
@@ -70,7 +71,7 @@ public class AdditionalIdFilter extends WFSFilter {
             Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
-        } else if(type == WFSMapLayerJob.Type.GEOJSON) {
+        } else if(type == JobType.GEOJSON) {
             log.debug("Filter: GeoJSON");
             super.setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
@@ -80,7 +81,7 @@ public class AdditionalIdFilter extends WFSFilter {
             Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
-        } else if(type == WFSMapLayerJob.Type.NORMAL) {
+        } else if(type == JobType.NORMAL) {
             log.debug("Filter: normal");
             Location location;
             if(bounds != null) {
@@ -95,7 +96,7 @@ public class AdditionalIdFilter extends WFSFilter {
             Filter idFilter = initIdFilter(layer, session);
             filter = ff.and(filter, idFilter);
 
-        }else if(type == WFSMapLayerJob.Type.PROPERTY_FILTER) {
+        }else if(type == JobType.PROPERTY_FILTER) {
             log.debug("Filter: property filter");
             Location location;
             if(bounds != null) {

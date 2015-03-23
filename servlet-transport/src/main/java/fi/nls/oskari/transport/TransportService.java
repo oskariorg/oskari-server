@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.work.*;
+import fi.nls.oskari.work.hystrix.HystrixJobQueue;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
@@ -153,7 +154,8 @@ public class TransportService extends AbstractService implements ResultProcessor
 
         this.bayeux = bayeux;
         this.local = getServerSession();
-        this.jobs = new JobQueue(workerCount);
+        //this.jobs = new JobQueue(workerCount);
+        this.jobs = new HystrixJobQueue(workerCount);
 
         // init jedis
         JedisManager.connect(workerCount + 2,
@@ -390,7 +392,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param layerId
      */
     private void initMapLayerJob(SessionStore store, String layerId) {
-        Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
+        Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
         jobs.remove(job);
         jobs.add(job);
     }
@@ -420,7 +422,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         String layerId = layer.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
         if (store.containsLayer(layerId)) {
             // first remove from jobs then from store
-            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
             jobs.remove(job);
 
             store.removeLayer(layerId);
@@ -481,7 +483,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         Layer layer = store.getLayers().get(layerId);
         if(layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
-            Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
             jobs.remove(job);
             jobs.add(job);
         }
@@ -532,7 +534,7 @@ public class TransportService extends AbstractService implements ResultProcessor
                 this.save(store);
                 if(tmpLayer.isVisible()) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-                    Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId, false, true, false); // no features
+                    Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId, false, true, false); // no features
                     jobs.remove(job);
                     jobs.add(job);
                 }
@@ -636,7 +638,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.MAP_CLICK, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, JobType.MAP_CLICK, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -661,7 +663,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.GEOJSON, store, e.getValue().getId(), true, false, false);
+                job = createOWSMapLayerJob(this, JobType.GEOJSON, store, e.getValue().getId(), true, false, false);
                 jobs.remove(job);
                 jobs.add(job);
             }
@@ -686,7 +688,7 @@ public class TransportService extends AbstractService implements ResultProcessor
                 // job without image drawing
                 // only for requested layer
                 if (e.getValue().getId().equals(propertyFilter.getLayerId())) {
-                    job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.PROPERTY_FILTER, store, e.getValue().getId(), true, false, false);
+                    job = createOWSMapLayerJob(this, JobType.PROPERTY_FILTER, store, e.getValue().getId(), true, false, false);
                     jobs.remove(job);
                     jobs.add(job);
                 }
@@ -717,7 +719,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	    		this.save(store);
 	    		if(layerVisible) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-		    		Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.NORMAL, store, layerId);
+		    		Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
 		        	jobs.remove(job);
 		        	jobs.add(job);
 	    		}
@@ -763,7 +765,7 @@ public class TransportService extends AbstractService implements ResultProcessor
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
             	// job without feature sending
-    			Job job = createOWSMapLayerJob(this, OWSMapLayerJob.Type.HIGHLIGHT, store, layerId, false, true, true);
+    			Job job = createOWSMapLayerJob(this, JobType.HIGHLIGHT, store, layerId, false, true, true);
 	        	jobs.remove(job);
 	        	jobs.add(job);
     		}
@@ -830,7 +832,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param layerId
      * @return
      */
-    public Job createOWSMapLayerJob(ResultProcessor service, OWSMapLayerJob.Type type,
+    public Job createOWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId) {
         
         WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
@@ -858,7 +860,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param reqSendImage
      * @param reqSendHighlight
      */
-    public Job createOWSMapLayerJob(ResultProcessor service, OWSMapLayerJob.Type type,
+    public Job createOWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
         

@@ -25,6 +25,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import fi.nls.oskari.work.JobType;
 import org.apache.http.client.utils.URIBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.geometry.BoundingBox;
@@ -209,7 +210,7 @@ public class FERequestTemplate {
     }
 
     public void buildParams(StringBuffer params,
-                            final OWSMapLayerJob.Type type, final WFSLayerStore layer,
+                            final JobType type, final WFSLayerStore layer,
                             final SessionStore session, final List<Double> bounds,
                             final MathTransform transformService,
                             final CoordinateReferenceSystem crs) throws TransformException,
@@ -218,7 +219,7 @@ public class FERequestTemplate {
 
         BoundingBox bbox = null;
 
-        if (type == WFSMapLayerJob.Type.MAP_CLICK) {
+        if (type == JobType.MAP_CLICK) {
 
             Coordinate c = session.getMapClick();
 
@@ -227,7 +228,7 @@ public class FERequestTemplate {
             env.expandBy(GetSearchTolerance(session));
             bbox = env.toBounds(layer.getCrs());
 
-        } else if (type == WFSMapLayerJob.Type.HIGHLIGHT) {
+        } else if (type == JobType.HIGHLIGHT) {
 
             Coordinate c = session.getMapClick();
 
@@ -265,7 +266,7 @@ public class FERequestTemplate {
 
     }
 
-    public void buildParams(URIBuilder builder, OWSMapLayerJob.Type type,
+    public void buildParams(URIBuilder builder, JobType type,
                             WFSLayerStore layer, SessionStore session, List<Double> bounds,
                             MathTransform transform, CoordinateReferenceSystem crs) {
 

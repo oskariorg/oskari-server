@@ -23,9 +23,6 @@ public class ZoomParamHandler extends ParamHandler {
         try {
             final JSONObject state = getBundleState(params.getConfig(), BUNDLE_MAPFULL);
             int zoom = ConversionHelper.getInt(params.getParamValue(), 0);
-            if(params.getActionParams().getHttpParam("ver") == null) {
-                if(zoom == 8) zoom = 7;
-            }
             state.put(KEY_ZOOM, zoom);
             return true;
         } catch (JSONException je) {

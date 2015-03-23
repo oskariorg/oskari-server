@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -24,7 +25,7 @@ import fi.nls.oskari.wfs.util.XMLHelper;
 public class WFSFilterTest {
 	private SessionStore session;
 	private WFSLayerStore layer;
-    private WFSMapLayerJob.Type type;
+    private JobType type;
 	private GeoJSONFilter geojsonFilter;
     private GeoJSONFilter geojsonComplexFilter;
 	private List<Double> emptyBounds;
@@ -73,7 +74,7 @@ public class WFSFilterTest {
     
 	@Test
 	public void testLocation() {
-        type = WFSMapLayerJob.Type.NORMAL;
+        type = JobType.NORMAL;
 		WFSFilter wfsFilter = new WFSFilter();
         String filterStr = wfsFilter.create(type, layer, session, emptyBounds, null);
 		OMElement filter = null;
@@ -87,7 +88,7 @@ public class WFSFilterTest {
 
 	@Test
 	public void testBounds() {
-        type = WFSMapLayerJob.Type.NORMAL;
+        type = JobType.NORMAL;
 		WFSFilter wfsFilter = new WFSFilter();
         String filterStr = wfsFilter.create(type, layer, session, bounds, null);
         OMElement filter = null;
@@ -100,7 +101,7 @@ public class WFSFilterTest {
 
 	@Test
 	public void testMapClick() {
-        type = WFSMapLayerJob.Type.MAP_CLICK;
+        type = JobType.MAP_CLICK;
 		session.setMapClick(new Coordinate(393893.0, 6692163.0));
 
 		WFSFilter wfsFilter = new WFSFilter();
@@ -115,7 +116,7 @@ public class WFSFilterTest {
 	
 	@Test
 	public void testGeoJson() {
-        type = WFSMapLayerJob.Type.GEOJSON;
+        type = JobType.GEOJSON;
     	session.setFilter(geojsonFilter);
 
     	WFSFilter wfsFilter = new WFSFilter();
@@ -141,7 +142,7 @@ public class WFSFilterTest {
 	
 	@Test
 	public void testHighlight() {
-        type = WFSMapLayerJob.Type.HIGHLIGHT;
+        type = JobType.HIGHLIGHT;
     	List<String> featureIds = new ArrayList<String>();
     	featureIds.add("toimipaikat.6398");
 		session.getLayers().get("216").setHighlightedFeatureIds(featureIds);

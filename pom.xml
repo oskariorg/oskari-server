@@ -111,6 +111,12 @@
             </dependency>
 
             <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>service-logging</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-control-base</artifactId>
                 <version>${fi.nls.oskari.version}</version>
@@ -752,6 +758,7 @@
         <module>control-admin</module>
         <module>control-statistics</module>
         <module>content-resources</module>
+        <module>service-logging</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>

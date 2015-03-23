@@ -2,6 +2,56 @@
 
 ## 1.28
 
+### DB upgrades
+
+#### Generic attributes field added for maplayers
+
+* Typed as 'text', contains JSON describing the layer.
+* Enables heatmap-enabling parameters to be saved for layer:
+
+    {
+        geometryProperty : 'geom',
+        heatmap : ['property1', 'property2', 'similar to wfs selected properties']
+    }
+
+Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/01_alter_table_oskari_maplayer.sql
+
+### service-map
+
+OskariLayers will now load the attributes value from DB and expose it with the same name in JSON-presentation.
+
+### service-logging
+
+Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
+
+### service-base
+
+Changed Job from abstract class to an interface and added AbstractJob to be a drop-in replacement for Job.
+
+JSONLocalized class now tries to get the value with default language if requested language is not available. This
+ helps when a language is added to Oskari installation and all data producers, Inspire-themes and maplayers lack
+ the localized name.
+
+### control-base
+
+GetReverseGeocodingResult configuration changed. Previously used search channel based properties for buffer and maxfeatures,
+now they are configured for the actionhandler:
+
+OLD:
+
+    search.channel.<channel id>service.buffer=1000
+    search.channel.<channel id>service.maxfeatures=1
+
+NEW:
+
+    actionhandler.GetReverseGeocodingResult.maxfeatures=1
+    actionhandler.GetReverseGeocodingResult.buffer=1000
+
+The maxfeatures is channel based currently so you will end up with a result count of (maxfeatures * channels configured).
+This will most propably be changed to an enforced limit across channels in the future.
+
 ### control-example
 
 GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as
@@ -39,6 +89,60 @@ FeatureEngine jobs http requests now respect the timeout limits set with propert
 
      oskari.connection.timeout=3000
      oskari.read.timeout=60000
+
+Moved OWSLayerJob.Type enum to own file as JobType.
+
+Maplayer jobs are now managed as Hystrix Commands (https://github.com/Netflix/Hystrix/wiki) instead of the custom
+threaded approach using JobQueue in service-base. This should put less strain on overloaded services as requests are
+short-circuited when problems occur.
+
+Properties to configure job execution are:
+
+    oskari.transport.job.pool.size=100
+    oskari.transport.job.pool.limit=100
+    oskari.transport.job.timeoutms=15000
+
+Where pool size is the thread pool size, limit is queue to keep when all threads are in use after which jobs will be
+rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
+Any errors occuring on job execution will trigger a message to the websocket error-channel.
+
+Added metrics indicators with https://dropwizard.github.io/. Metrics can be accessed as JSON by
+adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user to access the servlet).
+
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+
+### webapp-transport
+
+Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
+ to disable this.
+
+Added StatusServlet to expose metrics as JSON. It can be removed from the web.xml to disable the functionality.
+
+
+### servlet-map
+
+Added functionality for additional response headers when serving jsp pages.
+
+    oskari.page.header.X-UA-Compatible = IE=edge
+
+Log4JLogger is now accessible to servlet-map (new dependency service-logging).
+
+PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
+
+## 1.27.1
+
+Fixed ZoomParamHandler in control-base to use parameter as is without any special handling. The code previously
+changed zoomLevel 8 to 7 if parameter "ver" was not included in the url. This kind of application specific parameter handling
+ should be implemented as param-preprocessor functionality:
+
+    http://www.oskari.org/documentation/backend/adding-action-routes (search for preprocessor)
 
 ## 1.27
 

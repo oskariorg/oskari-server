@@ -49,7 +49,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.warn("Error generating JSONObject from ", content);
+            log.info("Error generating JSONObject from ", content);
         }
         return null;
     }
@@ -57,7 +57,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.warn("Error generating JSONObject from JSONTokener ", content);
+            log.info("Error generating JSONObject from JSONTokener ", content);
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.warn("Couldn't get JSONObject from ", content, " with key =", key);
+            log.info("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }
     }
@@ -87,7 +87,7 @@ public class JSONHelper {
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
-            log.warn("Couldn't get JSONArray from " + content + " with key = " + key);
+            log.info("Couldn't get JSONArray from " + content + " with key = " + key);
             return null;
         }
     }

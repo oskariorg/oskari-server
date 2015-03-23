@@ -6,7 +6,7 @@ import java.util.*;
 
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.worker.AbstractJob;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -22,7 +22,9 @@ import fi.nls.oskari.wfs.WFSImage;
 /**
  * Job for WFS Map Layer
  */
-public abstract class OWSMapLayerJob extends Job {
+public abstract class OWSMapLayerJob extends AbstractJob<String> {
+
+    public static final String STATUS_CANCELED = "canceled";
 
     protected static final Logger log = LogFactory
             .getLogger(OWSMapLayerJob.class);
@@ -34,22 +36,6 @@ public abstract class OWSMapLayerJob extends Job {
         excludedProperties.add("name");
         excludedProperties.add("boundedBy");
         excludedProperties.add("location");
-    }
-
-    public static enum Type {
-        NORMAL("normal"), HIGHLIGHT("highlight"), MAP_CLICK("mapClick"), GEOJSON(
-                "geoJSON"), PROPERTY_FILTER("property_filter");
-
-        protected final String name;
-
-        private Type(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 
     public static final String OUTPUT_LAYER_ID = "layerId";
@@ -94,7 +80,7 @@ public abstract class OWSMapLayerJob extends Job {
     protected boolean sendHighlight;
     protected MathTransform transformService;
     protected MathTransform transformClient;
-    protected Type type;
+    protected JobType type;
     protected FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     protected List<String> processedFIDs = new ArrayList<String>();
     protected List<List<Object>> featureValuesList;
@@ -128,7 +114,7 @@ public abstract class OWSMapLayerJob extends Job {
      * @param store
      * @param layerId
      */
-    public OWSMapLayerJob(ResultProcessor service, Type type,
+    public OWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId) {
         this(service, type, store, layerId, true, true, true);
     }
@@ -147,7 +133,7 @@ public abstract class OWSMapLayerJob extends Job {
      * @param reqSendImage
      * @param reqSendHighlight
      */
-    public OWSMapLayerJob(ResultProcessor service, Type type,
+    public OWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
         setupAPIUrl();
@@ -270,8 +256,8 @@ public abstract class OWSMapLayerJob extends Job {
 
         return null;
     }
-    
-    
+
+
 
 
     /**
@@ -298,7 +284,7 @@ public abstract class OWSMapLayerJob extends Job {
      * 
      */
     @Override
-    public abstract void run() ;
+    public abstract String run() ;
 
     /**
      * Wrapper for normal type job's handlers
@@ -378,25 +364,25 @@ public abstract class OWSMapLayerJob extends Job {
      *         <code>false</code> otherwise.
      */
     protected boolean validateType() {
-        if(this.type == Type.HIGHLIGHT) {
+        if(this.type == JobType.HIGHLIGHT) {
             if(this.sessionLayer.getHighlightedFeatureIds() != null &&
                     this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
                 return true;
             }
-        } else if(this.type == Type.MAP_CLICK) {
+        } else if(this.type == JobType.MAP_CLICK) {
             if(session.getMapClick() != null) {
                 return true;
             }
-        } else if(this.type == Type.GEOJSON) {
+        } else if(this.type == JobType.GEOJSON) {
             if(session.getFilter() != null) {
                 return true;
             }
         }
-        else if(this.type == Type.PROPERTY_FILTER) {
+        else if(this.type == JobType.PROPERTY_FILTER) {
             if(session.getPropertyFilter() != null) {
                 return true;
             }
-        } else if(this.type == Type.NORMAL) {
+        } else if(this.type == JobType.NORMAL) {
             return true;
         }
         return false;
@@ -607,7 +593,7 @@ public abstract class OWSMapLayerJob extends Job {
         log.debug("Sending", geometries.size(), "geometries");
         this.service.addResults(this.session.getClient(), channel, output);
     }
-    public abstract RequestResponse request(Type type, WFSLayerStore layer,
+    public abstract RequestResponse request(JobType type, WFSLayerStore layer,
                                             SessionStore session, List<Double> bounds,
                                             MathTransform transformService);
 
@@ -655,6 +641,6 @@ public abstract class OWSMapLayerJob extends Job {
     protected WFSImage createHighlightImage() {
         return new WFSImage(this.layer, this.session.getClient(), this.session
                 .getLayers().get(this.layerId).getStyleName(),
-                Type.HIGHLIGHT.toString());
+                JobType.HIGHLIGHT.toString());
     }
 }

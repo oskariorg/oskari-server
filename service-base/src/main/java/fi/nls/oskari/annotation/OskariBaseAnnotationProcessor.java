@@ -13,7 +13,6 @@ import java.util.Collection;
 /**
  * Base class for processing annotations, provides some nice-to-have utility functions.
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_5)
 public abstract class OskariBaseAnnotationProcessor extends AbstractProcessor {
     private static DocWriter docWriter = null;
 

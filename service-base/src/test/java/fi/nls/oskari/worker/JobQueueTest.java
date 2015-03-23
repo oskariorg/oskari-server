@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class JobQueueTest {
-	private class TestJob extends Job {
+	private class TestJob extends AbstractJob<String> {
 		private int id;
 		private boolean started = false;
 		
@@ -18,11 +18,11 @@ public class JobQueueTest {
 		}
 		
 		@Override
-		public void run() {
+		public String run() {
 			started = true;
 			while(true) {
 		    	if(!goNext()) { 
-		    		return;
+		    		return null;
 		    	}
 			}
 		}

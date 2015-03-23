@@ -1,8 +1,6 @@
 package fi.nls.oskari.worker;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -75,6 +73,22 @@ public class JobQueue
         return crashedJobCount;
     }
 
+    public List<String> getQueuedJobNames() {
+        List<String> names = new ArrayList<String>(queue.size());
+        for(Job j : queue) {
+            names.add(j.getKey());
+        }
+        return names;
+    }
+
+    public void cleanup(boolean force) {
+        for(Job j : queue) {
+            if(force) {
+                remove(j);
+            }
+        }
+    }
+
     /**
      * Adds a new job into queue and notifies workers
      * 
@@ -91,6 +105,25 @@ public class JobQueue
             maxQueueLength = queue.size();
         }
         log.debug("Added", key);
+    }
+
+    public void addJobCount() {
+        jobCount++;
+    }
+
+    public void setupTimingStatistics(long runTimeMS) {
+        if(runTimeMS > maxJobLength) {
+            maxJobLength = runTimeMS;
+        }
+        if(runTimeMS < minJobLength) {
+            minJobLength = runTimeMS;
+        }
+        if(avgRuntime == 0) {
+            avgRuntime = runTimeMS;
+        }
+        else {
+            avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
+        }
     }
 
     /**
@@ -122,7 +155,7 @@ public class JobQueue
     	 * 
     	 */
         public void run() {
-            Runnable r;
+            Job r;
 
             while (true) {
                 synchronized(queue) {
@@ -134,38 +167,27 @@ public class JobQueue
                     r = queue.removeFirst();
                 }
                 final long startTime = System.nanoTime();
-                jobCount++;
+                addJobCount();
                 try {
-                    r.run();
+                    r.execute();
                 } catch (Exception e) {
                     log.error("Exception while running job:", e.getMessage());
                     log.debug(e, "Here's the stacktrace");
                 }
                 catch (OutOfMemoryError e) {
                     crashedJobCount++;
-                    log.error("OutOfMemory while running job:",((Job) r).getKey(), "- message", e.getMessage());
+                    log.error("OutOfMemory while running job:", r.getKey(), "- message", e.getMessage());
                     if(firstCrashedJob == null) {
-                        firstCrashedJob = ((Job) r).getKey();
+                        firstCrashedJob = r.getKey();
                     }
                     throw e;
                 }
                 finally {
-                    ((Job) r).teardown();
-                    jobs.remove(((Job) r).getKey());
-                    log.debug("Finished", ((Job) r).getKey());
+                    r.teardown();
+                    jobs.remove(r.getKey());
+                    log.debug("Finished", r.getKey());
                     final long runTimeMS = (System.nanoTime() - startTime) / 1000000L;
-                    if(runTimeMS > maxJobLength) {
-                        maxJobLength = runTimeMS;
-                    }
-                    if(runTimeMS < minJobLength) {
-                        minJobLength = runTimeMS;
-                    }
-                    if(avgRuntime == 0) {
-                        avgRuntime = runTimeMS;
-                    }
-                    else {
-                        avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
-                    }
+                    setupTimingStatistics(runTimeMS);
                 }
             }
         }

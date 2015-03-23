@@ -13,6 +13,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.OWSMapLayerJob;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.factory.CommonFactoryFinder;
@@ -93,7 +94,7 @@ public class ArcGisFilter {
      *
      * @return xml
      */
-    public HashMap<String, String> create(final OWSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+    public HashMap<String, String> create(final JobType type, final WFSLayerStore layer, final SessionStore session,
                      final List<Double> bounds) {
         return create(type, layer, session, bounds, true);
     }
@@ -112,7 +113,7 @@ public class ArcGisFilter {
      *
      * @return xml
      */
-    public HashMap<String, String> create(final OWSMapLayerJob.Type type, final WFSLayerStore layer, final SessionStore session,
+    public HashMap<String, String> create(final JobType type, final WFSLayerStore layer, final SessionStore session,
                      final List<Double> bounds, boolean createFilter) {
         if(type == null || layer == null || session == null) {
             log.error("Parameters not set (type, layer, session)", type, layer, session);
@@ -124,24 +125,24 @@ public class ArcGisFilter {
 
         if(createFilter) {
             HashMap<String, String> filterMap = null;
-            if(type == OWSMapLayerJob.Type.HIGHLIGHT) {
+            if(type == JobType.HIGHLIGHT) {
                 log.debug("Filter: highlight");
                 List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
                 //filter = initFeatureIdFilter(featureIds);
                 filterMap = initFeatureIdFilter(featureIds);
-            } else if(type == OWSMapLayerJob.Type.MAP_CLICK) {
+            } else if(type == JobType.MAP_CLICK) {
                 log.debug("Filter: map click");
                 setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 Coordinate coordinate = session.getMapClick();
                 //filter = initCoordinateFilter(coordinate);
                 filterMap = initCoordinateFilter(coordinate, mapSrs);
-            } else if(type == OWSMapLayerJob.Type.GEOJSON) {
+            } else if(type == JobType.GEOJSON) {
                 log.debug("Filter: GeoJSON");
                 log.error("Unsupported filter GeoJSON");
                 //setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 //GeoJSONFilter geoJSONFilter = session.getFilter();
                 //filter = initGeoJSONFilter(geoJSONFilter);
-            } else if(type == OWSMapLayerJob.Type.NORMAL) {
+            } else if(type == JobType.NORMAL) {
                 log.debug("Filter: normal");
                 Location location;
                 if(bounds != null) {
