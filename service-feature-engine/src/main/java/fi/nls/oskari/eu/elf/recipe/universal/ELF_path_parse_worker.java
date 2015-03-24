@@ -18,15 +18,15 @@ public class ELF_path_parse_worker {
 
     protected JSONObject parseConfig = null;
 
-   public ELF_path_parse_worker(JSONObject conf) {
+    public ELF_path_parse_worker(JSONObject conf) {
         this.parseConfig = conf;
     }
 
     public void setupMaps(Map<String, String> attrmap, Map<String, String> elemmap, Map<String, String> typemap,
                           Map<String, String> nilmap) {
 
-        JSONArray paths = JSONHelper.getJSONArray(this.parseConfig,"paths");
-        if(paths == null) return;
+        JSONArray paths = JSONHelper.getJSONArray(this.parseConfig, "paths");
+        if (paths == null) return;
 
         for (int i = 0; i < paths.length(); i++) {
             JSONObject item = paths.optJSONObject(i);
@@ -79,8 +79,8 @@ public class ELF_path_parse_worker {
     public QName getRootQN() {
 
         if (this.parseConfig != null) {
-            JSONObject root = JSONHelper.getJSONObject(this.parseConfig,"root");
-            if(root == null) return null;
+            JSONObject root = JSONHelper.getJSONObject(this.parseConfig, "root");
+            if (root == null) return null;
             final String rootNS = JSONHelper.getStringFromJSON(root, "rootNS", null);
             final String name = JSONHelper.getStringFromJSON(root, "name", null);
             if (name == null || rootNS == null) return null;
@@ -94,8 +94,8 @@ public class ELF_path_parse_worker {
     public QName getScanQN() {
 
         if (this.parseConfig != null) {
-            JSONObject scan = JSONHelper.getJSONObject(this.parseConfig,"scan");
-            if(scan == null) return null;
+            JSONObject scan = JSONHelper.getJSONObject(this.parseConfig, "scan");
+            if (scan == null) return null;
             final String scanNS = JSONHelper.getStringFromJSON(scan, "scanNS", null);
             final String name = JSONHelper.getStringFromJSON(scan, "name", null);
             if (name == null || scanNS == null) return null;
@@ -125,17 +125,32 @@ public class ELF_path_parse_worker {
      * Fix open tag path tail
      *
      * @param tags open tags (element local names)
-     * @param tt   current end element name
+     * @param ns   current end element name
      */
-    public static void unStepPathTag(List tags, QName tt) {
+    public static void unStepPathTag(List tags, QName ns) {
         // Fix end element path tail, because of pull parser
         // Don't use remove(o), there could be same name elements in sub elements
-        while (tags.size() > 0 && !tags.get(tags.size() - 1).equals("/" + tt.getPrefix() + ":" + tt.getLocalPart())) {
+        while (tags.size() > 0 && !tags.get(tags.size() - 1).equals("/" + ns.getPrefix() + ":" + ns.getLocalPart())) {
             tags.remove(tags.size() - 1);
         }
         //Remove current end element
         if (tags.size() > 0) tags.remove(tags.size() - 1);
 
     }
+
+    /**
+     * Add child element to element path
+     * Clean element path if current element is root element
+     *
+     * @param tags   open tags (element local names)
+     * @param rootNS current start element name
+     * @param curNS  current start element name
+     */
+    public static void addPathTag(List tags, QName rootNS, QName curNS) {
+        if (rootNS.getPrefix().equals(curNS.getPrefix()) && rootNS.getLocalPart().equals(curNS.getLocalPart()))
+            tags = new ArrayList();
+        tags.add("/" + curNS.getPrefix() + ":" + curNS.getLocalPart());
+    }
+
 
 }
