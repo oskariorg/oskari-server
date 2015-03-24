@@ -216,7 +216,7 @@ public class MapLayerJSONParser {
             throws IOException {
         flexjson.JSONDeserializer deserializer = new flexjson.JSONDeserializer();
 
-        InputStreamReader reader = new InputStreamReader(inp);
+        InputStreamReader reader = new InputStreamReader(inp,"UTF-8");
 
         Map<String, ?> obj = (Map<String, ?>) deserializer.deserialize(reader);
 
@@ -231,7 +231,7 @@ public class MapLayerJSONParser {
 
         InputStream inp = url.openStream();
         try {
-            InputStreamReader reader = new InputStreamReader(inp);
+            InputStreamReader reader = new InputStreamReader(inp,"UTF-8");
 
             Map<String, ?> obj = (Map<String, ?>) deserializer
                     .deserialize(reader);
