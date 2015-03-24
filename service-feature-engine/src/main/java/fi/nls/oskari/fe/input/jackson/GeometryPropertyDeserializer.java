@@ -44,6 +44,11 @@ public class GeometryPropertyDeserializer extends
         return handlers;
     }
 
+    public Map<QName, PullParserHandler> getHandlers() {
+
+            return handlers;
+}
+
     public void mapGeometryTypes(final String ns, final String... localNames) {
 
         for (String localPart : localNames) {
@@ -55,6 +60,7 @@ public class GeometryPropertyDeserializer extends
         ;
 
     }
+
 
     public Object parseGeometry(
             Map<QName, PullParserHandler> handlers,

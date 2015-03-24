@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -132,6 +133,11 @@ public class TestGroovyFeatureEngine {
 
                 @Override
                 public void flush() throws IOException {
+
+                }
+
+
+                public void merge(List<JSONObject> list, Resource res) throws IOException {
 
                 }
 

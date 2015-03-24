@@ -1,5 +1,6 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 
 /* Backwards compatibility for Groovy impls */
@@ -29,6 +30,10 @@ public abstract class AbstractGroovyGMLParserRecipe extends
             gml = new org.geotools.gml3.v3_2.GMLConfiguration(true);
             parserAny = new FEPullParser(gml, null);
         }
+
+    }
+    public void setParseWorker(ELF_path_parse_worker worker){
+
 
     }
 

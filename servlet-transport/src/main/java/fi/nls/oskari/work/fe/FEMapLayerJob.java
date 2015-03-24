@@ -1,46 +1,38 @@
 package fi.nls.oskari.work.fe;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
+
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.hystrix.HystrixMapLayerJob;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -55,7 +47,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.Style;
 import org.json.JSONObject;
-import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -74,14 +65,11 @@ import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.pojo.Location;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.Tile;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.wfs.WFSFilter;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.RequestResponse;
 import fi.nls.oskari.work.ResultProcessor;
 
@@ -187,6 +175,7 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
         final String geomNs = layer.getGeometryNamespaceURI();
 
         JSONObject selectedFeatureParams = layer.getSelectedFeatureParams();
+        JSONObject parseConfig = JSONHelper.createJSONObject(layer.getParseConfig());
 
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {
@@ -211,6 +200,12 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
         if (featureEngine == null) {
             log.error("NO FeatureEngine available");
             return requestResponse;
+        }
+
+        // Is parsing based on parse config
+        if(parseConfig != null){
+            ELF_path_parse_worker worker = new ELF_path_parse_worker(parseConfig);
+            featureEngine.getRecipe().setParseWorker(worker);
         }
 
         final FeatureEngine engine = featureEngine;

@@ -7,12 +7,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -229,6 +231,45 @@ public class FEOutputProcessor implements OutputProcessor {
             }
 
             list.add(props);
+        }
+    }
+
+    /**
+     * Merge href sub features to main features
+     *
+     * @param jlist addtional features to where local hrefs point
+     * @param res   href property resourse
+     */
+    public void merge(List<JSONObject> jlist, Resource res) {
+        // Get index of resource
+        Integer keyInd = selectedPropertiesIndex.get(res);
+        if (keyInd == null) return;
+
+        try {
+            //Loop features
+            for (List lis : list) {
+                // Href key
+                Object val = lis.get(keyInd);
+                if (val instanceof List) {
+                    ArrayList<String> vallist = (ArrayList<String>) val;
+                    List<Map<String, Object>> hrefFeas = new ArrayList<Map<String, Object>>();
+                    for (String lval : vallist) {
+                        if (lval == null) continue;
+                        lval = lval.replace("#", "");
+                        for (JSONObject js : jlist) {
+                            if (JSONHelper.getStringFromJSON(js, "id", "").equals(lval)) {
+                                hrefFeas.add(JSONHelper.getObjectAsMap(js));
+                                break;
+                            }
+                        }
+
+                    }
+                    if(hrefFeas.size() > 0) lis.add(keyInd, hrefFeas);
+                }
+            }
+
+        } catch (Exception ee) {
+            log.debug("Local href subfeature merge failed:", ee);
         }
     }
 

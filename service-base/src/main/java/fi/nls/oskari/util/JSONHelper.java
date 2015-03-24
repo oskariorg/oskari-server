@@ -72,6 +72,17 @@ public class JSONHelper {
             return null;
         }
     }
+    public static final JSONObject getJSONObject(final JSONArray content, int key) {
+        if(content == null) {
+            return null;
+        }
+        try {
+            return content.getJSONObject(key);
+        } catch (Exception e) {
+            log.warn("Couldn't get JSONObject from ", content, " with key =", key);
+            return null;
+        }
+    }
     public static final JSONArray getJSONArray(final JSONObject content, String key) {
         try {
             return content.getJSONArray(key);
@@ -89,7 +100,15 @@ public class JSONHelper {
         while(it.hasNext()) {
             String key = (String)it.next();
             try {
-                map.put(key, (T) obj.opt(key));
+                if (obj.opt(key) instanceof JSONObject){
+                    map.put(key, (T) getObjectAsMap((JSONObject) obj.opt(key)));
+                }
+                else if (obj.opt(key) instanceof JSONArray){
+                    map.put(key, (T) getArrayAsList( (JSONArray) obj.opt(key)));
+                }
+                else {
+                    map.put(key, (T) obj.opt(key));
+                }
             }
             catch (Exception e) {
                 log.error("Couldn't convert JSONObject to Map:", e.getMessage());
@@ -105,7 +124,15 @@ public class JSONHelper {
         try {
             List<T> list = new ArrayList<T>(array.length());
             for(int i = 0; i < array.length(); ++i) {
-                list.add((T)array.opt(i));
+                if (array.opt(i) instanceof JSONObject){
+                    list.add((T) getObjectAsMap((JSONObject) array.opt(i)));
+                }
+                else if (array.opt(i) instanceof JSONArray){
+                    list.add((T) getArrayAsList((JSONArray) array.opt(i)));
+                }
+                else {
+                    list.add((T) array.opt(i));
+                }
             }
             return list;
         } catch (Exception e) {
