@@ -105,6 +105,7 @@ MetadataCatalogueChannelSearchService now requests the output schema `http://www
 
 Added new generic WFS path parser for complex featuretypes
 Instruction under oskari.org\md\documentation\backend\configuring-wfs-path-parser.md
+Sample complex wfs layer insert script in \elf-oskari-server-extensions\elf-resources\resources\sql\elf-nls_fi-lod0ad-Cascading-wfslayer.sql
 
 ### servlet-transport
 
