@@ -7,7 +7,7 @@ UPDATE portti_bundle set startup = '{
     "bundlename": "findbycoordinates",
     "metadata": {
         "Import-Bundle": {
-            "rpc": {
+            "findbycoordinates": {
                 "bundlePath": "/Oskari/packages/framework/bundle/"
             }
         }
