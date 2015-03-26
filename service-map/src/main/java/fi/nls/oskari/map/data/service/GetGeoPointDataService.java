@@ -41,6 +41,10 @@ public class GetGeoPointDataService {
     public static final String CONTENT = "content";
     public static final String PARSED = "parsed";
     public static final String GFI_CONTENT = "gfiContent";
+    public static final String KEY_INFO = "Info";
+    public static final String MESSAGE_NO_SUPPORT = "Feature data not supported on this layer";
+    public static final String REST_KEY_FEATURES = "features";
+    public static final String REST_KEY_ATTRIBUTES = "attributes";
 
     public static final String PRESENTATION_TYPE_JSON = "JSON";
     public static final String PRESENTATION_TYPE_TEXT = "TEXT";
@@ -93,26 +97,31 @@ public class GetGeoPointDataService {
         JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
         // REST query response is in json format
         JSONObject features = new JSONObject();
+        JSONArray attrs = new JSONArray();
         JSONObject respObj = JSONHelper.createJSONObject(gfiResponse);
-            if(respObj != null) {
-                // Pick feature data
-                JSONArray feas = JSONHelper.getJSONArray(respObj,"features");
-                if(feas == null){
-                    // layer is not a REST Feature Layer
-                    JSONObject info = new JSONObject();
-                    JSONHelper.putValue(info,"Info","Feature data not supported on this layer");
-                    JSONHelper.putValue(features, PARSED, info);
+        if (respObj != null) {
+            // Pick feature data
+            JSONArray feas = JSONHelper.getJSONArray(respObj, REST_KEY_FEATURES);
+            if (feas == null) {
+                // layer is not a REST Feature Layer
+                JSONObject info = new JSONObject();
+                JSONHelper.putValue(info, KEY_INFO, MESSAGE_NO_SUPPORT);
+                JSONHelper.putValue(features, PARSED, info);
 
-                } else if (feas.length() == 0) {
-                    // not found any features
+            } else if (feas.length() == 0) {
+                // not found any features
 
-                } else {
-                // Pick attributes as features - take only 1st found feature
-                    JSONObject item = feas.optJSONObject(0);
-                    JSONHelper.putValue(features, PARSED,item.optJSONObject("attributes"));
+            } else {
+                // Pick attributes as features
+
+                for (int i = 0; i < feas.length(); i++) {
+                    JSONObject item = feas.optJSONObject(i);
+                    attrs.put(item.optJSONObject(REST_KEY_ATTRIBUTES));
                 }
-
+                JSONHelper.putValue(features, PARSED, attrs);
             }
+
+        }
         JSONHelper.putValue(response, CONTENT, features);
 
         return response;

@@ -8,7 +8,7 @@ import java.net.URLEncoder;
 
 public class GFIRestQueryParams extends GFIRequestParams {
 
-    public static final double TOLERANCE_FACTOR = 0.01d; // from bbox width
+    public static final double TOLERANCE_FACTOR = 0.002d; // from bbox width
 
     private static final String REST_GFI_BASE_PARAMS = "/query?where=&text=&objectIds=&time="
             + "&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*"
@@ -17,27 +17,26 @@ public class GFIRestQueryParams extends GFIRequestParams {
             + "returnM=false&gdbVersion=&returnDistinctValues=false&f=json";
 
 
-
-
     private String getAsQueryString() {
 
 
         String name = getLayer().getName();   // Rest layer id
 
         try { // try encode
-            name =  URLEncoder.encode(getLayer().getName(), "UTF-8");
+            name = URLEncoder.encode(getLayer().getName(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // encode unsupported then ignore it and use without encode
         }
-       // &inSR=3857&geometry=2250000%2C8323000%2C2695000%2C8426000
+        // &inSR=3857&geometry=2250000%2C8323000%2C2695000%2C8426000
 
-        return name+REST_GFI_BASE_PARAMS + "&inSR=" + getSRSName().split(":")[getSRSName().split(":").length-1] + "&geometry=" + getSearchBbox();
+        return name + REST_GFI_BASE_PARAMS + "&inSR=" + getSRSName().split(":")[getSRSName().split(":").length - 1] + "&geometry=" + getSearchBbox();
 
     }
 
     /**
      * Set searchbox
      * Based on width of current map window
+     *
      * @return
      */
 
@@ -58,8 +57,7 @@ public class GFIRestQueryParams extends GFIRequestParams {
 
 
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -69,7 +67,7 @@ public class GFIRestQueryParams extends GFIRequestParams {
 
     private String getBaseQueryURL() {
         String queryUrl = getLayer().getUrl();
-        if (queryUrl.lastIndexOf("/export") > -1) queryUrl = queryUrl.replace("export","");
+        if (queryUrl.lastIndexOf("/export") > -1) queryUrl = queryUrl.replace("export", "");
 
         return queryUrl;
     }
