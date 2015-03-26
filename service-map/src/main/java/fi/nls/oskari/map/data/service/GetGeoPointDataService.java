@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,16 +39,18 @@ public class GetGeoPointDataService {
     public static final String LAYER_ID = "layerId";
     public static final String PRESENTATION_TYPE = "presentationType";
     public static final String CONTENT = "content";
+    public static final String PARSED = "parsed";
     public static final String GFI_CONTENT = "gfiContent";
 
     public static final String PRESENTATION_TYPE_JSON = "JSON";
     public static final String PRESENTATION_TYPE_TEXT = "TEXT";
-    
+
+
 
     public JSONObject getWMSFeatureInfo(final GFIRequestParams params) {
 
-        final String gfiResponse = makeGFIcall(params);
-        if(gfiResponse == null || gfiResponse.trim().isEmpty()) {
+        final String gfiResponse = makeGFIcall(params.getGFIUrl(), params.getLayer().getUsername(), params.getLayer().getPassword());
+        if (gfiResponse == null || gfiResponse.trim().isEmpty()) {
             return null;
         }
 
@@ -78,7 +81,44 @@ public class GetGeoPointDataService {
         return response;
     }
 
-    private String makeGFIcall(final GFIRequestParams params) {
+    public JSONObject getRESTFeatureInfo(final GFIRestQueryParams params) {
+
+        final String gfiResponse = makeGFIcall(params.getGFIUrl(), params.getLayer().getUsername(), params.getLayer().getPassword());
+        if (gfiResponse == null || gfiResponse.trim().isEmpty()) {
+            return null;
+        }
+        final JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, TYPE, params.getLayer().getType());
+        JSONHelper.putValue(response, LAYER_ID, params.getLayer().getId());
+        JSONHelper.putValue(response, PRESENTATION_TYPE, PRESENTATION_TYPE_JSON);
+        // REST query response is in json format
+        JSONObject features = new JSONObject();
+        JSONObject respObj = JSONHelper.createJSONObject(gfiResponse);
+            if(respObj != null) {
+                // Pick feature data
+                JSONArray feas = JSONHelper.getJSONArray(respObj,"features");
+                if(feas == null){
+                    // layer is not a REST Feature Layer
+                    JSONObject info = new JSONObject();
+                    JSONHelper.putValue(info,"Info","Feature data not supported on this layer");
+                    JSONHelper.putValue(features, PARSED, info);
+
+                } else if (feas.length() == 0) {
+                    // not found any features
+
+                } else {
+                // Pick attributes as features - take only 1st found feature
+                    JSONObject item = feas.optJSONObject(0);
+                    JSONHelper.putValue(features, PARSED,item.optJSONObject("attributes"));
+                }
+
+            }
+        JSONHelper.putValue(response, CONTENT, features);
+
+        return response;
+    }
+
+    private String makeGFIcall(final String url,final String user,final String pw) {
 
         final Map<String, String> headers = new HashMap<String,String>();
         headers.put("User-Agent", "Mozilla/5.0 "
@@ -88,14 +128,13 @@ public class GetGeoPointDataService {
         headers.put("Cookie", "_ptifiut_");
 
         try {
-            final String url = params.getGFIUrl();
             log.debug("Calling GFI url:", url);
-            HttpURLConnection conn = IOHelper.getConnection(url, params.getLayer().getUsername(), params.getLayer().getPassword());
+            HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
             String gfiResponse = IOHelper.getURL(conn, headers,IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
         } catch (IOException e) {
-            log.error(e, "Couldn't call GFI URL with params:", params);
+            log.error(e, "Couldn't call GFI URL with url:", url);
         }
         return null;
     }

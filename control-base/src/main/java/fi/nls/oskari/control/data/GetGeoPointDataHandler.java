@@ -3,6 +3,7 @@ package fi.nls.oskari.control.data;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import org.json.JSONArray;
@@ -54,7 +55,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
         final int zoom = ConversionHelper.getInt(params.getHttpParam(PARAM_ZOOM), 0);
         
         final JSONArray data = new JSONArray();
-        JSONObject geojs = new JSONObject();
+		JSONObject geojs = new JSONObject();
         try {
            
             geojs = new JSONObject(params.getHttpParam(
@@ -103,6 +104,21 @@ public class GetGeoPointDataHandler extends ActionHandler {
                 if(response != null) {
                     data.put(response);
                 }
+				continue;
+			} else if (OskariLayer.TYPE_ARCGIS93.equals(layerType)) {
+				final GFIRestQueryParams gfiParams = new GFIRestQueryParams();
+
+				gfiParams.setBbox(params.getRequiredParam(PARAM_BBOX));
+				gfiParams.setLat(lat);
+				gfiParams.setLayer(layer);
+				gfiParams.setLon(lon);
+
+				gfiParams.setSRSName(params.getHttpParam(PARAM_SRSNAME, "3067"));
+
+				final JSONObject response = geoPointService.getRESTFeatureInfo(gfiParams);
+				if(response != null) {
+					data.put(response);
+				}
 				continue;
 			}
 		}
