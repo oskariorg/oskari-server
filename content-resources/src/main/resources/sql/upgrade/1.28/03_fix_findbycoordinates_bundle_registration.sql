@@ -1,6 +1,4 @@
-INSERT INTO portti_bundle (name, startup) 
-       VALUES ('findbycoordinates','{}');
-
+﻿-- updates the Import-bundle statement from rpc -> findbycoordinates
 UPDATE portti_bundle set startup = '{
     "title": "FindByCoordinates",
     "bundleinstancename": "findbycoordinates",

@@ -20,10 +20,25 @@ Run on oskaridb:
 
 #### Parse config field added for WFS FE generic path parser
 
-
-Run on oskaridb or pgAdmin/psql:
+Run on oskaridb:
 
     content-resources/src/main/resources/sql/upgrade/1.28/02_alter_table_portti_wfs_template_model.sql
+
+#### Fixes findbycoordinates bundle registration
+
+Previously Import-bundle statement had the value 'rpc'. Updates it to correct 'findbycoordinates'. Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/03_fix_findbycoordinates_bundle_registration.sql
+
+### content-resources
+
+New bundle: heatmap (see frontend notes for configuration options):
+
+    content-resources/src/main/resources/sql/views/01-bundles/framework/037-heatmap.sql
+
+Added an example SQL how to easily register a bundle and link it to a view:
+
+    content-resources/src/main/resources/sql/example-bundle-insert.sql
 
 ### service-map
 
