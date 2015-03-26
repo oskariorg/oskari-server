@@ -44,6 +44,8 @@ Added an example SQL how to easily register a bundle and link it to a view:
 
 OskariLayers will now load the attributes value from DB and expose it with the same name in JSON-presentation.
 
+GFI support is added for `arcgis93layer` type
+
 ### service-logging
 
 Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
