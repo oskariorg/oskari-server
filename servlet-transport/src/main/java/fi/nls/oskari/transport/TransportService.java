@@ -319,7 +319,7 @@ public class TransportService extends AbstractService {
             log.debug("parseRequestId - success", obj);
             return ((Number) obj).longValue();
         }
-        log.debug("parseRequestId - id not a number",obj.getClass(), "--->", obj);
+        log.debug("parseRequestId - id not a number", obj);
         return -1;
     }
 
