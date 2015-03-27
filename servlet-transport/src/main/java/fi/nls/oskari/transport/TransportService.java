@@ -192,8 +192,8 @@ public class TransportService extends AbstractService implements ResultProcessor
     protected void finalize() throws Throwable {
     	// clear Sessions
     	JedisManager.delAll(SessionStore.KEY);
-    	super.finalize();
         log.debug("DESTROYED");
+        super.finalize();
     }
 
     /**
