@@ -264,7 +264,9 @@ public class FEOutputProcessor implements OutputProcessor {
                         }
 
                     }
-                    if(hrefFeas.size() > 0) lis.add(keyInd, hrefFeas);
+                    // Replace refs with objects
+                    if(hrefFeas.size() > 0) lis.set(keyInd, hrefFeas);
+
                 }
             }
 
