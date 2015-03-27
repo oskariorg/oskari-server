@@ -56,9 +56,11 @@ public class ELF_wfs_Parser extends GML32 {
         JSONArray conf = JSONHelper.getJSONArray(parseWorker.parseConfig, KEY_PATHS);
         for (int i = 0; i < conf.length(); i++) {
             JSONObject item = conf.optJSONObject(i);
-
+            // TODO: type mapping based add property
             //Not id
             if (JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN).equals(KEY_ID)) continue;
+            //Not geometry
+            if (JSONHelper.getStringFromJSON(item, KEY_TYPE, VALUE_UNKNOWN).equals(TYPE_GEOMETRY)) continue;
             final Resource resource = outputContext
                     .addOutputStringProperty(JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN));
 

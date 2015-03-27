@@ -462,9 +462,9 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             return;
         }
 
-        fields.add(0, "__fid");
-        fields.add("__centerX");
-        fields.add("__centerY");
+        if(!fields.contains("__fid")) fields.add(0, "__fid");
+        if(!fields.contains("__centerX")) fields.add("__centerX");
+        if(!fields.contains("__centerY")) fields.add("__centerY");
 
         if(locales != null && !locales.isEmpty()) {
             locales.add(0, "ID");
