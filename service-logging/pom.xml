@@ -16,14 +16,13 @@
             <artifactId>oskari-base</artifactId>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <version>1.2.17</version>
+            <artifactId>log4j</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
