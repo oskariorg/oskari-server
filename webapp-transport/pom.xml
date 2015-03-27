@@ -77,6 +77,10 @@
             <artifactId>transport-servlet</artifactId>
         </dependency>
         <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>service-logging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-metrics-event-stream</artifactId>
             <version>1.1.2</version>

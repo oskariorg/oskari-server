@@ -23,6 +23,11 @@
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>
+            <artifactId>service-logging</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
             <artifactId>map-servlet</artifactId>
             <exclusions>
                 <exclusion>
