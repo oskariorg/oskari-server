@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.transport.MessageParseHelper;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParser;
@@ -579,16 +580,16 @@ public class SessionStore {
                     }
                 }
 				store.setLocation(location);
-			} else if (TransportService.PARAM_GRID.equals(fieldName)) {
+			} else if (MessageParseHelper.PARAM_GRID.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         valueName = parser.getCurrentName();
                         long value = parser.getValueAsLong();
-                        if (TransportService.PARAM_ROWS.equals(valueName)) {
+                        if (MessageParseHelper.PARAM_ROWS.equals(valueName)) {
                             grid.setRows(((Long) value).intValue());
-                        } else if (TransportService.PARAM_COLUMNS.equals(valueName)) {
+                        } else if (MessageParseHelper.PARAM_COLUMNS.equals(valueName)) {
                             grid.setColumns(((Long) value).intValue());
-                        } else if (TransportService.PARAM_BOUNDS.equals(valueName)) {
+                        } else if (MessageParseHelper.PARAM_BOUNDS.equals(valueName)) {
                             List<List<Double>> bounds = new ArrayList<List<Double>>();
                             List<Double> bound = null;
                             if(parser.isExpectedStartArrayToken()) {

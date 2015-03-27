@@ -58,6 +58,8 @@ JSONLocalized class now tries to get the value with default language if requeste
  helps when a language is added to Oskari installation and all data producers, Inspire-themes and maplayers lack
  the localized name.
 
+JobQueue now removes any existing job with the same key when adding a job.
+
 ### control-base
 
 GetReverseGeocodingResult configuration changed. Previously used search channel based properties for buffer and maxfeatures,
@@ -147,6 +149,12 @@ adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user
         <servlet-name>status</servlet-name>
         <url-pattern>/status</url-pattern>
     </servlet-mapping>
+
+The metrics JSON-format is not set in stone and can change in the near future.
+
+Added a new TransportResultProcessor class which injects a requestId (received from client) to all responses.
+
+Refactored websocket messsage parsing a bit.
 
 ### webapp-transport
 

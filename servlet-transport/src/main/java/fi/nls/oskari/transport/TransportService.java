@@ -39,7 +39,6 @@ import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.work.fe.FEMapLayerJob;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
 
@@ -49,7 +48,7 @@ import fi.nls.oskari.worker.JobQueue;
  * 
  * @see org.cometd.server.AbstractService
  */
-public class TransportService extends AbstractService implements ResultProcessor {
+public class TransportService extends AbstractService {
     static {
         // populate properties before initializing logger since logger
         // implementation is configured in properties
@@ -75,11 +74,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	public static final String PARAM_LOCATION_SRS = "srs";
 	public static final String PARAM_LOCATION_BBOX = "bbox";
 	public static final String PARAM_LOCATION_ZOOM = "zoom";
-	public static final String PARAM_GRID = "grid";
     public static final String PARAM_TILES = "tiles";
-	public static final String PARAM_ROWS = "rows";
-	public static final String PARAM_COLUMNS = "columns";
-	public static final String PARAM_BOUNDS = "bounds";
 	public static final String PARAM_TILE_SIZE = "tileSize";
 	public static final String PARAM_MAP_SIZE = "mapSize";
 	public static final String PARAM_WIDTH = "width";
@@ -87,6 +82,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	public static final String PARAM_MAP_SCALES = "mapScales";
 	public static final String PARAM_LAYERS = "layers";
 	public static final String PARAM_LAYER_ID = "layerId";
+    public static final String PARAM_REQUEST_ID = "reqId";
 	public static final String PARAM_LAYER_STYLE = "styleName";
 	public static final String PARAM_LONGITUDE = "longitude";
 	public static final String PARAM_LATITUDE = "latitude";
@@ -197,27 +193,6 @@ public class TransportService extends AbstractService implements ResultProcessor
     }
 
     /**
-     * Call through implementation of ResultProcessor
-     * @param clientId
-     * @param channel
-     * @param data
-     */
-    public void addResults(final String clientId, final String channel, final Object data) {
-        send(clientId, channel, data);
-    }
-    /**
-     * Sends data to certain client on a given channel
-     * 
-     * @param clientId
-     * @param channel
-     * @param data
-     */
-    public void send(String clientId, String channel, Object data) {
-        ServerSession client = this.bayeux.getSession(clientId);
-        client.deliver(local, channel, data, null);
-    }
-
-    /**
      * Tries to get session from cache with given key or creates a new
      * SessionStore
      * 
@@ -247,7 +222,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      */
     private void save(SessionStore store) {
         if (!store.save()) {
-            this.send(store.getClient(), CHANNEL_RESET, "reset");
+            TransportResultProcessor.send(local, bayeux, store.getClient(), ResultProcessor.CHANNEL_RESET, "reset");
         }
     }
 
@@ -297,7 +272,7 @@ public class TransportService extends AbstractService implements ResultProcessor
             log.warn("Request failed because parameters were not set");
             output.put("once", false);
             output.put("message", "parameters_not_set");
-            client.deliver(local, CHANNEL_ERROR, output, null);
+            client.deliver(local, ResultProcessor.CHANNEL_ERROR, output, null);
             return;
         }
 
@@ -308,7 +283,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         String channel = message.getChannel();
         log.debug("Processing request on channel:", channel, "- payload:", json);
         if (channel.equals(CHANNEL_INIT)) {
-            processInit(client, store, json);
+            processInit(client, store, json, params);
         } else if (channel.equals(CHANNEL_ADD_MAP_LAYER)) {
             addMapLayer(store, params);
         } else if (channel.equals(CHANNEL_REMOVE_MAP_LAYER)) {
@@ -326,12 +301,26 @@ public class TransportService extends AbstractService implements ResultProcessor
         } else if (channel.equals(CHANNEL_SET_MAP_CLICK)) {
             setMapClick(store, params);
         } else if (channel.equals(CHANNEL_SET_FILTER)) {
-            setFilter(store, json);
+            setFilter(store, json, params);
         } else if (channel.equals(CHANNEL_SET_PROPERTY_FILTER)) {
-            setPropertyFilter(store, json);
+            setPropertyFilter(store, json, params);
         } else if (channel.equals(CHANNEL_SET_MAP_LAYER_VISIBILITY)) {
             setMapLayerVisibility(store, params);
         }
+    }
+
+    private long parseRequestId(final Map<String, Object> params) {
+        if(params == null) {
+            log.debug("parseRequestId - params null");
+            return -1;
+        }
+        final Object obj = params.get(PARAM_REQUEST_ID);
+        if(obj instanceof Number) {
+            log.debug("parseRequestId - success", obj);
+            return ((Number) obj).longValue();
+        }
+        log.debug("parseRequestId - id not a number",obj.getClass(), "--->", obj);
+        return -1;
     }
 
     /**
@@ -342,7 +331,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param json
      */
     public void processInit(ServerSession client, SessionStore store,
-            String json) {
+            String json, Map<String, Object> params) {
         try {
             store = SessionStore.setParamsJSON(json);
         } catch (IOException e) {
@@ -356,7 +345,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         Map<String, Layer> layers = store.getLayers();
         for (Layer layer : layers.values()) {
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-        	initMapLayerJob(store, layer.getId());
+        	initMapLayerJob(parseRequestId(params), store, layer.getId());
         }
     }
 
@@ -391,9 +380,16 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param store
      * @param layerId
      */
-    private void initMapLayerJob(SessionStore store, String layerId) {
-        Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
-        jobs.remove(job);
+    private void initMapLayerJob(final long requestId, SessionStore store, String layerId) {
+        initMapLayerJob(requestId, store, layerId, JobType.NORMAL);
+    }
+
+    private void initMapLayerJob(final long requestId, SessionStore store, String layerId, JobType type) {
+        final Job job = createOWSMapLayerJob(
+                createResultProcessor(requestId),
+                type,
+                store,
+                layerId);
         jobs.add(job);
     }
 
@@ -411,18 +407,22 @@ public class TransportService extends AbstractService implements ResultProcessor
      * Removes map layer from session and jobs
      * 
      * @param store
-     * @param layer
+     * @param params
      */
-    private void removeMapLayer(SessionStore store, Map<String, Object> layer) {
-        if (!layer.containsKey(PARAM_LAYER_ID)) {
+    private void removeMapLayer(SessionStore store, Map<String, Object> params) {
+        if (!params.containsKey(PARAM_LAYER_ID)) {
             log.warn("Failed to remove a map layer");
             return;
         }
         // Layer id may have prefix
-        String layerId = layer.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
+        String layerId = params.get(PARAM_LAYER_ID).toString(); //(Long) layer.get(PARAM_LAYER_ID);
         if (store.containsLayer(layerId)) {
             // first remove from jobs then from store
-            Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
+            Job job = createOWSMapLayerJob(
+                    createResultProcessor(parseRequestId(params)),
+                    JobType.NORMAL,
+                    store,
+                    layerId);
             jobs.remove(job);
 
             store.removeLayer(layerId);
@@ -435,57 +435,43 @@ public class TransportService extends AbstractService implements ResultProcessor
      * location
      * 
      * @param store
-     * @param location
+     * @param params
      */
 
-	private void setLocation(SessionStore store, Map<String, Object> location) {
-    	if (location == null ||
-                !location.containsKey(PARAM_LAYER_ID) ||
-                !location.containsKey(PARAM_LOCATION_SRS) ||
-    			!location.containsKey(PARAM_LOCATION_BBOX) ||
-    			!location.containsKey(PARAM_LOCATION_ZOOM) ||
-    			!location.containsKey(PARAM_GRID) ||
-                !location.containsKey(PARAM_TILES)) {
+	private void setLocation(SessionStore store, Map<String, Object> params) {
+    	if (params == null ||
+                !params.containsKey(PARAM_LAYER_ID) ||
+                !params.containsKey(PARAM_LOCATION_SRS) ||
+    			!params.containsKey(PARAM_LOCATION_BBOX) ||
+    			!params.containsKey(PARAM_LOCATION_ZOOM) ||
+    			!params.containsKey(MessageParseHelper.PARAM_GRID) ||
+                !params.containsKey(PARAM_TILES)) {
             log.warn("Failed to set location");
     		return;
     	}
 
-    	Object tmpbbox_fld = location.get(PARAM_LOCATION_BBOX);
-    	Object[] tmpbbox = tmpbbox_fld  instanceof List ? ((List)tmpbbox_fld).toArray() : (Object[]) tmpbbox_fld;
-    	List<Double> bbox = new ArrayList<Double>();
-    	for(Object obj : tmpbbox) {
-    		if(obj instanceof Double) {
-    			bbox.add((Double) obj);
-    		} else {
-    			bbox.add(((Number) obj).doubleValue());
-    		}
-    	}
+        List<Double> bbox = MessageParseHelper.parseBbox(params.get(PARAM_LOCATION_BBOX));
     	
     	Location mapLocation = new Location();
-    	mapLocation.setSrs((String)location.get(PARAM_LOCATION_SRS));
+    	mapLocation.setSrs((String)params.get(PARAM_LOCATION_SRS));
     	mapLocation.setBbox(bbox);
     	
-    	mapLocation.setZoom(((Number)location.get(PARAM_LOCATION_ZOOM)).longValue());
+    	mapLocation.setZoom(((Number)params.get(PARAM_LOCATION_ZOOM)).longValue());
     	store.setLocation(mapLocation);
-    	
 
-    	Grid grid = parseGrid(location);
+    	Grid grid = MessageParseHelper.parseGrid(params);
     	store.setGrid(grid);
     	
     	this.save(store);
 
-        String layerId = location.get(PARAM_LAYER_ID).toString();
-        
-        Object tmptiles_fld = location.get(PARAM_TILES);
-        Object[] tmptiles = tmptiles_fld instanceof List ? ((List) tmptiles_fld).toArray() : (Object[])tmptiles_fld;
-        List<List<Double>> tiles = parseBounds(tmptiles);
+        String layerId = params.get(PARAM_LAYER_ID).toString();
+
+        List<List<Double>> tiles = MessageParseHelper.parseBounds(params.get(PARAM_TILES));
 
         Layer layer = store.getLayers().get(layerId);
         if(layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
-            Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
-            jobs.remove(job);
-            jobs.add(job);
+            initMapLayerJob(parseRequestId(params), store, layerId);
         }
     }
 
@@ -515,16 +501,16 @@ public class TransportService extends AbstractService implements ResultProcessor
      * Sets layer style into session and starts job for the layer
      * 
      * @param store
-     * @param layer
+     * @param params
      */
-    private void setMapLayerStyle(SessionStore store, Map<String, Object> layer) {
-    	if(!layer.containsKey(PARAM_LAYER_ID) || !layer.containsKey(PARAM_LAYER_STYLE)) {
+    private void setMapLayerStyle(SessionStore store, Map<String, Object> params) {
+    	if(!params.containsKey(PARAM_LAYER_ID) || !params.containsKey(PARAM_LAYER_STYLE)) {
             log.warn("Failed to set map layer style");
     		return;
     	}
 
-    	String layerId = layer.get(PARAM_LAYER_ID).toString();
-    	String layerStyle = (String)layer.get(PARAM_LAYER_STYLE);
+    	String layerId = params.get(PARAM_LAYER_ID).toString();
+    	String layerStyle = (String)params.get(PARAM_LAYER_STYLE);
     	
     	if(store.containsLayer(layerId)) {
             Layer tmpLayer = store.getLayers().get(layerId);
@@ -533,9 +519,10 @@ public class TransportService extends AbstractService implements ResultProcessor
                 tmpLayer.setStyleName(layerStyle);
                 this.save(store);
                 if(tmpLayer.isVisible()) {
-                    tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-                    Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId, false, true, false); // no features
-                    jobs.remove(job);
+                    // init bounds to tiles (render all)
+                    tmpLayer.setTiles(store.getGrid().getBounds());
+                    // only update normal tiles
+                    Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.NORMAL, store, layerId, false, true, false);
                     jobs.add(job);
                 }
             }
@@ -603,13 +590,13 @@ public class TransportService extends AbstractService implements ResultProcessor
      * Sends only feature json.
      * 
      * @param store
-     * @param point
+     * @param params
      */
-    private void setMapClick(SessionStore store, Map<String, Object> point) {
-        if (!point.containsKey(PARAM_LONGITUDE)
-                || !point.containsKey(PARAM_LATITUDE)
-                || !point.containsKey(PARAM_KEEP_PREVIOUS)){
-            log.warn("Failed to set a map click", point);
+    private void setMapClick(SessionStore store, Map<String, Object> params) {
+        if (!params.containsKey(PARAM_LONGITUDE)
+                || !params.containsKey(PARAM_LATITUDE)
+                || !params.containsKey(PARAM_KEEP_PREVIOUS)){
+            log.warn("Failed to set a map click", params);
             return;
         }
 
@@ -617,29 +604,30 @@ public class TransportService extends AbstractService implements ResultProcessor
         double latitude;
         boolean keepPrevious;
 
-        if (point.get(PARAM_LONGITUDE) instanceof Double) {
-            longitude = (Double) point.get(PARAM_LONGITUDE);
+        if (params.get(PARAM_LONGITUDE) instanceof Double) {
+            longitude = (Double) params.get(PARAM_LONGITUDE);
         } else {
-            longitude = ((Number) point.get(PARAM_LONGITUDE)).doubleValue();
+            longitude = ((Number) params.get(PARAM_LONGITUDE)).doubleValue();
         }
-        if (point.get(PARAM_LATITUDE) instanceof Double) {
-            latitude = (Double) point.get(PARAM_LATITUDE);
+        if (params.get(PARAM_LATITUDE) instanceof Double) {
+            latitude = (Double) params.get(PARAM_LATITUDE);
         } else {
-            latitude = ((Number) point.get(PARAM_LATITUDE)).doubleValue();
+            latitude = ((Number) params.get(PARAM_LATITUDE)).doubleValue();
         }
 
-        keepPrevious = (Boolean) point.get(PARAM_KEEP_PREVIOUS);
+        keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
 
         // stores click, but doesn't save
         store.setMapClick(new Coordinate(longitude, latitude));
         store.setKeepPrevious(keepPrevious);
 
-        Job job = null;
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = createOWSMapLayerJob(this, JobType.MAP_CLICK, store, e.getValue().getId(), true, false, false);
-                jobs.remove(job);
+                Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)),
+                        JobType.MAP_CLICK,
+                        store,
+                        e.getValue().getId(), true, false, false);
                 jobs.add(job);
             }
         }
@@ -653,7 +641,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param store
      * @param json
      */
-    private void setFilter(SessionStore store, String json) {
+    private void setFilter(SessionStore store, String json, Map<String, Object> params) {
         GeoJSONFilter filter = GeoJSONFilter.setParamsJSON(json);
 
         // stores geojson, but doesn't save
@@ -663,8 +651,7 @@ public class TransportService extends AbstractService implements ResultProcessor
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {
                 // job without image drawing
-                job = createOWSMapLayerJob(this, JobType.GEOJSON, store, e.getValue().getId(), true, false, false);
-                jobs.remove(job);
+                job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.GEOJSON, store, e.getValue().getId(), true, false, false);
                 jobs.add(job);
             }
         }
@@ -677,7 +664,7 @@ public class TransportService extends AbstractService implements ResultProcessor
      * @param store
      * @param json
      */
-    private void setPropertyFilter(SessionStore store, String json) {
+    private void setPropertyFilter(SessionStore store, String json, Map<String, Object> params) {
         PropertyFilter propertyFilter = PropertyFilter.setParamsJSON(json);
         // stores property filters, but doesn't save
         store.setPropertyFilter(propertyFilter);
@@ -688,8 +675,7 @@ public class TransportService extends AbstractService implements ResultProcessor
                 // job without image drawing
                 // only for requested layer
                 if (e.getValue().getId().equals(propertyFilter.getLayerId())) {
-                    job = createOWSMapLayerJob(this, JobType.PROPERTY_FILTER, store, e.getValue().getId(), true, false, false);
-                    jobs.remove(job);
+                    job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.PROPERTY_FILTER, store, e.getValue().getId(), true, false, false);
                     jobs.add(job);
                 }
             }
@@ -699,18 +685,18 @@ public class TransportService extends AbstractService implements ResultProcessor
      * Sets layer visibility into session and starts/stops job for the layer
      * 
      * @param store
-     * @param layer
+     * @param params
      */
     private void setMapLayerVisibility(SessionStore store,
-            Map<String, Object> layer) {
-        if (!layer.containsKey(PARAM_LAYER_ID)
-                || !layer.containsKey(PARAM_LAYER_VISIBLE)) {
+            Map<String, Object> params) {
+        if (!params.containsKey(PARAM_LAYER_ID)
+                || !params.containsKey(PARAM_LAYER_VISIBLE)) {
             log.warn("Layer style not defined");
     		return;
     	}
 
-    	String layerId = layer.get(PARAM_LAYER_ID).toString();
-    	boolean layerVisible = (Boolean)layer.get(PARAM_LAYER_VISIBLE);
+    	String layerId = params.get(PARAM_LAYER_ID).toString();
+    	boolean layerVisible = (Boolean)params.get(PARAM_LAYER_VISIBLE);
     	
     	if(store.containsLayer(layerId)) {
     		Layer tmpLayer = store.getLayers().get(layerId);
@@ -719,9 +705,7 @@ public class TransportService extends AbstractService implements ResultProcessor
 	    		this.save(store);
 	    		if(layerVisible) {
                     tmpLayer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-		    		Job job = createOWSMapLayerJob(this, JobType.NORMAL, store, layerId);
-		        	jobs.remove(job);
-		        	jobs.add(job);
+                    initMapLayerJob(parseRequestId(params), store, layerId);
 	    		}
     		}
     	}
@@ -733,92 +717,44 @@ public class TransportService extends AbstractService implements ResultProcessor
      * Sends only image json.
      * 
      * @param store
-     * @param layer
+     * @param params
      */
     private void highlightMapLayerFeatures(SessionStore store,
-            Map<String, Object> layer) {
-        if (!layer.containsKey(PARAM_LAYER_ID)
-                || !layer.containsKey(PARAM_FEATURE_IDS)
-                || !layer.containsKey(PARAM_KEEP_PREVIOUS)
-                || !layer.containsKey(PARAM_GEOM_REQUEST)) {
+            Map<String, Object> params) {
+        if (!params.containsKey(PARAM_LAYER_ID)
+                || !params.containsKey(PARAM_FEATURE_IDS)
+                || !params.containsKey(PARAM_KEEP_PREVIOUS)
+                || !params.containsKey(PARAM_GEOM_REQUEST)) {
             log.warn("Layer features not defined");
     		return;
     	}
 
-    	String layerId = layer.get(PARAM_LAYER_ID).toString();
+    	String layerId = params.get(PARAM_LAYER_ID).toString();
     	List<String> featureIds = new ArrayList<String>();
     	boolean keepPrevious;
         boolean geomRequest;
-    	
-        Object tmpfids_fld = layer.get(PARAM_FEATURE_IDS);
-    	Object[] tmpfids = tmpfids_fld instanceof List ? ((List) tmpfids_fld).toArray() : (Object[])tmpfids_fld;
+
+    	Object[] tmpfids = MessageParseHelper.getArray(params.get(PARAM_FEATURE_IDS));
     	for(Object obj : tmpfids) {
 			featureIds.add((String) obj);
     	}
     	
-    	keepPrevious = (Boolean)layer.get(PARAM_KEEP_PREVIOUS);
+    	keepPrevious = (Boolean)params.get(PARAM_KEEP_PREVIOUS);
     	store.setKeepPrevious(keepPrevious);
-        geomRequest = (Boolean) layer.get(PARAM_GEOM_REQUEST);
+        geomRequest = (Boolean) params.get(PARAM_GEOM_REQUEST);
         store.setGeomRequest(geomRequest);
     	
     	if(store.containsLayer(layerId)) {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
             	// job without feature sending
-    			Job job = createOWSMapLayerJob(this, JobType.HIGHLIGHT, store, layerId, false, true, true);
-	        	jobs.remove(job);
+    			Job job = createOWSMapLayerJob(
+                        createResultProcessor(parseRequestId(params)),
+                            JobType.HIGHLIGHT,
+                            store, layerId, false, true, true);
 	        	jobs.add(job);
     		}
     	}
-    }
-
-    /**
-     * Helper for creating Grid from
-     * 
-     * @param params
-     */
-    @SuppressWarnings("unchecked")
-	private Grid parseGrid(Map<String, Object> params) {
-    	Grid grid = new Grid();
-    	
-    	Map<String, Object> tmpgrid = (Map<String, Object>) params.get(PARAM_GRID);
-    	Object tmpbounds_fld = tmpgrid.get(PARAM_BOUNDS);
-    	Object[] tmpbounds = tmpbounds_fld instanceof List ? ((List) tmpbounds_fld).toArray(): (Object[])tmpbounds_fld;
-    	List<List<Double>> bounds = parseBounds(tmpbounds);
-
-    	grid.setRows(((Number)tmpgrid.get(PARAM_ROWS)).intValue());
-    	grid.setColumns(((Number)tmpgrid.get(PARAM_COLUMNS)).intValue());
-    	grid.setBounds(bounds);
-    	
-    	return grid;
-    }
-
-    private List<List<Double>> parseBounds(Object[] params) {
-        if(params == null) {
-            return null;
-        }
-
-        List<List<Double>> bounds = new ArrayList<List<Double>>();
-        List<Double> tile = null;
-
-        for(Object obj : params) {
-            
-            if(obj instanceof Object[] || obj instanceof List) {
-                tile = new ArrayList<Double>();
-                
-                Object[] objs = obj instanceof List ? ((List) obj).toArray():(Object[])obj;                
-                for(Object bound : objs ) {
-                    if(bound instanceof Double) {
-                        tile.add((Double)bound);
-                    } else {
-                        tile.add(((Number)bound).doubleValue());
-                    }
-                }
-                bounds.add(tile);
-            }
-        }
-
-        return bounds;
     }
 
     /**
@@ -834,16 +770,12 @@ public class TransportService extends AbstractService implements ResultProcessor
      */
     public Job createOWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId) {
-        
-        WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
 
-        if ("oskari-feature-engine".equals(layer.getJobType())) {
-            return new FEMapLayerJob(service, type, store, layerId);
-        }
-        else if("oskari-custom-parser".equals(layer.getJobType())) {
-            new WFSCustomParserMapLayerJob(service, type, store, layerId);
-        }
-        return new WFSMapLayerJob(service, type, store, layerId);
+        return createOWSMapLayerJob(service, type, store, layerId, true, true, true);
+    }
+
+    private ResultProcessor createResultProcessor(final long requestId) {
+        return new TransportResultProcessor(local, bayeux, requestId);
     }
 
     /**
@@ -863,17 +795,20 @@ public class TransportService extends AbstractService implements ResultProcessor
     public Job createOWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
-        
         final WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
         MapLayerJobProvider provider = null;
         if(layer.getJobType() != null) {
             provider = mapLayerJobProviders.get(layer.getJobType());
         }
+        Job job = null;
         if(provider != null) {
-            return provider.createJob(service, type, store, layerId,
+            job = provider.createJob(service, type, store, layerId,
                     reqSendFeatures, reqSendImage, reqSendHighlight);
         }
-        return new WFSMapLayerJob(service, type, store, layerId,
-                reqSendFeatures, reqSendImage, reqSendHighlight);
+        if(job == null) {
+            job = new WFSMapLayerJob(service, type, store, layerId,
+                    reqSendFeatures, reqSendImage, reqSendHighlight);
+        }
+        return job;
     }
 }

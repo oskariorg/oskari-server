@@ -95,6 +95,8 @@ public class JobQueue
      * @param job
      */
     public void add(Job job) {
+        // removed previous job with same key
+        remove(job);
     	String key = job.getKey();
     	jobs.put(key, job);
         synchronized(queue) {

@@ -12,7 +12,6 @@ import fi.nls.oskari.arcgis.pojo.ArcGisProperty;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -52,7 +51,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
     public static String ERROR_REST_REQUEST_FAILED = "arcgis_request_failed";
 
     // process information
-    TransportService service;
+    ResultProcessor service;
     private ArcGisLayerStore arcGisLayer;
     private ArcGisLayerStore arcGisLayerScaled;
     private List<ArcGisLayerStore> arcGisLayers = new ArrayList<ArcGisLayerStore>();
@@ -314,7 +313,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
 
                 // Send geometries, if requested as well
                 if (this.session.isGeomRequest()) {
-                    this.sendWFSFeatureGeometries(this.geomValuesList, TransportService.CHANNEL_FEATURE_GEOMETRIES);
+                    this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
                 }
 
                 log.debug("highlight image handling", this.features.size());
@@ -348,17 +347,17 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             }
         } else if (this.type == JobType.MAP_CLICK) {
             if (!this.requestHandler(null)) {
-                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
                 return;
             }
             this.featuresHandler();
             if (!goNext()) return;
             if (this.sendFeatures) {
                 log.debug("Feature values list", this.featureValuesList);
-                this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_MAP_CLICK);
             } else {
                 log.debug("No feature data!");
-                this.sendWFSFeatures(EMPTY_LIST, TransportService.CHANNEL_MAP_CLICK);
+                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
             }
         } else if (this.type == JobType.GEOJSON) {
             if (!this.requestHandler(null)) {
@@ -367,7 +366,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             this.featuresHandler();
             if (!goNext()) return;
             if (this.sendFeatures) {
-                this.sendWFSFeatures(this.featureValuesList, TransportService.CHANNEL_FILTER);
+                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_FILTER);
             }
         } else {
             log.error("Type is not handled", this.type);
@@ -434,7 +433,8 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                 output.put(OUTPUT_LAYER_ID, layer.getLayerId());
                 output.put(OUTPUT_ONCE, true);
                 output.put(OUTPUT_MESSAGE, ERROR_REST_REQUEST_FAILED);
-                this.service.send(session.getClient(), TransportService.CHANNEL_ERROR, output);
+                this.service.addResults(
+                        session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             }
@@ -452,7 +452,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_ONCE, true);
                 output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_FEATURE_PARSING);
-                this.service.send(session.getClient(), TransportService.CHANNEL_ERROR, output);
+                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             }
@@ -465,14 +465,14 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
                 output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
-                this.service.send(session.getClient(), TransportService.CHANNEL_MAP_CLICK, output);
+                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_MAP_CLICK, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             } else if (this.type == JobType.GEOJSON && this.features.size() == 0) {
                 log.debug("Empty result for filter", this.layerId);
                 output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
-                this.service.send(session.getClient(), TransportService.CHANNEL_FILTER, output);
+                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FILTER, output);
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             } else {
@@ -480,14 +480,14 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                     log.debug("Empty result", this.layerId);
                     output.put(OUTPUT_LAYER_ID, this.layerId);
                     output.put(OUTPUT_FEATURE, "empty");
-                    this.service.send(session.getClient(), TransportService.CHANNEL_FEATURE, output);
+                    this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                     log.debug(PROCESS_ENDED, getKey());
                     return false;
                 } else if (this.features.size() == layer.getMaxFeatures()) {
                     log.debug("Max feature result", this.layerId);
                     output.put(OUTPUT_LAYER_ID, this.layerId);
                     output.put(OUTPUT_FEATURE, "max");
-                    this.service.send(session.getClient(), TransportService.CHANNEL_FEATURE, output);
+                    this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                 }
             }
 
@@ -497,7 +497,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_LAYER_ID, this.layerId);
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, ERROR_REST_REQUEST_FAILED);
-            this.service.send(session.getClient(), TransportService.CHANNEL_ERROR, output);
+            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
             log.debug(PROCESS_ENDED, getKey());
             return false;
         }
@@ -588,18 +588,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                     List<String> selectedProperties = layer.getSelectedFeatureParams(session.getLanguage());
                     if (selectedProperties != null && selectedProperties.size() != 0) {
                         for (String attr : selectedProperties) {
-//REST layers are not USERLAYERS                        	
-//                            if (this.layer.getLayerId().startsWith(UserLayerFilter.USERLAYER_PREFIX)) {
-//                                Object prop = feature.getAttribute(attr);
-//                                try {
-//                                    HashMap<String, Object> propMap = new ObjectMapper().readValue(prop.toString(), HashMap.class);
-//                                    values.add(propMap);
-//                                } catch(Exception e) {
-//                                    values.add(prop);
-//                                }
-//                            } else {
                             values.add(feature.getPropertyValue(attr));
-//                            }
                         }
                     } else { // all values
 

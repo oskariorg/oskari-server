@@ -353,7 +353,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_ONCE, true);
         output.put(OUTPUT_MESSAGE, message);
-        this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR,
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
                 output);
     }
 
@@ -516,7 +516,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_FEATURES, features);
-        if (channel.equals(TransportService.CHANNEL_MAP_CLICK)) {
+        if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
         }
 

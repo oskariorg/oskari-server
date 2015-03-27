@@ -262,13 +262,6 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
 
 
 
-    /**
-     * Releases all when removed
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-    }
 
     /**
      * Unique key definition
@@ -351,7 +344,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_ONCE, true);
         output.put(OUTPUT_MESSAGE, message);
-        this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR,
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
                 output);
     }
 
@@ -514,7 +507,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_FEATURES, features);
-        if (channel.equals(TransportService.CHANNEL_MAP_CLICK)) {
+        if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
         }
 
@@ -654,7 +647,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_MESSAGE, error);
-        this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR,
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
                 output);
     }
 

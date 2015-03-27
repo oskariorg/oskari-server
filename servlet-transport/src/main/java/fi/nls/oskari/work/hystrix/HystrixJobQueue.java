@@ -163,6 +163,8 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void add(Job job) {
+        // removed previous job with same key
+        remove(job);
         if(job instanceof HystrixJob) {
             if(job instanceof HystrixMapLayerJob) {
                 HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
