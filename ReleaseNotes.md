@@ -156,6 +156,9 @@ Added a new TransportResultProcessor class which injects a requestId (received f
 
 Refactored websocket messsage parsing a bit.
 
+Added a new status-channel for websocket-communication. Messages are sent to browser when a job starts and when it completes.
+Also added a requestId attribute for requests which is passed on in responses so client knows for which request the response is.
+
 ### webapp-transport
 
 Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml

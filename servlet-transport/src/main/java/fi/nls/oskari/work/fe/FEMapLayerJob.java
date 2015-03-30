@@ -556,7 +556,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
      * 
      */
     public String run() {
-        setStartTime();
         log.debug(PROCESS_STARTED + " " + getKey());
 
         if (!this.validateType()) {
@@ -575,10 +574,8 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
             log.debug("[fe] Session (" + this.session.getSession()
                     + ") has no permissions for getting the layer ("
                     + this.layerId + ")");
-            Map<String, Object> output = new HashMap<String, Object>();
-            output.put(OUTPUT_LAYER_ID, this.layerId);
+            Map<String, Object> output = createCommonResponse("wfs_no_permissions");
             output.put(OUTPUT_ONCE, true);
-            output.put(OUTPUT_MESSAGE, "wfs_no_permissions");
             this.service.addResults(session.getClient(),
                     ResultProcessor.CHANNEL_ERROR, output);
             throw new HystrixBadRequestException("Session (" +  this.session.getSession() + ") has no permissions for getting the layer (" + this.layerId + ")");
@@ -592,10 +589,8 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
         if (this.layer == null) {
             log.debug("[fe] Layer (" + this.layerId
                     + ") configurations couldn't be fetched");
-            Map<String, Object> output = new HashMap<String, Object>();
-            output.put(OUTPUT_LAYER_ID, this.layerId);
+            Map<String, Object> output = createCommonResponse("wfs_configuring_layer_failed");
             output.put(OUTPUT_ONCE, true);
-            output.put(OUTPUT_MESSAGE, "wfs_configuring_layer_failed");
             this.service.addResults(session.getClient(),
                     ResultProcessor.CHANNEL_ERROR, output);
             throw new RuntimeException("Layer (" +  this.layerId + ") configurations couldn't be fetched");
@@ -839,13 +834,12 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
         RequestResponse response = request(type, layer, session, bounds,
                 transformService);
 
-        Map<String, Object> output = new HashMap<String, Object>();
+        Map<String, Object> output = createCommonResponse();
         try {
 
             // request failed
             if (response == null) {
                 log.debug("Request failed for layer" + layer.getLayerId());
-                output.put(OUTPUT_LAYER_ID, layer.getLayerId());
                 output.put(OUTPUT_ONCE, true);
                 output.put(OUTPUT_MESSAGE, "wfs_request_failed");
                 this.service.addResults(session.getClient(),
@@ -860,7 +854,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
             // parsing failed
             if (this.features == null) {
                 log.debug("Parsing failed for layer " + this.layerId);
-                output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_ONCE, true);
                 output.put(OUTPUT_MESSAGE, "features_parsing_failed");
                 this.service.addResults(session.getClient(),
@@ -872,7 +865,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
             // 0 features found - send size
             if (this.type == JobType.MAP_CLICK && this.features.size() == 0) {
                 log.debug("Empty result for map click" + this.layerId);
-                output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
                 output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
                 this.service.addResults(session.getClient(),
@@ -881,7 +873,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
                 return false;
             } else if (this.type == JobType.GEOJSON && this.features.size() == 0) {
                 log.debug("Empty result for filter" + this.layerId);
-                output.put(OUTPUT_LAYER_ID, this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
                 this.service.addResults(session.getClient(),
                         ResultProcessor.CHANNEL_FILTER, output);
@@ -890,7 +881,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
             } else {
                 if (this.features.size() == 0) {
                     log.debug("Empty result" + this.layerId);
-                    output.put(OUTPUT_LAYER_ID, this.layerId);
                     output.put(OUTPUT_FEATURE, "empty");
                     this.service.addResults(session.getClient(),
                             ResultProcessor.CHANNEL_FEATURE, output);
@@ -898,7 +888,6 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
                     return false;
                 } else if (this.features.size() == layer.getMaxFeatures()) {
                     log.debug("Max feature result" + this.layerId);
-                    output.put(OUTPUT_LAYER_ID, this.layerId);
                     output.put(OUTPUT_FEATURE, "max");
                     this.service.addResults(session.getClient(),
                             ResultProcessor.CHANNEL_FEATURE, output);

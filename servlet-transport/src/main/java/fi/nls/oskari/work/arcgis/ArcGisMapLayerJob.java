@@ -183,7 +183,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
      * <p/>
      * Worker calls this when starts the job.
      */
-    public final void runasdf() {
+    public final void runThatShouldBeRefactoredToHystrixCompatible() {
 
         setResourceSending();
 

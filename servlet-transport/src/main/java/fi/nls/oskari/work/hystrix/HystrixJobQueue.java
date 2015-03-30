@@ -38,14 +38,43 @@ public class HystrixJobQueue extends JobQueue {
         super(nWorkers);
 
         HystrixPlugins.getInstance().registerCommandExecutionHook(new HystrixCommandExecutionHook() {
+            /**
+             * Actual run method execution starts
+             * @param commandInstance
+             * @param <T>
+             */
             @Override
-            public <T> void onSuccess(HystrixInvokable<T> commandInstance) {
+            public <T> void onExecutionStart(HystrixInvokable<T> commandInstance) {
+                if(commandInstance instanceof HystrixMapLayerJob) {
+                    HystrixMapLayerJob job = (HystrixMapLayerJob) commandInstance;
+                    job.setStartTime();
+                    job.notifyStart();
+                }
+                super.onExecutionStart(commandInstance);
+            }
+
+            /**
+             * Actual run method completed successfully
+             * @param commandInstance
+             * @param <T>
+             */
+            @Override
+            public <T> void onExecutionSuccess(HystrixInvokable<T> commandInstance) {
                 if(commandInstance instanceof HystrixJob) {
                     HystrixJob job = (HystrixJob)commandInstance;
-                    jobEnded(job, true, "Job success", job.getKey());
+                    jobEnded(job, true, "Job completed", job.getKey());
                 }
-                super.onSuccess(commandInstance);
+                super.onExecutionSuccess(commandInstance);
             }
+
+            /**
+             * When command fails with an exception
+             * @param commandInstance
+             * @param failureType
+             * @param e
+             * @param <T>
+             * @return
+             */
             @Override
             public <T> Exception onError(HystrixInvokable<T> commandInstance, HystrixRuntimeException.FailureType failureType, Exception e) {
                 if(commandInstance instanceof HystrixJob) {
@@ -54,18 +83,17 @@ public class HystrixJobQueue extends JobQueue {
                 }
                 return super.onError(commandInstance, failureType, e);
             }
+
+            /**
+             * Fallback is an error handler so treat as error
+             * @param commandInstance
+             * @param <T>
+             */
             @Override
-            public <T> void onThreadComplete(HystrixInvokable<T> commandInstance) {
-                if(commandInstance instanceof HystrixJob) {
-                    HystrixJob job = (HystrixJob)commandInstance;
-                    jobEnded(job, true, "Job completed", job.getKey());
-                }
-                super.onThreadComplete(commandInstance);
-            }
             public <T> void onFallbackSuccess(HystrixInvokable<T> commandInstance) {
                 if(commandInstance instanceof HystrixJob) {
                     HystrixJob job = (HystrixJob)commandInstance;
-                    jobEnded(job, true, "Job fallback", job.getKey());
+                    jobEnded(job, false, "Job fallback", job.getKey());
                 }
                 super.onFallbackSuccess(commandInstance);
             }
@@ -93,6 +121,7 @@ public class HystrixJobQueue extends JobQueue {
         // statistics
         if(job instanceof HystrixMapLayerJob) {
             HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
+            mlJob.notifyCompleted(success);
             final String jobId = getJobId(mlJob);
             final Histogram timing = metrics.histogram(
                     MetricRegistry.name(HystrixMapLayerJob.class, "exec.time." + jobId));

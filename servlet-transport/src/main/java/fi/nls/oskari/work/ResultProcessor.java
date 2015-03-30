@@ -14,6 +14,7 @@ public interface ResultProcessor {
     public static final String CHANNEL_FILTER = "/wfs/filter";
     public static final String CHANNEL_RESET = "/wfs/reset";
     public static final String CHANNEL_FEATURE_GEOMETRIES = "/wfs/featureGeometries";
+    public static final String CHANNEL_STATUS = "/status";
 
     // Error messages
     public static String ERROR_NO_PERMISSIONS = "wfs_no_permissions";

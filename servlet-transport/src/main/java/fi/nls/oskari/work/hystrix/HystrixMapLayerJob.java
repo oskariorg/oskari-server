@@ -3,7 +3,6 @@ package fi.nls.oskari.work.hystrix;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -340,10 +339,8 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
      */
     protected void imageParsingFailed(final String message) {
         log.debug("Image parsing failed");
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse(message);
         output.put(OUTPUT_ONCE, true);
-        output.put(OUTPUT_MESSAGE, message);
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
                 output);
     }
@@ -466,8 +463,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
         } else {
             locales = new ArrayList<String>();
         }
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse();
         output.put(OUTPUT_FIELDS, fields);
         output.put(OUTPUT_LOCALES, locales);
 
@@ -484,8 +480,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             log.warn("Failed to send feature");
             return;
         }
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse();
         output.put(OUTPUT_FEATURE, values);
 
         this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
@@ -504,8 +499,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
 
         log.debug("#### Sending " + features.size() + "  FEATURES");
 
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse();
         output.put(OUTPUT_FEATURES, features);
         if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
@@ -529,8 +523,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             return;
         }
 
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse();
 
         Location location = this.session.getLocation();
 
@@ -576,8 +569,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             log.warn("Failed to send feature geometries");
             return;
         }
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put(OUTPUT_LAYER_ID, this.layerId);
+        Map<String, Object> output = createCommonResponse();
         output.put(OUTPUT_GEOMETRIES, geometries);
         output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
 
@@ -644,12 +636,33 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             error = "Something went wrong";
         }
         log.error("On Error", error);
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
+                createCommonResponse(error));
+    }
+
+    public void notifyStart() {
+        log.error("On start");
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, createCommonResponse("started"));
+    }
+    public void notifyCompleted(final boolean success) {
+        log.error("Completed");
+        Map<String, Object> output = createCommonResponse("completed");
+        output.put("success", success);
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
+    }
+
+    public Map<String, Object> createCommonResponse(final String message) {
+        Map<String, Object> output = createCommonResponse();
+        output.put(OUTPUT_MESSAGE, message);
+        return output;
+    }
+
+    public Map<String, Object> createCommonResponse() {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
-        output.put(OUTPUT_MESSAGE, error);
-        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
-                output);
+        return output;
     }
+
 
     // TODO: check if this actually works!
     public String getFallback() {

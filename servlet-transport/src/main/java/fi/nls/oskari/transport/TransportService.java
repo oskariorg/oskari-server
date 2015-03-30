@@ -283,7 +283,7 @@ public class TransportService extends AbstractService {
         String channel = message.getChannel();
         log.debug("Processing request on channel:", channel, "- payload:", json);
         if (channel.equals(CHANNEL_INIT)) {
-            processInit(client, store, json, params);
+            processInit(client, store, json);
         } else if (channel.equals(CHANNEL_ADD_MAP_LAYER)) {
             addMapLayer(store, params);
         } else if (channel.equals(CHANNEL_REMOVE_MAP_LAYER)) {
@@ -330,9 +330,9 @@ public class TransportService extends AbstractService {
      * @param store
      * @param json
      */
-    public void processInit(ServerSession client, SessionStore store,
-            String json, Map<String, Object> params) {
+    public void processInit(ServerSession client, SessionStore store, String json) {
         try {
+            // this is done by json which has the reqId field...
             store = SessionStore.setParamsJSON(json);
         } catch (IOException e) {
             log.error(e, "Session creation failed");
@@ -345,7 +345,7 @@ public class TransportService extends AbstractService {
         Map<String, Layer> layers = store.getLayers();
         for (Layer layer : layers.values()) {
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
-        	initMapLayerJob(parseRequestId(params), store, layer.getId());
+        	initMapLayerJob(-1, store, layer.getId());
         }
     }
 
@@ -359,7 +359,6 @@ public class TransportService extends AbstractService {
         if (!layer.containsKey(PARAM_LAYER_ID)
                 || !layer.containsKey(PARAM_LAYER_STYLE)) {
             log.warn("Failed to add a map layer");
-
     		return;
     	}
 
