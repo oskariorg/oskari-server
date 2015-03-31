@@ -332,7 +332,6 @@ public class TransportService extends AbstractService {
      */
     public void processInit(ServerSession client, SessionStore store, String json) {
         try {
-            // this is done by json which has the reqId field...
             store = SessionStore.setParamsJSON(json);
         } catch (IOException e) {
             log.error(e, "Session creation failed");
