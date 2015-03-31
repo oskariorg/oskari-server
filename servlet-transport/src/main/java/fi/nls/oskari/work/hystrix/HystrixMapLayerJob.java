@@ -3,6 +3,7 @@ package fi.nls.oskari.work.hystrix;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -636,8 +637,9 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
             error = "Something went wrong";
         }
         log.error("On Error", error);
-        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
-                createCommonResponse(error));
+        Map<String, Object> output = createCommonResponse(error);
+        output.put("type", type.toString());
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
 
     public void notifyStart() {
@@ -648,6 +650,7 @@ public abstract class HystrixMapLayerJob extends HystrixJob {
         log.error("Completed");
         Map<String, Object> output = createCommonResponse("completed");
         output.put("success", success);
+        output.put("type", type.toString());
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
     }
 
