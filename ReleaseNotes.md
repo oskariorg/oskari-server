@@ -177,6 +177,13 @@ Log4JLogger is now accessible to servlet-map (new dependency service-logging).
 
 PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
 
+### geoserver-ext  / wps / analysis
+
+Improvements in analysis / in spatial join method when second layer is analysis layer
+- build "mvn clean install" in \oskari-server\geoserver-ext\wps\IntersectionFeatureCollection2 directory
+  and copy IntersectionFeatureCollection2-2.5.2.jar from target directory to [GeoServer home]\webapps\geoserver\WEB-INF\lib
+  and restart Geoserver (jetty)
+
 ## 1.27.1
 
 Fixed ZoomParamHandler in control-base to use parameter as is without any special handling. The code previously
