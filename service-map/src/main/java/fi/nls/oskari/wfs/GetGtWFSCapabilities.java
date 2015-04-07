@@ -42,6 +42,7 @@ public class GetGtWFSCapabilities {
     private static final Logger log = LogFactory.getLogger(GetGtWFSCapabilities.class);
 
     private final static String KEY_LAYERS = "layers";
+    private final static String KEY_LAYERS_WITH_ERRORS = "layersWithErrors";
     private final static String DEFAULT_VERSION = "1.1.0";
     private final static LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
 
@@ -78,7 +79,6 @@ public class GetGtWFSCapabilities {
      * @param rurl WFS service url
      * @param version WFS service version
      * @return json of wfslayer json array
-
      *
      */
     public static Map<String, Object> getGtDataStoreCapabilities(final String rurl, final String version, String user, String pw) {
@@ -137,11 +137,26 @@ public class GetGtWFSCapabilities {
                 // Add group of layers
 
                 JSONArray layers = new JSONArray();
+
+                JSONArray layersWithErrors = new JSONArray();
                 wfsLayers.put(KEY_LAYERS, layers);
+                wfsLayers.put(KEY_LAYERS_WITH_ERRORS, layersWithErrors);
 
                 // Loop feature types
                 for (String typeName : typeNames) {
-                    layers.put(layerToOskariLayerJson(data, typeName, rurl, user, pw));
+                    try {
+                        JSONObject temp = layerToOskariLayerJson(data, typeName, rurl, user, pw);
+                        if (temp != null) {
+                            layers.put(temp);
+                        }
+                    } catch(ServiceException se) {
+                        JSONObject errorLayer = new JSONObject();
+                        JSONHelper.putValue(errorLayer, "title", getFeaturetypeTitle(data, typeName));
+                        JSONHelper.putValue(errorLayer, "layerName" , typeName);
+                        JSONHelper.putValue(errorLayer, "errorMessage" , se.getMessage());
+                        layersWithErrors.put(errorLayer);
+
+                    }
                 }
             }
 
@@ -173,14 +188,18 @@ public class GetGtWFSCapabilities {
         String title = "";
 
         try {
+
+//            log.debug("layerToOskariLayerJson: "+typeName+" "+rurl+" "+user+" "+pw);
             SimpleFeatureType schema = data.getSchema(typeName);
+
+            //check whether there actually is a geometry column -> otherwise don't go further.
+            if (GetGtWFSCapabilities.getFeaturetypeGeometryName(schema) == null) {
+                throw new ServiceException("No geometry column.");
+            } 
 
             // Source
             FeatureSource<SimpleFeatureType, SimpleFeature> source  = data.getFeatureSource(typeName);
             title = source.getInfo().getTitle();
-
-            // Geometry property
-            String geomName = schema.getGeometryDescriptor().getName().getLocalPart();
 
             // setup UI names for all supported languages
             final String[] languages = PropertyUtil.getSupportedLanguages();
@@ -188,24 +207,9 @@ public class GetGtWFSCapabilities {
                 oskariLayer.setName(lang, title);
             }
 
-            // ResourceInfo info = source.getInfo();
-            // Set<String> keywords = info.getKeywords();
-
-
-             // JSON formatter will parse uuid from url
-            // Metadataurl is in featureType, but no method to get it
-
-     /*       final List<MetadataURL> meta = capabilitiesLayer.getMetadataURL();
-            if (meta != null) {
-                if (meta.size() > 0)
-                {
-                    oskariLayer.setMetadataId(meta.get(0).getUrl().toString());
-                }
-            }  */
-
         } catch (Exception ex) {
             log.warn("Couldn't get wfs feature source data" , ex);
-            return new JSONObject();
+            throw new ServiceException(ex.getMessage());
         }
 
         try {
@@ -226,9 +230,42 @@ public class GetGtWFSCapabilities {
             return json;
         } catch (Exception ex) {
             log.warn("Couldn't parse wfslayer to json" , ex);
-            return new JSONObject();
+            throw new ServiceException(ex.getMessage());
+
         }
     }
+
+    /**
+    *   Return the name of the geometry column for the schema of a featuretype.
+    *  
+    *   @param schema geotools wfs SimpleFeatureType
+    *   @return name of the geometry column if exists, null otherwise.
+    */
+    public static String getFeaturetypeGeometryName(SimpleFeatureType schema) {
+        try {
+            return schema.getGeometryDescriptor().getName().getLocalPart();
+        } catch(Exception ex) {
+//            log.warn("getFeaturetypeGeometryName",ex);
+            return null;
+        }
+    }
+
+    /**
+    *   Get the layer's title
+    *  
+    *   @param data geotools wfs SimpleFeatureType
+    *   @return the title of the featuretype
+    */
+    public static String getFeaturetypeTitle(WFSDataStore data, String typeName) {
+        try {
+            return data.getFeatureSource(typeName).getInfo().getTitle();
+        } catch(Exception ex) {
+            //log.warn("getFeaturetypeGeometryName",ex);
+            return null;
+        }
+    }
+
+
 
     /**
      * WMS layer data to json
@@ -239,7 +276,7 @@ public class GetGtWFSCapabilities {
      * @throws fi.nls.oskari.service.ServiceException
      *
      */
-    public static WFSLayerConfiguration  layerToWfsLayerConfiguration(WFSDataStore data, String typeName, String rurl, String user, String pw) {
+    public static WFSLayerConfiguration  layerToWfsLayerConfiguration(WFSDataStore data, String typeName, String rurl, String user, String pw)  throws ServiceException {
 
         final WFSLayerConfiguration lc = new WFSLayerConfiguration();
         lc.setDefaults();
@@ -266,7 +303,7 @@ public class GetGtWFSCapabilities {
             lc.setLayerId("layer_" + name);
 
             // Geometry property
-            String geomName = schema.getGeometryDescriptor().getName().getLocalPart();
+            String geomName = getFeaturetypeGeometryName(schema);//schema.getGeometryDescriptor().getName().getLocalPart();
             int isrs = CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true);
 
 
@@ -286,7 +323,8 @@ public class GetGtWFSCapabilities {
             return lc;
         } catch (Exception ex) {
             log.warn("Couldn't get wfs feature source data" , ex);
-            return null;
+            //return null;
+            throw new ServiceException(ex.getMessage());
         }
 
     }
