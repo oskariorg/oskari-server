@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.ResultProcessor;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
@@ -169,68 +170,59 @@ public class WFSCommunicator {
 			log.debug("Using GML Parser 3");
 			parser = GMLParser3.getParser(layer);
 		}
-		
-		boolean errorHandled = false;
+
 		Object obj = null;
-		FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
 		try {
 			obj = parser.parse(response);
-			if(obj instanceof Map) {
-				if(features == null) {
-					errorHandled = parseErrors((Map<Object, Object>) obj);	
-				}
-			}
-			else {
-				features = (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
-			}
+            if(obj instanceof FeatureCollection) {
+                return (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
+            }
+            throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
 		} catch (Exception e) {
-            e.printStackTrace();
-			if(!errorHandled)
-				log.error(e, "Features couldn't be parsed: - response: ", response, " obj: ", obj);
+            if(!parseErrors(obj)) {
+                log.error(e, "Features couldn't be parsed: - response: ", response, " obj: ", obj);
+            }
+            throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
 		}
-		
-		return features;
 	}
 
 	/**
 	 * Parses WFS 1.0.0 and 1.1.0 XML errors
 	 * 
-	 * @param error
+	 * @param param
 	 * @return <code>true</code> if error was handled; <code>false</code>
 	 *         otherwise.
 	 */
 	@SuppressWarnings("unchecked")
-	private static boolean parseErrors(Map<Object, Object> error) {
-		Map<Object, Object> exception = null;
-		String version = null;
-		boolean handled = false;
-		
-		
-		if(error != null && error.containsKey("Exception") && error.get("Exception") instanceof Map) {
-			exception = (Map<Object, Object>) error.get("Exception");
-			//log.debug("Exception:", exception);
-			
-			if(error.containsKey("version")) {
-				version = (String) error.get("version");
+	private static boolean parseErrors(Object param) {
+        if(!(param instanceof Map)) {
+            return false;
+        }
+        // can't handle these cases
+        final Map<Object, Object> error = (Map<Object, Object>) param;
+		if(error == null
+                || !error.containsKey("Exception")
+                || !error.containsKey("version")
+                || !(error.get("Exception") instanceof Map)) {
+            log.error("Layer configuration problem", error);
+            return false;
+        }
+        // check that we are processing a known version
+        final String version = (String) error.get("version");
+        final boolean knownVersion = version.equals(VERSION_1_0_0) || version.equals(VERSION_1_1_0);
+        if(!knownVersion) {
+            log.error("UNHANDLED Version:", version);
+            return false;
+        }
 
-				if(version.equals(VERSION_1_0_0) || version.equals(VERSION_1_1_0)) {
-					if(exception.containsKey("ExceptionText") && exception.containsKey("exceptionCode")) {
-						log.error("Layer configuration problem [",
-								exception.get("exceptionCode"), "] ", 
-								exception.get("ExceptionText"), error); 
-						handled = true;	
-					}
-				} else {
-                    log.error("UNHANDLED Version:", version);
-                }
-				
-			}
-		}
-		
-		if(!handled)
-			log.error("Layer configuration problem", error);
-		
-		return handled;
+        final Map<Object, Object> exception = (Map<Object, Object>) error.get("Exception");
+        if(exception.containsKey("ExceptionText") && exception.containsKey("exceptionCode")) {
+            log.error("Layer configuration problem [",
+                    exception.get("exceptionCode"), "] ",
+                    exception.get("ExceptionText"), error);
+            return true;
+        }
+        return false;
 	}
 
     /**

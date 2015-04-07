@@ -349,36 +349,25 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
     protected boolean requestHandler(List<Double> bounds) {
 
         // make a request
-        Map<String, Object> output = new HashMap<String, Object>();
         RequestResponse response = request(type, layer, session, bounds, transformService);
         boolean success = false;
 
         try {
-
             // request failed
             if(response == null) {
                 log.warn("Request failed for layer", layer.getLayerId());
-                output.put(OUTPUT_LAYER_ID, layer.getLayerId());
-                output.put(OUTPUT_ONCE, true);
-                output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_WFS_REQUEST_FAILED);
-                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-                log.debug(PROCESS_ENDED, getKey());
-                return false;
+                throw new RuntimeException(ResultProcessor.ERROR_WFS_REQUEST_FAILED);
             }
 
             // parse response
             this.features = response(layer, response);
             // parsing failed
             if(this.features == null) {
-                log.warn("Parsing failed for layer",  this.layerId);
-                output.put(OUTPUT_LAYER_ID, this.layerId);
-                output.put(OUTPUT_ONCE, true);
-                output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_FEATURE_PARSING);
-                this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-                log.debug(PROCESS_ENDED, getKey());
-                return false;
+                log.warn("Parsing failed for layer", this.layerId);
+                throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
             }
 
+            final Map<String, Object> output = createCommonResponse();
             // 0 features found - send size
             if(this.type == JobType.MAP_CLICK && this.features.size() == 0) {
                 log.debug("Empty result for map click",  this.layerId);
@@ -389,8 +378,7 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
                 log.debug(PROCESS_ENDED, getKey());
                 return false;
             } else if((this.type == JobType.GEOJSON && this.features.size() == 0) || (this.type == JobType.PROPERTY_FILTER && this.features.size() == 0)) {
-                log.debug("Empty result for filter",  this.layerId);
-                output.put(OUTPUT_LAYER_ID, this.layerId);
+                log.debug("Empty result for filter", this.layerId);
                 output.put(OUTPUT_FEATURES, "empty");
                 this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FILTER, output);
                 log.debug(PROCESS_ENDED, getKey());
@@ -398,14 +386,12 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
             } else {
                 if(this.features.size() == 0) {
                     log.debug("Empty result",  this.layerId);
-                    output.put(OUTPUT_LAYER_ID, this.layerId);
                     output.put(OUTPUT_FEATURE, "empty");
                     this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                     log.debug(PROCESS_ENDED, getKey());
                     return false;
                 } else if(this.features.size() == layer.getMaxFeatures()) {
-                    log.debug("Max feature result",  this.layerId);
-                    output.put(OUTPUT_LAYER_ID, this.layerId);
+                    log.debug("Max feature result", this.layerId);
                     output.put(OUTPUT_FEATURE, "max");
                     this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
                 }
@@ -413,10 +399,6 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
 
             success = true;
             log.debug("Features count", this.features.size());
-        }
-        catch (Exception ee)
-        {
-            log.debug("exception: ", ee);
         } finally {
             if( response != null ) {
                 try {

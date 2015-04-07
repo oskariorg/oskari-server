@@ -855,7 +855,7 @@ public class FEMapLayerJob extends HystrixMapLayerJob {
             if (this.features == null) {
                 log.debug("Parsing failed for layer " + this.layerId);
                 output.put(OUTPUT_ONCE, true);
-                output.put(OUTPUT_MESSAGE, "features_parsing_failed");
+                output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_FEATURE_PARSING);
                 this.service.addResults(session.getClient(),
                         ResultProcessor.CHANNEL_ERROR, output);
                 log.debug(PROCESS_ENDED + getKey());
