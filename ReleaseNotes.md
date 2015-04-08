@@ -78,6 +78,10 @@ NEW:
 The maxfeatures is channel based currently so you will end up with a result count of (maxfeatures * channels configured).
 This will most propably be changed to an enforced limit across channels in the future.
 
+
+CreateUserLayer now support files whose names contains dot(s).
+
+
 ### control-example
 
 GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as
