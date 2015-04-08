@@ -501,6 +501,8 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
             // if is not in shown area -> skip
             if(!screenBBOXFilter.evaluate(feature)) {
                 log.debug("Feature not on screen, skipping", fid);
+                log.debug("Filter ", screenBBOXFilter);
+                log.debug("Feature ", feature);
                 continue;
             }
 
