@@ -261,8 +261,6 @@ public class CreateUserLayerHandler extends ActionHandler {
                 filename = parts3[0];
             } else {
                 // Use same file name basics
-
-
                 i = newFile.getPath().lastIndexOf(".");
                 String[] parts3 = {newFile.getPath().substring(0, i), newFile.getPath().substring(i)};
                 boolean success = newFile.renameTo(new File(filename + parts3[1]));
@@ -286,11 +284,14 @@ public class CreateUserLayerHandler extends ActionHandler {
         return new File(filename + "." + imp_extension);
     }
 
-    private static String checkFileName(String filenam) {
-        String[] parts = filenam.split("\\/");
+    private static String checkFileName(String fileName) {
+        String[] parts = fileName.split("\\/");
+        String checkedFileName = parts[parts.length - 1];
+
         // no dots any more allowed in filename
-        if (parts[parts.length - 1].indexOf(".") > -1) return null;
-        return parts[parts.length - 1];
+        checkedFileName = checkedFileName.replace(".", "_");
+
+        return checkedFileName;
     }
 
     class RawUpLoadItem {
