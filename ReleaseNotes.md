@@ -114,6 +114,9 @@ Sample complex wfs layer insert script in \elf-oskari-server-extensions\elf-reso
 ### servlet-transport
 
 Moved duplicated code from `FEMaplayerJob` and `WFSMaplayerJob` to common baseclass `OWSMaplayerJob`.
+Moved helper methods from OWSMaplayerJob to JobHelper class.
+Removed job validation from OWS/FE/MaplayerJobs - validation should now be done by creating a JobValidator
+with the job and calling validator.validateJob(). This enables custom handling for validation errors.
 Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
 be included with documentation to make it usable.
 Layer scale limit of -1 is now handled as no limit like in other parts of Oskari.
@@ -150,11 +153,11 @@ adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user
         <url-pattern>/status</url-pattern>
     </servlet-mapping>
 
-The metrics JSON-format is not set in stone and can change in the near future.
+The JSON-format for metrics is not set in stone and can change in the near future.
 
 Added a new TransportResultProcessor class which injects a requestId (received from client) to all responses.
 
-Refactored websocket messsage parsing a bit.
+Some refactoring for websocket messsage parsing.
 
 Added a new status-channel for websocket-communication. Messages are sent to browser when a job starts and when it completes.
 Also added a requestId attribute for requests which is passed on in responses so client knows for which request the response is.

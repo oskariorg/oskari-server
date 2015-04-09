@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Job for Arcgis REST Map Layer
  */
-public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
+public class ArcGisMapLayerJob extends OWSMapLayerJob {
 
     private static final Logger log = LogFactory.getLogger(ArcGisMapLayerJob.class);
     private static final List<List<Object>> EMPTY_LIST = new ArrayList();
@@ -66,13 +66,13 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
     //private Job parentJob = null;
     private String token = null;
 
-    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId) {
-        super(service, type, store, layerId, true, true, true);
+    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer) {
+        super(service, type, store, layer, true, true, true);
     }
 
-    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId,
+    public ArcGisMapLayerJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer,
                              boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
-        super(service, type, store, layerId, reqSendFeatures, reqSendImage, reqSendHighlight);
+        super(service, type, store, layer, reqSendFeatures, reqSendImage, reqSendHighlight);
 
     }
 
@@ -178,21 +178,25 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
         return HttpHelper.getRequest(url, null);
     }
 
+    public void loadLayerConfig() {
+        this.token = ArcGisTokenService.getInstance().getTokenForLayer(this.layer.getURL());
+        this.arcGisLayer = getArcGisLayerConfiguration(this.layerId, this.layer, this.token);
+    }
     /**
      * Process of the job
      * <p/>
      * Worker calls this when starts the job.
      */
-    public final void runThatShouldBeRefactoredToHystrixCompatible() {
+    public String run() {
+        final boolean thisMethodShouldBeRefactoredForNewJobModel = true;
+        if(thisMethodShouldBeRefactoredForNewJobModel) {
+            throw new RuntimeException("Needs refactoring");
+        }
 
+        loadLayerConfig();
         setResourceSending();
 
         log.debug("type:", this.type, "features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
-
-        if (!validateMapScales()) {
-            log.debug("Map scale was not valid for layer", this.layerId);
-            return;
-        }
 
         // if different SRS, create transforms for geometries
         if (!this.session.getLocation().getSrs().equals(this.layer.getSRSName())) {
@@ -212,9 +216,8 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             this.session.getLocation().setEnlargedEnvelope(grid.get(0));
         }
 
-        if (!goNext()) return;
+        if (!goNext()) return STATUS_CANCELED;
 
-        this.token = ArcGisTokenService.getInstance().getTokenForLayer(this.layer.getURL());
 
         this.arcGisLayer = getArcGisLayerConfiguration(this.layerId, this.layer, this.token);
         if (this.arcGisLayer == null) {
@@ -224,7 +227,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             output.put(OUTPUT_ONCE, true);
             output.put(OUTPUT_MESSAGE, ERROR_REST_CONFIGURATION_FAILED);
             this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-            return;
+            return "error";
         }
 
         this.arcGisLayers = getArcGisLayersDependingOnScale();
@@ -235,7 +238,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             if (!this.layer.isTileRequest()) { // make single request
                 if (!this.normalHandlers(null, true)) {
                     log.warn("Canceling single request", layer.getLayerId());
-                    return;
+                    return STATUS_CANCELED;
                 }
             }
 
@@ -247,11 +250,11 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                 if (this.layer.isTileRequest()) { // make a request per tile
                     if (!this.normalHandlers(bounds, first)) {
                         log.warn("Canceling tile request", layer.getLayerId());
-                        return;
+                        return STATUS_CANCELED;
                     }
                 }
 
-                if (!goNext()) return;
+                if (!goNext()) return STATUS_CANCELED;
 
                 if (this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
                     Double[] bbox = new Double[4];
@@ -282,7 +285,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
 
                         if (bufferedImage == null) {
                             this.imageParsingFailed();
-                            return;
+                            return "error";
                         }
 
                         // set to cache
@@ -306,10 +309,10 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
         } else if (this.type == JobType.HIGHLIGHT) {
             if (this.sendHighlight) {
                 if (!this.requestHandler(null)) {
-                    return;
+                    return STATUS_CANCELED;
                 }
                 this.featuresHandler();
-                if (!goNext()) return;
+                if (!goNext()) return STATUS_CANCELED;
 
                 // Send geometries, if requested as well
                 if (this.session.isGeomRequest()) {
@@ -334,7 +337,7 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
                         this.features);
                 if (bufferedImage == null) {
                     this.imageParsingFailed();
-                    return;
+                    return "error";
                 }
 
                 Double[] bbox = location.getBboxArray();
@@ -348,10 +351,10 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
         } else if (this.type == JobType.MAP_CLICK) {
             if (!this.requestHandler(null)) {
                 this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
-                return;
+                return "success";
             }
             this.featuresHandler();
-            if (!goNext()) return;
+            if (!goNext()) return STATUS_CANCELED;
             if (this.sendFeatures) {
                 log.debug("Feature values list", this.featureValuesList);
                 this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_MAP_CLICK);
@@ -361,16 +364,17 @@ public abstract class ArcGisMapLayerJob extends OWSMapLayerJob {
             }
         } else if (this.type == JobType.GEOJSON) {
             if (!this.requestHandler(null)) {
-                return;
+                return STATUS_CANCELED;
             }
             this.featuresHandler();
-            if (!goNext()) return;
+            if (!goNext()) return STATUS_CANCELED;
             if (this.sendFeatures) {
                 this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_FILTER);
             }
         } else {
             log.error("Type is not handled", this.type);
         }
+        return "success";
     }
 
     private List<ArcGisLayerStore> getArcGisLayersDependingOnScale() {

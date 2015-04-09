@@ -10,6 +10,7 @@ import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.executionhook.HystrixCommandExecutionHook;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.work.OWSMapLayerJob;
 import fi.nls.oskari.work.hystrix.metrics.AvgJobLengthGauge;
 import fi.nls.oskari.work.hystrix.metrics.MaxJobLengthGauge;
 import fi.nls.oskari.work.hystrix.metrics.MinJobLengthGauge;
@@ -39,29 +40,14 @@ public class HystrixJobQueue extends JobQueue {
 
         HystrixPlugins.getInstance().registerCommandExecutionHook(new HystrixCommandExecutionHook() {
             /**
-             * Actual run method execution starts
-             * @param commandInstance
-             * @param <T>
-             */
-            @Override
-            public <T> void onExecutionStart(HystrixInvokable<T> commandInstance) {
-                if(commandInstance instanceof HystrixMapLayerJob) {
-                    HystrixMapLayerJob job = (HystrixMapLayerJob) commandInstance;
-                    job.setStartTime();
-                    job.notifyStart();
-                }
-                super.onExecutionStart(commandInstance);
-            }
-
-            /**
              * Actual run method completed successfully
              * @param commandInstance
              * @param <T>
              */
             @Override
             public <T> void onExecutionSuccess(HystrixInvokable<T> commandInstance) {
-                if(commandInstance instanceof HystrixJob) {
-                    HystrixJob job = (HystrixJob)commandInstance;
+                if (commandInstance instanceof HystrixJob) {
+                    HystrixJob job = (HystrixJob) commandInstance;
                     jobEnded(job, true, "Job completed", job.getKey());
                 }
                 super.onExecutionSuccess(commandInstance);
@@ -77,8 +63,8 @@ public class HystrixJobQueue extends JobQueue {
              */
             @Override
             public <T> Exception onError(HystrixInvokable<T> commandInstance, HystrixRuntimeException.FailureType failureType, Exception e) {
-                if(commandInstance instanceof HystrixJob) {
-                    HystrixJob job = (HystrixJob)commandInstance;
+                if (commandInstance instanceof HystrixJob) {
+                    HystrixJob job = (HystrixJob) commandInstance;
                     jobEnded(job, false, "Error on job", job.getKey(), failureType, e.getMessage());
                 }
                 return super.onError(commandInstance, failureType, e);
@@ -91,8 +77,8 @@ public class HystrixJobQueue extends JobQueue {
              */
             @Override
             public <T> void onFallbackSuccess(HystrixInvokable<T> commandInstance) {
-                if(commandInstance instanceof HystrixJob) {
-                    HystrixJob job = (HystrixJob)commandInstance;
+                if (commandInstance instanceof HystrixJob) {
+                    HystrixJob job = (HystrixJob) commandInstance;
                     jobEnded(job, false, "Job fallback", job.getKey());
                 }
                 super.onFallbackSuccess(commandInstance);
@@ -110,9 +96,11 @@ public class HystrixJobQueue extends JobQueue {
     private void jobEnded(HystrixJob job, boolean success, Object... args) {
         if(success) {
             log.debug(args);
+            onJobSuccess(job, null);
         }
         else {
             log.warn(args);
+            onJobFailed(job, null);
         }
 
         // NOTE! job.getExecutionTimeInMilliseconds() doesn't seem to provide correct values
@@ -122,7 +110,7 @@ public class HystrixJobQueue extends JobQueue {
         if(job instanceof HystrixMapLayerJob) {
             HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
             mlJob.notifyCompleted(success);
-            final String jobId = getJobId(mlJob);
+            final String jobId = mlJob.getJobId();
             final Histogram timing = metrics.histogram(
                     MetricRegistry.name(HystrixMapLayerJob.class, "exec.time." + jobId));
             timing.update(runtimeMS);
@@ -149,10 +137,6 @@ public class HystrixJobQueue extends JobQueue {
         job.teardown();
         // jobs stick around for some reason, clean the map when job has ended
         cleanup(false);
-    }
-
-    private String getJobId(HystrixMapLayerJob mlJob) {
-        return mlJob.layerId + "." + mlJob.type.toString();
     }
 
     public MetricRegistry getMetricsRegistry() {
@@ -194,20 +178,18 @@ public class HystrixJobQueue extends JobQueue {
     public void add(Job job) {
         // removed previous job with same key
         remove(job);
-        if(job instanceof HystrixJob) {
-            if(job instanceof HystrixMapLayerJob) {
-                HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
-                Meter addMeter = metrics.meter(
-                        MetricRegistry.name(HystrixJobQueue.class, "job.added." + getJobId(mlJob)));
-                addMeter.mark();
-            }
-            final HystrixJob j = (HystrixJob) job;
-            Future<String> existing = commandsMapping.get(j.getKey());
+        if(job instanceof OWSMapLayerJob) {
+            // wrap to HystrixMapLayerJob
+            HystrixMapLayerJob hJob = new HystrixMapLayerJob((OWSMapLayerJob)job);
+            Meter addMeter = metrics.meter(
+                    MetricRegistry.name(HystrixJobQueue.class, "job.added." + hJob.getJobId()));
+            addMeter.mark();
+            Future<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
                 existing.cancel(true);
             }
             addJobCount();
-            commandsMapping.put(j.getKey(), j.queue());
+            commandsMapping.put(job.getKey(), hJob.queue());
             if(mapSize < commandsMapping.size()) {
                 mapSize = commandsMapping.size();
             }
@@ -222,7 +204,7 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void remove(Job job) {
-        if(job instanceof HystrixJob) {
+        if(job instanceof OWSMapLayerJob) {
             Future<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
                 commandsMapping.remove(job.getKey());

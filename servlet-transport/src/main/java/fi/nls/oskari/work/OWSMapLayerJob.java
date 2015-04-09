@@ -1,11 +1,9 @@
 package fi.nls.oskari.work;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.*;
 
 import fi.nls.oskari.pojo.*;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.worker.AbstractJob;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
@@ -15,8 +13,6 @@ import org.opengis.referencing.operation.MathTransform;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
 
 /**
@@ -68,9 +64,9 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     protected ResultProcessor service;
     protected SessionStore session;
     protected Layer sessionLayer;
-    protected WFSLayerStore layer;
     protected WFSLayerPermissionsStore permissions;
     protected String layerId;
+    protected WFSLayerStore layer;
     protected boolean layerPermission;
     protected boolean reqSendFeatures;
     protected boolean reqSendImage;
@@ -87,22 +83,10 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     protected List<List<Object>> geomValuesList;
 
     protected WFSImage image = null;
-    protected Units units = new Units();
 
-    // API
-    public static final String PERMISSIONS_API = "GetLayerIds";
-    public static final String LAYER_CONFIGURATION_API = "GetWFSLayerConfiguration&id=";
 
     protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
-    // COOKIE
-    public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";
 
-    // API URL (action routes)
-    private final static String PARAM_ROUTE = "action_route";
-    private static String SERVICE_URL = null; // default value perhaps?
-    private static String SERVICE_URL_PATH = null;
-    private static String SERVICE_URL_QUERYSTRING = null;
-    private static String SERVICE_URL_SESSION_PARAM = PropertyUtil.get("oskari.cookie.session", null);
 
     /**
      * Creates a new runnable job with own Jedis instance
@@ -112,11 +96,11 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      * 
      * @param service
      * @param store
-     * @param layerId
+     * @param layer
      */
     public OWSMapLayerJob(ResultProcessor service, JobType type,
-            SessionStore store, String layerId) {
-        this(service, type, store, layerId, true, true, true);
+            SessionStore store, WFSLayerStore layer) {
+        this(service, type, store, layer, true, true, true);
     }
 
     /**
@@ -128,19 +112,18 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      * 
      * @param service
      * @param store
-     * @param layerId
      * @param reqSendFeatures
      * @param reqSendImage
      * @param reqSendHighlight
      */
     public OWSMapLayerJob(ResultProcessor service, JobType type,
-            SessionStore store, String layerId, boolean reqSendFeatures,
+            SessionStore store, WFSLayerStore layer, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
-        setupAPIUrl();
         this.service = service;
         this.type = type;
         this.session = store;
-        this.layerId = layerId;
+        this.layer = layer;
+        this.layerId = layer.getLayerId();
         this.sessionLayer = this.session.getLayers().get(this.layerId);
         this.layer = null;
         this.permissions = null;
@@ -152,113 +135,21 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         this.transformClient = null;
     }
 
-    private synchronized static void setupAPIUrl() {
-        if(SERVICE_URL != null) {
-            return;
-        }
-        SERVICE_URL = PropertyUtil.get("oskari.domain", null);
-        final String[] path = PropertyUtil.get("oskari.ajax.url.prefix", "/?").split("\\?");
-        SERVICE_URL_PATH = path[0];
-        SERVICE_URL_QUERYSTRING = "?";
-        if(path.length == 2) {
-            SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + path[1];
-        }
-        if(!SERVICE_URL_QUERYSTRING.endsWith("?") && !SERVICE_URL_QUERYSTRING.endsWith("&")) {
-            SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + "&";
-        }
-        SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + PARAM_ROUTE + "=";
-        // querystring should now be "?action_route=" or something like "?qwer=ty&action_route="
-        log.debug("Constructed path:", SERVICE_URL_PATH, "- and querystr: ", SERVICE_URL_QUERYSTRING, "from:", path);
+    public String getSessionId() {
+        return this.session.getSession();
     }
 
-    /**
-     * Gets service path for local API
-     * 
-     * Path for Layer configuration and permissions request
-     * 
-     * @param sessionId
-     * @return URL
-     */
-    public static String getAPIUrl(String sessionId) {
-        setupAPIUrl();
-        String session = "";
-        if (SERVICE_URL_SESSION_PARAM != null) {
-            // TODO: move into cookie same as route
-            // construct url session token if specified
-            session = ";" + SERVICE_URL_SESSION_PARAM + "=" + sessionId;
-        }
-        return SERVICE_URL + SERVICE_URL_PATH + session + SERVICE_URL_QUERYSTRING;
+    public String getRoute() {
+        return this.session.getRoute();
     }
 
-    /**
-     * Gets layer permissions (uses cache)
-     *
-     * @param layerId
-     * @param sessionId
-     * @param route
-     * @return <code>true</code> if rights to use the layer; <code>false</code>
-     *         otherwise.
-     */
-    public static boolean getPermissions(String layerId, String sessionId, String route) {
-        String json = WFSLayerPermissionsStore.getCache(sessionId);
-        boolean fromCache = (json != null);
-        if(!fromCache) {
-            log.warn(getAPIUrl(sessionId) + PERMISSIONS_API);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
-            json = HttpHelper.getRequest(getAPIUrl(sessionId) + PERMISSIONS_API, cookies);
-            if(json == null)
-                return false;
-        }
-        try {
-            WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(json);
-            return permissions.isPermission(layerId);
-        } catch (IOException e) {
-            log.error(e, "JSON parsing failed for WFSLayerPermissionsStore \n" + json);
-        }
-
-        return false;
+    public JobType getType() {
+        return type;
     }
 
-    /**
-     * Gets layer configuration (uses cache)
-     *
-     * @param layerId
-     * @param sessionId
-     * @param route
-     * @return layer
-     */
-    public static WFSLayerStore getLayerConfiguration(String layerId, String sessionId, String route) {
-        String json = WFSLayerStore.getCache(layerId);
-        boolean fromCache = (json != null);
-        if(!fromCache) {
-            final String apiUrl = getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId;
-            log.debug("Fetching layer data from", apiUrl);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
-            // NOTE: result is not handled
-            String result = HttpHelper.getRequest(apiUrl, cookies);
-            json = WFSLayerStore.getCache(layerId);
-            if(json == null) {
-                log.error("Couldn't find JSON for WFSLayerStore with id:", layerId, " - API url:", apiUrl);
-                return null;
-            }
-        }
-        try {
-            return WFSLayerStore.setJSON(json);
-        } catch (Exception e) {
-            log.error(e, "JSON parsing failed for WFSLayerStore \n" + json);
-        }
-
-        return null;
+    public String getLayerId() {
+        return layerId;
     }
-
-
-
 
     /**
      * Releases all when removed
@@ -283,8 +174,244 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      * Worker calls this when starts the job.
      * 
      */
-    @Override
-    public abstract String run() ;
+    public String run() {
+
+        log.debug(PROCESS_STARTED + " " + getKey());
+        setResourceSending();
+
+        // if different SRS, create transforms for geometries
+        if(!this.session.getLocation().getSrs().equals(this.layer.getSRSName())) {
+            this.transformService = this.session.getLocation().getTransformForService(this.layer.getCrs(), true);
+            this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
+        }
+
+        // check that the job isn't canceled
+        if (!goNext()) {
+            log.debug("[fe] Cancelled");
+            return STATUS_CANCELED;
+        }
+        // run job specific tasks
+        boolean completed = runRequestedJob();
+        if(!completed) {
+            log.debug("[fe] Cancelled");
+            return STATUS_CANCELED;
+        }
+        log.debug("[fe] " + PROCESS_ENDED + " " + getKey());
+        return "success";
+    }
+
+    private boolean runRequestedJob() {
+        // tiles for grid
+        if (this.type == JobType.NORMAL) {
+            return runNormalJob();
+        }
+        else if (this.type == JobType.HIGHLIGHT) {
+            return runHighlightJob();
+        }
+        else if (this.type == JobType.MAP_CLICK) {
+            return runMapClickJob();
+        }
+        else if (this.type == JobType.GEOJSON) {
+            return runGeoJSONJob();
+        }
+        else if (this.type == JobType.PROPERTY_FILTER) {
+            return runPropertyFilterJob();
+        }
+        return runUnknownJob();
+    }
+
+    public boolean runNormalJob() {
+        // make single request
+        if (!this.layer.isTileRequest()) {
+            log.debug("single request");
+            if (!this.normalHandlers(null, true)) {
+                log.debug("!normalHandlers leaving");
+                return false;
+            } else {
+                log.debug("single request - continue");
+            }
+        } else {
+            log.debug("MAKING TILED REQUESTS");
+        }
+        log.debug("normal tile images handling");
+
+        // init enlarged envelope
+        List<List<Double>> grid = this.session.getGrid().getBounds();
+        if (grid.size() > 0) {
+            this.session.getLocation().setEnlargedEnvelope(grid.get(0));
+        }
+
+        boolean first = true;
+        int index = 0;
+        for(List<Double> bounds : grid) {
+            if (!goNext()) {
+                return false;
+            }
+
+            log.debug("Tile bounds:", bounds);
+
+            // make a request per tile
+            if(this.layer.isTileRequest()) {
+                if(!this.normalHandlers(bounds, first)) {
+                    continue;
+                }
+            }
+
+            if(!goNext()) {
+                return false;
+            }
+
+            boolean isThisTileNeeded = true;
+
+            if (!this.sendImage) {
+                log.debug("[fe] !sendImage - not sending PNG");
+                isThisTileNeeded = false;
+            }
+
+            if (!this.sessionLayer.isTile(bounds)) {
+                log.debug("[fe] !layer.isTile - not sending PNG");
+                isThisTileNeeded = false;
+            }
+
+            if (isThisTileNeeded) {
+                Double[] bbox = bounds.toArray(new Double[4]);
+
+                // get from cache
+                BufferedImage bufferedImage = getImageCache(bbox);
+                boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary(index);
+
+                if(bufferedImage == null) {
+                    if(this.image == null) {
+                        this.image = createResponseImage();
+                    }
+                    bufferedImage = this.image.draw(this.session.getTileSize(),
+                            this.session.getLocation(),
+                            bounds,
+                            this.features);
+                    if(bufferedImage == null) {
+                        this.imageParsingFailed();
+                        throw new RuntimeException("Image parsing failed!");
+                    }
+
+                    // setup cachekey
+                    String cacheStyleName = this.session.getLayers().get(this.layerId).getStyleName();
+                    if (cacheStyleName.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
+                        cacheStyleName += "_" + this.session.getSession();
+                    }
+
+                    // save to cache
+                    setImageCache(bufferedImage, cacheStyleName, bbox, !isboundaryTile);
+                }
+
+                String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
+                this.sendWFSImage(url, bufferedImage, bbox, true, isboundaryTile);
+            } else {
+                log.debug("Tile not needed?", bounds);
+            }
+
+            if (first) {
+                first = false;
+                // keep the next tiles
+                this.session.setKeepPrevious(true);
+            }
+            index++;
+        }
+        return true;
+    }
+
+    public boolean runHighlightJob() {
+        if(!this.sendHighlight) {
+            // highlight job with a flag for not sending images, what is going on in here?
+            return true;
+        }
+        if(!this.requestHandler(null)) {
+            return false;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+        // Send geometries, if requested as well
+        if(this.session.isGeomRequest()){
+            this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
+        }
+        log.debug("highlight image handling", this.features.size());
+        // IMAGE HANDLING
+        log.debug("sending");
+        Location location = this.session.getLocation();
+        if(this.image == null) {
+            this.image = new WFSImage(this.layer,
+                    this.session.getClient(),
+                    this.session.getLayers().get(this.layerId).getStyleName(),
+                    JobType.HIGHLIGHT.toString());
+        }
+        BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
+                location,
+                this.features);
+        if(bufferedImage == null) {
+            this.imageParsingFailed();
+            throw new RuntimeException("Image parsing failed!");
+        }
+
+        Double[] bbox = location.getBboxArray();
+
+        // cache (non-persistant)
+        setImageCache(bufferedImage, JobType.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
+
+        String url = createImageURL(JobType.HIGHLIGHT.toString(), bbox);
+        this.sendWFSImage(url, bufferedImage, bbox, false, false);
+        return true;
+    }
+
+    public boolean runMapClickJob() {
+
+        if (!this.requestHandler(null)) {
+            // success, just no hits
+            this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
+            return true;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+
+        // features
+        if (this.sendFeatures) {
+            log.debug("Feature values list", this.featureValuesList);
+            this.sendWFSFeatures(this.featureValuesList,
+                    ResultProcessor.CHANNEL_MAP_CLICK);
+        } else {
+            log.debug("No feature data!");
+            this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
+        }
+        return true;
+    }
+
+    public boolean runGeoJSONJob() {
+        if (!this.requestHandler(null)) {
+            return false;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+        if (this.sendFeatures) {
+            this.sendWFSFeatures(this.featureValuesList,
+                    ResultProcessor.CHANNEL_FILTER);
+        }
+        return true;
+    }
+
+    public boolean runPropertyFilterJob() {
+        // should be same functionality
+        return runGeoJSONJob();
+    }
+
+    public boolean runUnknownJob() {
+        log.debug("Type is not handled " + this.type);
+        return true;
+    }
+
 
     /**
      * Wrapper for normal type job's handlers
@@ -358,37 +485,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     }
 
     /**
-     * Checks if enough information for running the task type
-     *
-     * @return <code>true</code> if enough information for type;
-     *         <code>false</code> otherwise.
-     */
-    protected boolean validateType() {
-        if(this.type == JobType.HIGHLIGHT) {
-            if(this.sessionLayer.getHighlightedFeatureIds() != null &&
-                    this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
-                return true;
-            }
-        } else if(this.type == JobType.MAP_CLICK) {
-            if(session.getMapClick() != null) {
-                return true;
-            }
-        } else if(this.type == JobType.GEOJSON) {
-            if(session.getFilter() != null) {
-                return true;
-            }
-        }
-        else if(this.type == JobType.PROPERTY_FILTER) {
-            if(session.getPropertyFilter() != null) {
-                return true;
-            }
-        } else if(this.type == JobType.NORMAL) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Sets which resources will be sent (features, image)
      */
     protected void setResourceSending() {
@@ -415,24 +511,42 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
      *         <code>false</code> otherwise.
      */
     protected boolean validateMapScales() {
-        double scale = this.session.getMapScales().get((int)this.session.getLocation().getZoom());
-        log.debug("Scale in:", layer.getSRSName(), scale, "[", layer.getMaxScale(), ",", layer.getMinScale(), "]");
-        // if scale value is -1 -> ignore scale check on that boundary
-        boolean minScaleOk = (layer.getMinScale() == -1);
-        boolean maxScaleOk = (layer.getMaxScale() == -1);
-        // min == biggest value
-        if(!minScaleOk) {
-            double minScaleInMapSrs = units.getScaleInSrs(layer.getMinScale(), layer.getSRSName(), session.getLocation().getSrs());
-            log.debug("Scale in:", session.getLocation().getSrs(), scale, "[min:", minScaleInMapSrs, "]");
-            minScaleOk = (minScaleInMapSrs >= scale);
-        }
-        if(!maxScaleOk) {
-            double maxScaleInMapSrs = units.getScaleInSrs(layer.getMaxScale(), layer.getSRSName(), session.getLocation().getSrs());
-            log.debug("Scale in:", session.getLocation().getSrs(), scale, "[max:", maxScaleInMapSrs, "]");
-            maxScaleOk = maxScaleInMapSrs <= scale;
-        }
+        return JobHelper.isRequestScalesInRange(
+                this.session.getMapScales(),
+                (int) this.session.getLocation().getZoom(),
+                layer,
+                session.getLocation().getSrs());
+    }
 
-        return minScaleOk && maxScaleOk;
+    /**
+     * Checks if enough information for running the task type
+     *
+     * @return <code>true</code> if enough information for type;
+     *         <code>false</code> otherwise.
+     */
+    public boolean hasValidParams() {
+        if(this.type == JobType.HIGHLIGHT) {
+            if(this.sessionLayer.getHighlightedFeatureIds() != null &&
+                    this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
+                return true;
+            }
+        } else if(this.type == JobType.MAP_CLICK) {
+            if(session.getMapClick() != null) {
+                return true;
+            }
+        } else if(this.type == JobType.GEOJSON) {
+            if(session.getFilter() != null) {
+                return true;
+            }
+        }
+        else if(this.type == JobType.PROPERTY_FILTER) {
+            if(session.getPropertyFilter() != null) {
+                return true;
+            }
+        } else if(this.type == JobType.NORMAL) {
+            return true;
+        }
+        return false;
     }
     /**
      * Creates image url
@@ -643,4 +757,52 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
                 .getLayers().get(this.layerId).getStyleName(),
                 JobType.HIGHLIGHT.toString());
     }
+
+    public void sendCommonErrorResponse(final String message, final boolean once) {
+        Map<String, Object> output = createCommonResponse(message);
+        if(once) {
+            output.put(OUTPUT_ONCE, once);
+        }
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+    public Map<String, Object> createCommonResponse(final String message) {
+        Map<String, Object> output = createCommonResponse();
+        output.put(OUTPUT_MESSAGE, message);
+        return output;
+    }
+
+    public Map<String, Object> createCommonResponse() {
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        return output;
+    }
+
+
+    public void notifyError() {
+        notifyError(null);
+    }
+
+    public void notifyError(String error) {
+        if (error == null) {
+            error = "Something went wrong";
+        }
+        log.error("On Error", error);
+        Map<String, Object> output = createCommonResponse(error);
+        output.put("type", type.toString());
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+
+    public void notifyStart() {
+        log.error("On start");
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, createCommonResponse("started"));
+    }
+
+    public void notifyCompleted(final boolean success) {
+        log.error("Completed");
+        Map<String, Object> output = createCommonResponse("completed");
+        output.put("success", success);
+        output.put("type", type.toString());
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
+    }
+
 }

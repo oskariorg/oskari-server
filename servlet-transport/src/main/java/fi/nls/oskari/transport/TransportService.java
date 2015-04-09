@@ -394,12 +394,12 @@ public class TransportService extends AbstractService {
     private String getOskariUid(SessionStore store) {
         String sessionId = store.getSession();
         String route = store.getRoute();
-        log.warn( WFSMapLayerJob.getAPIUrl(sessionId) + UID_API);
+        log.warn( JobHelper.getAPIUrl(sessionId) + UID_API);
         String cookies = null;
         if(route != null && !route.equals("")) {
-            cookies = WFSMapLayerJob.ROUTE_COOKIE_NAME + route;
+            cookies = JobHelper.ROUTE_COOKIE_NAME + route;
         }
-        return HttpHelper.getHeaderValue(WFSMapLayerJob.getAPIUrl(sessionId) + UID_API, cookies, KEY_UID);
+        return HttpHelper.getHeaderValue(JobHelper.getAPIUrl(sessionId) + UID_API, cookies, KEY_UID);
     }
     /**
      * Removes map layer from session and jobs
@@ -793,18 +793,18 @@ public class TransportService extends AbstractService {
     public Job createOWSMapLayerJob(ResultProcessor service, JobType type,
             SessionStore store, String layerId, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
-        final WFSLayerStore layer = OWSMapLayerJob.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
+        final WFSLayerStore layer = JobHelper.getLayerConfiguration(layerId, store.getSession(), store.getRoute());
         MapLayerJobProvider provider = null;
         if(layer.getJobType() != null) {
             provider = mapLayerJobProviders.get(layer.getJobType());
         }
         Job job = null;
         if(provider != null) {
-            job = provider.createJob(service, type, store, layerId,
+            job = provider.createJob(service, type, store, layer,
                     reqSendFeatures, reqSendImage, reqSendHighlight);
         }
         if(job == null) {
-            job = new WFSMapLayerJob(service, type, store, layerId,
+            job = new WFSMapLayerJob(service, type, store, layer,
                     reqSendFeatures, reqSendImage, reqSendHighlight);
         }
         return job;

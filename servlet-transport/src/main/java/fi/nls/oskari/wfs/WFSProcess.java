@@ -4,6 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobHelper;
 import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
@@ -28,7 +29,7 @@ public class WFSProcess {
         JobType processType = JobType.HIGHLIGHT;
 
         // get layer configuration
-        WFSLayerStore layer = WFSMapLayerJob.getLayerConfiguration(layerId, session, null);
+        WFSLayerStore layer = JobHelper.getLayerConfiguration(layerId, session, null);
         if(layer == null) {
             log.warn("No layer configuration", layerId);
             return null;
@@ -60,7 +61,7 @@ public class WFSProcess {
 
         // make request
         // TODO transportService == null
-        WFSMapLayerJob job = new WFSMapLayerJob(null, processType, store, layerId);
+        WFSMapLayerJob job = new WFSMapLayerJob(null, processType, store, layer);
         
         RequestResponse res = job.request(processType, layer, store, bounds, transformService);
         if(res == null) {

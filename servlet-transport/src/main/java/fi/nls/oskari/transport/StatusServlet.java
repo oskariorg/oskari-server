@@ -15,6 +15,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.work.JobHelper;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.oskari.work.hystrix.HystrixJob;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
@@ -146,12 +147,12 @@ public class StatusServlet extends HttpServlet {
     }
 
     private User getOskariUser(final String sessionId, final String route) {
-        log.debug("Getting user from:", WFSMapLayerJob.getAPIUrl(sessionId) + UID_API);
+        log.debug("Getting user from:", JobHelper.getAPIUrl(sessionId) + UID_API);
         String cookies = null;
         if (route != null && !route.equals("")) {
-            cookies = WFSMapLayerJob.ROUTE_COOKIE_NAME + route;
+            cookies = JobHelper.ROUTE_COOKIE_NAME + route;
         }
-        final String response = HttpHelper.getRequest(WFSMapLayerJob.getAPIUrl(sessionId) + UID_API, cookies);
+        final String response = HttpHelper.getRequest(JobHelper.getAPIUrl(sessionId) + UID_API, cookies);
         final JSONObject json = JSONHelper.createJSONObject(response);
         return User.parse(json);
     }

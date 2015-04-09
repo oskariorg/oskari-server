@@ -1,13 +1,11 @@
 package fi.nls.oskari.work;
 
-import com.netflix.hystrix.exception.HystrixBadRequestException;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.*;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.hystrix.HystrixMapLayerJob;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -20,15 +18,12 @@ import com.vividsolutions.jts.geom.Point;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.operation.MathTransform;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.util.*;
 /**
  * Job for WFS Map Layer
  */
-public class WFSMapLayerJob extends HystrixMapLayerJob {
-
-    public static final String STATUS_CANCELED = "canceled";
+public class WFSMapLayerJob extends OWSMapLayerJob {
 
 	/**
 	 * Creates a new runnable job with own Jedis instance
@@ -38,10 +33,10 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
 	 *
 	 * @param service
 	 * @param store
-	 * @param layerId
+	 * @param layer
 	 */
-	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId) {
-		this(service, type, store, layerId, true, true, true);
+	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer) {
+		this(service, type, store, layer, true, true, true);
     }
 
 	/**
@@ -52,20 +47,15 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
 	 *
 	 * @param service
 	 * @param store
-	 * @param layerId
+	 * @param layer
 	 * @param reqSendFeatures
 	 * @param reqSendImage
      * @param reqSendHighlight
 	 */
-	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, String layerId,
+	public WFSMapLayerJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer,
 			boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
-	    super(service,type,store,layerId,reqSendFeatures,reqSendImage,reqSendHighlight);
-
+	    super(service,type,store,layer,reqSendFeatures,reqSendImage,reqSendHighlight);
     }
-
-
-
-
 
 
     /**
@@ -132,212 +122,6 @@ public class WFSMapLayerJob extends HystrixMapLayerJob {
 	public String getKey() {
 		return this.getClass().getSimpleName() + "_" + this.session.getClient() + "_" + this.layerId + "_" + this.type;
 	}
-
-    /**
-	 * Process of the job
-	 *
-	 * Worker calls this when starts the job.
-	 *
-	 */
-	@Override
-	public final String run() {
-        log.debug(PROCESS_STARTED, getKey());
-
-        if(!this.validateType()) {
-            log.warn("Not enough information to continue the task (" +  this.type + ")");
-            throw new HystrixBadRequestException("Not enough information to continue the task (" +  this.type + ")");
-            //return "error";
-        }
-
-    	if(!goNext()) return STATUS_CANCELED;
-
-        this.layerPermission = getPermissions(layerId, this.session.getSession(), this.session.getRoute());
-        if(!this.layerPermission) {
-            log.warn("Session (" +  this.session.getSession() + ") has no permissions for getting the layer (" + this.layerId + ")");
-            Map<String, Object> output = new HashMap<String, Object>();
-            output.put(OUTPUT_LAYER_ID, this.layerId);
-            output.put(OUTPUT_ONCE, true);
-            output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_NO_PERMISSIONS);
-            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-            throw new HystrixBadRequestException("Session (" +  this.session.getSession() + ") has no permissions for getting the layer (" + this.layerId + ")");
-        }
-
-    	if(!goNext()) return null;
-    	this.layer = getLayerConfiguration(this.layerId, this.session.getSession(), this.session.getRoute());
-        if(this.layer == null) {
-            log.warn("Layer (" +  this.layerId + ") configurations couldn't be fetched");
-            Map<String, Object> output = new HashMap<String, Object>();
-            output.put(OUTPUT_LAYER_ID, this.layerId);
-            output.put(OUTPUT_ONCE, true);
-            output.put(OUTPUT_MESSAGE, ResultProcessor.ERROR_CONFIGURATION_FAILED);
-            this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
-            throw new RuntimeException("Layer (" +  this.layerId + ") configurations couldn't be fetched");
-        }
-
-		setResourceSending();
-
-		if(!validateMapScales()) {
-            log.debug("Map scale was not valid for layer",  this.layerId);
-            throw new HystrixBadRequestException("Map scale was not valid for layer (" + this.layerId + ")");
-		}
-
-        // if different SRS, create transforms for geometries
-        if(!this.session.getLocation().getSrs().equals(this.layer.getSRSName())) {
-            this.transformService = this.session.getLocation().getTransformForService(this.layer.getCrs(), true);
-            this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
-        }
-
-        String cacheStyleName = this.session.getLayers().get(this.layerId).getStyleName();
-        if(cacheStyleName.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
-            cacheStyleName += "_" + this.session.getSession();
-        }
-
-        // init enlarged envelope
-        List<List<Double>> grid = this.session.getGrid().getBounds();
-        if(grid.size() > 0) {
-            this.session.getLocation().setEnlargedEnvelope(grid.get(0));
-        }
-
-        if(!goNext()) return STATUS_CANCELED;
-
-        log.debug(this.type);
-
-        if(this.type == JobType.NORMAL) { // tiles for grid
-            if(!this.layer.isTileRequest()) { // make single request
-                if(!this.normalHandlers(null, true)) {
-                    return STATUS_CANCELED;
-                }
-            }
-
-            log.debug("normal tile images handling");
-
-            boolean first = true;
-			int index = 0;
-			for(List<Double> bounds : grid) {
-                if(this.layer.isTileRequest()) { // make a request per tile
-                    if(!this.normalHandlers(bounds, first)) {
-                        return STATUS_CANCELED;
-                    }
-                }
-
-				if(!goNext()) return STATUS_CANCELED;
-
-				if(this.sendImage && this.sessionLayer.isTile(bounds)) { // check if needed tile
-		   	 		Double[] bbox = new Double[4];
-		   	 		for (int i = 0; i < bbox.length; i++) {
-			   	 		bbox[i] = bounds.get(i);
-		   	 		}
-
-					// get from cache
-				    BufferedImage bufferedImage = getImageCache(bbox);
-			    	boolean fromCache = (bufferedImage != null);
-                    boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary(index);
-
-			    	if(!fromCache) {
-                        if(this.image == null) {
-                            this.image = new WFSImage(this.layer,
-                                    this.session.getClient(),
-                                    this.session.getLayers().get(this.layerId).getStyleName(),
-                                    null);
-                        }
-					    bufferedImage = this.image.draw(this.session.getTileSize(),
-                                this.session.getLocation(),
-                                bounds,
-                                this.features);
-                        if(bufferedImage == null) {
-                            this.imageParsingFailed();
-                            throw new RuntimeException("Image parsing failed!");
-                        }
-
-					    // set to cache
-						if(!isboundaryTile) {
-                            setImageCache(bufferedImage, cacheStyleName, bbox, true);
-						} else { // non-persistent cache - for ie
-                            setImageCache(bufferedImage, cacheStyleName, bbox, false);
-						}
-					}
-
-		   	 		String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
-					this.sendWFSImage(url, bufferedImage, bbox, true, isboundaryTile);
-				}
-
-				if(first) {
-					first = false;
-					this.session.setKeepPrevious(true); // keep the next tiles
-				}
-				index++;
-			}
-		} else if(this.type == JobType.HIGHLIGHT) {
-            if(this.sendHighlight) {
-                if(!this.requestHandler(null)) {
-                    return STATUS_CANCELED;
-                }
-                this.featuresHandler();
-                if(!goNext()) return STATUS_CANCELED;
-
-                // Send geometries, if requested as well
-                if(this.session.isGeomRequest()){
-                    this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
-                }
-
-                log.debug("highlight image handling", this.features.size());
-                // IMAGE HANDLING
-                log.debug("sending");
-                Location location = this.session.getLocation();
-                if(this.image == null) {
-                    this.image = new WFSImage(this.layer,
-                            this.session.getClient(),
-                            this.session.getLayers().get(this.layerId).getStyleName(),
-                            JobType.HIGHLIGHT.toString());
-                }
-                BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
-                        location,
-                        this.features);
-                if(bufferedImage == null) {
-                    this.imageParsingFailed();
-                    throw new RuntimeException("Image parsing failed!");
-                }
-
-                Double[] bbox = location.getBboxArray();
-
-                // cache (non-persistant)
-                setImageCache(bufferedImage, JobType.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
-
-                String url = createImageURL(JobType.HIGHLIGHT.toString(), bbox);
-                this.sendWFSImage(url, bufferedImage, bbox, false, false);
-            }
-        } else if(this.type == JobType.MAP_CLICK) {
-            if(!this.requestHandler(null)) {
-                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
-                // success, just no hits
-                return null;
-            }
-            this.featuresHandler();
-            if(!goNext()) return STATUS_CANCELED;
-            if(this.sendFeatures) {
-                log.debug("Feature values list", this.featureValuesList);
-                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_MAP_CLICK);
-            } else {
-                log.debug("No feature data!");
-                this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
-            }
-        } else if(this.type == JobType.GEOJSON || this.type == JobType.PROPERTY_FILTER) {
-            if(!this.requestHandler(null)) {
-                return STATUS_CANCELED;
-            }
-            this.featuresHandler();
-            if(!goNext()) return STATUS_CANCELED;
-            if(this.sendFeatures) {
-                this.sendWFSFeatures(this.featureValuesList, ResultProcessor.CHANNEL_FILTER);
-            }
-        } else {
-            log.error("Type is not handled", this.type);
-        }
-
-        log.debug(PROCESS_ENDED, getKey());
-        return "success";
-	}
-
 
 	/**
 	 * Makes request and parses response to features
