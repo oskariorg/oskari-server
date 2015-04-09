@@ -56,6 +56,7 @@ public abstract class AnalysisMethodParams {
     private String wps_reference_type = "";
     private String href = "";
     private int layer_id = 0;
+    private String layer_id2 = null;
     private String serviceUrl = "";
     private String serviceUser = "";
     private String servicePw = "";
@@ -111,6 +112,14 @@ public abstract class AnalysisMethodParams {
 
     public void setLayer_id(int layerId) {
         layer_id = layerId;
+    }
+
+    public String getLayer_id2() {
+        return layer_id2;
+    }
+
+    public void setLayer_id2(String layer_id2) {
+        this.layer_id2 = layer_id2;
     }
 
     public String getServiceUrl() {
