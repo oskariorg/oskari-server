@@ -143,6 +143,25 @@ public class JobQueue
         }
         log.debug("Removed", key);
     }
+
+    public void onJobSuccess(final Job job, final Object value) {
+        // convenience method for extension hooks
+        log.debug("Stacktrace");
+    }
+
+    /**
+     * Note! Throwable can be null if some unexpected error occured.
+     * @param job
+     * @param value
+     */
+    public void onJobFailed(final Job job, final Throwable value) {
+        final boolean knownCause = value != null;
+        // convenience method for extension hooks
+        log.error("Exception while running job:", knownCause ? value.getMessage() : "");
+        if(knownCause) {
+            log.debug(value, "Stacktrace");
+        }
+    }
     
     /**
      * Defines a worker thread for queue's job
@@ -170,11 +189,14 @@ public class JobQueue
                 }
                 final long startTime = System.nanoTime();
                 addJobCount();
+                boolean notified = false;
                 try {
-                    r.execute();
+                    final Object o = r.run();
+                    onJobSuccess(r, o);
+                    notified = true;
                 } catch (Exception e) {
-                    log.error("Exception while running job:", e.getMessage());
-                    log.debug(e, "Here's the stacktrace");
+                    onJobFailed(r, e);
+                    notified = true;
                 }
                 catch (OutOfMemoryError e) {
                     crashedJobCount++;
@@ -182,9 +204,14 @@ public class JobQueue
                     if(firstCrashedJob == null) {
                         firstCrashedJob = r.getKey();
                     }
+                    onJobFailed(r, e);
+                    notified = true;
                     throw e;
                 }
                 finally {
+                    if(!notified) {
+                        onJobFailed(r, null);
+                    }
                     r.teardown();
                     jobs.remove(r.getKey());
                     log.debug("Finished", r.getKey());
