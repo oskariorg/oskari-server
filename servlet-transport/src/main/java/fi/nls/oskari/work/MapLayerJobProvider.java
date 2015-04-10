@@ -13,9 +13,9 @@ import fi.nls.oskari.worker.Job;
 @Oskari("default")
 public class MapLayerJobProvider extends OskariComponent {
 
-    public Job createJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layerId,
+    public Job createJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer,
                                     boolean reqSendFeatures, boolean reqSendImage, boolean reqSendHighlight) {
-        return new WFSMapLayerJob(service, type, store, layerId,
+        return new WFSMapLayerJob(service, type, store, layer,
                 reqSendFeatures, reqSendImage, reqSendHighlight);
     }
 }

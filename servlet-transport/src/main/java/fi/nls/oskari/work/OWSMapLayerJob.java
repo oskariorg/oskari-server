@@ -125,7 +125,6 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         this.layer = layer;
         this.layerId = layer.getLayerId();
         this.sessionLayer = this.session.getLayers().get(this.layerId);
-        this.layer = null;
         this.permissions = null;
         this.layerPermission = false;
         this.reqSendFeatures = reqSendFeatures;
