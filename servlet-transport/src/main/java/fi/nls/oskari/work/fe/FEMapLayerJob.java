@@ -155,10 +155,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         final String srsName = layer.getSRSName();
         final String featureNs = layer.getFeatureNamespaceURI();
+        final String featurePrefix = layer.getFeatureNamespace();
         final String featureName = layer.getFeatureElement();
         final String WFSver = layer.getWFSVersion();
         final String geomProp = layer.getGMLGeometryProperty();
         final String geomNs = layer.getGeometryNamespaceURI();
+        final String maxCount = Integer.toString(layer.getMaxFeatures());
 
         JSONObject parseConfig = JSONHelper.createJSONObject(layer.getParseConfig());
 
@@ -168,8 +170,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             return requestResponse;
         }
 
-        backendRequestTemplate.setRequestFeatures(srsName, featureNs,
-                featureName, WFSver, geomProp, geomNs);
+        backendRequestTemplate.setRequestFeatures(srsName, featureNs, featurePrefix,
+                featureName, WFSver, geomProp, geomNs, maxCount);
 
         FeatureEngine featureEngine = null;
         try {

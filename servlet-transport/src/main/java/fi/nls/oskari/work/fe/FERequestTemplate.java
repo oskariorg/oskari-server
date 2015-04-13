@@ -32,6 +32,7 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -92,10 +93,12 @@ public class FERequestTemplate {
     TransformerFactory tFactory = TransformerFactory.newInstance();
     private String srsName;
     private String featureNs;
+    private String featurePrefix;
     private String featureName;
     private String wfsVer;
     private String geomProp;
     private String geomNs;
+    private String maxcount;
 
     public FERequestTemplate(FEQueryArgsBuilder argsBuilder) {
         this.templateResource = null;
@@ -200,6 +203,36 @@ public class FERequestTemplate {
             }
 
         }
+        if (featureName != null && featurePrefix != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@typeNames='[FEATURENAME]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("typeNames")
+                        .setTextContent(featurePrefix+ ":" + featureName);
+            }
+
+        }
+
+        String addns = doc.getDocumentElement().getAttribute("xmlns:tns");
+
+        if (addns != null && addns.equals("[ADD_NSURI]") && featureName != null && featurePrefix != null ) {
+            doc.getDocumentElement().removeAttribute("xmlns:tns");
+            doc.getDocumentElement().setAttribute("xmlns:"+featurePrefix,featureNs);
+        }
+
+        if (maxcount != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@count='[MAXCOUNT]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("count")
+                        .setTextContent(maxcount);
+            }
+
+        }
 
         Transformer transformer = tFactory.newTransformer();
 
@@ -275,14 +308,16 @@ public class FERequestTemplate {
 
     }
 
-    public void setRequestFeatures(String srsName, String featureNs,
-                                   String featureName, String wFSver, String geomProp, String geomNs) {
+    public void setRequestFeatures(String srsName, String featureNs, String featurePrefix,
+                                   String featureName, String wFSver, String geomProp, String geomNs, String maxCount) {
         this.srsName = srsName;
         this.featureNs = featureNs;
+        this.featurePrefix = featurePrefix;
         this.featureName = featureName;
         this.wfsVer = wFSver;
         this.geomProp = geomProp;
         this.geomNs = geomNs;
+        this.maxcount = maxCount;
 
     }
     private double GetSearchTolerance(final SessionStore session){
