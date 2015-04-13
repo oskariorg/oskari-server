@@ -785,19 +785,19 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         if (error == null) {
             error = "Something went wrong";
         }
-        log.error("On Error", error);
+        log.error("On Error - layer:", layerId, "type:", type, "msg:", error);
         Map<String, Object> output = createCommonResponse(error);
         output.put("type", type.toString());
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
     }
 
     public void notifyStart() {
-        log.error("On start");
+        log.info("On start - layer:", layerId, "type:", type);
         this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, createCommonResponse("started"));
     }
 
     public void notifyCompleted(final boolean success) {
-        log.error("Completed");
+        log.info("Completed - layer:", layerId, "type:", type);
         Map<String, Object> output = createCommonResponse("completed");
         output.put("success", success);
         output.put("type", type.toString());
