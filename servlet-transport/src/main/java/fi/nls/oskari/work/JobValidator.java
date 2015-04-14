@@ -20,7 +20,7 @@ public class JobValidator {
     }
 
     public void onJobCanceled() {
-        log.info("Job canceled on when running validations for layer", job.getLayerId());
+        log.info("Job canceled when running validations for layer", job.getLayerId());
     }
 
     public boolean validateJob() {

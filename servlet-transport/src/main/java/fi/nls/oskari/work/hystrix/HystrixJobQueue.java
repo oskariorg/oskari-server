@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
  */
 public class HystrixJobQueue extends JobQueue {
     private static final Logger log = LogFactory.getLogger(HystrixJobQueue.class);
-    private Map<String, Future<String>> commandsMapping = new ConcurrentHashMap<String, Future<String>>(100);
+    private Map<String, Job<String>> commandsMapping = new ConcurrentHashMap<String, Job<String>>(100);
     private MetricRegistry metrics = new MetricRegistry();
 
     private long mapMaxSize = 0;
@@ -135,8 +135,7 @@ public class HystrixJobQueue extends JobQueue {
         }
         setupTimingStatistics(runtimeMS);
         job.teardown();
-        // jobs stick around for some reason, clean the map when job has ended
-        //cleanup(false);
+        commandsMapping.remove(job.getKey());
     }
 
     public MetricRegistry getMetricsRegistry() {
@@ -144,18 +143,14 @@ public class HystrixJobQueue extends JobQueue {
     }
 
     public void cleanup(boolean force) {
-        List<String> doneJobs = new ArrayList<String>();
-        for(Map.Entry<String, Future<String>> entry : commandsMapping.entrySet()) {
-            if(entry.getValue().isDone()) {
-                doneJobs.add(entry.getKey());
-            } else if(force) {
-                entry.getValue().cancel(true);
-                doneJobs.add(entry.getKey());
-            }
+        if(!force) {
+            // do nothing
+            return;
         }
-        for(String key : doneJobs) {
-            commandsMapping.remove(key);
+        for(Job<String> job : commandsMapping.values()) {
+            job.terminate();
         }
+        commandsMapping.clear();
     }
 
     public long getQueueSize() {
@@ -185,7 +180,8 @@ public class HystrixJobQueue extends JobQueue {
                     MetricRegistry.name(HystrixJobQueue.class, "job.added." + hJob.getJobId()));
             addMeter.mark();
             addJobCount();
-            commandsMapping.put(job.getKey(), hJob.queue());
+            hJob.queue();
+            commandsMapping.put(job.getKey(), job);
             // track max size of the map
             if(mapMaxSize < commandsMapping.size()) {
                 mapMaxSize = commandsMapping.size();
@@ -203,11 +199,10 @@ public class HystrixJobQueue extends JobQueue {
     public void remove(Job job) {
         if(job instanceof OWSMapLayerJob ||
             job instanceof HystrixJob) {
-            Future<String> existing = commandsMapping.get(job.getKey());
+            Job<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
-                job.terminate();
+                existing.terminate();
                 commandsMapping.remove(job.getKey());
-                //existing.cancel(true);
             }
         }
         else {
