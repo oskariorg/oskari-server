@@ -64,7 +64,7 @@ public class JobValidator {
         log.warn("Not enough information to continue the task (" +  job.type + ")");
     }
     public void onInvalidScale() {
-        log.debug("Map scale was not valid for layer", job.getLayerId());
+        log.info("Map scale was not valid for layer", job.getLayerId());
     }
     public void onInvalidPermissions() {
         log.warn("Session (" + job.getSessionId() + ") has no permissions for getting the layer (" + job.getLayerId() + ")");

@@ -19,7 +19,6 @@ public class HystrixJobValidator extends JobValidator {
     @Override
     public void onInvalidParams() {
         super.onInvalidParams();
-        log.warn("Not enough information to continue the task (" +  getJob().getType() + ")");
         throw new HystrixBadRequestException("Not enough information to continue the task (" +  getJob().getType() + ")");
 
     }

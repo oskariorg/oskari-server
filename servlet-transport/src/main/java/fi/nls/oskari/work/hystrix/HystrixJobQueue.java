@@ -65,7 +65,7 @@ public class HystrixJobQueue extends JobQueue {
             public <T> Exception onError(HystrixInvokable<T> commandInstance, HystrixRuntimeException.FailureType failureType, Exception e) {
                 if (commandInstance instanceof HystrixJob) {
                     HystrixJob job = (HystrixJob) commandInstance;
-                    jobEnded(job, false, "Error on job", job.getKey(), failureType, e.getMessage());
+                    jobEnded(job, false, "Error on job", job.getKey(), failureType, log.getCauseMessages(e));
                 }
                 return super.onError(commandInstance, failureType, e);
             }
