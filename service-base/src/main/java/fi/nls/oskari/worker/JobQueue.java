@@ -146,7 +146,7 @@ public class JobQueue
 
     public void onJobSuccess(final Job job, final Object value) {
         // convenience method for extension hooks
-        log.debug("Stacktrace");
+        log.debug("Job success");
     }
 
     /**

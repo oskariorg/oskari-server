@@ -29,10 +29,10 @@ import java.util.concurrent.Future;
  */
 public class HystrixJobQueue extends JobQueue {
     private static final Logger log = LogFactory.getLogger(HystrixJobQueue.class);
-    private Map<String, Future<String>> commandsMapping = new ConcurrentHashMap<String, Future<String>>(100);
+    private Map<String, Job<String>> commandsMapping = new ConcurrentHashMap<String, Job<String>>(100);
     private MetricRegistry metrics = new MetricRegistry();
 
-    private long mapSize = 0;
+    private long mapMaxSize = 0;
     private Map<String, TimingGauge> customMetrics = new ConcurrentHashMap<String, TimingGauge>();
 
     public HystrixJobQueue(int nWorkers) {
@@ -65,7 +65,7 @@ public class HystrixJobQueue extends JobQueue {
             public <T> Exception onError(HystrixInvokable<T> commandInstance, HystrixRuntimeException.FailureType failureType, Exception e) {
                 if (commandInstance instanceof HystrixJob) {
                     HystrixJob job = (HystrixJob) commandInstance;
-                    jobEnded(job, false, "Error on job", job.getKey(), failureType, e.getMessage());
+                    jobEnded(job, false, "Error on job", job.getKey(), failureType, log.getCauseMessages(e));
                 }
                 return super.onError(commandInstance, failureType, e);
             }
@@ -135,8 +135,7 @@ public class HystrixJobQueue extends JobQueue {
         }
         setupTimingStatistics(runtimeMS);
         job.teardown();
-        // jobs stick around for some reason, clean the map when job has ended
-        cleanup(false);
+        commandsMapping.remove(job.getKey());
     }
 
     public MetricRegistry getMetricsRegistry() {
@@ -144,18 +143,14 @@ public class HystrixJobQueue extends JobQueue {
     }
 
     public void cleanup(boolean force) {
-        List<String> doneJobs = new ArrayList<String>();
-        for(Map.Entry<String, Future<String>> entry : commandsMapping.entrySet()) {
-            if(entry.getValue().isDone()) {
-                doneJobs.add(entry.getKey());
-            } else if(force) {
-                entry.getValue().cancel(true);
-                doneJobs.add(entry.getKey());
-            }
+        if(!force) {
+            // do nothing
+            return;
         }
-        for(String key : doneJobs) {
-            commandsMapping.remove(key);
+        for(Job<String> job : commandsMapping.values()) {
+            job.terminate();
         }
+        commandsMapping.clear();
     }
 
     public long getQueueSize() {
@@ -163,7 +158,7 @@ public class HystrixJobQueue extends JobQueue {
     }
 
     public long getMaxQueueLength() {
-        return super.getMaxQueueLength() + mapSize;
+        return super.getMaxQueueLength() + mapMaxSize;
     }
 
     public List<String> getQueuedJobNames() {
@@ -184,14 +179,12 @@ public class HystrixJobQueue extends JobQueue {
             Meter addMeter = metrics.meter(
                     MetricRegistry.name(HystrixJobQueue.class, "job.added." + hJob.getJobId()));
             addMeter.mark();
-            Future<String> existing = commandsMapping.get(job.getKey());
-            if (existing != null) {
-                existing.cancel(true);
-            }
             addJobCount();
-            commandsMapping.put(job.getKey(), hJob.queue());
-            if(mapSize < commandsMapping.size()) {
-                mapSize = commandsMapping.size();
+            hJob.queue();
+            commandsMapping.put(job.getKey(), job);
+            // track max size of the map
+            if(mapMaxSize < commandsMapping.size()) {
+                mapMaxSize = commandsMapping.size();
             }
         }
         else {
@@ -204,11 +197,12 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void remove(Job job) {
-        if(job instanceof OWSMapLayerJob) {
-            Future<String> existing = commandsMapping.get(job.getKey());
+        if(job instanceof OWSMapLayerJob ||
+            job instanceof HystrixJob) {
+            Job<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
+                existing.terminate();
                 commandsMapping.remove(job.getKey());
-                existing.cancel(true);
             }
         }
         else {

@@ -38,6 +38,12 @@ public class HystrixMapLayerJob extends HystrixJob {
         return job.getKey();
     }
 
+    @Override
+    public void terminate() {
+        super.terminate();
+        job.terminate();
+    }
+
     /**
      * Process of the job
      * <p/>
@@ -46,8 +52,12 @@ public class HystrixMapLayerJob extends HystrixJob {
     public String run() {
         setStartTime();
         notifyStart();
-        JobValidator validator = new HystrixJobValidator(job);
-        if(!validator.validateJob()) {
+        HystrixJobValidator validator = new HystrixJobValidator(job);
+        boolean valid = validator.validateJob();
+        if(validator.isCanceled()) {
+            return null;
+        }
+        if(!valid) {
             throw new HystrixBadRequestException("Validation failed for (" +  job.getKey() + ")");
         }
         final String value = job.run();

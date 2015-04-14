@@ -42,7 +42,7 @@ public abstract class HystrixJob extends HystrixCommand<String> implements Job<S
     /**
      * Terminates the job
      */
-    public final void terminate() {
+    public void terminate() {
         running = false;
     }
 

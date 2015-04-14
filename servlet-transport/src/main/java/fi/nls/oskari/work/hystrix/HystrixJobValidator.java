@@ -12,6 +12,8 @@ import fi.nls.oskari.work.OWSMapLayerJob;
 public class HystrixJobValidator extends JobValidator {
     private static final Logger log = LogFactory.getLogger(HystrixJobValidator.class);
 
+    boolean isCanceled = false;
+
     public HystrixJobValidator(OWSMapLayerJob job) {
         super(job);
     }
@@ -19,7 +21,6 @@ public class HystrixJobValidator extends JobValidator {
     @Override
     public void onInvalidParams() {
         super.onInvalidParams();
-        log.warn("Not enough information to continue the task (" +  getJob().getType() + ")");
         throw new HystrixBadRequestException("Not enough information to continue the task (" +  getJob().getType() + ")");
 
     }
@@ -35,4 +36,12 @@ public class HystrixJobValidator extends JobValidator {
         throw new HystrixBadRequestException("Map scale was not valid for layer (" + getJob().getLayerId() + ")");
     }
 
+    public void onJobCanceled() {
+        super.onJobCanceled();
+        isCanceled = true;
+    }
+
+    public boolean isCanceled() {
+        return isCanceled;
+    }
 }

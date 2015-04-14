@@ -168,7 +168,10 @@ public class JobHelper {
             log.debug("Scale in:", targetSRS, scale, "[max:", maxScaleInMapSrs, "]");
             maxScaleOk = maxScaleInMapSrs <= scale;
         }
-
-        return minScaleOk && maxScaleOk;
+        boolean scaleOk = minScaleOk && maxScaleOk;
+        if(!scaleOk) {
+            log.info("Layer out of scale limits:", layer.getId(), scale, "[", layer.getMaxScale(), ",", layer.getMinScale(), "]");
+        }
+        return scaleOk;
     }
 }
