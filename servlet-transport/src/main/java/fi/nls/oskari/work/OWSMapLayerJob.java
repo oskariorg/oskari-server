@@ -797,7 +797,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     }
 
     public void notifyCompleted(final boolean success) {
-        log.info("Completed - layer:", layerId, "type:", type);
+        log.info("Completed - layer:", layerId, "type:", type, "success:", success);
         Map<String, Object> output = createCommonResponse("completed");
         output.put("success", success);
         output.put("type", type.toString());
