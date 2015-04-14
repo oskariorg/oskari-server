@@ -136,7 +136,7 @@ public class HystrixJobQueue extends JobQueue {
         setupTimingStatistics(runtimeMS);
         job.teardown();
         // jobs stick around for some reason, clean the map when job has ended
-        cleanup(false);
+        //cleanup(false);
     }
 
     public MetricRegistry getMetricsRegistry() {

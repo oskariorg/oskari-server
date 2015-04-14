@@ -10,7 +10,6 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.ResultProcessor;
-import fi.nls.oskari.work.WFSMapLayerJob;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -177,13 +176,17 @@ public class WFSCommunicator {
             if(obj instanceof FeatureCollection) {
                 return (FeatureCollection<SimpleFeatureType, SimpleFeature>) obj;
             }
-            throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
+            if(!(obj instanceof Number)) {
+                // obj can be 0 if no hits
+                throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
+            }
 		} catch (Exception e) {
             if(!parseErrors(obj)) {
                 log.error(e, "Features couldn't be parsed: - response: ", response, " obj: ", obj);
             }
             throw new RuntimeException(ResultProcessor.ERROR_FEATURE_PARSING);
 		}
+        return null;
 	}
 
 	/**
