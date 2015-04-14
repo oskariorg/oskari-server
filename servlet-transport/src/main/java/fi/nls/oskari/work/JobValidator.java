@@ -7,7 +7,7 @@ import fi.nls.oskari.log.Logger;
  * Common validation routine that should be performed before running OWSMapLayerJobs
  */
 public class JobValidator {
-    private static final Logger log = LogFactory.getLogger(JobValidator.class);
+    private final Logger log = LogFactory.getLogger(JobValidator.class);
 
     private OWSMapLayerJob job;
 
@@ -20,7 +20,7 @@ public class JobValidator {
     }
 
     public void onJobCanceled() {
-
+        log.info("Job canceled on when running validations for layer", job.getLayerId());
     }
 
     public boolean validateJob() {
@@ -63,6 +63,7 @@ public class JobValidator {
     public void onInvalidParams() {
         log.warn("Not enough information to continue the task (" +  job.type + ")");
     }
+
     public void onInvalidScale() {
         log.info("Map scale was not valid for layer", job.getLayerId());
     }
