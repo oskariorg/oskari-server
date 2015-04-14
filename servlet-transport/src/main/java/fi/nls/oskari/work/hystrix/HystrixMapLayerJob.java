@@ -38,6 +38,12 @@ public class HystrixMapLayerJob extends HystrixJob {
         return job.getKey();
     }
 
+    @Override
+    public void terminate() {
+        super.terminate();
+        job.terminate();
+    }
+
     /**
      * Process of the job
      * <p/>

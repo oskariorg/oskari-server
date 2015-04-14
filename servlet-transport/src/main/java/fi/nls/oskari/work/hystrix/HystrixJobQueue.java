@@ -32,7 +32,7 @@ public class HystrixJobQueue extends JobQueue {
     private Map<String, Future<String>> commandsMapping = new ConcurrentHashMap<String, Future<String>>(100);
     private MetricRegistry metrics = new MetricRegistry();
 
-    private long mapSize = 0;
+    private long mapMaxSize = 0;
     private Map<String, TimingGauge> customMetrics = new ConcurrentHashMap<String, TimingGauge>();
 
     public HystrixJobQueue(int nWorkers) {
@@ -163,7 +163,7 @@ public class HystrixJobQueue extends JobQueue {
     }
 
     public long getMaxQueueLength() {
-        return super.getMaxQueueLength() + mapSize;
+        return super.getMaxQueueLength() + mapMaxSize;
     }
 
     public List<String> getQueuedJobNames() {
@@ -184,14 +184,11 @@ public class HystrixJobQueue extends JobQueue {
             Meter addMeter = metrics.meter(
                     MetricRegistry.name(HystrixJobQueue.class, "job.added." + hJob.getJobId()));
             addMeter.mark();
-            Future<String> existing = commandsMapping.get(job.getKey());
-            if (existing != null) {
-                existing.cancel(true);
-            }
             addJobCount();
             commandsMapping.put(job.getKey(), hJob.queue());
-            if(mapSize < commandsMapping.size()) {
-                mapSize = commandsMapping.size();
+            // track max size of the map
+            if(mapMaxSize < commandsMapping.size()) {
+                mapMaxSize = commandsMapping.size();
             }
         }
         else {
@@ -204,11 +201,13 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void remove(Job job) {
-        if(job instanceof OWSMapLayerJob) {
+        if(job instanceof OWSMapLayerJob ||
+            job instanceof HystrixJob) {
             Future<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
+                job.terminate();
                 commandsMapping.remove(job.getKey());
-                existing.cancel(true);
+                //existing.cancel(true);
             }
         }
         else {
