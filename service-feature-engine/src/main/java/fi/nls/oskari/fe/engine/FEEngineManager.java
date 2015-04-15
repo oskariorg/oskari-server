@@ -76,12 +76,11 @@ public class FEEngineManager {
 
                     recipeClazzes.put(recipePath, recipeClazz);
 
-                    log.debug("[fe] Groovy caching recipe " + recipePath);
+                    log.debug("[fe] Groovy caching recipe", recipePath);
 
                 } catch (RuntimeException e) {
 
-                    log.debug("[fe] Groovy recipe setup FAILURE");
-                    e.printStackTrace(System.err);
+                    log.debug(e, "[fe] Groovy recipe setup FAILURE");
 
                 } finally {
 

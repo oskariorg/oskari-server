@@ -77,8 +77,7 @@ public class FEResponseHandler implements ResponseHandler<Boolean> {
             succee = true;
 
         } catch (XMLStreamException e) {
-            log.debug("[fe] response XML exception " + e);
-            e.printStackTrace(System.err);
+            log.debug("[fe] response XML exception ", e);
             throw new ClientProtocolException("Response XMLStreamException "
                     + e);
         } finally {

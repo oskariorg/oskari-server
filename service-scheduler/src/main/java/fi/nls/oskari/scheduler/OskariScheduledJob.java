@@ -32,7 +32,7 @@ public class OskariScheduledJob implements Job {
         } catch (final ClassNotFoundException e) {
             log.error(e, "class not found", data.getString(CLASS_NAME));
         } catch (InstantiationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            log.error(e, "Instantiation failed");
         }
     }
 }

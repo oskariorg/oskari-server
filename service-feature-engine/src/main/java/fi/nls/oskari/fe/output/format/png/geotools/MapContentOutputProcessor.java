@@ -67,6 +67,9 @@ import fi.nls.oskari.log.Logger;
 /* PoC which builds GeoTools Map to PNG */
 public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
+
+    protected static final Logger log = LogFactory.getLogger(MapContentOutputProcessor.class);
+
     public static Style createSLDStyle(String sldFilename) {
 
         log.info("[fe] Creating Style tryin 1.1.0 " + sldFilename);
@@ -154,15 +157,12 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
             return style;
 
         } catch (Exception ee) {
-            ee.printStackTrace(System.err);
-
+            log.error(ee, "Error creating SLD style");
         }
 
         return null;
     }
 
-    protected static final Logger log = LogFactory
-            .getLogger(MapContentOutputProcessor.class);
     private CoordinateReferenceSystem crs;
     private SimpleFeatureType schema;
     private SimpleFeatureBuilder sfb;
@@ -194,10 +194,10 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         try {
             crs = CRS.decode(srsName, true);
         } catch (NoSuchAuthorityCodeException e) {
-            e.printStackTrace();
+            log.warn(e, "Couldn't setup CoordinateReferenceSystem");
             throw new IOException(e);
         } catch (FactoryException e) {
-            e.printStackTrace();
+            log.warn(e, "Couldn't setup CoordinateReferenceSystem");
             throw new IOException(e);
         }
 
@@ -379,7 +379,7 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
         for (Pair<Resource, Geometry> geomPair : geometryProperties) {
             Geometry geom = geomPair.getValue();
 
-            System.out.println("+ " + geom.toString());
+            log.debug("+",geom.toString());
 
             sfb.add(geom);
 

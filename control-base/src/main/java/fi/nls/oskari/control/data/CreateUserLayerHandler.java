@@ -59,13 +59,6 @@ public class CreateUserLayerHandler extends ActionHandler {
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
 
     @Override
-    public void init() {
-
-
-    }
-
-
-    @Override
     public void handleAction(ActionParameters params) throws ActionException {
 
         // stop here if user isn't logged in
@@ -145,7 +138,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             // Incoming strings are in UTF-8 but they're not read as such unless we force it...
             request.setCharacterEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.warn("Couldnt setup UTF-8 encoding");
         }
 
         Map fparams = new HashMap<String, String>();
