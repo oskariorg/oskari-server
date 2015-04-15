@@ -25,8 +25,8 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
     private static final String PROPERTY_MAXFEATURES = "actionhandler.GetReverseGeocodingResult.maxfeatures";
     private static final String PROPERTY_BUFFER = "actionhandler.GetReverseGeocodingResult.buffer";
 
-    private static int maxFeatures = 1;
-    private static int buffer = 1000;
+    private int maxFeatures = 1;
+    private int buffer = 1000;
 
     private String[] channels = new String[0];
 
