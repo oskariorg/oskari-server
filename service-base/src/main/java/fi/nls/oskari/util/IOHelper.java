@@ -640,6 +640,9 @@ public class IOHelper {
      * @param in
      */
     public static void close(final Closeable in) {
+        if(in == null) {
+            return;
+        }
         try {
             in.close();
         } catch (Exception ignored) { }
