@@ -26,15 +26,15 @@ public class StatisticalIndicatorMetadataHandler extends ActionHandler {
         final int indicatorId = params.getRequiredParamInt(PARAM_ID);
 
         // TODO: load indicators metadata based on datasource/indicator
-        ResponseHelper.writeResponse(params, getDummyIndicators("" + indicatorId));
+        ResponseHelper.writeResponse(params, getDummyIndicators(datasourceId, indicatorId));
     }
 
-    private JSONObject getDummyIndicators(String indicatorId) throws ActionException {
+    private JSONObject getDummyIndicators(int datasourceId, int indicatorId) throws ActionException {
 
         final SotkaRequest req = SotkaRequest.getInstance("indicator_metadata");
         req.setGender("");
         req.setVersion("1.1");
-        req.setIndicator(indicatorId);
+        req.setIndicator("" +indicatorId);
         //req.setYears(params.getRequest().getParameterValues(PARM_YEARS));
         final String data = req.getData();
         return JSONHelper.createJSONObject(data);

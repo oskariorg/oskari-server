@@ -196,7 +196,6 @@ public class ArcGisImage extends WFSImage {
 
         //SRS
         String mapSrs = location.getSrs();
-        String layerSrs = layer.getSRSName();
         //dynamic layers
 
         String url = layer.getURL() + "/export?";

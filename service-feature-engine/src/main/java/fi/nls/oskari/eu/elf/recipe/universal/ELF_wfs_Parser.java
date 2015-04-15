@@ -195,8 +195,6 @@ public class ELF_wfs_Parser extends GML32 {
                             }
 
                             // To FE feature
-                            Object fea = new Object();
-
                             //TODO: property type mapping
                             Iterator<?> keys = feature.keys();
 

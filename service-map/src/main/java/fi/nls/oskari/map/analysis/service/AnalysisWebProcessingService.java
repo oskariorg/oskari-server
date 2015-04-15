@@ -229,7 +229,6 @@ public class AnalysisWebProcessingService {
             String tempjs = JSONHelper.getStringFromJSON(geoJson, null);
             fc = fjs.readFeatureCollection(new ByteArrayInputStream(
                     tempjs.getBytes("utf-8")));
-            SimpleFeatureType ft = (SimpleFeatureType) fc.getSchema();
 
             org.geotools.xml.Configuration configuration = new org.geotools.gml3.GMLConfiguration();
             org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(configuration);
@@ -239,11 +238,7 @@ public class AnalysisWebProcessingService {
 
 
             try {
-
-
-                Object test = org.geotools.gml3.GML._FeatureCollection;
                 encoder.encode(fc, org.geotools.gml3.GML._FeatureCollection, xml);
-                //encoder.encode(fc, qname, xml);
                 xml.close();
                 featureSet = xml.toString();
 

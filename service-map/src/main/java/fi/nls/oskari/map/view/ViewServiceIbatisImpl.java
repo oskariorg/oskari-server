@@ -151,8 +151,10 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public void deleteViewById(final long id) throws DeleteViewException {
-        // TODO: why load it if not used?
         View view = queryForObject("View.view-with-conf-by-view-id", id);
+        if(view == null) {
+            throw new DeleteViewException("Couldn't find a view with id:" + id);
+        }
         SqlMapSession session = openSession();
         try {
             session.startTransaction();

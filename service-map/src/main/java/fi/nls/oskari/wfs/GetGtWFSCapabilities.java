@@ -304,7 +304,10 @@ public class GetGtWFSCapabilities {
 
             // Geometry property
             String geomName = getFeaturetypeGeometryName(schema);//schema.getGeometryDescriptor().getName().getLocalPart();
-            int isrs = CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true);
+
+            // seems this is not needed here since it isn't used,
+            // but could be used for checking for valid crs so leaving it in code
+            CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true);
 
 
             lc.setGMLGeometryProperty(geomName);

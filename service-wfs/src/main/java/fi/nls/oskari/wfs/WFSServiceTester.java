@@ -219,7 +219,6 @@ public class WFSServiceTester {
 
         String layer_id = "temp_" + Integer.toString(count);
         JSONObject response = null;
-        final String url = WFSDescribeFeatureHelper.parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
         try {
             response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
             if (response == null) {

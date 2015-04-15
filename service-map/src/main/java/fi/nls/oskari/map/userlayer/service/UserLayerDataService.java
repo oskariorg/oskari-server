@@ -19,7 +19,6 @@ import org.geotools.data.DataUtilities;
 import org.geotools.feature.DefaultFeatureCollection;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
@@ -137,7 +136,6 @@ public class UserLayerDataService {
 
         try {
             final JSONArray geofeas = geoJson.getJSONArray("features");
-            DefaultFeatureCollection fc = new DefaultFeatureCollection();
 
             // Loop json features and fix to user_layer_data structure
             for (int i = 0; i < geofeas.length(); i++) {

@@ -64,7 +64,6 @@ public class CreateUserLayerHandler extends ActionHandler {
         // stop here if user isn't logged in
         params.requireLoggedInUser();
 
-        final HttpServletResponse response = params.getResponse();
         final String target_epsg = params.getHttpParam(PARAM_EPSG_KEY, "EPSG:3067");
 
         try {
@@ -105,13 +104,14 @@ public class CreateUserLayerHandler extends ActionHandler {
             // workaround because of IE iframe submit json download functionality
             //params.getResponse().setContentType("application/json;charset=utf-8");
             //ResponseHelper.writeResponse(params, userlayerService.parseUserLayer2JSON(ulayer));
-            params.getResponse().setContentType("text/plain;charset=utf-8");
-            params.getResponse().setCharacterEncoding("UTF-8");
+            final HttpServletResponse response = params.getResponse();
+            response.setContentType("text/plain;charset=utf-8");
+            response.setCharacterEncoding("UTF-8");
 
             JSONObject userLayer = userlayerService.parseUserLayer2JSON(ulayer);
             JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
             JSONHelper.putValue(userLayer, "permissions", permissions);
-            params.getResponse().getWriter().print(userLayer);
+            response.getWriter().print(userLayer);
 
         } catch (Exception e) {
             throw new ActionException("Couldn't get the import file set",

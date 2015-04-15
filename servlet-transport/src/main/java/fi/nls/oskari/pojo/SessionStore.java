@@ -505,13 +505,12 @@ public class SessionStore {
 	 */
 	@JsonIgnore
 	public static SessionStore setJSON(String json) throws IOException {
-		SessionStore store = new SessionStore();
 
 		JsonFactory factory = new JsonFactory();
 		JsonParser parser = factory.createJsonParser(json);
 
 		parser.nextToken();
-		store = parse(parser);
+		SessionStore store = parse(parser);
 		parser.close();
 
 		return store;

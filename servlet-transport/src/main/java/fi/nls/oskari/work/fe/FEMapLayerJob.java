@@ -503,24 +503,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         FeatureCollection<SimpleFeatureType, SimpleFeature> responseFeatures = ((FERequestResponse) requestResponse)
                 .getResponse().get(
                         ((FERequestResponse) requestResponse).getFeatureIri());
-
-        Filter filter = ((FERequestResponse) requestResponse).getFilter();
-        /*
-         * if (responseFeatures != null && filter != null) {
-         * 
-         * log.debug("APPLYING FILTER " + filter + " to " + responseFeatures);
-         * log.debug("- GT ThreadSafety ..?"); responseFeatures =
-         * responseFeatures.subCollection(filter);
-         * 
-         * }
-         */
-
         return responseFeatures;
     }
 
     @Override
     public boolean runHighlightJob() {
-        /* NOPE */
+        // FE can't handle highlights
         return true;
     }
 
