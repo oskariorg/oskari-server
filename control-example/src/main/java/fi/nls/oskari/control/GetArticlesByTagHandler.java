@@ -30,7 +30,7 @@ public class GetArticlesByTagHandler extends ActionHandler {
     private static final String KEY_TITLE = "title";
     private static final String KEY_BODY = "body";
 
-    private static String fileLocation = null;
+    private String fileLocation = null;
 
     @Override
     public void init() {
