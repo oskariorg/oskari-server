@@ -103,10 +103,8 @@ public class MapResource {
 
             result = getmap.getMapExtentJSON(values,
                     getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
-        } finally {
-
         }
         return result;
 
@@ -136,7 +134,7 @@ public class MapResource {
 
             result = getmap
                     .getMapPDF(values, getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
         } finally {
 
@@ -167,7 +165,7 @@ public class MapResource {
                     .acquire();
             result = getmap.getGeoJsonMapPDF(inp,
                     getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
         } finally {
             inp.close();
@@ -198,7 +196,7 @@ public class MapResource {
             final WebServiceMapProducerResource getmap = SharedMapProducerResource
                     .acquire();
             result = getmap.getMapPDF(inp, getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
         } finally {
             inp.close();
@@ -242,10 +240,8 @@ public class MapResource {
 
             result = getmap
                     .getMapPNG(values, getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
-        } finally {
-
         }
         return result;
 
@@ -272,7 +268,7 @@ public class MapResource {
                     .acquire();
             result = getmap.getGeoJsonMapPNG(inp,
                     getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
         } finally {
             inp.close();
@@ -303,7 +299,7 @@ public class MapResource {
                     .acquire();
 
             result = getmap.getMapPNG(inp, getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
         } finally {
             inp.close();
@@ -324,11 +320,7 @@ public class MapResource {
     @Path("service/thumbnail/maplink.pptx")
     @Produces("application/vnd.openxmlformats-officedocument.presentationml.presentation")
     public StreamingOutput getSnapshotPPTX(@Context UriInfo ui)
-            throws IOException, ParseException, GeoWebCacheException,
-            XMLStreamException, FactoryConfigurationError,
-            RequestFilterException, TransformException, InterruptedException,
-            NoSuchAuthorityCodeException, FactoryException,
-            com.vividsolutions.jts.io.ParseException, URISyntaxException {
+            throws IOException {
         StreamingOutput result = null;
         try {
             final MultivaluedMap<String, String> queryParams = ui
@@ -340,10 +332,8 @@ public class MapResource {
 
             result = getmap.getMapPPTX(values,
                     getXClientInfo(getmap.getProps()));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new IOException(e);
-        } finally {
-
         }
 
         return result;
