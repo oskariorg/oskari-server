@@ -144,7 +144,10 @@ public class FEPullParser {
             }
             return equal
                     && element.getLocalPart().equals(
-                            handler.getComponent().getName());
+                    localPart(handler.getComponent().getName()));
+        }
+        String localPart(String Name) {
+            return Name != null ? Name.split(":")[Name.split(":").length-1] : null;
         }
     }
 

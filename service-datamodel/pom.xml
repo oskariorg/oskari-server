@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.27.1</version>
+        <version>1.28.0</version>
     </parent>
     <groupId>fi.nls.oskari.service</groupId>
     <artifactId>service-datamodel</artifactId>
@@ -20,7 +20,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -87,7 +86,5 @@
             <version>${roaster.version}</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 </project>

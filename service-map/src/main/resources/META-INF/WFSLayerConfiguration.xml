@@ -52,6 +52,7 @@
 		<result property="templateDescription" column="description"/>
 		<result property="templateType" column="type"/>
 		<result property="requestTemplate" column="request_template"/>
+        <result property="parseConfig" column="parse_config"/>
 		<result property="responseTemplate" column="response_template"/>
 		
 		<result property="selectionSLDStyle" column="selection_sld_style"/>
@@ -153,6 +154,7 @@
   			m.description,
   			m.type,
   			m.request_template,
+  			m.parse_config,
   			m.response_template,
   			
   			ss.sld_style as selection_sld_style

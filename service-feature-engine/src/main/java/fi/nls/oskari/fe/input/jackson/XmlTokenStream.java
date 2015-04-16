@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
- * Simple helper class used on top of STAX {@link XMLStreamReader} to further
+ * Simple helper class used on top of STAX {@link javax.xml.stream.XMLStreamReader} to further
  * abstract out all irrelevant details, and to expose equivalent of flat token
  * stream with no "fluff" tokens (comments, processing instructions, mixed
  * content) all of which is just to simplify
@@ -375,6 +375,7 @@ public class XmlTokenStream
             switch (type = _xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
             case XMLStreamConstants.END_ELEMENT:
+                return type;
             case XMLStreamConstants.END_DOCUMENT:
                 return type;
             default:
@@ -516,6 +517,7 @@ public class XmlTokenStream
             int type;
             switch (type = _xmlReader.next()) {
             case XMLStreamConstants.END_ELEMENT:
+                return type;
             case XMLStreamConstants.END_DOCUMENT:
                 return type;
             default:
@@ -529,7 +531,7 @@ public class XmlTokenStream
 //        _xmlReader.next();
         
         _currentState = _skipUntilEndTag();
-        _xmlReader.next();
+      //  _xmlReader.next();
        
         if (_currentWrapper != null) {
             _currentWrapper = _currentWrapper.getParent();

@@ -1,65 +1,64 @@
 package fi.nls.oskari.utils;
 
-import fi.nls.oskari.util.IOHelper;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-
-import java.io.InputStream;
-import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
 
 /**
- * Log4J logger implementation
+ * Slf4J logger implementation
  * @author SMAKINEN
  */
-public class Log4JLogger extends fi.nls.oskari.log.Logger {
+public class Slf4JLogger extends fi.nls.oskari.log.Logger {
 
-    private Logger log = null;
-    private static boolean propertiesConfigured = false;
-    private static final String FQCN = Log4JLogger.class.getName();
+    private enum Level {
+        DEBUG(LocationAwareLogger.DEBUG_INT),
+        INFO(LocationAwareLogger.INFO_INT),
+        WARN(LocationAwareLogger.WARN_INT),
+        ERROR(LocationAwareLogger.ERROR_INT);
 
-    public Log4JLogger(final String name) {
-        configure();
-        log = Logger.getLogger(name);
+        private int level = 1;
+
+        private Level(int l) {
+            level = l;
+        }
+        public int getLevel() {
+            return level;
+        }
     }
 
-    private void log(Level level, Object msg) {
+    private Logger log = null;
+    private static final String FQCN = Slf4JLogger.class.getName();
+
+    public Slf4JLogger(final String name) {
+        log = LoggerFactory.getLogger(name);
+    }
+
+    private void log(Level level, String msg) {
         log(level, msg, null);
     }
 
-    private void log(Level level, Object msg, Throwable t) {
-        log.log(FQCN, level, msg, t);
-    }
-
-    private void configure() {
-        if(propertiesConfigured) {
+    private void log(Level level, String msg, Throwable t) {
+        if (log instanceof LocationAwareLogger) {
+            final LocationAwareLogger la = (LocationAwareLogger) log;
+            la.log(null, FQCN, level.getLevel(), msg, null, null);
             return;
         }
-        InputStream inStream = null;
-        try
-        {
-            inStream = this.getClass().getClassLoader().getResourceAsStream("/log4j.properties");
-            final Properties props = new Properties();
-            props.load(inStream);
-            PropertyConfigurator.configure(props);
-            propertiesConfigured = true;
+        switch (level) {
+            case DEBUG:
+                log.debug(msg, t);
+                break;
+            case INFO:
+                log.info(msg, t);
+                break;
+            case WARN:
+                log.warn(msg, t);
+                break;
+            case ERROR:
+                log.error(msg, t);
+                break;
         }
-        catch(Exception e)
-        {
-            System.err.println("Error reading properties from 'log4j.properties'");
-        }
-        finally {
-            IOHelper.close(inStream);
-        }
-        /*
-        // To configure with xml you need this:
-        try {
-            org.apache.log4j.xml.DOMConfigurator.configure("/log4j.xml");
-        } catch (Exception ex) {
-            System.err.println("Exception configuring with log4j.xml: " + ex.getMessage());
-        }
-         */
     }
+
 
     public boolean isDebugEnabled() {
         if(log == null) {

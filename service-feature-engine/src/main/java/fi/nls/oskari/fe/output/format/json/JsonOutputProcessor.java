@@ -28,6 +28,7 @@ import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.output.jackson.GeometryPropertySerializer;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.json.JSONObject;
 
 public class JsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
@@ -220,5 +221,9 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
 
     public ImmutablePair<Resource, Object> pair(Resource rc, String val) {
         return new ImmutablePair<Resource, Object>(rc, val);
+    }
+
+    public void merge(List<JSONObject> list, Resource res) {
+
     }
 }

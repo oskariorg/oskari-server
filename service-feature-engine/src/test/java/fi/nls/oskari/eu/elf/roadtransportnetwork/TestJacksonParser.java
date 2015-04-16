@@ -69,7 +69,8 @@ public class TestJacksonParser extends TestHelper {
         }
 
     }
-  /*  @Test
+
+    @Test
     public void test_ELF_Master_tnro_cascading_RoadLink_GMLtoJSON()
             throws InstantiationException, IllegalAccessException, IOException,
             XMLStreamException {
@@ -91,7 +92,8 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new ELF_MasterLoD1_RoadLink_Parser();
+                ELF_MasterLoD1_RoadLink_Parser recipe = new ELF_MasterLoD1_RoadLink_Parser();
+               //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 engine.setRecipe(recipe);
 
@@ -108,6 +110,6 @@ public class TestJacksonParser extends TestHelper {
             inp.close();
         }
 
-    }  */
+    }
 
 }

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import fi.nls.oskari.work.JobType;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.impl.DefaultPrettyPrinter;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -156,9 +157,7 @@ public class ELF_FeatureEngineMapLayerJobTest {
 
         CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
-        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, ELFNamedPlaceJavaLayerJSON);
-
+        FEMapLayerJob job = TestHelper.createJob(sessionJSON, resultProcessor, ELFNamedPlaceJavaLayerJSON);
         job.run();
 
         HashMap<String, Integer> results = resultProcessor.getResults();
@@ -180,20 +179,10 @@ public class ELF_FeatureEngineMapLayerJobTest {
     @Test
     public void testNamedPlaceMapLayerJobtWithJettyJson() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
-
-        Map<String, Layer> layers = session.getLayers();
-        for (Layer layer : layers.values()) {
-            layer.setTiles(session.getGrid().getBounds()); // init bounds to
-                                                           // tiles (render
-                                                           // all)
-        }
 
         CounterJsonResultProcessor resultProcessor = new JettyCounterJsonResultProcessor();
 
-        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, ELFNamedPlaceJavaLayerJSON);
-
+        final FEMapLayerJob job = TestHelper.createJob(sessionJSON, resultProcessor, ELFNamedPlaceJavaLayerJSON);
         job.run();
 
         HashMap<String, Integer> results = resultProcessor.getResults();
@@ -214,16 +203,6 @@ public class ELF_FeatureEngineMapLayerJobTest {
     @org.junit.Ignore("Requires Backend")
     @Test
     public void testConcurrentRequests() throws IOException {
-
-        SessionStore session = SessionStore.setJSON(sessionJSON);
-
-        Map<String, Layer> layers = session.getLayers();
-        for (Layer layer : layers.values()) {
-            layer.setTiles(session.getGrid().getBounds()); // init bounds to
-                                                           // tiles (render
-                                                           // all)
-        }
-
         CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
         int nThreads = 5;
@@ -231,13 +210,17 @@ public class ELF_FeatureEngineMapLayerJobTest {
 
         ExecutorService executor = Executors.newFixedThreadPool(nThreads);
 
-        TestRunFEMapLayerJob[] jobs = new TestRunFEMapLayerJob[nJobs];
+        FEMapLayerJob[] jobs = new FEMapLayerJob[nJobs];
 
         for (int i = 0; i < nJobs; i++) {
-            TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(
-                    resultProcessor, session, ELFNamedPlaceGroovyLayerJSON);
+            final FEMapLayerJob job = TestHelper.createJob(sessionJSON, resultProcessor, ELFNamedPlaceGroovyLayerJSON);
             jobs[i] = job;
-            executor.execute(job);
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    job.run();
+                }
+            });
 
         }
 
@@ -253,34 +236,6 @@ public class ELF_FeatureEngineMapLayerJobTest {
         }
 
         log.debug("Finished all threads");
-
-    }
-
-    /* Test Helper to setup session and permission */
-    class TestRunFEMapLayerJob extends FEMapLayerJob {
-
-        private String layerjson;
-
-        TestRunFEMapLayerJob(ResultProcessor resultProcessor,
-                SessionStore session, String layerjson) {
-            super(resultProcessor, Type.NORMAL, session, "4", true, true, true);
-            this.layerjson = layerjson;
-        }
-
-        @Override
-        protected boolean hasPermissionsForJob() {
-            return true;
-        }
-
-        @Override
-        protected WFSLayerStore getLayerForJob() {
-            try {
-                return WFSLayerStore.setJSON(layerjson);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
 
     }
 

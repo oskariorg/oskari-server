@@ -16,6 +16,7 @@ public class ChannelSearchResult  implements Serializable {
 	private boolean queryFailed;
 
 	private List<SearchResultItem> searchResultItems = new ArrayList<SearchResultItem>();
+	private String searchMethod;
 	
 	public ChannelSearchResult() {
 		queryFailed = false;
@@ -35,6 +36,10 @@ public class ChannelSearchResult  implements Serializable {
 	public void setChannelId(String channel) {
 		this.channelId = channel;
 	}
+
+	public String getSearchMethod() { return searchMethod;	}
+	public void setSearchMethod(String searchMethod) {this.searchMethod = searchMethod;	}
+
 	public boolean isAvailable() {
 		return available;
 	}

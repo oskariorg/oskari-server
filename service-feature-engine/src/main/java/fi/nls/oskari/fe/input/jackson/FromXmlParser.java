@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 
 /**
- * {@link JsonParser} implementation that exposes XML structure as set of JSON
+ * {@link com.fasterxml.jackson.core.JsonParser} implementation that exposes XML structure as set of JSON
  * events that can be used for data binding.
  */
 public class FromXmlParser extends ParserMinimalBase {
@@ -84,7 +83,7 @@ public class FromXmlParser extends ParserMinimalBase {
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link FromXmlParser.Feature}s are enabled.
+     * {@link fi.nls.oskari.fe.input.jackson.FromXmlParser.Feature}s are enabled.
      */
     protected int _xmlFeatures;
 
@@ -183,7 +182,7 @@ public class FromXmlParser extends ParserMinimalBase {
     }
 
     /**
-     * XML format does require support from custom {@link ObjectCodec} (that is,
+     * XML format does require support from custom {@link com.fasterxml.jackson.core.ObjectCodec} (that is,
      * {@link XmlMapper}), so need to return true here.
      * 
      * @return True since XML format does require support from codec
@@ -230,7 +229,7 @@ public class FromXmlParser extends ParserMinimalBase {
 
     /**
      * Method that allows application direct access to underlying Stax
-     * {@link XMLStreamWriter}. Note that use of writer is discouraged, and may
+     * {@link javax.xml.stream.XMLStreamWriter}. Note that use of writer is discouraged, and may
      * interfere with processing of this writer; however, occasionally it may be
      * necessary.
      * <p>
@@ -785,13 +784,14 @@ public class FromXmlParser extends ParserMinimalBase {
         return PackageVersion.VERSION;
     }
 
-    public void resume() throws JsonParseException, IOException,
+  public void resume() throws JsonParseException, IOException,
             XMLStreamException {
 
-        _nextToken = null;
-        _xmlTokens.resume();
+       _nextToken = null;
+       _xmlTokens.resume();
         nextToken();
     }
+
 
     public QName getParentQName() {
         return null;

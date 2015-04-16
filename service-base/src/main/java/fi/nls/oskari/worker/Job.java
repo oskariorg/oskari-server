@@ -3,28 +3,32 @@ package fi.nls.oskari.worker;
 /**
  * Defines Job interface for JobQueue
  */
-public abstract class Job implements Runnable {
-	private volatile boolean running = true;
+public interface Job<T>  {
 
-	/**
-	 * Empty constructor
-	 */
-	public Job() {	}
-	
 	/**
 	 * Terminates the job
 	 */
-    public final void terminate() {
-    	running = false;
-    }
+    public void terminate();
 
     /**
      * Gets job unique key
      * 
      * @return key
      */
-	public abstract String getKey();
+	public String getKey();
 
+    /**
+     * Actual implementation method, should be called by execute
+     * @return
+     * @throws Exception
+     */
+    public T run() throws Exception;
+
+    /**
+     * JobQueue now calls execute() to start up the job
+     * @return
+     */
+    public T execute();
 
 	/**
 	 * Checks if job is running
@@ -32,15 +36,12 @@ public abstract class Job implements Runnable {
 	 * @return <code>true</code> if job is running; <code>false</code>
 	 *         otherwise.
 	 */
-	protected boolean goNext() {
-		return running;
-	}
+    public boolean goNext();
 
     /**
      * Can be used to hook some post processing stuff. Think of this as "finally".
      */
-    public void teardown() {
-    }
+    public void teardown();
 
 	/**
 	 * Checks if job is running and hasNext is true
@@ -49,7 +50,5 @@ public abstract class Job implements Runnable {
 	 * @return <code>true</code> if job is running and hasNext is true; <code>false</code>
 	 *         otherwise.
 	 */
-    protected boolean goNext(final boolean hasNext) {
-    	return running && hasNext;
-    }
+    public boolean goNext(final boolean hasNext);
 }

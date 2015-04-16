@@ -2,20 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- set parent pom to community pom -->
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.27.1</version>
+        <version>1.28.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>OskariMarkFactory</artifactId>
     <packaging>jar</packaging>
     <name>Oskari Mark Factory</name>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <geotools.version>11.2</geotools.version>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -59,18 +54,9 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
                 <configuration>
-                    <altDeploymentRepository>oskari_org::default::http://oskari.org/nexus/content/repositories/releases/</altDeploymentRepository>
-                    <altDeploymentRepository>oskari_org::default::http://oskari.org/nexus/content/repositories/snapshots/</altDeploymentRepository>
+                    <altReleaseDeploymentRepository>oskari_org::default::http://oskari.org/nexus/content/repositories/releases/</altReleaseDeploymentRepository>
+                    <altSnapshotDeploymentRepository>oskari_org::default::http://oskari.org/nexus/content/repositories/snapshots/</altSnapshotDeploymentRepository>
                 </configuration>
-                <!-- executions>
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions -->
             </plugin>
         </plugins>
     </build>
@@ -90,12 +76,11 @@
             <artifactId>gt-render</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>community</artifactId>
             <version>2.5.2</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
+            <scope>compile</scope>
+        </dependency -->
     </dependencies>
 </project>

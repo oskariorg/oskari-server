@@ -1,0 +1,486 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0 http://elf-wfs.maanmittauslaitos.fi/elf-wfs/services/elf-lod0ad?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=elf-lod0ad:Address&amp;NAMESPACES=xmlns(elf-lod0ad,http%3A%2F%2Fwww.locationframework.eu%2Fschemas%2FAddresses%2FMasterLoD0%2F1.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2015-03-13T09:36:14Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="unknown" numberReturned="0">
+    <!--NOTE: numberReturned attribute should be 'unknown' as well, but this would not validate against the current version of the WFS 2.0 schema (change upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925.-->
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25183953">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25183953</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25183953_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731312.421 8431438.572</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25183952">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25183952</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25183952_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731312.421 8431438.572</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2571"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2572"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_267508"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_267510"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25183950">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25183950</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25183950_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731273.795 8431449.280</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2571"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2572"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_267508"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_267510"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25183951">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25183951</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25183951_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731273.795 8431449.280</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25217374">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25217374</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25217374_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731153.810 8431353.892</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25217373">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25217373</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25217373_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731153.810 8431353.892</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2571"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2572"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_319274"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_319276"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25217375">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25217375</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25217375_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731158.626 8431314.038</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2571"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#KUNTANIMI_2572"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_319274"/>
+            <ad:component xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#TIENIMI_319276"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:member>
+        <elf-lod0ad:Address xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="FI_MTK_OSOITE_25217376">
+            <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                    <base:localId>25217376</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000785/Address/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                </base:Identifier>
+            </ad:inspireId>
+            <ad:position xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:GeographicPosition>
+                    <ad:geometry>
+                        <gml:Point gml:id="FI_MTK_OSOITE_25217376_AD_POSITION" srsName="EPSG:900913">
+                            <gml:pos>2731158.626 8431314.038</gml:pos>
+                        </gml:Point>
+                    </ad:geometry>
+                    <ad:specification xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometrySpecificationValue/segment"/>
+                    <ad:method xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/GeometryMethodValue/fromFeature"/>
+                    <ad:default>true</ad:default>
+                </ad:GeographicPosition>
+            </ad:position>
+            <ad:locator xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                <ad:AddressLocator>
+                    <ad:designator>
+                        <ad:LocatorDesignator>
+                            <ad:designator>0</ad:designator>
+                            <ad:type xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorDesignatorTypeValue/addressNumber"/>
+                        </ad:LocatorDesignator>
+                    </ad:designator>
+                    <ad:level xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/LocatorLevelValue/siteLevel"/>
+                </ad:AddressLocator>
+            </ad:locator>
+            <ad:validFrom xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:validTo xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:beginLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="unpopulated"/>
+            <ad:endLifespanVersion xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0" xsi:nil="true" nilReason="UNKNOWN"/>
+        </elf-lod0ad:Address>
+    </wfs:member>
+    <wfs:additionalObjects>
+        <wfs:SimpleFeatureCollection>
+            <wfs:member>
+                <elf-lod0ad:AdminUnitName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="KUNTANIMI_2571">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>2571</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/AdminUnitName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>fin</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Kirkkonummi</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                    <ad:level xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </elf-lod0ad:AdminUnitName>
+            </wfs:member>
+            <wfs:member>
+                <elf-lod0ad:AdminUnitName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="KUNTANIMI_2572">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>2572</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/AdminUnitName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>swe</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym/"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Kyrkslätt</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                    <ad:level xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0"/>
+                </elf-lod0ad:AdminUnitName>
+            </wfs:member>
+            <wfs:member>
+                <elf-lod0ad:ThoroughfareName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="TIENIMI_267508">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>267508</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/ThoroughfareName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>fin</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Kehä III</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                </elf-lod0ad:ThoroughfareName>
+            </wfs:member>
+            <wfs:member>
+                <elf-lod0ad:ThoroughfareName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="TIENIMI_267510">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>267510</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/ThoroughfareName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>swe</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Ring III</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                </elf-lod0ad:ThoroughfareName>
+            </wfs:member>
+            <wfs:member>
+                <elf-lod0ad:ThoroughfareName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="TIENIMI_319274">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>319274</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/ThoroughfareName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>fin</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Hammarsinkaari</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                </elf-lod0ad:ThoroughfareName>
+            </wfs:member>
+            <wfs:member>
+                <elf-lod0ad:ThoroughfareName xmlns:elf-lod0ad="http://www.locationframework.eu/schemas/Addresses/MasterLoD0/1.0" gml:id="TIENIMI_319276">
+                    <ad:inspireId xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <base:Identifier xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3rc3/">
+                            <base:localId>319276</base:localId>
+                            <base:namespace>http://paikkatiedot.fi/so/1000785/ThoroughfareName/</base:namespace>
+                            <base:versionId xsi:nil="true" nilReason="unpopulated"/>
+                        </base:Identifier>
+                    </ad:inspireId>
+                    <ad:name xmlns:ad="urn:x-inspire:specification:gmlas:Addresses:3.0">
+                        <gn:GeographicalName xmlns:gn="urn:x-inspire:specification:gmlas:GeographicalNames:3.0">
+                            <gn:language>swe</gn:language>
+                            <gn:nativeness xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"/>
+                            <gn:nameStatus xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official/"/>
+                            <gn:sourceOfName>National Land Survey of Finland - Topographic Database</gn:sourceOfName>
+                            <gn:pronunciation xsi:nil="true" nilReason="unpopulated"/>
+                            <gn:spelling>
+                                <gn:SpellingOfName>
+                                    <gn:text>Hammarsbågen</gn:text>
+                                    <gn:script>Latn</gn:script>
+                                </gn:SpellingOfName>
+                            </gn:spelling>
+                        </gn:GeographicalName>
+                    </ad:name>
+                </elf-lod0ad:ThoroughfareName>
+            </wfs:member>
+        </wfs:SimpleFeatureCollection>
+    </wfs:additionalObjects>
+</wfs:FeatureCollection>

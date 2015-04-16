@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.JobValidator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -130,24 +132,14 @@ public class RYSP_FeatureEngineMapLayerJobTest {
 
     }
 
+
     @org.junit.Ignore("Requires Backend")
     @Test
     public void testRYSPkantaLiikennevaylaMapLayerJob() throws IOException {
 
-        SessionStore session = SessionStore.setJSON(sessionJSON);
-
-        Map<String, Layer> layers = session.getLayers();
-        for (Layer layer : layers.values()) {
-            layer.setTiles(session.getGrid().getBounds()); // init bounds to
-                                                           // tiles (render
-                                                           // all)
-        }
-
         CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
-        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, RYSPkantaLiikennevaylaWFSLayerJSON);
-
+        FEMapLayerJob job = TestHelper.createJob(sessionJSON, resultProcessor, RYSPkantaLiikennevaylaWFSLayerJSON);
         job.run();
 
         HashMap<String, Integer> results = resultProcessor.getResults();
@@ -180,9 +172,7 @@ public class RYSP_FeatureEngineMapLayerJobTest {
 
         CounterJsonResultProcessor resultProcessor = new JacksonCounterJsonResultProcessor();
 
-        TestRunFEMapLayerJob job = new TestRunFEMapLayerJob(resultProcessor,
-                session, RYSPkantaRakennusWFSLayerJSON);
-
+        FEMapLayerJob job = TestHelper.createJob(sessionJSON, resultProcessor, RYSPkantaRakennusWFSLayerJSON);
         job.run();
 
         HashMap<String, Integer> results = resultProcessor.getResults();
@@ -197,34 +187,6 @@ public class RYSP_FeatureEngineMapLayerJobTest {
                 && results.get("/wfs/feature") > 0);
         assertTrue(results.get("/wfs/image") != null
                 && results.get("/wfs/image") == 24);
-
-    }
-
-    /* Test Helper to setup session and permission */
-    class TestRunFEMapLayerJob extends FEMapLayerJob {
-
-        private String layerjson;
-
-        TestRunFEMapLayerJob(ResultProcessor resultProcessor,
-                SessionStore session, String layerjson) {
-            super(resultProcessor, Type.NORMAL, session, "4", true, true, true);
-            this.layerjson = layerjson;
-        }
-
-        @Override
-        protected boolean hasPermissionsForJob() {
-            return true;
-        }
-
-        @Override
-        protected WFSLayerStore getLayerForJob() {
-            try {
-                return WFSLayerStore.setJSON(layerjson);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
 
     }
 

@@ -30,22 +30,9 @@ public class SearchWorker {
     public static final String KEY_TOTAL_COUNT = "totalCount";
     public static final String KEY_ERROR_TEXT = "errorText";
     public static final String KEY_LOCATIONS = "locations";
+    public static final String KEY_METHODS = "methods";
     public static final String KEY_HAS_MORE = "hasMore";
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_TYPE = "type";
-    public static final String KEY_RANK = "rank";
-    public static final String KEY_LON = "lon";
-    public static final String KEY_LAT = "lat";
-    public static final String KEY_VILLAGE = "village";
-    public static final String KEY_ZOOMLEVEL = "zoomLevel";
-    public static final String KEY_ZOOMSCALE = "zoomScale";
 
-    public static final String KEY_BBOX = "bbox";
-    public static final String KEY_LEFT = "left";
-    public static final String KEY_TOP = "top";
-    public static final String KEY_RIGHT = "right";
-    public static final String KEY_BOTTOM = "bottom";
 
     public static final String ERR_EMPTY = "cannot_be_empty";
     public static final String ERR_TOO_SHORT = "too_short";
@@ -134,8 +121,10 @@ public class SearchWorker {
         Query query = searchService.doSearch(sc);
 
         List<SearchResultItem> items = new ArrayList<SearchResultItem>();
+        JSONArray methodArray = new JSONArray();
         for(String channelId : sc.getChannels()) {
             items.addAll(query.findResult(channelId).getSearchResultItems());
+            methodArray.put(JSONHelper.createJSONObject(channelId,query.findResult(channelId).getSearchMethod()));
         }
         Collections.sort(items);
 
@@ -155,47 +144,13 @@ public class SearchWorker {
                 }
                 break;
             }
-
-            JSONObject itemJson = new JSONObject();
-
-            JSONHelper.putValue(itemJson, KEY_ID, itemCount);
-
-            // Name & coordinates
-            String name = ConversionHelper.getString(sri.getTitle(), "N/A");
-            boolean gotNameAndLocation = JSONHelper.putValue(itemJson, KEY_NAME, Jsoup.clean(name, Whitelist.none())) &&
-                    JSONHelper.putValue(itemJson, KEY_LON, sri.getLon()) &&
-                    JSONHelper.putValue(itemJson, KEY_LAT, sri.getLat());
-            if(!gotNameAndLocation) {
+            if(!sri.hasNameAndLocation()) {
                 // didn't get name/location -> skip to next result
                 log.warn("Didn't get name or location from search result item:", sri);
                 continue;
             }
-            // Rank
-            JSONHelper.putValue(itemJson, KEY_RANK, sri.getRank());
 
-            // Type
-            JSONHelper.putValue(itemJson, KEY_TYPE, sri.getType());
-
-            // Village (?)
-            // TODO: Shouldn't this be 'municipality' or sth?
-            String village = ConversionHelper.getString(sri.getVillage(), "");
-            JSONHelper.putValue(itemJson, KEY_VILLAGE, Jsoup.clean(village, Whitelist.none()));
-
-            // Zoom level - prefer scale, zoom level is deprecated
-            JSONHelper.putValue(itemJson, KEY_ZOOMLEVEL, sri.getZoomLevel());
-            if(sri.getZoomScale() != -1) {
-                JSONHelper.putValue(itemJson, KEY_ZOOMSCALE, sri.getZoomScale());
-            }
-            // do the bbox if we have any of the bbox values (Should have all if has any one of these)
-            if(sri.getWestBoundLongitude() != null) {
-                JSONObject bbox = new JSONObject();
-                JSONHelper.putValue(bbox, KEY_RIGHT, sri.getEastBoundLongitude());
-                JSONHelper.putValue(bbox, KEY_TOP, sri.getNorthBoundLatitude());
-                JSONHelper.putValue(bbox, KEY_LEFT, sri.getWestBoundLongitude());
-                JSONHelper.putValue(bbox, KEY_BOTTOM, sri.getSouthBoundLatitude());
-                JSONHelper.putValue(itemJson, KEY_BBOX, bbox);
-            }
-            itemArray.put(itemJson);
+            itemArray.put(sri.toJSON(itemCount));
 
             // Success
             itemCount++;
@@ -205,6 +160,12 @@ public class SearchWorker {
             rootJson.put(KEY_LOCATIONS, itemArray);
         } catch (JSONException jsonex) {
             throw new RuntimeException("Could not set search items in JSON");
+        }
+
+        try {
+            rootJson.put(KEY_METHODS, methodArray);
+        } catch (JSONException jsonex) {
+            throw new RuntimeException("Could not set search method items in JSON");
         }
 
         try {

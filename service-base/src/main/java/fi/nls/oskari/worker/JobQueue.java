@@ -1,8 +1,6 @@
 package fi.nls.oskari.worker;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -75,12 +73,30 @@ public class JobQueue
         return crashedJobCount;
     }
 
+    public List<String> getQueuedJobNames() {
+        List<String> names = new ArrayList<String>(queue.size());
+        for(Job j : queue) {
+            names.add(j.getKey());
+        }
+        return names;
+    }
+
+    public void cleanup(boolean force) {
+        for(Job j : queue) {
+            if(force) {
+                remove(j);
+            }
+        }
+    }
+
     /**
      * Adds a new job into queue and notifies workers
      * 
      * @param job
      */
     public void add(Job job) {
+        // removed previous job with same key
+        remove(job);
     	String key = job.getKey();
     	jobs.put(key, job);
         synchronized(queue) {
@@ -91,6 +107,25 @@ public class JobQueue
             maxQueueLength = queue.size();
         }
         log.debug("Added", key);
+    }
+
+    public void addJobCount() {
+        jobCount++;
+    }
+
+    public void setupTimingStatistics(long runTimeMS) {
+        if(runTimeMS > maxJobLength) {
+            maxJobLength = runTimeMS;
+        }
+        if(runTimeMS < minJobLength) {
+            minJobLength = runTimeMS;
+        }
+        if(avgRuntime == 0) {
+            avgRuntime = runTimeMS;
+        }
+        else {
+            avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
+        }
     }
 
     /**
@@ -108,6 +143,25 @@ public class JobQueue
         }
         log.debug("Removed", key);
     }
+
+    public void onJobSuccess(final Job job, final Object value) {
+        // convenience method for extension hooks
+        log.debug("Job success");
+    }
+
+    /**
+     * Note! Throwable can be null if some unexpected error occured.
+     * @param job
+     * @param value
+     */
+    public void onJobFailed(final Job job, final Throwable value) {
+        final boolean knownCause = value != null;
+        // convenience method for extension hooks
+        log.error("Exception while running job:", knownCause ? value.getMessage() : "");
+        if(knownCause) {
+            log.debug(value, "Stacktrace");
+        }
+    }
     
     /**
      * Defines a worker thread for queue's job
@@ -122,7 +176,7 @@ public class JobQueue
     	 * 
     	 */
         public void run() {
-            Runnable r;
+            Job r;
 
             while (true) {
                 synchronized(queue) {
@@ -134,38 +188,35 @@ public class JobQueue
                     r = queue.removeFirst();
                 }
                 final long startTime = System.nanoTime();
-                jobCount++;
+                addJobCount();
+                boolean notified = false;
                 try {
-                    r.run();
+                    final Object o = r.run();
+                    onJobSuccess(r, o);
+                    notified = true;
                 } catch (Exception e) {
-                    log.error("Exception while running job:", e.getMessage());
-                    log.debug(e, "Here's the stacktrace");
+                    onJobFailed(r, e);
+                    notified = true;
                 }
                 catch (OutOfMemoryError e) {
                     crashedJobCount++;
-                    log.error("OutOfMemory while running job:",((Job) r).getKey(), "- message", e.getMessage());
+                    log.error("OutOfMemory while running job:", r.getKey(), "- message", e.getMessage());
                     if(firstCrashedJob == null) {
-                        firstCrashedJob = ((Job) r).getKey();
+                        firstCrashedJob = r.getKey();
                     }
+                    onJobFailed(r, e);
+                    notified = true;
                     throw e;
                 }
                 finally {
-                    ((Job) r).teardown();
-                    jobs.remove(((Job) r).getKey());
-                    log.debug("Finished", ((Job) r).getKey());
+                    if(!notified) {
+                        onJobFailed(r, null);
+                    }
+                    r.teardown();
+                    jobs.remove(r.getKey());
+                    log.debug("Finished", r.getKey());
                     final long runTimeMS = (System.nanoTime() - startTime) / 1000000L;
-                    if(runTimeMS > maxJobLength) {
-                        maxJobLength = runTimeMS;
-                    }
-                    if(runTimeMS < minJobLength) {
-                        minJobLength = runTimeMS;
-                    }
-                    if(avgRuntime == 0) {
-                        avgRuntime = runTimeMS;
-                    }
-                    else {
-                        avgRuntime = ((avgRuntime * (jobCount -1)) + runTimeMS) / jobCount;
-                    }
+                    setupTimingStatistics(runTimeMS);
                 }
             }
         }

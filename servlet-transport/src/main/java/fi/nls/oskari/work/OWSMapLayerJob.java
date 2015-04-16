@@ -1,16 +1,10 @@
 package fi.nls.oskari.work;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.worker.Job;
+import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.worker.AbstractJob;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -18,19 +12,15 @@ import org.opengis.referencing.operation.MathTransform;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.Layer;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.Units;
-import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.transport.TransportService;
-import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.WFSImage;
 
 /**
  * Job for WFS Map Layer
  */
-public abstract class OWSMapLayerJob extends Job {
+public abstract class OWSMapLayerJob extends AbstractJob<String> {
+
+    public static final String STATUS_CANCELED = "canceled";
 
     protected static final Logger log = LogFactory
             .getLogger(OWSMapLayerJob.class);
@@ -42,22 +32,6 @@ public abstract class OWSMapLayerJob extends Job {
         excludedProperties.add("name");
         excludedProperties.add("boundedBy");
         excludedProperties.add("location");
-    }
-
-    public static enum Type {
-        NORMAL("normal"), HIGHLIGHT("highlight"), MAP_CLICK("mapClick"), GEOJSON(
-                "geoJSON"), PROPERTY_FILTER("property_filter");
-
-        protected final String name;
-
-        private Type(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 
     public static final String OUTPUT_LAYER_ID = "layerId";
@@ -90,9 +64,9 @@ public abstract class OWSMapLayerJob extends Job {
     protected ResultProcessor service;
     protected SessionStore session;
     protected Layer sessionLayer;
-    protected WFSLayerStore layer;
     protected WFSLayerPermissionsStore permissions;
     protected String layerId;
+    protected WFSLayerStore layer;
     protected boolean layerPermission;
     protected boolean reqSendFeatures;
     protected boolean reqSendImage;
@@ -102,29 +76,17 @@ public abstract class OWSMapLayerJob extends Job {
     protected boolean sendHighlight;
     protected MathTransform transformService;
     protected MathTransform transformClient;
-    protected Type type;
+    protected JobType type;
     protected FeatureCollection<SimpleFeatureType, SimpleFeature> features;
     protected List<String> processedFIDs = new ArrayList<String>();
     protected List<List<Object>> featureValuesList;
     protected List<List<Object>> geomValuesList;
 
     protected WFSImage image = null;
-    protected Units units = new Units();
 
-    // API
-    public static final String PERMISSIONS_API = "GetLayerIds";
-    public static final String LAYER_CONFIGURATION_API = "GetWFSLayerConfiguration&id=";
 
     protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
-    // COOKIE
-    public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";
 
-    // API URL (action routes)
-    private final static String PARAM_ROUTE = "action_route";
-    private static String SERVICE_URL = null; // default value perhaps?
-    private static String SERVICE_URL_PATH = null;
-    private static String SERVICE_URL_QUERYSTRING = null;
-    private static String SERVICE_URL_SESSION_PARAM = PropertyUtil.get("oskari.cookie.session", null);
 
     /**
      * Creates a new runnable job with own Jedis instance
@@ -134,11 +96,11 @@ public abstract class OWSMapLayerJob extends Job {
      * 
      * @param service
      * @param store
-     * @param layerId
+     * @param layer
      */
-    public OWSMapLayerJob(ResultProcessor service, Type type,
-            SessionStore store, String layerId) {
-        this(service, type, store, layerId, true, true, true);
+    public OWSMapLayerJob(ResultProcessor service, JobType type,
+            SessionStore store, WFSLayerStore layer) {
+        this(service, type, store, layer, true, true, true);
     }
 
     /**
@@ -150,21 +112,19 @@ public abstract class OWSMapLayerJob extends Job {
      * 
      * @param service
      * @param store
-     * @param layerId
      * @param reqSendFeatures
      * @param reqSendImage
      * @param reqSendHighlight
      */
-    public OWSMapLayerJob(ResultProcessor service, Type type,
-            SessionStore store, String layerId, boolean reqSendFeatures,
+    public OWSMapLayerJob(ResultProcessor service, JobType type,
+            SessionStore store, WFSLayerStore layer, boolean reqSendFeatures,
             boolean reqSendImage, boolean reqSendHighlight) {
-        setupAPIUrl();
         this.service = service;
         this.type = type;
         this.session = store;
-        this.layerId = layerId;
+        this.layer = layer;
+        this.layerId = layer.getLayerId();
         this.sessionLayer = this.session.getLayers().get(this.layerId);
-        this.layer = null;
         this.permissions = null;
         this.layerPermission = false;
         this.reqSendFeatures = reqSendFeatures;
@@ -174,113 +134,21 @@ public abstract class OWSMapLayerJob extends Job {
         this.transformClient = null;
     }
 
-    private synchronized static void setupAPIUrl() {
-        if(SERVICE_URL != null) {
-            return;
-        }
-        SERVICE_URL = PropertyUtil.get("oskari.domain", null);
-        final String[] path = PropertyUtil.get("oskari.ajax.url.prefix", "/?").split("\\?");
-        SERVICE_URL_PATH = path[0];
-        SERVICE_URL_QUERYSTRING = "?";
-        if(path.length == 2) {
-            SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + path[1];
-        }
-        if(!SERVICE_URL_QUERYSTRING.endsWith("?") && !SERVICE_URL_QUERYSTRING.endsWith("&")) {
-            SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + "&";
-        }
-        SERVICE_URL_QUERYSTRING = SERVICE_URL_QUERYSTRING + PARAM_ROUTE + "=";
-        // querystring should now be "?action_route=" or something like "?qwer=ty&action_route="
-        log.debug("Constructed path:", SERVICE_URL_PATH, "- and querystr: ", SERVICE_URL_QUERYSTRING, "from:", path);
+    public String getSessionId() {
+        return this.session.getSession();
     }
 
-    /**
-     * Gets service path for local API
-     * 
-     * Path for Layer configuration and permissions request
-     * 
-     * @param sessionId
-     * @return URL
-     */
-    public static String getAPIUrl(String sessionId) {
-        setupAPIUrl();
-        String session = "";
-        if (SERVICE_URL_SESSION_PARAM != null) {
-            // TODO: move into cookie same as route
-            // construct url session token if specified
-            session = ";" + SERVICE_URL_SESSION_PARAM + "=" + sessionId;
-        }
-        return SERVICE_URL + SERVICE_URL_PATH + session + SERVICE_URL_QUERYSTRING;
+    public String getRoute() {
+        return this.session.getRoute();
     }
 
-    /**
-     * Gets layer permissions (uses cache)
-     *
-     * @param layerId
-     * @param sessionId
-     * @param route
-     * @return <code>true</code> if rights to use the layer; <code>false</code>
-     *         otherwise.
-     */
-    public static boolean getPermissions(String layerId, String sessionId, String route) {
-        String json = WFSLayerPermissionsStore.getCache(sessionId);
-        boolean fromCache = (json != null);
-        if(!fromCache) {
-            log.warn(getAPIUrl(sessionId) + PERMISSIONS_API);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
-            json = HttpHelper.getRequest(getAPIUrl(sessionId) + PERMISSIONS_API, cookies);
-            if(json == null)
-                return false;
-        }
-        try {
-            WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(json);
-            return permissions.isPermission(layerId);
-        } catch (IOException e) {
-            log.error(e, "JSON parsing failed for WFSLayerPermissionsStore \n" + json);
-        }
-
-        return false;
+    public JobType getType() {
+        return type;
     }
 
-    /**
-     * Gets layer configuration (uses cache)
-     *
-     * @param layerId
-     * @param sessionId
-     * @param route
-     * @return layer
-     */
-    public static WFSLayerStore getLayerConfiguration(String layerId, String sessionId, String route) {
-        String json = WFSLayerStore.getCache(layerId);
-        boolean fromCache = (json != null);
-        if(!fromCache) {
-            final String apiUrl = getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId;
-            log.debug("Fetching layer data from", apiUrl);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
-            // NOTE: result is not handled
-            String result = HttpHelper.getRequest(apiUrl, cookies);
-            json = WFSLayerStore.getCache(layerId);
-            if(json == null) {
-                log.error("Couldn't find JSON for WFSLayerStore with id:", layerId, " - API url:", apiUrl);
-                return null;
-            }
-        }
-        try {
-            return WFSLayerStore.setJSON(json);
-        } catch (Exception e) {
-            log.error(e, "JSON parsing failed for WFSLayerStore \n" + json);
-        }
-
-        return null;
+    public String getLayerId() {
+        return layerId;
     }
-    
-    
-
 
     /**
      * Releases all when removed
@@ -305,13 +173,268 @@ public abstract class OWSMapLayerJob extends Job {
      * Worker calls this when starts the job.
      * 
      */
-    @Override
-    public abstract void run() ;
+    public String run() {
+
+        log.debug(PROCESS_STARTED + " " + getKey());
+        setResourceSending();
+
+        // if different SRS, create transforms for geometries
+        if(!this.session.getLocation().getSrs().equals(this.layer.getSRSName())) {
+            this.transformService = this.session.getLocation().getTransformForService(this.layer.getCrs(), true);
+            this.transformClient = this.session.getLocation().getTransformForClient(this.layer.getCrs(), true);
+        }
+
+        // check that the job isn't canceled
+        if (!goNext()) {
+            log.debug("[fe] Cancelled");
+            return STATUS_CANCELED;
+        }
+        // run job specific tasks
+        boolean completed = runRequestedJob();
+        if(!completed) {
+            log.debug("[fe] Cancelled");
+            return STATUS_CANCELED;
+        }
+        log.debug("[fe] " + PROCESS_ENDED + " " + getKey());
+        return "success";
+    }
+
+    private boolean runRequestedJob() {
+        // tiles for grid
+        if (this.type == JobType.NORMAL) {
+            return runNormalJob();
+        }
+        else if (this.type == JobType.HIGHLIGHT) {
+            return runHighlightJob();
+        }
+        else if (this.type == JobType.MAP_CLICK) {
+            return runMapClickJob();
+        }
+        else if (this.type == JobType.GEOJSON) {
+            return runGeoJSONJob();
+        }
+        else if (this.type == JobType.PROPERTY_FILTER) {
+            return runPropertyFilterJob();
+        }
+        return runUnknownJob();
+    }
+
+    public boolean runNormalJob() {
+        // make single request
+        if (!this.layer.isTileRequest()) {
+            log.debug("single request");
+            if (!this.normalHandlers(null, true)) {
+                log.debug("!normalHandlers leaving");
+                return false;
+            } else {
+                log.debug("single request - continue");
+            }
+        } else {
+            log.debug("MAKING TILED REQUESTS");
+        }
+        log.debug("normal tile images handling");
+
+        // init enlarged envelope
+        List<List<Double>> grid = this.session.getGrid().getBounds();
+        if (grid.size() > 0) {
+            this.session.getLocation().setEnlargedEnvelope(grid.get(0));
+        }
+
+        boolean first = true;
+        int index = 0;
+        for(List<Double> bounds : grid) {
+            if (!goNext()) {
+                return false;
+            }
+
+            log.debug("Tile bounds:", bounds);
+
+            // make a request per tile
+            if(this.layer.isTileRequest()) {
+                if(!this.normalHandlers(bounds, first)) {
+                    continue;
+                }
+            }
+
+            if(!goNext()) {
+                return false;
+            }
+
+            boolean isThisTileNeeded = true;
+
+            if (!this.sendImage) {
+                log.debug("[fe] !sendImage - not sending PNG");
+                isThisTileNeeded = false;
+            }
+
+            if (!this.sessionLayer.isTile(bounds)) {
+                log.debug("[fe] !layer.isTile - not sending PNG");
+                isThisTileNeeded = false;
+            }
+
+            if (isThisTileNeeded) {
+                Double[] bbox = bounds.toArray(new Double[4]);
+
+                // get from cache
+                BufferedImage bufferedImage = getImageCache(bbox);
+                boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary(index);
+
+                if(bufferedImage == null) {
+                    if(this.image == null) {
+                        this.image = createResponseImage();
+                    }
+                    bufferedImage = this.image.draw(this.session.getTileSize(),
+                            this.session.getLocation(),
+                            bounds,
+                            this.features);
+                    if(bufferedImage == null) {
+                        this.imageParsingFailed();
+                        throw new RuntimeException("Image parsing failed!");
+                    }
+
+                    // setup cachekey
+                    String cacheStyleName = this.session.getLayers().get(this.layerId).getStyleName();
+                    if (cacheStyleName.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
+                        cacheStyleName += "_" + this.session.getSession();
+                    }
+
+                    // save to cache
+                    setImageCache(bufferedImage, cacheStyleName, bbox, !isboundaryTile);
+                }
+
+                String url = createImageURL(this.session.getLayers().get(this.layerId).getStyleName(), bbox);
+                this.sendWFSImage(url, bufferedImage, bbox, true, isboundaryTile);
+            } else {
+                log.debug("Tile not needed?", bounds);
+            }
+
+            if (first) {
+                first = false;
+                // keep the next tiles
+                this.session.setKeepPrevious(true);
+            }
+            index++;
+        }
+        return true;
+    }
+
+    public boolean runHighlightJob() {
+        if(!this.sendHighlight) {
+            // highlight job with a flag for not sending images, what is going on in here?
+            return true;
+        }
+        if(!this.requestHandler(null)) {
+            return false;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+        // Send geometries, if requested as well
+        if(this.session.isGeomRequest()){
+            this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
+        }
+        log.debug("highlight image handling", this.features.size());
+        // IMAGE HANDLING
+        log.debug("sending");
+        Location location = this.session.getLocation();
+        if(this.image == null) {
+            this.image = new WFSImage(this.layer,
+                    this.session.getClient(),
+                    this.session.getLayers().get(this.layerId).getStyleName(),
+                    JobType.HIGHLIGHT.toString());
+        }
+        BufferedImage bufferedImage = this.image.draw(this.session.getMapSize(),
+                location,
+                this.features);
+        if(bufferedImage == null) {
+            this.imageParsingFailed();
+            throw new RuntimeException("Image parsing failed!");
+        }
+
+        Double[] bbox = location.getBboxArray();
+
+        // cache (non-persistant)
+        setImageCache(bufferedImage, JobType.HIGHLIGHT.toString() + "_" + this.session.getSession(), bbox, false);
+
+        String url = createImageURL(JobType.HIGHLIGHT.toString(), bbox);
+        this.sendWFSImage(url, bufferedImage, bbox, false, false);
+        return true;
+    }
+
+    public boolean runMapClickJob() {
+
+        if (!this.requestHandler(null)) {
+            // success, just no hits
+            this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
+            return true;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+
+        // features
+        if (this.sendFeatures) {
+            log.debug("Feature values list", this.featureValuesList);
+            this.sendWFSFeatures(this.featureValuesList,
+                    ResultProcessor.CHANNEL_MAP_CLICK);
+        } else {
+            log.debug("No feature data!");
+            this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
+        }
+        return true;
+    }
+
+    public boolean runGeoJSONJob() {
+        if (!this.requestHandler(null)) {
+            return false;
+        }
+        this.featuresHandler();
+        if (!goNext()) {
+            return false;
+        }
+        if (this.sendFeatures) {
+            this.sendWFSFeatures(this.featureValuesList,
+                    ResultProcessor.CHANNEL_FILTER);
+        }
+        return true;
+    }
+
+    public boolean runPropertyFilterJob() {
+        // should be same functionality
+        return runGeoJSONJob();
+    }
+
+    public boolean runUnknownJob() {
+        log.debug("Type is not handled " + this.type);
+        return true;
+    }
+
 
     /**
      * Wrapper for normal type job's handlers
      */
-    protected abstract boolean normalHandlers(List<Double> bounds, boolean first);
+    protected boolean normalHandlers(List<Double> bounds, boolean first) {
+        if(!this.requestHandler(bounds)) {
+            log.debug("Cancelled by request handler");
+            return false;
+        }
+        if(first) {
+            propertiesHandler();
+            if(!goNext()) {
+                return false;
+            }
+        }
+        if(!goNext()) {
+            return false;
+        }
+        this.featuresHandler();
+        if(!goNext()) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Makes request and parses response to features
@@ -338,41 +461,92 @@ public abstract class OWSMapLayerJob extends Job {
      * Parses features values
      */
     protected abstract void featuresHandler() ;
-        
+
+
 
     /**
      * Send image parsing error
      */
     protected void imageParsingFailed() {
+        imageParsingFailed(ResultProcessor.ERROR_WFS_IMAGE_PARSING);
+    }
+    /**
+     * Send image parsing error
+     */
+    protected void imageParsingFailed(final String message) {
         log.debug("Image parsing failed");
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_ONCE, true);
-        output.put(OUTPUT_MESSAGE, "wfs_image_parsing_failed");
-        this.service.addResults(session.getClient(), TransportService.CHANNEL_ERROR,
+        output.put(OUTPUT_MESSAGE, message);
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR,
                 output);
     }
 
     /**
-     * Checks if enough information for running the task type
-     * 
-     * @return <code>true</code> if enough information for type;
-     *         <code>false</code> otherwise.
-     */
-    protected abstract boolean validateType() ;
-
-    /**
      * Sets which resources will be sent (features, image)
      */
-    protected abstract void setResourceSending() ;
+    protected void setResourceSending() {
+        // layer configuration is the default
+        this.sendFeatures = layer.isGetFeatureInfo();
+        this.sendImage = layer.isGetMapTiles();
+        this.sendHighlight = layer.isGetHighlightImage();
+
+        // if request defines false and layer configuration allows
+        if(!this.reqSendFeatures && this.sendFeatures)
+            this.sendFeatures = false;
+        if(!this.reqSendImage && this.sendImage)
+            this.sendImage = false;
+        if(!this.reqSendHighlight && this.sendHighlight)
+            this.sendHighlight = false;
+
+        log.debug("send - features:", this.sendFeatures, "image:", this.sendImage, "highlight:", this.sendHighlight);
+    }
 
     /**
      * Checks if the map scale is valid
-     * 
-     * @return <code>true</code> if map scale is valid; <code>false</code>
-     *         otherwise.
+     *
+     * @return <code>true</code> if map scale is valid;
+     *         <code>false</code> otherwise.
      */
-    protected abstract boolean validateMapScales() ;
+    protected boolean validateMapScales() {
+        return JobHelper.isRequestScalesInRange(
+                this.session.getMapScales(),
+                (int) this.session.getLocation().getZoom(),
+                layer,
+                session.getLocation().getSrs());
+    }
+
+    /**
+     * Checks if enough information for running the task type
+     *
+     * @return <code>true</code> if enough information for type;
+     *         <code>false</code> otherwise.
+     */
+    public boolean hasValidParams() {
+        if(this.type == JobType.HIGHLIGHT) {
+            if(this.sessionLayer.getHighlightedFeatureIds() != null &&
+                    this.sessionLayer.getHighlightedFeatureIds().size() > 0) {
+                return true;
+            }
+        } else if(this.type == JobType.MAP_CLICK) {
+            if(session.getMapClick() != null) {
+                return true;
+            }
+        } else if(this.type == JobType.GEOJSON) {
+            if(session.getFilter() != null) {
+                return true;
+            }
+        }
+        else if(this.type == JobType.PROPERTY_FILTER) {
+            if(session.getPropertyFilter() != null) {
+                return true;
+            }
+        } else if(this.type == JobType.NORMAL) {
+            return true;
+        }
+        return false;
+    }
     /**
      * Creates image url
      * 
@@ -380,69 +554,197 @@ public abstract class OWSMapLayerJob extends Job {
      * @param bbox
      */
     protected String createImageURL(final String style, Double[] bbox) {
-        return "/image" + "?" + OUTPUT_LAYER_ID + "=" + this.layerId + "&"
-                + OUTPUT_STYLE + "=" + style + "&" + OUTPUT_IMAGE_SRS + "="
-                + this.session.getLocation().getSrs() + "&" + OUTPUT_IMAGE_BBOX
-                + "=" + bbox[0] + "," + bbox[1] + "," + bbox[2] + "," + bbox[3]
-                + "&" + OUTPUT_IMAGE_ZOOM + "="
-                + this.session.getLocation().getZoom();
+        return "/image" +
+                "?" + OUTPUT_LAYER_ID + "=" + this.layerId +
+                "&" + OUTPUT_STYLE + "=" + style +
+                "&" + OUTPUT_IMAGE_SRS + "=" + this.session.getLocation().getSrs() +
+                "&" + OUTPUT_IMAGE_BBOX + "=" + bbox[0] +
+                "," + bbox[1] +
+                "," + bbox[2] +
+                "," + bbox[3] +
+                "&" + OUTPUT_IMAGE_ZOOM + "=" + this.session.getLocation().getZoom();
     }
 
     /**
      * Sends properties (fields and locales)
-     * 
+     *
      * @param fields
      * @param locales
      */
-    protected abstract void sendWFSProperties(List<String> fields, List<String> locales) ;
+    protected void sendWFSProperties(List<String> fields, List<String> locales) {
+        if(fields == null || fields.size() == 0) {
+            log.warn("Failed to send properties");
+            return;
+        }
+
+        if(!fields.contains("__fid")) fields.add(0, "__fid");
+        if(!fields.contains("__centerX"))fields.add("__centerX");
+        if(!fields.contains("__centerY"))fields.add("__centerY");
+
+        if(locales != null && !locales.isEmpty()) {
+            locales.add(0, "ID");
+            locales.add("x");
+            locales.add("y");
+        } else {
+            locales = new ArrayList<String>();
+        }
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_FIELDS, fields);
+        output.put(OUTPUT_LOCALES, locales);
+
+        this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_PROPERTIES, output);
+    }
+
     /**
      * Sends one feature
-     * 
+     *
      * @param values
      */
-    protected abstract void sendWFSFeature(List<Object> values) ;
+    protected void sendWFSFeature(List<Object> values) {
+        if(values == null || values.size() == 0) {
+            log.warn("Failed to send feature");
+            return;
+        }
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_FEATURE, values);
+
+        this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_FEATURE, output);
+    }
     /**
      * Sends list of features
      * 
      * @param features
      * @param channel
      */
-    protected abstract void sendWFSFeatures(List<List<Object>> features, String channel) ;
+    protected void sendWFSFeatures(List<List<Object>> features, String channel) {
+        if (features == null || features.size() == 0) {
+            log.debug("No features to Send");
+            return;
+        }
+
+        log.debug("#### Sending " + features.size() + "  FEATURES");
+
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_FEATURES, features);
+        if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
+            output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+        }
+
+        log.debug("Sending", features.size(), "features");
+        this.service.addResults(this.session.getClient(), channel, output);
+    }
+
     /**
      * Sends image as an URL to IE 8 & 9, base64 data for others
-     * 
+     *
      * @param url
      * @param bufferedImage
      * @param bbox
      * @param isTiled
      */
-    protected abstract void sendWFSImage(String url, BufferedImage bufferedImage,
-            Double[] bbox, boolean isTiled, boolean isboundaryTile) ;
+    protected void sendWFSImage(String url, BufferedImage bufferedImage, Double[] bbox, boolean isTiled, boolean isboundaryTile) {
+        if(bufferedImage == null) {
+            log.warn("Failed to send image");
+            return;
+        }
 
-    public abstract RequestResponse request(Type type, WFSLayerStore layer,
-            SessionStore session, List<Double> bounds,
-            MathTransform transformService);
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+
+        Location location = this.session.getLocation();
+
+        Tile tileSize = null;
+        if(isTiled) {
+            tileSize = this.session.getTileSize();
+        } else {
+            tileSize = this.session.getMapSize();
+        }
+
+        output.put(OUTPUT_IMAGE_SRS, location.getSrs());
+        output.put(OUTPUT_IMAGE_BBOX, bbox);
+        output.put(OUTPUT_IMAGE_ZOOM, location.getZoom());
+        output.put(OUTPUT_IMAGE_TYPE, this.type.toString()); // "normal" | "highlight"
+        output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+        output.put(OUTPUT_BOUNDARY_TILE, isboundaryTile);
+        output.put(OUTPUT_IMAGE_WIDTH, tileSize.getWidth());
+        output.put(OUTPUT_IMAGE_HEIGHT, tileSize.getHeight());
+        output.put(OUTPUT_IMAGE_URL, url);
+
+        byte[] byteImage = WFSImage.imageToBytes(bufferedImage);
+        String base64Image = WFSImage.bytesToBase64(byteImage);
+        int base64Size = (base64Image.length()*2)/1024;
+
+        // IE6 & IE7 doesn't support base64, max size in base64 for IE8 is 32KB
+        if(!(this.session.getBrowser().equals(BROWSER_MSIE) && this.session.getBrowserVersion() < 8 ||
+                this.session.getBrowser().equals(BROWSER_MSIE) && this.session.getBrowserVersion() == 8 &&
+                        base64Size >= 32)) {
+            output.put(OUTPUT_IMAGE_DATA, base64Image);
+        }
+
+        this.service.addResults(this.session.getClient(), ResultProcessor.CHANNEL_IMAGE, output);
+    }
+
+    /**
+     * Sends list of feature geometries
+     *
+     * @param geometries
+     * @param channel
+     */
+    protected void sendWFSFeatureGeometries(List<List<Object>> geometries, String channel) {
+        if(geometries == null || geometries.size() == 0) {
+            log.warn("Failed to send feature geometries");
+            return;
+        }
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        output.put(OUTPUT_GEOMETRIES, geometries);
+        output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
+
+        log.debug("Sending", geometries.size(), "geometries");
+        this.service.addResults(this.session.getClient(), channel, output);
+    }
+    public abstract RequestResponse request(JobType type, WFSLayerStore layer,
+                                            SessionStore session, List<Double> bounds,
+                                            MathTransform transformService);
+
 
     public abstract FeatureCollection<SimpleFeatureType, SimpleFeature> response(
             WFSLayerStore layer, RequestResponse response);
 
     /**
      * Gets image from cache
-     * 
+     *
      * @param bbox
      */
-    protected abstract BufferedImage getImageCache(Double[] bbox);
+    protected BufferedImage getImageCache(Double[] bbox) {
+        return WFSImage.getCache(
+                this.layerId,
+                this.session.getLayers().get(this.layerId).getStyleName(),
+                this.session.getLocation().getSrs(),
+                bbox,
+                this.session.getLocation().getZoom()
+        );
+    }
 
     /**
      * Sets image to cache
-     * 
+     *
      * @param bufferedImage
      * @param style
      * @param bbox
      * @param persistent
      */
-    protected abstract void setImageCache(BufferedImage bufferedImage,
-            final String style, Double[] bbox, boolean persistent);
+    protected void setImageCache(BufferedImage bufferedImage,
+                                 final String style, Double[] bbox, boolean persistent) {
+
+        WFSImage.setCache(bufferedImage, this.layerId, style, this.session
+                .getLocation().getSrs(), bbox, this.session.getLocation()
+                .getZoom(), persistent);
+
+    }
 
     protected WFSImage createResponseImage() {
         return new WFSImage(this.layer, this.session.getClient(), this.session
@@ -452,6 +754,54 @@ public abstract class OWSMapLayerJob extends Job {
     protected WFSImage createHighlightImage() {
         return new WFSImage(this.layer, this.session.getClient(), this.session
                 .getLayers().get(this.layerId).getStyleName(),
-                Type.HIGHLIGHT.toString());
+                JobType.HIGHLIGHT.toString());
     }
+
+    public void sendCommonErrorResponse(final String message, final boolean once) {
+        Map<String, Object> output = createCommonResponse(message);
+        if(once) {
+            output.put(OUTPUT_ONCE, once);
+        }
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+    public Map<String, Object> createCommonResponse(final String message) {
+        Map<String, Object> output = createCommonResponse();
+        output.put(OUTPUT_MESSAGE, message);
+        return output;
+    }
+
+    public Map<String, Object> createCommonResponse() {
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put(OUTPUT_LAYER_ID, this.layerId);
+        return output;
+    }
+
+
+    public void notifyError() {
+        notifyError(null);
+    }
+
+    public void notifyError(String error) {
+        if (error == null) {
+            error = "Something went wrong";
+        }
+        log.error("On Error - layer:", layerId, "type:", type, "msg:", error);
+        Map<String, Object> output = createCommonResponse(error);
+        output.put("type", type.toString());
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_ERROR, output);
+    }
+
+    public void notifyStart() {
+        log.info("On start - layer:", layerId, "type:", type);
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, createCommonResponse("started"));
+    }
+
+    public void notifyCompleted(final boolean success) {
+        log.info("Completed - layer:", layerId, "type:", type, "success:", success);
+        Map<String, Object> output = createCommonResponse("completed");
+        output.put("success", success);
+        output.put("type", type.toString());
+        this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_STATUS, output);
+    }
+
 }

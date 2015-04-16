@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.transport.MessageParseHelper;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParser;
@@ -19,6 +20,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Handles user's session (current state)
@@ -26,6 +28,7 @@ import fi.nls.oskari.transport.TransportService;
 public class SessionStore {
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
+	private static final ObjectMapper mapper = new ObjectMapper();
 	public static final String KEY = "Session_";
 
 	private String client; // bayeux session (used in redis key)
@@ -442,7 +445,7 @@ public class SessionStore {
 	@JsonIgnore
 	public String getAsJSON() {
 		try {
-			return TransportService.mapper.writeValueAsString(this);
+			return mapper.writeValueAsString(this);
 		} catch (JsonGenerationException e) {
 			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
@@ -577,16 +580,16 @@ public class SessionStore {
                     }
                 }
 				store.setLocation(location);
-			} else if (TransportService.PARAM_GRID.equals(fieldName)) {
+			} else if (MessageParseHelper.PARAM_GRID.equals(fieldName)) {
                 if (parser.getCurrentToken() == JsonToken.START_OBJECT) {
                     while (parser.nextToken() != JsonToken.END_OBJECT) {
                         valueName = parser.getCurrentName();
                         long value = parser.getValueAsLong();
-                        if (TransportService.PARAM_ROWS.equals(valueName)) {
+                        if (MessageParseHelper.PARAM_ROWS.equals(valueName)) {
                             grid.setRows(((Long) value).intValue());
-                        } else if (TransportService.PARAM_COLUMNS.equals(valueName)) {
+                        } else if (MessageParseHelper.PARAM_COLUMNS.equals(valueName)) {
                             grid.setColumns(((Long) value).intValue());
-                        } else if (TransportService.PARAM_BOUNDS.equals(valueName)) {
+                        } else if (MessageParseHelper.PARAM_BOUNDS.equals(valueName)) {
                             List<List<Double>> bounds = new ArrayList<List<Double>>();
                             List<Double> bound = null;
                             if(parser.isExpectedStartArrayToken()) {

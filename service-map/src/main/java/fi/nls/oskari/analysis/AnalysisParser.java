@@ -363,6 +363,7 @@ public class AnalysisParser {
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                method.setLayer_id2(this.getAnalysisInputId(params));
             } else if (isWpsInputLayerType(lc2.getWps_params())) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else if (isJsonData) {
@@ -421,6 +422,7 @@ public class AnalysisParser {
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                method.setLayer_id2(this.getAnalysisInputId(params));
             } else if (isWpsInputLayerType(lc2.getWps_params())) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else if (isJsonData) {

@@ -8,6 +8,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.IntersectJoinMethodParams;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -109,6 +110,9 @@ public class AnalysisDataService {
                             analysislayer.getInputAnalysisId());
                 }
             }
+            // if analysis in analysis and second layer is analysislayer - fix field names to original
+            fields = this.SwapSecondAnalysisFieldNames(fields, analysislayer);
+
             analysis.setCols(fields);
 
             log.debug("Update analysis row", analysis);
@@ -325,6 +329,46 @@ public class AnalysisDataService {
             }
 
         }
+        return fieldsin;
+    }
+    /**
+     * Replace analysislayer internal field names in 2 layers analysis
+     * when second layer is analysislayer
+     * @param fieldsin    raw field names mapping
+     * @return List of field names mapping
+     */
+    public List<String> SwapSecondAnalysisFieldNames(List<String> fieldsin, AnalysisLayer analysisLayer) {
+
+
+          if (analysisLayer.getAnalysisMethodParams() instanceof IntersectJoinMethodParams) {
+                IntersectJoinMethodParams params = (IntersectJoinMethodParams) analysisLayer.getAnalysisMethodParams();
+                if (params.getWps_reference_type2().equals(
+                        ANALYSIS_INPUT_TYPE_GS_VECTOR)) {
+                    if(params.getLayer_id2() != null){
+                        Map<String, String> colnames = this.getAnalysisColumns(params.getLayer_id2());
+                        // Replace internal analysis field names (t1,...)
+                        for (int i = 0; i < fieldsin.size(); i++) {
+                            String col = fieldsin.get(i);
+                            if (!col.isEmpty()) {
+                                if (col.indexOf("=") != -1) {
+                                    String[] cola = col.split("=");
+                                    // Remove join body field part
+                                    cola[1] = cola[1].replace(transformationService.stripNamespace(params.getTypeName2())+"_","");
+                                    if (colnames.containsKey(cola[1])) {
+                                        fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(params.getTypeName2())+"_" + colnames.get(cola[1]));
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
         return fieldsin;
     }
 

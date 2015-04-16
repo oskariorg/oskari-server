@@ -6,9 +6,12 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.metadata.MetadataField;
+import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
@@ -17,6 +20,9 @@ import fi.nls.oskari.util.ServiceFactory;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.Projection;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -56,13 +62,14 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private final static List<MetadataField> fields = new ArrayList<MetadataField>();
 
-    private final MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
+    private MetadataCatalogueResultParser RESULT_PARSER = null;
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
     
     private OskariLayerServiceIbatisImpl mapLayerService = (OskariLayerServiceIbatisImpl)ServiceFactory.getMapLayerService();
 
     private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
     private static final String PROPERTY_FETCHURL_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.";
+    private static final String PROPERTY_RESULTPARSER = "search.channel.METADATA_CATALOGUE_CHANNEL.resultparser";
 
     @Override
     public void init() {
@@ -78,6 +85,20 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         for(String key : urlKeys) {
             final String langCode = key.substring(urlPrefixLen);
             fetchPageURLs.put(langCode, PropertyUtil.get(key));
+        }
+
+        // hook for customized parsing
+        final String customResultParser = PropertyUtil.getOptional(PROPERTY_RESULTPARSER);
+        if(customResultParser != null) {
+            try {
+                final Class clazz = Class.forName(customResultParser);
+                RESULT_PARSER = (MetadataCatalogueResultParser) clazz.newInstance();
+            } catch (Exception e) {
+                log.error(e, "Error instantiating custom metadata result parser:", customResultParser);
+            }
+        }
+        if(RESULT_PARSER == null) {
+            RESULT_PARSER = new MetadataCatalogueResultParser();
         }
     }
 
@@ -142,7 +163,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         StAXOMBuilder builder = null;
         try {
             builder = makeQuery(searchCriteria);
-            channelSearchResult = parseResults(builder, searchCriteria.getLocale());
+            channelSearchResult = parseResults(builder, searchCriteria);
         } catch (Exception x) {
             log.error(x, "Failed to search");
             channelSearchResult = new ChannelSearchResult();
@@ -157,23 +178,23 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return channelSearchResult;
     }
 
-    
-    public ChannelSearchResult parseResults(final StAXOMBuilder builder, final String locale) {
+    public ChannelSearchResult parseResults(final StAXOMBuilder builder, final SearchCriteria searchCriteria) {
     	
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
         log.debug("parseResults");
         try {
             final OMElement resultsWrapper = getResultsElement(builder);
+            final String locale = searchCriteria.getLocale();
+            final String srs = searchCriteria.getSRS();
             // resultsWrapper == null -> no search results
             final Iterator<OMElement> results = resultsWrapper.getChildrenWithLocalName("MD_Metadata");
             final long start = System.currentTimeMillis();
             while(results.hasNext()) {
                 final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
                 setupResultItemURLs(item, locale);
-                
-                
+
                 final List<OskariLayer> oskariLayers =  getOskariLayerWithUuid(item);
-                
+
                 if(oskariLayers != null && !oskariLayers.isEmpty()){
                 	log.debug("Got oskariLayers");
                 	
@@ -182,7 +203,8 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                 		item.addUuId(oskariLayer.getMetadataId());
                 	}
                 }
-                
+
+                item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
                 channelSearchResult.addItem(item);
             }
             
@@ -196,7 +218,33 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
         return channelSearchResult;
     }
-    
+
+    private String getWKT(final SearchResultItem item, final String sourceSRS, final String targetSRS) {
+        // check if we have values
+        if((item.getSouthBoundLatitude() == null) ||
+            (item.getWestBoundLongitude() == null) ||
+            (item.getEastBoundLongitude() == null) ||
+            (item.getNorthBoundLatitude() == null)) {
+            return null;
+        }
+        // transform points to map projection and create a WKT bbox
+        try {
+            Point p1 = null;
+            Point p2 = null;
+            if (ProjectionHelper.isFirstAxisNorth(CRS.decode(sourceSRS))) {
+                p1 = ProjectionHelper.transformPoint(item.getSouthBoundLatitude(), item.getWestBoundLongitude(), sourceSRS, targetSRS);
+                p2 = ProjectionHelper.transformPoint(item.getNorthBoundLatitude(), item.getEastBoundLongitude(), sourceSRS, targetSRS);
+            } else {
+                p1 = ProjectionHelper.transformPoint(item.getWestBoundLongitude(), item.getSouthBoundLatitude(), sourceSRS, targetSRS);
+                p2 = ProjectionHelper.transformPoint(item.getEastBoundLongitude(), item.getNorthBoundLatitude(), sourceSRS, targetSRS);
+            }
+            return WKTHelper.getBBOX(p1.getLon(), p1.getLat(), p2.getLon(), p2.getLat());
+        } catch(Exception e){
+            log.error(e, "Cannot get BBOX");
+        }
+        return null;
+    }
+
     private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
     	
     	log.debug("in getOskariLayerWithUuid");

@@ -43,7 +43,11 @@
                         }
                     },
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin",
+                        "config": {
+                            "markerButton": false
+                        }
+                    },
                     { "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" }
                 ],
                 "layers": [
@@ -57,7 +61,27 @@
             }
         },
         { "id" : "infobox" },
-        { "id" : "toolbar" },
+        {
+            "id" : "toolbar",
+            "config" : {
+                "basictools": {
+                    "measurearea": false,
+                    "measureline": false,
+                    "select": false,
+                    "zoombox": false
+
+                },
+                "history": {
+                    "history_back": false,
+                    "history_forward": false,
+                    "reset": false
+                },
+                "viewtools": {
+                    "link": false,
+                    "print": false
+                }
+            }
+        },
         { "id" : "publishedstatehandler" },
         { "id" : "rpc" }
     ]

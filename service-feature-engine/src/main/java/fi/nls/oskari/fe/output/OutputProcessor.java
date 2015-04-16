@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.json.JSONObject;
 
 public interface OutputProcessor {
 
@@ -45,5 +46,7 @@ public interface OutputProcessor {
             final List<Pair<Resource, Object>> linkProperties,
             final List<Pair<Resource, Geometry>> geometryProperties)
             throws IOException;
+
+    public void merge(final List<JSONObject> list, Resource href) throws  IOException;
 
 }

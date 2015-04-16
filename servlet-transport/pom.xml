@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.27.1</version>
+        <version>1.28.0</version>
 	</parent>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>transport-servlet</artifactId>
@@ -15,6 +15,7 @@
 
     <properties>
         <transport.resourceDir>${basedir}/src/main/resources</transport.resourceDir>
+        <metrics.version>3.1.0</metrics.version>
     </properties>
 
     <build>
@@ -42,6 +43,36 @@
 	</build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.rxjava</groupId>
+            <artifactId>rxjava-math</artifactId>
+            <version>0.19.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-json</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-jvm</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+
+
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -163,25 +194,16 @@
            <version>1.4.01</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.2</version>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+            <scope>test</scope>
         </dependency>
+        <!-- arcgis rest support needs this -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.2</version>
+            <groupId>com.esri.geometry</groupId>
+            <artifactId>esri-geometry-api</artifactId>
+            <version>1.2</version>
         </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-        </dependency>
-        <dependency>
-    <groupId>xalan</groupId>
-    <artifactId>xalan</artifactId>
-    <version>2.7.2</version>
-    <scope>test</scope>
-</dependency>
     </dependencies>
 </project>

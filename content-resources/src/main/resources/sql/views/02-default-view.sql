@@ -198,6 +198,7 @@ UPDATE portti_view_bundle_seq set config = '{
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin" },
        { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+       { "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" },
        {
             "id" : "Oskari.mapframework.bundle.mapmodule.plugin.BackgroundLayerSelectionPlugin",
             "config" : {
@@ -1119,4 +1120,16 @@ UPDATE portti_view_bundle_seq set startup = '{
     "instanceProps" : {}
 }' WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name = 'findbycoordinates') 
     AND  view_id=(SELECT id FROM portti_view WHERE type='DEFAULT');
+
+
+--------------------------------------------
+-- 26. Heatmap
+--------------------------------------------
+INSERT INTO portti_view_bundle_seq (view_id, seqno, bundle_id, startup, config, state)
+VALUES ((SELECT id FROM portti_view WHERE type='DEFAULT'),
+        (SELECT (max(seqno) + 1) FROM portti_view_bundle_seq WHERE view_id = (SELECT id FROM portti_view WHERE type='DEFAULT')),
+        (SELECT id FROM portti_bundle WHERE name = 'heatmap'),
+        (SELECT startup FROM portti_bundle WHERE name = 'heatmap'),
+        (SELECT config FROM portti_bundle WHERE name = 'heatmap'),
+        (SELECT state FROM portti_bundle WHERE name = 'heatmap'));
 

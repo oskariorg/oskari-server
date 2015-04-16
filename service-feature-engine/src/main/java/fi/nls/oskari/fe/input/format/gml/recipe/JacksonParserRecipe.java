@@ -7,7 +7,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -17,7 +19,9 @@ import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.codehaus.staxmate.in.SMInputCursor;
 import org.geotools.xml.Configuration;
+import org.json.JSONObject;
 
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
@@ -27,6 +31,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     protected final List<Pair<Resource, XSDDatatype>> O_properties = new ArrayList<Pair<Resource, XSDDatatype>>();
     protected final List<Pair<Resource, Object>> O_linkProperties = new ArrayList<Pair<Resource, Object>>();
     protected final List<Pair<Resource, String>> O_geometryProperties = new ArrayList<Pair<Resource, String>>();
+    protected ELF_path_parse_worker parseWorker = null;
 
     public static abstract class GML32 extends JacksonParserRecipe {
         public GML32() {
@@ -78,6 +83,10 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
         gml = conf;
         mapper = new GmlMapper(gml, false);
         setupGeometryMapper(getGeometryDeserializer());
+    }
+
+    public void setParseWorker(ELF_path_parse_worker worker) {
+        this.parseWorker = worker;
     }
 
     public void setLenient(boolean l) {
@@ -145,6 +154,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             output.type(r, O_properties, O_linkProperties, O_geometryProperties);
         }
 
+
         protected void addOutputPrefix(String prefix, String ns)
                 throws IOException {
             output.prefix(prefix, ns);
@@ -162,6 +172,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
             addOutputType(featureResource);
 
         }
+
     }
 
     public class InputFeature<T> {
@@ -188,6 +199,12 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
             return (T) mapper.readValue(inputFeature.crsr.getStreamReader(),
                     cls);
+
+        }
+        public XMLStreamReader getStreamReader(QName qn) throws IOException
+        {
+
+                return ((StaxGMLInputProcessor) input).root().getStreamReader();
 
         }
 

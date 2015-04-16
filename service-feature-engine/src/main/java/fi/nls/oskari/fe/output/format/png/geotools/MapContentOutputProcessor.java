@@ -46,6 +46,7 @@ import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory;
@@ -387,6 +388,10 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
             sfc.add(f);
 
         }
+
+    }
+    public void merge(List<JSONObject> list, Resource res) {
+
 
     }
 

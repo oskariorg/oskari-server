@@ -1,5 +1,199 @@
 # Release Notes
 
+## 1.28
+
+### DB upgrades
+
+#### Generic attributes field added for maplayers
+
+* Typed as 'text', contains JSON describing the layer.
+* Enables heatmap-enabling parameters to be saved for layer:
+
+    {
+        geometryProperty : 'geom',
+        heatmap : ['property1', 'property2', 'similar to wfs selected properties']
+    }
+
+Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/01_alter_table_oskari_maplayer.sql
+
+#### Parse config field added for WFS FE generic path parser
+
+Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/02_alter_table_portti_wfs_template_model.sql
+
+#### Fixes findbycoordinates bundle registration
+
+Previously Import-bundle statement had the value 'rpc'. Updates it to correct 'findbycoordinates'. Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.28/03_fix_findbycoordinates_bundle_registration.sql
+
+### content-resources
+
+New bundle: heatmap (see frontend notes for configuration options):
+
+    content-resources/src/main/resources/sql/views/01-bundles/framework/037-heatmap.sql
+
+Added an example SQL how to easily register a bundle and link it to a view:
+
+    content-resources/src/main/resources/sql/example-bundle-insert.sql
+
+### service-map
+
+OskariLayers will now load the attributes value from DB and expose it with the same name in JSON-presentation.
+
+GFI support is added for `arcgis93layer` type
+
+### service-logging
+
+Moved Log4JLogger from under servlet-transport to a new service so it can be used with other modules as well.
+
+### service-base
+
+Changed Job from abstract class to an interface and added AbstractJob to be a drop-in replacement for Job.
+
+JSONLocalized class now tries to get the value with default language if requested language is not available. This
+ helps when a language is added to Oskari installation and all data producers, Inspire-themes and maplayers lack
+ the localized name.
+
+JobQueue now removes any existing job with the same key when adding a job.
+
+### control-base
+
+GetReverseGeocodingResult configuration changed. Previously used search channel based properties for buffer and maxfeatures,
+now they are configured for the actionhandler:
+
+OLD:
+
+    search.channel.<channel id>service.buffer=1000
+    search.channel.<channel id>service.maxfeatures=1
+
+NEW:
+
+    actionhandler.GetReverseGeocodingResult.maxfeatures=1
+    actionhandler.GetReverseGeocodingResult.buffer=1000
+
+The maxfeatures is channel based currently so you will end up with a result count of (maxfeatures * channels configured).
+This will most propably be changed to an enforced limit across channels in the future.
+
+
+CreateUserLayer now support files whose names contains dot(s).
+
+
+### control-example
+
+GetArticlesByTag can now be configured to serve files in classpath. The handler gets a comma-separated list of tags as
+parameter such as "userguide,en". This is used as filename, but characters ' ' (space), ',' (comma), '.' (dot), '/' (slash)
+and '\\' (backslash) are replaced with '_'. Initially tries to load filename with .html extension then with .json extension.
+To get an article (with example tags above) this way requires a file named "userguide_en.html" or
+"userguide_en.json" in a classpath under a directory configured in oskari-ext.properties like this:
+
+    actionhandler.GetArticlesByTag.dir=/articlesByTag/
+
+### service-search
+
+Removed deprecated classes: `MetadataCatalogueSearchCriteria` and `Csw202ResultsDoc`.
+`SearchResultItem` now has toJSON() method to construct the response for searches in similar fashion all over Oskari.
+`SearchWorker` now uses SearchResultItem.toJSON() to create the response.
+
+### service-search-nls
+
+Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`. Result parser must extend/be assignable to
+`fi.nls.oskari.search.channel.MetadataCatalogueResultParser` and can be configured with property:
+
+    search.channel.METADATA_CATALOGUE_CHANNEL.resultparser=<fqcn extending fi.nls.oskari.search.channel.MetadataCatalogueResultParser>
+
+`GetMetadataSearchHandler` now uses SearchResultItem.toJSON() to create the response.
+
+MetadataCatalogueChannelSearchService now requests the output schema `http://www.isotc211.org/2005/gmd` instead of `csw:IsoRecord`.
+
+### service-feature-engine
+
+Added new generic WFS path parser for complex featuretypes
+Instruction under oskari.org\md\documentation\backend\configuring-wfs-path-parser.md
+Sample complex wfs layer insert script in \elf-oskari-server-extensions\elf-resources\resources\sql\elf-nls_fi-lod0ad-Cascading-wfslayer.sql
+
+### servlet-transport
+
+Moved duplicated code from `FEMaplayerJob` and `WFSMaplayerJob` to common baseclass `OWSMaplayerJob`.
+Moved helper methods from OWSMaplayerJob to JobHelper class.
+Removed job validation from OWS/FE/MaplayerJobs - validation should now be done by creating a JobValidator
+with the job and calling validator.validateJob(). This enables custom handling for validation errors.
+Added initial merge for ArcGis REST-layer support. There are still some missing parts which needs to
+be included with documentation to make it usable.
+Layer scale limit of -1 is now handled as no limit like in other parts of Oskari.
+FeatureEngine jobs http requests now respect the timeout limits set with properties (ms values):
+
+     oskari.connection.timeout=3000
+     oskari.read.timeout=60000
+
+Moved OWSLayerJob.Type enum to own file as JobType.
+
+Maplayer jobs are now managed as Hystrix Commands (https://github.com/Netflix/Hystrix/wiki) instead of the custom
+threaded approach using JobQueue in service-base. This should put less strain on overloaded services as requests are
+short-circuited when problems occur.
+
+Properties to configure job execution are:
+
+    oskari.transport.job.pool.size=100
+    oskari.transport.job.pool.limit=100
+    oskari.transport.job.timeoutms=15000
+
+Where pool size is the thread pool size, limit is queue to keep when all threads are in use after which jobs will be
+rejected until threads become available. Any job will be canceled after timeoutms milliseconds if it hasn't completed until then.
+Any errors occuring on job execution will trigger a message to the websocket error-channel.
+
+Added metrics indicators with https://dropwizard.github.io/. Metrics can be accessed as JSON by
+adding fi.nls.oskari.transport.StatusServlet to the web.xml (requires admin user to access the servlet).
+
+    <servlet>
+        <servlet-name>status</servlet-name>
+        <servlet-class>fi.nls.oskari.transport.StatusServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>status</servlet-name>
+        <url-pattern>/status</url-pattern>
+    </servlet-mapping>
+
+The JSON-format for metrics is not set in stone and can change in the near future.
+
+Added a new TransportResultProcessor class which injects a requestId (received from client) to all responses.
+
+Some refactoring for websocket messsage parsing.
+
+Added a new status-channel for websocket-communication. Messages are sent to browser when a job starts and when it completes.
+Also added a requestId attribute for requests which is passed on in responses so client knows for which request the response is.
+
+Errors while making requests/parsing features are now throwing exceptions instead of acting as everything is ok. This triggers
+the correct error handling when tracking request status.
+
+### webapp-transport
+
+Added the Hystrix stream servlet for Hystrix Dashboard usage. HystrixMetricsStreamServlet can be removed from the web.xml
+ to disable this.
+
+Added StatusServlet to expose metrics as JSON. It can be removed from the web.xml to disable the functionality.
+
+
+### servlet-map
+
+Added functionality for additional response headers when serving jsp pages.
+
+    oskari.page.header.X-UA-Compatible = IE=edge
+
+Log4JLogger is now accessible to servlet-map (new dependency service-logging).
+
+PrincipalAuthenticationFilter now always trims usernames before using them (removes leading and trailing whitespace).
+
+### geoserver-ext  / wps / analysis
+
+Improvements in analysis / in spatial join method when second layer is analysis layer
+- build "mvn clean install" in \oskari-server\geoserver-ext\wps\IntersectionFeatureCollection2 directory
+  and copy IntersectionFeatureCollection2-2.5.2.jar from target directory to [GeoServer home]\webapps\geoserver\WEB-INF\lib
+  and restart Geoserver (jetty)
+
 ## 1.27.1
 
 Fixed ZoomParamHandler in control-base to use parameter as is without any special handling. The code previously

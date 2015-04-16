@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.27.1</version>
+    <version>1.28.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -93,6 +93,9 @@
         <!-- Test deps versions -->
         <powermock.version>1.5</powermock.version>
         <junit.version>4.11</junit.version>
+
+        <log4j.version>1.2.17</log4j.version>
+        <slf4j.version>1.7.12</slf4j.version>
     </properties>
 
     <!-- Managed dependencies -->
@@ -107,6 +110,12 @@
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-base</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>service-logging</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
@@ -545,6 +554,26 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>apache-log4j-extras</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -730,6 +759,7 @@
     </pluginRepositories>
 
     <modules>
+        <!-- basic oskari map requirements -->
         <module>shared-test-resources</module>
 
         <module>service-base</module>
@@ -744,7 +774,6 @@
         <module>service-control</module>
         <module>service-scheduler</module>
         <module>service-csw</module>
-        <module>service-datamodel</module>
 
         <module>control-base</module>
         <module>control-example</module>
@@ -752,17 +781,22 @@
         <module>control-admin</module>
         <module>control-statistics</module>
         <module>content-resources</module>
+        <module>service-logging</module>
 
-        <module>geoserver-ext/OskariMarkFactory</module>
-        <module>service-feature-engine</module>
-
+        <!-- oskari map -->
         <module>servlet-map</module>
         <module>webapp-map</module>
         <module>standalone-jetty</module>
+
+        <!-- transport  -->
+        <module>service-datamodel</module>
+        <module>geoserver-ext/OskariMarkFactory</module>
+        <module>service-feature-engine</module>
         <module>servlet-transport</module>
-        <module>servlet-printout</module>
         <module>webapp-transport</module>
-        
+
+        <!-- printout -->
+        <module>servlet-printout</module>
     </modules>
 
 </project>

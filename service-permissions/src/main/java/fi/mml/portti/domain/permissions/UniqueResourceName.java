@@ -7,13 +7,24 @@ public class UniqueResourceName {
 	
 	@Override
 	public boolean equals(Object o) {
+        if( !(o instanceof UniqueResourceName)) {
+            return false;
+        }
 		UniqueResourceName u2 = (UniqueResourceName) o;
 		return this.getName().equals(u2.getName()) 
 			&& this.getNamespace().equals(u2.getNamespace()) 
 			&& this.getType().equals(u2.getType());
 	}
-	
-	public String toString() {
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + namespace.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
+
+    public String toString() {
 		return "name=" + name + ", namespace=" + namespace + ", type=" + type;
 	}
 

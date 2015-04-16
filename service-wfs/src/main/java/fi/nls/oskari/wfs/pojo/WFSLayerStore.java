@@ -326,7 +326,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                         store.addFeatureParamsLocales(localeName, paramsLocale);
                     }
                 }
-            } else if (GEOMETRY_TYPE.equals(fieldName)) {
+            }  else if (GEOMETRY_TYPE.equals(fieldName)) {
                 store.setGeometryType(parser.getText());
             } else if (GET_MAP_TILES.equals(fieldName)) {
                 store.setGetMapTiles(parser.getValueAsBoolean());
@@ -397,7 +397,9 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                         store.addSLDStyle(SLDStyle);
                     }
                 }
-            } else {
+            } else if (PARSE_CONFIG.equals(fieldName)) {
+                    store.setParseConfig(parser.getText());
+           } else {
                 log.warn("Unrecognized field while parsing layer JSON:", fieldName);
                 // exception is thrown since the parser state should be fixed here if we don't
                 // maybe calling parser.nextToken() might fix it but it seems not to be working

@@ -18,18 +18,25 @@ public class LogFactory {
 
         final String className = PropertyUtil.getOptionalNonLocalized("oskari.logger");
         if(className == null) {
-            //return new NullLogger(name);
-            return new SystemLogger(name);
+            return createDefaultLogger(name);
         }
         try {
             final Class c = Class.forName(className);
             final Constructor<?> cons = c.getConstructor(String.class);
             final Logger logger = (Logger)cons.newInstance(name);
             return logger;
+        } catch (ClassNotFoundException e) {
+            System.err.println("Couldn't find logger class for name: " + name +
+                    ". Check that a property 'oskari.logger' has value of a fully qualified name for class extending fi.nls.oskari.log.Logger");
         } catch (Exception e) {
             System.err.println("Couldn't initialize logger for name: " + name +
-                    ". Check that a property 'oskari.logger' has value of a fully qualified name for class extending fi.nls.oskari.log.Logger");
+                    ". Check that the logger ");
+            e.printStackTrace();
         }
-        return new NullLogger(name);
+        return createDefaultLogger(name);
+    }
+
+    private static Logger createDefaultLogger(final String name) {
+        return new SystemLogger(name);
     }
 }

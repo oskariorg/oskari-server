@@ -19,6 +19,12 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.FilterFactory2;
 
+//import org.opengis.geometry.*;
+//import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.*;
+import fi.nls.oskari.map.geometry.WKTHelper;
+
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +43,12 @@ public class WFSFilterBuilder {
     public static final String KEY_BOOLEAN = "boolean";
     public static final String KEY_OPERATOR = "operator";
     public static final String KEY_BBOX = "bbox";
+
+
+    public static final String KEY_FILTER_BY_GEOMETRY_METHOD = "filterByGeometryMethod";
+
+
+
     public static final String CLEAN_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
     public static final String PROPERTY_TEMPLATE = "<wfs:PropertyName>{property}</wfs:PropertyName>";
@@ -71,12 +83,14 @@ public class WFSFilterBuilder {
      */
     public static String parseWfsFilter(final JSONObject filter_js,
                                         String srsName, String geom_elem) {
-
         Filter all = parseWfsJsonFilter(filter_js, srsName, geom_elem);
 
         if (all == null) {
             return null;
         }
+
+        //TODO: remove test debugging
+        log.debug("parseWfsFilter, got filter: "+getFilterAsString(all));
 
         return getFilterAsString(all);
 
@@ -87,15 +101,17 @@ public class WFSFilterBuilder {
         if (filter_js == null) {
             return null;
         }
-        if (!filter_js.has(KEY_FILTERS) && !filter_js.has(KEY_FEATUREIDS)) {
+        if (!filter_js.has(KEY_FILTERS) && !filter_js.has(KEY_FEATUREIDS) && !filter_js.has(KEY_FILTER_BY_GEOMETRY_METHOD)) {
             return null;
         }
 
         JSONArray jsArray = new JSONArray();
 
         try {
-            if (!filter_js.has(KEY_FILTERS) && filter_js.has(KEY_FEATUREIDS)) {
-                if (filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) return null;
+            if (!filter_js.has(KEY_FILTERS) && !filter_js.has(KEY_FILTER_BY_GEOMETRY_METHOD) && filter_js.has(KEY_FEATUREIDS)) {
+                if (filter_js.getJSONArray(KEY_FEATUREIDS).length() == 0) {        
+                    return null;
+                }
             }
 
             if (filter_js.has(KEY_FILTERS)) {
@@ -189,13 +205,17 @@ public class WFSFilterBuilder {
                 all = appendFilter(all, ff.not(mynot));
             }
 
-            // include BBOX filter if any
-            final Filter fbbox = getBboxFilter(filter_js, srsName, geom_elem);
-            if (fbbox != null) {
-                all = appendFilter(all, fbbox);
+            //Spatial Filter (if any)
+            final Filter fSpatial = getSpatialFilter(filter_js, srsName, geom_elem);
+            if (fSpatial != null) {
+                all = appendFilter(all, fSpatial);
+            } else {
+                // include BBOX filter if any. But only if there's no spatial filter available.
+                final Filter fbbox = getBboxFilter(filter_js, srsName, geom_elem);
+                if (fbbox != null) {
+                    all = appendFilter(all, fbbox);
+                }
             }
-
-
             return all;
         } catch (JSONException e) {
             log.warn(e, "Filter JSON parse failed ");
@@ -291,6 +311,56 @@ public class WFSFilterBuilder {
         }
         return null;
     }
+
+    /**
+     * Creates WFS Spatial filter for WFS query
+     * @param filter_js analysis filter json
+     * @param srsName   name of GML coordinate reference system
+     * @param geom_elem  name of geometry property in FeatureCollection
+     * @return WFS Spatial filter
+     * @throws JSONException
+     */
+    private static Filter getSpatialFilter(final JSONObject filter_js,
+            String srsName, String geom_elem) throws JSONException {
+        
+        if (filter_js.has(KEY_FILTER_BY_GEOMETRY_METHOD) && srsName != null && geom_elem != null) {
+            JSONArray filterGeometries = filter_js.getJSONArray("geometries"); 
+            String filterMethod = filter_js.getString(KEY_FILTER_BY_GEOMETRY_METHOD);
+            List<Filter> filterList = new ArrayList<Filter>();
+            for (int i = 0; i < filterGeometries.length(); i++) {
+                try {
+                    Geometry geom = WKTHelper.parseWKT(filterGeometries.getString(i));
+                    Filter filter = null;
+                    if (filterMethod.equals("Within")) {
+                        filter = ff.within(ff.property(geom_elem), ff.literal(geom));
+                    } else if (filterMethod.equals("Intersects")) {
+                        filter = ff.intersects(ff.literal(geom), ff.property(geom_elem));
+                    }
+
+                    if (filter != null) {
+                        filterList.add(filter);
+                    }                    
+                } catch(Exception e) {
+                    log.error(e, "getSpatialFilter - fail ", filter_js);
+                    return null;
+                }
+            }
+
+            if (filterList.size() > 0) {
+                List<Filter> fadd = new ArrayList<Filter>();
+                fadd.add(ff.or(filterList));
+                return ff.and(fadd);
+            }
+        }
+
+        return null;
+    }
+
+
+
+
+
+
 
     /**
      * WFS filter to xml string
