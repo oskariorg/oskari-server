@@ -347,7 +347,9 @@ public class WFSFilterBuilder {
             }
 
             if (filterList.size() > 0) {
-                return ff.or(filterList);
+                List<Filter> fadd = new ArrayList<Filter>();
+                fadd.add(ff.or(filterList));
+                return ff.and(fadd);
             }
         }
 
