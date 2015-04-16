@@ -15,7 +15,8 @@ public class FileHelperTest {
 
     @BeforeClass
     public static void setup() {
-        TEST_FILE_NAMES[0] = new String[] {",sdag/..SADG/jyt_-7_/sadg\\moikka.moi.txt", "moikka.moi.txt", "moikka.moi", "txt", "moikka_moi.txt"};
+        // note! in windows Java uses both / and \ path separators, but on linux \ stay as part of the filename
+        TEST_FILE_NAMES[0] = new String[] {",sdag/..SADG/jyt_-7_/sadg/moikka.moi.txt", "moikka.moi.txt", "moikka.moi", "txt", "moikka_moi.txt"};
     }
 
     @Test
