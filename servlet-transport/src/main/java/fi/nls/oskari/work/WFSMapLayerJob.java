@@ -146,7 +146,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
             // parse response, throws an exception on failure
             this.features = response(layer, response);
             final Map<String, Object> output = createCommonResponse();
-            if(features == null || features.size() == 0) {
+            if(features == null || features.isEmpty()) {
                 log.debug("Empty result for", this.layerId, "type:", type);
                 output.put(OUTPUT_FEATURES, "empty");
                 log.debug(PROCESS_ENDED, getKey());

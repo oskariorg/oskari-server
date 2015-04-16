@@ -32,7 +32,6 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,8 +42,6 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.OWSMapLayerJob;
-import fi.nls.oskari.work.WFSMapLayerJob;
 
 public class FERequestTemplate {
 
@@ -217,7 +214,7 @@ public class FERequestTemplate {
 
         String addns = doc.getDocumentElement().getAttribute("xmlns:tns");
 
-        if (addns != null && addns.equals("[ADD_NSURI]") && featureName != null && featurePrefix != null ) {
+        if (addns != null && "[ADD_NSURI]".equals(addns) && featureName != null && featurePrefix != null ) {
             doc.getDocumentElement().removeAttribute("xmlns:tns");
             doc.getDocumentElement().setAttribute("xmlns:"+featurePrefix,featureNs);
         }
