@@ -19,7 +19,7 @@ public class FileHelper {
         File f = new File(param);
         // name without path
         fileName = f.getName();
-        int i = fileName.lastIndexOf(".");
+        int i = fileName.lastIndexOf('.');
         if(i != -1) {
             baseName = fileName.substring(0, i);
             extension = fileName.substring(i + 1);

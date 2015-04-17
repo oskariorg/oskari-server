@@ -257,9 +257,8 @@ public class CreateUserLayerHandler extends ActionHandler {
                 fos.write(buffer, 0, len);
             }
         } catch (IOException ex) {
-            log.warn("Error unzipping file", file);
-        }
-        finally {
+            log.warn(ex, "Error unzipping file:", file);
+        } finally {
             if(newFile != null) {
                 file.setSavedTo(newFile.getPath());
                 newFile.deleteOnExit();
@@ -274,8 +273,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             boolean success = newFile.renameTo(renameLocation);
             if(!success) {
                 log.warn("Rename failed in temp directory", newFile.getName(), " ->  ",newName );
-            }
-            else {
+            } else {
                 // update path
                 file.setSavedTo(renameLocation.getPath());
                 log.debug("File renamed ",newFile.getName(), " ->  ",newName );
