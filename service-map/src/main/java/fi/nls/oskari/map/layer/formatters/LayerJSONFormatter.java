@@ -109,7 +109,17 @@ public class LayerJSONFormatter {
             // Adding them here so frontend doesn't break.
             JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "wmsName", layer.getName());
-            if ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) {
+            
+            boolean forceProxy = false;
+            if (layer.getAttributes() != null && layer.getAttributes().has("forceProxy")) {
+                try {
+                    forceProxy = layer.getAttributes().getBoolean("forceProxy");
+                } catch (JSONException jsonException) {
+                    //just ignore
+                }
+            } 
+
+            if (((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy) {
                 Map<String, String> urlParams = new HashMap<String, String>();
                 urlParams.put("action_route", "GetLayerTile");
                 urlParams.put("id", Integer.toString(layer.getId()));
