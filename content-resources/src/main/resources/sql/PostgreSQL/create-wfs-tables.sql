@@ -80,6 +80,7 @@ CREATE TABLE portti_wfs_template_model
   "type" character varying(64),
   request_template text,
   response_template text,
+  parse_config text,
   CONSTRAINT portti_wfs_template_model_pkey PRIMARY KEY (id)
 )
 WITH (
