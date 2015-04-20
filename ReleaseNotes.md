@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.28.1
+
+### content-resources
+
+Fixed database create script to include the new column:
+
+    content-resources/src/main/resources/sql/PostgreSQL/create-wfs-tables.sql
+
+This fixes the initial database creation on new installs.
+
 ## 1.28
 
 ### DB upgrades
