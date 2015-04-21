@@ -12,7 +12,7 @@ INSERT INTO oskari_maplayer(type, name, groupId,
 
 
 -- add wfs specific layer data;
-INSERT INTO portti_wfs_layer (maplayer_id, layer_name, url,  gml_geometry_property, gml_version, gml2_separator,  max_features,
+INSERT INTO portti_wfs_layer (maplayer_id, layer_name, gml_geometry_property, gml_version, gml2_separator,  max_features,
  feature_namespace, wfs_template_model_id, properties, feature_type, selected_feature_params, feature_params_locales, geometry_type,
   selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id,  feature_element, feature_namespace_uri, geometry_namespace_uri,
    get_highlight_image, wps_params, tile_buffer)

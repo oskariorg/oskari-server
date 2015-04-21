@@ -1,13 +1,6 @@
 
 -- user data store tables for storage of Oskari kmz, shp, .. file import results;
--- Configure analysis_data and analysis_data_style tables for GeoServer; 
-
-
---DROP TRIGGER IF EXISTS trigger_user_layer_update ON user_layer_data;
-DROP FUNCTION IF EXISTS procedure_user_layer_data_update();
-
---DROP TRIGGER IF EXISTS trigger_user_layer ON user_layer;
-DROP FUNCTION IF EXISTS procedure_user_layer_update();
+-- Configure user_layer_data and user_layer_data_style tables for GeoServer;
 
 DROP TABLE IF EXISTS gt_pk_metadata_table;
 DROP VIEW IF EXISTS user_layer_data_style;
@@ -17,7 +10,7 @@ DROP TABLE IF EXISTS user_layer_data;
 DROP TABLE IF EXISTS user_layer;
 DROP TABLE IF EXISTS user_layer_style;
 
--- Create primary key table for GeoServer
+-- Create primary key table for GeoServer;
 CREATE TABLE gt_pk_metadata_table
 (
   table_schema character varying(32) NOT NULL,
@@ -32,8 +25,6 @@ WITH (
 OIDS=FALSE
 );
 
-
-
 INSERT INTO gt_pk_metadata_table(
   table_schema, table_name, pk_column, pk_column_idx, pk_policy,
   pk_sequence)
@@ -45,9 +36,7 @@ INSERT INTO gt_pk_metadata_table(
     'assigned',
     null);
 
--- Table: user_layer_style
-
-
+-- Table: user_layer_style;
 CREATE TABLE user_layer_style
 (
   id bigserial NOT NULL,
@@ -72,8 +61,7 @@ WITH (
 );
 
 
--- Table: user_layer
-
+-- Table: user_layer;
 CREATE TABLE user_layer
 (
   id bigserial NOT NULL,
@@ -95,39 +83,9 @@ WITH (
   OIDS=FALSE
 );
 
--- Function: procedure_user_layer_update()
 
-
-CREATE OR REPLACE FUNCTION procedure_user_layer_update()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-    IF (TG_OP = 'UPDATE') THEN
-        NEW.updated := current_timestamp;
-    RETURN NEW;
-    ELSIF (TG_OP = 'INSERT') THEN
-        NEW.created := current_timestamp;
-    RETURN NEW;
-    END IF;
-    RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
--- Trigger: trigger_user_layer on user_layer
-
-
-CREATE TRIGGER trigger_user_layer
-  BEFORE INSERT OR UPDATE
-  ON user_layer
-  FOR EACH ROW
-  EXECUTE PROCEDURE procedure_user_layer_update();
-
-
--- Table: user_layer_data
-
-  CREATE TABLE user_layer_data
+-- Table: user_layer_data;
+CREATE TABLE user_layer_data
 (
   id bigserial NOT NULL,
   user_layer_id bigint NOT NULL,
@@ -146,39 +104,7 @@ WITH (
   OIDS=FALSE
 );
 
--- Function: procedure_user_layer_data_update()
-
-
-CREATE OR REPLACE FUNCTION procedure_user_layer_data_update()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-    IF (TG_OP = 'UPDATE') THEN
-        NEW.updated := current_timestamp;
-    RETURN NEW;
-    ELSIF (TG_OP = 'INSERT') THEN
-        NEW.created := current_timestamp;
-    RETURN NEW;
-    END IF;
-    RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
-
-
--- Trigger: trigger_user_layer_update on user_layer_data
-
-CREATE TRIGGER trigger_user_layer_update
-  BEFORE INSERT OR UPDATE
-  ON user_layer_data
-  FOR EACH ROW
-  EXECUTE PROCEDURE procedure_user_layer_data_update();
-
-
--- View: user_layer_data_style
-
+-- View: user_layer_data_style;
 CREATE OR REPLACE VIEW user_layer_data_style AS 
  SELECT ad.id, 
     ad.uuid, 
@@ -209,11 +135,8 @@ CREATE OR REPLACE VIEW user_layer_data_style AS
   WHERE ad.user_layer_id = a.id AND a.style_id = st.id;
 
 
--- View: vuser_layer_data
-
--- DROP VIEW vuser_layer_data;
-
-CREATE OR REPLACE VIEW vuser_layer_data AS 
+-- View: vuser_layer_data;
+CREATE OR REPLACE VIEW vuser_layer_data AS
  SELECT user_layer_data.id, 
     user_layer_data.uuid, 
     user_layer_data.user_layer_id, 

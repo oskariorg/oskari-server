@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.29
+
+### content-resources
+ 
+Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
+
 ## 1.28.1
 
 ### content-resources
