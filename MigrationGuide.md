@@ -11,3 +11,11 @@ Run the node.js upgrade scripts under content-resources/db-upgrade:
 
     SCRIPT=1.29/01_update_routesearch_bundle_bundlepath node app.js
     SCRIPT=1.29/02_update_routesearch_bundle_view_bundlepath node app.js
+
+### Update default configs for userguide and printout
+
+Run on oskaridb:
+
+    content-resources/src/main/resources/sql/upgrade/1.29/01_update_defaults.sql
+     
+    
