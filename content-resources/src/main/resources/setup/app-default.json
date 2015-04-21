@@ -3,6 +3,8 @@
         "create-empty-db",
         "register-bundles",
         "postgres-add-myplaces",
+        "postgres-add-analysis",
+        "postgres-add-userlayers",
         "postgres-add-users",
         "postgres-add-JAAS",
         "populate-inspire-themes-and-groups"

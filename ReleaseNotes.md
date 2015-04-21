@@ -6,6 +6,7 @@
  
 Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
 The default view now has more bundles as an example since it's easier to remove than to add.
+Userlayers/analysis database tables are now setup by the default setup (initial db content). 
 
 ## 1.28.1
 
