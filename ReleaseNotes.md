@@ -5,6 +5,7 @@
 ### content-resources
  
 Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
+The default view now has more bundles as an example since it's easier to remove than to add.
 
 ## 1.28.1
 
