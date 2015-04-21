@@ -71,7 +71,7 @@ CREATE TABLE user_layer
   layer_source character varying(256),
   publisher_name character varying(256),
   style_id bigint,
-  created timestamp with time zone NOT NULL,
+  created timestamp with time zone DEFAULT current_timestamp NOT NULL,
   updated timestamp with time zone,
   fields json,
   CONSTRAINT user_layer_pkey PRIMARY KEY (id),
@@ -93,7 +93,7 @@ CREATE TABLE user_layer_data
   feature_id character varying(64),
   property_json json,
   geometry geometry NOT NULL,
-  created timestamp with time zone NOT NULL,
+  created timestamp with time zone DEFAULT current_timestamp NOT NULL,
   updated timestamp with time zone,
   CONSTRAINT "user_layer_data_pKey" PRIMARY KEY (id),
   CONSTRAINT user_layer_data_user_layer_fkey FOREIGN KEY (user_layer_id)

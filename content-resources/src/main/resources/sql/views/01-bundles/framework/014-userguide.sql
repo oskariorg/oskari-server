@@ -19,3 +19,8 @@ UPDATE portti_bundle set startup = '{
     },
     "instanceProps" : {}
 }' WHERE name = 'userguide';
+
+UPDATE portti_bundle set config = '{
+    "tags" : "userguide",
+    "flyoutClazz" : "Oskari.mapframework.bundle.userguide.SimpleFlyout"
+}' WHERE name = 'userguide';

@@ -35,7 +35,7 @@ CREATE TABLE my_places
   category_id integer NOT NULL,
   name character varying(256) NOT NULL,
   attention_text text,
-  created timestamp with time zone NOT NULL,
+  created timestamp with time zone DEFAULT current_timestamp NOT NULL,
   updated timestamp with time zone,
   geometry geometry NOT NULL,
   place_desc text,

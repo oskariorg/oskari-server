@@ -66,23 +66,9 @@
         { "id" : "personaldata" },
         { "id" : "publisher" },
         { "id" : "maplegend" },
-        { "id" : "userguide",
-            "config" : {
-                "tags" : "userguide",
-                "flyoutClazz" : "Oskari.mapframework.bundle.userguide.SimpleFlyout"
-            }
-        },
+        { "id" : "userguide" },
         { "id" : "myplaces2" },
-        { "id" : "printout",
-            "config" : {
-                "backendConfiguration": {
-                    "formatProducers": {
-                        "image/png": "/?action_route=GetPreview&format=image/png&",
-                        "application/pdf": "/?action_route=GetPreview&format=application/pdf&"
-                    }
-                }
-            }
-        },
+        { "id" : "printout" },
         { "id" : "analyse" },
         { "id" : "myplacesimport" },
         { "id" : "featuredata2" },
