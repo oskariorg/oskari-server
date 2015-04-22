@@ -20,8 +20,11 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.util.WFSParserConfigs;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,6 +48,7 @@ public class SaveLayerHandler extends ActionHandler {
     private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
     private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
+    private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
     private boolean permissionFailure = false;
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
@@ -59,7 +64,9 @@ public class SaveLayerHandler extends ActionHandler {
     private static final String ERROR_OPERATION_NOT_PERMITTED = "operation_not_permitted_for_layer_id:";
     private static final String ERROR_MANDATORY_FIELD_MISSING = "mandatory_field_missing:";
     private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value:";
+    private static final String ERROR_FE_PARSER_CONFIG_MISSING = "FE WFS feature parser config missing";
 
+    private static final String OSKARI_FEATURE_ENGINE = "oskari-feature-engine";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -118,6 +125,7 @@ public class SaveLayerHandler extends ActionHandler {
 
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
+                //TODO: WFS spesific property update
 
                 log.debug(ml);
 
@@ -136,6 +144,8 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setCreated(currentDate);
                 ml.setUpdated(currentDate);
                 handleRequestToMapLayer(params, ml);
+                validateInsertLayer(params, ml);
+
                 int id = mapLayerService.insert(ml);
                 ml.setId(id);
 
@@ -150,6 +160,9 @@ public class SaveLayerHandler extends ActionHandler {
                     wfsl.setDefaults();
                     wfsl.setLayerId(Integer.toString(id));
                     handleRequestToWfsLayer(params, wfsl);
+                    if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
+                        handleFESpesificToWfsLayer(wfsl);
+                    }
                     int idwfsl = wfsLayerService.insert(wfsl);
                     wfsl.setId(idwfsl);
 
@@ -315,12 +328,12 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));
         ml.setPassword(params.getHttpParam("password", ml.getPassword()));
-        
+
         String attributes = (String)params.getHttpParam("attributes");
         if (attributes == null || attributes.equals("")) {
             attributes = "{}";
         }
-        
+
         ml.setAttributes(JSONHelper.createJSONObject(attributes));
 
         ml.setSrs_name(params.getHttpParam("srs_name",ml.getSrs_name()));
@@ -344,7 +357,7 @@ public class SaveLayerHandler extends ActionHandler {
         wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam("GML2Separator"),wfsl.isGML2Separator()));
         wfsl.setGMLGeometryProperty(params.getHttpParam("GMLGeometryProperty"));
         wfsl.setGMLVersion(params.getHttpParam("GMLVersion"));
-        wfsl.setSRSName(params.getHttpParam("SRSName"));
+        wfsl.setSRSName(params.getHttpParam("srs_name"));
         wfsl.setWFSVersion(params.getHttpParam("WFSVersion"));
         wfsl.setFeatureElement(params.getHttpParam("featureElement"));
         wfsl.setFeatureNamespace(params.getHttpParam("featureNamespace"));
@@ -363,6 +376,85 @@ public class SaveLayerHandler extends ActionHandler {
         wfsl.setSelectedFeatureParams(params.getHttpParam("selectedFeatureParams"));
         wfsl.setTileBuffer(params.getHttpParam("tileBuffer"));
         wfsl.setTileRequest(ConversionHelper.getBoolean(params.getHttpParam("tileRequest"), wfsl.isTileRequest()));
+        wfsl.setJobType(params.getHttpParam("jobType"));
+
+    }
+
+    private void handleFESpesificToWfsLayer( WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
+
+        //Get parser setup for featype
+        WFSParserConfigs parseConfigs =  new WFSParserConfigs();
+        JSONArray feaconf = parseConfigs.getFeatureTypeConfig(wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement());
+        JSONObject conf = null;
+        if (feaconf == null) {
+            feaconf = parseConfigs.getDefaultFeatureTypeConfig(wfsl);
+        }
+
+        if (feaconf != null) {
+            // Use 1st config, if many
+            // TODO: parser config selection - in common case there is 0-1 parsers for feature type
+            conf = JSONHelper.getJSONObject(feaconf, 0);
+        }
+
+        if (conf != null) {
+            Map<String, String> model = new HashMap<String, String>();
+            model.put("name", wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement());
+            model.put("description", "FE parser model - wfs version : " + wfsl.getWFSVersion());
+            model.put("type", JSONHelper.getStringFromJSON(conf, "type", "unknown"));
+            model.put("request_template", JSONHelper.getStringFromJSON(conf, "request_template", "unknown"));
+            model.put("response_template", JSONHelper.getStringFromJSON(conf, "response_template", "unknown"));
+            JSONObject pconf = JSONHelper.getJSONObject(conf, "parse_config");
+            if(pconf != null) {
+                model.put("parse_config", JSONHelper.getJSONObject(conf, "parse_config").toString());
+            }
+
+            // Get Namespace uri from config, if is empty
+            if(wfsl.getFeatureNamespaceURI() == null || wfsl.getFeatureNamespaceURI().isEmpty() ){
+                wfsl.setFeatureNamespaceURI(JSONHelper.getStringFromJSON(conf, "feature_namespace_uri", null));
+            }
+
+
+            int model_id = wfsLayerService.insertTemplateModel(model);
+            wfsl.setTemplateModelId(model_id);
+            wfsl.setRequestTemplate(JSONHelper.getStringFromJSON(conf, "request_template", null));
+            wfsl.setResponseTemplate(JSONHelper.getStringFromJSON(conf, "response_template", null));
+            wfsl.setParseConfig(JSONHelper.getStringFromJSON(conf, "parse_config", null));
+
+
+        }
+
+    }
+
+    /**
+     * Check before maplayer insert that all data is valid for specific layer types
+     *
+     * @param params
+     * @param ml
+     * @throws ActionException
+     */
+    private void validateInsertLayer(final ActionParameters params, OskariLayer ml) throws ActionException {
+
+        if (!OskariLayer.TYPE_WFS.equals(ml.getType())) return;
+        if(params.getHttpParam("jobType") != null && params.getHttpParam("jobType").equals(OSKARI_FEATURE_ENGINE) ) {
+            try {
+
+                JSONArray feaconf = wfsParserConfigs.getFeatureTypeConfig(params.getHttpParam("featureNamespace") + ":" + params.getHttpParam("featureElement"));
+                if (feaconf == null) {
+                    feaconf = wfsParserConfigs.getFeatureTypeConfig("default");
+                }
+
+                if (feaconf == null) {
+                    throw new ActionException(ERROR_FE_PARSER_CONFIG_MISSING);
+                }
+            } catch (Exception e) {
+                if (e instanceof ActionException) {
+                    throw (ActionException) e;
+                } else {
+                    throw new ActionException(ERROR_FE_PARSER_CONFIG_MISSING, e);
+                }
+
+            }
+        }
 
     }
     private void handleWMSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
@@ -383,7 +475,7 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         // these are only in insert
-        ml.setSrs_name(params.getHttpParam("SRSName",ml.getSrs_name()));
+        ml.setSrs_name(params.getHttpParam("srs_name",ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
     }
     private String validateUrl(final String url) throws ActionParamsException {

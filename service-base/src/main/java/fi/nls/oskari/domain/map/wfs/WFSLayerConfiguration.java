@@ -116,6 +116,7 @@ public class WFSLayerConfiguration {
     private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
+    private int templateModelId;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
 
@@ -538,6 +539,23 @@ public class WFSLayerConfiguration {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    /**
+     * Get Template model id (row id of portti_wfs_template_model table)
+     * @return
+     */
+    public int getTemplateModelId() {
+        return templateModelId;
+    }
+
+    /**
+     * Set template id
+     * @param templateModelId
+     */
+    public void setTemplateModelId(int templateModelId) {
+        this.templateModelId = templateModelId;
+    }
+
     /**
 	 * Gets template name
 	 *
@@ -770,6 +788,16 @@ public class WFSLayerConfiguration {
         this.setMinScale(15000000d);
         this.setMaxScale(1d);
         this.setPublished(false);
+    }
+    public void setWFS20Defaults() {
+        setDefaults();
+        this.setGMLVersion("3.2.1");
+        this.setGML2Separator(false);
+        this.setWFSVersion("2.0.0");
+        this.setGMLGeometryProperty("geometry");
+        this.setJobType("oskari-feature-engine");
+        this.setTileBuffer("{ \"default\" : 1, \"oskari_custom\" : 1}");
+
     }
 
 	public static String getCache(String layerId) {
