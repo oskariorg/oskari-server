@@ -1,5 +1,11 @@
 package fi.nls.oskari.eu.elf.recipe.universal;
 
+/**
+ * Generic parser  for WFS 2.0.0 FeatureCollection
+ * - configs are in WFSParserConfigs.json  --> later on in a separate DB table
+ * - test driver e.g. \service-feature-engine\src\test\java\fi\nls\oskari\eu\elf\addresses\TestJacksonParser.java
+ * */
+
 import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
@@ -50,17 +56,23 @@ public class ELF_wfs_Parser extends GML32 {
         Map<String, String> nilmap = new HashMap<String, String>();
         Map<String, Resource> resmap = new HashMap<String, Resource>();
         Resource hrefRes = null;
+        Boolean isGeomMapping = false;
 
         parseWorker.setupMaps(attrmap, elemmap, typemap, nilmap);
-        // Output resources
+
+        // Output resources for output processor
         JSONArray conf = JSONHelper.getJSONArray(parseWorker.parseConfig, KEY_PATHS);
         for (int i = 0; i < conf.length(); i++) {
             JSONObject item = conf.optJSONObject(i);
             // TODO: type mapping based add property
-            //Not id
-            if (JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN).equals(KEY_ID)) continue;
+            //Not id, if many properties
+            if (JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN).equals(KEY_ID) && conf.length() > 1)
+                continue;
             //Not geometry
-            if (JSONHelper.getStringFromJSON(item, KEY_TYPE, VALUE_UNKNOWN).equals(TYPE_GEOMETRY)) continue;
+            if (JSONHelper.getStringFromJSON(item, KEY_TYPE, VALUE_UNKNOWN).equals(TYPE_GEOMETRY)) {
+                isGeomMapping = true;
+                continue;
+            }
             final Resource resource = outputContext
                     .addOutputStringProperty(JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN));
 
@@ -87,17 +99,31 @@ public class ELF_wfs_Parser extends GML32 {
 
             boolean isAdditional = false;  // Is there addtional object in stream bottom
             List<JSONObject> additionalFeas = new ArrayList<JSONObject>();
+            JSONObject additionalFea = new JSONObject();
 
             while (xsr.hasNext()) {
-                switch (xsr.nextTag()) {
+                // Handle unexpected end of document
+                int nextTag = XMLStreamConstants.END_DOCUMENT;
+                try {
+                    nextTag = xsr.nextTag();
+                } catch (Exception e) {
+                }
+
+                switch (nextTag) {
                     case XMLStreamConstants.START_ELEMENT:
 
                         JSONObject feature = new JSONObject();
-                        JSONObject additionalFea = new JSONObject();
+                        additionalFea = new JSONObject();
                         Geometry ggeom = null;
                         QName qn = xsr.getName();
                         // There are local href elements  inside this element - put flag on
-                        if (qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
+                        if (qn != null && qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
+
+                        // Skip if not member or featureMembers or featureMember
+                        if (!scanQN.getLocalPart().equals(qn.getLocalPart())) {
+                            xsr.next();
+                            break;
+                        }
 
                         String textTag = null;
                         Object subfea = null;
@@ -115,12 +141,15 @@ public class ELF_wfs_Parser extends GML32 {
                                 String elem = elemmap.get(parseWorker.getPathString(pathTag));
                                 String type = typemap.get(parseWorker.getPathString(pathTag));
 
-                                if (elem != null && type != null && type.equals(TYPE_GEOMETRY)) {  // <--- parse mapped geometry
-                                // if (this.getGeometryDeserializer().getHandlers().get(curQN) != null) {  <-- parse any geometry
+                                if (elem != null && type != null && type.equals(TYPE_GEOMETRY)) {
+                                    // Parse mapped geometry
                                     ggeom = (Geometry) this.getGeometryDeserializer().parseGeometry(this.getGeometryDeserializer().getHandlers(), rootQN, xsr);
-
+                                } else if (!isGeomMapping && this.getGeometryDeserializer().getHandlers().get(curQN) != null && !curQN.getLocalPart().equals("Envelope")) {
+                                    // Parse any geometry
+                                    ggeom = (Geometry) this.getGeometryDeserializer().parseGeometry(this.getGeometryDeserializer().getHandlers(), rootQN, xsr);
                                 } else {
-                                   // Attributes are in start element
+                                    // Scan attributes
+                                    // Attributes are in start element
                                     for (int i = 0; i < xsr.getAttributeCount(); i++) {
                                         String label = attrmap.get(parseWorker.getPathString(pathTag) + "/" + xsr.getAttributePrefix(i) + ":" + xsr.getAttributeLocalName(i));
                                         if (label != null) {
@@ -146,11 +175,14 @@ public class ELF_wfs_Parser extends GML32 {
 
                                     }
 
+
                                 }
 
 
                             } else if (xsr.getEventType() == XMLStreamReader.CHARACTERS) {
                                 if (xsr.hasText()) textTag = xsr.getText().trim();
+                                if (textTag.toUpperCase().indexOf("EXCEPTION") > -1)
+                                    log.debug("Exception in response: ", textTag);
                             } else if (xsr.getEventType() == XMLStreamReader.END_ELEMENT) {
                                 qn = xsr.getName();
                                 String elem = elemmap.get(parseWorker.getPathString(pathTag));
@@ -179,7 +211,6 @@ public class ELF_wfs_Parser extends GML32 {
                                     isRootOpen = false;
                                 }
                             } else if (xsr.getEventType() == XMLStreamReader.END_DOCUMENT) {
-
                                 isRootOpen = false;
                             } else {
                                 // Other events nop
@@ -202,7 +233,8 @@ public class ELF_wfs_Parser extends GML32 {
                                 String key = (String) keys.next();
                                 Resource res = resmap.get(key);
                                 if (res != null) {
-                                    if (!key.equals(KEY_ID)) {
+                                    // Get id when it is the only attribute
+                                    if (!key.equals(KEY_ID) || feature.length() == 1) {
                                         Object prop = feature.get(key);
                                         if (prop instanceof JSONArray)
                                             prop = JSONHelper.getArrayAsList((JSONArray) prop);
@@ -228,12 +260,12 @@ public class ELF_wfs_Parser extends GML32 {
                             additionalFeas.add(additionalFea);
 
                         }
-
-
                         break;
+
                     default:
 
                         // Other events nop
+
 
                 }
 

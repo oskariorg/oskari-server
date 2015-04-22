@@ -1,98 +1,59 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=hy-p:StandingWater&amp;NAMESPACES=xmlns(hy-p,urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0)"
-	xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2014-06-06T13:54:56Z"
-	xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="1"
-	numberReturned="1">
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0 http://wfs.geonorge.no/skwms1/wfs.inspire-hy-p?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=hy-p:StandingWater&amp;NAMESPACES=xmlns(hy-p,urn%3Ax-inspire%3Aspecification%3Agmlas%3AHydroPhysicalWaters%3A3.0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2015-04-20T15:36:03Z" xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="1" numberReturned="1">
 	<wfs:boundedBy>
-		<gml:Envelope srsName="urn:ogc:def:crs:EPSG::3857">
-			<gml:lowerCorner>1838254.454 10324342.852</gml:lowerCorner>
-			<gml:upperCorner>1838528.150 10324706.933</gml:upperCorner>
+		<gml:Envelope srsName="EPSG:900913">
+			<gml:lowerCorner>838998.893 8515683.794</gml:lowerCorner>
+			<gml:upperCorner>839233.512 8515882.205</gml:upperCorner>
 		</gml:Envelope>
 	</wfs:boundedBy>
 	<wfs:member>
-		<hy-p:StandingWater
-			xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"
-			gml:id="HY-P_STANDINGWATER_2382171">
-			<hy-p:geographicalName xsi:nil="true"
-				nilReason="template" />
+		<hy-p:StandingWater xmlns:hy-p="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0" gml:id="HY-P_STANDINGWATER_1936198">
+			<hy-p:geographicalName xsi:nil="true" nilReason="template"/>
 			<hy-p:hydroId xsi:nil="false" nilReason="">
-				<hy:HydroIdentifier
-					xmlns:hy="urn:x-inspire:specification:gmlas:HydroBase:3.0">
+				<hy:HydroIdentifier xmlns:hy="urn:x-inspire:specification:gmlas:HydroBase:3.0">
 					<hy:classificationScheme>something</hy:classificationScheme>
-					<hy:localId>93462</hy:localId>
+					<hy:localId>175077</hy:localId>
 					<hy:namespace>something</hy:namespace>
 				</hy:HydroIdentifier>
 			</hy-p:hydroId>
-			<hy-p:relatedHydroObject />
-			<hy-p:beginLifespanVersion xsi:nil="true"
-				nilReason="missing" />
-			<hy-p:endLifespanVersion xsi:nil="true"
-				nilReason="missing" />
+			<hy-p:relatedHydroObject/>
+			<hy-p:beginLifespanVersion xsi:nil="true" nilReason="missing"/>
+			<hy-p:endLifespanVersion xsi:nil="true" nilReason="missing"/>
 			<hy-p:geometry>
-				<!--Inlined geometry 'HY-P_STANDINGWATER_2382171_HY-P_GEOMETRY' -->
-				<gml:Polygon gml:id="HY-P_STANDINGWATER_2382171_HY-P_GEOMETRY"
-					srsName="urn:ogc:def:crs:EPSG::3857">
+				<!--Inlined geometry 'HY-P_STANDINGWATER_1936198_HY-P_GEOMETRY'-->
+				<gml:Polygon gml:id="HY-P_STANDINGWATER_1936198_HY-P_GEOMETRY" srsName="EPSG:900913">
 					<gml:exterior>
 						<gml:LinearRing>
-							<gml:posList>1838281.389 10324703.846 1838290.786 10324704.959
-								1838299.031 10324702.073 1838300.472 10324693.195 1838289.819
-								10324658.980 1838303.414 10324633.778 1838332.536 10324630.092
-								1838364.992 10324616.402 1838377.527 10324599.516 1838377.132
-								10324590.894 1838358.773 10324570.895 1838359.110 10324560.991
-								1838378.946 10324542.400 1838396.407 10324533.262 1838405.891
-								10324531.530 1838433.146 10324528.995 1838449.107 10324535.999
-								1838459.521 10324549.666 1838475.197 10324558.993 1838480.022
-								10324565.796 1838481.262 10324583.135 1838487.814 10324590.633
-								1838496.757 10324590.440 1838504.568 10324584.827 1838515.010
-								10324570.650 1838526.742 10324542.467 1838528.150 10324533.327
-								1838526.919 10324464.776 1838523.233 10324417.445 1838517.953
-								10324411.389 1838500.499 10324401.422 1838476.898 10324404.868
-								1838464.228 10324418.363 1838456.504 10324433.947 1838440.187
-								10324436.057 1838441.376 10324427.633 1838425.710 10324417.647
-								1838429.177 10324409.826 1838446.696 10324404.160 1838467.699
-								10324388.146 1838470.403 10324380.343 1838464.236 10324373.520
-								1838448.247 10324370.753 1838444.538 10324363.265 1838443.510
-								10324346.027 1838434.512 10324342.852 1838409.831 10324369.904
-								1838399.045 10324385.089 1838381.315 10324420.892 1838360.285
-								10324455.170 1838343.246 10324490.167 1838321.073 10324525.105
-								1838300.132 10324540.433 1838277.883 10324566.873 1838262.358
-								10324622.965 1838262.492 10324641.331 1838267.536 10324660.367
-								1838264.480 10324677.442 1838257.679 10324679.161 1838254.454
-								10324701.189 1838273.543 10324706.933 1838281.389 10324703.846</gml:posList>
+							<gml:posList>838999.377 8515696.972 838999.349 8515699.009 839004.795 8515727.555 839001.622 8515780.288 838998.893 8515810.695 838999.913 8515855.402 839011.594 8515878.011 839017.593 8515882.205 839025.725 8515880.360 839031.989 8515872.385 839034.193 8515864.294 839040.314 8515862.403 839092.883 8515869.672 839129.700 8515856.273 839145.816 8515860.683 839173.784 8515879.584 839183.967 8515877.789 839190.136 8515873.863 839196.283 8515869.955 839202.525 8515863.957 839204.552 8515864.046 839227.152 8515850.308 839233.370 8515844.348 839233.512 8515838.265 839231.751 8515826.009 839227.923 8515815.801 839219.960 8515809.548 839201.940 8515798.964 839188.151 8515780.377 839160.641 8515741.173 839122.611 8515718.003 839080.493 8515696.752 839046.331 8515683.794 839017.910 8515685.157 839003.630 8515688.952 838999.474 8515692.904 838999.377 8515696.972</gml:posList>
 						</gml:LinearRing>
 					</gml:exterior>
 				</gml:Polygon>
 			</hy-p:geometry>
 			<hy-p:inspireId>
 				<base:Identifier xmlns:base="urn:x-inspire:specification:gmlas:BaseTypes:3.2">
-					<base:localId>2382171</base:localId>
-					<base:namespace>http://www.kartverket.no/kartografiseksjon/N50/so
-					</base:namespace>
-					<base:versionId xsi:nil="true" nilReason="missing" />
+					<base:localId>1936198</base:localId>
+					<base:namespace>http://www.kartverket.no/kartografiseksjon/N50/so</base:namespace>
+					<base:versionId xsi:nil="true" nilReason="missing"/>
 				</base:Identifier>
 			</hy-p:inspireId>
 			<hy-p:levelOfDetail>
 				<gmd:MD_Resolution xmlns:gmd="http://www.isotc211.org/2005/gmd">
-					<gmd:equivalentScale xmlns:gco="http://www.isotc211.org/2005/gco"
-						gco:nilReason="unknown">
+					<gmd:equivalentScale xmlns:gco="http://www.isotc211.org/2005/gco" gco:nilReason="unknown">
 						<gmd:MD_RepresentativeFraction>
-							<gmd:denominator gco:nilReason="unknown" />
+							<gmd:denominator gco:nilReason="unknown"/>
 						</gmd:MD_RepresentativeFraction>
 					</gmd:equivalentScale>
 				</gmd:MD_Resolution>
 			</hy-p:levelOfDetail>
-			<hy-p:origin xsi:nil="true" nilReason="missing" />
-			<hy-p:persistence xsi:nil="true" nilReason="missing" />
-			<hy-p:tidal xsi:nil="true" nilReason="unknown" />
-			<hy-p:bank xsi:nil="true" />
-			<hy-p:drainsBasin xsi:nil="true" />
-			<hy-p:neighbour xsi:nil="true" />
-			<hy-p:elevation uom="urn:ogc:def:uom:EPSG::9001">621</hy-p:elevation>
-			<hy-p:meanDepth uom="urn:ogc:def:uom:EPSG::9001"
-				xsi:nil="true" nilReason="missing" />
-			<hy-p:surfaceArea uom="urn:ogc:def:uom:EPSG::9001">5487.626699987036
-			</hy-p:surfaceArea>
+			<hy-p:origin xsi:nil="true" nilReason="missing"/>
+			<hy-p:persistence xsi:nil="true" nilReason="missing"/>
+			<hy-p:tidal xsi:nil="true" nilReason="unknown"/>
+			<hy-p:bank xsi:nil="true"/>
+			<hy-p:drainsBasin xsi:nil="true"/>
+			<hy-p:neighbour xsi:nil="true"/>
+			<hy-p:elevation uom="urn:ogc:def:uom:EPSG::9001">-8888</hy-p:elevation>
+			<hy-p:meanDepth uom="urn:ogc:def:uom:EPSG::9001" xsi:nil="true" nilReason="missing"/>
+			<hy-p:surfaceArea uom="urn:ogc:def:uom:EPSG::9001">7754.845699959615</hy-p:surfaceArea>
 		</hy-p:StandingWater>
 	</wfs:member>
 </wfs:FeatureCollection>

@@ -60,6 +60,8 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     public static final String PROCESS_STARTED = "Started";
     public static final String PROCESS_ENDED = "Ended";
 
+    public static final String DEFAULT_FE_SLD_STYLE_PATH ="/fi/nls/oskari/fe/output/style/default/default_fe_sld_";
+
     // process information
     protected ResultProcessor service;
     protected SessionStore session;

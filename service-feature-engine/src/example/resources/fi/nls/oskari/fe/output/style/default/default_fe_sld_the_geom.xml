@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<NamedLayer>
+	<Name>Default</Name>
+	<UserStyle>
+		<Title>Default</Title>
+		<FeatureTypeStyle>
+			<Rule>
+				<ogc:Filter>
+					<ogc:PropertyIsEqualTo>
+						<ogc:Function name="in2">
+							<ogc:Function name="geometryType">
+								<ogc:PropertyName>the_geom</ogc:PropertyName>
+							</ogc:Function>
+							<ogc:Literal>Point</ogc:Literal>
+							<ogc:Literal>MultiPoint</ogc:Literal>
+						</ogc:Function>
+						<ogc:Literal>true</ogc:Literal>
+					</ogc:PropertyIsEqualTo>
+				</ogc:Filter>
+				<PointSymbolizer>
+					<Graphic>
+						<Mark>
+							<WellKnownName>star</WellKnownName>
+							<Fill>
+								<CssParameter name="fill">#ff0000</CssParameter>
+								<CssParameter name="fill-opacity">0.5</CssParameter>
+							</Fill>
+							<Stroke>
+								<CssParameter name="stroke">#ffffff</CssParameter>
+								<CssParameter name="stroke-width">1</CssParameter>
+							</Stroke>
+						</Mark>
+						<Size>16</Size>
+					</Graphic>
+				</PointSymbolizer>
+			</Rule>
+			<Rule>
+				<ogc:Filter>
+					<ogc:PropertyIsEqualTo>
+						<ogc:Function name="in2">
+							<ogc:Function name="geometryType">
+								<ogc:PropertyName>the_geom</ogc:PropertyName>
+							</ogc:Function>
+							<ogc:Literal>LineString</ogc:Literal>
+							<ogc:Literal>MultiLineString</ogc:Literal>
+						</ogc:Function>
+						<ogc:Literal>true</ogc:Literal>
+					</ogc:PropertyIsEqualTo>
+				</ogc:Filter>
+				<LineSymbolizer>
+					<Stroke>
+						<CssParameter name="stroke">#ff0000</CssParameter>
+						<CssParameter name="stroke-width">2</CssParameter>
+						<CssParameter name="stroke-dasharray">5 2</CssParameter>
+					</Stroke>
+				</LineSymbolizer>
+			</Rule>
+			<Rule>
+				<ogc:Filter>
+					<ogc:PropertyIsEqualTo>
+						<ogc:Function name="in2">
+							<ogc:Function name="geometryType">
+								<ogc:PropertyName>the_geom</ogc:PropertyName>
+							</ogc:Function>
+							<ogc:Literal>Polygon</ogc:Literal>
+							<ogc:Literal>MultiPolygon</ogc:Literal>
+						</ogc:Function>
+						<ogc:Literal>true</ogc:Literal>
+					</ogc:PropertyIsEqualTo>
+				</ogc:Filter>
+				<PolygonSymbolizer>
+					<Stroke>
+						<CssParameter name="stroke">#000040</CssParameter>
+						<CssParameter name="stroke-width">2</CssParameter>
+						<CssParameter name="stroke-dasharray">5 2</CssParameter>
+					</Stroke>
+					<Fill>
+						<CssParameter name="fill">#ff0000</CssParameter>
+						<CssParameter name="fill-opacity">0.2</CssParameter>
+					</Fill>
+				</PolygonSymbolizer>
+			</Rule>
+		</FeatureTypeStyle>
+	</UserStyle>
+</NamedLayer>
+</StyledLayerDescriptor>

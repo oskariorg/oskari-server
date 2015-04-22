@@ -47,7 +47,7 @@
 		<result property="maxScale" column="maxscale"/>
         <result property="jobType" column="job_type"/>
         <result property="requestImpulse" column="request_impulse"/>
-		
+        <result property="templateModelId" column="wfs_template_model_id"/>
 		<result property="templateName" column="t_name"/>
 		<result property="templateDescription" column="description"/>
 		<result property="templateType" column="type"/>
@@ -70,6 +70,7 @@
        <parameter property="featureNamespaceURI"/>
        <parameter property="geometryNamespaceURI"/>
        <parameter property="featureElement"/>
+
        <parameter property="outputFormat"/>
        <parameter property="featureType" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
        <parameter property="selectedFeatureParams" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
@@ -80,10 +81,10 @@
        <parameter property="getFeatureInfo"/>
        <parameter property="tileRequest"/>
        <parameter property="tileBuffer" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
+
        <parameter property="WMSLayerId"/>
-
        <parameter property="wps_params"/>
-
+        <parameter property="templateModelId"/>
        <parameter property="jobType"/>
        <parameter property="requestImpulse"/>
 
@@ -147,6 +148,7 @@
 			
 			map.minscale,
 			map.maxscale,
+			l.wfs_template_model_id,
             l.job_type,
             l.request_impulse,
 
@@ -206,9 +208,10 @@
         tile_buffer,
         wms_layer_id,
         wps_params,
+        wfs_template_model_id,
         job_type,
         request_impulse)
-        values (CAST(? as BigInt),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (CAST(? as BigInt),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,CAST(? as Int),?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -219,6 +222,19 @@
         max_features = ?
         WHERE id = ?
     </statement>
+
+    <statement id="insertTemplateModel" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+        insert into portti_wfs_template_model (
+        name,
+        description,
+        type,
+        request_template,
+        response_template,
+        parse_config)
+        values (#name#, #description#, #type#, #request_template#, #response_template#, #parse_config#)
+        returning id
+    </statement>
+
 
     <!-- TODO: verify these works as OskariLayer refactoring effort is ongoing
     <statement id="insertSLDStyle" parameterClass="java.util.Map" resultClass="java.lang.Integer" >

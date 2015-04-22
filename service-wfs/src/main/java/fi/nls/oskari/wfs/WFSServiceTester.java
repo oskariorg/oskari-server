@@ -192,28 +192,53 @@ public class WFSServiceTester {
     public static void TestWfsDescribeFeatureTypes( Map<String, Object> capa, String serviceUrl, String version, String user, String pw) {
 
         if (capa == null)  return;
-        if (!capa.containsKey("WFSDataStore")) return;
+        if (capa.containsKey("WFSDataStore")) {
 
-        try {
-            WFSDataStore wfsds = (WFSDataStore) capa.get("WFSDataStore");
+            try {
+                WFSDataStore wfsds = (WFSDataStore) capa.get("WFSDataStore");
 
-            // Feature types
-            String[] typeNames = wfsds.getTypeNames();
-            int count = 0;
+                // Feature types
+                String[] typeNames = wfsds.getTypeNames();
+                int count = 0;
 
 
                 // Loop feature types
                 for (String typeName : typeNames) {
                     count++;
-                    WFSLayerConfiguration lc =   GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user,  pw);
+                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     TestWfsDescribeFeatureType(lc, version, count);
                 }
 
-        } catch (Exception ex) {
+            } catch (Exception ex) {
+
+            }
+        }
+        else if (capa.containsKey("FeatureTypeList")) {
+
+            try {
+                // Feature types
+                Map<String,Object> typeNames = (HashMap<String,Object>) capa.get("FeatureTypeList");
+
+                int count = 0;
+
+                // Loop feature types
+                for (String typeName : typeNames.keySet()) {
+                    GetGtWFSCapabilities._FeatureType featype = ( GetGtWFSCapabilities._FeatureType) typeNames.get(typeName);
+                    count++;
+                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(featype, serviceUrl, user, pw);
+                    TestWfsDescribeFeatureType(lc, version, count);
+                }
+
+            } catch (Exception ex) {
+
+            }
 
         }
 
-    }
+
+
+
+}
 
     public static JSONObject TestWfsDescribeFeatureType(WFSLayerConfiguration lc, String version, int count) {
 

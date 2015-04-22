@@ -2,6 +2,7 @@ package fi.nls.oskari.wfs;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -35,6 +36,10 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
         List<WFSSLDStyle> styles = queryForList(getNameSpace() + ".findStylesForLayer", layerId);
         return styles;
     }
+    public synchronized int insertTemplateModel(final Map<String,String> map) throws ServiceException {
+        return  queryForObject(getNameSpace() + ".insertTemplateModel", map);
+    }
+
     public void update(final WFSLayerConfiguration layer) {
         try {
             getSqlMapClient().update(getNameSpace() + ".update", layer);

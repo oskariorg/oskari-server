@@ -87,7 +87,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     protected WFSImage createHighlightImage() {
 
-        final Style style = getSLD();
+        final Style style = getSLD(this.layer.getGMLGeometryPropertyNoNamespace());
 
         return new WFSImage(this.layer, this.session.getClient(),
                 WFSImage.STYLE_DEFAULT, JobType.HIGHLIGHT.toString()) {
@@ -100,7 +100,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     @Override
     protected WFSImage createResponseImage() {
 
-        final Style style = getSLD();
+        final Style style = getSLD(this.layer.getGMLGeometryPropertyNoNamespace());
 
         return new WFSImage(this.layer, this.session.getClient(),
                 WFSImage.STYLE_DEFAULT, null) {
@@ -432,7 +432,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      */
     protected UsernamePasswordCredentials getCredentials(String username,
             String password) {
-        if (username == null || password == null) {
+        if (username == null || username.isEmpty()) {
+            return null;
+        }
+        if (password == null || password.isEmpty()) {
             return null;
         }
         log.debug("[fe] building credentials for " + this.layerId + " as "
@@ -471,7 +474,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      * 
      * @return
      */
-    protected Style getSLD() {
+    protected Style getSLD(String geomPropertyname) {
 
         List<WFSSLDStyle> sldStyles = this.layer.getSLDStyles();
 
@@ -483,13 +486,17 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 break;
             }
         }
-
+        String sldPath = null;
         if (sldStyle == null) {
-            log.debug("[fe] SLD for  " + this.layerId + " not found");
-            return null;
+            log.debug("[fe] SLD for  " + this.layerId + " not found - use default");
+            sldPath = this.DEFAULT_FE_SLD_STYLE_PATH+geomPropertyname.toLowerCase()+".xml";
+        }
+        else {
+            sldPath = sldStyle.getSLDStyle();
+
         }
 
-        String sldPath = sldStyle.getSLDStyle();
+
 
         Style sld = FEStyledLayerDescriptorManager.getSLD(sldPath);
 
