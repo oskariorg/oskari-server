@@ -122,7 +122,7 @@ public class ELF_wfs_Parser extends GML32 {
                         if (qn != null && qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
 
                         // Skip if not member or featureMembers or featureMember
-                        if (qn != null && !scanQN.getLocalPart().equals(qn.getLocalPart())) {
+                        if (qn != null && !scanQN.getLocalPart().equals(qn.getLocalPart()) && !isAdditional) {
                             xsr.next();
                             break;
                         }

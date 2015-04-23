@@ -126,42 +126,42 @@
             "label": "components",
             "hrefPath": [
               {
-                "path": "/elf-lod0ad:AdminUnitName/@gml:id",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:AdminUnitName/@gml:id",
                 "type": "String",
                 "label": "id"
               },
               {
-                "path": "/elf-lod0ad:AdminUnitName/ad:inspireId/base:Identifier/base:namespace",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:AdminUnitName/ad:inspireId/base:Identifier/base:namespace",
                 "type": "String",
                 "label": "type"
               },
               {
-                "path": "/elf-lod0ad:AdminUnitName/ad:name/gn:GeographicalName/gn:language",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:AdminUnitName/ad:name/gn:GeographicalName/gn:language",
                 "type": "String",
                 "label": "language"
               },
               {
-                "path": "/elf-lod0ad:AdminUnitName/ad:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:AdminUnitName/ad:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text",
                 "type": "String",
                 "label": "name"
               },
               {
-                "path": "/elf-lod0ad:ThoroughfareName/@gml:id",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:ThoroughfareName/@gml:id",
                 "type": "String",
                 "label": "id"
               },
               {
-                "path": "/elf-lod0ad:ThoroughfareName/ad:inspireId/base:Identifier/base:namespace",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:ThoroughfareName/ad:inspireId/base:Identifier/base:namespace",
                 "type": "String",
                 "label": "type"
               },
               {
-                "path": "/elf-lod0ad:ThoroughfareName/ad:name/gn:GeographicalName/gn:language",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:ThoroughfareName/ad:name/gn:GeographicalName/gn:language",
                 "type": "String",
                 "label": "language"
               },
               {
-                "path": "/elf-lod0ad:ThoroughfareName/ad:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text",
+                "path": "/wfs:SimpleFeatureCollection/wfs:member/elf-lod0ad:ThoroughfareName/ad:name/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text",
                 "type": "String",
                 "label": "name"
               }
