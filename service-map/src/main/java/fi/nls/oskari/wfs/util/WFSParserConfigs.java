@@ -73,7 +73,7 @@ public class WFSParserConfigs {
                 reader.close();
             }
             catch (Exception e){
-
+                log.debug("Reading fe parser configs file:",this.wfsParserConfigs, e);
             }
         }
 

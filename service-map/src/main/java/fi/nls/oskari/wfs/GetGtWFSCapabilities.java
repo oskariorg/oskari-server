@@ -252,8 +252,9 @@ public class GetGtWFSCapabilities {
             wfsLayers.put(KEY_LAYERS_WITH_ERRORS, layersWithErrors);
 
             // Loop feature types
-            for (String typeName : typeNames.keySet()) {
-                _FeatureType fea2x = (_FeatureType) typeNames.get(typeName);
+            for(Map.Entry<String, _FeatureType> entry : typeNames.entrySet()) {
+                 String typeName = entry.getKey();
+                _FeatureType fea2x = entry.getValue();
                 try {
                     JSONObject temp = layerToOskariLayerJson(fea2x, typeName, rurl, user, pw);
                     if (temp != null) {
@@ -627,7 +628,6 @@ public class GetGtWFSCapabilities {
      */
     public static void parseWfs2xDescribeFeatureType(_FeatureType ft, final String data) {
 
-        Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
             // GetCapabilities request
             final DocumentBuilderFactory dbf = DocumentBuilderFactory

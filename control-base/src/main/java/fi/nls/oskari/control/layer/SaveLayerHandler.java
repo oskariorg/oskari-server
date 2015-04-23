@@ -434,7 +434,9 @@ public class SaveLayerHandler extends ActionHandler {
      */
     private void validateInsertLayer(final ActionParameters params, OskariLayer ml) throws ActionException {
 
-        if (!OskariLayer.TYPE_WFS.equals(ml.getType())) return;
+        if (!OskariLayer.TYPE_WFS.equals(ml.getType())) {
+            return;
+        }
         if(params.getHttpParam("jobType") != null && params.getHttpParam("jobType").equals(OSKARI_FEATURE_ENGINE) ) {
             try {
 
