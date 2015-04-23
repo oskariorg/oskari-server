@@ -11,8 +11,9 @@
     ],
     "views" : [
         "default-view.json",
-        "postgres-view.json",
-        "publisher-template-view.json"
+        "publisher-template-view.json",
+        "default-transport-view.json",
+        "default-full-view.json"
     ],
     "sql" : [
         "example-wfslayer.sql",

@@ -5,8 +5,20 @@
 ### content-resources
  
 Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
-The default view now has more bundles as an example since it's easier to remove than to add.
-Userlayers/analysis database tables are now setup by the default setup (initial db content). 
+The default setup (content-resources/src/main/resources/setup/app-default.json) now populates the database with 
+more content than before and creates tables for analysis and userlayers as well as myplaces. 
+
+It also setups 3 views with different levels of Oskari installations:
+1) view that includes bundles that can be used with having just webapp-map (default-view.json)
+2) publisher template (publisher-template-view.json)
+3) view that includes bundles using webapp-map and transport (requires redis as well) (default-transport-view.json)
+4) view that includes the whole stack: webapp-map/transport/printout/geoserver (requires redis as well) (default-full-view.json)
+
+These can be accessed by adding url parameter viewId with value of the view number listed above (for example viewId=4). 
+The view definition files can be found in content-resources/src/main/resources/json/views. 
+
+The myplaces/userlayer/analysis baselayers SQLs have been updated to point to a geoserver running on 
+http://localhost:8080/geoserver (previously the same, but port 8084).
 
 ## 1.28.1
 

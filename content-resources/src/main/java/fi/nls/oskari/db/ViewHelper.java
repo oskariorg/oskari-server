@@ -40,8 +40,9 @@ public class ViewHelper {
         log.debug(viewJSON);
         try {
             final View view = new View();
-            view.setCreator(ConversionHelper.getLong( viewJSON.optString("creator"), -1));
-            view.setIsPublic(viewJSON.getBoolean("public"));
+            view.setCreator(ConversionHelper.getLong(viewJSON.optString("creator"), -1));
+            view.setIsPublic(viewJSON.optBoolean("public", false));
+            view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
             view.setName(viewJSON.getString("name"));
             view.setType(viewJSON.getString("type"));
             view.setIsDefault(viewJSON.optBoolean("default"));
