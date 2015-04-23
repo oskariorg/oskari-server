@@ -21,13 +21,13 @@
 				<PointSymbolizer>
 					<Graphic>
 						<Mark>
-							<WellKnownName>star</WellKnownName>
+							<WellKnownName>triangle</WellKnownName>
 							<Fill>
-								<CssParameter name="fill">#ff0000</CssParameter>
+								<CssParameter name="fill">#ffffff</CssParameter>
 								<CssParameter name="fill-opacity">0.5</CssParameter>
 							</Fill>
 							<Stroke>
-								<CssParameter name="stroke">#ffffff</CssParameter>
+								<CssParameter name="stroke">#000000</CssParameter>
 								<CssParameter name="stroke-width">1</CssParameter>
 							</Stroke>
 						</Mark>
@@ -50,9 +50,8 @@
 				</ogc:Filter>
 				<LineSymbolizer>
 					<Stroke>
-						<CssParameter name="stroke">#ff0000</CssParameter>
-						<CssParameter name="stroke-width">2</CssParameter>
-						<CssParameter name="stroke-dasharray">5 2</CssParameter>
+						<CssParameter name="stroke">#000000</CssParameter>
+						<CssParameter name="stroke-width">1</CssParameter>
 					</Stroke>
 				</LineSymbolizer>
 			</Rule>
@@ -71,12 +70,11 @@
 				</ogc:Filter>
 				<PolygonSymbolizer>
 					<Stroke>
-						<CssParameter name="stroke">#000040</CssParameter>
-						<CssParameter name="stroke-width">2</CssParameter>
-						<CssParameter name="stroke-dasharray">5 2</CssParameter>
+						<CssParameter name="stroke">#000000</CssParameter>
+						<CssParameter name="stroke-width">1</CssParameter>
 					</Stroke>
 					<Fill>
-						<CssParameter name="fill">#ff0000</CssParameter>
+						<CssParameter name="fill">#ffffff</CssParameter>
 						<CssParameter name="fill-opacity">0.2</CssParameter>
 					</Fill>
 				</PolygonSymbolizer>
