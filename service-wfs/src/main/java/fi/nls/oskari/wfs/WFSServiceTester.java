@@ -222,15 +222,16 @@ public class WFSServiceTester {
                 int count = 0;
 
                 // Loop feature types
-                for (String typeName : typeNames.keySet()) {
-                    GetGtWFSCapabilities._FeatureType featype = ( GetGtWFSCapabilities._FeatureType) typeNames.get(typeName);
+                for(Map.Entry<String, Object> entry : typeNames.entrySet()) {
+                    String typeName = entry.getKey();
+                    GetGtWFSCapabilities._FeatureType featype = ( GetGtWFSCapabilities._FeatureType) entry.getValue();
                     count++;
                     WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(featype, serviceUrl, user, pw);
                     TestWfsDescribeFeatureType(lc, version, count);
                 }
 
             } catch (Exception ex) {
-
+                info("WFS 2.0.0 featuretypelist error",ex);
             }
 
         }

@@ -92,6 +92,7 @@ public class ELF_wfs_Parser extends GML32 {
 
         final InputFeature<Object> iter = new InputFeature<Object>(
                 scanQN, Object.class);
+        JSONObject additionalFea = new JSONObject();
 
 
         try {
@@ -99,7 +100,7 @@ public class ELF_wfs_Parser extends GML32 {
 
             boolean isAdditional = false;  // Is there addtional object in stream bottom
             List<JSONObject> additionalFeas = new ArrayList<JSONObject>();
-            JSONObject additionalFea = new JSONObject();
+
 
             while (xsr.hasNext()) {
                 // Handle unexpected end of document
@@ -107,6 +108,7 @@ public class ELF_wfs_Parser extends GML32 {
                 try {
                     nextTag = xsr.nextTag();
                 } catch (Exception e) {
+                    log.debug("*** Unhandled end of document - go on",e);
                 }
 
                 switch (nextTag) {
@@ -120,7 +122,7 @@ public class ELF_wfs_Parser extends GML32 {
                         if (qn != null && qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
 
                         // Skip if not member or featureMembers or featureMember
-                        if (!scanQN.getLocalPart().equals(qn.getLocalPart())) {
+                        if (qn != null && !scanQN.getLocalPart().equals(qn.getLocalPart()) && !isAdditional) {
                             xsr.next();
                             break;
                         }

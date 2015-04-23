@@ -47,7 +47,7 @@
 		<result property="maxScale" column="maxscale"/>
         <result property="jobType" column="job_type"/>
         <result property="requestImpulse" column="request_impulse"/>
-        <result property="templateModelId" column="wfs_template_model_id"/>
+        <result property="templateModelId" column="wfs_template_model_id" nullValue="-1"/>
 		<result property="templateName" column="t_name"/>
 		<result property="templateDescription" column="description"/>
 		<result property="templateType" column="type"/>
