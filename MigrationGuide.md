@@ -18,4 +18,6 @@ Run on oskaridb:
 
     content-resources/src/main/resources/sql/upgrade/1.29/01_update_defaults.sql
      
-    
+### webapp-transport
+
+Now builds transport.war instead of transport-0.0.1.war as this is the default Oskari frontend uses.
