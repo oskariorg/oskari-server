@@ -18,8 +18,7 @@
     </properties>
 
     <build>
-    	<!-- This name is referenced in proxy forwards-->
-		<finalName>transport-0.0.1</finalName>
+		<finalName>transport</finalName>
         <filters>
             <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
         </filters>

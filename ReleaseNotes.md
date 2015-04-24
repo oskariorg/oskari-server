@@ -2,6 +2,10 @@
 
 ## 1.29
 
+### webapp-transport
+
+Now builds transport.war instead of transport-0.0.1.war as this is the default Oskari frontend uses.
+
 ### content-resources
  
 Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
