@@ -164,6 +164,20 @@
         and r.resource_type=#resourceType#
     </select>
 
+    <select id="findDownloadPermissions"  resultMap="publishPermissionsList" parameterClass="java.util.HashMap">
+        select
+        r.resource_mapping as resourceMapping,
+        p.external_id as externalId
+        from
+        oskari_resource r, oskari_permission p
+        where r.id=p.oskari_resource_id
+        and p.permission = 'DOWNLOAD'
+        and p.external_type = 'ROLE'
+        and r.resource_type=#resourceType#
+    </select>
+
+
+
     <select id="findEditPermissions"  resultMap="publishPermissionsList">
         select
         r.resource_mapping as resourceMapping,

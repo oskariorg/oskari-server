@@ -47,13 +47,14 @@ public class GetAnalysisLayersHandler extends ActionHandler {
         if (!user.isGuest()) {
             // FIXME: make a new method to permission service for a more specific search, this will blow up eventually
             final Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
+            final Set<String> downloadPermissionsList = permissionsService.getDownloadPermissions(AnalysisLayer.TYPE);
             final Set<String> editAccessList = null;
             final List<Analysis> list = analysisService.getAnalysisByUid(user.getUuid());
             for(Analysis a: list) {
                 // Parse analyse layer json out analysis
                 final JSONObject analysisLayer = AnalysisHelper.getlayerJSON(a);
                 final String permissionKey = "analysis+" + a.getId();
-                JSONObject permissions = OskariLayerWorker.getPermissions(user, permissionKey, permissionsList, editAccessList);
+                JSONObject permissions = OskariLayerWorker.getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList);
                 JSONHelper.putValue(analysisLayer, "permissions", permissions);
                 layers.put(analysisLayer);
             }
