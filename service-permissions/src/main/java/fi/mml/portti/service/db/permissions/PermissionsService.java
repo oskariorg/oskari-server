@@ -104,6 +104,10 @@ public interface PermissionsService extends BaseService<Permissions> {
 	
 	public Set<String> getPublishPermissions();
 	public Set<String> getPublishPermissions(String resourceType);
+
+	public Set<String> getDownloadPermissions();
+	public Set<String> getDownloadPermissions(String resourceType);
+
     public Set<String> getEditPermissions();
 
     public Map<Long, List<Permissions>> getPermissionsForLayers(List<Long> layeridList, String permissionsType);
