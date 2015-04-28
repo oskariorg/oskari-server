@@ -24,6 +24,9 @@ The view definition files can be found in content-resources/src/main/resources/j
 The myplaces/userlayer/analysis baselayers SQLs have been updated to point to a geoserver running on 
 http://localhost:8080/geoserver (previously the same, but port 8084).
 
+### control-base
+Improvements in Excel/csv export (metadata request url, expanding object column values, reforming jsonarrays)
+
 ## 1.28.1
 
 ### content-resources
