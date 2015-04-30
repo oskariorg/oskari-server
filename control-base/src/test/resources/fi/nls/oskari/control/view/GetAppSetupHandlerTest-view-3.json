@@ -59,6 +59,7 @@
             "layers": [],
             "imageLocation": "/Oskari/resources",
             "user": {
+                "apikey": "testkey",
                 "userID": -1,
                 "lastName": "guest",
                 "nickName": "guest",

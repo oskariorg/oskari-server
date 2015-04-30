@@ -90,7 +90,9 @@ public class MapfullHandler extends BundleHandler {
         }
 
         // setup user data
-        JSONHelper.putValue(mapfullConfig, KEY_USER, params.getUser().toJSON());
+        final JSONObject user = params.getUser().toJSON();
+        JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());
+        JSONHelper.putValue(mapfullConfig, KEY_USER, user);
 
         // Any layer referenced in state.selectedLayers array NEEDS to 
         // be in conf.layers otherwise it cant be added to map on startup

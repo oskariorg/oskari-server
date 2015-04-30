@@ -6,6 +6,10 @@
 
 ActionParameters now has a getAPIkey() method. Currently returns session id.
 
+### control-base
+
+GetAppSetup now includes an apikey in user data.
+
 ### webapp-transport
 
 Now builds transport.war instead of transport-0.0.1.war as this is the default Oskari frontend uses.
