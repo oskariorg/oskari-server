@@ -198,7 +198,7 @@ public class ExportTableFile extends ActionHandler {
                 JSONArray newdata = new JSONArray();
                 for (int subIndex = 0; subIndex < row.length(); subIndex++) {
                     if (row.get(subIndex) instanceof JSONObject) {
-                        Iterator<?> keys = row.getJSONObject(0).keys();
+                        Iterator<?> keys = row.getJSONObject(subIndex).keys();
                         while (keys.hasNext()) {
                             String key = (String) keys.next();
                             // append new columns to header row
