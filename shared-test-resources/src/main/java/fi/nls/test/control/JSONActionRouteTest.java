@@ -15,6 +15,7 @@ import org.mockito.exceptions.base.MockitoAssertionError;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -98,6 +99,11 @@ public class JSONActionRouteTest {
         for(String key : parameters.keySet()) {
             when(req.getParameter(key)).thenReturn(parameters.get(key));
         }
+
+        // mock the session
+        HttpSession session = mock(HttpSession.class);
+        doReturn("testkey").when(session).getId();
+        doReturn(session).when(req).getSession();
 
         doReturn(new Vector(parameters.keySet()).elements()).when(req).getParameterNames();
         if(!response.toString().isEmpty()) {
