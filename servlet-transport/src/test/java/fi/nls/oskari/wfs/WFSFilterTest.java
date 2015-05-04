@@ -168,6 +168,14 @@ public class WFSFilterTest {
         GeoJSONFilter geoJson = GeoJSONFilter.setParamsJSON(input);
         WFSFilter wfsFilter = new WFSFilter();
         wfsFilter.setDefaultBuffer(59d);
+// NOTE!!! This fails with geotools 11.2 and Java 8! With Java 7 it works ok.
+        /*
+java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Number
+at org.geotools.geojson.GeoJSONUtil.createCoordinate(GeoJSONUtil.java:218)
+at org.geotools.geojson.geom.GeometryHandlerBase.coordinate(GeometryHandlerBase.java:54)
+at org.geotools.geojson.geom.PointHandler.endObject(PointHandler.java:50)
+at org.json.simple.parser.JSONParser.parse(Unknown Source)
+         */
         Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
         assertNotNull(f);
         System.out.println("F on " + f);
