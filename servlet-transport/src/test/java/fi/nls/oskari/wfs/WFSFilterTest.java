@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -24,7 +26,6 @@ import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.util.XMLHelper;
 import org.opengis.filter.Filter;
 
-@Ignore
 public class WFSFilterTest {
 	private SessionStore session;
 	private WFSLayerStore layer;
@@ -161,15 +162,13 @@ public class WFSFilterTest {
 	}
 
     @Test
-    @Ignore
 	public void initGeoJson() {
 		//initGeoJSONFilter
         String input = ResourceHelper.readStringResource("WFSFilterTest-geojson-point-input.json", this);
         GeoJSONFilter geoJson = GeoJSONFilter.setParamsJSON(input);
-
         WFSFilter wfsFilter = new WFSFilter();
         wfsFilter.setDefaultBuffer(59d);
-        Filter f = wfsFilter.initGeoJSONFilter(geoJson);
+        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
         assertNotNull(f);
         System.out.println("F on " + f);
 	}
