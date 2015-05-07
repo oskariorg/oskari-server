@@ -8,6 +8,7 @@
 
     <typeAlias alias="WFSLayerConfiguration" type="fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration" />
     <typeAlias alias="WFSSLDStyle" type="fi.nls.oskari.domain.map.wfs.WFSSLDStyle" />
+    <typeAlias alias="WFSParserConfig" type="fi.nls.oskari.domain.map.wfs.WFSParserConfig" />
     
     <resultMap class="WFSLayerConfiguration" id="WFSLayerConfiguration">
         <result property="layerId" column="maplayer_id"/>
@@ -104,6 +105,18 @@
 		<result property="SLDStyle" column="sld_style"/>
     </resultMap>
 
+    <resultMap class="WFSParserConfig" id="WFSParserConfig">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="request_template" column="request_template"/>
+        <result property="response_template" column="response_template"/>
+        <result property="parse_config" column="parse_config"/>
+        <result property="sld_style" column="sld_style"/>
+
+    </resultMap>
+
+
     <cacheModel type="LRU" id="wfs-layer-cache" readOnly="true" serialize="false">
         <flushInterval minutes="15"/>
         <property name="CacheSize" value="100"/>
@@ -178,6 +191,12 @@
 		LEFT OUTER JOIN portti_wfs_layers_styles ls ON ls.wfs_layer_id = l.id
 		LEFT OUTER JOIN portti_wfs_layer_style s ON s.id = ls.wfs_layer_style_id
 		WHERE l.maplayer_id = #id#
+    </select>
+
+    <select id="findParserConfigs" parameterClass="string" resultMap="WFSParserConfig">
+        SELECT
+        *
+        FROM oskari_wfs_parser_config
     </select>
     <statement id="delete" parameterClass="java.lang.Long">
         delete from portti_wfs_layer where maplayer_id=#maplayer_id#;

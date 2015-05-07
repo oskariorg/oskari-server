@@ -12,33 +12,25 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
 
-import net.opengis.wfs.WfsFactory;
+
 import org.geotools.data.DataStore;
-import org.geotools.data.ResourceInfo;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.wfs.WFSServiceInfo;
-import org.geotools.data.wfs.protocol.wfs.WFSProtocol;
-import org.geotools.referencing.CRS;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.ComplexType;
-import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.feature.type.Name;
+
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -148,7 +140,7 @@ public class GetGtWFSCapabilities {
      * @return HashMap / HashMap of wfs service featuretypes
      */
     public static Map<String, Object> getGtDataStoreCapabilities_2_x(final String rurl, final String version, String user, String pw) {
-        WFSParserConfigs parseConfigs =  new WFSParserConfigs();
+        WFSParserConfigs parseConfigs = new WFSParserConfigs();
         Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
             // GetCapabilities request
@@ -252,8 +244,8 @@ public class GetGtWFSCapabilities {
             wfsLayers.put(KEY_LAYERS_WITH_ERRORS, layersWithErrors);
 
             // Loop feature types
-            for(Map.Entry<String, _FeatureType> entry : typeNames.entrySet()) {
-                 String typeName = entry.getKey();
+            for (Map.Entry<String, _FeatureType> entry : typeNames.entrySet()) {
+                String typeName = entry.getKey();
                 _FeatureType fea2x = entry.getValue();
                 try {
                     JSONObject temp = layerToOskariLayerJson(fea2x, typeName, rurl, user, pw);
@@ -543,9 +535,16 @@ public class GetGtWFSCapabilities {
             lc.setWFSVersion(WFS2_0_0_VERSION);
             //lc.setMaxFeatures(data.getMaxFeatures());
             lc.setFeatureNamespace(xmlns);
-            if(featype.getNsUri() != null) lc.setFeatureNamespaceURI(featype.getNsUri());
+            if (featype.getNsUri() != null) lc.setFeatureNamespaceURI(featype.getNsUri());
 
             lc.setFeatureElement(name);
+            // WFS 2.0 parser items
+            lc.setTemplateName(featype.getName());
+            lc.setTemplateType(featype.getTemplateType());
+            lc.setResponseTemplate(featype.getResponseTemplate());
+            lc.setParseConfig(featype.getParseConfig());
+            lc.setRequestTemplate(featype.getRequestTemplate());
+
 
             return lc;
         } catch (Exception ex) {
@@ -639,55 +638,78 @@ public class GetGtWFSCapabilities {
 
             String nsuri = doc.getDocumentElement().getAttribute("targetNamespace");
 
-            if(nsuri != null) ft.setNsUri(nsuri);
+            if (nsuri != null) ft.setNsUri(nsuri);
 
-        } catch (Exception ex )
-        {
+        } catch (Exception ex) {
             log.debug("WFS 2.0.0 DescribeFeaturetype failed ", ex);
         }
     }
 
+    /**
+     * Set parser config items to featuretype and parser type information to layer title
+     *
+     * @param ft            featuretype items
+     * @param parserConfigs parser configurations in oskari_wfs_parse_config table
+     */
     public static void parserConfigType2Title(_FeatureType ft, WFSParserConfigs parserConfigs) {
 
         JSONArray feaconf = parserConfigs.getFeatureTypeConfig(ft.getName());
-        String type ="Default Path";
-        if(feaconf != null){
-          type =  JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf,0),"type","Default Path");
+        String type = "Unknown";
+        if (feaconf == null) {
+            // Get default parser config
+            feaconf = parserConfigs.getDefaultFeatureTypeConfig(ft.getNsUri(), ft.getName());
         }
-        ft.setTitle(ft.getTitle()+" (" + type + " parser)");
+
+        if (feaconf != null) {
+            type = JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "type", "Default Path");
+            ft.setTemplateType(type);
+            ft.setResponseTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "response_template", null));
+            ft.setRequestTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "request_template", null));
+            JSONObject pconf = JSONHelper.getJSONObject(JSONHelper.getJSONObject(feaconf, 0), "parse_config");
+            if(pconf != null) {
+                ft.setParseConfig(pconf.toString());
+            }
+        }
+        ft.setTitle(ft.getTitle() + " (" + type + " parser)");
+
     }
 
     /**
      * Scan 1st node value for to child node
+     *
      * @param subnodes
-     * @param name   child node name
-     * @param val    child node value
-     * @return  node value
+     * @param name     child node name
+     * @param val      child node value
+     * @return node value
      */
     public static String scanChildNode(NodeList subnodes, String name, String val) {
-        if(val != null) return val;
+        if (val != null) return val;
         //if(subnodes == null) return val;
         for (int k = 0; k < subnodes.getLength(); k++) {
             String localname = subnodes.item(k).getLocalName();
-            if(localname == null) localname = subnodes.item(k).getNodeName();
+            if (localname == null) localname = subnodes.item(k).getNodeName();
             if (localname != null) {
                 if (localname.equals(name)) {
                     return subnodes.item(k).getTextContent();
                 }
             }
             val = scanChildNode(subnodes.item(k).getChildNodes(), name, val);
-            if(val != null) return val;
+            if (val != null) return val;
         }
 
         return val;
     }
 
-    public static class _FeatureType
-    {
-        String name;
-        String title;
-        String defaultSrs;
-        String nsUri;
+    public static class _FeatureType {
+        private String name;
+        private String title;
+        private String defaultSrs;
+        private String nsUri;
+        private String templateDescription;
+        private String templateType;
+        private String requestTemplate;
+        private String responseTemplate;
+        private String parseConfig;
 
         public String getName() {
             return name;
@@ -719,6 +741,47 @@ public class GetGtWFSCapabilities {
 
         public void setNsUri(String nsUri) {
             this.nsUri = nsUri;
+        }
+
+
+        public String getTemplateDescription() {
+            return templateDescription;
+        }
+
+        public void setTemplateDescription(String templateDescription) {
+            this.templateDescription = templateDescription;
+        }
+
+        public String getTemplateType() {
+            return templateType;
+        }
+
+        public void setTemplateType(String templateType) {
+            this.templateType = templateType;
+        }
+
+        public String getRequestTemplate() {
+            return requestTemplate;
+        }
+
+        public void setRequestTemplate(String requestTemplate) {
+            this.requestTemplate = requestTemplate;
+        }
+
+        public String getResponseTemplate() {
+            return responseTemplate;
+        }
+
+        public void setResponseTemplate(String responseTemplate) {
+            this.responseTemplate = responseTemplate;
+        }
+
+        public String getParseConfig() {
+            return parseConfig;
+        }
+
+        public void setParseConfig(String parseConfig) {
+            this.parseConfig = parseConfig;
         }
     }
 

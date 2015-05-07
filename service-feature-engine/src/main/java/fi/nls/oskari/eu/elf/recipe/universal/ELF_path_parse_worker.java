@@ -120,6 +120,18 @@ public class ELF_path_parse_worker {
         }
         return out;
     }
+    public static String getGenericName(List tags) {
+
+        String lastTag = tags.get(tags.size()-1).toString().replace("/","");;
+        String sndlastTag = "";
+        lastTag = lastTag.split(":")[lastTag.split(":").length-1];
+        if(tags.size() > 2) {
+            sndlastTag = tags.get(tags.size()-2).toString().replace("/","");;
+            sndlastTag = sndlastTag.split(":")[sndlastTag.split(":").length-1] + "_";
+        }
+
+        return sndlastTag + lastTag;
+    }
 
     /**
      * Fix open tag path tail
