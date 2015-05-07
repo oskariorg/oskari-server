@@ -107,7 +107,7 @@ public class WFSLayerConfiguration {
 	private JSONObject featureType;
 	private JSONObject selectedFeatureParams; // if needed?
 	private JSONObject featureParamsLocales;
-    private String parseConfig;
+
 	private String geometryType; // 2D/3D
 	private boolean getMapTiles; // if tile images are drawn and send
     private boolean getHighlightImage; // if highlight image is drawn and send
@@ -132,6 +132,7 @@ public class WFSLayerConfiguration {
 	private String templateType;
 	private String requestTemplate;
 	private String responseTemplate;
+    private JSONObject parseConfig;
 
 	private String selectionSLDStyle;
 
@@ -668,15 +669,15 @@ public class WFSLayerConfiguration {
 		SLDStyles = sLDStyles;
 	}
 
-    public String getParseConfig() {
-        return this.parseConfig;
+    public JSONObject getParseConfig() {
+        return parseConfig;
     }
 
     public void setParseConfig(String parseConfig) {
-        this.parseConfig = parseConfig;
+        this.parseConfig = parseConfig != null ? JSONHelper.createJSONObject(parseConfig) : null;
     }
 
-	public void save() {
+    public void save() {
         final String key = KEY + this.layerId;
         final String json = getAsJSON();
         log.debug("Writing WFS to Redis:", key, "->", json);
@@ -744,7 +745,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, REQUEST_TEMPLATE, this.getRequestTemplate());
 		JSONHelper.putValue(root, RESPONSE_TEMPLATE, this.getResponseTemplate());
 		JSONHelper.putValue(root, SELECTION_SLD_STYLE, this.getSelectionSLDStyle());
-        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig());
+        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig() != null ? this.getParseConfig().toString() : null);
 
     	// styles
 		final JSONObject styleList = new JSONObject();

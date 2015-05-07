@@ -1,8 +1,8 @@
 package fi.nls.oskari.eu.elf.recipe.universal;
 
 /**
- * Generic parser  for WFS 2.0.0 FeatureCollection
- * - configs are in oskari_wfs_parser_config db table
+ * Generic default parser  for WFS 2.0.0 FeatureCollection
+ * - default config is in oskari_wfs_parser_config db table
  * - test driver e.g. \service-feature-engine\src\test\java\fi\nls\oskari\eu\elf\addresses\TestJacksonParser.java
  * */
 
@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.util.*;
 
-public class ELF_wfs_Parser extends GML32 {
+public class ELF_wfs_DefaultParser extends GML32 {
 
     private static final String KEY_PATHS = "paths";
     private static final String KEY_LABEL = "label";
@@ -32,14 +32,13 @@ public class ELF_wfs_Parser extends GML32 {
     private static final String TYPE_HREF = "Href";
     private static final String TYPE_OBJECT = "Object";
     private static final String TYPE_GEOMETRY = "Geometry";
+    private static final List<String> EXCLUDE_ATTRIBUTES = Arrays.asList("nil");
 
-    private static final String VALUE_NILREASON = "nilReason";
     private static final String VALUE_UNKNOWN = "unknown";
 
-    private static final String ELEM_ADDITIONALOBJECTS = "additionalObjects";
 
     protected static final Logger log = LogFactory
-            .getLogger(ELF_wfs_Parser.class);
+            .getLogger(ELF_wfs_DefaultParser.class);
 
     public void parse() throws IOException {
 
@@ -49,46 +48,15 @@ public class ELF_wfs_Parser extends GML32 {
 
         final FeatureOutputContext outputContext = new FeatureOutputContext(rootQN);
 
-        // Attribute and element mappings
-        Map<String, String> attrmap = new HashMap<String, String>();
-        Map<String, String> elemmap = new HashMap<String, String>();
-        Map<String, String> typemap = new HashMap<String, String>();
-        Map<String, String> nilmap = new HashMap<String, String>();
         Map<String, Resource> resmap = new HashMap<String, Resource>();
-        Resource hrefRes = null;
+
         Boolean isGeomMapping = false;
-
-        parseWorker.setupMaps(attrmap, elemmap, typemap, nilmap);
-
-        // Output resources for output processor
-        JSONArray conf = JSONHelper.getJSONArray(parseWorker.parseConfig, KEY_PATHS);
-        for (int i = 0; i < conf.length(); i++) {
-            JSONObject item = conf.optJSONObject(i);
-            // TODO: type mapping based add property
-            //Not id, if many properties
-            if (JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN).equals(KEY_ID) && conf.length() > 1)
-                continue;
-            //Not geometry
-            if (JSONHelper.getStringFromJSON(item, KEY_TYPE, VALUE_UNKNOWN).equals(TYPE_GEOMETRY)) {
-                isGeomMapping = true;
-                continue;
-            }
-            final Resource resource = outputContext
-                    .addOutputStringProperty(JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN));
-
-            resmap.put(JSONHelper.getStringFromJSON(item, KEY_LABEL, VALUE_UNKNOWN), resource);
-            if (JSONHelper.getStringFromJSON(item, KEY_TYPE, TYPE_STRING).equals(TYPE_HREF)) hrefRes = resource;
-
-        }
+        Boolean isResourcesPrepared = false;
 
 
         final Resource geom = outputContext.addDefaultGeometryProperty();
 
-
-        outputContext.build();
-
-        final OutputFeature<Object> outputFeature = new OutputFeature<Object>(
-                outputContext);
+        OutputFeature<Object> outputFeature = null;
 
         final InputFeature<Object> iter = new InputFeature<Object>(
                 scanQN, Object.class);
@@ -98,9 +66,6 @@ public class ELF_wfs_Parser extends GML32 {
         try {
             XMLStreamReader xsr = iter.getStreamReader(scanQN);
 
-            boolean isAdditional = false;  // Is there addtional object in stream bottom
-            List<JSONObject> additionalFeas = new ArrayList<JSONObject>();
-
 
             while (xsr.hasNext()) {
                 // Handle unexpected end of document
@@ -108,7 +73,7 @@ public class ELF_wfs_Parser extends GML32 {
                 try {
                     nextTag = xsr.nextTag();
                 } catch (Exception e) {
-                    log.debug("*** Unhandled end of document - go on",e);
+                    log.debug("*** Unhandled end of document - go on", e);
                 }
 
                 switch (nextTag) {
@@ -118,11 +83,9 @@ public class ELF_wfs_Parser extends GML32 {
                         additionalFea = new JSONObject();
                         Geometry ggeom = null;
                         QName qn = xsr.getName();
-                        // There are local href elements  inside this element - put flag on
-                        if (qn != null && qn.getLocalPart().equals(ELEM_ADDITIONALOBJECTS)) isAdditional = true;
 
                         // Skip if not member or featureMembers or featureMember
-                        if (qn != null && !scanQN.getLocalPart().equals(qn.getLocalPart()) && !isAdditional) {
+                        if (qn != null && !scanQN.getLocalPart().equals(qn.getLocalPart())) {
                             xsr.next();
                             break;
                         }
@@ -140,42 +103,31 @@ public class ELF_wfs_Parser extends GML32 {
                                 QName curQN = xsr.getName();
                                 parseWorker.addPathTag(pathTag, rootQN, curQN);
 
-                                String elem = elemmap.get(parseWorker.getPathString(pathTag));
-                                String type = typemap.get(parseWorker.getPathString(pathTag));
 
-                                if (elem != null && type != null && type.equals(TYPE_GEOMETRY)) {
-                                    // Parse mapped geometry
-                                    ggeom = (Geometry) this.getGeometryDeserializer().parseGeometry(this.getGeometryDeserializer().getHandlers(), rootQN, xsr);
-                                } else if (!isGeomMapping && this.getGeometryDeserializer().getHandlers().get(curQN) != null && !curQN.getLocalPart().equals("Envelope")) {
+                                if (!isGeomMapping && this.getGeometryDeserializer().getHandlers().get(curQN) != null && !curQN.getLocalPart().equals("Envelope")) {
                                     // Parse any geometry
                                     ggeom = (Geometry) this.getGeometryDeserializer().parseGeometry(this.getGeometryDeserializer().getHandlers(), rootQN, xsr);
                                 } else {
-                                    // Scan attributes
                                     // Attributes are in start element
                                     for (int i = 0; i < xsr.getAttributeCount(); i++) {
-                                        String label = attrmap.get(parseWorker.getPathString(pathTag) + "/" + xsr.getAttributePrefix(i) + ":" + xsr.getAttributeLocalName(i));
+                                        String label = xsr.getAttributeLocalName(i);
                                         if (label != null) {
+                                            // jump over common xml attributes
+                                            if(EXCLUDE_ATTRIBUTES.contains(label)) continue;
 
-                                            if (isAdditional) {
-                                                // store current fea, if new member gml:id and prepare new one
-                                                //TODO: make better parsing of addtionalFeatures
-                                                if ((xsr.getAttributePrefix(i) + ":" + xsr.getAttributeLocalName(i)).equals("gml:id") && !additionalFea.toString().equals("{}")) {
-                                                    additionalFeas.add(additionalFea);
-                                                    additionalFea = new JSONObject();
-
-                                                }
-                                                additionalFea.accumulate(label, xsr.getAttributeValue(i));
-                                            } else feature.accumulate(label, xsr.getAttributeValue(i));
+                                            // id is special case
+                                            if(label.equals(KEY_ID) && !feature.has(KEY_ID)){
+                                                feature.put(label, xsr.getAttributeValue(i));
+                                            }
+                                            else {
+                                                feature.accumulate(curQN.getLocalPart() + "_" + label, xsr.getAttributeValue(i));
+                                            }
                                         }
-                                        if (elem != null && xsr.getAttributeLocalName(i).equals(VALUE_NILREASON)) {
-                                            nilmap.put(elem, xsr.getAttributeValue(i));
-                                        }
-                                    }
-                                    if (elem != null && type != null && type.equals(TYPE_OBJECT)) {
-                                        // Parse as Object
-                                        subfea = this.getMapper().readValue(xsr, Object.class);
 
                                     }
+
+                                    // Parse as Object
+                                    // subfea = this.getMapper().readValue(xsr, Object.class);
 
 
                                 }
@@ -187,23 +139,11 @@ public class ELF_wfs_Parser extends GML32 {
                                     log.debug("Exception in response: ", textTag);
                             } else if (xsr.getEventType() == XMLStreamReader.END_ELEMENT) {
                                 qn = xsr.getName();
-                                String elem = elemmap.get(parseWorker.getPathString(pathTag));
-                                String type = typemap.get(parseWorker.getPathString(pathTag));
-                                if (elem != null && (textTag == null || textTag.isEmpty())) {
-                                    //Add nilreason
-                                    textTag = nilmap.get(elem);
-                                }
+                                String elem = parseWorker.getGenericName(pathTag);
+
                                 if (elem != null && textTag != null && !textTag.isEmpty()) {
-
-
-                                    if (isAdditional) additionalFea.accumulate(elem, textTag);
-                                    else feature.accumulate(elem, textTag);
+                                    feature.accumulate(elem, textTag);
                                     textTag = null;
-
-                                } else if (elem != null && type != null && type.equals(TYPE_OBJECT) && subfea != null) {
-                                    if (isAdditional) additionalFea.accumulate(elem, subfea);
-                                    else feature.accumulate(elem, subfea);
-                                    subfea = null;
 
                                 }
 
@@ -221,6 +161,27 @@ public class ELF_wfs_Parser extends GML32 {
 
                         }
                         if (!feature.toString().equals("{}")) {
+                            if (!isResourcesPrepared) {
+                                // Output resources for output processor
+                                Iterator<?> keys = feature.keys();
+
+                                while (keys.hasNext()) {
+                                    String key = (String) keys.next();
+                                    final Resource resource = outputContext
+                                            .addOutputStringProperty(key);
+
+                                    resmap.put(key, resource);
+
+                                }
+
+                                outputContext.build();
+
+                                outputFeature = new OutputFeature<Object>(
+                                        outputContext);
+                                isResourcesPrepared = true;
+                            }
+
+
                             Resource output_ID = null;
                             if (feature.has(KEY_ID)) {
                                 output_ID = outputContext.uniqueId(feature.getString(KEY_ID));
@@ -257,10 +218,6 @@ public class ELF_wfs_Parser extends GML32 {
 
 
                             outputFeature.build();
-                        } else if (!additionalFea.toString().equals("{}")) {
-                            // href features to List
-                            additionalFeas.add(additionalFea);
-
                         }
                         break;
 
@@ -274,12 +231,9 @@ public class ELF_wfs_Parser extends GML32 {
 
             }
 
-            // Merge href features, if any
-            if (additionalFeas.size() > 0) {
-                this.output.merge(additionalFeas, hrefRes);
-            }
+
         } catch (Exception e) {
-            log.debug("*** path parsing failed - ", e);
+            log.debug("*** default path parsing failed - ", e);
 
         }
 

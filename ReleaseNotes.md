@@ -32,8 +32,16 @@ The view definition files can be found in content-resources/src/main/resources/j
 The myplaces/userlayer/analysis baselayers SQLs have been updated to point to a geoserver running on 
 http://localhost:8080/geoserver (previously the same, but port 8084).
 
+#### New WFS 2.0.0 initial parser config table  (oskari_wfs_parser_config)
+Look at MigrationGuide.md
+
 ### control-base
-Improvements in Excel/csv export (metadata request url, expanding object column values, reforming jsonarrays)
+Improvements in Excel/csv export (metadata request url, expanding object column values, reforming jsonarrays)'
+
+### service-feature-engine
+Improved the new generic WFS path parser for complex featuretypes (WFS 2.0.0  services)
+Instruction under oskari.org\md\documentation\backend\configuring-wfs-path-parser.md
+Initial WFS 2.0.0 parser configs are now in new DB table oskari_wfs_parser_config
 
 ## 1.28.1
 

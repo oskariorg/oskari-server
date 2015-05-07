@@ -17,6 +17,10 @@ Run the node.js upgrade scripts under content-resources/db-upgrade:
 Run on oskaridb:
 
     content-resources/src/main/resources/sql/upgrade/1.29/01_update_defaults.sql
+
+### Create new table ( oskari_wfs_parser_config) for WFS 2.0.0 initial parser configs and insert initial values
+
+    content-resources/src/main/resources/sql/upgrade/1.29/02_create_oskari_wfs_parser_config.sql
      
 ### webapp-transport
 

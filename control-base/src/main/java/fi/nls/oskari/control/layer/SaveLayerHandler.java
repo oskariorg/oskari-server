@@ -161,7 +161,7 @@ public class SaveLayerHandler extends ActionHandler {
                     wfsl.setLayerId(Integer.toString(id));
                     handleRequestToWfsLayer(params, wfsl);
                     if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
-                        handleFESpesificToWfsLayer(wfsl);
+                        handleFESpesificToWfsLayer(params, wfsl);
                     }
                     int idwfsl = wfsLayerService.insert(wfsl);
                     wfsl.setId(idwfsl);
@@ -380,46 +380,28 @@ public class SaveLayerHandler extends ActionHandler {
 
     }
 
-    private void handleFESpesificToWfsLayer( WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
+    private void handleFESpesificToWfsLayer(  final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException, ServiceException {
 
-        //Get parser setup for featype
-        WFSParserConfigs parseConfigs =  new WFSParserConfigs();
-        JSONArray feaconf = parseConfigs.getFeatureTypeConfig(wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement());
-        JSONObject conf = null;
-        if (feaconf == null) {
-            feaconf = parseConfigs.getDefaultFeatureTypeConfig(wfsl);
-        }
 
-        if (feaconf != null) {
-            // Use 1st config, if many
-            // TODO: parser config selection - in common case there is 0-1 parsers for feature type
-            conf = JSONHelper.getJSONObject(feaconf, 0);
-        }
-
-        if (conf != null) {
+        if (wfsl != null) {
+            wfsl.setRequestTemplate(params.getHttpParam("requestTemplate"));
+            wfsl.setResponseTemplate(params.getHttpParam("responseTemplate"));
+            wfsl.setParseConfig(params.getHttpParam("parseConfig"));
+            wfsl.setTemplateName(params.getHttpParam("templateName"));
+            wfsl.setTemplateType(params.getHttpParam("templateType"));
+            wfsl.setTemplateDescription("FE parser model - wfs version : " + wfsl.getWFSVersion());
             Map<String, String> model = new HashMap<String, String>();
+
             model.put("name", wfsl.getFeatureNamespace() + ":" + wfsl.getFeatureElement());
-            model.put("description", "FE parser model - wfs version : " + wfsl.getWFSVersion());
-            model.put("type", JSONHelper.getStringFromJSON(conf, "type", "unknown"));
-            model.put("request_template", JSONHelper.getStringFromJSON(conf, "request_template", "unknown"));
-            model.put("response_template", JSONHelper.getStringFromJSON(conf, "response_template", "unknown"));
-            JSONObject pconf = JSONHelper.getJSONObject(conf, "parse_config");
-            if(pconf != null) {
-                model.put("parse_config", JSONHelper.getJSONObject(conf, "parse_config").toString());
-            }
-
-            // Get Namespace uri from config, if is empty
-            if(wfsl.getFeatureNamespaceURI() == null || wfsl.getFeatureNamespaceURI().isEmpty() ){
-                wfsl.setFeatureNamespaceURI(JSONHelper.getStringFromJSON(conf, "feature_namespace_uri", null));
-            }
-
+            model.put("description", wfsl.getTemplateDescription());
+            model.put("type", wfsl.getTemplateType());
+            model.put("request_template", wfsl.getRequestTemplate());
+            model.put("response_template", wfsl.getResponseTemplate());
+            model.put("parse_config", wfsl.getParseConfig().toString());
 
             int model_id = wfsLayerService.insertTemplateModel(model);
-            wfsl.setTemplateModelId(model_id);
-            wfsl.setRequestTemplate(JSONHelper.getStringFromJSON(conf, "request_template", null));
-            wfsl.setResponseTemplate(JSONHelper.getStringFromJSON(conf, "response_template", null));
-            wfsl.setParseConfig(JSONHelper.getStringFromJSON(conf, "parse_config", null));
 
+            wfsl.setTemplateModelId(model_id);
 
         }
 

@@ -162,7 +162,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         final String geomNs = layer.getGeometryNamespaceURI();
         final String maxCount = Integer.toString(layer.getMaxFeatures());
 
-        JSONObject parseConfig = JSONHelper.createJSONObject(layer.getParseConfig());
+        JSONObject parseConfig = layer.getParseConfig();
 
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {

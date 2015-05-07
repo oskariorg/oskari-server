@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import javax.xml.stream.XMLStreamException;
 
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_DefaultParser;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.log4j.Logger;
@@ -325,7 +326,7 @@ public class TestJacksonParser extends TestHelper {
             try {
                 outputProcessor.setOutput(fouts);
 
-                ParserRecipe recipe = new ELF_wfs_Parser();
+                ParserRecipe recipe = new ELF_wfs_DefaultParser();
                 ELF_path_parse_worker worker = new ELF_path_parse_worker(conf);
                 recipe.setParseWorker(worker);
 
