@@ -65,7 +65,7 @@ public class GetGtWFSCapabilities {
                 throw new ServiceException("Couldn't read/get wfs capabilities response from url.");
             try {
 
-                return parseLayer(capa, rurl, user, pw);
+                return parseLayer(capa, wfs_version, rurl, user, pw);
 
             } catch (Exception ex) {
                 throw new ServiceException("Couldn't read/get wfs capabilities response from url.", ex);
@@ -203,16 +203,16 @@ public class GetGtWFSCapabilities {
      * @param capa geotools wfs DataStore
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseLayer(Map<String, Object> capa, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseLayer(Map<String, Object> capa, String version, String rurl, String user, String pw) throws ServiceException {
         if (capa == null) {
             return null;
         }
         if (capa.containsKey("WFSDataStore")) {
             WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
-            return parseWfs1xLayer(data, rurl, user, pw);
+            return parseWfs1xLayer(data, version, rurl, user, pw);
         } else if (capa.containsKey("FeatureTypeList")) {
             Map<String, _FeatureType> data = (Map<String, _FeatureType>) capa.get("FeatureTypeList");
-            return parseWfs2xLayer(data, rurl, user, pw);
+            return parseWfs2xLayer(data, version, rurl, user, pw);
         }
         return null;
 
@@ -224,7 +224,7 @@ public class GetGtWFSCapabilities {
      * @param typeNames capabilites typenames
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseWfs2xLayer(Map<String, _FeatureType> typeNames, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseWfs2xLayer(Map<String, _FeatureType> typeNames, String version, String rurl, String user, String pw) throws ServiceException {
         if (typeNames == null) {
             return null;
         }
@@ -248,7 +248,7 @@ public class GetGtWFSCapabilities {
                 String typeName = entry.getKey();
                 _FeatureType fea2x = entry.getValue();
                 try {
-                    JSONObject temp = layerToOskariLayerJson(fea2x, typeName, rurl, user, pw);
+                    JSONObject temp = layerToOskariLayerJson(fea2x, version, typeName, rurl, user, pw);
                     if (temp != null) {
                         layers.put(temp);
                     }
@@ -275,7 +275,7 @@ public class GetGtWFSCapabilities {
      * @param data geotools wfs DataStore
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseWfs1xLayer(WFSDataStore data, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseWfs1xLayer(WFSDataStore data, String version, String rurl, String user, String pw) throws ServiceException {
         if (data == null) {
             return null;
         }
@@ -298,7 +298,7 @@ public class GetGtWFSCapabilities {
                 // Loop feature types
                 for (String typeName : typeNames) {
                     try {
-                        JSONObject temp = layerToOskariLayerJson(data, typeName, rurl, user, pw);
+                        JSONObject temp = layerToOskariLayerJson(data, version, typeName, rurl, user, pw);
                         if (temp != null) {
                             layers.put(temp);
                         }
@@ -328,7 +328,7 @@ public class GetGtWFSCapabilities {
      * @return WFSlayers
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject layerToOskariLayerJson(Object capa, String typeName, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject layerToOskariLayerJson(Object capa, String version, String typeName, String rurl, String user, String pw) throws ServiceException {
 
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WFS);
@@ -337,6 +337,7 @@ public class GetGtWFSCapabilities {
         oskariLayer.setMaxScale(1d);
         oskariLayer.setMinScale(1500000d);
         oskariLayer.setName(typeName);
+        oskariLayer.setVersion(version);
         String title = "";
 
         WFSDataStore data1x = null;
