@@ -31,6 +31,8 @@ public class MetadataCatalogueResultParser {
     private AXIOMXPath XPATH_IDENTIFICATION_BBOX = null;
     private AXIOMXPath XPATH_IDENTIFICATION_UUID = null;
 
+    private AXIOMXPath XPATH_CODELISTVALUE = null;
+
     private AXIOMXPath XPATH_DISTINFO = null;
 
     private AXIOMXPath XPATH_FILEID = null;
@@ -88,6 +90,9 @@ setResourceNameSpace(serverURL)
         XPATH_IDENTIFICATION_UUID = XmlHelper.buildXPath("./srv:operatesOn", NAMESPACE_CTX);
         XPATH_LOCALE_MAP = XmlHelper.buildXPath("./gmd:locale/gmd:PT_Locale", NAMESPACE_CTX);
 
+
+        XPATH_CODELISTVALUE = XmlHelper.buildXPath("./gmd:hierarchyLevel/gmd:MD_ScopeCode", NAMESPACE_CTX);
+
         if(ISO3letterOskariLangMapping.isEmpty()) {
             final String[] languages = Locale.getISOLanguages();
             for (String language : languages) {
@@ -124,8 +129,15 @@ setResourceNameSpace(serverURL)
         final OMElement uuidNode = (OMElement) XPATH_FILEID.selectSingleNode(elem);
         
         final List<OMElement> operatesOnNodes = XPATH_IDENTIFICATION_UUID.selectNodes(idNode);
-        
-        
+
+        log.debug("==1");
+        final OMElement codeListValue = (OMElement) XPATH_CODELISTVALUE.selectSingleNode(elem);
+        log.debug("====: " + codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
+        item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
+
+
+
+
         for(OMElement operatesOnNode  : operatesOnNodes){
             if(operatesOnNode != null){
                 if(operatesOnNode.getAllAttributes() == null)
