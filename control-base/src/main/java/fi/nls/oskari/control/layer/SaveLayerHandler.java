@@ -168,9 +168,12 @@ public class SaveLayerHandler extends ActionHandler {
 
                 }
 
+                final String[] publishRoleIds = params.getHttpParam("publishPermissions", "").split(",");
                 final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
+                final String[] downloadRoleIds = params.getHttpParam("downloadPermissions", "").split(",");
+                final String[] viewEmbeddedRoleIds = params.getHttpParam("enbeddedPermissions", "").split(",");
 
-                addPermissionsForRoles(ml, params.getUser(), externalIds);
+                addPermissionsForRoles(ml, externalIds, publishRoleIds, downloadRoleIds, viewEmbeddedRoleIds);
 
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
@@ -495,4 +498,63 @@ public class SaveLayerHandler extends ActionHandler {
         permissionsService.saveResourcePermissions(res);
 
     }
+
+    private void addPermissionsForRoles(final OskariLayer ml,
+                                        final String[] externalIds,
+                                        final String[] publishRoleIds,
+                                        final String[] downloadRoleIds,
+                                        final String[] viewEmbeddedRoleIds) {
+
+        OskariLayerResource res = new OskariLayerResource(ml);
+        // insert permissions
+        for (String externalId : externalIds) {
+            log.debug("== " + Permissions.PERMISSION_TYPE_VIEW_LAYER);
+            log.debug(externalId);
+            Permission permission = new Permission();
+            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+            permission.setExternalId(externalId);
+            permission.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
+            res.addPermission(permission);
+
+            permission = new Permission();
+            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+            permission.setExternalId(externalId);
+            permission.setType(Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            res.addPermission(permission);
+        }
+
+        for (String publishRoleId : publishRoleIds) {
+            log.debug("== " + Permissions.PERMISSION_TYPE_PUBLISH);
+            log.debug(publishRoleId);
+            Permission permission = new Permission();
+            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+            permission.setExternalId(publishRoleId);
+            permission.setType(Permissions.PERMISSION_TYPE_PUBLISH);
+            res.addPermission(permission);
+        }
+
+        for (String downloadRoleId : downloadRoleIds) {
+            log.debug("== " + Permissions.PERMISSION_TYPE_DOWNLOAD);
+            log.debug(downloadRoleId);
+            Permission permission = new Permission();
+            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+            permission.setExternalId(downloadRoleId);
+            permission.setType(Permissions.PERMISSION_TYPE_DOWNLOAD);
+            res.addPermission(permission);
+        }
+
+        for (String viewEmbeddedRoleId : viewEmbeddedRoleIds) {
+            log.debug("== " + Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+            log.debug(viewEmbeddedRoleId);
+            Permission permission = new Permission();
+            permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+            permission.setExternalId(viewEmbeddedRoleId);
+            permission.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+            res.addPermission(permission);
+        }
+
+        permissionsService.saveResourcePermissions(res);
+
+    }
+
 }
