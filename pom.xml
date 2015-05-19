@@ -190,13 +190,13 @@
                 <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-            
+
              <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-datamodel</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
-            
+
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -699,10 +699,6 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>codehaus-snapshots</id>
-            <url>http://snapshots.repository.codehaus.org</url>
         </repository>
         <repository>
             <id>maven2-repository.dev.java.net</id>
