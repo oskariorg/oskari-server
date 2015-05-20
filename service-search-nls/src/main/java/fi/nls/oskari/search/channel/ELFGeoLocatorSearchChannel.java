@@ -2,6 +2,7 @@ package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -9,13 +10,17 @@ import fi.nls.oskari.search.util.ELFGeoLocatorParser;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Search channel for ELF Geolocator requests
@@ -32,6 +37,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
     private static final String PROPERTY_SERVICE_FUZZY_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.fuzzy.template";
     private static final String PROPERTY_SERVICE_GETFEATURE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeature.template";
+    private static final String PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES = "search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json";
 
     public static final String KEY_LANG_HOLDER = "_LANG_";
     public static final String KEY_LATITUDE_HOLDER = "_LATITUDE_";
@@ -50,6 +56,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public static final String REQUEST_GETFEATUREAU_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE, DEFAULT_GETFEATUREAU_TEMPLATE);
     public static final String REQUEST_FUZZY_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_FUZZY_TEMPLATE, DEFAULT_FUZZY_TEMPLATE);
     public static final String REQUEST_GETFEATURE_TEMPLATE = PropertyUtil.get(PROPERTY_SERVICE_GETFEATURE_TEMPLATE, DEFAULT_GETFEATURE_TEMPLATE);
+    public static final String LOCATIONTYPE_ATTRIBUTES = PropertyUtil.get(PROPERTY_SERVICE_GEOLOCATOR_LOCATIONTYPES, ID+".json");
+    public static final String JSONKEY_LOCATIONTYPES = "SI_LocationTypes";
+    public static final String LOCATIONTYPE_ID_PREFIX = "SI_LocationType.";
+
     private static final String PARAM_NORMAL = "normal";
     private static final String PARAM_REGION = "region";
     private static final String PARAM_COUNTRY = "country";
@@ -59,8 +69,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
     private static final String METHOD_REVERSE = "reverse";
+    private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static JSONObject elfCountryMap = null;
-    private final String geolocatorCountries = "/geolocator-countries.json";
+    private final String geolocatorCountries = "geolocator-countries.json";
+
 
     private ELFGeoLocatorParser elfParser = null;
 
@@ -76,6 +88,51 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             JSONTokener tokenizer = new JSONTokener(reader);
             this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
         }
+
+        InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
+        if(inp2 == null){
+            // Try to get user defined setup file
+            try {
+                inp2 = new FileInputStream(LOCATIONTYPE_ATTRIBUTES);
+            }
+            catch (Exception e) {
+                log.info("No setup found for location type based scaling in geolocator seach", e);
+            }
+        }
+        if(inp2 != null && this.elfScalesForType.size() == 0) {
+            InputStreamReader reader = new InputStreamReader(inp2);
+            JSONTokener tokenizer = new JSONTokener(reader);
+            JSONObject elfLocationTypes = JSONHelper.createJSONObject4Tokener(tokenizer);
+            if(elfLocationTypes != null) {
+                JSONArray types = JSONHelper.getJSONArray(elfLocationTypes, JSONKEY_LOCATIONTYPES);
+                try {
+                    // Set Map scale values
+
+                    if (types != null) {
+                        for (int i = 0; i < types.length(); i++) {
+                            JSONObject jsobj = types.getJSONObject(i);
+                            String type_range = JSONHelper.getStringFromJSON(jsobj, "gml_id", null);
+                            Double scale = jsobj.optDouble("scale");
+                            if (type_range != null && scale != null) {
+                                String[] sranges = type_range.split("-");
+                                int i1 = Integer.parseInt(sranges[0]);
+                                int i2 = sranges.length > 1 ? Integer.parseInt(sranges[1]) : i1;
+                                for (int k = i1; k <= i2; k++) {
+                                    String key = LOCATIONTYPE_ID_PREFIX + String.valueOf(k);
+                                    this.elfScalesForType.put(key, scale);
+                                }
+                            }
+
+
+                        }
+                    }
+                } catch (Exception e) {
+                    log.debug("Initializing Elf geolocator search configs failed", e);
+                }
+            }
+        }
+
+
         elfParser = new ELFGeoLocatorParser();
     }
 
@@ -208,6 +265,20 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             method = PARAM_NORMAL;
         }
         return method;
+
+    }
+
+    public Map<String, Double> getElfScalesForType() {
+        return elfScalesForType;
+    }
+
+    /**
+     * Skip scale setting in ELF
+     * Scale is not based on type value
+     * @param item
+     */
+    @Override
+    public void calculateCommonFields(final SearchResultItem item) {
 
     }
 

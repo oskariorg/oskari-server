@@ -50,9 +50,12 @@ public class ELFGeoLocatorParser {
     public static final String KEY_NAME = "_name";
     public static final String KEY_TYPE = "_type";
     public static final String KEY_LOCATIONTYPE_TITLE = "locationType_title";
+    // Role value is value of SI_LocationType gml:id
+    public static final String KEY_LOCATIONTYPE_ROLE = "locationType_role";
     public static final String KEY_PARENT_TITLE = "parent_title";
     public static final String KEY_ADMINISTRATOR = "administrator";
     private JSONObject countryMap = null;
+    private Map<String, Double> elfScalesForType = null;
 
     public final static String SERVICE_SRS = "EPSG:4258";
 
@@ -61,6 +64,8 @@ public class ELFGeoLocatorParser {
         ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
         countryMap = elfchannel.getElfCountryMap();
         if(countryMap == null) log.debug("CountryMap is not set ");
+        elfScalesForType = elfchannel.getElfScalesForType();
+        if(elfScalesForType == null) log.debug("Scale relation to locationtypes is not set ");
 
     }
 
@@ -126,6 +131,7 @@ public class ELFGeoLocatorParser {
                 List<String> names = this.findProperties(result, KEY_NAME);
                 List<String> types = this.findProperties(result, KEY_TYPE);
                 List<String> loctypes = this.findProperties(result, KEY_LOCATIONTYPE_TITLE);
+                List<String> loctypeids = this.findProperties(result, KEY_LOCATIONTYPE_ROLE);
                 List<String> parents = this.findProperties(result, KEY_PARENT_TITLE);
                 List<String> descs = this.findProperties(result, KEY_ADMINISTRATOR);
 
@@ -174,6 +180,7 @@ public class ELFGeoLocatorParser {
                         item.setLocationTypeCode(loctypes.get(0));
                         item.setType(loctypes.get(0));
                     }
+
                     item.setVillage("");
                     item.setDescription("");
 
@@ -181,6 +188,15 @@ public class ELFGeoLocatorParser {
                     else if (descs.size() > 0) item.setVillage(getAdminCountry(locale, descs.get(0)));
 
                     if (descs.size() > 0) item.setDescription(descs.get(0));
+
+                    //Zoom scale
+                    if (loctypeids.size() > 0) {
+                       Double scale = this.elfScalesForType.get(loctypeids.get(0));
+                        scale = scale != null ? scale : -1d;
+                        item.setZoomScale(scale);
+                    }
+
+
 
                     item.setLon(lon);
                     item.setLat(lat);
