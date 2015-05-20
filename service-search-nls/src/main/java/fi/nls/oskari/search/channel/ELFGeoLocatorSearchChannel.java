@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
@@ -89,6 +90,15 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         }
 
         InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
+        if(inp2 == null){
+            // Try to get user defined setup file
+            try {
+                inp2 = new FileInputStream(LOCATIONTYPE_ATTRIBUTES);
+            }
+            catch (Exception e) {
+                log.info("No setup found for location type based scaling in geolocator seach", e);
+            }
+        }
         if(inp2 != null && this.elfScalesForType.size() == 0) {
             InputStreamReader reader = new InputStreamReader(inp2);
             JSONTokener tokenizer = new JSONTokener(reader);
