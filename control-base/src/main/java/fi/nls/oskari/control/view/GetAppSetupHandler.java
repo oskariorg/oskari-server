@@ -118,7 +118,7 @@ public class GetAppSetupHandler extends ActionHandler {
                         requestedBundles.put(bundleId, bundle);
                         list.add(bundle);
                     } else {
-                        log.info("Could not retrieve bundle by name " + bundleId);
+                        log.error("Could not retrieve configured bundle by name " + bundleId);
                     }
                 }
             }
@@ -331,7 +331,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         }
     }
 
-    
+
     private View getView(final ActionParameters params, final long defaultViewId, final long oldId) throws ActionException {
 
         long viewId = ConversionHelper.getLong(params.getHttpParam(ActionConstants.PARAM_VIEW_ID), defaultViewId);
@@ -352,7 +352,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         }
         return view;
     }
-    
+
 
     private JSONObject getStateFromCookie(javax.servlet.http.Cookie cookie) {
         if (cookie == null) {
@@ -431,7 +431,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
 
         if(bundle == null) {
             // admin bundle init failed. See init().
-            log.debug("Tried to insert bundle but it isn't initialized. Id:", id);
+            log.warn("Tried to insert bundle but it isn't initialized. Id:", id);
             return;
         }
         try {
