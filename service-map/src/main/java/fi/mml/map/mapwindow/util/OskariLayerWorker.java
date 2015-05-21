@@ -31,6 +31,9 @@ public class OskariLayerWorker {
     private static final String NO_PUBLICATION_PERMISSION = "no_publication_permission";
     private static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
 
+    private static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
+    private static final String NO_DOWNLOAD_PERMISSION = "no_download_permission";
+
     private static Logger log = LogFactory.getLogger(OskariLayerWorker.class);
 
     private static OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
@@ -85,6 +88,11 @@ public class OskariLayerWorker {
         start = System.currentTimeMillis();
         final Set<String> permissionsList = permissionsService.getPublishPermissions();
         log.debug("Publish permissions loaded in", System.currentTimeMillis() - start, "ms");
+
+        start = System.currentTimeMillis();
+        final Set<String> downloadPermissionsList = permissionsService.getDownloadPermissions();
+        log.debug("Download permissions loaded in", System.currentTimeMillis() - start, "ms");
+
         start = System.currentTimeMillis();
         final Set<String> editAccessList = permissionsService.getEditPermissions();
         log.debug("Edit permissions loaded in", System.currentTimeMillis() - start, "ms");
@@ -103,7 +111,7 @@ public class OskariLayerWorker {
                 //log.debug("Generated JSON");
                 if (layerJson != null) {
                     //log.debug("Generating permissions JSON");
-                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, editAccessList);
+                    JSONObject permissions = getPermissions(user, permissionKey, permissionsList, downloadPermissionsList, editAccessList);
                     JSONHelper.putValue(layerJson, "permissions", permissions);
                     if(permissions.optBoolean("edit")) {
                         // has edit rights, alter JSON/add info for admin bundle
@@ -201,15 +209,17 @@ public class OskariLayerWorker {
      * @param user               Current user
      * @param layerPermissionKey Layer permission key
      * @param permissionsList    List of user publish permissions
+     * @param downloadPermissionsList    List of user download permissions
      * @param editAccessList     List of user edit permissions
      */
     public static JSONObject getPermissions(final User user, final String layerPermissionKey,
-                                             final Set<String> permissionsList, final Set<String> editAccessList) {
+                                             final Set<String> permissionsList, final Set<String> downloadPermissionsList, final Set<String> editAccessList) {
 
         final JSONObject permission = new JSONObject();
         if (user.isAdmin()) {
             JSONHelper.putValue(permission, "edit", true);
             JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
+            JSONHelper.putValue(permission, "download", DOWNLOAD_PERMISSION_OK);
         } else if (user.isGuest()) {
             JSONHelper.putValue(permission, "publish", NO_PUBLICATION_PERMISSION);
         } else {
@@ -220,6 +230,10 @@ public class OskariLayerWorker {
                 if (permissionsList != null && permissionsList.contains(layerPermissionKey + ":" + role.getId())) {
                     JSONHelper.putValue(permission, "publish", PUBLICATION_PERMISSION_OK);
                 }
+
+                if (downloadPermissionsList != null && downloadPermissionsList.contains(layerPermissionKey + ":" + role.getId())) {
+                    JSONHelper.putValue(permission, "download", DOWNLOAD_PERMISSION_OK);
+                }
             }
         }
         return permission;
@@ -229,6 +243,8 @@ public class OskariLayerWorker {
         final JSONObject permissions = new JSONObject();
         JSONHelper.putValue(permissions, "edit", true);
         JSONHelper.putValue(permissions, "publish", PUBLICATION_PERMISSION_OK);
+        //this should probably be allowed as well?
+        JSONHelper.putValue(permissions, "download", DOWNLOAD_PERMISSION_OK);
 
         return permissions;
     }

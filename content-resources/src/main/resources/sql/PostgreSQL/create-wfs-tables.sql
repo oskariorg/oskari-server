@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS portti_wfs_layers_styles;
 DROP TABLE IF EXISTS portti_wfs_layer_style;
 DROP TABLE IF EXISTS portti_wfs_layer;
 DROP TABLE IF EXISTS portti_wfs_template_model;
+DROP TABLE IF EXISTS oskari_wfs_parser_config;
 
 CREATE TABLE portti_wfs_layer
 (
@@ -85,4 +86,20 @@ CREATE TABLE portti_wfs_template_model
 )
 WITH (
 OIDS=FALSE
+);
+
+
+CREATE TABLE oskari_wfs_parser_config
+(
+  id serial NOT NULL,
+  name character varying(128),
+  type character varying(64),
+  request_template text,
+  response_template text,
+  parse_config text,
+  sld_style text,
+  CONSTRAINT oskari_wfs_parser_config_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
 );

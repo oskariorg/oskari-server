@@ -35,11 +35,13 @@ public class FERequestTemplateTest {
         String geomNs = ""; // Not Used ATM
         String wFSver = "1.1.0";
         String featureNs = ""; // Not Used ATM
+        String featurePrefix = ""; // Not Used ATM
         String geomProp = "geometry";
         String featureName = "AdministrativeUnit";
+        final String maxCount = "1000";  // Not used - only for 2.0.0
         String srsName = "EPSG:900913"; // compatible with most WFS servers...
-        template.setRequestFeatures(srsName, featureNs, featureName, wFSver,
-                geomProp, geomNs);
+        template.setRequestFeatures(srsName, featureNs,featurePrefix, featureName, wFSver,
+                geomProp, geomNs, maxCount);
 
         CoordinateReferenceSystem crs = CRS
                 .decode(srsName.indexOf("900913") != -1 ? "EPSG:3785" : srsName);
@@ -76,11 +78,13 @@ public class FERequestTemplateTest {
         String geomNs = ""; // Not Used ATM
         String wFSver = "1.1.0";
         String featureNs = ""; // Not Used ATM
+        String featurePrefix = ""; // Not Used ATM
         String geomProp = "geometry";
         String featureName = "AdministrativeBoundary";
+        final String maxCount = "1000";  // Not used for 1.1.0 version
         String srsName = "EPSG:900913"; // compatible with most WFS servers...
-        template.setRequestFeatures(srsName, featureNs, featureName, wFSver,
-                geomProp, geomNs);
+        template.setRequestFeatures(srsName, featureNs, featurePrefix, featureName, wFSver,
+                geomProp, geomNs, maxCount);
 
         CoordinateReferenceSystem crs = CRS
                 .decode(srsName.indexOf("900913") != -1 ? "EPSG:3785" : srsName);

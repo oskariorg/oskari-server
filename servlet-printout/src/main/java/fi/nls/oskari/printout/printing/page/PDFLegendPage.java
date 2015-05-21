@@ -95,7 +95,6 @@ public class PDFLegendPage extends PDFAbstractPage implements PDFPage {
 		float logoHeight = 16;
 
 		PDXObjectImage xlogo = null;
-		Vector<LegendImage> legends = new Vector<LegendImage>();
 
 		if (opts.isPageLogo()) {
 			/* MUST create before optiona content group is created */

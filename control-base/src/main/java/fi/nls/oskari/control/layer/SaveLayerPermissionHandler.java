@@ -77,7 +77,7 @@ public class SaveLayerPermissionHandler extends ActionHandler {
                     addPermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
                 } else {
                     log.warn("Changing permissions (DELETE) by user '" + whoMakesThisModification + "': " + permissions);
-                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_DOWNLOAD);
+                    deletePermissions(permissions, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
                 }
 
 

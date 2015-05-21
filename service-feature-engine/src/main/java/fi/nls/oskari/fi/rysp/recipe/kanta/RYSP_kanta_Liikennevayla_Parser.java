@@ -19,7 +19,7 @@ public class RYSP_kanta_Liikennevayla_Parser extends GML31 {
         final Resource gn = outputContext.addOutputProperty("name");
         final Resource beginLifespanVersion = outputContext
                 .addOutputStringProperty("beginLifespanVersion");
-        final Resource inspireId = outputContext.addOutputProperty("inspireId");
+        outputContext.addOutputProperty("inspireId");
         final Resource endLifespanVersion = outputContext
                 .addOutputStringProperty("endLifespanVersion");
         final Resource obj = outputContext.addOutputStringProperty("obj");

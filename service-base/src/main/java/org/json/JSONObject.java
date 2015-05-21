@@ -115,6 +115,9 @@ public class JSONObject {
             return object == null || object == this;
         }
 
+        @Override
+        public int hashCode() { return -1; }
+
 
         /**
          * Get the "null" string value.
@@ -124,7 +127,6 @@ public class JSONObject {
             return "null";
         }
     }
-
 
     /**
      * The map where the JSONObject's properties are kept.

@@ -86,7 +86,7 @@ CREATE TABLE oskari_maplayer
   gfi_content text,
   realtime boolean DEFAULT false,
   refresh_rate integer DEFAULT 0,
-  created timestamp with time zone,
+  created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   updated timestamp with time zone,
   username character varying(256),
   password character varying(256),

@@ -59,8 +59,9 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
 
             Coordinate c = session.getMapClick();
 
-            ReferencedEnvelope env = new ReferencedEnvelope(new Envelope(c),
-                    crs);
+            // seems this is not needed here since it isn't used,
+            // but could be used for checking for valid envelope so leaving it in code
+            new ReferencedEnvelope(new Envelope(c), crs);
             /* env.expandBy(10); */
 
             coordsAsSpaceSeparatedString.append(Double.toString(c
@@ -114,9 +115,6 @@ public class FEWFSGetQueryArgsBuilder implements FEQueryArgsBuilder {
         }
 
         builder.setParameter("BBOX", coordsAsSpaceSeparatedString.toString());
-
-        //System.err.println("BBOX " + coordsAsSpaceSeparatedString.toString());
-
     }
 
 }

@@ -107,7 +107,7 @@ public class WFSLayerConfiguration {
 	private JSONObject featureType;
 	private JSONObject selectedFeatureParams; // if needed?
 	private JSONObject featureParamsLocales;
-    private String parseConfig;
+
 	private String geometryType; // 2D/3D
 	private boolean getMapTiles; // if tile images are drawn and send
     private boolean getHighlightImage; // if highlight image is drawn and send
@@ -116,6 +116,7 @@ public class WFSLayerConfiguration {
     private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
+    private int templateModelId;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
 
@@ -131,6 +132,7 @@ public class WFSLayerConfiguration {
 	private String templateType;
 	private String requestTemplate;
 	private String responseTemplate;
+    private JSONObject parseConfig;
 
 	private String selectionSLDStyle;
 
@@ -538,6 +540,23 @@ public class WFSLayerConfiguration {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    /**
+     * Get Template model id (row id of portti_wfs_template_model table)
+     * @return
+     */
+    public int getTemplateModelId() {
+        return templateModelId;
+    }
+
+    /**
+     * Set template id
+     * @param templateModelId
+     */
+    public void setTemplateModelId(int templateModelId) {
+        this.templateModelId = templateModelId;
+    }
+
     /**
 	 * Gets template name
 	 *
@@ -650,15 +669,15 @@ public class WFSLayerConfiguration {
 		SLDStyles = sLDStyles;
 	}
 
-    public String getParseConfig() {
-        return this.parseConfig;
+    public JSONObject getParseConfig() {
+        return parseConfig;
     }
 
     public void setParseConfig(String parseConfig) {
-        this.parseConfig = parseConfig;
+        this.parseConfig = parseConfig != null ? JSONHelper.createJSONObject(parseConfig) : null;
     }
 
-	public void save() {
+    public void save() {
         final String key = KEY + this.layerId;
         final String json = getAsJSON();
         log.debug("Writing WFS to Redis:", key, "->", json);
@@ -726,7 +745,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, REQUEST_TEMPLATE, this.getRequestTemplate());
 		JSONHelper.putValue(root, RESPONSE_TEMPLATE, this.getResponseTemplate());
 		JSONHelper.putValue(root, SELECTION_SLD_STYLE, this.getSelectionSLDStyle());
-        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig());
+        JSONHelper.putValue(root, PARSE_CONFIG, this.getParseConfig() != null ? this.getParseConfig().toString() : null);
 
     	// styles
 		final JSONObject styleList = new JSONObject();
@@ -770,6 +789,16 @@ public class WFSLayerConfiguration {
         this.setMinScale(15000000d);
         this.setMaxScale(1d);
         this.setPublished(false);
+    }
+    public void setWFS20Defaults() {
+        setDefaults();
+        this.setGMLVersion("3.2.1");
+        this.setGML2Separator(false);
+        this.setWFSVersion("2.0.0");
+        this.setGMLGeometryProperty("geometry");
+        this.setJobType("oskari-feature-engine");
+        this.setTileBuffer("{ \"default\" : 1, \"oskari_custom\" : 1}");
+
     }
 
 	public static String getCache(String layerId) {

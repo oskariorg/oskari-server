@@ -60,9 +60,6 @@ public class KMLGeoJsonCollection extends GeoJsonCollection implements GeoJsonWo
 
             MathTransform transform = CRS.findMathTransform(sourceCrs, target, true);
 
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
             JSONArray feas = new JSONArray();
             SimpleFeature simpleFeature = (SimpleFeature) parser.parse();
 

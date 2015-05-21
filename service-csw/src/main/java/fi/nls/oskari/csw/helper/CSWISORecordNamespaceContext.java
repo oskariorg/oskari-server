@@ -37,7 +37,7 @@ public class CSWISORecordNamespaceContext implements NamespaceContext, org.jaxen
             nsmap.put("gml", new URI(GMLNS));
             nsmap.put("srv", new URI(SRVNS));
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            log.error(e, "Error setting up namespace context");
         }
     }
 

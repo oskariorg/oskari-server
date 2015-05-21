@@ -30,7 +30,6 @@ public class SchemaSubscriber extends JedisSubscriber {
                 log.error("Id was not set");
                 return;
             }
-            long id = Long.parseLong(tmpId);
 
             String status = JSONHelper.getStringFromJSON(root, "status", null);
             if(status == null) {
@@ -51,6 +50,7 @@ public class SchemaSubscriber extends JedisSubscriber {
                 status = "fail - schema was not set";
             }
 
+            //long id = Long.parseLong(tmpId);
             //wfsService.updateSchemaInfo(id, schema, status);
         }
     }

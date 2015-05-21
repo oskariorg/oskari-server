@@ -10,9 +10,8 @@ import fi.nls.oskari.work.OWSMapLayerJob;
  * Created by SMAKINEN on 8.4.2015.
  */
 public class HystrixJobValidator extends JobValidator {
-    private static final Logger log = LogFactory.getLogger(HystrixJobValidator.class);
 
-    boolean isCanceled = false;
+    private boolean isCanceled = false;
 
     public HystrixJobValidator(OWSMapLayerJob job) {
         super(job);

@@ -192,34 +192,59 @@ public class WFSServiceTester {
     public static void TestWfsDescribeFeatureTypes( Map<String, Object> capa, String serviceUrl, String version, String user, String pw) {
 
         if (capa == null)  return;
-        if (!capa.containsKey("WFSDataStore")) return;
+        if (capa.containsKey("WFSDataStore")) {
 
-        try {
-            WFSDataStore wfsds = (WFSDataStore) capa.get("WFSDataStore");
+            try {
+                WFSDataStore wfsds = (WFSDataStore) capa.get("WFSDataStore");
 
-            // Feature types
-            String[] typeNames = wfsds.getTypeNames();
-            int count = 0;
+                // Feature types
+                String[] typeNames = wfsds.getTypeNames();
+                int count = 0;
 
 
                 // Loop feature types
                 for (String typeName : typeNames) {
                     count++;
-                    WFSLayerConfiguration lc =   GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user,  pw);
+                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(wfsds, typeName, serviceUrl, user, pw);
                     TestWfsDescribeFeatureType(lc, version, count);
                 }
 
-        } catch (Exception ex) {
+            } catch (Exception ex) {
+
+            }
+        }
+        else if (capa.containsKey("FeatureTypeList")) {
+
+            try {
+                // Feature types
+                Map<String,Object> typeNames = (HashMap<String,Object>) capa.get("FeatureTypeList");
+
+                int count = 0;
+
+                // Loop feature types
+                for(Map.Entry<String, Object> entry : typeNames.entrySet()) {
+                    String typeName = entry.getKey();
+                    GetGtWFSCapabilities._FeatureType featype = ( GetGtWFSCapabilities._FeatureType) entry.getValue();
+                    count++;
+                    WFSLayerConfiguration lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(featype, serviceUrl, user, pw);
+                    TestWfsDescribeFeatureType(lc, version, count);
+                }
+
+            } catch (Exception ex) {
+                info("WFS 2.0.0 featuretypelist error",ex);
+            }
 
         }
 
-    }
+
+
+
+}
 
     public static JSONObject TestWfsDescribeFeatureType(WFSLayerConfiguration lc, String version, int count) {
 
         String layer_id = "temp_" + Integer.toString(count);
         JSONObject response = null;
-        final String url = WFSDescribeFeatureHelper.parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
         try {
             response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
             if (response == null) {

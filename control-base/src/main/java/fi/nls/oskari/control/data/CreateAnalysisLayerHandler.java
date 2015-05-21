@@ -221,9 +221,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         JSONHelper.putValue(analysisLayerJSON, "mergeLayers", mlayers);
 
         Set<String> permissionsList = permissionsService.getPublishPermissions(AnalysisLayer.TYPE);
+        Set<String> downloadPermissionsList = permissionsService.getDownloadPermissions(AnalysisLayer.TYPE);
         Set<String> editAccessList = null;
         String permissionKey = "analysis+" + analysis.getId();
-        JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(), permissionKey, permissionsList, editAccessList);
+        JSONObject permissions = OskariLayerWorker.getPermissions(params.getUser(), permissionKey, permissionsList, downloadPermissionsList, editAccessList);
         JSONHelper.putValue(analysisLayerJSON, "permissions", permissions);
 
         ResponseHelper.writeResponse(params, analysisLayerJSON);

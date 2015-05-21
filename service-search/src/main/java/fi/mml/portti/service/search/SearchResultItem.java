@@ -37,6 +37,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	private String title;
 	private String resourceNameSpace;
 	private String resourceId;
+    private String natureOfTarget;
 	private String description;
 	private String contentURL;
 	private String actionURL;
@@ -302,6 +303,12 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	public void setResourceId(String resourceId) {
 		this.resourceId = resourceId;
 	}
+    public String getNatureOfTarget() {
+        return natureOfTarget;
+    }
+    public void setNatureOfTarget(String natureOfTarget) {
+        this.natureOfTarget = natureOfTarget;
+    }
 	public List<String> getUuId() {
 		return uuid;
 	}
@@ -372,7 +379,8 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
      * @return
      */
     public JSONObject toJSON(Object itemId) {
-        final JSONObject node = JSONHelper.createJSONObject(KEY_NAME, Jsoup.clean(getTitle(), Whitelist.none()));
+        //final JSONObject node = JSONHelper.createJSONObject(KEY_NAME, Jsoup.clean(getTitle(), Whitelist.none()));
+        final JSONObject node = JSONHelper.createJSONObject(KEY_NAME, getTitle());
         JSONHelper.putValue(node, KEY_ID, itemId);
         JSONHelper.putValue(node, KEY_LON, getLon());
         JSONHelper.putValue(node, KEY_LAT, getLat());

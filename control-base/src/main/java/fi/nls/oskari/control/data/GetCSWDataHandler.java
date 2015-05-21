@@ -38,7 +38,6 @@ public class GetCSWDataHandler extends ActionHandler {
         try {
             record = service.getRecordById(uuid, lang);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ActionException("Failed to query service: " + e.getMessage());
         }
         JSONObject result;

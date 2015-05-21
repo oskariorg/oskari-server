@@ -1,5 +1,48 @@
 # Release Notes
 
+## 1.29
+
+### service-control
+
+ActionParameters now has a getAPIkey() method. Currently returns session id.
+
+### control-base
+
+GetAppSetup now includes an apikey in user data.
+
+### webapp-transport
+
+Now builds transport.war instead of transport-0.0.1.war as this is the default Oskari frontend uses.
+
+### content-resources
+ 
+Separated userlayers triggers to a separate file and created a setup.json for other userlayer related things.  
+The default setup (content-resources/src/main/resources/setup/app-default.json) now populates the database with 
+more content than before and creates tables for analysis and userlayers as well as myplaces. 
+
+It also setups 3 views with different levels of Oskari installations:
+1) view that includes bundles that can be used with having just webapp-map (default-view.json)
+2) publisher template (publisher-template-view.json)
+3) view that includes bundles using webapp-map and transport (requires redis as well) (default-transport-view.json)
+4) view that includes the whole stack: webapp-map/transport/printout/geoserver (requires redis as well) (default-full-view.json)
+
+These can be accessed by adding url parameter viewId with value of the view number listed above (for example viewId=4). 
+The view definition files can be found in content-resources/src/main/resources/json/views. 
+
+The myplaces/userlayer/analysis baselayers SQLs have been updated to point to a geoserver running on 
+http://localhost:8080/geoserver (previously the same, but port 8084).
+
+#### New WFS 2.0.0 initial parser config table  (oskari_wfs_parser_config)
+Look at MigrationGuide.md
+
+### control-base
+Improvements in Excel/csv export (metadata request url, expanding object column values, reforming jsonarrays)'
+
+### service-feature-engine
+Improved the new generic WFS path parser for complex featuretypes (WFS 2.0.0  services)
+Instruction under oskari.org\md\documentation\backend\configuring-wfs-path-parser.md
+Initial WFS 2.0.0 parser configs are now in new DB table oskari_wfs_parser_config
+
 ## 1.28.1
 
 ### content-resources
@@ -118,6 +161,16 @@ Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`
 `GetMetadataSearchHandler` now uses SearchResultItem.toJSON() to create the response.
 
 MetadataCatalogueChannelSearchService now requests the output schema `http://www.isotc211.org/2005/gmd` instead of `csw:IsoRecord`.
+
+### elf/geolocator search
+
+Location type based scaling is available when locating the search item
+Default setup is in ELFGEOLOCATOR_CHANNEL.json
+Override setup will be set in oskari-ext.properties
+
+(#) Optional setup for location type based scaling - default is oskari-server\service-search-nls\src\main\resources\fi\nls\oskari\search\channel\ELFGEOLOCATOR_CHANNEL.json
+(#) e.g.
+search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json=/opt/jetty/webapps/root/setup/test.json
 
 ### service-feature-engine
 

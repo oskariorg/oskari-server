@@ -1,0 +1,27 @@
+{
+  "channel": "/service/wfs/setFilter",
+  "data": {
+    "filter": {
+      "geojson": {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "properties": {},
+          "geometry": {
+            "type": "Point",
+            "coordinates": [386260, 6676432]
+          }
+        }],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:3067"
+          }
+        }
+      }
+    },
+    "reqId": 2
+  },
+  "id": "17",
+  "clientId": "617hlfpypge67c1q1wyh9alytvb"
+}

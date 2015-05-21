@@ -75,7 +75,7 @@ public class AdditionalIdFilter extends WFSFilter {
             log.debug("Filter: GeoJSON");
             super.setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
-            filter = super.initGeoJSONFilter(geoJSONFilter);
+            filter = super.initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
 
             // Analysis id
             Filter idFilter = initIdFilter(layer, session);

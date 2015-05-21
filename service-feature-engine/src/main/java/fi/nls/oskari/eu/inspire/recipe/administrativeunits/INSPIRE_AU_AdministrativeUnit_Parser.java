@@ -17,7 +17,7 @@ public class INSPIRE_AU_AdministrativeUnit_Parser extends GML32 {
         final FeatureOutputContext outputContext = new FeatureOutputContext(
                 AdministrativeUnit.QN);
 
-        final Resource geom = outputContext.addDefaultGeometryProperty();
+        outputContext.addDefaultGeometryProperty();
         final Resource beginLifespanVersion = outputContext
                 .addOutputStringProperty("beginLifespanVersion");
         final Resource inspireId = outputContext.addOutputProperty("inspireId");

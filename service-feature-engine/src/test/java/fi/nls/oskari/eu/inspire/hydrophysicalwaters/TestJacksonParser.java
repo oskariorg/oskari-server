@@ -6,7 +6,12 @@ import java.io.OutputStream;
 
 import javax.xml.stream.XMLStreamException;
 
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_DefaultParser;
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
+import fi.nls.oskari.util.JSONHelper;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import fi.nls.oskari.eu.inspire.recipe.hydrophysicalwaters.INSPIRE_HYp_LandWaterBoundary_Parser;
@@ -275,6 +280,56 @@ public class TestJacksonParser extends TestHelper {
                 //recipe.getGeometryDeserializer().setIgnoreProps(true);
 
                 recipe.setLenient(true);
+                engine.setRecipe(recipe);
+
+                engine.setInputProcessor(inputProcessor);
+                engine.setOutputProcessor(outputProcessor);
+
+                engine.process();
+
+            } finally {
+                // fouts.close();
+            }
+
+        } finally {
+            inp.close();
+        }
+
+    }
+
+    @Test
+    public void test_INSPIRE_HYP_geonorge_DefaultPathParser_WFS_WatercourseGMLtoJSON()
+            throws InstantiationException, IllegalAccessException, IOException,
+            XMLStreamException {
+
+        BasicFeatureEngine engine = new BasicFeatureEngine();
+
+        XMLInputProcessor inputProcessor = new StaxGMLInputProcessor();
+
+        OutputStreamProcessor outputProcessor = new JsonOutputProcessor();
+
+        InputStream inp = getClass()
+                .getResourceAsStream(
+                        "/fi/nls/oskari/eu/inspire/hydrophysicalwaters/geonorge_no-INSPIRE-HY-StandingWater-wfs.xml");
+
+        String testConf ="{\"paths\":[{\"path\":\"/hy-p:StandingWater/@gml:id\",\"label\":\"id\",\"type\":\"String\"}],\"root\":{\"rootNS\":\"urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0\",\"name\":\"StandingWater\"},\"scan\":{\"scanNS\":\"http://www.opengis.net/wfs/2.0\",\"name\":\"member\"}} ";
+
+
+        JSONObject conf = JSONHelper.createJSONObject(testConf);
+
+
+        try {
+            inputProcessor.setInput(inp);
+
+
+            OutputStream fouts = System.out;
+            try {
+                outputProcessor.setOutput(fouts);
+
+                ParserRecipe recipe = new ELF_wfs_DefaultParser();
+                ELF_path_parse_worker worker = new ELF_path_parse_worker(conf);
+                recipe.setParseWorker(worker);
+
                 engine.setRecipe(recipe);
 
                 engine.setInputProcessor(inputProcessor);

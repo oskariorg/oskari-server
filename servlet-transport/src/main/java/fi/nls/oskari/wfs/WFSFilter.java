@@ -138,7 +138,7 @@ public class WFSFilter {
                 log.debug("Filter: GeoJSON");
                 setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
                 GeoJSONFilter geoJSONFilter = session.getFilter();
-                filter = initGeoJSONFilter(geoJSONFilter);
+                filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
             }else if(type == JobType.PROPERTY_FILTER) {
                 log.debug("Filter: Property filter");
                 filter = initPropertyFilter(session, bounds, layer);
@@ -282,7 +282,7 @@ public class WFSFilter {
      *
      * @return filter
      */
-    public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter) {
+    public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter, String targetGeometryProperty) {
         if(geoJSONFilter == null || geoJSONFilter.getFeatures() == null || this.defaultBuffer == 0.0d) {
             log.error("Failed to create geoJSON filter (invalid JSON or default buffer unset)");
             return null;
@@ -335,8 +335,7 @@ public class WFSFilter {
                     }
                 }
 
-                tmpFilter = ff.intersects(ff.property(layer
-                        .getGMLGeometryProperty()), ff.literal(polygon));
+                tmpFilter = ff.intersects(ff.property(targetGeometryProperty), ff.literal(polygon));
 
                 geometryFilters.add(tmpFilter);
             }

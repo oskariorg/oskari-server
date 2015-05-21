@@ -22,7 +22,6 @@ import fi.nls.oskari.view.modifier.ViewModifierManager;
 
 import java.net.URLDecoder;
 
-import org.json.Cookie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,18 +31,18 @@ import java.util.*;
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
 
-    private static ViewService viewService = null;
-    private static BundleService bundleService = null;
-    private static PublishedMapRestrictionService restrictionService = null;
+    private ViewService viewService = null;
+    private BundleService bundleService = null;
+    private PublishedMapRestrictionService restrictionService = null;
 
     private static final Logger log = LogFactory.getLogger(GetAppSetupHandler.class);
 
-    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
 
     public static final String PARAM_OLD_ID = "oldId";
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
-    public final static String VIEW_DATA = "viewData";
-    public final static String STATE = "state";
+    public static final String VIEW_DATA = "viewData";
+    public static final String STATE = "state";
     public static final String PARAM_SSL = "ssl";
 
     private static final String KEY_STARTUP = "startupSequence";
@@ -51,14 +50,14 @@ public class GetAppSetupHandler extends ActionHandler {
 
     public static final String COOKIE_SAVED_STATE = "oskaristate";
 
-    private static final long DEFAULT_USERID = 10110;
-    private static String UNRESTRICTED_USAGE_ROLE = "";
-    private static String SECURE_AJAX_PREFIX = "";
+    // TODO: this is paikkatietoikkuna-specific. Remove/make configurable
+    private final static long DEFAULT_USERID = 10110;
+    private String SECURE_AJAX_PREFIX = "";
 
-    private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
+    private String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
 
     // for adding extra bundle(s) for users with specific roles
-    private  Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
+    private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
     private final Set<String> paramHandlers = new HashSet<String>();
     private final Map<String, BundleHandler> bundleHandlers = new HashMap<String, BundleHandler>();
@@ -87,13 +86,12 @@ public class GetAppSetupHandler extends ActionHandler {
         // Loads @OskariViewModifier annotated classes of type ParamHandler from classpath
         ParamControl.addDefaultControls();
         paramHandlers.addAll(ParamControl.getHandlerKeys());
-        UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRoles");
         UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
 
         // Loads @OskariViewModifier annotated classes of type BundleHandler from classpath
         final Map<String, BundleHandler> handlers = ViewModifierManager.getModifiersOfType(BundleHandler.class);
-        for(String key : handlers.keySet()) {
-            bundleHandlers.put(key, handlers.get(key));
+        for(Map.Entry<String, BundleHandler> entry : handlers.entrySet()) {
+            bundleHandlers.put(entry.getKey(), entry.getValue());
         }
 
 
@@ -193,6 +191,8 @@ public class GetAppSetupHandler extends ActionHandler {
             // // FIXME: we cannot use the current user -> the publisher is the
             // one we are interested in!!!!
             /*
+private String UNRESTRICTED_USAGE_ROLE = "";
+UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRoles");
             if (!params.getUser().hasRole(UNRESTRICTED_USAGE_ROLE)) {
                 final List<Integer> viewIdList = new ArrayList<Integer>();
                 // get all view for view creator

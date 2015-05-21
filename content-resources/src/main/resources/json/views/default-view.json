@@ -3,6 +3,7 @@
     "type" : "DEFAULT",
     "default" : true,
     "public" : true,
+    "onlyUuid" : false,
     "oskari" : {
         "application" : "servlet",
         "page" : "index",
@@ -23,12 +24,8 @@
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
-                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
-                      "config" : {
-                        "ignoredLayerTypes" : ["WFS"]
-                    }},
+                    { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin" },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
@@ -36,9 +33,7 @@
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" }
                 ],
-                "layers": [
-                    { "id": 1 }
-                ]
+                "layers": []
             },
             "state" : {
                 "east": "517620",
@@ -52,18 +47,22 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "print" : false,
-                    "link" : false
+                    "print" : false
                 }
             }
         },
         { "id" : "infobox" },
         { "id" : "statehandler" },
         { "id" : "search" },
+        { "id" : "metadatacatalogue" },
         { "id" : "layerselector2" },
         { "id" : "layerselection2" },
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
-        { "id" : "featuredata2" }
+        { "id" : "personaldata" },
+        { "id" : "publisher" },
+        { "id" : "maplegend" },
+        { "id" : "userguide" },
+        { "id" : "heatmap" }
     ]
 }

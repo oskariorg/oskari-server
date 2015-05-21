@@ -1,6 +1,9 @@
 package fi.nls.oskari.work;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.WFSParser;
 import org.geotools.feature.FeatureCollection;
@@ -14,6 +17,8 @@ import java.io.IOException;
  * Job for WFS Map Layer
  */
 public class WFSCustomParserMapLayerJob extends  WFSMapLayerJob {
+
+    private static final Logger log = LogFactory.getLogger(WFSCustomParserMapLayerJob.class);
 
     public WFSCustomParserMapLayerJob(ResultProcessor service, JobType type, SessionStore store, WFSLayerStore layer) {
         this(service, type, store, layer, true, true, true);
@@ -37,14 +42,7 @@ public class WFSCustomParserMapLayerJob extends  WFSMapLayerJob {
         log.debug("Custom parser layer id: ", layer.getLayerId());
         WFSParser parser = new WFSParser(response, layer);
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = parser.parse();
-
-        try {
-            response.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+        IOHelper.close(response);
         return features;
     }
 }

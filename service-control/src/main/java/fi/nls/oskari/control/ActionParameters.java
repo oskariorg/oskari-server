@@ -233,4 +233,13 @@ public class ActionParameters {
             throw new ActionDeniedException("Admin only");
         }
     }
+
+    /**
+     * Returns an api key for the request
+     * @return
+     */
+    public String getAPIkey() {
+        // TODO: use something better than session id
+        return getRequest().getSession().getId();
+    }
 }

@@ -37,9 +37,9 @@ public class StatisticalIndicatorValuesHandler extends ActionHandler {
         final String optionsStr = params.getHttpParam(PARAM_OPTIONS);
         JSONObject options =  JSONHelper.createJSONObject(optionsStr);
 
-        ResponseHelper.writeResponse(params, getDummyValues("" + indicatorId, options));
+        ResponseHelper.writeResponse(params, getDummyValues(datasourceId, "" + indicatorId, options));
     }
-    private JSONArray getDummyValues(String indicatorId, JSONObject options) throws ActionException {
+    private JSONArray getDummyValues(int datasourceId, String indicatorId, JSONObject options) throws ActionException {
 
         final SotkaRequest req = SotkaRequest.getInstance("data");
         req.setGender(options.optString("sex"));

@@ -3,16 +3,20 @@
         "create-empty-db",
         "register-bundles",
         "postgres-add-myplaces",
+        "postgres-add-analysis",
+        "postgres-add-userlayers",
         "postgres-add-users",
         "postgres-add-JAAS",
         "populate-inspire-themes-and-groups"
     ],
     "views" : [
         "default-view.json",
-        "postgres-view.json",
-        "publisher-template-view.json"
+        "publisher-template-view.json",
+        "default-transport-view.json",
+        "default-full-view.json"
     ],
     "sql" : [
+        "add_oskari_wfs_parser_config.sql",
         "example-wfslayer.sql",
         "example-permissions.sql"
     ]

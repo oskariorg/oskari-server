@@ -47,7 +47,6 @@ public class GFIRestQueryParams extends GFIRequestParams {
             String[] sbox = getBbox().split(",");
             if (sbox.length == 4) {
                 double x1 = Double.valueOf(sbox[0]);
-                double y1 = Double.valueOf(sbox[1]);
                 double x2 = Double.valueOf(sbox[2]);
                 double tol = (x2 - x1) * TOLERANCE_FACTOR;
                 searchBox.append(String.valueOf(getLon() - tol) + ",");

@@ -205,7 +205,7 @@ public class CSWISORecordParser {
             XPATH_DI_SI_TEMPORAL_EXTENTS = xpath.compile(
                     "./gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e, "Error compiling xpath XPATH_DI_SI_TEMPORAL_EXTENTS");
         }
         //(0..1) (0..1 as these could be gml:begin and gml:end)
         XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_BEGIN = xpath.compile(

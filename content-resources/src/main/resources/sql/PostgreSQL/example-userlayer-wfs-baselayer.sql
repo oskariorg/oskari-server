@@ -8,11 +8,11 @@ INSERT INTO oskari_maplayer(type, name, groupId,
                             opacity,url,username, password, version, srs_name, locale)
   VALUES('wfslayer', 'oskari:vuser_layer_data', (SELECT MAX(id) FROM oskari_layergroup),
   		 15000000, 1, 
-         80, 'http://localhost:8084/geoserver/oskari/ows', 'admin', 'geoserver', '1.1.0', 'EPSG:3067', '{ fi:{name:"Omat aineistot",subtitle:""},sv:{name:"User layers",subtitle:""},en:{name:"User layers",subtitle:""}}');
+         80, 'http://localhost:8080/geoserver/oskari/ows', 'admin', 'geoserver', '1.1.0', 'EPSG:3067', '{ fi:{name:"Omat aineistot",subtitle:""},sv:{name:"User layers",subtitle:""},en:{name:"User layers",subtitle:""}}');
 
 
 -- add wfs specific layer data;
-INSERT INTO portti_wfs_layer (maplayer_id, layer_name, url,  gml_geometry_property, gml_version, gml2_separator,  max_features,
+INSERT INTO portti_wfs_layer (maplayer_id, layer_name, gml_geometry_property, gml_version, gml2_separator,  max_features,
  feature_namespace, wfs_template_model_id, properties, feature_type, selected_feature_params, feature_params_locales, geometry_type,
   selection_sld_style_id, get_map_tiles, get_feature_info, tile_request, wms_layer_id,  feature_element, feature_namespace_uri, geometry_namespace_uri,
    get_highlight_image, wps_params, tile_buffer)

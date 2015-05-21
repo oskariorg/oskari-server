@@ -189,11 +189,9 @@ public class Location {
             try {
                 this.mapcrs = CRS.decode(this.getSrs(),true);
             } catch (NoSuchAuthorityCodeException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.warn(e, "Couldn't setup CoordinateReferenceSystem");
             } catch (FactoryException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.warn(e, "Couldn't setup CoordinateReferenceSystem");
             }
             
         }

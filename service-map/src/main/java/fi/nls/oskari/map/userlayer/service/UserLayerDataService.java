@@ -14,12 +14,8 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-
 import org.geotools.data.DataUtilities;
-import org.geotools.feature.DefaultFeatureCollection;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
@@ -69,8 +65,7 @@ public class UserLayerDataService {
 
             // Insert style row
             style.setId(1);  // for default, even if style should be always valued
-            if (fparams.containsKey(KEY_STYLE))
-            {
+            if (fparams.containsKey(KEY_STYLE)) {
                 final JSONObject stylejs = JSONHelper
                         .createJSONObject(fparams.get(KEY_STYLE));
                 style.populateFromJSON(stylejs);
@@ -105,17 +100,8 @@ public class UserLayerDataService {
                 //TODO:  delete user_layer row if no rows
             }
 
-        }
-
-        catch(
-                Exception e
-                )
-
-        {
-            log
-                    .info(
-                            "Unable to store user layer data",
-                            e);
+        } catch (Exception e) {
+            log.error(e, "Unable to store user layer data");
             return null;
         }
 
@@ -137,7 +123,6 @@ public class UserLayerDataService {
 
         try {
             final JSONArray geofeas = geoJson.getJSONArray("features");
-            DefaultFeatureCollection fc = new DefaultFeatureCollection();
 
             // Loop json features and fix to user_layer_data structure
             for (int i = 0; i < geofeas.length(); i++) {
@@ -161,10 +146,7 @@ public class UserLayerDataService {
 
             }
         } catch (Exception e) {
-            log
-                    .debug(
-                            "Unable to store user layer data",
-                            e);
+            log.error(e, "Unable to store user layer data");
             return 0;
         }
 
@@ -195,7 +177,7 @@ public class UserLayerDataService {
             return json;
 
         } catch (Exception ex) {
-            log.error("Couldn't parse userlayer to json", ex);
+            log.error(ex, "Couldn't parse userlayer to json");
             return null;
         }
     }
@@ -211,7 +193,7 @@ public class UserLayerDataService {
             }
 
         } catch (Exception ex) {
-            log.error("Couldn't parse field schema", ex);
+            log.error(ex, "Couldn't parse field schema");
         }
         return JSONHelper.getStringFromJSON(jsfields, "{}");
     }

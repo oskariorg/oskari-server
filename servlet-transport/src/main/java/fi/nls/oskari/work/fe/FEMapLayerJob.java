@@ -87,7 +87,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
     protected WFSImage createHighlightImage() {
 
-        final Style style = getSLD();
+        final Style style = getSLD(this.layer.getGMLGeometryPropertyNoNamespace());
 
         return new WFSImage(this.layer, this.session.getClient(),
                 WFSImage.STYLE_DEFAULT, JobType.HIGHLIGHT.toString()) {
@@ -100,7 +100,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
     @Override
     protected WFSImage createResponseImage() {
 
-        final Style style = getSLD();
+        final Style style = getSLD(this.layer.getGMLGeometryPropertyNoNamespace());
 
         return new WFSImage(this.layer, this.session.getClient(),
                 WFSImage.STYLE_DEFAULT, null) {
@@ -155,12 +155,14 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
         final String srsName = layer.getSRSName();
         final String featureNs = layer.getFeatureNamespaceURI();
+        final String featurePrefix = layer.getFeatureNamespace();
         final String featureName = layer.getFeatureElement();
         final String WFSver = layer.getWFSVersion();
         final String geomProp = layer.getGMLGeometryProperty();
         final String geomNs = layer.getGeometryNamespaceURI();
+        final String maxCount = Integer.toString(layer.getMaxFeatures());
 
-        JSONObject parseConfig = JSONHelper.createJSONObject(layer.getParseConfig());
+        JSONObject parseConfig = layer.getParseConfig();
 
         final FERequestTemplate backendRequestTemplate = getRequestTemplate(requestTemplatePath);
         if (backendRequestTemplate == null) {
@@ -168,8 +170,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
             return requestResponse;
         }
 
-        backendRequestTemplate.setRequestFeatures(srsName, featureNs,
-                featureName, WFSver, geomProp, geomNs);
+        backendRequestTemplate.setRequestFeatures(srsName, featureNs, featurePrefix,
+                featureName, WFSver, geomProp, geomNs, maxCount);
 
         FeatureEngine featureEngine = null;
         try {
@@ -430,7 +432,10 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      */
     protected UsernamePasswordCredentials getCredentials(String username,
             String password) {
-        if (username == null || password == null) {
+        if (username == null || username.isEmpty()) {
+            return null;
+        }
+        if (password == null || password.isEmpty()) {
             return null;
         }
         log.debug("[fe] building credentials for " + this.layerId + " as "
@@ -469,7 +474,7 @@ public class FEMapLayerJob extends OWSMapLayerJob {
      * 
      * @return
      */
-    protected Style getSLD() {
+    protected Style getSLD(String geomPropertyname) {
 
         List<WFSSLDStyle> sldStyles = this.layer.getSLDStyles();
 
@@ -481,13 +486,17 @@ public class FEMapLayerJob extends OWSMapLayerJob {
                 break;
             }
         }
-
+        String sldPath = null;
         if (sldStyle == null) {
-            log.debug("[fe] SLD for  " + this.layerId + " not found");
-            return null;
+            log.debug("[fe] SLD for  " + this.layerId + " not found - use default");
+            sldPath = this.DEFAULT_FE_SLD_STYLE_PATH+geomPropertyname.toLowerCase()+".xml";
+        }
+        else {
+            sldPath = sldStyle.getSLDStyle();
+
         }
 
-        String sldPath = sldStyle.getSLDStyle();
+
 
         Style sld = FEStyledLayerDescriptorManager.getSLD(sldPath);
 
@@ -501,24 +510,12 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         FeatureCollection<SimpleFeatureType, SimpleFeature> responseFeatures = ((FERequestResponse) requestResponse)
                 .getResponse().get(
                         ((FERequestResponse) requestResponse).getFeatureIri());
-
-        Filter filter = ((FERequestResponse) requestResponse).getFilter();
-        /*
-         * if (responseFeatures != null && filter != null) {
-         * 
-         * log.debug("APPLYING FILTER " + filter + " to " + responseFeatures);
-         * log.debug("- GT ThreadSafety ..?"); responseFeatures =
-         * responseFeatures.subCollection(filter);
-         * 
-         * }
-         */
-
         return responseFeatures;
     }
 
     @Override
     public boolean runHighlightJob() {
-        /* NOPE */
+        // FE can't handle highlights
         return true;
     }
 

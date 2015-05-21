@@ -1151,7 +1151,7 @@ UPDATE portti_view_bundle_seq set startup = '{
     "metadata": {
         "Import-Bundle": {
             "routesearch": {
-                "bundlePath": "/Oskari/packages/framework/bundle/"
+                "bundlePath": "/Oskari/packages/paikkatietoikkuna/bundle/"
             }
         },
         "Require-Bundle-Instance": [ ]
