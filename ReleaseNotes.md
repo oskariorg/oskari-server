@@ -162,6 +162,16 @@ Added a hook for custom result parser in `MetadataCatalogueChannelSearchService`
 
 MetadataCatalogueChannelSearchService now requests the output schema `http://www.isotc211.org/2005/gmd` instead of `csw:IsoRecord`.
 
+### elf/geolocator search
+
+Location type based scaling is available when locating the search item
+Default setup is in ELFGEOLOCATOR_CHANNEL.json
+Override setup will be set in oskari-ext.properties
+
+(#) Optional setup for location type based scaling - default is oskari-server\service-search-nls\src\main\resources\fi\nls\oskari\search\channel\ELFGEOLOCATOR_CHANNEL.json
+(#) e.g.
+search.channel.ELFGEOLOCATOR_CHANNEL.service.locationtype.json=/opt/jetty/webapps/root/setup/test.json
+
 ### service-feature-engine
 
 Added new generic WFS path parser for complex featuretypes
