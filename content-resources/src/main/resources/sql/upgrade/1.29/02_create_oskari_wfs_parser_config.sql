@@ -2,6 +2,8 @@
 -- WFS-layer seed parser configs for wfs 2.0.0 parsers
 -- Stored WFS-layer parser configs are in portti_wfs_template_model table
 -- These seed configs are spesific for ELF and INSPIRE WFS services
+-- DO only FIRST INSERT for oskari application
+-- All inserts are for ELF
 
 DROP TABLE IF EXISTS oskari_wfs_parser_config;
 
