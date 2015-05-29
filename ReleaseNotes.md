@@ -27,6 +27,16 @@ This will result in { "url" : "single value" } or
 
 With properties 'oskari.map.url' for single value and 'oskari.map.url.en' and 'oskari.map.url.fi' for multiple values
 
+### control-base
+
+MapfullHandler now populates map link and terms of use urls for LogoPlugin config based on properties if available:
+
+    oskari.map.url=/
+    oskari.map.terms.url=/terms
+
+Properties can also have localized values with keys like 'oskari.map.terms.url.en' and 'oskari.map.terms.url.fi'. Existing 
+ config will NOT be overwritten, the values are only populated if they don't exist in the database for the view.
+
 ## 1.29
 
 ### service-control

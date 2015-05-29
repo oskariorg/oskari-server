@@ -50,7 +50,8 @@
                     "id": "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin"
                 },
                 {
-                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+                    "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+                    "config": {"mapUrlPrefix": "/"}
                 }
             ],
             "layers": [],

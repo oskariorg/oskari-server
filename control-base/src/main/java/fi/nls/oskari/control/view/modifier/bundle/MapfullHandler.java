@@ -70,6 +70,8 @@ public class MapfullHandler extends BundleHandler {
     private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
+    private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
+
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig());
         final JSONObject mapfullState = getBundleState(params.getConfig());
@@ -132,6 +134,10 @@ public class MapfullHandler extends BundleHandler {
             log.info("locationModifiedByParams -> disabling GeoLocationPlugin");
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
         }
+
+        // setup URLs for LogoPlugin if available
+        LOGO_PLUGIN_HANDLER.setupLogoPluginConfig(getPlugin(LOGO_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig));
+
         return false;
     }
 
