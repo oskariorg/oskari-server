@@ -51,19 +51,7 @@
                             "baseLayers" : ["base_2"]
                         }
                     },{
-                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
-                        "config": {
-                            "mapUrlPrefix": {
-                                "en": "http://www.paikkatietoikkuna.fi/web/en/map-window?",
-                                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kartta?",
-                                "sv": "http://www.paikkatietoikkuna.fi/web/sv/kartfonstret?"
-                            },
-                            "termsUrl": {
-                                "en": "http://www.paikkatietoikkuna.fi/web/en/terms-and-conditions",
-                                "fi": "http://www.paikkatietoikkuna.fi/web/fi/kayttoehdot",
-                                "sv": "http://www.paikkatietoikkuna.fi/web/sv/anvandningsvillkor"
-                            }
-                        }
+                        "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
                     }
                 ],
                 "layers": []
@@ -81,7 +69,6 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "print" : false,
                     "link" : false
                 }
             }
@@ -94,15 +81,7 @@
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
         { "id" : "featuredata2" },
-        { "id" : "personaldata" ,
-            "config" : {
-                "publishedMapUrl": {
-                    "en": "/?viewId=",
-                    "fi": "/?viewId=",
-                    "sv": "/?viewId="
-                }
-            }
-        },
+        { "id" : "personaldata" },
         { "id" : "myplaces2",
             "config" : {
                 "featureNS" : "http://www.oskari.org",

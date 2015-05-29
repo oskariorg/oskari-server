@@ -98,19 +98,7 @@
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
                     {
-                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
-                    	"config":{
-                    		"termsUrl":{
-                    			"fi":"?",
-                    			"sv":"?",
-                    			"en":"?"
-                    		},
-                    		"mapUrlPrefix":{
-                    			"fi":"?",
-                    			"sv":"?",
-                    			"en":"?"
-                    		}
-                    	}
+                    	"id":"Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
                     }
                 ],
                 "layers": [
@@ -147,7 +135,7 @@
                     {
                         "id": 2
                     }
-                    
+
                 ],
                 "zoom": 4
             }

@@ -55,7 +55,6 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "print" : false,
                     "link" : false
                 }
             }
@@ -68,23 +67,7 @@
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
         { "id" : "featuredata2" },
-        { "id" : "personaldata" ,
-            "config" : {
-                "publishedMapUrl": {
-                    "en": "/?viewId=",
-                    "fi": "/?viewId=",
-                    "sv": "/?viewId="
-                }
-            }
-        },
-        { "id" : "publisher" ,
-            "config" : {
-                "publishedMapUrl": {
-                    "en": "localhost:2373/?viewId=",
-                    "fi": "localhost:2373/?viewId=",
-                    "sv": "localhost:2373/?viewId="
-                }
-            }
-        },
+        { "id" : "personaldata" },
+        { "id" : "publisher" }
     ]
 }
