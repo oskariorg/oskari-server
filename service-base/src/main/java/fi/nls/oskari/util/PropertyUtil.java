@@ -57,7 +57,7 @@ public class PropertyUtil {
     public static void setLogger(Logger logger) {
         log = logger;
     }
-    
+
     static Set<String> propertiesFiles = new HashSet<String>();
 
     /**
@@ -84,11 +84,11 @@ public class PropertyUtil {
             in = PropertyUtil.class.getResourceAsStream(propertiesFile);
             prop.load(in);
             addProperties(prop, overwrite);
-            
+
             propertiesFiles.add(propertiesFile);
-            
+
         } catch (Exception ignored) {
-            
+
         } finally {
             IOHelper.close(in);
         }
@@ -210,6 +210,36 @@ public class PropertyUtil {
         return properties.getProperty(propertyName);
     }
 
+    public static Object getLocalizableProperty(final String key) {
+        return getLocalizableProperty(key, null);
+    }
+
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     * @return
+     */
+    public static Object getLocalizableProperty(final String key, final String defaultValue) {
+        List<String> names = PropertyUtil.getPropertyNamesStartingWith(key);
+        if(names.size() > 1) {
+            Map<String, String> values = new HashMap<String, String>(names.size());
+            final int prefixLength = key.length() + 1;
+            for (String singleKey : names) {
+                if(key.equals(singleKey)) {
+                    // skip the non-localized version
+                    continue;
+                }
+                final String value = get(singleKey, defaultValue);
+                final String modifier = singleKey.substring(prefixLength);
+                values.put(modifier, value);
+            }
+            return values;
+        }
+
+        return get(key, defaultValue);
+    }
+
     /**
      * Returns property names that start with given prefix
      * @param prefix start of the property name
@@ -257,11 +287,11 @@ public class PropertyUtil {
     public static void addProperties(final Properties props) throws DuplicateException {
         addProperties(props, false);
     }
-    
+
     public static void addProperty(final String key, final String value) throws DuplicateException {
         addProperty(key, value, false);
     }
-    
+
     public static void addProperty(final String key, final String value, final boolean overwrite) throws DuplicateException {
         if(properties.containsKey(key)) {
             if(overwrite) {
@@ -274,7 +304,7 @@ public class PropertyUtil {
         }
         properties.put(key, value.trim());
     }
-    
+
     private static void addProperty(final Properties props, final String key, final String value, final boolean overwrite) throws DuplicateException {
         if(props.containsKey(key)) {
             if(overwrite) {

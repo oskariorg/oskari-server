@@ -1,5 +1,7 @@
 package fi.nls.oskari.util;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,6 +121,30 @@ public class PropertyUtilTest {
             final String val3 = values3.get(key);
             assertEquals("Both should have same values with the same key", val2, val3);
         }
+    }
+
+    @Test
+    public void testLocalizableProperty() throws Exception {
+        final String KEY = "my.key";
+        final String value = "test value";
+        PropertyUtil.addProperty(KEY, value);
+        Object o = PropertyUtil.getLocalizableProperty(KEY);
+        assertTrue("Single property should return String", o instanceof String);
+        assertEquals("Value should match", value, o);
+    }
+
+    @Test
+    public void testLocalizablePropertyMultipleValues() throws Exception {
+        final String KEY = "my.key";
+        final String value = "test value";
+        PropertyUtil.addProperty(KEY + ".en", value + " en");
+        PropertyUtil.addProperty(KEY + ".fi", value + " fi");
+        Object o = PropertyUtil.getLocalizableProperty(KEY);
+        assertTrue("Single property should return Map", o instanceof Map);
+        final Map<String, String> values = (Map<String, String>) o;
+        assertEquals("Should have 2 values", 2, values.size());
+        assertEquals("English Value should match", value + " en", values.get("en"));
+        assertEquals("Finnish Value should match", value + " fi", values.get("fi"));
     }
 
 }

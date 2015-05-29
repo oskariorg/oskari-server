@@ -1,5 +1,32 @@
 # Release Notes
 
+## 1.30
+
+### service-base
+
+PropertyUtil now has a convenience method for getting properties that might be localized:
+
+    final Object urlObj = PropertyUtil.getLocalizableProperty("oskari.map.url", null);
+    // single value configured
+    if(urlObj instanceof String) {
+        JSONHelper.putValue(config, "url", urlObj);
+    }
+    // localized values configured
+    else if(urlObj instanceof Map) {
+        Map<String, String> values = (Map<String, String>) urlObj;
+        JSONHelper.putValue(config, "url", new JSONObject(values));
+    }
+    
+This will result in { "url" : "single value" } or 
+
+    { "url" : { 
+         "en" : "en value",
+         "fi" : "fi value"
+      }
+    }
+
+With properties 'oskari.map.url' for single value and 'oskari.map.url.en' and 'oskari.map.url.fi' for multiple values
+
 ## 1.29
 
 ### service-control
