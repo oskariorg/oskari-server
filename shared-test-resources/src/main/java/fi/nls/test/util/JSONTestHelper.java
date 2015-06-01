@@ -1,5 +1,7 @@
 package fi.nls.test.util;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,22 +14,23 @@ import static org.junit.Assert.assertTrue;
  */
 public class JSONTestHelper {
 
+    private static final Logger LOGGER = LogFactory.getLogger(JSONTestHelper.class);
+
+    private JSONTestHelper() {}
+
     public static void shouldEqual(final JSONObject actualResponse, final JSONObject expectedResult) {
         boolean success = false;
         try {
 
             assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
             success = true;
-        }
-        finally {
+        } finally {
             if(!success) {
                 try {
-                    System.out.println(">>>>>> Expected:\n" + expectedResult.toString(2));
-                    System.out.println("  =======  Actual:");
-                    System.out.println(actualResponse.toString(2));
-                    System.out.println("<<<<<<<<<<<");
+                    printError(expectedResult.toString(2), actualResponse.toString(2));
                 } catch (JSONException ignored) {
-                    System.out.println("Couldn't print out the jsons");
+                    LOGGER.error("Couldn't print out the jsons");
+                    LOGGER.ignore(ignored);
                 }
             }
         }
@@ -39,18 +42,22 @@ public class JSONTestHelper {
 
             assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
             success = true;
-        }
-        finally {
+        } finally {
             if(!success) {
                 try {
-                    System.out.println(">>>>>> Expected:\n" + expectedResult.toString(2));
-                    System.out.println("  =======  Actual:");
-                    System.out.println(actualResponse.toString(2));
-                    System.out.println("<<<<<<<<<<<");
+                    printError(expectedResult.toString(2), actualResponse.toString(2));
                 } catch (JSONException ignored) {
-                    System.out.println("Couldn't print out the jsons");
+                    LOGGER.error("Couldn't print out the jsons");
+                    LOGGER.ignore(ignored);
                 }
             }
         }
+    }
+
+    private static void printError(final String expected, final String actual) {
+        LOGGER.error(">>>>>> Expected:\n" + expected);
+        LOGGER.error("  =======  Actual:");
+        LOGGER.error(actual);
+        LOGGER.error("<<<<<<<<<<<");
     }
 }

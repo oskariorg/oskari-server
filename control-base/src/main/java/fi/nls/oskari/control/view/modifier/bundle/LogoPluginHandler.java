@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class LogoPluginHandler {
 
-    private Logger log = LogFactory.getLogger(LogoPluginHandler.class);
+    private static final Logger LOGGER = LogFactory.getLogger(LogoPluginHandler.class);
     public static final String PLUGIN_NAME = "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin";
     public static final String KEY_ID = "id";
     public static final String KEY_CONFIG = "config";
@@ -22,11 +22,11 @@ public class LogoPluginHandler {
 
     public JSONObject setupLogoPluginConfig(final JSONObject originalPlugin) {
         if(originalPlugin == null) {
-            log.debug("Tried to modify LogoPlugin URLS, but plugin didn't exist!");
+            LOGGER.debug("Tried to modify LogoPlugin URLS, but plugin didn't exist!");
             return null;
         }
         if(!PLUGIN_NAME.equals(originalPlugin.optString(KEY_ID))) {
-            log.debug("Tried to modify LogoPlugin URLS, but given JSON isn't LogoPlugin!");
+            LOGGER.debug("Tried to modify LogoPlugin URLS, but given JSON isn't LogoPlugin!");
             return null;
         }
 
@@ -54,9 +54,8 @@ public class LogoPluginHandler {
         // single value configured
         if(urlObj instanceof String) {
             JSONHelper.putValue(config, KEY_MAP_URL, urlObj);
-        }
-        // localized values configured
-        else if(urlObj instanceof Map) {
+        } else if(urlObj instanceof Map) {
+            // localized values configured
             Map<String, String> values = (Map<String, String>) urlObj;
             JSONHelper.putValue(config, KEY_MAP_URL, new JSONObject(values));
         }
@@ -69,8 +68,7 @@ public class LogoPluginHandler {
         final Object termsObj = PropertyUtil.getLocalizableProperty("oskari.map.terms.url");
         if(termsObj instanceof String) {
             JSONHelper.putValue(config, KEY_TERMS_URL, termsObj);
-        }
-        else if(termsObj instanceof Map) {
+        } else if(termsObj instanceof Map) {
             Map<String, String> values = (Map<String, String>) termsObj;
             JSONHelper.putValue(config, KEY_TERMS_URL, new JSONObject(values));
         }
