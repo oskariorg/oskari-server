@@ -22,7 +22,7 @@ public class JedisManager {
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
 
     public static final int EXPIRY_TIME_DAY = 86400;
-    
+
     /**
      * Blocking construction of instances from other classes by making constructor private
      */
@@ -32,6 +32,10 @@ public class JedisManager {
      * Connects configured connection pool to a Redis server
      */
     public static void connect(final int poolSize, final String host, final int port) {
+        if(pool != null) {
+            log.warn("Pool already created! Connect called multiple times. Tried connecting to:", host);
+            return;
+        }
         final JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setTestOnBorrow(true);
         poolConfig.setTestOnReturn(true);
@@ -59,10 +63,10 @@ public class JedisManager {
     public void release() {
         pool.destroy();
     }
-    
+
     /**
      * Gets Jedis connection from the pool
-     * 
+     *
      * @return Jedis instance
      */
     public Jedis getJedis() {
@@ -76,19 +80,19 @@ public class JedisManager {
             return null;
         }
     }
-    
+
     /**
      * Returns (releases) Jedis connection back to the pool
-     * 
+     *
      * @param jedis
      */
     public void returnJedis(Jedis jedis) {
         pool.returnResource(jedis);
     }
-    
+
     /**
      * Thread-safe String GET for Redis
-     * 
+     *
      * @param key
      * @return string
      */
@@ -110,10 +114,10 @@ public class JedisManager {
 			instance.returnJedis(jedis);
 		}
 	}
-    
+
     /**
      * Thread-safe byte[] GET for Redis
-     * 
+     *
      * @param key
      * @return bytes
      */
@@ -217,7 +221,7 @@ public class JedisManager {
 
     /**
      * Thread-safe String HKEYS for Redis
-     * 
+     *
      * @param key
      * @return set of string
      */
@@ -239,10 +243,10 @@ public class JedisManager {
             instance.returnJedis(jedis);
         }
 	}
-	
+
     /**
      * Thread-safe String HGET for Redis
-     * 
+     *
      * @param key
      * @param field
      * @return string
