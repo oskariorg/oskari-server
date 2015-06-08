@@ -95,6 +95,31 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		return "resourceId=" + resourceId + ", resourceNameSpace=" + resourceNameSpace 
 		+ ", title=" + title + ", actionURL=" + actionURL + ", gmdURL=" + gmdURL;
 	}
+
+/*
+    public String toStringAll(){
+        return "title" + title +
+                "resourceNameSpace" + resourceNameSpace +
+                "resourceId" + resourceId +
+                "natureOfTarget" + natureOfTarget +
+                "" + description +
+                ""contentURL +
+        "actionURL" + actionURL +
+        "" + gmdURL +
+        "" + village +
+        "" + locationTypeCode +
+        "" + type +
+        "" + locationName +
+        "" + lon +
+        "" + lat +
+        "" + westBoundLongitude +
+        "" + southBoundLatitude +
+        "" + eastBoundLongitude +
+        "" + northBoundLatitude +
+        "" + mapURL +
+        "" + zoomLevel +
+        "" + trunkateDescription;
+    } */
 	
 	public int compareTo(SearchResultItem sri) {
         // TODO: rank should be normalized and village -> type(?)
