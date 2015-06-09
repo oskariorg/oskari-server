@@ -10,7 +10,7 @@
     <version>2.5.2</version>
     <name>IntersectionFeatureCollection2</name>
     <properties>
-        <geotools.version>11.2</geotools.version>
+        <geotools.version>13.1</geotools.version>
     </properties>
     <dependencies>
         <dependency>

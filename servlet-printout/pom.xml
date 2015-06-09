@@ -14,7 +14,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<geotools.version>10.2</geotools.version>
+		<geotools.version>13.1</geotools.version>
 		<poi.version>3.9</poi.version>
 		<gwc.version>1.4.0</gwc.version>
 		<pdfbox.version>1.8.2</pdfbox.version>
