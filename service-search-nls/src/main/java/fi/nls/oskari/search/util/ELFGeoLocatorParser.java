@@ -9,20 +9,17 @@ package fi.nls.oskari.search.util;
  */
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.ELFGeoLocatorSearchChannel;
-import fi.nls.oskari.util.JSONHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -41,8 +38,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLEncoder;
 import java.util.*;
 
 public class ELFGeoLocatorParser {
@@ -56,6 +51,7 @@ public class ELFGeoLocatorParser {
     public static final String KEY_ADMINISTRATOR = "administrator";
     private JSONObject countryMap = null;
     private Map<String, Double> elfScalesForType = null;
+    private Map<String, Integer> elfLocationPriority = null;
 
     public final static String SERVICE_SRS = "EPSG:4258";
 
@@ -66,6 +62,8 @@ public class ELFGeoLocatorParser {
         if(countryMap == null) log.debug("CountryMap is not set ");
         elfScalesForType = elfchannel.getElfScalesForType();
         if(elfScalesForType == null) log.debug("Scale relation to locationtypes is not set ");
+        elfLocationPriority = elfchannel.getElfLocationPriority();
+        if(elfLocationPriority == null) log.debug("priority relation to locationtypes is not set ");
 
     }
 
@@ -104,6 +102,7 @@ public class ELFGeoLocatorParser {
             parser.setStrict(false);
 
 
+
             //parse featurecollection
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc = null;
             try {
@@ -118,15 +117,16 @@ public class ELFGeoLocatorParser {
                 log.error(e, "parse error");
                 return null;
             }
-            FeatureIterator i = fc.features();
+            FeatureIterator features = fc.features();
 
             int nfeatures = 0;
-            while (i.hasNext()) {
-                SimpleFeature f = (SimpleFeature) i.next();
+            while (features.hasNext()) {
+
+                SimpleFeature feature = (SimpleFeature) features.next();
 
                 Map<String, Object> result = new HashMap<String, Object>();
                 // flat attributes and property values
-                this.parseFeatureProperties(result, f);
+                this.parseFeatureProperties(result, feature);
 
                 List<String> names = this.findProperties(result, KEY_NAME);
                 List<String> types = this.findProperties(result, KEY_TYPE);
@@ -134,7 +134,6 @@ public class ELFGeoLocatorParser {
                 List<String> loctypeids = this.findProperties(result, KEY_LOCATIONTYPE_ROLE);
                 List<String> parents = this.findProperties(result, KEY_PARENT_TITLE);
                 List<String> descs = this.findProperties(result, KEY_ADMINISTRATOR);
-
 
                 String lon = "";
                 String lat = "";
@@ -152,8 +151,8 @@ public class ELFGeoLocatorParser {
                     log.debug("Bounds:", f.getBounds());
                 }
                 */
-                if (f.getDefaultGeometry() instanceof com.vividsolutions.jts.geom.Point) {
-                    com.vividsolutions.jts.geom.Point point = (com.vividsolutions.jts.geom.Point) f.getDefaultGeometry();
+                if (feature.getDefaultGeometry() instanceof com.vividsolutions.jts.geom.Point) {
+                    com.vividsolutions.jts.geom.Point point = (com.vividsolutions.jts.geom.Point) feature.getDefaultGeometry();
                     log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
                     // since ProjectionHelper.isFirstAxisNorth(CRS.decode(SERVICE_SRS)) == true -> y first
                     Point p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), SERVICE_SRS, epsg); //"EPSG:3067"
@@ -167,54 +166,103 @@ public class ELFGeoLocatorParser {
                 // Loop names - multiply items, if exomym true
                 int size = names.size();
                 if (size > 0 && !exonym) size = 1;   // 1st one when exonym false
-                for (int k = 0; k < size; k++) {
-                    SearchResultItem item = new SearchResultItem();
-                    item.setTitle(names.get(k));
 
+                SearchResultItem item = new SearchResultItem();
+
+                item.addValue("exonymNames", getVariantName(names, types));
+                item.setTitle(getOfficialName(names, types));
+
+                for (int k = 0; k < size; k++) {
                     if (types.size() >= k + 1) {
                         item.setType(types.get(k));
                         item.setLocationTypeCode(types.get(k));
                     }
-
-                    if (loctypes.size() > 0) {
-                        item.setLocationTypeCode(loctypes.get(0));
-                        item.setType(loctypes.get(0));
-                    }
-
-                    item.setVillage("");
-                    item.setDescription("");
-
-                    if (parents.size() > 0) item.setVillage(parents.get(0));
-                    else if (descs.size() > 0) item.setVillage(getAdminCountry(locale, descs.get(0)));
-
-                    if (descs.size() > 0) item.setDescription(descs.get(0));
-
-                    //Zoom scale
-                    if (loctypeids.size() > 0) {
-                       Double scale = this.elfScalesForType.get(loctypeids.get(0));
-                        scale = scale != null ? scale : -1d;
-                        item.setZoomScale(scale);
-                    }
-
-
-
-                    item.setLon(lon);
-                    item.setLat(lat);
-                    if(lowerLeft != null && upperRight != null) {
-                        item.setEastBoundLongitude("" + upperRight.getLon());
-                        item.setNorthBoundLatitude("" + upperRight.getLat());
-                        item.setWestBoundLongitude("" + lowerLeft.getLon());
-                        item.setSouthBoundLatitude("" + lowerLeft.getLat());
-                    }
-                    searchResultList.addItem(item);
                 }
 
+                if (loctypes.size() > 0) {
+                    item.setLocationTypeCode(loctypes.get(0));
+                    item.setType(loctypes.get(0));
+                }
+
+                item.setVillage("");
+                item.setDescription("");
+
+                if (parents.size() > 0){
+                    item.setVillage(parents.get(0));
+                }else if (descs.size() > 0){
+                    item.setVillage(getAdminCountry(locale, descs.get(0)));
+                }
+
+                if (descs.size() > 0){
+                    item.setDescription(descs.get(0));
+                }
+
+                //Zoom scale
+                if (loctypeids.size() > 0) {
+                    Double scale = this.elfScalesForType.get(loctypeids.get(0));
+                    scale = scale != null ? scale : -1d;
+                    item.setZoomScale(scale);
+                }
+
+                //Priority
+                if (loctypeids.size() > 0) {
+                    Integer rank = this.elfLocationPriority.get(loctypeids.get(0));
+                    rank = rank != null ? rank : 9999;
+                    item.setRank(rank);
+                }
+
+                item.setLon(lon);
+                item.setLat(lat);
+                if(lowerLeft != null && upperRight != null) {
+                    item.setEastBoundLongitude("" + upperRight.getLon());
+                    item.setNorthBoundLatitude("" + upperRight.getLat());
+                    item.setWestBoundLongitude("" + lowerLeft.getLon());
+                    item.setSouthBoundLatitude("" + lowerLeft.getLat());
+                }
+                searchResultList.addItem(item);
+
+                nfeatures++;
             }  // Feature loop
 
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of ELF GeoLocator");
         }
         return searchResultList;
+    }
+
+
+    private String getOfficialName(List<String> names, List<String> types){
+        if(names != null && types != null){
+            int index = 0;
+            for(String type : types){
+                if(type.equals("official"))
+                    return names.get(index);
+
+                index++;
+            }
+        }else{
+            log.error("Official name not found!!");
+            return null;
+        }
+        return null;
+    }
+
+    private List<String> getVariantName(List<String> names, List<String> types){
+        List<String> exonymNames = new  ArrayList<String>();
+
+        if(names != null && types != null){
+            int index = 0;
+            for(String type : types){
+                if(type.equals("variant"))
+                    exonymNames.add(names.get(index));
+
+                index++;
+            }
+        }else{
+            log.error("No names found!!!!");
+            return null;
+        }
+        return exonymNames;
     }
 
     /**
