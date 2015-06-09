@@ -109,6 +109,8 @@ public class HystrixJobQueue extends JobQueue {
         // statistics
         if(job instanceof HystrixMapLayerJob) {
             HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
+            // manually call terminate just in case (timeout and such)
+            mlJob.terminate();
             mlJob.notifyCompleted(success);
             final String jobId = mlJob.getJobId();
             final Histogram timing = metrics.histogram(
