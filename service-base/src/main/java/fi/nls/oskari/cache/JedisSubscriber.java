@@ -17,6 +17,7 @@ public class JedisSubscriber extends JedisPubSub {
     @Override
     public void onMessage(String channel, String message) {
         log.warn("Message received. Channel: " + channel + " Message: " + message);
+
     }
 
     @Override

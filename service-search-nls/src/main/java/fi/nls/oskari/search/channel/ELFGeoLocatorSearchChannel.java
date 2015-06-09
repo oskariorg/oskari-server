@@ -70,6 +70,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     private static final String PARAM_LAT = "lat";
     private static final String METHOD_REVERSE = "reverse";
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
+    private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
     private final String geolocatorCountries = "geolocator-countries.json";
 
@@ -110,9 +111,11 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
                     if (types != null) {
                         for (int i = 0; i < types.length(); i++) {
+
                             JSONObject jsobj = types.getJSONObject(i);
                             String type_range = JSONHelper.getStringFromJSON(jsobj, "gml_id", null);
                             Double scale = jsobj.optDouble("scale");
+                            int priority = jsobj.optInt("priority");
                             if (type_range != null && scale != null) {
                                 String[] sranges = type_range.split("-");
                                 int i1 = Integer.parseInt(sranges[0]);
@@ -120,6 +123,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                                 for (int k = i1; k <= i2; k++) {
                                     String key = LOCATIONTYPE_ID_PREFIX + String.valueOf(k);
                                     this.elfScalesForType.put(key, scale);
+                                    this.elfLocationPriority.put(key, Integer.valueOf(priority));
                                 }
                             }
 
@@ -144,7 +148,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @throws Exception
      */
     private String getData(SearchCriteria searchCriteria) throws Exception {
-        log.debug("getData");
+
     	if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
@@ -227,12 +231,15 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
-            log.debug("DATA: " + data);
             boolean exonym = false;
             boolean normal = false;
             if(hasParam(searchCriteria,PARAM_EXONYM)) exonym = searchCriteria.getParam(PARAM_EXONYM).toString().equals("true");
             if(hasParam(searchCriteria,PARAM_NORMAL)) normal = searchCriteria.getParam(PARAM_NORMAL).toString().equals("true");
             ChannelSearchResult result = elfParser.parse(data, searchCriteria.getSRS(), locale, exonym);
+
+
+
+
             if(result.getSearchResultItems().size() == 0 && normal)
             {
                 // Try fuzzy search, if empty
@@ -270,6 +277,10 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     public Map<String, Double> getElfScalesForType() {
         return elfScalesForType;
+    }
+
+    public Map<String, Integer> getElfLocationPriority() {
+        return elfLocationPriority;
     }
 
     /**
