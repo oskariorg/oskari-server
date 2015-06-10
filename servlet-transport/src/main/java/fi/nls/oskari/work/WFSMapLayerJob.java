@@ -155,6 +155,7 @@ public class WFSMapLayerJob extends OWSMapLayerJob {
                     this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_MAP_CLICK, output);
                     return false;
                 } else if(this.type == JobType.GEOJSON  || this.type == JobType.PROPERTY_FILTER) {
+                    output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
                     this.service.addResults(session.getClient(), ResultProcessor.CHANNEL_FILTER, output);
                     return false;
                 }
