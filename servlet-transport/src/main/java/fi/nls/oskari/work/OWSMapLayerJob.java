@@ -631,7 +631,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
         Map<String, Object> output = new HashMap<String, Object>();
         output.put(OUTPUT_LAYER_ID, this.layerId);
         output.put(OUTPUT_FEATURES, features);
-        if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK)) {
+        if (channel.equals(ResultProcessor.CHANNEL_MAP_CLICK) || channel.equals(ResultProcessor.CHANNEL_FILTER)) {
             output.put(OUTPUT_KEEP_PREVIOUS, this.session.isKeepPrevious());
         }
 
