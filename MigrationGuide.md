@@ -1,5 +1,12 @@
 # Migration guide
 
+## 1.30
+
+### Geoserver 2.7.1 and geotools 13.1
+
+Current build is against Geotools 13.1
+RYSP WFS parser is not working and partly WFS transport tests fail, if older version of geotools is in use
+
 ## 1.29
 
 ### DB upgrades
