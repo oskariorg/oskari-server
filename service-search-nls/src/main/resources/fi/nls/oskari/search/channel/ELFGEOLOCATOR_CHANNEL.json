@@ -4,7 +4,7 @@
 	"gml_id": "1-24",
 	"lang": "eng",
 	"name": "COUNTRIES, ADMINISTRATIVE UNITS AND OTHER AREAS",
-	"priority": 1,
+	"priority": 111,
 	"scale": 113000
   }, {
 	"id": 2,
@@ -32,7 +32,7 @@
 	"gml_id": "97-120",
 	"lang": "eng",
 	"name": "POPULATED PLACES",
-	"priority": 2,
+	"priority": 211,
 	"scale": 56650
   }, {
 	"id": 6,
@@ -60,7 +60,7 @@
 	"gml_id": "193-216",
 	"lang": "eng",
 	"name": "NON-RESIDENTIAL STRUCTURES AND BUILDINGS",
-	"priority": 3,
+	"priority": 1111,
 	"scale": 28300
   }, {
 	"id": 10,
@@ -88,7 +88,7 @@
 	"gml_id": "289-312",
 	"lang": "eng",
 	"name": "TRANSPORT AND TELECOMMUNICATION FEATURES",
-	"priority": 4,
+	"priority": 411,
 	"scale": 113000
   }, {
 	"id": 14,
@@ -123,7 +123,7 @@
 	"gml_id": "407-430",
 	"lang": "eng",
 	"name": "TERRAIN FEATURES",
-	"priority": 5,
+	"priority": 1111,
 	"scale": 28300
   }, {
 	"id": 19,
@@ -165,7 +165,7 @@
 	"gml_id": "551-574",
 	"lang": "eng",
 	"name": "HYDROGRAPHIC FEATURES",
-	"priority": 6,
+	"priority": 1111,
 	"scale": 28300
   }, {
 	"id": 25,
@@ -214,7 +214,7 @@
 	"gml_id": "718-741",
 	"lang": "eng",
 	"name": "CONSERVATION AREAS",
-	"priority": 7,
+	"priority": 1111,
 	"scale": 28300
   }, {
 	"id": 32,
