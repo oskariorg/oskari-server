@@ -2,10 +2,13 @@
 
 ## 1.30
 
-### Geoserver 2.7.1 and geotools 13.1
+### Geoserver 2.7.1 and geotools 13.1 upgrade
 
-Current build is against Geotools 13.1
-RYSP WFS parser is not working and partly WFS transport tests fail, if older version of geotools is in use
+Keep your current Geoserver data dir as is
+Replace your geoserver directory under webapps with geoserver dir in jetty-package http://oskari.org/build/server/jetty-8.1.16-oskari.zip
+
+- Current Geoserver build is against Geotools 13.1
+- know issue: RYSP WFS parser is not working and partly WFS transport tests fails, if older version of geotools is in use
 
 ## 1.29
 
