@@ -30,11 +30,7 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Admin insert/update of WMS map layer
@@ -168,12 +164,11 @@ public class SaveLayerHandler extends ActionHandler {
 
                 }
 
-                final String[] publishRoleIds = params.getHttpParam("publishPermissions", "").split(",");
-                final String[] externalIds = params.getHttpParam("viewPermissions", "").split(",");
-                final String[] downloadRoleIds = params.getHttpParam("downloadPermissions", "").split(",");
-                final String[] viewEmbeddedRoleIds = params.getHttpParam("enbeddedPermissions", "").split(",");
-
-                addPermissionsForRoles(ml, externalIds, publishRoleIds, downloadRoleIds, viewEmbeddedRoleIds);
+                addPermissionsForRoles(ml,
+                        getPermissionSet(params.getHttpParam("viewPermissions")),
+                        getPermissionSet(params.getHttpParam("publishPermissions")),
+                        getPermissionSet(params.getHttpParam("downloadPermissions")),
+                        getPermissionSet(params.getHttpParam("enbeddedPermissions")));
 
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
@@ -189,6 +184,27 @@ public class SaveLayerHandler extends ActionHandler {
                 throw new ActionException(ERROR_UPDATE_OR_INSERT_FAILED, e);
             }
         }
+    }
+
+    /**
+     * Treats the param as comma-separated list. Splits to individual values and
+     * returns a set of values that could be converted to Long
+     * @param param
+     * @return
+     */
+    private Set<Long> getPermissionSet(final String param) {
+        if(param == null) {
+            return Collections.emptySet();
+        }
+        final Set<Long> set = new HashSet<Long>();
+        final String[] roleIds = param.split(",");
+        for (String externalId : roleIds) {
+            final long extId = ConversionHelper.getLong(externalId, -1);
+            if (extId != -1) {
+                set.add(extId);
+            }
+        }
+        return set;
     }
 
     private boolean updateCache(OskariLayer ml, final String version) throws ActionException {
@@ -500,61 +516,55 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private void addPermissionsForRoles(final OskariLayer ml,
-                                        final String[] externalIds,
-                                        final String[] publishRoleIds,
-                                        final String[] downloadRoleIds,
-                                        final String[] viewEmbeddedRoleIds) {
+                                        final Set<Long> externalIds,
+                                        final Set<Long> publishRoleIds,
+                                        final Set<Long> downloadRoleIds,
+                                        final Set<Long> viewEmbeddedRoleIds) {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
-        for (String externalId : externalIds) {
-            log.debug("== " + Permissions.PERMISSION_TYPE_VIEW_LAYER);
-            log.debug(externalId);
+        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
+        for (long externalId : externalIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(externalId);
+            permission.setExternalId(Long.toString(externalId));
             permission.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
             res.addPermission(permission);
 
             permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(externalId);
+            permission.setExternalId(Long.toString(externalId));
             permission.setType(Permissions.PERMISSION_TYPE_EDIT_LAYER);
             res.addPermission(permission);
         }
 
-        for (String publishRoleId : publishRoleIds) {
-            log.debug("== " + Permissions.PERMISSION_TYPE_PUBLISH);
-            log.debug(publishRoleId);
+        log.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
+        for (long externalId : publishRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(publishRoleId);
+            permission.setExternalId(Long.toString(externalId));
             permission.setType(Permissions.PERMISSION_TYPE_PUBLISH);
             res.addPermission(permission);
         }
 
-        for (String downloadRoleId : downloadRoleIds) {
-            log.debug("== " + Permissions.PERMISSION_TYPE_DOWNLOAD);
-            log.debug(downloadRoleId);
+        log.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
+        for (long externalId : downloadRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(downloadRoleId);
+            permission.setExternalId(Long.toString(externalId));
             permission.setType(Permissions.PERMISSION_TYPE_DOWNLOAD);
             res.addPermission(permission);
         }
 
-        for (String viewEmbeddedRoleId : viewEmbeddedRoleIds) {
-            log.debug("== " + Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
-            log.debug(viewEmbeddedRoleId);
+        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
+        for (long externalId : viewEmbeddedRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
-            permission.setExternalId(viewEmbeddedRoleId);
+            permission.setExternalId(Long.toString(externalId));
             permission.setType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
             res.addPermission(permission);
         }
 
         permissionsService.saveResourcePermissions(res);
-
     }
-
 }
