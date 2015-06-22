@@ -2,6 +2,11 @@
 
 ## 1.30
 
+### ASDI specific configurations moved
+
+ASDI application specific artifacts have been removed from oskari-server. 
+They can now be accessed in: https://github.com/arctic-sdi/oskari-server-extensions
+
 ### service-base
 
 PropertyUtil now has a convenience method for getting properties that might be localized:
