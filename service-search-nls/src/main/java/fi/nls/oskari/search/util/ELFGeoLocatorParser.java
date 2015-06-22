@@ -18,7 +18,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.xsi.XSISimpleTypes;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.Property;
@@ -54,18 +53,32 @@ public class ELFGeoLocatorParser {
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
 
-    public final static String SERVICE_SRS = "EPSG:4258";
+    private String serviceSrs = "EPSG:4258";
 
     public ELFGeoLocatorParser() {
+        this(null);
+    }
+    public ELFGeoLocatorParser(final String serviceSrs) {
+        // use provided SRS or default to EPSG:4258
+        if(serviceSrs != null) {
+            this.serviceSrs = serviceSrs.toUpperCase();
+        }
 
-        ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
+        final ELFGeoLocatorSearchChannel elfchannel = new ELFGeoLocatorSearchChannel();
         countryMap = elfchannel.getElfCountryMap();
-        if(countryMap == null) log.debug("CountryMap is not set ");
-        elfScalesForType = elfchannel.getElfScalesForType();
-        if(elfScalesForType == null) log.debug("Scale relation to locationtypes is not set ");
-        elfLocationPriority = elfchannel.getElfLocationPriority();
-        if(elfLocationPriority == null) log.debug("priority relation to locationtypes is not set ");
+        if(countryMap == null) {
+            log.debug("CountryMap is not set ");
+        }
 
+        elfScalesForType = elfchannel.getElfScalesForType();
+        if(elfScalesForType == null) {
+            log.debug("Scale relation to locationtypes is not set ");
+        }
+
+        elfLocationPriority = elfchannel.getElfLocationPriority();
+        if(elfLocationPriority == null) {
+            log.debug("priority relation to locationtypes is not set ");
+        }
     }
 
     /**
@@ -147,16 +160,16 @@ public class ELFGeoLocatorParser {
                 if(f.getBounds() != null) {
                     log.debug("Bounds:", f.getBounds(), "min y", f.getBounds().getMinY(), "min x", f.getBounds().getMinX(),
                             "max y", f.getBounds().getMaxY(), "max x", f.getBounds().getMaxX());
-                    lowerLeft = ProjectionHelper.transformPoint(f.getBounds().getMinY(), f.getBounds().getMinX(), SERVICE_SRS, epsg); //"EPSG:3067"
-                    upperRight = ProjectionHelper.transformPoint(f.getBounds().getMaxY(), f.getBounds().getMaxX(), SERVICE_SRS, epsg); //"EPSG:3067"
+                    lowerLeft = ProjectionHelper.transformPoint(f.getBounds().getMinY(), f.getBounds().getMinX(), serviceSrs, epsg); //"EPSG:3067"
+                    upperRight = ProjectionHelper.transformPoint(f.getBounds().getMaxY(), f.getBounds().getMaxX(), serviceSrs, epsg); //"EPSG:3067"
                     log.debug("Bounds:", f.getBounds());
                 }
                 */
                 if (feature.getDefaultGeometry() instanceof com.vividsolutions.jts.geom.Point) {
                     com.vividsolutions.jts.geom.Point point = (com.vividsolutions.jts.geom.Point) feature.getDefaultGeometry();
                     log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
-                    // since ProjectionHelper.isFirstAxisNorth(CRS.decode(SERVICE_SRS)) == true -> y first
-                    Point p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), SERVICE_SRS, epsg); //"EPSG:3067"
+                    // since ProjectionHelper.isFirstAxisNorth(CRS.decode(serviceSrs)) == true -> y first
+                    Point p2 = ProjectionHelper.transformPoint(point.getY(), point.getX(), serviceSrs, epsg); //"EPSG:3067"
                     log.debug("Transformed coordinates - x:", p2.getLon(), "y:", p2.getLat());
                     if(p2 != null) {
                         lon = "" + p2.getLon();
@@ -241,12 +254,11 @@ public class ELFGeoLocatorParser {
 
                 index++;
             }
-        } else{
-            log.debug("No names found ");
-            return "";
+        }else{
+            log.error("Official name not found!!");
+            return null;
         }
-        log.debug("No official name found - use 1st variant ");
-        return names.size() > 0 ? names.get(0) : "";
+        return null;
     }
 
     private List<String> getVariantName(List<String> names, List<String> types){
@@ -328,9 +340,9 @@ public class ELFGeoLocatorParser {
      * @param parentKey field name in case of null entry key
      */
     private static void parseFeaturePropertiesMapList(Map result, List<Map<String, Object>> valuein, String parentKey) {
-        int count = 0;
+        int count = 1;
         for (Map map : valuein) {
-            parseFeaturePropertiesMap(result, (Map<String, Object>) map, parentKey + "_" + Integer.toString(count));
+            parseFeaturePropertiesMap(result, (Map<String, Object>) map, parentKey + Integer.toString(count));
             count++;
         }
 
@@ -339,41 +351,15 @@ public class ELFGeoLocatorParser {
     private static List<String> findProperties(Map<String, Object> result, String key) {
 
         List<String> values = new ArrayList<String>();
-        List<Integer> order =  new ArrayList<Integer>();
-
         for (Map.Entry<String, Object> entry : result.entrySet()) {
             Object value = entry.getValue();
             if (value != null) { // hide null properties
                 if (value instanceof String) {
-                    if (entry.getKey().endsWith(key)) {
-                        values.add(value.toString());
-                        // Terrible order num hack for ordering properties later on
-                        String[] num = entry.getKey().split("_");
-                        if (num.length > 2){
-                            order.add(Integer.parseInt(num[num.length - 2]));
-                        }
-                    }
-
+                    if (entry.getKey().endsWith(key)) values.add(value.toString());
                 }
             }
 
         }
-        //Sort similiar name properties of flatted data
-        List<String> ordervalues = Arrays.asList(new String[values.size()]);
-        if(order.size() > 1 && order.size() == values.size()){
-            for(int i = 0 ; i < order.size(); i++) {
-                try {
-                    ordervalues.set(order.get(i).intValue(), values.get(i));
-                }
-                catch (Exception e){
-                    return values;
-                }
-            }
-
-            return ordervalues;
-
-        }
-
         return values;
 
     }
@@ -421,13 +407,13 @@ public class ELFGeoLocatorParser {
                 String[] admins = countryMap.get(key).toString().split(";");
                 for (String s: admins)
                 {
-                   if(s.equals(admin_name)) {
-                       Locale obj = new Locale("", key);
-                       return obj.getDisplayCountry(locale);
-                   }
+                    if(s.equals(admin_name)) {
+                        Locale obj = new Locale("", key);
+                        return obj.getDisplayCountry(locale);
+                    }
                 }
 
-                }
+            }
 
         } catch (JSONException e) {
             log.debug("Failed to get ELF country name to " + admin_name);
@@ -452,12 +438,12 @@ public class ELFGeoLocatorParser {
 
         lonlat[0] = lon;
         lonlat[1] = lat;
-        if (epsg.toUpperCase().equals("EPSG:4258")) return lonlat;
+        if (epsg.toUpperCase().equals(serviceSrs)) return lonlat;
 
         try {
 
             CoordinateReferenceSystem sourceCrs = CRS.decode(epsg);
-            CoordinateReferenceSystem targetCrs = CRS.decode("EPSG:4258");
+            CoordinateReferenceSystem targetCrs = CRS.decode(serviceSrs);
 
 
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, true);

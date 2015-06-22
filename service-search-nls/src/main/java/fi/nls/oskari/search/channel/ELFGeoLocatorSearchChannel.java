@@ -33,6 +33,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
     private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
+    private static final String PROPERTY_SERVICE_SRS = "search.channel.ELFGEOLOCATOR_CHANNEL.service.srs";
     private static final String PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.reversegeocode.template";
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
     private static final String PROPERTY_SERVICE_FUZZY_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.fuzzy.template";
@@ -81,6 +82,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
     public void init() {
         super.init();
         serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
+
         log.debug("ServiceURL set to " + serviceURL);
 
         InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
@@ -137,7 +139,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         }
 
 
-        elfParser = new ELFGeoLocatorParser();
+        elfParser = new ELFGeoLocatorParser(PropertyUtil.getOptional(PROPERTY_SERVICE_SRS));
     }
 
     /**
@@ -149,7 +151,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     private String getData(SearchCriteria searchCriteria) throws Exception {
 
-    	if (serviceURL == null) {
+        if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
