@@ -48,7 +48,7 @@
 
             #contentMap {
                 height: 100%;
-                margin-left: 153px;
+                margin-left: 170px;
             }
 
             #login {
