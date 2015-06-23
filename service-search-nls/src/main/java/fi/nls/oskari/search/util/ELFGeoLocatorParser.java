@@ -61,6 +61,7 @@ public class ELFGeoLocatorParser {
     public ELFGeoLocatorParser(final String serviceSrs) {
         // use provided SRS or default to EPSG:4258
         if(serviceSrs != null) {
+            log.debug("Using", serviceSrs, "as native SRS");
             this.serviceSrs = serviceSrs.toUpperCase();
         }
 
