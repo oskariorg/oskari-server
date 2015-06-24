@@ -2,11 +2,12 @@
 
 ## 1.30
 
-###  Geoserver updated to 2.7.1  and Geotools to 13.1
+### Generic
 
-Look at MigrationGuide
-
-### ASDI specific configurations moved
+Geotools version has been updated to 13.1.
+The new Geotools version no longer supports Java 6 so Oskari now requires Java 7 as well.
+Geoserver and WPS extensions have been upgraded for version 2.7.1.
+See MigrationGuide.md for details.
 
 ASDI application specific artifacts have been removed from oskari-server. 
 They can now be accessed in: https://github.com/arctic-sdi/oskari-server-extensions

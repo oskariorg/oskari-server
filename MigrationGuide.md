@@ -2,6 +2,10 @@
 
 ## 1.30
 
+### Java update
+
+As the updated geotools version has dropped Java 6 support, Oskari now requires Java 7 as well.
+
 ### Geoserver 2.7.1 and geotools 13.1 upgrade
 
 Keep your current Geoserver data dir as is
