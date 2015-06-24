@@ -2,6 +2,10 @@
 
 ## 1.30
 
+###  Geoserver updated to 2.7.1  and Geotools to 13.1
+
+Look at MigrationGuide
+
 ### ASDI specific configurations moved
 
 ASDI application specific artifacts have been removed from oskari-server. 
