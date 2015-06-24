@@ -1,8 +1,0 @@
-{
-    "create": [
-        "create-user-tables.sql"
-    ],
-    "sql": [
-        "asdi-users.sql"
-    ]
-}

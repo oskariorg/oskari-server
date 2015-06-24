@@ -2,6 +2,21 @@
 
 ## 1.30
 
+### Generic
+
+Geotools version has been updated to 13.1.
+The new Geotools version no longer supports Java 6 so Oskari now requires Java 7 as well.
+Geoserver extensions have been upgraded for version 2.7.1.
+See MigrationGuide.md for details.
+
+ASDI application specific artifacts have been removed from oskari-server. 
+They can now be accessed in: https://github.com/arctic-sdi/oskari-server-extensions
+
+### service-search-nls
+
+ELFGeolocator can now be configured to other projections than the default EPSG:4258.
+This is done with by providing the srs name as a property value with key 'search.channel.ELFGEOLOCATOR_CHANNEL.service.srs'
+
 ### service-base
 
 PropertyUtil now has a convenience method for getting properties that might be localized:
