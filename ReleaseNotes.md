@@ -42,10 +42,9 @@ This will result in { "url" : "single value" } or
 
 With properties 'oskari.map.url' for single value and 'oskari.map.url.en' and 'oskari.map.url.fi' for multiple values
 
-#### Coordinate reference system must be similiar to current map  in Mif/mid data import
+#### Mif/mid data import
 
-Coordinate reference system must be similiar to current map CRS (EPSG:3067 in Oskari) in Mif/mid data format.
-If CRS is not defined or not reconigzed by gdal, then current map CRS is user (Oskari EPSG:3067, ELF EPSG:3857) / MIFGeoJsonCollection
+If GDAL cannot determine CRS from the data, the import now assumes the current maps CRS (previously assumed EPSG:2393).
 
 ### control-base
 
