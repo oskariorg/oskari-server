@@ -6,7 +6,7 @@
 
 Geotools version has been updated to 13.1.
 The new Geotools version no longer supports Java 6 so Oskari now requires Java 7 as well.
-Geoserver extensions have been upgraded for version 2.7.1.
+Geoserver and WPS extensions have been upgraded for version 2.7.1.
 See MigrationGuide.md for details.
 
 ASDI application specific artifacts have been removed from oskari-server. 
