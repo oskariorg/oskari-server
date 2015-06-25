@@ -8,12 +8,9 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +30,7 @@ public class DBHandler {
 
     private static Logger log = LogFactory.getLogger(DBHandler.class);
     private static volatile boolean startedAsStandalone = false;
+    private static DataSource datasource;
 
     public static boolean isCommandLineUsage() {
         return startedAsStandalone;
@@ -54,18 +52,25 @@ public class DBHandler {
         // replace logger after properties are populated
         log = LogFactory.getLogger(DBHandler.class);
 
-        final String addView = System.getProperty("oskari.addview");
-        final String addLayer = System.getProperty("oskari.addlayer");
-        if(addView != null) {
-            ViewHelper.insertView(getConnection(), addView);
-        }
-        else if(addLayer != null) {
-            final int id = LayerHelper.setupLayer(addLayer);
-            log.debug("Added layer with id:", id);
-        }
-        else {
-            // initialize db with demo data if tables are not present
-            createContentIfNotCreated();
+        final DatasourceHelper helper = new DatasourceHelper();
+        try {
+            datasource = helper.createDataSource();
+            final String addView = System.getProperty("oskari.addview");
+            final String addLayer = System.getProperty("oskari.addlayer");
+            if(addView != null) {
+                ViewHelper.insertView(getConnection(), addView);
+            }
+            else if(addLayer != null) {
+                final int id = LayerHelper.setupLayer(addLayer);
+                log.debug("Added layer with id:", id);
+            }
+            else {
+                // initialize db with demo data if tables are not present
+                createContentIfNotCreated();
+            }
+
+        } finally {
+            helper.teardown();
         }
     }
 
@@ -93,29 +98,7 @@ public class DBHandler {
     }
 
     public static DataSource getDataSource() throws SQLException {
-        final String jndiUrl = String.format("java:/comp/env/%s",
-                PropertyUtil.get("db.jndi.name", "jdbc/OskariPool"));
-        try {
-            return (DataSource) new InitialContext().lookup(jndiUrl);
-        } catch (final NamingException e) {
-            // fallthrough, continue if the DataSource was not found from the JNDI context
-        }
-
-        final BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl(PropertyUtil.get("db.url", "jdbc:postgresql://localhost:5432/oskaridb"));
-        dataSource.setUsername(getProperty("db.username"));
-        dataSource.setPassword(getProperty("db.password"));
-
-        // don't try to bind JNDI if we are running this from command line
-        if(!isCommandLineUsage()) {
-            try {
-                new InitialContext().rebind(jndiUrl, dataSource);
-            } catch (final NamingException e) {
-                log.error(e, "Unable to set the JNDI data source from DBHandler.");
-            }
-        }
-        return dataSource;
+        return datasource;
     }
 
     private static String getProperty(final String key) {

@@ -3,21 +3,23 @@
 -- Trigger: trigger_my_places_update on my_places;
 
 CREATE OR REPLACE FUNCTION procedure_my_places_update()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-IF (TG_OP = 'UPDATE') THEN
-NEW.updated := current_timestamp;
-RETURN NEW;
-ELSIF (TG_OP = 'INSERT') THEN
-NEW.created := current_timestamp;
-RETURN NEW;
-END IF;
-RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+  RETURNS TRIGGER AS
+  $BODY$
+  BEGIN
+    IF (TG_OP = 'UPDATE')
+    THEN
+      NEW.updated := current_timestamp;
+      RETURN NEW;
+    ELSIF (TG_OP = 'INSERT')
+      THEN
+        NEW.created := current_timestamp;
+        RETURN NEW;
+    END IF;
+    RETURN NEW;
+  END;
+  $BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
 
 DROP TRIGGER IF EXISTS trigger_my_places_update ON my_places;
 

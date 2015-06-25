@@ -5,24 +5,24 @@
 
 DROP TRIGGER IF EXISTS trigger_user_layer ON user_layer;
 DROP TRIGGER IF EXISTS trigger_user_layer_update ON user_layer_data;
-DROP FUNCTION IF EXISTS procedure_user_layer_update();
-DROP FUNCTION IF EXISTS procedure_user_layer_data_update();
 
 -- Function: procedure_user_layer_update();
 CREATE OR REPLACE FUNCTION procedure_user_layer_update()
-  RETURNS trigger AS
+  RETURNS TRIGGER AS
   $BODY$
-BEGIN
-    IF (TG_OP = 'UPDATE') THEN
-        NEW.updated := current_timestamp;
-    RETURN NEW;
-    ELSIF (TG_OP = 'INSERT') THEN
+  BEGIN
+    IF (TG_OP = 'UPDATE')
+    THEN
+      NEW.updated := current_timestamp;
+      RETURN NEW;
+    ELSIF (TG_OP = 'INSERT')
+      THEN
         NEW.created := current_timestamp;
-    RETURN NEW;
+        RETURN NEW;
     END IF;
     RETURN NEW;
-END;
-$BODY$
+  END;
+  $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
@@ -36,19 +36,21 @@ EXECUTE PROCEDURE procedure_user_layer_update();
 
 -- Function: procedure_user_layer_data_update()
 CREATE OR REPLACE FUNCTION procedure_user_layer_data_update()
-  RETURNS trigger AS
+  RETURNS TRIGGER AS
   $BODY$
-BEGIN
-    IF (TG_OP = 'UPDATE') THEN
-        NEW.updated := current_timestamp;
-    RETURN NEW;
-    ELSIF (TG_OP = 'INSERT') THEN
+  BEGIN
+    IF (TG_OP = 'UPDATE')
+    THEN
+      NEW.updated := current_timestamp;
+      RETURN NEW;
+    ELSIF (TG_OP = 'INSERT')
+      THEN
         NEW.created := current_timestamp;
-    RETURN NEW;
+        RETURN NEW;
     END IF;
     RETURN NEW;
-END;
-$BODY$
+  END;
+  $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
