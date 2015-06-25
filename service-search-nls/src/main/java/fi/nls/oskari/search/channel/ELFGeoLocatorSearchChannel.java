@@ -233,16 +233,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
             // Clean xml version for geotools parser for faster parse
             data = data.replace(RESPONSE_CLEAN, "");
-            boolean exonym = false;
-            boolean normal = false;
-            if(hasParam(searchCriteria,PARAM_EXONYM)) exonym = searchCriteria.getParam(PARAM_EXONYM).toString().equals("true");
-            if(hasParam(searchCriteria,PARAM_NORMAL)) normal = searchCriteria.getParam(PARAM_NORMAL).toString().equals("true");
+            boolean exonym = true;
+           // New definitions - no mode setups any more in UI - exonym is always true
             ChannelSearchResult result = elfParser.parse(data, searchCriteria.getSRS(), locale, exonym);
 
-
-
-
-            if(result.getSearchResultItems().size() == 0 && normal)
+            // Execute fuzzy search, if no result in exact search
+            if(result.getSearchResultItems().size() == 0 && findSearchMethod(searchCriteria).equals(PARAM_NORMAL) )
             {
                 // Try fuzzy search, if empty
                 searchCriteria.addParam(PARAM_NORMAL, "false");
