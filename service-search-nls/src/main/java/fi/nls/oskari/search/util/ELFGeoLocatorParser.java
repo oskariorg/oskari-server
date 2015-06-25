@@ -252,14 +252,14 @@ public class ELFGeoLocatorParser {
             for(String type : types){
                 if(type.equals("official"))
                     return names.get(index);
-
                 index++;
             }
-        }else{
-            log.error("Official name not found!!");
-            return null;
+        } else{
+            log.debug("No names found ");
+            return "";
         }
-        return null;
+        log.debug("No official name found - use 1st variant ");
+        return names.size() > 0 ? names.get(0) : "";
     }
 
     private List<String> getVariantName(List<String> names, List<String> types){
@@ -341,28 +341,46 @@ public class ELFGeoLocatorParser {
      * @param parentKey field name in case of null entry key
      */
     private static void parseFeaturePropertiesMapList(Map result, List<Map<String, Object>> valuein, String parentKey) {
-        int count = 1;
+        int count = 0;
         for (Map map : valuein) {
-            parseFeaturePropertiesMap(result, (Map<String, Object>) map, parentKey + Integer.toString(count));
+            parseFeaturePropertiesMap(result, (Map<String, Object>) map, parentKey + "_" + Integer.toString(count));
             count++;
         }
 
     }
 
     private static List<String> findProperties(Map<String, Object> result, String key) {
-
         List<String> values = new ArrayList<String>();
+        List<Integer> order = new ArrayList<Integer>();
         for (Map.Entry<String, Object> entry : result.entrySet()) {
             Object value = entry.getValue();
             if (value != null) { // hide null properties
                 if (value instanceof String) {
-                    if (entry.getKey().endsWith(key)) values.add(value.toString());
+                    if (entry.getKey().endsWith(key)) {
+                        values.add(value.toString());
+                       // Trick order num hack for ordering properties later on because of original hash order
+                        String[] num = entry.getKey().split("_");
+                        if (num.length > 2){
+                            order.add(Integer.parseInt(num[num.length - 2]));
+                        }
+                    }
                 }
             }
-
+        }
+        //Sort similiar name properties of flatted data
+        List<String> ordervalues = Arrays.asList(new String[values.size()]);
+        if(order.size() > 1 && order.size() == values.size()){
+            for(int i = 0 ; i < order.size(); i++) {
+                try {
+                    ordervalues.set(order.get(i).intValue(), values.get(i));
+                }
+                catch (Exception e){
+                    return values;
+                }
+            }
+            return ordervalues;
         }
         return values;
-
     }
 
     /**
