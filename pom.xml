@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.29.0</version>
+    <version>1.30.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -44,7 +44,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.6</jdk.version>
+        <jdk.version>1.7</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
@@ -83,7 +83,7 @@
 
         <xerces.version>2.10.0</xerces.version>
         <xmlbeans.version>2.5.0</xmlbeans.version>
-        <geotools.version>11.2</geotools.version>
+        <geotools.version>13.1</geotools.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
         <deegree.version>2</deegree.version>

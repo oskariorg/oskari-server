@@ -59,7 +59,6 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "print" : false,
                     "link" : false
                 }
             }

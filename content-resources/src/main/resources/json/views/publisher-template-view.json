@@ -28,20 +28,7 @@
                         }
                     },
                     { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
-                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
-                        "config":{
-                            "termsUrl":{
-                                "fi":"",
-                                "sv":"",
-                                "en":""
-                            },
-                            "mapUrlPrefix":{
-                                "fi":"",
-                                "sv":"",
-                                "en":""
-                            }
-                        }
-                    },
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin",
                         "config": {
@@ -77,8 +64,7 @@
                     "reset": false
                 },
                 "viewtools": {
-                    "link": false,
-                    "print": false
+                    "link": false
                 }
             }
         },

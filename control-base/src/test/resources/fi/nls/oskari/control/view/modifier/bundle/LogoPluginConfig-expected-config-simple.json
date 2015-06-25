@@ -1,0 +1,7 @@
+{
+  "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+  "config" : {
+    "mapUrlPrefix" : "/",
+    "termsUrl" : "http://my.map.net/terms"
+  }
+}

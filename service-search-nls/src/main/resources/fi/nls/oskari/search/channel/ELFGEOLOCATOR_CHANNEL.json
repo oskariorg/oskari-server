@@ -1,0 +1,241 @@
+{
+  "SI_LocationTypes": [{
+	"id": 1,
+	"gml_id": "1-24",
+	"lang": "eng",
+	"name": "COUNTRIES, ADMINISTRATIVE UNITS AND OTHER AREAS",
+	"priority": 111,
+	"scale": 113000
+  }, {
+	"id": 2,
+	"gml_id": "25-48",
+	"lang": "eng",
+	"name": "Country",
+	"priority": 11,
+	"scale": 226000
+  }, {
+	"id": 3,
+	"gml_id": "49-72",
+	"lang": "eng",
+	"name": "Administrative units",
+	"priority": 111,
+	"scale": 113000
+  }, {
+	"id": 4,
+	"gml_id": "73-96",
+	"lang": "eng",
+	"name": "Other non-administrative units",
+	"priority": 1111,
+	"scale": 56650
+  }, {
+	"id": 5,
+	"gml_id": "97-120",
+	"lang": "eng",
+	"name": "POPULATED PLACES",
+	"priority": 211,
+	"scale": 56650
+  }, {
+	"id": 6,
+	"gml_id": "121-144",
+	"lang": "eng",
+	"name": "Administrative capitals",
+	"priority": 21,
+	"scale": 113000
+  }, {
+	"id": 7,
+	"gml_id": "145-168",
+	"lang": "eng",
+	"name": "Other populated places",
+	"priority": 211,
+	"scale": 28300
+  }, {
+	"id": 8,
+	"gml_id": "169-192",
+	"lang": "eng",
+	"name": "Houses",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 9,
+	"gml_id": "193-216",
+	"lang": "eng",
+	"name": "NON-RESIDENTIAL STRUCTURES AND BUILDINGS",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 10,
+	"gml_id": "217-239",
+	"lang": "eng",
+	"name": "Economic activity facilities",
+	"priority": 31,
+	"scale": 28300
+  }, {
+	"id": 11,
+	"gml_id": "240-264",
+	"lang": "eng",
+	"name": "Social facilities, administrative buildings and monuments",
+	"priority": 311,
+	"scale": 28300
+  }, {
+	"id": 12,
+	"gml_id": "265-288",
+	"lang": "eng",
+	"name": "Other non-residential structures",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 13,
+	"gml_id": "289-312",
+	"lang": "eng",
+	"name": "TRANSPORT AND TELECOMMUNICATION FEATURES",
+	"priority": 411,
+	"scale": 113000
+  }, {
+	"id": 14,
+	"gml_id": "313-336",
+	"lang": "eng",
+	"name": "Air transport",
+	"priority": 41,
+	"scale": 56650
+  }, {
+	"id": 15,
+	"gml_id": "337-359",
+	"lang": "eng",
+	"name": "Waterborne transport",
+	"priority": 411,
+	"scale": 28300
+  }, {
+	"id": 16,
+	"gml_id": "360-382",
+	"lang": "eng",
+	"name": "Land transport",
+	"priority": 411,
+	"scale": 28300
+  }, {
+	"id": 17,
+	"gml_id": "383-406",
+	"lang": "eng",
+	"name": "Telecommunication",
+	"priority": 411,
+	"scale": 28300
+  }, {
+	"id": 18,
+	"gml_id": "407-430",
+	"lang": "eng",
+	"name": "TERRAIN FEATURES",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 19,
+	"gml_id": "431-454",
+	"lang": "eng",
+	"name": "Island",
+	"priority": 51,
+	"scale": 28300
+  }, {
+	"id": 20,
+	"gml_id": "455-478",
+	"lang": "eng",
+	"name": "Coastal and shore relieves",
+	"priority": 511,
+	"scale": 28300
+  }, {
+	"id": 21,
+	"gml_id": "479-502",
+	"lang": "eng",
+	"name": "Elevation",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 22,
+	"gml_id": "503-526",
+	"lang": "eng",
+	"name": "Natural terrain areas or regions",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 23,
+	"gml_id": "527-550",
+	"lang": "eng",
+	"name": "Point terrain features",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 24,
+	"gml_id": "551-574",
+	"lang": "eng",
+	"name": "HYDROGRAPHIC FEATURES",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 25,
+	"gml_id": "575-598",
+	"lang": "eng",
+	"name": "Seas or part of them",
+	"priority": 61,
+	"scale": 28300
+  }, {
+	"id": 26,
+	"gml_id": "599-623",
+	"lang": "eng",
+	"name": "Standing water features",
+	"priority": 611,
+	"scale": 28300
+  }, {
+	"id": 27,
+	"gml_id": "624-647",
+	"lang": "eng",
+	"name": "Flowing water features",
+	"priority": 611,
+	"scale": 28300
+  }, {
+	"id": 28,
+	"gml_id": "648-670",
+	"lang": "eng",
+	"name": "Hydrographic point features",
+	"priority": 611,
+	"scale": 28300
+  }, {
+	"id": 29,
+	"gml_id": "671-693",
+	"lang": "eng",
+	"name": "Diverse hydrographic structures",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 30,
+	"gml_id": "694-717",
+	"lang": "eng",
+	"name": "Other hydrographic and underwater features",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 31,
+	"gml_id": "718-741",
+	"lang": "eng",
+	"name": "CONSERVATION AREAS",
+	"priority": 1111,
+	"scale": 28300
+  }, {
+	"id": 32,
+	"gml_id": "742-765",
+	"lang": "eng",
+	"name": "World Heritage Sites",
+	"priority": 7,
+	"scale": 28300
+  }, {
+	"id": 33,
+	"gml_id": "766-788",
+	"lang": "eng",
+	"name": "Conservation areas of natural environment",
+	"priority": 71,
+	"scale": 28300
+  }, {
+	"id": 34,
+	"gml_id": "789-812",
+	"lang": "eng",
+	"name": "MISCELLANEOUS",
+	"priority": 1000,
+	"scale": 28300
+  }]
+}

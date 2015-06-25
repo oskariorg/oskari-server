@@ -65,18 +65,13 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     private BundleService bundleService = null;
     private PublishedMapRestrictionService restrictionService = null;
 
-    //propertyutilsilla propertyt, checkataan että jsoniin tulee lisää bundlea.
-    //
-
     @BeforeClass
     public static void addLocales() throws Exception {
         Properties properties = new Properties();
         try {
             properties.load(GetAppSetupHandlerRolesFromPropertiesTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
-            String locales = PropertyUtil.getNecessary("oskari.locales");
-            if (locales == null)
-                fail("No darned locales");
+            PropertyUtil.getNecessary("oskari.locales");
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }

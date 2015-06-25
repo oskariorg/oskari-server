@@ -7,10 +7,10 @@
     <groupId>org.geoserver</groupId>
     <artifactId>ZoneSectorFeatureCollection</artifactId>
     <packaging>jar</packaging>
-    <version>2.5.2</version>
+    <version>2.7.1</version>
     <name>ZoneSectorFeatureCollection</name>
     <properties>
-        <geotools.version>11.2</geotools.version>
+        <geotools.version>13.1</geotools.version>
     </properties>
 
     <dependencies>

@@ -42,7 +42,6 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "print" : false,
                     "link" : false
                 }
             }
@@ -55,17 +54,9 @@
         { "id" : "coordinatedisplay" },
         { "id" : "metadataflyout" },
         { "id" : "featuredata" },
-        { "id" : "personaldata" ,
-            "config" : {
-                "publishedMapUrl": {
-                    "en": "/?viewId=",
-                    "fi": "/?viewId=",
-                    "sv": "/?viewId="
-                }
-            }
-        },
+        { "id" : "personaldata" },
         { "id" : "myplaces2",
-            "config" : { 
+            "config" : {
                 "featureNS" : "http://www.oskari.org",
                 "queryUrl" : "[REPLACED BY HANDLER]",
                  "wmsUrl" : "/oskari-map/?action_route=MyPlacesTile&myCat="

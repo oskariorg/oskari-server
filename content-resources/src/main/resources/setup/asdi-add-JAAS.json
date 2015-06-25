@@ -1,8 +1,0 @@
-{
-    "create": [
-        "create-JAAS-user-tables.sql"
-    ],
-    "sql": [
-        "asdi-JAAS-users.sql"
-    ]
-}

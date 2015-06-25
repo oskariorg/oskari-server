@@ -1,5 +1,19 @@
 # Migration guide
 
+## 1.30
+
+### Java update
+
+As the updated geotools version has dropped Java 6 support, Oskari now requires Java 7 as well.
+
+### Geoserver 2.7.1 and geotools 13.1 upgrade
+
+Keep your current Geoserver data dir as is
+Replace your geoserver directory under webapps with geoserver dir in jetty-package http://oskari.org/build/server/jetty-8.1.16-oskari.zip
+
+- Current Geoserver build is against Geotools 13.1
+- know issue: RYSP WFS parser is not working and partly WFS transport tests fails, if older version of geotools is in use
+
 ## 1.29
 
 ### DB upgrades

@@ -645,6 +645,9 @@ public class TransportService extends AbstractService {
         // stores geojson, but doesn't save
         store.setFilter(filter);
 
+        boolean keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
+        store.setKeepPrevious(keepPrevious);
+
         Job job = null;
         for (Entry<String, Layer> e : store.getLayers().entrySet()) {
             if (e.getValue().isVisible()) {

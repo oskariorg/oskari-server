@@ -4,9 +4,9 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.MapBuilder;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -149,46 +149,12 @@ public class JSONActionRouteTest {
 
     public void verifyResponseContent(final JSONObject expectedResult) {
         final JSONObject actualResponse = getResponseJSON();
-        boolean success = false;
-        try {
-
-            assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
-            success = true;
-        }
-        finally {
-            if(!success) {
-                try {
-                    System.out.println(">>>>>> Expected:\n" + expectedResult.toString(2));
-                    System.out.println("  =======  Actual:");
-                    System.out.println(actualResponse.toString(2));
-                    System.out.println("<<<<<<<<<<<");
-                } catch (JSONException ignored) {
-                    System.out.println("Couldn't print out the jsons");
-                }
-            }
-        }
+        JSONTestHelper.shouldEqual(actualResponse, expectedResult);
     }
 
     public void verifyResponseContent(final JSONArray expectedResult) {
         final JSONArray actualResponse = getResponseJSONArray();
-        boolean success = false;
-        try {
-
-            assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
-            success = true;
-        }
-        finally {
-            if(!success) {
-                try {
-                    System.out.println(">>>>>> Expected:\n" + expectedResult.toString(2));
-                    System.out.println("  =======  Actual:");
-                    System.out.println(actualResponse.toString(2));
-                    System.out.println("<<<<<<<<<<<");
-                } catch (JSONException ignored) {
-                    System.out.println("Couldn't print out the jsons");
-                }
-            }
-        }
+        JSONTestHelper.shouldEqual(actualResponse, expectedResult);
     }
 
     public void verifyResponseContent(final String expectedResult) {

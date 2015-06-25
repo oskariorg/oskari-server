@@ -1,5 +1,62 @@
 # Release Notes
 
+## 1.30
+
+### Generic
+
+Geotools version has been updated to 13.1.
+The new Geotools version no longer supports Java 6 so Oskari now requires Java 7 as well.
+Geoserver and WPS extensions have been upgraded for version 2.7.1.
+See MigrationGuide.md for details.
+
+ASDI application specific artifacts have been removed from oskari-server. 
+They can now be accessed in: https://github.com/arctic-sdi/oskari-server-extensions
+
+### service-search-nls
+
+ELFGeolocator can now be configured to other projections than the default EPSG:4258.
+This is done with by providing the srs name as a property value with key 'search.channel.ELFGEOLOCATOR_CHANNEL.service.srs'
+
+### service-base
+
+PropertyUtil now has a convenience method for getting properties that might be localized:
+
+    final Object urlObj = PropertyUtil.getLocalizableProperty("oskari.map.url", null);
+    // single value configured
+    if(urlObj instanceof String) {
+        JSONHelper.putValue(config, "url", urlObj);
+    }
+    // localized values configured
+    else if(urlObj instanceof Map) {
+        Map<String, String> values = (Map<String, String>) urlObj;
+        JSONHelper.putValue(config, "url", new JSONObject(values));
+    }
+    
+This will result in { "url" : "single value" } or 
+
+    { "url" : { 
+         "en" : "en value",
+         "fi" : "fi value"
+      }
+    }
+
+With properties 'oskari.map.url' for single value and 'oskari.map.url.en' and 'oskari.map.url.fi' for multiple values
+
+#### Coordinate reference system must be similiar to current map  in Mif/mid data import
+
+Coordinate reference system must be similiar to current map CRS (EPSG:3067 in Oskari) in Mif/mid data format.
+If CRS is not defined or not reconigzed by gdal, then current map CRS is user (Oskari EPSG:3067, ELF EPSG:3857) / MIFGeoJsonCollection
+
+### control-base
+
+MapfullHandler now populates map link and terms of use urls for LogoPlugin config based on properties if available:
+
+    oskari.map.url=/
+    oskari.map.terms.url=/terms
+
+Properties can also have localized values with keys like 'oskari.map.terms.url.en' and 'oskari.map.terms.url.fi'. Existing 
+ config will NOT be overwritten, the values are only populated if they don't exist in the database for the view.
+
 ## 1.29
 
 ### service-control

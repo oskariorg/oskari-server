@@ -37,14 +37,7 @@
             }
         },
         { "id" : "divmanazer" },
-        {
-            "id" : "toolbar",
-            "config" : {
-                "viewtools": {
-                    "print" : false
-                }
-            }
-        },
+        { "id" : "toolbar" },
         { "id" : "infobox" },
         { "id" : "search" },
         { "id" : "layerselector2" },

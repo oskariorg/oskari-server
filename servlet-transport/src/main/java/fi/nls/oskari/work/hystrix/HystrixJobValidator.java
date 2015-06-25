@@ -1,8 +1,6 @@
 package fi.nls.oskari.work.hystrix;
 
 import com.netflix.hystrix.exception.HystrixBadRequestException;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.work.JobValidator;
 import fi.nls.oskari.work.OWSMapLayerJob;
 

@@ -1,0 +1,10 @@
+{
+  "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin",
+  "config" : {
+    "mapUrlPrefix" : "/thisismyexistingmapurl",
+    "termsUrl": {
+      "en": "/terms",
+      "fi": "/ehdot"
+    }
+  }
+}

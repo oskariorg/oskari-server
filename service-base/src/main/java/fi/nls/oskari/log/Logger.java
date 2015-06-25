@@ -11,21 +11,27 @@ public abstract class Logger {
     public abstract boolean isDebugEnabled();
 
     public abstract void debug(Throwable t, final Object ... args);
-    
+
     public abstract void debug(final Object ... args);
 
     public abstract void info(Throwable t, final Object ... args);
-    
+
     public abstract void info(final Object ... args);
-    
+
     public abstract void warn(Throwable t, final Object ... args);
-    
+
     public abstract void warn(final Object ... args);
-    
+
     public abstract void error(Throwable t, final Object ... args);
-    
+
     public abstract void error(final Object ... args);
-    
+
+    /**
+     * For handling ignored exceptions. In case one would sometimes want to log them.
+     * @param ignored exception that is usually ignored
+     */
+    public void ignore(final Exception ignored) {}
+
     public String getString(final Object ... args) {
         StringWriter w = new StringWriter();
         for(Object arg: args) {
@@ -106,11 +112,6 @@ public abstract class Logger {
         if(arg instanceof String[]) {
             return Arrays.toString((String[])arg);
         }
-        /*
-        else if(arg instanceof Number[]) {
-            return Arrays.toString((Number[])arg);
-        }
-        */
         else if(arg instanceof Collection) {
             return listToString((Collection)arg);
         }

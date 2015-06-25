@@ -70,17 +70,19 @@ public class MapfullHandler extends BundleHandler {
     private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
+    private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
+
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig());
         final JSONObject mapfullState = getBundleState(params.getConfig());
-        
-        if(mapfullConfig == null) {
+
+        if (mapfullConfig == null) {
             return false;
         }
         // setup correct ajax url
         final String ajaxUrl = mapfullConfig.optString("globalMapAjaxUrl");
         try {
-            // fix ajaxurl to current community if possible 
+            // fix ajaxurl to current community if possible
             // (required to show correct help articles)
             mapfullConfig.put("globalMapAjaxUrl", params.getBaseAjaxUrl());
             log.debug("Replaced ajax url: ", ajaxUrl, "->", params.getBaseAjaxUrl());
@@ -94,7 +96,7 @@ public class MapfullHandler extends BundleHandler {
         JSONHelper.putValue(user, "apikey", params.getActionParams().getAPIkey());
         JSONHelper.putValue(mapfullConfig, KEY_USER, user);
 
-        // Any layer referenced in state.selectedLayers array NEEDS to 
+        // Any layer referenced in state.selectedLayers array NEEDS to
         // be in conf.layers otherwise it cant be added to map on startup
         final JSONArray mfConfigLayers = JSONHelper.getEmptyIfNull(mapfullConfig.optJSONArray(KEY_LAYERS));
         final JSONArray mfStateLayers = JSONHelper.getEmptyIfNull(mapfullState.optJSONArray(KEY_SEL_LAYERS));
@@ -102,17 +104,17 @@ public class MapfullHandler extends BundleHandler {
         final Set<String> bundleIds = getBundleIds(params.getStartupSequence());
         final boolean useDirectURLForMyplaces = false;
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
-        		params.getUser(), 
-        		params.getLocale().getLanguage(),
-        		params.getViewId(), 
-        		params.getViewType(),
+                params.getUser(),
+                params.getLocale().getLanguage(),
+                params.getViewId(),
+                params.getViewType(),
                 bundleIds,
                 useDirectURLForMyplaces,
-        		params.isModifyURLs());
+                params.isModifyURLs());
 
         final String mapSRS = getSRSFromMapConfig(mapfullConfig);
         // transform WKT for layers now that we know SRS
-        for(int i = 0; i < fullConfigLayers.length(); ++i) {
+        for (int i = 0; i < fullConfigLayers.length(); ++i) {
             OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
         }
         // overwrite layers
@@ -121,10 +123,10 @@ public class MapfullHandler extends BundleHandler {
         } catch (Exception e) {
             log.error(e, "Unable to overwrite layers");
         }
-        
+
         // dummyfix: because migration tool added layer selection to all migrated maps
         // remove it from old published maps if only one layer is selected
-        if(params.isOldPublishedMap()) {
+        if (params.isOldPublishedMap()) {
             this.killLayerSelectionPlugin(mapfullConfig);
         }
 
@@ -132,6 +134,10 @@ public class MapfullHandler extends BundleHandler {
             log.info("locationModifiedByParams -> disabling GeoLocationPlugin");
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
         }
+
+        // setup URLs for LogoPlugin if available
+        LOGO_PLUGIN_HANDLER.setupLogoPluginConfig(getPlugin(LOGO_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig));
+
         return false;
     }
 
@@ -144,26 +150,26 @@ public class MapfullHandler extends BundleHandler {
 
     /**
      * Detect projection that will be used for view that is being loaded
-     *
-     *  {
-     *    "mapOptions" : {
-     *       "srsName":"EPSG:3067"
-     *    }
-     *  }
+     * <p/>
+     * {
+     * "mapOptions" : {
+     * "srsName":"EPSG:3067"
+     * }
+     * }
      *
      * @param mapfullConfig
      * @return conf.mapOptions.srsName or DEFAULT_MAP_SRS if it doesn't exist
      */
     public String getSRSFromMapConfig(final JSONObject mapfullConfig) {
-        if(mapfullConfig == null) {
+        if (mapfullConfig == null) {
             return DEFAULT_MAP_SRS;
         }
         final JSONObject options = mapfullConfig.optJSONObject(KEY_MAP_OPTIONS);
-        if(options == null) {
+        if (options == null) {
             return DEFAULT_MAP_SRS;
         }
         final String mapSRS = options.optString(KEY_SRS);
-        if(mapSRS != null) {
+        if (mapSRS != null) {
             return mapSRS;
         }
         return DEFAULT_MAP_SRS;
@@ -171,6 +177,7 @@ public class MapfullHandler extends BundleHandler {
 
     /**
      * Creates JSON array of layer configurations.
+     *
      * @param layersArray
      * @param user
      * @param lang
@@ -178,14 +185,14 @@ public class MapfullHandler extends BundleHandler {
      * @param viewType
      * @param bundleIds
      * @param useDirectURLForMyplaces
-     * @param modifyURLs false to keep urls as is, true to modify them for easier proxy forwards
+     * @param modifyURLs              false to keep urls as is, true to modify them for easier proxy forwards
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-    		final User user, final String lang, final long viewID,
-    		final String viewType, final Set<String> bundleIds,
-            final boolean useDirectURLForMyplaces,
-            final boolean modifyURLs) {
+                                               final User user, final String lang, final long viewID,
+                                               final String viewType, final Set<String> bundleIds,
+                                               final boolean useDirectURLForMyplaces,
+                                               final boolean modifyURLs) {
 
         // Create a list of layer ids
         final List<String> layerIdList = new ArrayList<String>();
@@ -235,7 +242,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         final JSONObject struct = OskariLayerWorker.getListOfMapLayersById(
-                layerIdList,user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
+                layerIdList, user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
             log.warn("getSelectedLayersStructure did not return layers when expanding:",
@@ -249,6 +256,7 @@ public class MapfullHandler extends BundleHandler {
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds);
         return prefetch;
     }
+
     private static void appendAnalysisLayers(final JSONArray layerList,
                                              final List<Long> publishedAnalysis,
                                              final User user,
@@ -263,13 +271,13 @@ public class MapfullHandler extends BundleHandler {
                 AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
         log.debug("Analysis layer permissions for published view", permissionsList);
 
-        for(Long id : publishedAnalysis) {
+        for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
-            if(analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
+            if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
             }
-            final String permissionKey = "analysis+"+id;
+            final String permissionKey = "analysis+" + id;
             boolean containsKey = permissionsList.contains(permissionKey);
             if (!containsKey) {
                 log.info("Found analysis layer in selected that is no longer published. ViewID:",
@@ -278,21 +286,21 @@ public class MapfullHandler extends BundleHandler {
             }
             final JSONObject json = AnalysisHelper.getlayerJSON(analysis, lang,
                     useDirectURL, user.getUuid(), modifyURLs);
-            if(json != null) {
+            if (json != null) {
                 layerList.put(json);
             }
         }
     }
 
-    
+
     private static void appendMyPlacesLayers(final JSONArray layerList,
-            final List<Long> publishedMyPlaces,
-            final User user,
-            final long viewID,
-            final String lang,
-            final Set<String> bundleIds,
-            final boolean useDirectURL,
-            final boolean modifyURLs) {
+                                             final List<Long> publishedMyPlaces,
+                                             final User user,
+                                             final long viewID,
+                                             final String lang,
+                                             final Set<String> bundleIds,
+                                             final boolean useDirectURL,
+                                             final boolean modifyURLs) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
@@ -305,7 +313,7 @@ public class MapfullHandler extends BundleHandler {
         for (MyPlaceCategory mpLayer : myPlacesLayers) {
             if (!mpLayer.isPublished() && !mpLayer.isOwnedBy(uuid)) {
                 log.info("Found my places layer in selected that is no longer published. ViewID:",
-                		viewID, "Myplaces layerId:", mpLayer.getId());
+                        viewID, "Myplaces layerId:", mpLayer.getId());
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
@@ -317,7 +325,7 @@ public class MapfullHandler extends BundleHandler {
 
             final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
                     mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
-            if(myPlaceLayer != null) {
+            if (myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
             }
         }
@@ -329,7 +337,7 @@ public class MapfullHandler extends BundleHandler {
                                          final long viewID,
                                          final Set<String> bundleIds) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        for(Long id : publishedUserLayers) {
+        for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
             if (userLayer == null) {
@@ -337,7 +345,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            if(userLayersBundlePresent && userLayer.isOwnedBy(user.getUuid())) {
+            if (userLayersBundlePresent && userLayer.isOwnedBy(user.getUuid())) {
                 // skip if it's an own layer and myplacesimport bundle is present ->
                 // will be loaded via aforementioned bundle
                 continue;
@@ -351,7 +359,7 @@ public class MapfullHandler extends BundleHandler {
             }
 
             final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer);
-            if(json != null) {
+            if (json != null) {
                 layerList.put(json);
             }
         }
@@ -376,7 +384,7 @@ public class MapfullHandler extends BundleHandler {
     }
 
     private void copySelectedLayersToConfigLayers(final JSONArray mfConfigLayers,
-            final JSONArray mfStateLayers) {
+                                                  final JSONArray mfStateLayers) {
         for (int i = 0; i < mfStateLayers.length(); i++) {
             String stateLayerId = null;
             String confLayerId = null;
@@ -405,7 +413,7 @@ public class MapfullHandler extends BundleHandler {
     }
 
     public static JSONObject getPlugin(final String pluginClassName,
-                              final JSONObject mapfullConfig) {
+                                       final JSONObject mapfullConfig) {
 
         if (mapfullConfig == null || !mapfullConfig.has(KEY_PLUGINS)) {
             return null;
@@ -425,7 +433,7 @@ public class MapfullHandler extends BundleHandler {
     }
 
     private void removePlugin(final String pluginClassName,
-            final JSONObject mapfullConfig) {
+                              final JSONObject mapfullConfig) {
 
         if (mapfullConfig == null || !mapfullConfig.has(KEY_PLUGINS)) {
             return;
@@ -478,5 +486,5 @@ public class MapfullHandler extends BundleHandler {
             log.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
         }
-    }    
+    }
 }

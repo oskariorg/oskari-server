@@ -119,12 +119,16 @@ public class SearchServiceImpl implements SearchService {
         }
 
         long fullQueryStartTime = System.currentTimeMillis();
-        
-        printsc(searchCriteria);
-        printAvailableChannels();
+
+        if(log.isDebugEnabled())
+            printsc(searchCriteria);
+
+        if(log.isDebugEnabled())
+            printAvailableChannels();
 
         Query query = new Query();
         query.setSearchCriteria(searchCriteria);
+
         for (String channel : searchCriteria.getChannels()) {
             if (availableChannels.containsKey(channel)) {
                 long timeStart = System.currentTimeMillis();
@@ -160,7 +164,6 @@ public class SearchServiceImpl implements SearchService {
     private ChannelSearchResult handleChannelSearch(
             SearchCriteria searchCriteria, SearchableChannel actualChannel)
     {
-    	log.debug("handleChannelSearch");
         try {
             ChannelSearchResult result = actualChannel.doSearch(searchCriteria);
             List<SearchResultItem> items = result.getSearchResultItems();
@@ -250,5 +253,6 @@ public class SearchServiceImpl implements SearchService {
         } catch (Exception e) {
             log.debug("a error");
         }
+        log.debug("/printing AvailableChannels");
     }
 }

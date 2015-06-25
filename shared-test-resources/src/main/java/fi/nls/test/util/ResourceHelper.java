@@ -1,6 +1,5 @@
 package fi.nls.test.util;
 
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
