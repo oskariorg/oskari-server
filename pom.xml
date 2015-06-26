@@ -791,7 +791,7 @@
         <module>control-admin</module>
         <module>control-statistics</module>
         <module>content-resources</module>
-        <module>content-routing</module>
+        <module>control-routing</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>
