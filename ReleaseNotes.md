@@ -1,5 +1,38 @@
 # Release Notes
 
+## 1.31
+
+### Property changes
+
+db.additional.pools has been changed to db.additional.modules to better describe it. 
+The default value is the same (under servlet-map/src/main/resources/oskari.properties).
+It is now used to keep track of DB-modules for the FlywayDB migration.
+
+### Automated database upgrade
+
+The database is now automatically upgraded using FlywayDB library. The default upgrade setup is configured in
+servlet-map/src/main/resources/oskari.properties and the migration is triggered by 
+fi.nls.oskari.map.servlet.OskariContextInitializer. The database is separated to 4 modules: oskari, myplaces, analysis
+ and userlayer. Each has its own status table for keeping track of the database. 
+ 
+Application specific update scripts can be added by adding a module in the property: 
+
+    db.additional.modules=myplaces,analysis,userlayer,myapplication
+    
+This will result a table called oskari_status_myapplication to the database and migration scripts will be searched 
+ from the classpath under the path /flyway/myapplication by default. The scripts are executed with the default Oskari 
+ datasource. To customize the used datasource, script locations, status table name in the database define these 
+ properties in oskari-ext.properties:
+   
+    db.myapplication.jndi.name=jdbc/MyApplicationDS
+    db.myapplication.url=[db url]
+    db.myapplication.username=[db user]
+    db.myapplication.password=[db pass]
+    db.myapplication.status_table=my_status_table
+    db.myapplication.script.locations=/flyway/myapplication,/upgrade/scripts/in/here/also
+    
+For further information about script naming etc see http://flywaydb.org/
+
 ## 1.30
 
 ### Generic

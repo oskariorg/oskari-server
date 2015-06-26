@@ -57,7 +57,7 @@ public class OskariContextInitializer implements ServletContextListener {
             info("Oskari-map checking DB status");
             FlywaydbMigrator.migrate(DS_HELPER.getDataSource());
             info("core DB migrated");
-            final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.pools");
+            final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.modules");
             for(String module : additionalPools) {
                 final String poolName = DS_HELPER.getOskariDataSourceName(module);
                 FlywaydbMigrator.migrate(DS_HELPER.getDataSource(poolName), module);
@@ -93,7 +93,7 @@ public class OskariContextInitializer implements ServletContextListener {
 
         // loop "db.additional.pools" to see if we need any more pools configured
         info("- checking additional DataSources");
-        final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.pools");
+        final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.modules");
         for(String pool : additionalPools) {
             if(!DS_HELPER.checkDataSource(ctx, pool)) {
                 error("Couldn't initialize DataSource with prefix: " + pool);
