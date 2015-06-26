@@ -233,6 +233,18 @@
             </dependency>
 
             <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-routing</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-control-routing</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>fi.mml</groupId>
                 <artifactId>capabilities</artifactId>
                 <version>${fi.mml.capabilities.version}</version>
@@ -770,6 +782,8 @@
         <module>service-control</module>
         <module>service-scheduler</module>
         <module>service-csw</module>
+        <module>service-logging</module>
+        <module>service-routing</module>
 
         <module>control-base</module>
         <module>control-example</module>
@@ -777,7 +791,7 @@
         <module>control-admin</module>
         <module>control-statistics</module>
         <module>content-resources</module>
-        <module>service-logging</module>
+        <module>content-routing</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>
