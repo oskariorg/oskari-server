@@ -36,9 +36,6 @@ BEGIN
 END;
 $$;
 
-ALTER FUNCTION public.procedure_analysis_data_update() OWNER TO postgres;
-ALTER FUNCTION public.procedure_analysis_update() OWNER TO postgres;
-
 CREATE TRIGGER trigger_analysis BEFORE INSERT OR UPDATE ON analysis FOR EACH ROW EXECUTE PROCEDURE procedure_analysis_update();
 CREATE TRIGGER trigger_analysis_update BEFORE INSERT OR UPDATE ON analysis_data FOR EACH ROW EXECUTE PROCEDURE procedure_analysis_data_update();
 
