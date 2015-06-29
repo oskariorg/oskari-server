@@ -77,7 +77,7 @@
 
 	<!-- ==== Build Settings ==== -->
 	<properties>
-		<!-- This is the default properties if no profile is selected on the command 
+		<!-- This is the default properties if no profile is selected on the command
 			line -->
 		<filter-profile>template</filter-profile>
 		<filter-path>${basedir}/filter</filter-path>
@@ -85,7 +85,7 @@
 
 	<build>
 		<filters>
-			<!-- The base filtering path and file should always be hardcoded, it's 
+			<!-- The base filtering path and file should always be hardcoded, it's
 				not dependent on any profile change -->
 			<filter>${filter-path}/filter-base.properties</filter>
 			<!-- filter>${filter-path}/${filter-profile}.properties</filter -->

@@ -2,10 +2,6 @@
 
 ## 1.31
 
-### servlet-transport
-
-No longer sends session id as part of url, but as cookie.
-
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 
@@ -36,6 +32,12 @@ This will result a table called oskari_status_myapplication to the database and 
     db.myapplication.script.locations=/flyway/myapplication,/upgrade/scripts/in/here/also
     
 For further information about script naming etc see http://flywaydb.org/
+
+## 1.30.1
+
+### servlet-transport
+
+No longer sends session id as part of url, but as cookie.
 
 ## 1.30
 
