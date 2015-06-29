@@ -13,9 +13,11 @@ import org.json.JSONObject;
 public interface ViewService extends BaseService<Object> {
 
     public boolean hasPermissionToAlterView(final View view, final User user);
-    
+
+    public List<View> getViews(int page, int pagesize);
+
     public View getViewWithConf(long viewId);
-    
+
     public View getViewWithConfByUuId(String uuId);
 
     public View getViewWithConfByOldId(long oldId);
@@ -27,9 +29,9 @@ public interface ViewService extends BaseService<Object> {
     public long addView(View view) throws ViewException;
 
     public void updateAccessFlag(View view);
-    
+
     public void updateView(View view);
-    
+
     public void deleteViewById(long id) throws DeleteViewException;
 
     public void deleteViewByUserId(long id) throws DeleteViewException;
@@ -49,7 +51,7 @@ public interface ViewService extends BaseService<Object> {
      * @return view id
      */
     public long getDefaultViewId(final User user);
-    
+
     public void updatePublishedView(View view) throws ViewException;
 
     public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;

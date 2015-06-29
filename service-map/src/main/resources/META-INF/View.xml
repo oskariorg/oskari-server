@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
     "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="View">
 
-    <typeAlias 
-        alias="View" 
+    <typeAlias
+        alias="View"
         type="fi.nls.oskari.domain.map.view.View" />
     <typeAlias
-        alias="Bundle" 
+        alias="Bundle"
         type="fi.nls.oskari.domain.map.view.Bundle" />
-    <typeAlias 
+    <typeAlias
         alias="Bundle"
         type="fi.nls.oskari.domain.map.view.Bundle" />
 
@@ -50,10 +50,23 @@
         <result property="bundleinstance" column="bundleinstance" />
     </resultMap>
 
-    <select id="view-with-conf-by-view-name"
-            parameterClass="java.lang.String" 
+    <select id="paged-views"
+            parameterClass="java.util.Map"
             resultMap="view-with-conf">
-      SELECT   id, name, description, uuid, type
+      SELECT   id, name, description, type, uuid, only_uuid,
+               application, page, application_dev_prefix, creator,
+	           is_public, domain, lang, old_id
+        FROM   portti_view
+        ORDER BY created ASC
+        OFFSET $offset$ limit $limit$
+    </select>
+
+    <select id="view-with-conf-by-view-name"
+            parameterClass="java.lang.String"
+            resultMap="view-with-conf">
+      SELECT   id, name, description, type, uuid, only_uuid,
+               application, page, application_dev_prefix, creator,
+	           is_public, domain, lang, old_id
         FROM   portti_view
        WHERE   name = #name#
     </select>
@@ -97,12 +110,12 @@
        WHERE   creator = #user_id#
     ORDER BY   name ASC
     </select>
-            
+
     <select id="get-default-view-id"
 	    resultClass="java.lang.Long"
 	    parameterClass="java.lang.String">
-      SELECT   MAX(id) 
-        FROM   portti_view 
+      SELECT   MAX(id)
+        FROM   portti_view
        WHERE   is_default = TRUE
          AND   type = #type#
     </select>
@@ -114,7 +127,7 @@
            VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault# )
         RETURNING id
     </statement>
-    
+
     <statement id="update-access"
                parameterClass="View">
       UPDATE portti_view
@@ -141,7 +154,7 @@
       DELETE FROM portti_view
             WHERE creator = #userId#
     </statement>
-               
+
 
     <select id="states-with-conf-by-view-id"
             parameterClass="java.lang.Long"
