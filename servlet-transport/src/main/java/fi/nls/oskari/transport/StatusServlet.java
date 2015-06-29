@@ -147,12 +147,9 @@ public class StatusServlet extends HttpServlet {
     }
 
     private User getOskariUser(final String sessionId, final String route) {
-        log.debug("Getting user from:", JobHelper.getAPIUrl(sessionId) + UID_API);
-        String cookies = null;
-        if (route != null && !route.equals("")) {
-            cookies = JobHelper.ROUTE_COOKIE_NAME + route;
-        }
-        final String response = HttpHelper.getRequest(JobHelper.getAPIUrl(sessionId) + UID_API, cookies);
+        log.debug("Getting user from:", JobHelper.getAPIUrl() + UID_API);
+        final String response = HttpHelper.getRequest(JobHelper.getAPIUrl() + UID_API,
+                JobHelper.getCookiesValue(sessionId, route));
         final JSONObject json = JSONHelper.createJSONObject(response);
         return User.parse(json);
     }

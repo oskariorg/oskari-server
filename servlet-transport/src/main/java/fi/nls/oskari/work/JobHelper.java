@@ -10,6 +10,7 @@ import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -62,17 +63,26 @@ public class JobHelper {
      *
      * Path for Layer configuration and permissions request
      *
-     * @param sessionId
      * @return URL
      */
-    public static String getAPIUrl(String sessionId) {
-        String session = "";
-        if (SERVICE_URL_SESSION_PARAM != null) {
-            // TODO: move into cookie same as route
-            // construct url session token if specified
-            session = ";" + SERVICE_URL_SESSION_PARAM + "=" + sessionId;
+    public static String getAPIUrl() {
+        return SERVICE_URL + SERVICE_URL_PATH + SERVICE_URL_QUERYSTRING;
+    }
+
+    public static String getCookiesValue(String sessionId, String route) {
+        StringWriter writer = new StringWriter();
+        if(SERVICE_URL_SESSION_PARAM != null && sessionId != null && !sessionId.isEmpty()) {
+            writer.append(SERVICE_URL_SESSION_PARAM);
+            writer.append("=");
+            writer.append(sessionId);
+            writer.append("; ");
         }
-        return SERVICE_URL + SERVICE_URL_PATH + session + SERVICE_URL_QUERYSTRING;
+        if(route != null && !route.isEmpty()) {
+            writer.append(ROUTE_COOKIE_NAME);
+            writer.append(route);
+            writer.append("; ");
+        }
+        return writer.toString();
     }
     /**
      * Gets layer permissions (uses cache)
@@ -85,16 +95,13 @@ public class JobHelper {
      */
     public static boolean hasPermission(String layerId, String sessionId, String route) {
         String json = WFSLayerPermissionsStore.getCache(sessionId);
-        boolean fromCache = (json != null);
+        boolean fromCache = json != null;
         if(!fromCache) {
-            log.warn(getAPIUrl(sessionId) + PERMISSIONS_API);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
-            json = HttpHelper.getRequest(getAPIUrl(sessionId) + PERMISSIONS_API, cookies);
-            if(json == null)
+            log.warn(getAPIUrl() + PERMISSIONS_API);
+            json = HttpHelper.getRequest(getAPIUrl() + PERMISSIONS_API, getCookiesValue(sessionId, route));
+            if(json == null) {
                 return false;
+            }
         }
         try {
             WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(json);
@@ -116,16 +123,12 @@ public class JobHelper {
      */
     public static WFSLayerStore getLayerConfiguration(String layerId, String sessionId, String route) {
         String json = WFSLayerStore.getCache(layerId);
-        boolean fromCache = (json != null);
+        boolean fromCache = json != null;
         if(!fromCache) {
-            final String apiUrl = getAPIUrl(sessionId) + LAYER_CONFIGURATION_API + layerId;
+            final String apiUrl = getAPIUrl() + LAYER_CONFIGURATION_API + layerId;
             log.debug("Fetching layer data from", apiUrl);
-            String cookies = null;
-            if(route != null && !route.equals("")) {
-                cookies = ROUTE_COOKIE_NAME + route;
-            }
             // NOTE: result is not handled as request triggers Redis write
-            HttpHelper.getRequest(apiUrl, cookies);
+            HttpHelper.getRequest(apiUrl, getCookiesValue(sessionId, route));
             // that we read here
             json = WFSLayerStore.getCache(layerId);
             if(json == null) {

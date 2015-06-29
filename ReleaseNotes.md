@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.30.1
+
+### servlet-transport
+
+No longer sends session id as part of url, but as cookie.
+
 ## 1.30
 
 ### Generic
