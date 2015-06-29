@@ -2,6 +2,10 @@
 
 ## 1.31
 
+### servlet-transport
+
+No longer sends session id as part of url, but as cookie.
+
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 
