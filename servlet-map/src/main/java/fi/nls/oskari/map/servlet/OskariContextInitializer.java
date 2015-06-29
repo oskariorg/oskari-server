@@ -26,7 +26,7 @@ public class OskariContextInitializer implements ServletContextListener {
     private final static Logger log = LogFactory.getLogger(OskariContextInitializer.class);
 
     private SchedulerService schedulerService;
-    private final DatasourceHelper DS_HELPER = new DatasourceHelper();
+    private static final DatasourceHelper DS_HELPER = new DatasourceHelper();
 
     @Override
     public void contextDestroyed(final ServletContextEvent event) {

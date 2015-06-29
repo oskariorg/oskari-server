@@ -12,15 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.sql.DataSource;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.sql.*;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * @author EVAARASMAKI
@@ -29,15 +23,9 @@ import java.util.jar.JarFile;
 public class DBHandler {
 
     private static Logger log = LogFactory.getLogger(DBHandler.class);
-    private static volatile boolean startedAsStandalone = false;
     private static DataSource datasource;
 
-    public static boolean isCommandLineUsage() {
-        return startedAsStandalone;
-    }
-
     public static void main(String[] args) throws Exception {
-        startedAsStandalone = true;
         // set alternate sqlMapLocation when running on commandline
         BaseIbatisService.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
         OskariLayerServiceIbatisImpl.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
@@ -74,17 +62,6 @@ public class DBHandler {
         }
     }
 
-    public static void debugPrintDBContents() {
-        // Enable to show db contents for view related tables if an error occurs
-        printQuery("SELECT * FROM portti_bundle");
-        printQuery("SELECT * FROM portti_view");
-        printQuery("SELECT * FROM portti_view_bundle_seq");
-
-        // Enable to show db contents for layer permissions related tables if an error occurs
-        printQuery("SELECT * FROM portti_resource_user");
-        printQuery("SELECT * FROM portti_permissions");
-    }
-
     /**
      * Returns connection based on db.properties.
      * Prefers a datasource -> property 'db.jndi.name' (defaults to "jdbc/OskariPool").
@@ -101,34 +78,12 @@ public class DBHandler {
         return datasource;
     }
 
-    private static String getProperty(final String key) {
-        return firstNonNull(PropertyUtil.getOptional(key), System.getProperty(key));
-    }
-
-    private static String firstNonNull(final String ... strings) {
-        for (final String s : strings) {
-            if (null != s) {
-                return s;
-            }
-        }
-        return null;
-    }
-
-    private static void overrideConnectionPropertiesFromSystemProperties(Properties connectionProps) {
-        overridePropertyIfNotNull(connectionProps, "user", System.getProperty("db.username"));
-        overridePropertyIfNotNull(connectionProps, "password", System.getProperty("db.password"));
-    }
-
-    private static void overridePropertyIfNotNull(Properties properties, String propertyName, String propertyValue) {
-        if(propertyValue != null) properties.put(propertyName, propertyValue);
-    }
-
     public static void createContentIfNotCreated() {
         try {
             createContentIfNotCreated(getDataSource());
         }
         catch (Exception ex) {
-            log.error(ex, "Couldnt ge connection to db!");
+            log.error(ex, "Couldn't get connection to db!");
         }
     }
 
@@ -138,10 +93,9 @@ public class DBHandler {
             DatabaseMetaData dbmeta = conn.getMetaData();
 
             final String dbName = dbmeta.getDatabaseProductName().replace(' ', '_');
-            String[] types = null;
 
-            final ResultSet result = dbmeta.getTables(null, null, "portti_%", types);
-            final ResultSet result2 = dbmeta.getTables(null, null, "PORTTI_%", types);
+            final ResultSet result = dbmeta.getTables(null, null, "portti_%", null);
+            final ResultSet result2 = dbmeta.getTables(null, null, "PORTTI_%", null);
             final String propertyDropDB = System.getProperty("oskari.dropdb");
 
             final boolean tablesExist = result.next() || result2.next();
@@ -158,7 +112,7 @@ public class DBHandler {
                     log.error(e, "Couldn't commit changes!");
                 }
             }
-            else if(tablesExist) {
+            else {
                 log.info("Existing tables found in db. Use 'oskari.dropdb=true' system property to override.");
             }
 
@@ -277,7 +231,7 @@ public class DBHandler {
         String[] sqlStrings = sqlContents.split(";");
         Statement stmt = conn.createStatement();
         for (String sql : sqlStrings) {
-            if (sql.indexOf("--") < 0) {
+            if (!sql.contains("--")) {
                 stmt.execute(sql);
                 if(!conn.getAutoCommit()) {
                     conn.commit();
@@ -285,36 +239,6 @@ public class DBHandler {
             }
         }
         stmt.close();
-    }
-
-
-    public static void executeSingleSql(Connection conn, final String sql) throws IOException, SQLException {
-        final Statement stmt = conn.createStatement();
-        if (sql.indexOf("--") < 0) {
-            stmt.execute(sql);
-            if(!conn.getAutoCommit()) {
-                conn.commit();
-            }
-        }
-        stmt.close();
-    }
-
-    public static Map<String, String> selectSql(Connection conn, final String query) throws IOException, SQLException {
-        final Map<String, String> result = new HashMap<String, String>();
-        final Statement stmt = conn.createStatement();
-
-        final ResultSet rs = stmt.executeQuery(query);
-        final int columns = rs.getMetaData().getColumnCount();
-        while (rs.next()) {
-            for (int i = 1; i <= columns; ++i) {
-                final String name = rs.getMetaData().getColumnName(i);
-                final String value = rs.getString(i);
-                result.put(name, value);
-            }
-        }
-        stmt.close();
-        rs.close();
-        return result;
     }
 
     private static String readSQLFileAsString(final String dbName, final String fileName) throws java.io.IOException {
@@ -333,98 +257,5 @@ public class DBHandler {
             log.error("Error reading sql file for dbName", dbName, "and file", fileName, "  ", ex.getMessage());
         }
         return "";
-    }
-
-
-    public static void printQuery(final String sql) {
-        try {
-            printQuery(sql, getConnection());
-        } catch (Exception ex) {
-            log.warn(ex, "Error printing query");
-        }
-    }
-
-
-    public static void printQuery(String sql, Connection conn) throws SQLException {
-        Statement stmt = conn.createStatement();
-
-        ResultSet rs = stmt.executeQuery(sql);
-
-        log.info("/-----------------------------");
-
-        ResultSetMetaData metaData = rs.getMetaData();
-        int count = metaData.getColumnCount();
-
-        for (int i = 1; i < count; i++) {
-            log.info(metaData.getColumnName(i) + " | ");
-        }
-        log.info("--");
-
-        while (rs.next()) {
-
-            for (int i = 1; i < count; i++) {
-                log.info(rs.getString(i) + " | ");
-            }
-            log.info("--");
-
-        }
-        log.info("-----------------------------/");
-    }
-
-    /**
-     * List directory contents for a resource folder. Not recursive.
-     * This is basically a brute-force implementation.
-     * Works for regular files and also JARs.
-     *
-     * @param clazz Any java class that lives in the same place as the resources you want.
-     * @param path  Should end with "/", but not start with one.
-     * @return Just the name of each member item, not the full paths.
-     * @throws IOException
-     * @author Greg Briggs
-     */
-    private static String[] getResourceListing(Class clazz, String path) {
-        try {
-            URL dirURL = clazz.getClassLoader().getResource(path);
-            if (dirURL != null && dirURL.getProtocol().equals("file")) {
-            /* A file path: easy enough */
-                return new File(dirURL.toURI()).list();
-            }
-
-            if (dirURL == null) {
-            /*
-             * In case of a jar file, we can't actually find a directory.
-             * Have to assume the same jar as clazz.
-             */
-                String me = clazz.getName().replace(".", "/") + ".class";
-                dirURL = clazz.getClassLoader().getResource(me);
-            }
-
-            if (dirURL.getProtocol().equals("jar")) {
-            /* A JAR path */
-                String jarPath = dirURL.getPath().substring(5, dirURL.getPath().indexOf("!")); //strip out only the JAR file
-                JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
-                Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-                Set<String> result = new HashSet<String>(); //avoid duplicates in case it is a subdirectory
-                while (entries.hasMoreElements()) {
-                    String name = entries.nextElement().getName();
-                    if (name.startsWith(path)) { //filter according to the path
-                        String entry = name.substring(path.length());
-                        int checkSubdir = entry.indexOf("/");
-                        if (checkSubdir >= 0) {
-                            // if it is a subdirectory, we just return the directory name
-                            entry = entry.substring(0, checkSubdir);
-                        }
-                        result.add(entry);
-                    }
-                }
-                return result.toArray(new String[result.size()]);
-            }
-
-            throw new UnsupportedOperationException("Cannot list files for URL " + dirURL);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        ;
-        return new String[0];
     }
 }

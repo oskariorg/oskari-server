@@ -8,6 +8,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class DatasourceHelper {
     private static final Logger LOGGER = LogFactory.getLogger(DatasourceHelper.class);
     private static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
     private List<BasicDataSource> localDataSources = new ArrayList<BasicDataSource>();
+    private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
     public String getOskariDataSourceName() {
@@ -33,8 +35,7 @@ public class DatasourceHelper {
      */
     public String getOskariDataSourceName(final String prefix) {
         final String poolToken = (prefix == null) ? "" : prefix + ".";
-        final String poolName = PropertyUtil.get("db." + poolToken + "jndi.name", DEFAULT_DATASOURCE_NAME);
-        return poolName;
+        return PropertyUtil.get("db." + poolToken + "jndi.name", DEFAULT_DATASOURCE_NAME);
     }
 
     /**
@@ -59,7 +60,7 @@ public class DatasourceHelper {
             return null;
         }
         try {
-            return (DataSource) ctx.lookup("java:comp/env/" + name);
+            return (DataSource) ctx.lookup(JNDI_PREFIX + name);
         } catch (Exception ex) {
             LOGGER.info("Couldn't find pool with name '" + name + "': " + ex.getMessage());
         }
@@ -84,13 +85,12 @@ public class DatasourceHelper {
 
         LOGGER.info(" - checking existance of database pool: " + poolName);
         final DataSource ds = getDataSource(ctx, poolName);
-        boolean success = (ds != null);
+        boolean success = ds != null;
         if(success) {
             // using container provided datasource rather than one created by us
             LOGGER.info("Found JNDI dataSource with name: " + poolName +
                     ". Using it instead of properties configuration db." + poolToken + "url");
-        }
-        else {
+        } else {
             LOGGER.info(" - creating a DataSource with defaults based on configured properties");
             final DataSource dataSource = createDataSource(null);
             addDataSource(ctx, poolName, dataSource);
@@ -131,7 +131,7 @@ public class DatasourceHelper {
         }
         try {
             constructContext(ctx, "comp", "env", "jdbc");
-            ctx.bind("java:comp/env/" + name, ds);
+            ctx.bind(JNDI_PREFIX + name, ds);
         } catch (Exception ex) {
             LOGGER.error(ex, "Couldn't add pool with name '" + name +"': ", ex.getMessage());
         }
@@ -143,13 +143,14 @@ public class DatasourceHelper {
      * @param path
      */
     private void constructContext(final Context ctx, final String... path) {
-        String current = "java:";
+        StringWriter current = new StringWriter();
+        current.append("java:");
         for (String key : path) {
             try {
-                current = current + "/" + key;
-                ctx.createSubcontext(current);
+                current.append("/" + key);
+                ctx.createSubcontext(current.toString());
             } catch (Exception ignored) {
-                LOGGER.ignore(ignored);
+                LOGGER.ignore("Ignore context creation fail", ignored);
             }
         }
     }

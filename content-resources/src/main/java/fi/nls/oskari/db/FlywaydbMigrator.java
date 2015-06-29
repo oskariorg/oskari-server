@@ -15,6 +15,11 @@ public class FlywaydbMigrator {
 
     private static final Logger LOG = LogFactory.getLogger(FlywaydbMigrator.class);
 
+    private static final String DEFAULT_STATUS_TABLE_NAME = "oskari_status";
+    private static final String DEFAULT_SCRIPT_LOCATION = "/flyway/";
+
+    private FlywaydbMigrator() {}
+
     public static void migrate(DataSource datasource) {
         migrate(datasource, null);
     }
@@ -25,13 +30,12 @@ public class FlywaydbMigrator {
         flyway.setLocations(getScriptLocations(moduleName));
         try {
             if (flyway.info().current() == null) {
-                flyway.setBaselineVersion("0.1");
+                flyway.setBaselineVersionAsString("0.1");
                 flyway.baseline();
             }
             flyway.migrate();
         } catch (final FlywayException e) {
             LOG.error(e, "Failed to migrate");
-            e.printStackTrace();
         }
     }
 
@@ -42,14 +46,13 @@ public class FlywaydbMigrator {
             return locations;
         }
         // default to flyway/[oskari | myplaces | otherModuleName]
-        return new String[]{"/flyway/" + moduleName};
+        return new String[]{DEFAULT_SCRIPT_LOCATION + moduleName};
     }
 
     private static String getStatusTableName(final String prefix) {
         final String tableNamePart = (prefix == null) ? "" : "_" + prefix;
         // default to oskari[_moduleName]_status
-        final String poolName = PropertyUtil.get("db." + normalizePrefix(prefix) + "status_table", "oskari_status"  + tableNamePart);
-        return poolName;
+        return PropertyUtil.get("db." + normalizePrefix(prefix) + "status_table", DEFAULT_STATUS_TABLE_NAME + tableNamePart);
     }
 
     private static String normalizePrefix(final String prefix) {

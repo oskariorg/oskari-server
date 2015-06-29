@@ -259,7 +259,7 @@ public class ELFGeoLocatorParser {
             return "";
         }
         log.debug("No official name found - use 1st variant ");
-        return names.size() > 0 ? names.get(0) : "";
+        return !names.isEmpty() ? names.get(0) : "";
     }
 
     private List<String> getVariantName(List<String> names, List<String> types){

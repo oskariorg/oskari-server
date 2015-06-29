@@ -31,6 +31,7 @@ public abstract class Logger {
      * @param ignored exception that is usually ignored
      */
     public void ignore(final Exception ignored) {}
+    public void ignore(final String msg, final Exception ignored) {}
 
     public String getString(final Object ... args) {
         StringWriter w = new StringWriter();

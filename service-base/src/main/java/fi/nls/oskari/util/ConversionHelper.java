@@ -6,6 +6,20 @@ package fi.nls.oskari.util;
 public class ConversionHelper {
 
     /**
+     * Returns the first of the given parameters that is not null or null if all are null
+     * @param strings
+     * @return
+     */
+    public static String firstNonNull(final String ... strings) {
+        for (final String s : strings) {
+            if (null != s) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Count the number of instances of substring within a string.
      *
      * @param string     String to look for substring in.
@@ -104,7 +118,7 @@ public class ConversionHelper {
             return Long.parseLong(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
@@ -122,7 +136,7 @@ public class ConversionHelper {
             return Integer.parseInt(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
@@ -137,7 +151,7 @@ public class ConversionHelper {
             return Double.parseDouble(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
