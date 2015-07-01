@@ -33,6 +33,11 @@ This will result a table called oskari_status_myapplication to the database and 
     
 For further information about script naming etc see http://flywaydb.org/
 
+### servlet-transport
+
+Session id is now always sent as cookie when getting layer permissions. The default cookie name is 'JSESSIONID' and can be 
+overridden in transport-ext.properties with 'oskari.cookie.session' as before.
+
 ## 1.30.1
 
 ### servlet-transport
