@@ -2,6 +2,11 @@
 
 ## 1.31
 
+### Library upgrades
+
+Servlet-API upgraded from 2.4 to 3.1.0 in preparation of replacing current servlet-map/webapp-map with spring
+ counterparts from oskari-spring repository.
+
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 

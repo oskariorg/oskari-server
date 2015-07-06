@@ -1,0 +1,6 @@
+# This Annotation processor will be run automatically by the compiler
+# in order to detect all of the places that the @OskariActionRoute annotation
+# is used.
+
+fi.nls.oskari.annotation.OskariViewModifierAnnotationProcessor
+fi.nls.oskari.annotation.OskariActionRouteAnnotationProcessor

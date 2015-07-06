@@ -47,8 +47,7 @@
         <jdk.version>1.7</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
-
-        <javax.servlet.version>2.4</javax.servlet.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.0</javax.servlet.jsp.version>
         <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
@@ -101,6 +100,7 @@
     <!-- Managed dependencies -->
     <dependencyManagement>
         <dependencies>
+            <!-- Oskari -->
             <dependency>
                 <groupId>fi.nls.oskari</groupId>
                 <artifactId>content-resources</artifactId>
@@ -245,6 +245,12 @@
             </dependency>
 
             <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>standalone-jetty</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>fi.mml</groupId>
                 <artifactId>capabilities</artifactId>
                 <version>${fi.mml.capabilities.version}</version>
@@ -256,11 +262,6 @@
                 <version>${fi.mml.wms.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>fi.nls.oskari</groupId>
-                <artifactId>standalone-jetty</artifactId>
-                <version>${fi.nls.oskari.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>xerces</groupId>
@@ -276,7 +277,7 @@
 
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
+                <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -291,11 +292,6 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${javax.servlet.jstl.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>taglibs</groupId>
-                <artifactId>standard</artifactId>
-                <version>${taglibs.standard.version}</version>
             </dependency>
 
             <dependency>
@@ -599,6 +595,13 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <plugin>

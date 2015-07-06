@@ -31,11 +31,6 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-wfs</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>fi.nls.oskari</groupId>
