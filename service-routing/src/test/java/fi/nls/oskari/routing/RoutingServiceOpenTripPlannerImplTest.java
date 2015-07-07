@@ -1,9 +1,10 @@
 package fi.nls.oskari.routing;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

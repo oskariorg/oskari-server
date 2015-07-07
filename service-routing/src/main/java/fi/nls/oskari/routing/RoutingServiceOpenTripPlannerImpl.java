@@ -1,10 +1,10 @@
 package fi.nls.oskari.routing;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
