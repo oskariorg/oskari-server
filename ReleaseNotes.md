@@ -2,6 +2,21 @@
 
 ## 1.31
 
+### service-routing (POC)
+
+New service requests route from the defined route service provider and parses data to geoJson and route instructions.
+Uses OpenTripPlanner route interface by default.
+To be able to use this you need to have the following parameters defined in properties:
+- routing.url (route service url)
+- routing.user (username required by the route service provider)
+- routing.password (password required by the route service provider)
+- routing.srs (coordinate system used bu route service provider)
+
+### control-routing (POC)
+
+New action route "RoutingHandler" added for handling route request. 
+Gets route parameters from frotend end returns route geometry as geoJson and route instructions as json.
+
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 
