@@ -10,6 +10,7 @@ Servlet-API upgraded from 2.4 to 3.1.0 in preparation of replacing current servl
 Other updates: 
 * Jackson 1.9.11 -> 2.5.4
 * Jedis 2.6.0 -> 2.7.2
+* Axiom 1.2.14 -> 1.2.15
 * org.codehaus.woodstox:stax2-api 3.1.1 -> 3.1.4
 * com.fasterxml.woodstox:woodstox-core 4.4.1 -> 5.0.1
 

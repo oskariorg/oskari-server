@@ -67,7 +67,7 @@
         <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
         <jsoup.version>1.7.2</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
-        <axiom.version>1.2.14</axiom.version>
+        <axiom.version>1.2.15</axiom.version>
         <commons-lang3.version>3.0</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
