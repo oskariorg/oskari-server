@@ -2,6 +2,7 @@ package fi.nls.oskari.control.admin;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
@@ -13,6 +14,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
@@ -22,7 +24,6 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,8 +46,8 @@ public class SystemViewsHandler extends RestActionHandler {
     public void init() {
         viewService = new ViewServiceIbatisImpl();
 
-        layerService = ServiceFactory.getMapLayerService();
-        permissionsService = ServiceFactory.getPermissionsService();
+        layerService = new OskariLayerServiceIbatisImpl();
+        permissionsService = new PermissionsServiceIbatisImpl();
     }
 
     /**

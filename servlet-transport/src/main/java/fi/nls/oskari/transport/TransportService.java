@@ -45,7 +45,7 @@ import fi.nls.oskari.worker.JobQueue;
 
 /**
  * Handles all incoming requests (channels) and manages Job queues
- * 
+ *
  * @see org.cometd.server.AbstractService
  */
 public class TransportService extends AbstractService {
@@ -116,30 +116,30 @@ public class TransportService extends AbstractService {
 	// server transport info
 	private BayeuxServer bayeux;
 	private ServerSession local;
-	
+
 	// JobQueue singleton
 	private static JobQueue jobs;
 
 	/**
 	 * Constructs TransportService with BayeuxServer instance
-	 * 
-	 * Hooks all channels to processRequest() and creates singletons for JobQueue and JedisManager. 
+	 *
+	 * Hooks all channels to processRequest() and creates singletons for JobQueue and JedisManager.
 	 * Also initializes Jedis client for this thread.
-	 * 
+	 *
 	 * @param bayeux
 	 */
     public TransportService(BayeuxServer bayeux)
     {
         super(bayeux, "transport");
-        
+
         Object jsonContext = bayeux.getOption("jsonContext");
-        
+
         if( jsonContext instanceof JettyJSONContextServer ) {
-            
+
         } else if( jsonContext instanceof JacksonJSONContextServer ) {
             ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
             transportMapper.registerModule(new GeometryJSONOutputModule());
-            
+
         }
 
         int workerCount = ConversionHelper.getInt(PropertyUtil
@@ -181,7 +181,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Removes Sessions and releases Jedis
-     * 
+     *
      * @see java.lang.Object#finalize()
      */
     @Override
@@ -195,7 +195,7 @@ public class TransportService extends AbstractService {
     /**
      * Tries to get session from cache with given key or creates a new
      * SessionStore
-     * 
+     *
      * @param client
      * @return session object
      */
@@ -228,7 +228,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Removes client's session
-     * 
+     *
      * @param client
      * @param message
      */
@@ -248,16 +248,16 @@ public class TransportService extends AbstractService {
         JedisManager.delAll(WFSCustomStyleStore.KEY + client.getId());
 
         // TODO: remove styles from map
-        
+
     	log.debug("Session & permission deleted: " + client);
     }
 
     /**
      * Preprocesses every service channel
-     * 
+     *
      * Gets parameters and session and gives processing to a channel specific
      * method.
-     * 
+     *
      * @param client
      * @param message
      */
@@ -267,7 +267,7 @@ public class TransportService extends AbstractService {
     	Map<String, Object> output = new HashMap<String, Object>();
     	Map<String, Object> params = message.getDataAsMap();
     	String json = message.getJSON();
-    	
+
         if(params == null) {
             log.warn("Request failed because parameters were not set");
             output.put("once", false);
@@ -325,7 +325,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Parses init's json for session and adds jobs for the selected layers
-     * 
+     *
      * @param client
      * @param store
      * @param json
@@ -350,7 +350,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Adds map layer to session and adds a job for the layer
-     * 
+     *
      * @param store
      * @param layer
      */
@@ -363,7 +363,7 @@ public class TransportService extends AbstractService {
 
     	String layerId = layer.get(PARAM_LAYER_ID).toString();
     	String layerStyle = (String)layer.get(PARAM_LAYER_STYLE);
-    	
+
     	if(!store.containsLayer(layerId)) {
             Layer tmpLayer = new Layer(layerId, layerStyle);
     		store.setLayer(layerId, tmpLayer);
@@ -374,7 +374,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Starts a new job for given layer
-     * 
+     *
      * @param store
      * @param layerId
      */
@@ -394,16 +394,13 @@ public class TransportService extends AbstractService {
     private String getOskariUid(SessionStore store) {
         String sessionId = store.getSession();
         String route = store.getRoute();
-        log.warn( JobHelper.getAPIUrl(sessionId) + UID_API);
-        String cookies = null;
-        if(route != null && !route.equals("")) {
-            cookies = JobHelper.ROUTE_COOKIE_NAME + route;
-        }
-        return HttpHelper.getHeaderValue(JobHelper.getAPIUrl(sessionId) + UID_API, cookies, KEY_UID);
+        log.warn( JobHelper.getAPIUrl() + UID_API);
+        return HttpHelper.getHeaderValue(JobHelper.getAPIUrl() + UID_API,
+                JobHelper.getCookiesValue(sessionId, route), KEY_UID);
     }
     /**
      * Removes map layer from session and jobs
-     * 
+     *
      * @param store
      * @param params
      */
@@ -431,7 +428,7 @@ public class TransportService extends AbstractService {
     /**
      * Sets location into session and starts jobs for selected layers with given
      * location
-     * 
+     *
      * @param store
      * @param params
      */
@@ -449,17 +446,17 @@ public class TransportService extends AbstractService {
     	}
 
         List<Double> bbox = MessageParseHelper.parseBbox(params.get(PARAM_LOCATION_BBOX));
-    	
+
     	Location mapLocation = new Location();
     	mapLocation.setSrs((String)params.get(PARAM_LOCATION_SRS));
     	mapLocation.setBbox(bbox);
-    	
+
     	mapLocation.setZoom(((Number)params.get(PARAM_LOCATION_ZOOM)).longValue());
     	store.setLocation(mapLocation);
 
     	Grid grid = MessageParseHelper.parseGrid(params);
     	store.setGrid(grid);
-    	
+
     	this.save(store);
 
         String layerId = params.get(PARAM_LAYER_ID).toString();
@@ -476,7 +473,7 @@ public class TransportService extends AbstractService {
     /**
      * Sets map size into session and starts jobs for selected layers with given
      * map size if got bigger
-     * 
+     *
      * @param store
      * @param mapSize
      */
@@ -497,7 +494,7 @@ public class TransportService extends AbstractService {
 
     /**
      * Sets layer style into session and starts job for the layer
-     * 
+     *
      * @param store
      * @param params
      */
@@ -509,7 +506,7 @@ public class TransportService extends AbstractService {
 
     	String layerId = params.get(PARAM_LAYER_ID).toString();
     	String layerStyle = (String)params.get(PARAM_LAYER_STYLE);
-    	
+
     	if(store.containsLayer(layerId)) {
             Layer tmpLayer = store.getLayers().get(layerId);
 
@@ -584,9 +581,9 @@ public class TransportService extends AbstractService {
 
     /**
      * Click isn't saved in session. Set click will be request just once.
-     * 
+     *
      * Sends only feature json.
-     * 
+     *
      * @param store
      * @param params
      */
@@ -633,9 +630,9 @@ public class TransportService extends AbstractService {
 
     /**
      * Filter isn't saved in session. Set filter will be request just once.
-     * 
+     *
      * Sends only feature json.
-     * 
+     *
      * @param store
      * @param json
      */
@@ -684,7 +681,7 @@ public class TransportService extends AbstractService {
     }
     /**
      * Sets layer visibility into session and starts/stops job for the layer
-     * 
+     *
      * @param store
      * @param params
      */
@@ -698,7 +695,7 @@ public class TransportService extends AbstractService {
 
     	String layerId = params.get(PARAM_LAYER_ID).toString();
     	boolean layerVisible = (Boolean)params.get(PARAM_LAYER_VISIBLE);
-    	
+
     	if(store.containsLayer(layerId)) {
     		Layer tmpLayer = store.getLayers().get(layerId);
     		if(tmpLayer.isVisible() != layerVisible) { // only if changed
@@ -714,9 +711,9 @@ public class TransportService extends AbstractService {
 
     /**
      * FeatureIds aren't stored in session. Sets highlighted features
-     * 
+     *
      * Sends only image json.
-     * 
+     *
      * @param store
      * @param params
      */
@@ -739,12 +736,12 @@ public class TransportService extends AbstractService {
     	for(Object obj : tmpfids) {
 			featureIds.add((String) obj);
     	}
-    	
+
     	keepPrevious = (Boolean)params.get(PARAM_KEEP_PREVIOUS);
     	store.setKeepPrevious(keepPrevious);
         geomRequest = (Boolean) params.get(PARAM_GEOM_REQUEST);
         store.setGeomRequest(geomRequest);
-    	
+
     	if(store.containsLayer(layerId)) {
     		store.getLayers().get(layerId).setHighlightedFeatureIds(featureIds);
     		if(store.getLayers().get(layerId).isVisible()) {
@@ -760,10 +757,10 @@ public class TransportService extends AbstractService {
 
     /**
      * Creates a new runnable job with own Jedis instance
-     * 
+     *
      * Parameters define client's service (communication channel), session and
      * layer's id. Sends all resources that the layer configuration allows.
-     * 
+     *
      * @param service
      * @param store
      * @param layerId
@@ -781,11 +778,11 @@ public class TransportService extends AbstractService {
 
     /**
      * Creates a new runnable job with own Jedis instance
-     * 
+     *
      * Parameters define client's service (communication channel), session and
      * layer's id. Also sets resources that will be sent if the layer
      * configuration allows.
-     * 
+     *
      * @param service
      * @param store
      * @param layerId

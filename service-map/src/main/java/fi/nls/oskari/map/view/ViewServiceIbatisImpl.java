@@ -63,7 +63,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     public boolean hasPermissionToAlterView(final View view, final User user) {
-        
+
         // uuids are much longer than 10 actually but check for atleast 10
         if(user.getUuid() == null || user.getUuid().length() < 10) {
             log.debug("Users uuid is missing or invalid: ", user.getUuid());
@@ -85,6 +85,15 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             return false;
         }
         return true;
+    }
+
+
+    public List<View> getViews(int page, int pagesize) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("limit", pagesize);
+        params.put("offset", (page -1) * pagesize);
+        List<View> views = queryForList("View.paged-views", params);
+        return views;
     }
 
     public View getViewWithConf(long viewId) {
@@ -128,7 +137,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
         try {
         	view.setUuid(generateUuid());
-        	
+
             session.startTransaction();
             Object ret =  queryForObject("View.add-view", view);
             long id = ((Long) ret).longValue();
@@ -182,7 +191,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             endSession(session);
         }
     }
-    
+
 
 	public void updateView(View view) {
         update("View.update", view);
@@ -297,5 +306,5 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public String generateUuid() {
         return UUID.randomUUID().toString();
     }
-    
+
 }

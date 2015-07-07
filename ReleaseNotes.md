@@ -17,6 +17,11 @@ To be able to use this you need to have the following parameters defined in prop
 New action route "RoutingHandler" added for handling route request. 
 Gets route parameters from frotend end returns route geometry as geoJson and route instructions as json.
 
+### Library upgrades
+
+Servlet-API upgraded from 2.4 to 3.1.0 in preparation of replacing current servlet-map/webapp-map with spring
+ counterparts from oskari-spring repository.
+
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 
@@ -47,6 +52,17 @@ This will result a table called oskari_status_myapplication to the database and 
     db.myapplication.script.locations=/flyway/myapplication,/upgrade/scripts/in/here/also
     
 For further information about script naming etc see http://flywaydb.org/
+
+### servlet-transport
+
+Session id is now always sent as cookie when getting layer permissions. The default cookie name is 'JSESSIONID' and can be 
+overridden in transport-ext.properties with 'oskari.cookie.session' as before.
+
+## 1.30.1
+
+### servlet-transport
+
+No longer sends session id as part of url, but as cookie.
 
 ## 1.30
 

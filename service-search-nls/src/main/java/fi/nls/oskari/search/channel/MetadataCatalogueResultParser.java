@@ -86,7 +86,7 @@ setResourceNameSpace(serverURL)
         XPATH_FILEID = XmlHelper.buildXPath("./gmd:fileIdentifier/gco:CharacterString", NAMESPACE_CTX);
 
         XPATH_LOCALE_MAP = XmlHelper.buildXPath("./gmd:locale/gmd:PT_Locale", NAMESPACE_CTX);
-        
+
         XPATH_IDENTIFICATION_UUID = XmlHelper.buildXPath("./srv:operatesOn", NAMESPACE_CTX);
         XPATH_LOCALE_MAP = XmlHelper.buildXPath("./gmd:locale/gmd:PT_Locale", NAMESPACE_CTX);
 
@@ -97,13 +97,12 @@ setResourceNameSpace(serverURL)
             final String[] languages = Locale.getISOLanguages();
             for (String language : languages) {
                 Locale locale = new Locale(language);
-                log.debug("Adding mapping:", locale.getISO3Language(), " -> ", locale.getLanguage());
                 ISO3letterOskariLangMapping.put(locale.getISO3Language(), locale.getLanguage());
             }
         }
     }
 
-    
+
     public SearchResultItem parseResult(final OMElement elem, final String locale) throws Exception {
         //final String locale = "fi";
         final Map<String, String> locales = getLocaleMap(elem);
@@ -112,7 +111,7 @@ setResourceNameSpace(serverURL)
             pathToLocalizedValue = XmlHelper.buildXPath("../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locales.get(locale) + "']", NAMESPACE_CTX);
         }
         final OMElement idNode = (OMElement) XPATH_IDENTIFICATION.selectSingleNode(elem);
-        
+
         final SearchResultItem item = new SearchResultItem();
         final OMElement titleNode = (OMElement) XPATH_IDENTIFICATION_TITLE.selectSingleNode(idNode);
         item.setTitle(getLocalizedContent(titleNode, pathToLocalizedValue));
@@ -127,7 +126,7 @@ setResourceNameSpace(serverURL)
         final OMElement distInfoNode = (OMElement) XPATH_DISTINFO.selectSingleNode(elem);
         item.setGmdURL(getLocalizedContent(distInfoNode, pathToLocalizedValue));
         final OMElement uuidNode = (OMElement) XPATH_FILEID.selectSingleNode(elem);
-        
+
         final List<OMElement> operatesOnNodes = XPATH_IDENTIFICATION_UUID.selectNodes(idNode);
 
         log.debug("==1");
@@ -148,18 +147,18 @@ setResourceNameSpace(serverURL)
                 	OMAttribute ao = (OMAttribute)i.next();
                 	log.debug("AO value: " + ao.getAttributeValue());
                 	item.addUuId(ao.getAttributeValue());
-                	
+
                 }
             }
         }
-        
+
         item.setContentURL(getLocalizedContent(imageNode, pathToLocalizedValue));
         log.debug("getLocalizedContent :" + getLocalizedContent(imageNode, pathToLocalizedValue));
-        
+
         item.setResourceId(getLocalizedContent(uuidNode, pathToLocalizedValue));
 
         return item;
-    }    
+    }
 
     /**
      * Parses bbox element for coordinate tags if available:

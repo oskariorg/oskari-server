@@ -250,7 +250,7 @@ public class WFSServiceTester {
             if (response == null) {
                 info("WFS DescribeFeatureType request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default "+ lc.getSRSName());
             } else {
-                info("WFS DescribeFeatureType request OK - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default "+ lc.getSRSName());
+                info("WFS DescribeFeatureType request OK - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default: "+ lc.getSRSName()+ "- geomproperty: "+lc.getGMLGeometryProperty());
             }
         } catch (Exception ex) {
             info("WFS GetCapabilities request FAILED - version " + version + " --  Feature: " + lc.getFeatureNamespace() + ":" + lc.getFeatureElement()+ " - default  "+ lc.getSRSName());

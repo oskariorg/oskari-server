@@ -137,7 +137,7 @@
 			<version>${stax-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Stax2 API (and matching RI), too, is required, not included, We need 
+		<!-- Stax2 API (and matching RI), too, is required, not included, We need
 			version 3.x of it to get Typed Access API -->
 		<dependency>
 			<groupId>org.codehaus.woodstox</groupId>

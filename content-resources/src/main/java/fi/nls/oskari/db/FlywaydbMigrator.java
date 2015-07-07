@@ -28,15 +28,11 @@ public class FlywaydbMigrator {
         flyway.setDataSource(datasource);
         flyway.setTable(getStatusTableName(moduleName));
         flyway.setLocations(getScriptLocations(moduleName));
-        try {
-            if (flyway.info().current() == null) {
-                flyway.setBaselineVersionAsString("0.1");
-                flyway.baseline();
-            }
-            flyway.migrate();
-        } catch (final FlywayException e) {
-            LOG.error(e, "Failed to migrate");
+        if (flyway.info().current() == null) {
+            flyway.setBaselineVersionAsString("0.1");
+            flyway.baseline();
         }
+        flyway.migrate();
     }
 
     private static String[] getScriptLocations(final String prefix) {

@@ -25,6 +25,9 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -46,6 +49,13 @@ public class GetGtWFSCapabilities {
     private final static String DEFAULT_VERSION = "1.1.0";
     private final static String WFS2_0_0_VERSION = "2.0.0";
     private final static LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
+    private final static List<String> GEOMTYPES = new ArrayList<>(Arrays.asList("gml:PolygonPropertyType", "gml:SurfacePropertyType",
+            "gml:PolyhedralSurfacePropertyType", "gml:TriangulatedSurfacePropertyType", "gml:TinPropertyType",
+            "gml:OrientableSurfacePropertyType", "gml:CompositeSurfacePropertyType", "gml:LineStringPropertyType",
+            "gml:CurvePropertyType", "gml:CompositeCurvePropertyType", "gml:OrientableCurvePropertyType", "gml:MultiCurvePropertyType",
+            "gml:PointPropertyType",
+            "gml:MultiSurfacePropertyType",
+            "gml:MultiPointPropertyType"));
 
     /**
      * Get all WFS layers (featuretypes) data in JSON
@@ -153,9 +163,12 @@ public class GetGtWFSCapabilities {
                     new ByteArrayInputStream(data.getBytes("UTF-8"))));
 
             NodeList featypes = doc.getDocumentElement().getElementsByTagName("wfs:FeatureType");
-            if (featypes.getLength() == 0) featypes = doc.getDocumentElement().getElementsByTagName("FeatureType");
-            if (featypes.getLength() == 0)
+            if (featypes.getLength() == 0) {
+                featypes = doc.getDocumentElement().getElementsByTagName("FeatureType");
+            }
+            if (featypes.getLength() == 0) {
                 featypes = doc.getDocumentElement().getElementsByTagNameNS(null, "FeatureType");
+            }
             //Loop featypes
             Map<String, _FeatureType> featuretypes = new HashMap<String, _FeatureType>();
             for (int i = 0; i < featypes.getLength(); i++) {
@@ -342,22 +355,44 @@ public class GetGtWFSCapabilities {
 
         WFSDataStore data1x = null;
         _FeatureType fea2x = null;
+        _FeatureType fea1x = null;
 
         try {
 
             if (capa instanceof WFSDataStore) {
                 data1x = (WFSDataStore) capa;
 //            log.debug("layerToOskariLayerJson: "+typeName+" "+rurl+" "+user+" "+pw);
-                SimpleFeatureType schema = data1x.getSchema(typeName);
-
-                //check whether there actually is a geometry column -> otherwise don't go further.
-                if (GetGtWFSCapabilities.getFeaturetypeGeometryName(schema) == null) {
-                    throw new ServiceException("No geometry column.");
+                SimpleFeatureType schema = null;
+                try {
+                    schema = data1x.getSchema(typeName);
                 }
+                catch (Exception ex) {
+                    log.warn("Couldn't get wfs feature source data", ex);
 
-                // Source
-                FeatureSource<SimpleFeatureType, SimpleFeature> source = data1x.getFeatureSource(typeName);
-                title = source.getInfo().getTitle();
+                }
+                if (schema != null) {
+
+
+                    //check whether there actually is a geometry column -> otherwise don't go further.
+                    if (GetGtWFSCapabilities.getFeaturetypeGeometryName(schema) == null) {
+                        throw new ServiceException("No geometry column.");
+                    }
+
+                    // Source
+                    FeatureSource<SimpleFeatureType, SimpleFeature> source = data1x.getFeatureSource(typeName);
+                    title = source.getInfo().getTitle();
+
+                }
+                else {
+                    // try own DescribeFeature request and parsing
+                    fea1x = parseWfs1xDescribeFeatureType(IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, typeName), user, pw), typeName, data1x);
+                    title = fea1x.getTitle();
+                    //check whether there actually is a geometry column -> otherwise don't go further.
+                    if (fea1x.getGeomPropertyName() == null) {
+                        throw new ServiceException("No geometry column.");
+                    }
+
+                }
             } else if (capa instanceof _FeatureType) {
                 fea2x = (_FeatureType) capa;
                 title = fea2x.getTitle();
@@ -383,9 +418,18 @@ public class GetGtWFSCapabilities {
             JSONHelper.putValue(json, "title", title);
             //FIXME  merge oskarilayer and wfsLayer
             WFSLayerConfiguration lc = null;
-            if (data1x != null)
+            if (data1x != null && fea1x != null) {
+                // WFS 1.x  Geotools parse FAILED
+                lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea1x, rurl, user, pw);
+            }
+            else if (data1x != null && fea1x == null) {
+                // WFS 1.x  Geotools parse OK
                 lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(data1x, typeName, rurl, user, pw);
-            if (fea2x != null) lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2x, rurl, user, pw);
+            }
+            else if (fea2x != null) {
+                //WFS 2.0
+                lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2x, rurl, user, pw);
+            }
 
             JSONHelper.putValue(json.getJSONObject("admin"), "passthrough", JSONHelper.createJSONObject(lc.getAsJSON()));
 
@@ -495,7 +539,7 @@ public class GetGtWFSCapabilities {
     }
 
     /**
-     * WMS 2.0.0 layer data to json
+     * WFS 2.0.0 layer data to json
      *
      * @param featype
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
@@ -550,6 +594,60 @@ public class GetGtWFSCapabilities {
             return lc;
         } catch (Exception ex) {
             log.warn("Couldn't get wfs feature source data", ex);
+            //return null;
+            throw new ServiceException(ex.getMessage());
+        }
+
+    }
+    /**
+     * WFS 1.x.0 layer data to json  in case geotools fails
+     *
+     * @param featype
+     * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
+     * @throws fi.nls.oskari.service.ServiceException
+     */
+    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(_FeatureType featype, String rurl, String user, String pw) throws ServiceException {
+
+        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
+        lc.setDefaults();
+
+
+        lc.setURL(rurl);
+        lc.setUsername(user);
+        lc.setPassword(pw);
+
+        lc.setLayerName(featype.getTitle());
+
+
+        try {
+
+            String[] nameParts = featype.getName().split(":");
+            String xmlns = "";
+            String name = nameParts[0];
+            if (nameParts.length > 1) {
+                xmlns = nameParts[0];
+                name = nameParts[1];
+            }
+
+            lc.setLayerId("layer_" + name);
+
+
+            lc.setGMLGeometryProperty(featype.getGeomPropertyName());
+            // Use oskari front srs
+            //  lc.setSRSName(featype.getDefaultSrs());
+
+
+            //lc.setGMLVersion();
+            lc.setWFSVersion(DEFAULT_VERSION);
+            //lc.setMaxFeatures(data.getMaxFeatures());
+            lc.setFeatureNamespace(xmlns);
+            if (featype.getNsUri() != null) lc.setFeatureNamespaceURI(featype.getNsUri());
+
+            lc.setFeatureElement(name);
+
+            return lc;
+        } catch (Exception ex) {
+            log.warn("Couldn't get wfs 1.x.0 feature source data", ex);
             //return null;
             throw new ServiceException(ex.getMessage());
         }
@@ -645,7 +743,64 @@ public class GetGtWFSCapabilities {
             log.debug("WFS 2.0.0 DescribeFeaturetype failed ", ex);
         }
     }
+    /**
+     * Parse DescribeFeatureType response - at least namespace uri and geom property
+     * Use this  for wfs 1.1.0, if geotools fails
+     *
+     * @param data   describefeaturetype response
+     */
+    private static  _FeatureType parseWfs1xDescribeFeatureType( final String data, String name, WFSDataStore store) {
 
+        _FeatureType ft = new _FeatureType();
+        ft.setName(name);
+        //ft.setDefaultSrs(srsval);  we use front side default srs
+
+        try {
+            ft.setTitle(store.getFeatureTypeTitle(name));
+            // GetCapabilities request
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory
+                    .newInstance();
+            // dbf.setNamespaceAware(true);  //default false
+            final DocumentBuilder builder = dbf.newDocumentBuilder();
+            final Document doc = builder.parse(new InputSource(
+                    new ByteArrayInputStream(data.getBytes("UTF-8"))));
+
+            String nsuri = doc.getDocumentElement().getAttribute("targetNamespace");
+
+            if (nsuri != null) ft.setNsUri(nsuri);
+            //Get Elements
+            NodeList elements = doc.getDocumentElement().getElementsByTagName("xs:element");
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagName("xsd:element");
+            }
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagName("element");
+            }
+            if (elements.getLength() == 0) {
+                elements = doc.getDocumentElement().getElementsByTagNameNS(null, "element");
+            }
+            //Loop elements
+
+            for (int i = 0; i < elements.getLength(); i++) {
+
+                Node node = elements.item(i);
+                if(node instanceof Element){
+                    Element elem = (Element) elements.item(i);
+                    String type = elem.getAttribute("type");
+                    //is geom property
+                    if(GEOMTYPES.contains(type)){
+                        ft.setGeomPropertyName(elem.getAttribute("name"));
+                        break;
+                    }
+                }
+
+            }
+
+        } catch (Exception ex) {
+            log.debug("WFS 1.1.0 DescribeFeaturetype parse failed ", ex);
+        }
+        return ft;
+    }
     /**
      * Set parser config items to featuretype and parser type information to layer title
      *
@@ -701,6 +856,7 @@ public class GetGtWFSCapabilities {
         return val;
     }
 
+
     public static class _FeatureType {
         private String name;
         private String title;
@@ -711,6 +867,7 @@ public class GetGtWFSCapabilities {
         private String requestTemplate;
         private String responseTemplate;
         private String parseConfig;
+        private String geomPropertyName;
 
         public String getName() {
             return name;
@@ -783,6 +940,14 @@ public class GetGtWFSCapabilities {
 
         public void setParseConfig(String parseConfig) {
             this.parseConfig = parseConfig;
+        }
+
+        public String getGeomPropertyName() {
+            return geomPropertyName;
+        }
+
+        public void setGeomPropertyName(String geomPropertyName) {
+            this.geomPropertyName = geomPropertyName;
         }
     }
 

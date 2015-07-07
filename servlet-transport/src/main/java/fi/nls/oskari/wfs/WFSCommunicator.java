@@ -69,15 +69,21 @@ public class WFSCommunicator {
 		OMAttribute maxFeatures = factory.createOMAttribute("maxFeatures", null, String.valueOf(layer.getMaxFeatures()));
 
         // if geometry property has different namespace than the featureNamespace
-        String[] split = layer.getGMLGeometryProperty().split(":");
-        if(split.length >= 2 && !split[0].equals(layer.getFeatureNamespace())) {
-            if(layer.getGeometryNamespaceURI() == null) {
-                log.error("No geometry namespace URI defined");
+            if(layer.getGMLGeometryProperty() != null) {
+                String[] split = layer.getGMLGeometryProperty().split(":");
+                if (split.length >= 2 && !split[0].equals(layer.getFeatureNamespace())) {
+                    if (layer.getGeometryNamespaceURI() == null) {
+                        log.error("No geometry namespace URI defined");
+                        return null;
+                    }
+                    OMAttribute geomNs = factory.createOMAttribute("xmlns:" + split[0], null, layer.getGeometryNamespaceURI());
+                    root.addAttribute(geomNs);
+                }
+            }
+            else {
+                log.error("No geometry property name defined");
                 return null;
             }
-            OMAttribute geomNs = factory.createOMAttribute("xmlns:" + split[0], null, layer.getGeometryNamespaceURI());
-            root.addAttribute(geomNs);
-        }
 
         if (layer.getOutputFormat() != null) {
             OMAttribute outputFormat = factory.createOMAttribute("outputFormat", null, layer.getOutputFormat());
