@@ -55,6 +55,7 @@
 		<result property="requestTemplate" column="request_template"/>
         <result property="parseConfig" column="parse_config"/>
 		<result property="responseTemplate" column="response_template"/>
+        <result property="attributes" column="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject"/>
 		
 		<result property="selectionSLDStyle" column="selection_sld_style"/>
     </resultMap>
@@ -171,6 +172,7 @@
   			m.request_template,
   			m.parse_config,
   			m.response_template,
+  			map.attributes,
   			
   			ss.sld_style as selection_sld_style
   			

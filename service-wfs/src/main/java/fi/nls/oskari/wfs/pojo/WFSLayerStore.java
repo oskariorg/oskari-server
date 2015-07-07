@@ -399,7 +399,9 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 }
             } else if (PARSE_CONFIG.equals(fieldName)) {
                     store.setParseConfig(parser.getText());
-           } else {
+             }else if (ATTRIBUTES.equals(fieldName)) {
+                store.setAttributes(parser.getText());
+            } else {
                 log.warn("Unrecognized field while parsing layer JSON:", fieldName);
                 // exception is thrown since the parser state should be fixed here if we don't
                 // maybe calling parser.nextToken() might fix it but it seems not to be working

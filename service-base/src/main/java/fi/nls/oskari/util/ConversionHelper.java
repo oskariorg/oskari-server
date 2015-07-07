@@ -172,4 +172,22 @@ public class ConversionHelper {
         }
     }
 
+    /**
+     * Parses boolean from on/off String. Returns defaultValue if strToParse is null.
+     *
+     * @param strToParse
+     * @param defaultValue
+     * @return
+     */
+    public static final boolean getOnOffBoolean(final String strToParse, final boolean defaultValue) {
+        if(strToParse == null) {
+            return defaultValue;
+        }
+        try {
+            return strToParse.toUpperCase().equals("ON");
+        } catch (Exception ex) {
+            return defaultValue;
+        }
+    }
+
 }
