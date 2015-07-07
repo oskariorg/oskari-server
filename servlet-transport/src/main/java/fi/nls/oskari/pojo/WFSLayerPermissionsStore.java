@@ -3,23 +3,21 @@ package fi.nls.oskari.pojo;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.wfs.extension.MyPlacesFilter;
 import fi.nls.oskari.wfs.extension.UserLayerFilter;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * handles user's permissions
- * 
+ *
  * Contains a list of layers that user may use.
  *
  * Similar WFSLayerPermissionsStore class can be found in oskari-permissions.
@@ -40,7 +38,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Gets list of layer ids
-	 * 
+	 *
 	 * @return layerIds
 	 */
 	public List<String> getLayerIds() {
@@ -49,7 +47,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Sets layer ids
-	 * 
+	 *
 	 * @param layerIds
 	 */
 	public void setLayerIds(List<String> layerIds) {
@@ -58,7 +56,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Checks if user has permissions for a layer
-	 * 
+	 *
 	 * @param id
 	 * @return <code>true</code> if user may use the layer; <code>false</code>
 	 *         otherwise.
@@ -71,15 +69,13 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Transforms object to JSON String
-	 * 
+	 *
 	 * @return JSON String
 	 */
 	@JsonIgnore
 	public String getAsJSON() {
 		try {
 			return mapper.writeValueAsString(this); // thread-safe
-		} catch (JsonGenerationException e) {
-			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
 			log.error(e, "Mapping from Object to JSON String failed");
 		} catch (IOException e) {
@@ -90,7 +86,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Transforms JSON String to object
-	 * 
+	 *
 	 * @param json
 	 * @return object
 	 */
@@ -103,7 +99,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Gets saved permissions for certain session from redis
-	 * 
+	 *
 	 * @param session
 	 * @return permissions as JSON String
 	 */

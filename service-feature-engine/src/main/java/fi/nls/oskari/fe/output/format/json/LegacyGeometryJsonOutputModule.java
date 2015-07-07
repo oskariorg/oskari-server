@@ -1,8 +1,8 @@
 package fi.nls.oskari.fe.output.format.json;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.module.SimpleModule;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import fi.nls.oskari.fe.output.jackson.LegacyGeometryPropertySerializer;
 
 public class LegacyGeometryJsonOutputModule extends SimpleModule {

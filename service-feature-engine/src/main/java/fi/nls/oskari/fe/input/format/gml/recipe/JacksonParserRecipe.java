@@ -19,9 +19,7 @@ import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
-import org.codehaus.staxmate.in.SMInputCursor;
 import org.geotools.xml.Configuration;
-import org.json.JSONObject;
 
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {

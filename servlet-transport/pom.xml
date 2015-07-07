@@ -70,12 +70,9 @@
             <version>${metrics.version}</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -99,6 +96,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- older version of Jackson needed by cometd -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.11</version>
+        </dependency>
+
         <dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -138,7 +142,7 @@
         <dependency>
            <groupId>org.geotools</groupId>
            <artifactId>gt-epsg-extension</artifactId>
-           <version>${geotools.version}</version>
+            <version>${geotools.version}</version>
         </dependency>
 		<dependency>
 		   <groupId>org.geotools</groupId>

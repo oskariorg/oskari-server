@@ -1,21 +1,19 @@
 package fi.nls.oskari.spatineo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
-import fi.nls.oskari.db.DBHandler;
 import fi.nls.oskari.spatineo.dao.OskariDao;
 import fi.nls.oskari.spatineo.dao.SpatineoServalDao;
 import fi.nls.oskari.spatineo.dao.WmsServiceStatusDao;
 import fi.nls.oskari.spatineo.dto.OskariMapLayerDto;
 import fi.nls.oskari.spatineo.dto.PorttiBackendStatusDto;
 import fi.nls.oskari.spatineo.dto.SpatineoResponseDto;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 
-import javax.sql.DataSource;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;

@@ -1,7 +1,8 @@
 package fi.nls.oskari.utils;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.module.SimpleModule;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class GeometryJSONOutputModule extends SimpleModule {
 
@@ -10,7 +11,7 @@ public class GeometryJSONOutputModule extends SimpleModule {
     }
 
     @Override
-    public void setupModule(SetupContext context) {
+    public void setupModule(Module.SetupContext context) {
         addSerializer(new GeometrySerializer());
 
         super.setupModule(context);

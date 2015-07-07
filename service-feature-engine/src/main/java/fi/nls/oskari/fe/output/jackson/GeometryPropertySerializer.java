@@ -14,9 +14,7 @@ public class GeometryPropertySerializer extends
 
     @Override
     public void serialize(GeometryProperty value, JsonGenerator jgen,
-            SerializerProvider provider) throws IOException,
-            JsonProcessingException {
-
+            SerializerProvider provider) throws IOException {
         if (value.getGeometry() == null) {
             provider.defaultSerializeNull(jgen);
             return;

@@ -6,21 +6,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.transport.MessageParseHelper;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Handles user's session (current state)
@@ -467,7 +467,7 @@ public class SessionStore {
 		SessionStore store = new SessionStore();
 
 		JsonFactory factory = new JsonFactory();
-		JsonParser parser = factory.createJsonParser(json);
+		JsonParser parser = factory.createParser(json);
 
 		String fieldName = null;
 		parser.nextToken();

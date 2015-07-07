@@ -1,5 +1,6 @@
 package fi.nls.oskari.spatineo.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.spatineo.dto.OskariMapLayerDto;
@@ -7,7 +8,6 @@ import fi.nls.oskari.spatineo.dto.SpatineoResponseDto;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.LinkedList;

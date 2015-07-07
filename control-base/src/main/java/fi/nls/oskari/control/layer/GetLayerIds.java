@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
 import fi.mml.portti.service.db.permissions.PermissionsService;

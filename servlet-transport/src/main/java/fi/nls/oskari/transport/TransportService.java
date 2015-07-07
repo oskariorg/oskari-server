@@ -10,13 +10,10 @@ import java.util.Map.Entry;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.work.*;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
 import org.cometd.server.AbstractService;
-import org.cometd.server.JacksonJSONContextServer;
-import org.cometd.server.JettyJSONContextServer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -34,7 +31,6 @@ import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -132,16 +128,18 @@ public class TransportService extends AbstractService {
     {
         super(bayeux, "transport");
 
+        // CometD uses older version of Jackson where as GeometryJSONOutputModule uses newer
+/*
         Object jsonContext = bayeux.getOption("jsonContext");
+        if( jsonContext instanceof JettyJSONContextServer) {
 
-        if( jsonContext instanceof JettyJSONContextServer ) {
-
-        } else if( jsonContext instanceof JacksonJSONContextServer ) {
+        } else if( jsonContext instanceof JacksonJSONContextServer) {
+        // cometd uses codehaus jackson, need to update it for this to work
             ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
             transportMapper.registerModule(new GeometryJSONOutputModule());
 
         }
-
+        */
         int workerCount = ConversionHelper.getInt(PropertyUtil
                 .get("workerCount"), 10);
 

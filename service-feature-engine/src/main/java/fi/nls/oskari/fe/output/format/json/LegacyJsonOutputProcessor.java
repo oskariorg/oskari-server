@@ -9,10 +9,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -29,7 +28,6 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
     long counter = 0;
     protected OpenBufferedWriter ps;
 
-    final JsonFactory jsonFactory = new JsonFactory();
     final ObjectMapper json = new ObjectMapper();
 
     static class OpenBufferedWriter extends BufferedWriter {

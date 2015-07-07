@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
@@ -26,7 +26,7 @@ public class SotkaRegionParser {
 	public static final String CATEGORY_FIELD = "category";
 	private static final String REGION_CATEGORY = "KUNTA";
 	private ObjectMapper mapper;
-	
+
     private final static Logger log = LogFactory.getLogger(SotkaRegionParser.class);
 
 	private Map<String, Integer> regionsByCode;
@@ -41,14 +41,14 @@ public class SotkaRegionParser {
 		regionsByCode = new HashMap<String, Integer>();
 		regionsById = new HashMap<Integer, String>();
         regionsObjectsById = new HashMap<Integer, Map<String,Object>>();
-		
+
 		try {
 			getData();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
      * Gets code from the HashMap
 	 * @param id
@@ -79,7 +79,7 @@ public class SotkaRegionParser {
     public Map<String,Object> getRegionById(int id) {
         return regionsObjectsById.get(id);
     }
-    
+
     /**
      * Makes HTTP get request and parses the responses JSON into HashMaps.
      * @throws IOException
@@ -87,10 +87,10 @@ public class SotkaRegionParser {
     private void getData() throws IOException{
     	String json = HttpRequest.get(URL).body();
 		JsonFactory factory = new JsonFactory();
-		JsonParser parser = factory.createJsonParser(json);
-		
+		JsonParser parser = factory.createParser(json);
+
 		Map<String,Object> region = null;
-		
+
 		parser.nextToken();
 		while(parser.nextToken() == JsonToken.START_OBJECT) {
 			region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
