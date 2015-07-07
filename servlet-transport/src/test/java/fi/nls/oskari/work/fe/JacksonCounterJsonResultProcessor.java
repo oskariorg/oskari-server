@@ -3,20 +3,29 @@ package fi.nls.oskari.work.fe;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.*;
-import fi.nls.oskari.fe.input.jackson.XmlMapper;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.impl.DefaultPrettyPrinter;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 import fi.nls.oskari.utils.GeometryJSONOutputModule;
 
+/**
+ * This uses the Jackson 1.x version since it's used by the current version of CometD.
+ * Don't upgrade if not upgrading CometD.
+ */
 public class JacksonCounterJsonResultProcessor extends CounterJsonResultProcessor {
 
-    protected ObjectMapper json = new XmlMapper();
+    protected ObjectMapper json = new ObjectMapper();
     protected ObjectWriter writer;
 
     public JacksonCounterJsonResultProcessor() {
-        json.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        SerializationConfig x = json.getSerializationConfig()
+                .withSerializationInclusion(Inclusion.NON_NULL);
+        json.setSerializationConfig(x);
         writer = json.writer(new DefaultPrettyPrinter());
 
         GeometryJSONOutputModule simpleModule = new GeometryJSONOutputModule();

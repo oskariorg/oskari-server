@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import fi.nls.oskari.work.*;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.ServerSession;
@@ -37,6 +39,8 @@ import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
+import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.server.JettyJSONContextServer;
 
 
 /**
@@ -128,18 +132,14 @@ public class TransportService extends AbstractService {
     {
         super(bayeux, "transport");
 
-        // CometD uses older version of Jackson where as GeometryJSONOutputModule uses newer
-/*
         Object jsonContext = bayeux.getOption("jsonContext");
         if( jsonContext instanceof JettyJSONContextServer) {
 
         } else if( jsonContext instanceof JacksonJSONContextServer) {
-        // cometd uses codehaus jackson, need to update it for this to work
+            // CometD uses older version of Jackson so transport uses 1.x versions for this on purpose
             ObjectMapper transportMapper =  ((JacksonJSONContextServer) jsonContext).getObjectMapper();
             transportMapper.registerModule(new GeometryJSONOutputModule());
-
         }
-        */
         int workerCount = ConversionHelper.getInt(PropertyUtil
                 .get("workerCount"), 10);
 
