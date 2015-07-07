@@ -29,6 +29,7 @@ public class JobHelper {
     private static String SERVICE_URL_PATH = null;
     private static String SERVICE_URL_QUERYSTRING = null;
     private static String SESSION_COOKIE_NAME = PropertyUtil.get("oskari.cookie.session", "JSESSIONID") + "=";
+    public static final String PARAM_MANUAL_REFRESH = "manualRefresh";
 
     // COOKIE
     public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";
@@ -148,6 +149,7 @@ public class JobHelper {
         double scale = mapScales.get(zoomLevel);
         return isRequestScalesInRange(scale, layer, targetSRS);
     }
+
     /**
      * Checks if the map scale is valid
      *

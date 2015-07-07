@@ -62,6 +62,7 @@ public class WFSLayerConfiguration {
 
     protected final static String JOB_TYPE = "jobType";
     protected static final String REQUEST_IMPULSE = "requestImpulse";
+    protected static final String ATTRIBUTES = "attributes";
 
     protected final static String MIN_SCALE = "minScale";
     protected final static String MAX_SCALE = "maxScale";
@@ -119,6 +120,7 @@ public class WFSLayerConfiguration {
     private int templateModelId;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
+    private JSONObject attributes = new JSONObject();
 
 	private double minScale;
 	private double maxScale;
@@ -489,6 +491,18 @@ public class WFSLayerConfiguration {
         return this.requestImpulse;
     }
 
+    public JSONObject getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(JSONObject attributes) {
+        this.attributes = attributes;
+    }
+    public void setAttributes(String attributes) {
+        this.attributes = attributes != null ? JSONHelper.createJSONObject(attributes) : null;
+    }
+
+
     /**
 	 * Gets min scale
 	 *
@@ -732,6 +746,7 @@ public class WFSLayerConfiguration {
 		JSONHelper.putValue(root, WMS_LAYER_ID, this.getWMSLayerId());
         JSONHelper.putValue(root, JOB_TYPE, this.getJobType());
         JSONHelper.putValue(root, REQUEST_IMPULSE, this.getRequestImpulse());
+        JSONHelper.putValue(root, ATTRIBUTES, this.getAttributes() != null ? this.getAttributes().toString() : null);
 
 		JSONHelper.putValue(root, MIN_SCALE, this.getMinScale());
 		JSONHelper.putValue(root, MAX_SCALE, this.getMaxScale());

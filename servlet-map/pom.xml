@@ -52,6 +52,11 @@
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-control-admin</artifactId>
 		</dependency>
+		
+		 <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-routing</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

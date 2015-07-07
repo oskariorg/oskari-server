@@ -155,6 +155,7 @@ public class SaveLayerHandler extends ActionHandler {
                     final WFSLayerConfiguration wfsl = new WFSLayerConfiguration();
                     wfsl.setDefaults();
                     wfsl.setLayerId(Integer.toString(id));
+                    wfsl.setAttributes(ml.getAttributes());
                     handleRequestToWfsLayer(params, wfsl);
                     if(wfsl.getJobType() != null && wfsl.getJobType().equals(OSKARI_FEATURE_ENGINE)){
                         handleFESpesificToWfsLayer(params, wfsl);
@@ -373,7 +374,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
     private void handleRequestToWfsLayer(final ActionParameters params, WFSLayerConfiguration wfsl) throws ActionException {
 
-        wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam("GML2Separator"),wfsl.isGML2Separator()));
+        wfsl.setGML2Separator(ConversionHelper.getBoolean(params.getHttpParam("GML2Separator"), wfsl.isGML2Separator()));
         wfsl.setGMLGeometryProperty(params.getHttpParam("GMLGeometryProperty"));
         wfsl.setGMLVersion(params.getHttpParam("GMLVersion"));
         wfsl.setSRSName(params.getHttpParam("srs_name"));
@@ -390,7 +391,7 @@ public class SaveLayerHandler extends ActionHandler {
         wfsl.setGetMapTiles(ConversionHelper.getBoolean(params.getHttpParam("getMapTiles"), wfsl.isGetMapTiles()));
 
         wfsl.setLayerName(params.getHttpParam("layerName"));
-        wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam("maxFeatures"),wfsl.getMaxFeatures()));
+        wfsl.setMaxFeatures(ConversionHelper.getInt(params.getHttpParam("maxFeatures"), wfsl.getMaxFeatures()));
         wfsl.setOutputFormat(params.getHttpParam("outputFormat"));
         wfsl.setSelectedFeatureParams(params.getHttpParam("selectedFeatureParams"));
         wfsl.setTileBuffer(params.getHttpParam("tileBuffer"));
@@ -478,8 +479,16 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         // these are only in insert
-        ml.setSrs_name(params.getHttpParam("srs_name",ml.getSrs_name()));
+        ml.setSrs_name(params.getHttpParam("srs_name", ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
+
+        // Put manual Refresh mode to attributes if true
+        JSONObject attributes = ml.getAttributes();
+        attributes.remove("manualRefresh");
+        if(ConversionHelper.getOnOffBoolean(params.getHttpParam("manualRefresh", "off"), false)){
+            JSONHelper.putValue(attributes, "manualRefresh", true);
+            ml.setAttributes(attributes);
+        }
     }
     private String validateUrl(final String url) throws ActionParamsException {
         try {
