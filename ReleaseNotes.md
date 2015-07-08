@@ -29,6 +29,8 @@ Other updates:
 * org.codehaus.woodstox:stax2-api 3.1.1 -> 3.1.4
 * com.fasterxml.woodstox:woodstox-core 4.4.1 -> 5.0.1
 
+Note that both Jackson 1.x and 2.x are used currently. 1.x is mostly used in WFS/transport since CometD needs it.
+
 ### Property changes
 
 db.additional.pools has been changed to db.additional.modules to better describe it. 
