@@ -266,6 +266,12 @@
             </dependency>
 
             <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-webapp-helpers</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>fi.mml</groupId>
                 <artifactId>capabilities</artifactId>
                 <version>${fi.mml.capabilities.version}</version>
@@ -865,6 +871,7 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
+        <module>service-webapp</module>
 
         <module>control-base</module>
         <module>control-example</module>

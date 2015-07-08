@@ -16,7 +16,11 @@
 
 	<dependencies>
 
-		<!-- Managed deps -->
+		<dependency>
+			<groupId>fi.nls.oskari.service</groupId>
+			<artifactId>oskari-webapp-helpers</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>fi.nls.oskari.service</groupId>
 			<artifactId>oskari-map</artifactId>
