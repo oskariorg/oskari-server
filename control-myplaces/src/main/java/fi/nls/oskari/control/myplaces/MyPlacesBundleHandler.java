@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.myplaces;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
@@ -10,6 +8,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.*;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -62,7 +62,7 @@ public class MyPlacesBundleHandler extends ActionHandler {
     public void init() {
         super.init();
         if(service == null) {
-            setMyPlacesService(new MyPlacesServiceIbatisImpl());
+            setMyPlacesService(OskariComponentManager.getComponentOfType(MyPlacesService.class));
         }
         if(proxyService == null) {
             setGeoServerProxyService(new GeoServerProxyService());

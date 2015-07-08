@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!DOCTYPE sqlMap      
-    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
-    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<mapper namespace="fi.nls.oskari.myplaces.MyPlaceMapper">
 
-<sqlMap namespace="MyPlace">
-
-    <!-- Use type aliases to avoid typing the full classname every time. -->
-    <typeAlias alias="MyPlaceCategory" type="fi.nls.oskari.domain.map.MyPlaceCategory" />
-    <typeAlias alias="MyPlace" type="fi.nls.oskari.domain.map.MyPlace" />
-
-    <resultMap id="CategoryResult" class="MyPlaceCategory">
+    <resultMap id="CategoryResult" type="MyPlaceCategory">
 	    <result property="id" column="id" /> 
 	    <result property="category_name" column="category_name" />
         <result property="stroke_width" column="stroke_width" />
@@ -24,7 +19,7 @@
         <result property="publisher_name" column="publisher_name" />
     </resultMap>
 
-    <resultMap id="PlaceResult" class="MyPlace">
+    <resultMap id="PlaceResult" type="MyPlace">
         <result property="id" column="id" />
         <result property="uuid" column="uuid" />
         <result property="categoryId" column="category_id" />
@@ -36,7 +31,6 @@
     </resultMap>
 
     <select id="findPlace"
-            parameterClass="long"
             resultMap="PlaceResult">
         select
             id,
@@ -49,11 +43,10 @@
             attention_text
         from
             my_places
-        where id = #id#
+        where id = #{id}
     </select>
 
-    <select id="find" 
-        parameterClass="int" 
+    <select id="find"
         resultMap="CategoryResult">
         select 
             id, 
@@ -69,12 +62,12 @@
             publisher_name
 	    from 
 	        categories 
-	    where id = #id#
+	    where id = #{id}
     </select>
     
-     <select id="findByIds" 
-        parameterClass="List" 
-        resultMap="CategoryResult">
+     <select id="findByIds"
+             parameterType="list"
+             resultMap="CategoryResult">
         select 
             id, 
             category_name,
@@ -90,9 +83,9 @@
         from 
             categories 
         where id in
-		  <iterate open="(" close=")" conjunction=",">
-		   #[]#
-		  </iterate>
+		  <foreach item="item" collection="list" open="(" close=")" separator=",">
+              #{item}
+		  </foreach>
     </select>
 
     <select id="findAll" 
@@ -114,8 +107,7 @@
          where publisher_name is not null
     </select>
     
-     <select id="freeFind" 
-        parameterClass="Map" 
+     <select id="freeFind"
         resultMap="CategoryResult">
          <![CDATA[
         select 
@@ -133,7 +125,7 @@
         from 
             categories 
          WHERE 
-            to_tsvector(category_name  || ' ' || publisher_name) @@ to_tsquery(#searchKey#) AND 
+            to_tsvector(category_name  || ' ' || publisher_name) @@ to_tsquery(#{searchKey}) AND
             categories.publisher_name is not null UNION 
                 SELECT 
                    categories.id, 
@@ -150,24 +142,9 @@
                 FROM 
                    my_places,categories
                 WHERE 
-                    to_tsvector(name || ' ' || place_desc) @@ to_tsquery(#searchKey#) AND
+                    to_tsvector(name || ' ' || place_desc) @@ to_tsquery(#{searchKey}) AND
                     my_places.category_id = categories.id and
                     categories.publisher_name is not null
           ]]>       
     </select>
-    
-    
-    
-    
-    <update id="updatePublisherName" 
-        parameterClass="Map">
-        update categories set
-            publisher_name = #publisher_name:VarChar#
-        where uuid = #uuid# and id = #id#
-    </update>
-    
-    
-    
-    
-     
-</sqlMap>
+</mapper>

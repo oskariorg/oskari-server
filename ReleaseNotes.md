@@ -2,6 +2,11 @@
 
 ## 1.31
 
+### service-myplaces
+
+Myplaces services have been moved from service-map to service-myplaces. 
+The database library has been updated from Ibatis to Mybatis.
+
 ### service-routing (POC)
 
 New service requests route from the defined route service provider and parses data to geoJson and route instructions.
