@@ -6,13 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.transport.MessageParseHelper;
@@ -21,6 +14,13 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.transport.TransportService;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Handles user's session (current state)
@@ -28,7 +28,13 @@ import fi.nls.oskari.transport.TransportService;
 public class SessionStore {
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
+    /*
+     * This uses the Jackson 1.x version since it's used anyway by the current version of CometD.
+     * Using Jackson 2.x results in problems with serialization/deserialization.
+     * Perhaps needs a custom serializer...
+     */
 	private static final ObjectMapper mapper = new ObjectMapper();
+
 	public static final String KEY = "Session_";
 
 	private String client; // bayeux session (used in redis key)
@@ -450,6 +456,7 @@ public class SessionStore {
 			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
 			log.error(e, "Mapping from Object to JSON String failed");
+			e.printStackTrace();
 		} catch (IOException e) {
 			log.error(e, "IO failed");
 		}
@@ -467,7 +474,7 @@ public class SessionStore {
 		SessionStore store = new SessionStore();
 
 		JsonFactory factory = new JsonFactory();
-		JsonParser parser = factory.createParser(json);
+		JsonParser parser = factory.createJsonParser(json);
 
 		String fieldName = null;
 		parser.nextToken();

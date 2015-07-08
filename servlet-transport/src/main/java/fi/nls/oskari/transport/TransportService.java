@@ -465,7 +465,7 @@ public class TransportService extends AbstractService {
         List<List<Double>> tiles = MessageParseHelper.parseBounds(params.get(PARAM_TILES));
 
         Layer layer = store.getLayers().get(layerId);
-        if(layer.isVisible() ) {
+        if(layer != null && layer.isVisible()) {
             layer.setTiles(tiles); // selected tiles to render
             initMapLayerJob(parseRequestId(params), store, layerId, refresh);
         }
