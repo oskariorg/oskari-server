@@ -20,6 +20,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AggregateMethodParams;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
@@ -38,6 +40,7 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @OskariActionRoute("CreateAnalysisLayer")
@@ -173,6 +176,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 }
 
             }
+            // Add extra TypeNames (depends on wps method)
+            analysisParser.fixTypeNames(analysisLayer);
+
+            // Fix geometry property name for WFST (could be any, depends on Wps method )
+            fixGeometryPropertyName(analysisLayer);
 
             analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
@@ -397,5 +405,28 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         }
         return result;
     }
+
+    /**
+     * Fix the geometry property name for WFST transform
+     * Geometry property name in WPS method result is not the same as in input featurecollections
+     * @param analysisLayer
+     */
+    private void fixGeometryPropertyName(AnalysisLayer analysisLayer) {
+
+        try {
+
+            AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
+            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
+                params.setGeom("z_"+ ((SpatialJoinStatisticsMethodParams) params).getGeom2());
+            }
+
+
+        } catch (Exception e) {
+            log.warn("WPS geometry property name fix failed ", e);
+
+        }
+
+    }
+
 
 }

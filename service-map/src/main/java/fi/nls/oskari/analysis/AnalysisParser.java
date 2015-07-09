@@ -76,6 +76,7 @@ public class AnalysisParser {
     public static final String BUFFER = "buffer";
     public static final String INTERSECT = "intersect";
     public static final String SPATIAL_JOIN = "spatial_join";
+    public static final String SPATIAL_JOIN_STATISTICS = "spatial_join_statistics";
     public static final String DIFFERENCE = "difference";
     public static final String AGGREGATE = "aggregate";
     public static final String UNION = "union";
@@ -85,6 +86,7 @@ public class AnalysisParser {
     private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
     private static final String JSONKEY_OVERRIDE_SLD = "override_sld";
 
+    private static final String JSON_KEY_METHOD = "method";
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LAYERID = "layerId";
     private static final String JSON_KEY_FUNCTIONS = "functions";
@@ -139,7 +141,7 @@ public class AnalysisParser {
         // GeoJson input data
         final String geojson = prepareGeoJsonFeatures(json, json.optString(JSON_KEY_NAME,"feature"));
 
-        String analysisMethod = json.optString("method");
+        String analysisMethod = this.getAnalysisMethod(json);
 
         analysisLayer.setInputAnalysisId(null);
         int id = 0;
@@ -455,6 +457,64 @@ public class AnalysisParser {
             method.setProperties(this.parseProperties(
                     analysisLayer.getFields(), lc.getFeatureNamespace(), lc
                             .getGMLGeometryProperty()));
+
+            analysisLayer.setAnalysisMethodParams(method);
+        }
+        //------------------ SPATIAL_JOIN_STATISTICS (WPS method gs:VectorZonalStatistics) -----------------------
+        else if (SPATIAL_JOIN_STATISTICS.equals(analysisMethod)) {
+            JSONObject params;
+            try {
+                params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+            } catch (JSONException e) {
+                throw new ServiceException("Method parameters missing.");
+            }
+
+            final String geojson2 = prepareGeoJsonFeatures(params, json.optString(JSON_KEY_NAME, "feature"));
+            final String sid = JSONHelper.getStringFromJSON(params,JSON_KEY_LAYERID, "");
+            final Boolean isJsonData = (geojson2 != null && !geojson2.isEmpty());
+            WFSLayerConfiguration lc2 = this.getWfsLayerConfiguration(sid, isJsonData );
+
+
+            // Set params for WPS execute
+
+            SpatialJoinStatisticsMethodParams method = this.parseSpatialJoinStatisticsParams(lc, lc2,
+                    json, geojson, geojson2, baseUrl);
+            //TODO: better input type mapping
+            method.setWps_reference_type(analysisLayer.getInputType());
+            if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
+                method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+                method.setLayer_id2(this.getAnalysisInputId(params));
+            } else if (isWpsInputLayerType(lc2.getWps_params())) {
+                method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
+            } else if (isJsonData) {
+                method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GEOJSON);
+            } else {
+                method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
+            }
+            // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
+            this.setWpsInputLayerType(lc.getWps_params(), analysisLayer);
+
+
+            // WFS filter
+
+            method.setFilter(this.parseFilter(lc, filter1, analysisLayer
+                    .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
+
+            if (sid.indexOf(MYPLACES_LAYER_PREFIX) == 0) {
+                method.setFilter2(this.parseFilter(lc2, filter2, null, this
+                        .getAnalysisInputId(params), null));
+            } else if (sid.indexOf(USERLAYER_PREFIX) == 0) {
+                method.setFilter2(this.parseFilter(lc2, filter2, null, null, this
+                        .getAnalysisInputId(params)));
+            } else {
+                method.setFilter2(this.parseFilter(lc2, filter2, this
+                        .getAnalysisInputId(params), null, null));
+            }
+            // WFS Query properties
+            method.setProperties(this.parseProperties(
+                    analysisLayer.getFields(), lc.getFeatureNamespace(), lc
+                            .getGMLGeometryProperty()));
+
 
             analysisLayer.setAnalysisMethodParams(method);
         }
@@ -922,6 +982,65 @@ public class AnalysisParser {
 
         } catch (Exception e) {
             throw new ServiceException("Intersect join analysis parameters missing.");
+        }
+
+        return method;
+    }
+    /**
+     * Parses SPATIAL_JOIN_STATISTICS method parameters for WPS execute xml variables
+     *
+     * @param lc
+     *            1st WFS layer configuration (point layer)
+     * @param lc2
+     *            2nd WFS layer configuration (polygon layer)
+     * @param json
+     *            Method parameters and layer info from the front
+     * @param gjson
+     *            1st layer geometry, if input is geojson
+     * @param gjson2
+     *            2nd layer geometry, if input is geojson
+     * @param baseUrl
+     *            Url for Geoserver WPS reference input (input
+     *            FeatureCollection)
+     * @return IntersectJoinMethodParams parameters for WPS execution
+     ************************************************************************/
+    private  SpatialJoinStatisticsMethodParams  parseSpatialJoinStatisticsParams(
+            WFSLayerConfiguration lc, WFSLayerConfiguration lc2,
+            JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
+        SpatialJoinStatisticsMethodParams method = new SpatialJoinStatisticsMethodParams();
+        //
+        method.setMethod(SPATIAL_JOIN_STATISTICS);
+
+        try {
+
+            parseMethodParams( method, lc, json, gjson, baseUrl);
+
+            // Variable values of  input 2
+            method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getLayerId()));
+            method.setTypeName2(lc2.getFeatureNamespace() + ":"
+                    + lc2.getFeatureElement());
+            method.setXmlns2("xmlns:" + lc2.getFeatureNamespace() + "=\""
+                    + lc2.getFeatureNamespaceURI() + "\"");
+            method.setGeom2(lc2.getGMLGeometryProperty());
+            method.setGeojson2(gjson2);
+
+
+
+            // attribute field name of point layer for to which to compute statistics
+            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+            // A layer (point layer)
+            String dataAttribute = (params.getJSONArray("featuresA1").toString().replace("[","").replace("]","").replace("\"",""));
+            // Only one attribute is allowed and its type must be numeric
+            method.setDataAttribute(dataAttribute.split(",")[0]);
+            // 2nd layer properties to retain in analysis layer
+            String [] layer2_properties = (params.getJSONArray("featuresB1").toString().replace("[","").replace("]","").replace("\"","")).split(",");
+            // WFS Query properties
+            method.setProperties2(this.parseProperties(
+                    Arrays.asList(layer2_properties), lc2.getFeatureNamespace(), lc2
+                            .getGMLGeometryProperty()));
+
+        } catch (Exception e) {
+            throw new ServiceException("Spatial-join-statistics  analysis parameters missing.");
         }
 
         return method;
@@ -1534,8 +1653,8 @@ public class AnalysisParser {
         try {
             JSONObject json = JSONHelper.createJSONObject(analyse);
             // Switch to UNION method
-            json.remove("method");
-            json.put("method", "union");
+            json.remove(JSON_KEY_METHOD);
+            json.put(JSON_KEY_METHOD, "union");
 
             AnalysisLayer al2 = this.parseAnalysisLayer(json, filter1, filter2, baseUrl, null);
             al2.setResult(analysisLayer.getResult());
@@ -1671,5 +1790,54 @@ public class AnalysisParser {
         method.setY_lower(bbox.optString("bottom"));
         method.setX_upper(bbox.optString("right"));
         method.setY_upper(bbox.optString("top"));
+    }
+
+    /** Returns the final wps method id
+     *  In certain cases requested method is changed here to an other wps method because of oskari analyse UI
+     * @param json Analyse json send from oskari front
+     * @return
+     */
+    private String getAnalysisMethod(JSONObject json) {
+
+        String method = json.optString(JSON_KEY_METHOD);
+        if(method != null && method.equals(SPATIAL_JOIN)){
+            //If spatial join operator is aggregate, use SPATIAL_JOIN_STATISTICS method
+            JSONObject params = json.optJSONObject(JSON_KEY_METHODPARAMS);
+            if(params != null) {
+                String operator = params.optString(JSON_KEY_OPERATOR);
+                if (operator != null && operator.equals(AGGREGATE)) {
+                    method = SPATIAL_JOIN_STATISTICS;
+                }
+            }
+        }
+       return method;
+    }
+    /**
+     * Fix fieldnames names and types for analysis storage
+     * WPS method might generate new fields for the features in WPS resultset
+     * @param analysisLayer
+     */
+    public void fixTypeNames(AnalysisLayer analysisLayer) {
+
+        try {
+
+            AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
+            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
+                Map<String,String> fieldTypes =  analysisLayer.getFieldtypeMap();
+                fieldTypes.put("count","numeric");
+                fieldTypes.put("min","numeric");
+                fieldTypes.put("max","numeric");
+                fieldTypes.put("sum","numeric");
+                fieldTypes.put("avg","numeric");
+                fieldTypes.put("stddev","numeric");
+                analysisLayer.setFieldsMap(fieldTypes);
+            }
+
+
+        } catch (Exception e) {
+            log.warn("WPS geometry property name fix failed ", e);
+
+        }
+
     }
 }
