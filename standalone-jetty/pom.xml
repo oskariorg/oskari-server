@@ -64,7 +64,7 @@
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/../webapp-map/src/main/webapp</directory>
+                <directory>${basedir}/../webapp-map/src/main/webapp/jsp</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
@@ -145,7 +145,7 @@
                       <outputDirectory>${basedir}/dist/jsp</outputDirectory>
                       <resources>
                         <resource>
-                            <directory>${basedir}/../webapp-map/src/main/webapp</directory>
+                            <directory>${basedir}/../webapp-map/src/main/webapp/jsp</directory>
                         </resource>
                       </resources>
                     </configuration>

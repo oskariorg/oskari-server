@@ -8,11 +8,13 @@ import fi.nls.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import fi.nls.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -89,7 +91,15 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         adapter.setArgumentResolvers(argumentResolvers);
 
     }
-
+/*
+    @Bean
+    public SpringTemplateEngine templateEngine(MessageSource messageSource, ServletContextTemplateResolver templateResolver) {
+        SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+        engine.setMessageSource(messageSource);
+        return engine;
+    }
+    */
     @Bean
     public ViewResolver getExtensionHookViewResolver() {
         // OskariViewResolver extends InternalResourceViewResolver but let's missing views
@@ -123,6 +133,19 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         cleanupIbatis();
     }
 
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames("classpath:locale/messages");
+        // if true, the key of the message will be displayed if the key is not
+        // found, instead of throwing a NoSuchMessageException
+        messageSource.setUseCodeAsDefaultMessage(true);
+        //messageSource.setDefaultEncoding("UTF-8");
+        // # -1 : never reload, 0 always reload
+        messageSource.setCacheSeconds(30);
+
+        return messageSource;
+    }
     /**
      * Workaround for https://issues.apache.org/jira/browse/IBATIS-540
      */

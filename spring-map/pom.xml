@@ -15,41 +15,15 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-webapp-helpers</artifactId>
         </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
-        </dependency>
-
 
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-users</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-example</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-myplaces</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-admin</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-routing</artifactId>
         </dependency>
 
         <dependency>

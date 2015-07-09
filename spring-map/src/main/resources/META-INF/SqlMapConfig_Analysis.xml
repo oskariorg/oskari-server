@@ -7,16 +7,15 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 <sqlMapConfig>
 
   <settings enhancementEnabled="true" useStatementNamespaces="true"/>
-
-    <!-- Use custom userlayer datasource -->
+    <!-- Use custom analysis datasource -->
   <transactionManager type="JDBC" commitRequired="true">
     <dataSource type="JNDI">
-      <property name="DataSource" value="java:/comp/env/${db.userlayer.jndi.name}" />
+      <property name="DataSource" value="java:/comp/env/jdbc/OskariPool" />
     </dataSource>
   </transactionManager>
-
-    <sqlMap resource="META-INF/UserLayer.xml" />
-    <sqlMap resource="META-INF/UserLayerData.xml" />
-    <sqlMap resource="META-INF/UserLayerStyle.xml" />
+  
+   <sqlMap resource="META-INF/Analysis.xml" />
+   <sqlMap resource="META-INF/AnalysisStyle.xml" />
+   <sqlMap resource="META-INF/AnalysisAndStyle.xml" />
  
 </sqlMapConfig>

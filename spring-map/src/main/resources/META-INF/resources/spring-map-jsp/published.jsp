@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Published view - ${viewName}</title>
+    <title>${viewName}</title>
 
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script>

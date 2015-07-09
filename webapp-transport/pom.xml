@@ -13,41 +13,8 @@
     <artifactId>transport</artifactId>
     <packaging>war</packaging>
 
-    <properties>
-        <transport.resourceDir>${basedir}/../servlet-transport/src/main/resources</transport.resourceDir>
-    </properties>
-
     <build>
 		<finalName>transport</finalName>
-        <filters>
-            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
-        </filters>
-        <resources>
-            <!-- Get the oskari.properties from servlet-map as baseline properties -->
-            <resource>
-                <directory>${basedir}/../servlet-map/src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-            <!-- Get additional properties based on profile -->
-            <resource>
-                <directory>${basedir}/../servlet-transport/src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <!-- Get additional properties based on profile -->
-            <resource>
-                <directory>${transport.resourceDir}</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>

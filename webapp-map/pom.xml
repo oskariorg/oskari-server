@@ -22,6 +22,31 @@
         </dependency>
 
         <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-example</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-myplaces</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-admin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-routing</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>fi.nls.oskari</groupId>
             <artifactId>service-logging</artifactId>
         </dependency>
@@ -32,7 +57,8 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
-            <artifactId>map-servlet</artifactId>
+            <!-- artifactId>map-servlet</artifactId -->
+            <artifactId>spring-map</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.ibm.icu</groupId>
@@ -52,100 +78,13 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <env>default</env>
-        <profile-filter>${basedir}/env/default/default-filter.properties</profile-filter>
-        <profile-resources>${basedir}/env/${env}</profile-resources>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>jetty</id>
-            <!-- activation><activeByDefault>true</activeByDefault></activation -->
-            <properties>
-                <env>jetty</env>
-            </properties>
-        </profile>
-        <profile>
-            <id>jetty-jaas</id>
-            <properties>
-                <env>jetty-jaas</env>
-            </properties>
-        </profile>
-        <profile>
-            <id>jetty9-jaas</id>
-            <properties>
-                <env>jetty9-jaas</env>
-            </properties>
-        </profile>
-         <profile>
-            <id>kvp</id>
-            <properties>
-                <env>jetty-kvp</env>
-            </properties>
-            <dependencies>
-                <!-- Adding additional search channels to servlet build -->
-                <dependency>
-                    <groupId>fi.nls.oskari.service</groupId>
-                    <artifactId>oskari-search-nls</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>tomcat</id>
-            <properties>
-                <env>tomcat</env>
-                <profile-filter>${basedir}/env/${env}/tomcat-filter.properties</profile-filter>
-            </properties>
-        </profile>
-
-
-        <!--
-        Add a custom profile for your maven settings.xml or here to use your own filter properties instead of defaults:
-        <profile>
-            <id>custom</id>
-            <properties>
-        		<profile-resources>/path/to/custom/resources</profile-resources>
-                <profile-filter>/path/to/custom/my-filter.properties</profile-filter>
-            </properties>
-        </profile>
-
-        Compile using profile with "mvn clean install -Pcustom"
-        -->
-    </profiles>
-
     <build>
         <finalName>oskari-map</finalName>
-        <filters>
-            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
-            <filter>${basedir}/env/default/default-filter.properties</filter>
-            <filter>${profile-filter}</filter>
-        </filters>
-        <resources>
-            <resource>
-                <directory>${basedir}/../servlet-map/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <!-- profile specific resources -->
-                <directory>${profile-resources}</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.6</version>
-
-                <configuration>
-                    <webResources>
-                        <resource>
-                            <directory>${profile-resources}</directory>
-                            <filtering>true</filtering>
-                        </resource>
-                    </webResources>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -154,12 +93,6 @@
                 <version>9.2.9.v20150224</version>
 
                 <configuration>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>java.security.auth.login.config</name>
-                            <value>${basedir}/target/oskari-map/WEB-INF/jndi-login.conf</value>
-                        </systemProperty>
-                    </systemProperties>
                     <httpConnector>
                         <port>2373</port>
                     </httpConnector>

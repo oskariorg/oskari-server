@@ -893,7 +893,7 @@
         <module>control-routing</module>
 
         <!-- oskari map -->
-        <module>servlet-map</module>
+        <module>spring-map</module>
         <module>webapp-map</module>
         <module>standalone-jetty</module>
 

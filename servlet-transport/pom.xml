@@ -18,13 +18,10 @@
     </properties>
 
     <build>
-        <filters>
-            <filter>${basedir}/../servlet-map/filter/filter-base.properties</filter>
-        </filters>
         <resources>
             <!-- Get the oskari.properties from servlet-map as baseline properties -->
             <resource>
-                <directory>${basedir}/../servlet-map/src/main/resources</directory>
+                <directory>${basedir}/../spring-map/src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.properties</include>
@@ -159,16 +156,6 @@
             <artifactId>gt-geojson</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
         </dependency>
@@ -182,31 +169,43 @@
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
-            <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari</groupId>
             <artifactId>OskariMarkFactory</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-          <groupId>xml-apis</groupId>
-           <artifactId>xml-apis</artifactId>
-           <version>1.4.01</version>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
         </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.2</version>
-            <scope>test</scope>
-        </dependency>
+
         <!-- arcgis rest support needs this -->
         <dependency>
             <groupId>com.esri.geometry</groupId>
             <artifactId>esri-geometry-api</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,6 +43,8 @@ public class MapController {
 
     private final static String KEY_AJAX_URL = "ajaxUrl";
     private final static String KEY_CONTROL_PARAMS = "controlParams";
+
+    private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header.";
 
     private final ViewService viewService = new ViewServiceIbatisImpl();
     private boolean isDevelopmentMode = false;
@@ -63,8 +67,9 @@ public class MapController {
 
 
     @RequestMapping("/")
-    public String getMap(Model model,
-                         @OskariParam ActionParameters params) {
+    public String getMap(Model model, @OskariParam ActionParameters params) {
+
+        writeCustomHeaders(params.getResponse());
         boolean development = PropertyUtil.getOptional("development", false);
         model.addAttribute("preloaded", !development);
 
@@ -89,6 +94,21 @@ public class MapController {
 
         return viewJSP;
     }
+
+    private void writeCustomHeaders(HttpServletResponse response) {
+
+        final List<String> propertyList = PropertyUtil.getPropertyNamesStartingWith(KEY_RESPONSE_HEADER_PREFIX);
+        final int prefixLength = KEY_RESPONSE_HEADER_PREFIX.length();
+        for (String key : propertyList) {
+            final String value = PropertyUtil.get(key, "");
+            final String headerName = key.substring(prefixLength);
+            if(!value.isEmpty()) {
+                log.debug("Adding header", headerName, "=", value);
+                response.addHeader(headerName, value);
+            }
+        }
+    }
+
     private void setupLoginDetails(final ActionParameters params, Model model) {
         if(env.isHandleLoginForm()) {
             if(!params.getUser().isGuest()) {

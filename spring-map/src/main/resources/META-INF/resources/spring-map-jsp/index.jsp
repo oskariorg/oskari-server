@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
 <html>
@@ -48,7 +49,7 @@
 
             #contentMap {
                 height: 100%;
-                margin-left: 153px;
+                margin-left: 170px;
             }
 
             #login {
@@ -108,25 +109,25 @@
     <div id="login">
         <c:choose>
             <c:when test="${!empty loginState}">
-                <p class="error">Invalid password or username!!</p>
+                <p class="error"><spring:message code="invalid_password_or_username" text="Invalid password or username!" /></p>
             </c:when>
         </c:choose>
         <c:choose>
             <%-- If logout url is present - so logout link --%>
             <c:when test="${!empty _logout_uri}">
-                <a href="${pageContext.request.contextPath}${_logout_uri}">Logout</a>
+                <a href="${pageContext.request.contextPath}${_logout_uri}"><spring:message code="logout" text="Logout" /></a>
             </c:when>
             <%-- Otherwise show appropriate logins --%>
             <c:otherwise>
                 <c:if test="${!empty _login_uri_saml}">
-                    <a href="${pageContext.request.contextPath}${_login_uri_saml}">Log in with SAML</a><hr />
+                    <a href="${pageContext.request.contextPath}${_login_uri_saml}"><spring:message code="login.sso" text="SSO login" /></a><hr />
                 </c:if>
                 <c:if test="${!empty _login_uri && !empty _login_field_user}">
                     <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
-                        <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="Username" autofocus
+                        <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
                                required>
-                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="Password" required>
-                        <input type="submit" id="submit" value="Log in">
+                        <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="<spring:message code="password" text="Password" />" required>
+                        <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />">
                     </form>
                 </c:if>
             </c:otherwise>
