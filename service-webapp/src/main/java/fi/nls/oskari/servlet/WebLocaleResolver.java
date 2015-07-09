@@ -1,4 +1,4 @@
-package fi.nls.oskari.map.servlet;
+package fi.nls.oskari.servlet;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

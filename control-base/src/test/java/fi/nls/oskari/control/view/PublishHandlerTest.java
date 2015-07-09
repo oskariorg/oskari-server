@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
@@ -12,6 +10,8 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -49,7 +49,7 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         // view.template.publish=3
     	// mock services for testing
     	mockViewService();
-        myPlaceService = mock(MyPlacesServiceIbatisImpl.class);
+        myPlaceService = mock(MyPlacesServiceMybatisImpl.class);
         permissionsService = mock(PermissionsServiceIbatisImpl.class);
         bundleService = mock(BundleServiceIbatisImpl.class);
 

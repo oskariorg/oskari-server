@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.servlet.WebLocaleResolver;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.*;

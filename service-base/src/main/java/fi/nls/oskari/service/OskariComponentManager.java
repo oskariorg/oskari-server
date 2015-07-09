@@ -63,6 +63,12 @@ public class OskariComponentManager {
             }
         }
     }
+    public static <Mod extends OskariComponent> Mod getComponentOfType(final Class<Mod> clazz) {
+        Map<String, Mod> map = getComponentsOfType(clazz);
+        // just pick the first one
+        // TODO: error handling (nullpointer) and possibly prioritize implementations
+        return map.values().iterator().next();
+    }
 
     /**
      * Returns a subset of the registered OskariComponents matching the given class.

@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.analysis.AnalysisHelper;
@@ -27,8 +25,10 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -124,10 +124,10 @@ public class PublishHandler extends ActionHandler {
         layerService = service;
     }
 
-    public void init() {
+        public void init() {
         // setup service if it hasn't been initialized
         if (myPlaceService == null) {
-        	setMyPlacesService(new MyPlacesServiceIbatisImpl());
+        	setMyPlacesService(OskariComponentManager.getComponentOfType(MyPlacesService.class));
         }
 
         if (analysisService == null) {

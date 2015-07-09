@@ -97,7 +97,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
            PropertyUtil.addProperty("actionhandler.GetAppSetup.dynamic.bundle.admin-layerselector.roles", "Administrator, Karttajulkaisija_Tre");
         } catch (DuplicateException e) {
                  //this method is called once for every test, duplicates don't matter.
-
         }
 
         handler.init();

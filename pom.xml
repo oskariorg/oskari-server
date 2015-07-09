@@ -48,6 +48,10 @@
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
+        <spring.version>4.1.7.RELEASE</spring.version>
+        <spring-security.version>4.0.1.RELEASE</spring-security.version>
+        <spring.saml.version>1.0.1.RELEASE</spring.saml.version>
+
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.0</javax.servlet.jsp.version>
         <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
@@ -250,9 +254,21 @@
             </dependency>
 
             <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-myplaces</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>fi.nls.oskari</groupId>
                 <artifactId>standalone-jetty</artifactId>
                 <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-webapp-helpers</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
             </dependency>
 
             <dependency>
@@ -267,6 +283,27 @@
                 <version>${fi.mml.wms.version}</version>
             </dependency>
 
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework.security.extensions</groupId>
+                <artifactId>spring-security-saml2-core</artifactId>
+                <version>${spring.saml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>xerces</groupId>
@@ -824,6 +861,7 @@
         <module>service-permissions</module>
         <module>service-map</module>
         <module>service-wfs</module>
+        <module>service-myplaces</module>
 
         <module>service-search</module>
         <module>service-search-nls</module>
@@ -833,6 +871,7 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
+        <module>service-webapp</module>
 
         <module>control-base</module>
         <module>control-example</module>

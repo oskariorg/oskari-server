@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.myplaces;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -9,16 +7,20 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("PublishMyPlaceLayer")
 public class PublishMyPlaceLayerHandler extends ActionHandler  {
 
-    private static final  MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
+    private static MyPlacesService myPlaceService = null;
     private static final Logger log = LogFactory.getLogger(PublishMyPlaceLayerHandler.class);
 
+    public void init() {
+        myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+    }
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         final User user = params.getUser();

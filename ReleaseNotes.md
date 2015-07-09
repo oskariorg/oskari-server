@@ -2,6 +2,21 @@
 
 ## 1.31
 
+### spring-map
+
+This will replace the servlet-map module. It has some additional features like SAML-support, but
+drops configurable database JNDI-names and JAAS-support. Servlet-map will most likely be removed from the
+master version of 1.31 Oskari and this will be renamed as servlet-map.
+
+### service-webapp
+
+This new module has some common helper classes for webapps.
+
+### service-myplaces
+
+Myplaces services have been moved from service-map to service-myplaces. 
+The database access library has been updated from Ibatis to Mybatis.
+
 ### service-routing (POC)
 
 New service requests route from the defined route service provider and parses data to geoJson and route instructions.

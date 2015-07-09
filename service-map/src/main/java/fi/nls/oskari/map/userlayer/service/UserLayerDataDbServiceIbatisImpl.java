@@ -1,17 +1,11 @@
 package fi.nls.oskari.map.userlayer.service;
 
-import com.ibatis.sqlmap.client.SqlMapSession;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class UserLayerDataDbServiceIbatisImpl extends
         BaseIbatisService<UserLayerData> implements UserLayerDataDbService {
@@ -37,7 +31,6 @@ public class UserLayerDataDbServiceIbatisImpl extends
      *
      * @param userLayer
      */
-
     public long insertUserLayerDataRow(final UserLayerData userLayer) {
 
        // log.debug("Insert user layer data row:", userLayer);

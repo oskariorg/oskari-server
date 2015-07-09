@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.nls.oskari</groupId>
+        <artifactId>oskari-parent</artifactId>
+        <version>1.31.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>fi.nls.oskari.service</groupId>
+    <artifactId>oskari-webapp-helpers</artifactId>
+    <packaging>jar</packaging>
+    <name>WebApp helpers</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>content-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>service-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
