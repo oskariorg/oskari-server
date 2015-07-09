@@ -49,7 +49,12 @@
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
 
         <spring.version>4.1.7.RELEASE</spring.version>
-        <spring-security.version>4.0.1.RELEASE</spring-security.version>
+        <!-- saml 1.0.1.RELEASE uses security 3.1.2, check saml-extension for upgrades before updating security
+         Tested that it DOESN'T work with spring-security versions:
+          - 3.2.6.RELEASE
+          - 3.2.7.RELEASE
+          - 4.0.1.RELEASE -->
+        <spring-security.version>3.2.5.RELEASE</spring-security.version>
         <spring.saml.version>1.0.1.RELEASE</spring.saml.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
@@ -269,6 +274,12 @@
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-webapp-helpers</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari</groupId>
+                <artifactId>spring-map</artifactId>
+                <version>${fi.nls.oskari.version}</version>
             </dependency>
 
             <dependency>
