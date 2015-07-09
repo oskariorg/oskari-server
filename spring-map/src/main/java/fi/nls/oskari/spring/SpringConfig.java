@@ -53,7 +53,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     }
 
     //  --------- locale handling -------------
-    // TODO: use this instead fi.nls.oskari.map.servlet.WebLocaleResolver
+    // TODO: use this instead fi.nls.oskari.servlet.WebLocaleResolver
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         log.debug("addInterceptors called!!");
@@ -61,14 +61,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         localeChangeInterceptor.setParamName("lang");
         registry.addInterceptor(localeChangeInterceptor).addPathPatterns("/**");
     }
-/*
-    @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("lang");
-        return localeChangeInterceptor;
-    }
-*/
+
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver= new CookieLocaleResolver();
