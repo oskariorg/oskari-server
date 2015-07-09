@@ -4,9 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -62,11 +60,16 @@ public class RouteParams {
     }
 
     public Date getDate() {
-        return date;
+        if(date == null) {
+            return null;
+        }
+        return new Date(date.getTime());
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        if(date != null) {
+            this.date = new Date(date.getTime());
+        }
     }
 
     public Boolean getIsDepartureTime() {

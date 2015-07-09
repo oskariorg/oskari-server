@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.routing;
 
-import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -32,8 +31,6 @@ public class RoutingHandler extends ActionHandler {
     private static final String PARAM_FROM_LON = "fromlon";
     private static final String PARAM_TO_LAT = "tolat";
     private static final String PARAM_TO_LON = "tolon";
-    private static final String PARAM_VIA_LAT = "vialat";
-    private static final String PARAM_VIA_LON = "vialon";
     private static final String PARAM_DATE = "date";
     private static final String PARAM_TIME = "time";
     private static final String PARAM_TIMETYPE = "timetype";
@@ -50,18 +47,17 @@ public class RoutingHandler extends ActionHandler {
 
         routeparams.setFrom(params.getRequiredParamDouble(PARAM_FROM_LON), params.getRequiredParamDouble(PARAM_FROM_LAT));
         routeparams.setTo(params.getRequiredParamDouble(PARAM_TO_LON), params.getRequiredParamDouble(PARAM_TO_LAT));
-        //routeparams.setVia(params.getHttpParam(PARAM_VIA_LON), params.getRequiredParamDouble(PARAM_VIA_LAT));
 
         // TODO: validate values
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-        //HH:mm
-        final String dateTime = params.getHttpParam(PARAM_DATE, dateFormatter.format(new Date())) +
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
+        final SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+        final String dateTime =
+                params.getHttpParam(PARAM_DATE, dateFormatter.format(new Date())) +
                 params.getHttpParam(PARAM_TIME, timeFormatter.format(new Date()));
 
         try {
-            Date date = sdf.parse(dateTime);
+            final Date date = sdf.parse(dateTime);
             routeparams.setDate(date);
 
         } catch (ParseException e) {

@@ -16,7 +16,7 @@ import fi.nls.oskari.util.ResponseHelper;
 public class SearchMyPlaceLayersHandler extends ActionHandler {
 
     private static final String PARAM_SEARCH_KEY = "searchKey";
-    private static MyPlacesService myPlaceService = null;
+    private MyPlacesService myPlaceService = null;
 
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);

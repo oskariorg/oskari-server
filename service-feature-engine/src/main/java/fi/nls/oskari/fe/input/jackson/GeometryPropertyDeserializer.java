@@ -43,11 +43,7 @@ public class GeometryPropertyDeserializer extends
                 gml));
         return handlers;
     }
-/*
-    public Class<?> handledType() {
-        return GeometryProperty.class;
-    }
-*/
+
     public Map<QName, PullParserHandler> getHandlers() {
 
             return handlers;

@@ -35,14 +35,9 @@ public class RoutingServiceOpenTripPlannerImplTest {
             final JSONObject responseGeoJson = parser.parseGeoJson(route, routeparams.getSrs());
             routeresponse.setGeoJson(responseGeoJson);
 
-            try {
-                final JSONObject responseRoute = parser.parseRoute(route);
-                routeresponse.setInstructions(responseRoute);
-                result.add(routeresponse);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-
+            final JSONObject responseRoute = parser.parseRoute(route);
+            routeresponse.setInstructions(responseRoute);
+            result.add(routeresponse);
         }
         JSONArray response = new JSONArray();
 

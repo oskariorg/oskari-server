@@ -173,7 +173,9 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void add(Job job) {
-        if(job == null) return;
+        if(job == null) {
+            return;
+        }
         // removed previous job with same key
         remove(job);
         if(job instanceof OWSMapLayerJob) {
@@ -200,9 +202,10 @@ public class HystrixJobQueue extends JobQueue {
      * @param job
      */
     public void remove(Job job) {
-        if(job == null) return;
-        if(job instanceof OWSMapLayerJob ||
-            job instanceof HystrixJob) {
+        if(job == null) {
+            return;
+        }
+        if(job instanceof OWSMapLayerJob || job instanceof HystrixJob) {
             Job<String> existing = commandsMapping.get(job.getKey());
             if (existing != null) {
                 existing.terminate();

@@ -113,27 +113,7 @@ public class JSONActionRouteTest {
         // mock possible payload inputstream
         if(payload != null) {
             try {
-                ServletInputStream wrapper = new ServletInputStream() {
-                    @Override
-                    public boolean isFinished() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean isReady() {
-                        return false;
-                    }
-
-                    @Override
-                    public void setReadListener(ReadListener readListener) {
-
-                    }
-
-                    @Override
-                    public int read() throws IOException {
-                        return payload.read();
-                    }
-                };
+                ServletInputStream wrapper = new MockServletInputStream(payload);
                 doReturn(wrapper).when(req).getInputStream();
             }
             catch (IOException ignored ) {}

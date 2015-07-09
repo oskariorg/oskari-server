@@ -11,7 +11,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -29,12 +28,13 @@ import java.util.Map;
 @Oskari
 public class MyPlacesServiceMybatisImpl extends MyPlacesService {
 
-    private final static Logger log = LogFactory.getLogger(
+    private static final Logger LOG = LogFactory.getLogger(
             MyPlacesServiceMybatisImpl.class);
 
     private PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private SqlSessionFactory factory = null;
+
     public MyPlacesServiceMybatisImpl() {
 
         final DatasourceHelper helper = new DatasourceHelper();
@@ -43,14 +43,8 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             factory = initializeMyBatis(dataSource);
         }
         else {
-            log.error("Couldn't get datasource for myplaces");
+            LOG.error("Couldn't get datasource for myplaces");
         }
-        // default 'myplaces.client.wmsurl' to ajax url for tiles if not configured
-        if(MYPLACES_CLIENT_WMS_URL == null) {
-            // action_route name points to fi.nls.oskari.control.myplaces.MyPlacesTileHandler
-            MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=MyPlacesTile&myCat=";
-        }
-
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -111,7 +105,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             return place.isOwnedBy(user.getUuid());
 
         } catch (Exception e) {
-            log.warn(e, "Exception when trying to load place with id:", placeId);
+            LOG.warn(e, "Exception when trying to load place with id:", placeId);
         } finally {
             session.close();
         }
@@ -119,7 +113,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     }
 
     public boolean canModifyCategory(final User user, final String layerId) {
-        log.debug("canModifyCategory - layer:", layerId, "- User:", user);
+        LOG.debug("canModifyCategory - layer:", layerId, "- User:", user);
         if(layerId == null || user.isGuest()) {
             return false;
         }
@@ -139,7 +133,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
      * @return
      */
     public boolean canModifyCategory(final User user, final long categoryId) {
-        log.debug("canModifyCategory - categoryId:", categoryId, "- User:", user);
+        LOG.debug("canModifyCategory - categoryId:", categoryId, "- User:", user);
         try {
             MyPlaceCategory cat =  findCategory(categoryId);
             if(cat == null) {
@@ -148,7 +142,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             return cat.isOwnedBy(user.getUuid());
 
         } catch (Exception e) {
-            log.warn(e, "Exception when trying to load category with id:", categoryId);
+            LOG.warn(e, "Exception when trying to load category with id:", categoryId);
         }
         return false;
     }
@@ -159,7 +153,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.findAll();
         } catch (Exception e) {
-            log.error(e, "Failed to load categories");
+            LOG.error(e, "Failed to load categories");
         } finally {
             session.close();
         }
@@ -171,8 +165,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return  mapper.find(id);
         } catch (Exception e) {
-            log.warn(e, "Exception when trying to load category with id:", id);
-            e.printStackTrace();
+            LOG.warn(e, "Exception when trying to load category with id:", id);
         } finally {
             session.close();
         }
@@ -198,7 +191,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.updatePublisherName(data);
         } catch (Exception e) {
-            log.error(e, "Failed to update publisher name", data);
+            LOG.error(e, "Failed to update publisher name", data);
         } finally {
             session.close();
         }
@@ -211,7 +204,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.findByIds(idList);
         } catch (Exception e) {
-            log.error(e, "Failed load list", idList);
+            LOG.error(e, "Failed load list", idList);
         } finally {
             session.close();
         }
@@ -226,7 +219,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             return mapper.freeFind(data);
         } catch (Exception e) {
-            log.error(e, "Failed searchwith", search);
+            LOG.error(e, "Failed searchwith", search);
         } finally {
             session.close();
         }

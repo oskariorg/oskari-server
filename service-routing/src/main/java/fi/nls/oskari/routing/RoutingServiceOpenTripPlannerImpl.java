@@ -45,20 +45,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         final String to = newTo.getLatToString() + "," + newTo.getLonToString();
         requestParams.put("to", to);
 
-
-        if (params.getDate() != null) {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("HHmm");
-            final String date = dateFormatter.format(params.getDate());
-            requestParams.put("date", date);
-            final String time = timeFormatter.format(params.getDate());
-            requestParams.put("time", time);
-            // if don't have time, we can't have timetype
-            // departure is default
-            if (!params.getIsDepartureTime()) {
-                requestParams.put("timetype", "arrival");
-            }
-        }
+        setupDateAndTime(params, requestParams);
 
         if (params.getVia() != null) {
             final String via = params.getVia().getX() + "," + params.getVia().getY();
@@ -91,13 +78,9 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 final JSONObject responseGeoJson = parser.parseGeoJson(route, params.getSrs());
                 routeresponse.setGeoJson(responseGeoJson);
 
-                try {
-                    final JSONObject responseRoute = parser.parseRoute(route);
-                    routeresponse.setInstructions(responseRoute);
-                    result.add(routeresponse);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                final JSONObject responseRoute = parser.parseRoute(route);
+                routeresponse.setInstructions(responseRoute);
+                result.add(routeresponse);
 
             }
 
@@ -106,5 +89,23 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         }
 
         return result;
+    }
+
+    private void setupDateAndTime(RouteParams params, Map<String, String> requestParams) {
+        if (params.getDate() == null) {
+            return;
+        }
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HHmm");
+        final String date = dateFormatter.format(params.getDate());
+        requestParams.put("date", date);
+        final String time = timeFormatter.format(params.getDate());
+        requestParams.put("time", time);
+        // if don't have time, we can't have timetype
+        // departure is default
+        if (!params.getIsDepartureTime()) {
+            requestParams.put("timetype", "arrival");
+        }
+
     }
 }

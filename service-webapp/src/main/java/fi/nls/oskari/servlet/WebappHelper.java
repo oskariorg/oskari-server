@@ -24,10 +24,15 @@ public class WebappHelper {
     private static final String KEY_REDIS_PORT = "redis.port";
     private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
 
+    private static final String KEY_MODULE_LIST = "db.additional.modules";
+    private static final String STR_LOG_LINE = "#########################################################";
+
 
     private static Logger log = LogFactory.getLogger(WebappHelper.class);
     private static SchedulerService schedulerService;
     private static boolean propsLoaded = false;
+
+    private WebappHelper() {}
 
     public static void loadProperties() {
         // populate properties
@@ -46,7 +51,7 @@ public class WebappHelper {
                 loadProperties();
             }
             // catch all so we don't get mysterious listener start errors
-            log.info("#########################################################");
+            log.info(STR_LOG_LINE);
             log.info("Oskari-map context is being initialized");
             initializeOskariContext();
 
@@ -65,9 +70,8 @@ public class WebappHelper {
                     PropertyUtil.get(KEY_REDIS_HOSTNAME, "localhost"),
                     ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_PORT), 6379));
             log.info("Oskari-map context initialization done");
-            log.info("#########################################################");
-        }
-        catch (Exception ex) {
+            log.info(STR_LOG_LINE);
+        } catch (Exception ex) {
             log.error(ex, "!!! Error initializing context for Oskari !!!");
         }
 
@@ -92,7 +96,7 @@ public class WebappHelper {
 
         // loop "db.additional.pools" to see if we need any more pools configured
         log.info("- checking additional DataSources");
-        final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.modules");
+        final String[] additionalPools = PropertyUtil.getCommaSeparatedList(KEY_MODULE_LIST);
         for(String pool : additionalPools) {
             if(!DS_HELPER.checkDataSource(ctx, pool)) {
                 log.error("Couldn't initialize DataSource for module:", pool);
@@ -109,7 +113,7 @@ public class WebappHelper {
         } catch (Exception e) {
             log.error(e, "DB migration for Oskari core failed!");
         }
-        final String[] additionalPools = PropertyUtil.getCommaSeparatedList("db.additional.modules");
+        final String[] additionalPools = PropertyUtil.getCommaSeparatedList(KEY_MODULE_LIST);
         for(String module : additionalPools) {
             final String poolName = DS_HELPER.getOskariDataSourceName(module);
             try {

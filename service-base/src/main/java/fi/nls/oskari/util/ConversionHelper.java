@@ -184,7 +184,7 @@ public class ConversionHelper {
             return defaultValue;
         }
         try {
-            return strToParse.toUpperCase().equals("ON");
+            return "ON".equalsIgnoreCase(strToParse);
         } catch (Exception ex) {
             return defaultValue;
         }

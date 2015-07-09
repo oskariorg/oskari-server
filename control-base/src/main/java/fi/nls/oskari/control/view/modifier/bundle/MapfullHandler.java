@@ -2,7 +2,6 @@ package fi.nls.oskari.control.view.modifier.bundle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;

@@ -456,7 +456,6 @@ public class SessionStore {
 			log.error(e, "JSON Generation failed");
 		} catch (JsonMappingException e) {
 			log.error(e, "Mapping from Object to JSON String failed");
-			e.printStackTrace();
 		} catch (IOException e) {
 			log.error(e, "IO failed");
 		}

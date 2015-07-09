@@ -1,7 +1,5 @@
 package fi.nls.oskari.myplaces;
 
-import java.util.List;
-
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -13,29 +11,49 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wms.WMSCapabilities;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public abstract class MyPlacesService extends OskariComponent {
 
     public static final String RESOURCE_TYPE_MYPLACES = "myplaces";
-    public final static String PERMISSION_TYPE_DRAW = "DRAW";
+    public static final String PERMISSION_TYPE_DRAW = "DRAW";
     public static final String MYPLACES_LAYERID_PREFIX = "myplaces_";
 
-    static String MYPLACES_CLIENT_WMS_URL = PropertyUtil.getOptional("myplaces.client.wmsurl");
+    private String MYPLACES_CLIENT_WMS_URL = PropertyUtil.getOptional("myplaces.client.wmsurl");
 
-    private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows")+":my_places_categories";
+    private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows") + ":my_places_categories";
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
-    private final static LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
+    private static final LayerJSONFormatterWMS JSON_FORMATTER = new LayerJSONFormatterWMS();
 
     public abstract List<MyPlaceCategory> getCategories();
+
     public abstract MyPlaceCategory findCategory(long id);
+
     public abstract List<MyPlaceCategory> getMyPlaceLayersById(List<Long> idList);
+
     public abstract int updatePublisherName(final long id, final String uuid, final String name);
+
     public abstract List<MyPlaceCategory> getMyPlaceLayersBySearchKey(final String search);
+
     public abstract boolean canInsert(final User user, final long categoryId);
+
     public abstract boolean canModifyPlace(final User user, final long placeId);
+
     public abstract boolean canModifyCategory(final User user, final long categoryId);
+
     public abstract boolean canModifyCategory(final User user, final String layerId);
+
     public abstract Resource getResource(final long categoryId);
+
     public abstract Resource getResource(final String myplacesLayerId);
+
+    public MyPlacesService() {
+        // default 'myplaces.client.wmsurl' to ajax url for tiles if not configured
+        if (MYPLACES_CLIENT_WMS_URL == null) {
+            // action_route name points to fi.nls.oskari.control.myplaces.MyPlacesTileHandler
+            MYPLACES_CLIENT_WMS_URL = PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=MyPlacesTile&myCat=";
+        }
+    }
 
     public String getClientWMSUrl() {
         return MYPLACES_CLIENT_WMS_URL;
@@ -57,11 +75,10 @@ public abstract class MyPlacesService extends OskariComponent {
         layer.setOptions(options);
 
         // if useDirectURL -> geoserver URL
-        if(useDirectURL) {
+        if (useDirectURL) {
             layer.setUrl(MYPLACES_ACTUAL_WMS_URL +
                     "(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());
-        }
-        else {
+        } else {
             layer.setUrl(MYPLACES_CLIENT_WMS_URL + mpLayer.getId() + "&");
         }
 

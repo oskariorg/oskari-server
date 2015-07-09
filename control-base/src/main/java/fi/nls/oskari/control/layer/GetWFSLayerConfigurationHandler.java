@@ -24,8 +24,6 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
-import java.util.Map;
-
 @OskariActionRoute("GetWFSLayerConfiguration")
 public class GetWFSLayerConfigurationHandler extends ActionHandler {
 

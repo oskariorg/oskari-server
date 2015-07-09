@@ -79,8 +79,7 @@ public class WFSCommunicator {
                     OMAttribute geomNs = factory.createOMAttribute("xmlns:" + split[0], null, layer.getGeometryNamespaceURI());
                     root.addAttribute(geomNs);
                 }
-            }
-            else {
+            } else {
                 log.error("No geometry property name defined");
                 return null;
             }

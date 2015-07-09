@@ -15,7 +15,7 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("PublishMyPlaceLayer")
 public class PublishMyPlaceLayerHandler extends ActionHandler  {
 
-    private static MyPlacesService myPlaceService = null;
+    private MyPlacesService myPlaceService = null;
     private static final Logger log = LogFactory.getLogger(PublishMyPlaceLayerHandler.class);
 
     public void init() {

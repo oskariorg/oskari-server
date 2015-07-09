@@ -13,7 +13,7 @@ import java.util.Locale;
  * Resolves locale based on http param with state handled with cookie.
  */
 public class WebLocaleResolver {
-    private final static Logger log = LogFactory.getLogger(WebLocaleResolver.class);
+    private static final Logger LOG = LogFactory.getLogger(WebLocaleResolver.class);
     private String localeHttpParam = "lang";
     private String cookieName = "oskari.language";
 
@@ -35,28 +35,26 @@ public class WebLocaleResolver {
         // possible Query parameter always overrides cookie value
         String requestedLocale = request.getParameter(localeHttpParam);
         Cookie cookie = getCookie(request.getCookies());
-        log.debug("Language param:", requestedLocale);
+        LOG.debug("Language param:", requestedLocale);
         if (requestedLocale == null && cookie != null) {
             // no parameter, check cookie
             requestedLocale = cookie.getValue();
-            log.debug("Cookie language:", requestedLocale);
+            LOG.debug("Cookie language:", requestedLocale);
         }
         final boolean supportedLanguage = isSupported(requestedLocale);
-        if (supportedLanguage) {
-            if (cookie == null) {
-                cookie = new Cookie(cookieName, requestedLocale);
-                cookie.setPath("/"); // request.getContextPath()
-                cookie.setSecure(request.isSecure());
-            }
-            else {
-                cookie.setValue(requestedLocale);
-            }
-            // add or update language-cookie value
-            response.addCookie(cookie);
-            return getLocale(requestedLocale);
+        if (!supportedLanguage) {
+            return defaultLocale;
         }
-
-        return defaultLocale;
+        if (cookie == null) {
+            cookie = new Cookie(cookieName, requestedLocale);
+            cookie.setPath("/"); // request.getContextPath()
+            cookie.setSecure(request.isSecure());
+        } else {
+            cookie.setValue(requestedLocale);
+        }
+        // add or update language-cookie value
+        response.addCookie(cookie);
+        return getLocale(requestedLocale);
     }
 
     private Locale getLocale(final String requestedLocale) {
@@ -91,7 +89,7 @@ public class WebLocaleResolver {
                 closeMatch = supportedLocale;
             }
         }
-        return (closeMatch != null);
+        return closeMatch != null;
     }
 
 }

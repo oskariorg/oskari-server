@@ -63,8 +63,8 @@ public class OskariComponentManager {
             }
         }
     }
-    public static <Mod extends OskariComponent> Mod getComponentOfType(final Class<Mod> clazz) {
-        Map<String, Mod> map = getComponentsOfType(clazz);
+    public static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
+        Map<String, MOD> map = getComponentsOfType(clazz);
         // just pick the first one
         // TODO: error handling (nullpointer) and possibly prioritize implementations
         return map.values().iterator().next();
@@ -73,16 +73,16 @@ public class OskariComponentManager {
     /**
      * Returns a subset of the registered OskariComponents matching the given class.
      * @param clazz A OskariComponent subclass we are interested in
-     * @return unmodifyable map of components mathing the given type
+     * @return unMODifyable map of components mathing the given type
      */
-    public static <Mod extends OskariComponent> Map<String, Mod> getComponentsOfType(final Class clazz) {
+    public static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
         if(components.isEmpty()) {
             addDefaultComponents();
         }
-        final HashMap<String, Mod> mods = new HashMap<String, Mod>();
+        final HashMap<String, MOD> mods = new HashMap<String, MOD>();
         for(OskariComponent comp : components) {
             if(clazz.isInstance(comp)) {
-                mods.put(comp.getName(), (Mod)comp);
+                mods.put(comp.getName(), (MOD)comp);
             }
         }
         return Collections.unmodifiableMap(mods);

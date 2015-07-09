@@ -4,10 +4,7 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.XmlHelper;
-import org.apache.axiom.om.OMElement;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,11 +17,11 @@ import java.util.*;
 public class RouteParser {
 
 
-    private Logger log = LogFactory.getLogger(RouteParser.class);
+    private static final Logger LOG = LogFactory.getLogger(RouteParser.class);
 
     public JSONObject parseGeoJson(Route params, String targetSRS) {
 
-        System.out.println("----------------------Trying to parse geoJson");
+        LOG.debug("----------------------Trying to parse geoJson");
 
         JSONObject featureCollection = new JSONObject();
 
@@ -64,12 +61,12 @@ public class RouteParser {
             featureCollection.put("features", featureList);
 
         } catch (JSONException e) {
-            log.error("can't save json object: "+e.toString());
+            LOG.error("can't save json object: " + e.toString());
         }
         return featureCollection;
     }
 
-    public JSONObject parseRoute (Route params) throws JSONException {
+    public JSONObject parseRoute (Route params) {
 
         JSONObject instructions = new JSONObject();
         JSONArray legList = new JSONArray();
@@ -104,7 +101,7 @@ public class RouteParser {
             }
             instructions.put("legs", legList);
         } catch (JSONException e) {
-            log.error("couldn,t parse instructions"+e.toString());
+            LOG.error("couldn,t parse instructions" + e.toString());
         }
 
         return instructions;

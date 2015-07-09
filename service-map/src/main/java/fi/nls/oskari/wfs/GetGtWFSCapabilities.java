@@ -11,22 +11,16 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
-
-
 import org.geotools.data.DataStore;
-import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-
-
+import org.geotools.data.wfs.WFSDataStore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -44,12 +38,12 @@ public class GetGtWFSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWFSCapabilities.class);
 
-    private final static String KEY_LAYERS = "layers";
-    private final static String KEY_LAYERS_WITH_ERRORS = "layersWithErrors";
-    private final static String DEFAULT_VERSION = "1.1.0";
-    private final static String WFS2_0_0_VERSION = "2.0.0";
-    private final static LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
-    private final static List<String> GEOMTYPES = new ArrayList<>(Arrays.asList("gml:PolygonPropertyType", "gml:SurfacePropertyType",
+    private static final String KEY_LAYERS = "layers";
+    private static final String KEY_LAYERS_WITH_ERRORS = "layersWithErrors";
+    private static final String DEFAULT_VERSION = "1.1.0";
+    private static final String WFS2_0_0_VERSION = "2.0.0";
+    private static final LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
+    private static final List<String> GEOMTYPES = new ArrayList<>(Arrays.asList("gml:PolygonPropertyType", "gml:SurfacePropertyType",
             "gml:PolyhedralSurfacePropertyType", "gml:TriangulatedSurfacePropertyType", "gml:TinPropertyType",
             "gml:OrientableSurfacePropertyType", "gml:CompositeSurfacePropertyType", "gml:LineStringPropertyType",
             "gml:CurvePropertyType", "gml:CompositeCurvePropertyType", "gml:OrientableCurvePropertyType", "gml:MultiCurvePropertyType",
@@ -64,15 +58,22 @@ public class GetGtWFSCapabilities {
      * @return json of wfslayer json array
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject getWFSCapabilities(final String rurl, final String version, final String user, final String pw) throws ServiceException {
+    public static JSONObject getWFSCapabilities(final String rurl, final String version, final String user,
+                                                final String pw)
+            throws ServiceException {
         try {
             String wfs_version = version;
-            if (version.isEmpty()) wfs_version = DEFAULT_VERSION;
+            if (version.isEmpty()) {
+                wfs_version = DEFAULT_VERSION;
+            }
             // Only default_version and WFS2_0_0_VERSION  are supported
-            if (!version.equals(WFS2_0_0_VERSION)) wfs_version = DEFAULT_VERSION;
+            if (!version.equals(WFS2_0_0_VERSION)) {
+                wfs_version = DEFAULT_VERSION;
+            }
             Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(rurl, wfs_version, user, pw);
-            if (capa == null || (!capa.containsKey("WFSDataStore") && !capa.containsKey("FeatureTypeList")))
+            if (capa == null || (!capa.containsKey("WFSDataStore") && !capa.containsKey("FeatureTypeList"))) {
                 throw new ServiceException("Couldn't read/get wfs capabilities response from url.");
+            }
             try {
 
                 return parseLayer(capa, wfs_version, rurl, user, pw);
@@ -93,7 +94,8 @@ public class GetGtWFSCapabilities {
      * @param version WFS service version
      * @return json of wfslayer json array
      */
-    public static Map<String, Object> getGtDataStoreCapabilities(final String rurl, final String version, String user, String pw) {
+    public static Map<String, Object> getGtDataStoreCapabilities(final String rurl, final String version, String user,
+                                                                 String pw) {
         if (version.equals(WFS2_0_0_VERSION)) {
             return getGtDataStoreCapabilities_2_x(rurl, version, user, pw);
         } else {
@@ -108,7 +110,8 @@ public class GetGtWFSCapabilities {
      * @param version WFS service version
      * @return HashMap / WFSDataStore of wfs service
      */
-    public static Map<String, Object> getGtDataStoreCapabilities_1_x(final String rurl, final String version, String user, String pw) {
+    public static Map<String, Object> getGtDataStoreCapabilities_1_x(final String rurl, final String version,
+                                                                     String user, String pw) {
 
         Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
@@ -125,7 +128,9 @@ public class GetGtWFSCapabilities {
             DataStore data = DataStoreFinder.getDataStore(connectionParameters);
 
             WFSDataStore wfsds = null;
-            if (data instanceof WFSDataStore) wfsds = (WFSDataStore) data;
+            if (data instanceof WFSDataStore) {
+                wfsds = (WFSDataStore) data;
+            }
             if (wfsds != null) {
                 capabilities.put("status", "OK");
                 capabilities.put("WFSDataStore", wfsds);
@@ -149,7 +154,8 @@ public class GetGtWFSCapabilities {
      * @param version WFS service version
      * @return HashMap / HashMap of wfs service featuretypes
      */
-    public static Map<String, Object> getGtDataStoreCapabilities_2_x(final String rurl, final String version, String user, String pw) {
+    public static Map<String, Object> getGtDataStoreCapabilities_2_x(final String rurl, final String version,
+                                                                     String user, String pw) {
         WFSParserConfigs parseConfigs = new WFSParserConfigs();
         Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
@@ -183,7 +189,9 @@ public class GetGtWFSCapabilities {
                 srsval = scanChildNode(featypes.item(i).getChildNodes(), srs, srsval);
 
                 if (nameval != null) {
-                    if (titleval == null) titleval = nameval;
+                    if (titleval == null) {
+                        titleval = nameval;
+                    }
                     _FeatureType tmpft = new _FeatureType();
                     tmpft.setName(nameval);
                     tmpft.setTitle(titleval);
@@ -216,7 +224,8 @@ public class GetGtWFSCapabilities {
      * @param capa geotools wfs DataStore
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseLayer(Map<String, Object> capa, String version, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseLayer(Map<String, Object> capa, String version, String rurl, String user, String pw)
+            throws ServiceException {
         if (capa == null) {
             return null;
         }
@@ -237,7 +246,9 @@ public class GetGtWFSCapabilities {
      * @param typeNames capabilites typenames
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseWfs2xLayer(Map<String, _FeatureType> typeNames, String version, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseWfs2xLayer(Map<String, _FeatureType> typeNames, String version, String rurl,
+                                             String user, String pw)
+            throws ServiceException {
         if (typeNames == null) {
             return null;
         }
@@ -288,7 +299,8 @@ public class GetGtWFSCapabilities {
      * @param data geotools wfs DataStore
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject parseWfs1xLayer(WFSDataStore data, String version, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject parseWfs1xLayer(WFSDataStore data, String version, String rurl, String user, String pw)
+            throws ServiceException {
         if (data == null) {
             return null;
         }
@@ -333,6 +345,16 @@ public class GetGtWFSCapabilities {
         }
     }
 
+    private static SimpleFeatureType getSchema(WFSDataStore data, String typeName) {
+
+        try {
+            return data.getSchema(typeName);
+        } catch (Exception ex) {
+            log.warn("Couldn't get wfs feature source data", ex);
+        }
+        return null;
+    }
+
     /**
      * WMS layer data to json
      *
@@ -341,7 +363,9 @@ public class GetGtWFSCapabilities {
      * @return WFSlayers
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static JSONObject layerToOskariLayerJson(Object capa, String version, String typeName, String rurl, String user, String pw) throws ServiceException {
+    public static JSONObject layerToOskariLayerJson(Object capa, String version, String typeName, String rurl,
+                                                    String user, String pw)
+            throws ServiceException {
 
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WFS);
@@ -358,21 +382,10 @@ public class GetGtWFSCapabilities {
         _FeatureType fea1x = null;
 
         try {
-
             if (capa instanceof WFSDataStore) {
                 data1x = (WFSDataStore) capa;
-//            log.debug("layerToOskariLayerJson: "+typeName+" "+rurl+" "+user+" "+pw);
-                SimpleFeatureType schema = null;
-                try {
-                    schema = data1x.getSchema(typeName);
-                }
-                catch (Exception ex) {
-                    log.warn("Couldn't get wfs feature source data", ex);
-
-                }
+                SimpleFeatureType schema = getSchema(data1x, typeName);
                 if (schema != null) {
-
-
                     //check whether there actually is a geometry column -> otherwise don't go further.
                     if (GetGtWFSCapabilities.getFeaturetypeGeometryName(schema) == null) {
                         throw new ServiceException("No geometry column.");
@@ -382,8 +395,7 @@ public class GetGtWFSCapabilities {
                     FeatureSource<SimpleFeatureType, SimpleFeature> source = data1x.getFeatureSource(typeName);
                     title = source.getInfo().getTitle();
 
-                }
-                else {
+                } else {
                     // try own DescribeFeature request and parsing
                     fea1x = parseWfs1xDescribeFeatureType(IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, typeName), user, pw), typeName, data1x);
                     title = fea1x.getTitle();
@@ -421,16 +433,16 @@ public class GetGtWFSCapabilities {
             if (data1x != null && fea1x != null) {
                 // WFS 1.x  Geotools parse FAILED
                 lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea1x, rurl, user, pw);
-            }
-            else if (data1x != null && fea1x == null) {
+            } else if (data1x != null && fea1x == null) {
                 // WFS 1.x  Geotools parse OK
                 lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(data1x, typeName, rurl, user, pw);
-            }
-            else if (fea2x != null) {
+            } else if (fea2x != null) {
                 //WFS 2.0
                 lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2x, rurl, user, pw);
             }
-
+            if(lc == null) {
+                throw new RuntimeException("Couldn't parse wfs capabilities");
+            }
             JSONHelper.putValue(json.getJSONObject("admin"), "passthrough", JSONHelper.createJSONObject(lc.getAsJSON()));
 
             // NOTE! Important to remove id since this is at template
@@ -483,7 +495,9 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfsLayerConfiguration(WFSDataStore data, String typeName, String rurl, String user, String pw) throws ServiceException {
+    public static WFSLayerConfiguration layerToWfsLayerConfiguration(WFSDataStore data, String typeName, String rurl,
+                                                                     String user, String pw)
+            throws ServiceException {
 
         final WFSLayerConfiguration lc = new WFSLayerConfiguration();
         lc.setDefaults();
@@ -532,7 +546,6 @@ public class GetGtWFSCapabilities {
             return lc;
         } catch (Exception ex) {
             log.warn("Couldn't get wfs feature source data", ex);
-            //return null;
             throw new ServiceException(ex.getMessage());
         }
 
@@ -545,18 +558,16 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(_FeatureType featype, String rurl, String user, String pw) throws ServiceException {
+    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(_FeatureType featype, String rurl, String user,
+                                                                       String pw)
+            throws ServiceException {
 
         final WFSLayerConfiguration lc = new WFSLayerConfiguration();
         lc.setWFS20Defaults();
-
-
         lc.setURL(rurl);
         lc.setUsername(user);
         lc.setPassword(pw);
-
         lc.setLayerName(featype.getTitle());
-
 
         try {
 
@@ -569,18 +580,11 @@ public class GetGtWFSCapabilities {
             }
 
             lc.setLayerId("layer_" + name);
-
-
-            // lc.setGMLGeometryProperty(geomName); WFS 2.0.0 works without geom property in GetFeature
-            // Use oskari front srs
-            //  lc.setSRSName(featype.getDefaultSrs());
-
-
-            //lc.setGMLVersion();
             lc.setWFSVersion(WFS2_0_0_VERSION);
-            //lc.setMaxFeatures(data.getMaxFeatures());
             lc.setFeatureNamespace(xmlns);
-            if (featype.getNsUri() != null) lc.setFeatureNamespaceURI(featype.getNsUri());
+            if (featype.getNsUri() != null) {
+                lc.setFeatureNamespaceURI(featype.getNsUri());
+            }
 
             lc.setFeatureElement(name);
             // WFS 2.0 parser items
@@ -594,11 +598,11 @@ public class GetGtWFSCapabilities {
             return lc;
         } catch (Exception ex) {
             log.warn("Couldn't get wfs feature source data", ex);
-            //return null;
             throw new ServiceException(ex.getMessage());
         }
 
     }
+
     /**
      * WFS 1.x.0 layer data to json  in case geotools fails
      *
@@ -606,7 +610,9 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(_FeatureType featype, String rurl, String user, String pw) throws ServiceException {
+    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(_FeatureType featype, String rurl, String user,
+                                                                       String pw)
+            throws ServiceException {
 
         final WFSLayerConfiguration lc = new WFSLayerConfiguration();
         lc.setDefaults();
@@ -641,7 +647,9 @@ public class GetGtWFSCapabilities {
             lc.setWFSVersion(DEFAULT_VERSION);
             //lc.setMaxFeatures(data.getMaxFeatures());
             lc.setFeatureNamespace(xmlns);
-            if (featype.getNsUri() != null) lc.setFeatureNamespaceURI(featype.getNsUri());
+            if (featype.getNsUri() != null) {
+                lc.setFeatureNamespaceURI(featype.getNsUri());
+            }
 
             lc.setFeatureElement(name);
 
@@ -663,25 +671,31 @@ public class GetGtWFSCapabilities {
      */
     public static String getUrl(String urlin, String version) {
 
-        if (urlin.isEmpty())
+        if (urlin.isEmpty()) {
             return "";
+        }
         String url = urlin;
         // check params
         if (url.indexOf("?") == -1) {
             url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1)
+            if (url.toLowerCase().indexOf("service=") == -1) {
                 url = url + "service=WFS";
-            if (url.toLowerCase().indexOf("getcapabilities") == -1)
+            }
+            if (url.toLowerCase().indexOf("getcapabilities") == -1) {
                 url = url + "&request=GetCapabilities";
+            }
         } else {
-            if (url.toLowerCase().indexOf("service=") == -1)
+            if (url.toLowerCase().indexOf("service=") == -1) {
                 url = url + "&service=WFS";
-            if (url.toLowerCase().indexOf("getcapabilities") == -1)
+            }
+            if (url.toLowerCase().indexOf("getcapabilities") == -1) {
                 url = url + "&request=GetCapabilities";
+            }
 
         }
-        if (url.toLowerCase().indexOf("version") == -1)
+        if (url.toLowerCase().indexOf("version") == -1) {
             url = url + "&version=" + version;
+        }
 
         return url;
     }
@@ -694,25 +708,31 @@ public class GetGtWFSCapabilities {
      */
     public static String getDescribeFeatureTypeUrl(String urlin, String version, String featureType) {
 
-        if (urlin.isEmpty())
+        if (urlin.isEmpty()) {
             return "";
+        }
         String url = urlin;
         // check params
         if (url.indexOf("?") == -1) {
             url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1)
+            if (url.toLowerCase().indexOf("service=") == -1) {
                 url = url + "service=WFS";
-            if (url.toLowerCase().indexOf("describefeaturetype") == -1)
+            }
+            if (url.toLowerCase().indexOf("describefeaturetype") == -1) {
                 url = url + "&request=DescribeFeatureType&typeNames=" + featureType;
+            }
         } else {
-            if (url.toLowerCase().indexOf("service=") == -1)
+            if (url.toLowerCase().indexOf("service=") == -1) {
                 url = url + "&service=WFS";
-            if (url.toLowerCase().indexOf("describefeaturetype") == -1)
+            }
+            if (url.toLowerCase().indexOf("describefeaturetype") == -1) {
                 url = url + "&request=DescribeFeatureType&typeNames=" + featureType;
+            }
 
         }
-        if (url.toLowerCase().indexOf("version") == -1)
+        if (url.toLowerCase().indexOf("version") == -1) {
             url = url + "&version=" + version;
+        }
 
         return url;
     }
@@ -737,19 +757,22 @@ public class GetGtWFSCapabilities {
 
             String nsuri = doc.getDocumentElement().getAttribute("targetNamespace");
 
-            if (nsuri != null) ft.setNsUri(nsuri);
+            if (nsuri != null) {
+                ft.setNsUri(nsuri);
+            }
 
         } catch (Exception ex) {
             log.debug("WFS 2.0.0 DescribeFeaturetype failed ", ex);
         }
     }
+
     /**
      * Parse DescribeFeatureType response - at least namespace uri and geom property
      * Use this  for wfs 1.1.0, if geotools fails
      *
-     * @param data   describefeaturetype response
+     * @param data describefeaturetype response
      */
-    private static  _FeatureType parseWfs1xDescribeFeatureType( final String data, String name, WFSDataStore store) {
+    private static _FeatureType parseWfs1xDescribeFeatureType(final String data, String name, WFSDataStore store) {
 
         _FeatureType ft = new _FeatureType();
         ft.setName(name);
@@ -767,7 +790,9 @@ public class GetGtWFSCapabilities {
 
             String nsuri = doc.getDocumentElement().getAttribute("targetNamespace");
 
-            if (nsuri != null) ft.setNsUri(nsuri);
+            if (nsuri != null) {
+                ft.setNsUri(nsuri);
+            }
             //Get Elements
             NodeList elements = doc.getDocumentElement().getElementsByTagName("xs:element");
             if (elements.getLength() == 0) {
@@ -784,11 +809,11 @@ public class GetGtWFSCapabilities {
             for (int i = 0; i < elements.getLength(); i++) {
 
                 Node node = elements.item(i);
-                if(node instanceof Element){
+                if (node instanceof Element) {
                     Element elem = (Element) elements.item(i);
                     String type = elem.getAttribute("type");
                     //is geom property
-                    if(GEOMTYPES.contains(type)){
+                    if (GEOMTYPES.contains(type)) {
                         ft.setGeomPropertyName(elem.getAttribute("name"));
                         break;
                     }
@@ -801,6 +826,7 @@ public class GetGtWFSCapabilities {
         }
         return ft;
     }
+
     /**
      * Set parser config items to featuretype and parser type information to layer title
      *
@@ -822,7 +848,7 @@ public class GetGtWFSCapabilities {
             ft.setResponseTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "response_template", null));
             ft.setRequestTemplate(JSONHelper.getStringFromJSON(JSONHelper.getJSONObject(feaconf, 0), "request_template", null));
             JSONObject pconf = JSONHelper.getJSONObject(JSONHelper.getJSONObject(feaconf, 0), "parse_config");
-            if(pconf != null) {
+            if (pconf != null) {
                 ft.setParseConfig(pconf.toString());
             }
         }
@@ -839,18 +865,24 @@ public class GetGtWFSCapabilities {
      * @return node value
      */
     public static String scanChildNode(NodeList subnodes, String name, String val) {
-        if (val != null) return val;
+        if (val != null) {
+            return val;
+        }
         //if(subnodes == null) return val;
         for (int k = 0; k < subnodes.getLength(); k++) {
             String localname = subnodes.item(k).getLocalName();
-            if (localname == null) localname = subnodes.item(k).getNodeName();
+            if (localname == null) {
+                localname = subnodes.item(k).getNodeName();
+            }
             if (localname != null) {
                 if (localname.equals(name)) {
                     return subnodes.item(k).getTextContent();
                 }
             }
             val = scanChildNode(subnodes.item(k).getChildNodes(), name, val);
-            if (val != null) return val;
+            if (val != null) {
+                return val;
+            }
         }
 
         return val;

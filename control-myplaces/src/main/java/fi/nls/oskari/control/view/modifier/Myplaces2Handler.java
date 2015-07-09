@@ -24,7 +24,7 @@ public class Myplaces2Handler extends BundleHandler {
     private static final String DEFAULT_XMLNS_NAMESPACE = "oskari";
     private static final String DEFAULT_XMLNS = "http://www.oskari.org";
 
-    private static MyPlacesService service = null;
+    private MyPlacesService service = null;
 
     @Override
     public void init() {

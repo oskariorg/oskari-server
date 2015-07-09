@@ -16,7 +16,7 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("GetPublishedMyPlaceLayers")
 public class GetPublishedMyPlaceLayersHandler extends ActionHandler {
 
-    private static MyPlacesService myPlaceService = null;
+    private MyPlacesService myPlaceService = null;
     private final String PARAM_USERS = "USERS";
 
     public void init() {
