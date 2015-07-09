@@ -122,7 +122,12 @@ public class OskariSAMLSecurityConfig extends WebSecurityConfigurerAdapter {
         IDP_META_LOCATION = PropertyUtil.get("oskari.saml.idp.metadata", "/saml/idp-meta-ssocircle.xml");
         SP_METADATA_ENTITY_BASE_URL = PropertyUtil.getOptional("oskari.saml.sp.baseurl");
         if(SP_METADATA_ENTITY_BASE_URL == null) {
-            SP_METADATA_ENTITY_BASE_URL = PropertyUtil.get("oskari.domain") + PropertyUtil.get("oskari.map.url");
+            SP_METADATA_ENTITY_BASE_URL = PropertyUtil.get("oskari.domain");
+            final String mapUrl = PropertyUtil.get("oskari.map.url");
+            if(!"/".equals(mapUrl)) {
+                // only add map url if it's not root
+                SP_METADATA_ENTITY_BASE_URL = SP_METADATA_ENTITY_BASE_URL + mapUrl;
+            }
         }
 
         // keystore props
