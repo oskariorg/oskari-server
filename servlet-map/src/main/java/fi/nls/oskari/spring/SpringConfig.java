@@ -58,16 +58,19 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     // TODO: use this instead fi.nls.oskari.servlet.WebLocaleResolver
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.debug("addInterceptors called!!");
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor(){
+        LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
-        registry.addInterceptor(localeChangeInterceptor).addPathPatterns("/**");
+        return localeChangeInterceptor;
     }
 
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver resolver= new CookieLocaleResolver();
-        resolver.setDefaultLocale(new Locale(PropertyUtil.getDefaultLocale()));
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        resolver.setDefaultLocale(new Locale(PropertyUtil.getDefaultLanguage()));
         resolver.setCookieMaxAge(-1);
         resolver.setCookieName("oskari.language");
         return resolver;
@@ -136,13 +139,20 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasenames("classpath:locale/messages");
+        // check for extension first, then the defaults
+        messageSource.setBasenames("classpath:locale/messages-ext", "classpath:locale/messages");
         // if true, the key of the message will be displayed if the key is not
         // found, instead of throwing a NoSuchMessageException
         messageSource.setUseCodeAsDefaultMessage(true);
+        messageSource.setFallbackToSystemLocale(false);
         //messageSource.setDefaultEncoding("UTF-8");
         // # -1 : never reload, 0 always reload
-        messageSource.setCacheSeconds(30);
+        boolean isDevMode = PropertyUtil.getOptional("development", true);
+        if(isDevMode) {
+            messageSource.setCacheSeconds(0);
+        } else {
+            messageSource.setCacheSeconds(-1);
+        }
 
         return messageSource;
     }

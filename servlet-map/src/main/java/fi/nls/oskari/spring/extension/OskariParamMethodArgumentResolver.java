@@ -59,7 +59,9 @@ public class OskariParamMethodArgumentResolver implements
         final ActionParameters params = new ActionParameters();
         params.setRequest(request);
         params.setResponse(response);
-
+        // localeResolver validates the locale to supported one, but can result in
+        // spring components using different locale than Oskari components.
+        // TODO: replace with custom validating spring based localeResolver and use request.getLocale() here.
         params.setLocale(localeResolver.resolveLocale(request, response));
         HttpSession session = request.getSession(false);
         if (session != null) {

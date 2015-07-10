@@ -2,11 +2,17 @@
 
 ## 1.31
 
-### spring-map
+### servlet-map
 
-This will replace the servlet-map module. It has some additional features like SAML-support, but
-drops configurable database JNDI-names and JAAS-support. Servlet-map will most likely be removed from the
-master version of 1.31 Oskari and this will be renamed as servlet-map.
+The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
+It uses programmatic initialization instead of a web.xml and has some additional features like SAML-support,
+ but drops configurable database JNDI-names and JAAS-support. JNDI-names need to be configured in Ibatis SQLMapConfig.xml
+ in addition to oskari-ext.properties if not using the defaults. Ibatis will be replaced with Mybatis in the future which
+ will solve this issue.
+
+### webapp-map
+
+Has been updated to use the new servlet-map.
 
 ### service-webapp
 

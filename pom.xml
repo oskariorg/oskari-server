@@ -91,6 +91,7 @@
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
         <jetty.version>9.1.0.M0</jetty.version>
+
         <postgresql.version>9.3-1102-jdbc41</postgresql.version>
         <quartz-scheduler.version>2.2.1</quartz-scheduler.version>
 
@@ -278,7 +279,7 @@
 
             <dependency>
                 <groupId>fi.nls.oskari</groupId>
-                <artifactId>spring-map</artifactId>
+                <artifactId>servlet-map</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -893,9 +894,11 @@
         <module>control-routing</module>
 
         <!-- oskari map -->
-        <module>spring-map</module>
+        <module>servlet-map</module>
         <module>webapp-map</module>
-        <module>standalone-jetty</module>
+        <!-- Standalone Jetty doesn't work with the new spring-based servlet-map so
+        removing it for now and possibly refactoring it later to use spring-boot -->
+        <!-- module>standalone-jetty</module -->
 
         <!-- transport  -->
         <module>service-datamodel</module>

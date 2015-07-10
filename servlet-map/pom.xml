@@ -6,7 +6,7 @@
         <artifactId>oskari-parent</artifactId>
         <version>1.31.0-SNAPSHOT</version>
     </parent>
-    <artifactId>spring-map</artifactId>
+    <artifactId>servlet-map</artifactId>
     <packaging>jar</packaging>
     <name>Oskari Map Servlet</name>
 

@@ -68,7 +68,6 @@ public class MapController {
 
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
-
         writeCustomHeaders(params.getResponse());
         boolean development = PropertyUtil.getOptional("development", false);
         model.addAttribute("preloaded", !development);

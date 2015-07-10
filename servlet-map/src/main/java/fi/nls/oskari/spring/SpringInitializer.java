@@ -21,8 +21,10 @@ public class SpringInitializer implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        // IMPORTANT! read properties already - needed for profile selection
+        // IMPORTANT! read properties at startup - needed for profile selection
         WebappHelper.loadProperties();
+        // re-init logger so we get the one configured in properties
+        log = LogFactory.getLogger(SpringInitializer.class);
         final WebApplicationContext context = getContext();
         servletContext.addListener(new ContextLoaderListener(context));
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("DispatcherServlet", new DispatcherServlet(context));

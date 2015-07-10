@@ -58,7 +58,7 @@
         <dependency>
             <groupId>fi.nls.oskari</groupId>
             <!-- artifactId>map-servlet</artifactId -->
-            <artifactId>spring-map</artifactId>
+            <artifactId>servlet-map</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.ibm.icu</groupId>

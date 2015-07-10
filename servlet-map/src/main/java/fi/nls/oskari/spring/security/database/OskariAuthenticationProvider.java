@@ -28,7 +28,6 @@ public class OskariAuthenticationProvider implements AuthenticationProvider {
         try {
             User user = getUser(name, password);
             return new UsernamePasswordAuthenticationToken(name, password, OskariUserHelper.getRoles(user.getRoles()));
-
         } catch (Exception ex) {
             log.error(ex, "Exception on auth!");
         }

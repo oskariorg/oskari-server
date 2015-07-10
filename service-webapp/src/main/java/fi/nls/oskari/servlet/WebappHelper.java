@@ -120,7 +120,8 @@ public class WebappHelper {
                 FlywaydbMigrator.migrate(DS_HELPER.getDataSource(poolName), module);
                 log.info(module + " DB migrated successfully");
             } catch (Exception e) {
-                log.error(e, "DB migration for module " + module + " failed!");
+                log.error(e, "DB migration for module " + module + " failed!", e);
+                e.printStackTrace();
             }
         }
     }

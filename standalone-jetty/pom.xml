@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.31.0-SNAPSHOT</version>
+        <version>1.30.0</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -61,10 +61,18 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org release repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/../webapp-map/src/main/webapp/jsp</directory>
+                <directory>${basedir}/../webapp-map/src/main/webapp</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
@@ -145,7 +153,7 @@
                       <outputDirectory>${basedir}/dist/jsp</outputDirectory>
                       <resources>
                         <resource>
-                            <directory>${basedir}/../webapp-map/src/main/webapp/jsp</directory>
+                            <directory>${basedir}/../webapp-map/src/main/webapp</directory>
                         </resource>
                       </resources>
                     </configuration>
