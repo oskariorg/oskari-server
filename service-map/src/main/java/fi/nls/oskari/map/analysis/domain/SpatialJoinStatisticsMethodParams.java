@@ -7,49 +7,24 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
-public class IntersectJoinMethodParams extends AnalysisMethodParams {
+public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
 
-    private final String analysisMethodTemplate = "layer-wps-intersect-join.xml";
-    private final String retainDataInput1stTemplate =  "<wps:Input><ows:Identifier>first attributes to retain</ows:Identifier><wps:Data><wps:LiteralData>{retainfield}</wps:LiteralData></wps:Data></wps:Input>";
-    private final String retainDataInput2ndTemplate =  "<wps:Input><ows:Identifier>second attributes to retain</ows:Identifier><wps:Data><wps:LiteralData>{retainfield}</wps:LiteralData></wps:Data></wps:Input>";
+    private final String analysisMethodTemplate = "layer-wps-spatial-join-statistics.xml";
 
-    // xml template paths {}
-
-    private final String RETAIN_FIELD = "{retainfield}";
-    private final String RETAIN_FIELDSA = "{retainfieldsA}";
-    private final String RETAIN_FIELDSB = "{retainfieldsB}";
-
-    private final String INTERSECTIONMODE = "{intersectionMode}";
-    private final String INTERSECT_CONTAINS = "contains";
-    private final String INTERSECT_CLIP = "clip";
+    // xml template placeholder paths {}
+    private final String DATA_ATTRIBUTE = "{dataAttribute}";
 
     private String href2 = "";
     private String xmlns2 = "";
     private String typeName2 = "";
     private String filter2 = "";
     private String geom2 = "";
-    private String retainfieldsA = "";
-    private String retainfieldsB = "";
+    private String dataAttribute = "";
     private String properties2 = "";
     private String geojson2 = "";
     private String wps_reference_type2 = "";
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
-    public String getRetainfieldsA() {
-        return retainfieldsA;
-    }
-
-    public void setRetainfieldsA(String retainfieldsA) {
-        this.retainfieldsA = retainfieldsA;
-    }
-
-    public String getRetainfieldsB() {
-        return retainfieldsB;
-    }
-
-    public void setRetainfieldsB(String retainfieldsB) {
-        this.retainfieldsB = retainfieldsB;
-    }
 
     public String getGeom2() {
         return geom2;
@@ -107,15 +82,14 @@ public class IntersectJoinMethodParams extends AnalysisMethodParams {
         wps_reference_type2 = wpsReferenceType2;
     }
 
-    public String getIntersection_mode() {
-        if (intersection_mode.equals(INTERSECT_CONTAINS)) return "SECOND_CONTAINS";
-        else if (intersection_mode.equals(INTERSECT_CLIP)) return "SECOND_CLIP";
-        else return "SECOND";  //"INTERSECTION" mode doesn't work
+    public String getDataAttribute() {
+        return dataAttribute;
     }
 
-    public void setIntersection_mode(String intersection_mode) {
-        this.intersection_mode = intersection_mode;
+    public void setDataAttribute(String dataAttribute) {
+        this.dataAttribute = dataAttribute;
     }
+
 
     public String getGeojson2() {
         if(geojson2 == null) return "";
@@ -205,12 +179,8 @@ public class IntersectJoinMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(REFERENCE1, reference1);
         doctemp = doctemp.replace(REFERENCE2, reference2);
 
-        //Retain fields A
-        doctemp = doctemp.replace(RETAIN_FIELDSA, getRetainData(this.getRetainfieldsA(), retainDataInput1stTemplate));
-        doctemp = doctemp.replace(RETAIN_FIELDSB, getRetainData(this.getRetainfieldsB(), retainDataInput2ndTemplate));
-
-        // Intersection mode
-        doctemp = doctemp.replace(INTERSECTIONMODE, this.getIntersection_mode());
+        //data attribute name for statistics computation
+        doctemp = doctemp.replace(DATA_ATTRIBUTE, this.getDataAttribute());
 
 
         Document doc = this.getDocument2(doctemp);
@@ -218,20 +188,5 @@ public class IntersectJoinMethodParams extends AnalysisMethodParams {
         return doc;
     }
 
-    /**
-     * generate input sections for retain fields
-     * @param fields  field names
-     * @param template
-     * @return
-     */
-    private String getRetainData(String fields, String template) {
 
-        StringBuilder data = new StringBuilder();
-        for (String field: fields.split(","))
-        {
-            String input = template.replace(RETAIN_FIELD,field);
-            data.append(input);
-        }
-        return data.toString();
-    }
 }

@@ -19,7 +19,7 @@ public class BufferMethodParams extends AnalysisMethodParams {
     // xml template paths {}
     private final String DISTANCE = "{distance}";
 
-    // distance from feature attribute field
+    // distance is read from feature attribute field
     private final String ATTRIBUTENAME = "{attributeName}";
     // private final String HREF = "{href}";
 
