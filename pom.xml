@@ -267,7 +267,7 @@
 
             <dependency>
                 <groupId>fi.nls.oskari</groupId>
-                <artifactId>standalone-jetty</artifactId>
+                <artifactId>servlet-saml-config</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
@@ -895,6 +895,7 @@
 
         <!-- oskari map -->
         <module>servlet-map</module>
+        <module>servlet-saml-config</module>
         <module>webapp-map</module>
         <!-- Standalone Jetty doesn't work with the new spring-based servlet-map so
         removing it for now and possibly refactoring it later to use spring-boot -->

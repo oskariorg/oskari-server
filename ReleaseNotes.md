@@ -5,7 +5,7 @@
 ### servlet-map
 
 The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
-It uses programmatic initialization instead of a web.xml and has some additional features like SAML-support,
+It uses programmatic initialization instead of a web.xml and can utilize SAML-security module (servlet-saml-config),
  but drops configurable database JNDI-names and JAAS-support. JNDI-names need to be configured in Ibatis SQLMapConfig.xml
  in addition to oskari-ext.properties if not using the defaults. Ibatis will be replaced with Mybatis in the future which
  will solve this issue.
@@ -23,6 +23,15 @@ TODO:
 - documentation about customizing the webapp
 - Mybatis at least for Userlayers/Analysis (Myplaces already migrated)
 
+### servlet-saml-config
+
+New module providing SAML2 support for servlet-map. Add it to your webapp with servlet-map to gain SAML-functionality:
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>servlet-saml-config</artifactId>
+        </dependency>
+        
 ### webapp-map
 
 Has been updated to use the new servlet-map.

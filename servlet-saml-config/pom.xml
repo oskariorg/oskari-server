@@ -6,26 +6,15 @@
         <artifactId>oskari-parent</artifactId>
         <version>1.31.0-SNAPSHOT</version>
     </parent>
-    <artifactId>servlet-map</artifactId>
+    <artifactId>servlet-saml-config</artifactId>
     <packaging>jar</packaging>
-    <name>Oskari Map Servlet</name>
+    <name>Oskari Map Servlet SAML configuration</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-webapp-helpers</artifactId>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>servlet-map</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-users</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-base</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -35,12 +24,17 @@
             <artifactId>spring-security-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>org.springframework.security.extensions</groupId>
+            <artifactId>spring-security-saml2-core</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -59,4 +53,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>
