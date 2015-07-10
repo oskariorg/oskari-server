@@ -9,10 +9,16 @@ It uses programmatic initialization instead of a web.xml and has some additional
  but drops configurable database JNDI-names and JAAS-support. JNDI-names need to be configured in Ibatis SQLMapConfig.xml
  in addition to oskari-ext.properties if not using the defaults. Ibatis will be replaced with Mybatis in the future which
  will solve this issue.
+ 
+Added localization support for login server-side HTML/Login form. 
 
 ### webapp-map
 
 Has been updated to use the new servlet-map.
+
+### standalone-jetty
+
+Moved out of oskari-server modules and Jetty-bundle from oskari.org should be used instead. 
 
 ### service-webapp
 
