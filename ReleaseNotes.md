@@ -10,6 +10,8 @@ It uses programmatic initialization instead of a web.xml and has some additional
  in addition to oskari-ext.properties if not using the defaults. Ibatis will be replaced with Mybatis in the future which
  will solve this issue.
  
+ See MigrationGuide.md for further info.
+ 
 Added localization support for server-side HTML/Login form.
  
 TODO: 

@@ -16,6 +16,11 @@ are now handled with path /action. This propably requires a change in oskari-ext
     # url path to call for ajax requests/action routes
     oskari.ajax.url.prefix=/action?
 
+The Maven artifactId was changed to clearly signal the change:
+
+    <groupId>fi.nls.oskari</groupId>
+    <artifactId>servlet-map</artifactId>
+
 ## 1.30
 
 ### Java update
