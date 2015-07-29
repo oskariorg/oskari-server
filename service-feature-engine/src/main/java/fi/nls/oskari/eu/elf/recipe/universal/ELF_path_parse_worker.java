@@ -160,7 +160,7 @@ public class ELF_path_parse_worker {
      */
     public static void addPathTag(List tags, QName rootNS, QName curNS) {
         if (rootNS.getPrefix().equals(curNS.getPrefix()) && rootNS.getLocalPart().equals(curNS.getLocalPart()))
-            tags = new ArrayList();
+            tags.clear();
         tags.add("/" + curNS.getPrefix() + ":" + curNS.getLocalPart());
     }
 
