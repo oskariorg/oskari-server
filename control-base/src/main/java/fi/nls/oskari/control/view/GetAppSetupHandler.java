@@ -321,7 +321,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         try {
             viewService.updateViewUsage(view);
             return true;
-        } catch (ViewException e) {
+        } catch (Exception e) {
             return false;
         }
     }
