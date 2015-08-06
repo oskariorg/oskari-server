@@ -144,6 +144,14 @@
        WHERE id = #id#
     </statement>
 
+    <statement id="updateUsage"
+               parameterClass="View">
+        UPDATE portti_view
+        SET used=now(),
+            usagecount=(SELECT usagecount+1 FROM portti_view WHERE id=1)
+        WHERE id=#id#;
+    </statement>
+
     <statement id="delete-view"
                parameterClass="java.lang.Long">
       DELETE FROM portti_view WHERE id = #id#

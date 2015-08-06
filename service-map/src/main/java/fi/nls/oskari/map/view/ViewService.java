@@ -38,6 +38,8 @@ public interface ViewService extends BaseService<Object> {
 
     public long getDefaultViewId();
 
+    public void updateViewUsage(View view);
+
     /**
      * Returns default view id for given role name
      * @param roleName

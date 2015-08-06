@@ -211,6 +211,9 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
             */
         }
 
+        // Update view for latest usage timestamp and opened count number
+        updateUsageData(view);
+
         // JSON presentation of view
         final JSONObject configuration = getConfiguration(view);
         final JSONArray startupSequence = getStartupSequence(view);
@@ -312,6 +315,15 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
             }
         }
          return referer.endsWith(pubdomain);
+    }
+
+    private boolean updateUsageData(final View view)  {
+        try {
+            viewService.updateViewUsage(view);
+            return true;
+        } catch (ViewException e) {
+            return false;
+        }
     }
 
     private JSONObject getConfiguration(final View view) throws ActionException {

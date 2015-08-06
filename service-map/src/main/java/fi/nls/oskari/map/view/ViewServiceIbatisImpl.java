@@ -197,6 +197,10 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         update("View.update", view);
     }
 
+    public void updateViewUsage(View view) {
+        update("View.updateUsage", view);
+    }
+
     public void updatePublishedView(final View view) throws ViewException {
         SqlMapSession session = openSession();
         long id = view.getId();
