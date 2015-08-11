@@ -2,6 +2,7 @@ package fi.nls.oskari.spatineo;
 
 import com.google.common.collect.Lists;
 import fi.nls.oskari.db.DBHandler;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.spatineo.dao.OskariDao;
@@ -31,7 +32,9 @@ public class SpatineoServalUpdateService {
      */
     public static void scheduledServiceCall() throws Exception {
         log.info("Starting the Spatineo Serval update service call...");
-        final DataSource dataSource = DBHandler.getDataSource();
+        final DatasourceHelper helper = new DatasourceHelper();
+
+        final DataSource dataSource = helper.getDataSource();
         final OskariDao oskariDao = new OskariDao(dataSource);
         final WmsServiceStatusDao serviceStatusDao = new WmsServiceStatusDao(dataSource);
         final SpatineoServalDao spatineoDao = new SpatineoServalDao(SERVAL_URL);
