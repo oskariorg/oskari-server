@@ -2,6 +2,12 @@
 
 ## 1.31
 
+### control-base
+
+GetAppSetupHandler now updates views usages to portti_view usagecount and used columns.
+* usagecount column tells how many times view has been used
+* used column tells the last time when view was used 
+
 ### servlet-map
 
 The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
@@ -113,6 +119,11 @@ For further information about script naming etc see http://flywaydb.org/
 
 Session id is now always sent as cookie when getting layer permissions. The default cookie name is 'JSESSIONID' and can be 
 overridden in transport-ext.properties with 'oskari.cookie.session' as before.
+
+### flyway migrates
+
+* add coordinatetool bundle to portti_bundle table
+* add used and usagecount for portti_view
 
 ## 1.30.1
 
