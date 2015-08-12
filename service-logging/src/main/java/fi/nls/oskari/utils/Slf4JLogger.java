@@ -40,7 +40,7 @@ public class Slf4JLogger extends fi.nls.oskari.log.Logger {
     private void log(Level level, String msg, Throwable t) {
         if (log instanceof LocationAwareLogger) {
             final LocationAwareLogger la = (LocationAwareLogger) log;
-            la.log(null, FQCN, level.getLevel(), msg, null, null);
+            la.log(null, FQCN, level.getLevel(), msg, null, t);
             return;
         }
         switch (level) {
