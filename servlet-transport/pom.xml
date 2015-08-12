@@ -21,7 +21,7 @@
         <resources>
             <!-- Get the oskari.properties from servlet-map as baseline properties -->
             <resource>
-                <directory>${basedir}/../spring-map/src/main/resources</directory>
+                <directory>${basedir}/../servlet-map/src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.properties</include>
