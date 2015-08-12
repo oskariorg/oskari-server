@@ -23,7 +23,6 @@ Added localization support for server-side HTML/Login form.
 TODO: 
 - Thymeleaf support
 - LDAP login
-- separating SAML login to a separate module 
 - spring-boot setup (or otherwise try to restore standalone-jetty packaging)
 - documentation of SAML features to oskari.org
 - documentation about customizing the webapp
