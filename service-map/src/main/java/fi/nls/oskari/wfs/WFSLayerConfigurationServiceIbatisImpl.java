@@ -86,7 +86,7 @@ public class WFSLayerConfigurationServiceIbatisImpl extends BaseIbatisService<WF
             session.delete(getNameSpace() + ".delete", maplayer_id);
             session.commitTransaction();
         } catch (Exception e) {
-            new RuntimeException("Error deleting wfs layer with maplayer_id:" + Long.toString(maplayer_id), e);
+            throw new RuntimeException("Error deleting wfs layer with maplayer_id:" + Long.toString(maplayer_id), e);
         } finally {
             endSession(session);
         }
