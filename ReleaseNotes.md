@@ -2,6 +2,22 @@
 
 ## 1.31
 
+### service-control
+
+Added white-/blacklist capabilities for action handlers. To blacklist/block action routes define existing route keys as 
+comma-separated value for property:
+
+    actioncontrol.blacklist=Users, ManageRoles
+    
+To whitelist (use only mentioned) action routes define existing route keys as comma-separated value for property:
+
+    actioncontrol.whitelist=GetAppSetup, GetSupportedLocales
+
+Note! This can also be used to replace existing handler with a custom implementation by blacklisting the existing one and
+programmatically adding the custom implementation on startup by calling (true as third parameter to skip black/whitelist check):
+
+    ActionControl.addAction("ActionKey", new MyActionHandler(), true);
+    
 ### control-base
 
 GetAppSetupHandler now updates views usages to portti_view usagecount and used columns.
