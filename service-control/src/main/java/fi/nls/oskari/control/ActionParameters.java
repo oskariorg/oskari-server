@@ -193,6 +193,15 @@ public class ActionParameters {
         return ConversionHelper.getLong(getHttpParam(key), defaultValue);
     }
     /**
+     * Returns a parameter as boolean or default value if not present/can't be parsed
+     * @param key parameter name for a boolean parameter
+     * @param defaultValue value to be returned if parameter is not present in the request or can't be parsed
+     * @return cleaned up value for the parameter or given defaultValue if not found
+     */
+    public boolean getHttpParam(final String key, final boolean defaultValue) {
+        return ConversionHelper.getBoolean(getHttpParam(key), defaultValue);
+    }
+    /**
      * Returns value of a header field matching given key
      * @param key header name
      * @return

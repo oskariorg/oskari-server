@@ -4,8 +4,9 @@
 
 ### service-control
 
-Added white-/blacklist capabilities for action handlers. To blacklist/block action routes define existing route keys as 
-comma-separated value for property:
+#### Added white-/blacklist capabilities for action handlers. 
+
+To blacklist/block action routes define existing route keys as comma-separated value for property:
 
     actioncontrol.blacklist=Users, ManageRoles
     
@@ -18,6 +19,10 @@ programmatically adding the custom implementation on startup by calling (true as
 
     ActionControl.addAction("ActionKey", new MyActionHandler(), true);
     
+#### ActionParameters - Added a convenience method for boolean type params
+ 
+    boolean bln = actionParams.getHttpParam("booleanParamKey", true);
+ 
 ### control-base
 
 GetAppSetupHandler now updates views usages to portti_view usagecount and used columns.
