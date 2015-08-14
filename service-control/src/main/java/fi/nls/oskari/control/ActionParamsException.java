@@ -1,5 +1,6 @@
 package fi.nls.oskari.control;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
 /**
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 public class ActionParamsException extends ActionException {
     
     private JSONObject options;
+    private static final String KEY_ADDITIONAL_MSG = "error";
 
     public ActionParamsException(final String message) {
         super(message);
@@ -18,6 +20,11 @@ public class ActionParamsException extends ActionException {
     public ActionParamsException(final String message, final JSONObject options) {
         super(message);
         this.options = options;
+    }
+
+    public ActionParamsException(final String message, final String additionalMsg) {
+        super(message);
+        this.options = JSONHelper.createJSONObject(KEY_ADDITIONAL_MSG, additionalMsg);
     }
     
     public JSONObject getOptions() {
