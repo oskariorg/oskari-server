@@ -29,6 +29,8 @@ GetAppSetupHandler now updates views usages to portti_view usagecount and used c
 * usagecount column tells how many times view has been used
 * used column tells the last time when view was used 
 
+CreateAnalysisLayerHandler can now be used to generate aggregated values without saving as analysislayer.
+
 ### servlet-map
 
 The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
