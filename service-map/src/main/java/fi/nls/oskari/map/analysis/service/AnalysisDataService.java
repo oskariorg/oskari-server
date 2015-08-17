@@ -75,8 +75,7 @@ public class AnalysisDataService {
 
             // Convert featureset (wps) to wfs-t
             // ----------------------------------
-            final AnalysisMethodParams params = analysislayer
-                    .getAnalysisMethodParams();
+            final AnalysisMethodParams params = analysislayer.getAnalysisMethodParams();
             final String geometryProperty = transformationService.stripNamespace(params.getGeom());
             // FIXME: wpsToWfst populates fields list AND returns the wfst
             // payload

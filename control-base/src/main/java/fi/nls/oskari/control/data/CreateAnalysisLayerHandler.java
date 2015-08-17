@@ -247,12 +247,12 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
             throw new ActionParamsException(ERROR_UNABLE_TO_GET_WPS_FEATURES, e.getMessage());
         }
         // Check, if exception result set
-        if (featureSet.indexOf("ows:Exception") > -1) {
+        if (featureSet == null || featureSet.indexOf("ows:Exception") > -1) {
             throw new ActionParamsException(ERROR_WPS_EXECUTE_RETURNS_EXCEPTION, featureSet);
         }
 
         // Check, if any data in result set
-        if (featureSet == null || featureSet.isEmpty() || featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
+        if (featureSet.isEmpty() || featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
             throw new ActionParamsException(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES);
         }
         return featureSet;
