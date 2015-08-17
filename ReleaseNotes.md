@@ -2,6 +2,19 @@
 
 ## 1.31
 
+### content-resources
+
+DBHandler now allows further customization using command line parameters/env properties (thanks hatapitk): 
+
+1) Using env property 'oskari.resourceOverlayDir' one can override default setup files by providing an overriding file
+ with the same name and in the same directory structure in the referenced 'overlay' directory.
+ 
+2) Maven assembly plugin can be used to create a bundled runnable jar for standalone use
+ 
+3) Command line parameter can be used to reference an override properties-file to be used to f. ex. provide database credentials.
+
+See oskari-server/content-resources/README.md for details.
+    
 ### service-control
 
 #### Added white-/blacklist capabilities for action handlers. 
