@@ -48,12 +48,6 @@ public class PublishHandler extends ActionHandler {
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
 
     public static final String KEY_PUBDATA = "pubdata";
-    public static final String KEY_VIEW_DATA = "viewData";
-
-    public static final String KEY_FIRSTNAME = "firstName";
-    public static final String KEY_LASTNAME = "lastName";
-    public static final String KEY_NICKNAME = "nickName";
-    public static final String KEY_LOGINNAME = "loginName";
     public static final String KEY_DOMAIN = "domain";
     public static final String KEY_LAYOUT = "layout";
     public static final String KEY_LANGUAGE = "language";
@@ -216,18 +210,7 @@ public class PublishHandler extends ActionHandler {
         }
 
         // Setup user
-        try {
-            JSONObject userJson = new JSONObject();
-            userJson.put(KEY_FIRSTNAME, user.getFirstname());
-            userJson.put(KEY_LASTNAME, user.getLastname());
-            userJson.put(KEY_NICKNAME, user.getScreenname());
-            userJson.put(KEY_LOGINNAME, user.getEmail());
-            JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_USER, userJson);
-            //mapfullTemplateConfig.put(KEY_USER, userJson);
-        } catch (JSONException jsonex) {
-            log.error("Could not create user object:", user, "- Error:", jsonex.getMessage());
-            throw new ActionParamsException("User data problem");
-        }
+        JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_USER, user.toJSON());
 
         // setup basic info about view
         final String domain = JSONHelper.getStringFromJSON(publisherData, KEY_DOMAIN, null);
