@@ -46,6 +46,8 @@ public class PublishHandler extends ActionHandler {
     private static final Logger log = LogFactory.getLogger(PublishHandler.class);
 
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
+    static final String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
+    static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     public static final String KEY_PUBDATA = "pubdata";
     public static final String KEY_DOMAIN = "domain";
@@ -61,6 +63,8 @@ public class PublishHandler extends ActionHandler {
     public static final String APP_RESPONSIVE = "responsive-published-map";
 
     public static final String KEY_GRIDSTATE = "gridState";
+
+    private static final boolean VIEW_ACCESS_UUID = PropertyUtil.getOptional(PROPERTY_VIEW_UUID, true);
     private static final Set<String> CACHED_BUNDLE_IDS = ConversionHelper.asSet(
             ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
             ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
@@ -146,13 +150,10 @@ public class PublishHandler extends ActionHandler {
         if (layerService == null) {
             setOskariLayerService(ServiceFactory.getMapLayerService());
         }
-        final String publishTemplateIdProperty = PropertyUtil.getOptional("view.template.publish");
-        PUBLISHED_VIEW_TEMPLATE_ID = ConversionHelper.getLong(publishTemplateIdProperty, PUBLISHED_VIEW_TEMPLATE_ID);
-        if(publishTemplateIdProperty == null) {
-            log.warn("Publish template id not configured (property: view.template.publish)!");
-        }
-        else {
-            log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+        try {
+            getPublishTemplate();
+        } catch (ActionException ex) {
+            log.error("Publish template not available!!");
         }
 
         // setup roles authorized to enable drawing tools on published map
@@ -176,10 +177,7 @@ public class PublishHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
 
-
-    	final String useUuid = PropertyUtil.get("oskari.publish.only.with.uuid");    	
     	final User user = params.getUser();
-
         
         // Parse stuff sent by JS
         final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
@@ -227,12 +225,7 @@ public class PublishHandler extends ActionHandler {
         currentView.setIsPublic(true);
         // application/page/developmentPath should be configured to publish template view
         currentView.setLang(language);
-        
-        if(useUuid != null && useUuid.equalsIgnoreCase("true")){
-        	currentView.setOnlyForUuId(true);
-        }else{
-        	currentView.setOnlyForUuId(false);
-        }
+        currentView.setOnlyForUuId(VIEW_ACCESS_UUID);
         log.debug("UUID: " + currentView.getUuid());
 
         // setup map state
@@ -458,18 +451,9 @@ public class PublishHandler extends ActionHandler {
             throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
         }
 
-        // not editing, use template view
-        if(PUBLISHED_VIEW_TEMPLATE_ID == -1) {
-            log.error("Publish template id not configured (property: view.template.publish)!");
-            throw new ActionParamsException("Trying to publish map, but template isn't configured");
-        }
-        log.debug("Using template to create a new view");
         // Get publisher defaults
-        View templateView = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
-        if (templateView == null) {
-            log.error("Could not get template View with id:", PUBLISHED_VIEW_TEMPLATE_ID);
-            throw new ActionParamsException("Could not get template View");
-        }
+        log.debug("Using template to create a new view");
+        final View templateView = getPublishTemplate();
 
         // clone a blank view based on template (so template doesn't get updated!!)
         final View view = templateView.cloneBasicInfo();
@@ -679,5 +663,30 @@ public class PublishHandler extends ActionHandler {
         return hasPermission;
     }
 
+    private View getPublishTemplate()
+            throws ActionException {
+        if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(PROPERTY_PUBLISH_TEMPLATE, -1);
+            if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+                // TODO: maybe try checking for view of type PUBLISH from DB?
+                log.warn("Publish template id not configured (property:", PROPERTY_PUBLISH_TEMPLATE, ")!");
+            } else {
+                log.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
+            }
+        }
+
+        if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
+            log.error("Publish template id not configured (property: view.template.publish)!");
+            throw new ActionParamsException("Trying to publish map, but template isn't configured");
+        }
+        log.debug("Using template to create a new view");
+        // Get publisher defaults
+        View templateView = viewService.getViewWithConf(PUBLISHED_VIEW_TEMPLATE_ID);
+        if (templateView == null) {
+            log.error("Could not get template View with id:", PUBLISHED_VIEW_TEMPLATE_ID);
+            throw new ActionParamsException("Could not get template View");
+        }
+        return templateView;
+    }
 
 }
