@@ -7,6 +7,10 @@ The database properties can be modified in oskari-server/content-resources/src/m
 Also these database-settings can be overridden by using -Doskari.env=myenv parameter on maven call.
 This reads db.properties as base, reads an additional properties file db-myenv.properties and overrides any keys found in base properties with the env-specific properties.
 
+Finally it is possible to provide properties using any .properties file by specifying the path to the file
+as the first command line argument. This is useful if you wish to run the DB populator as a standalone unmodified
+.jar file.
+
 ## Populating database content
 
 After the database connection parameters have been configured the database can be populated with maven running (in oskari-server/content-resources):
@@ -72,3 +76,15 @@ Layers can be added without running whole setup-files. Add a sample layer with t
 
 The layer JSON is parsed and added as layer to the db as it would have been if it had been referenced in a setup/view-file.
 Referenced files have base dir src/main/resources/json/layers.
+
+# Resource overlay files
+
+You can place new or modified setup files in an external directory tree that follows the same structure
+as the files under the resource directory. You must provide the path to this directory using the parameter
+-Doskari.resourceOverlayDir=/path/to/your/overlay/directory. This makes it possible to use the DB populator
+as a standalone tool without modifying the resources contained in it and store your application specific
+configuration elsewhere:
+
+    mvn assembly:assembly
+    java "-Doskari.dropdb=true" "-Doskari.setup=yourapp" "-Doskari.resourceOverlayDir=c:/your/overlay" \
+    -jar target/content-resources-VERSION-jar-with-dependencies.jar c:/your/db/env.properties

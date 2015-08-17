@@ -14,7 +14,10 @@ import org.json.JSONObject;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.Properties;
 
 /**
  * @author EVAARASMAKI
@@ -36,6 +39,15 @@ public class DBHandler {
         PropertyUtil.loadProperties("/db-" + environment + ".properties");
         PropertyUtil.loadProperties("/oskari.properties");
         PropertyUtil.loadProperties("/oskari-ext.properties");
+
+        // allow specifying extra properties file as a command line argument
+        if (args.length > 0 && args[0].endsWith(".properties")) {
+            Properties props = new Properties();
+            FileInputStream in = new FileInputStream(args[0]);
+            props.load(in);
+            in.close();
+            PropertyUtil.addProperties(props, true);
+        }
 
         // replace logger after properties are populated
         log = LogFactory.getLogger(DBHandler.class);
@@ -133,7 +145,7 @@ public class DBHandler {
                 propertySetupFile = propertySetupFile+ ".json";
             }
 
-            String setupJSON = IOHelper.readString(DBHandler.class.getResourceAsStream(propertySetupFile));
+            String setupJSON = IOHelper.readString(getInputStreamFromResource(propertySetupFile));
             if(setupJSON == null || setupJSON.isEmpty()) {
                 throw new RuntimeException("Error reading file " + propertySetupFile);
             }
@@ -143,6 +155,26 @@ public class DBHandler {
             createContent(conn, dbname, setup);
 
     }
+
+    @SuppressWarnings("resource")
+    private static InputStream getInputStreamFromResource(String propertySetupFile) {
+        InputStream is = null;
+        try {
+            // If resource overlay directory has been specified prefer the files in there
+            // over those shipped with Oskari.
+            String resourceOverlayDirectory = System.getProperty("oskari.resourceOverlayDir");
+            if (resourceOverlayDirectory != null) {
+                is = new FileInputStream(resourceOverlayDirectory + propertySetupFile);
+            }
+        } catch (FileNotFoundException e) {
+            // do nothing
+        }
+        if (is == null) {
+            is = DBHandler.class.getResourceAsStream(propertySetupFile);
+        }
+        return is;
+    }
+
     private static void createContent(Connection conn, final String dbname, final JSONObject setup) throws IOException{
 
         try {
@@ -217,7 +249,7 @@ public class DBHandler {
 
     private static void registerBundle(Connection conn, final String namespace, final String bundlefile) throws IOException, SQLException {
         log.info("/ - /sql/views/01-bundles/" + namespace + "/" + bundlefile);
-        String sqlContents = IOHelper.readString(DBHandler.class.getResourceAsStream("/sql/views/01-bundles/" + namespace + "/" + bundlefile));
+        String sqlContents = IOHelper.readString(getInputStreamFromResource("/sql/views/01-bundles/" + namespace + "/" + bundlefile));
         executeMultilineSql(conn, sqlContents);
     }
 
@@ -244,9 +276,9 @@ public class DBHandler {
     private static String readSQLFileAsString(final String dbName, final String fileName) throws java.io.IOException {
 
         try {
-            InputStream is = DBHandler.class.getResourceAsStream("/sql/" + dbName + "/" + fileName);
+            InputStream is = getInputStreamFromResource("/sql/" + dbName + "/" + fileName);
             if (is == null) {
-                is = DBHandler.class.getResourceAsStream("/sql/" + fileName);
+                is = getInputStreamFromResource("/sql/" + fileName);
                 log.info("   file: /sql/" + fileName);
             }
             else {
