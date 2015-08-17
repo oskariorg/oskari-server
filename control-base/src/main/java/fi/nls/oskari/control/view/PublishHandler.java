@@ -67,11 +67,10 @@ public class PublishHandler extends ActionHandler {
     public static final String APP_RESPONSIVE = "responsive-published-map";
 
     public static final String KEY_GRIDSTATE = "gridState";
-    private static final String[] CACHED_BUNDLE_IDS = {
+    private static final Set<String> CACHED_BUNDLE_IDS = ConversionHelper.asSet(
             ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
             ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
-            ViewModifier.BUNDLE_DIVMANAZER};
-    private Map<String, Bundle> bundleCache = new HashMap<String, Bundle>(CACHED_BUNDLE_IDS.length);
+            ViewModifier.BUNDLE_DIVMANAZER);
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
@@ -166,12 +165,7 @@ public class PublishHandler extends ActionHandler {
         drawToolsEnabledRoles = PropertyUtil.getCommaSeparatedList(PROPERTY_DRAW_TOOLS_ENABLED);
 
         for(String bundleid : CACHED_BUNDLE_IDS) {
-            final Bundle bundle = bundleService.getBundleTemplateByName(bundleid);
-            if(bundle == null) {
-                log.warn("Couldn't get", bundleid, "bundle template from DB!");
-                continue;
-            }
-            bundleCache.put(bundleid, bundle);
+            bundleService.forceBundleTemplateCached(bundleid);
         }
     }
 
@@ -534,11 +528,11 @@ public class PublishHandler extends ActionHandler {
         Bundle bundle = view.getBundleByName(bundleid);
         if (bundle == null) {
             log.info("Bundle with id:", bundleid, "not found in currentView - adding");
-            if(!bundleCache.containsKey(bundleid)) {
-                log.warn("Trying to add bundle that isn't loaded:", bundleid, "- Skipping it!");
+            if(!CACHED_BUNDLE_IDS.contains(bundleid)) {
+                log.warn("Trying to add bundle that isn't recognized:", bundleid, "- Skipping it!");
                 return null;
             }
-            bundle = bundleCache.get(bundleid).clone();
+            bundle = bundleService.getBundleTemplateByName(bundleid);
             view.addBundle(bundle);
         }
         return bundle;
