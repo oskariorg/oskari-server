@@ -2,6 +2,10 @@
 
 ## 1.31
 
+### service-map
+
+BundleService can now be instructed to cache bundle templates.
+
 ### service-base
 
 ConversionHelper.asSet(T... type) added as a convenience method to get arrays as sets. 
