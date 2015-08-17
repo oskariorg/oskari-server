@@ -1,5 +1,9 @@
 package fi.nls.oskari.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Conversion helper methods
  */
@@ -188,6 +192,15 @@ public class ConversionHelper {
         } catch (Exception ex) {
             return defaultValue;
         }
+    }
+
+    /**
+     * Wraps an array of values to a Set of the same type
+     * @param array values
+     * @return Set wrapped values
+     */
+    public static <T> Set<T> asSet(final T... array) {
+        return new HashSet<>(Arrays.asList(array));
     }
 
 }

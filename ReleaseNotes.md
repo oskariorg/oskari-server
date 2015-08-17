@@ -2,6 +2,10 @@
 
 ## 1.31
 
+### service-base
+
+ConversionHelper.asSet(T... type) added as a convenience method to get arrays as sets. 
+
 ### content-resources
 
 DBHandler now allows further customization using command line parameters/env properties (thanks hatapitk): 
