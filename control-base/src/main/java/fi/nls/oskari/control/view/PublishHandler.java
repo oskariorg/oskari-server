@@ -19,13 +19,11 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Set;
-import java.util.TreeSet;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -59,15 +57,6 @@ public class PublishHandler extends ActionHandler {
             ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
             ViewModifier.BUNDLE_DIVMANAZER);
 
-    private static final Set<String> CLASS_WHITELIST;
-    static {
-        CLASS_WHITELIST = new TreeSet<String>();
-        CLASS_WHITELIST.add("center");
-        CLASS_WHITELIST.add("top");
-        CLASS_WHITELIST.add("right");
-        CLASS_WHITELIST.add("bottom");
-        CLASS_WHITELIST.add("left");
-    }
     private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
     private ViewService viewService = null;
@@ -129,16 +118,6 @@ public class PublishHandler extends ActionHandler {
         for(String bundleid : CACHED_BUNDLE_IDS) {
             bundleService.forceBundleTemplateCached(bundleid);
         }
-    }
-
-    private static String[] filterClasses(String[] classes) {
-        Set<String> filteredClasses = new TreeSet<String>();
-        for (int i = 0; i < classes.length; i++) {
-            if (CLASS_WHITELIST.contains(classes[i])) {
-                filteredClasses.add(classes[i]);
-            }
-        }
-        return filteredClasses.toArray(new String[filteredClasses.size()]);
     }
 
 
@@ -240,7 +219,7 @@ public class PublishHandler extends ActionHandler {
             addBundle(currentView, ViewModifier.BUNDLE_DIVMANAZER);
             // then setup feature data
             final Bundle bundle = addBundle(currentView, ViewModifier.BUNDLE_FEATUREDATA2);
-            mergeBundleConfiguration(bundle, featureData, null);
+            PublishBundleHelper.mergeBundleConfiguration(bundle, featureData, null);
         }
 
         // Setup thematic map/published grid bundle
@@ -249,7 +228,7 @@ public class PublishHandler extends ActionHandler {
         if(gridState != null) {
             final Bundle gridBundle = addBundle(currentView, ViewModifier.BUNDLE_PUBLISHEDGRID);
             LOG.debug("Grid bundle added:", gridBundle);
-            mergeBundleConfiguration(gridBundle, null, gridState);
+            PublishBundleHelper.mergeBundleConfiguration(gridBundle, null, gridState);
         }
 
         final View newView = saveView(currentView);
@@ -317,19 +296,19 @@ public class PublishHandler extends ActionHandler {
         for(int i = 0; i < plugins.length(); ++i) {
             JSONObject plugin = plugins.optJSONObject(i);
             //plugins
-            JSONObject userPlugin = removePlugin(userConfiguredPlugins, plugin.optString(KEY_ID));
+            JSONObject userPlugin = PublishBundleHelper.removePlugin(userConfiguredPlugins, plugin.optString(KEY_ID));
             if(userPlugin != null) {
                 // same plugin from template AND user
                 // merge config using users as base! and override it with template values
                 // this way terms of use etc cannot be overridden by user
                 JSONObject mergedConfig = JSONHelper.merge(userPlugin.optJSONObject(KEY_CONFIG), plugin.optJSONObject(KEY_CONFIG));
-                JSONHelper.putValue(plugin, KEY_CONFIG, sanitizeConfigLocation(mergedConfig));
+                JSONHelper.putValue(plugin, KEY_CONFIG, PublishBundleHelper.sanitizeConfigLocation(mergedConfig));
             }
         }
         // add remaining plugins user has selected on top of template plugins
         for (int i = userConfiguredPlugins.length(); --i >= 0; ) {
             JSONObject userPlugin = userConfiguredPlugins.optJSONObject(i);
-            JSONHelper.putValue(userPlugin, KEY_CONFIG, sanitizeConfigLocation(userPlugin.optJSONObject(KEY_CONFIG)));
+            JSONHelper.putValue(userPlugin, KEY_CONFIG, PublishBundleHelper.sanitizeConfigLocation(userPlugin.optJSONObject(KEY_CONFIG)));
             plugins.put(userPlugin);
         }
 
@@ -337,49 +316,6 @@ public class PublishHandler extends ActionHandler {
         JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_PLUGINS, plugins);
     }
 
-    /**
-     * Removes the plugin and returns the removed value or null if not found.
-     * NOTE! Modifies input list
-     * @param plugins
-     * @param pluginId
-     * @return
-     */
-    private JSONObject removePlugin(final JSONArray plugins, final String pluginId) {
-        if(pluginId == null || plugins == null) {
-            return null;
-        }
-        for(int i = 0; i < plugins.length(); ++i) {
-            JSONObject pluginObj = plugins.optJSONObject(i);
-            if(pluginObj != null && pluginId.equals(pluginObj.optString(KEY_ID))) {
-                plugins.remove(i);
-                return pluginObj;
-            }
-        }
-        return null;
-    }
-
-    private JSONObject sanitizeConfigLocation(final JSONObject config) {
-        if(config == null) {
-            return null;
-        }
-
-        // sanitize plugin.config.location.classes
-        JSONObject location = config.optJSONObject("location");
-        if (location != null) {
-            String classes = location.optString("classes");
-            if (classes != null && classes.length() > 0) {
-                String[] filteredClasses = filterClasses(classes.split(" "));
-                JSONHelper.putValue(location, "classes", StringUtils.join(filteredClasses, " "));
-            }
-            // Make sure we don't have inline css set
-            location.remove("top");
-            location.remove("right");
-            location.remove("bottom");
-            location.remove("left");
-        }
-
-        return config;
-    }
 
 
     private JSONObject getPublisherInput(final String input) throws ActionException {
@@ -427,7 +363,7 @@ public class PublishHandler extends ActionHandler {
         if (bundleData != null && bundleData.names().length() > 0) {
             LOG.info("config found for", bundleid);
             final Bundle bundle = addBundle(view, bundleid);
-            mergeBundleConfiguration(bundle, bundleData, null);
+            PublishBundleHelper.mergeBundleConfiguration(bundle, bundleData, null);
             return bundle;
         } else {
             LOG.warn("config not found for", bundleid, "- removing bundle.");
@@ -437,6 +373,7 @@ public class PublishHandler extends ActionHandler {
         }
         return null;
     }
+
     private Bundle addBundle(final View view, final String bundleid) {
         Bundle bundle = view.getBundleByName(bundleid);
         if (bundle == null) {
@@ -449,22 +386,6 @@ public class PublishHandler extends ActionHandler {
             view.addBundle(bundle);
         }
         return bundle;
-    }
-
-    /**
-     * Merges user selections to bundles default config/state.
-     * @param bundle bundle to configure
-     * @param userConfig overrides for default config
-     * @param userState overrides for default state
-     * @return root configuration object containing both config and state
-     */
-    private void mergeBundleConfiguration(final Bundle bundle, final JSONObject userConfig, final JSONObject userState) {
-        final JSONObject defaultConfig = bundle.getConfigJSON();
-        final JSONObject defaultState = bundle.getStateJSON();
-        final JSONObject mergedConfig = JSONHelper.merge(defaultConfig, userConfig);
-        final JSONObject mergedState = JSONHelper.merge(defaultState, userState);
-        bundle.setConfig(mergedConfig.toString());
-        bundle.setState(mergedState.toString());
     }
 
     private View saveView(final View view) {
