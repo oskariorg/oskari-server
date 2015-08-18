@@ -31,7 +31,8 @@ public class GetLayerTileHandler extends ActionHandler {
     final private static String RESOURCE_CACHE_NAME = "permission_resources";
     final private static String LAYER_CACHE_NAME = "layer_resources";
     final private static String LAYER_ID = "id";
-    final private static List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, ActionControl.PARAM_ROUTE});
+    final private static String LEGEND = "legend";
+    final private static List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private OskariLayerService layerService = null;
     private PermissionsService permissionsService = null;
     private final Cache<Resource> resourceCache = CacheManager.getCache(RESOURCE_CACHE_NAME);
@@ -152,6 +153,9 @@ public class GetLayerTileHandler extends ActionHandler {
     }
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
+        if (params.getHttpParam(LEGEND, false)) {
+            return layer.getLegendImage();
+        }
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();
         Map<String, String> urlParams = new HashMap<String, String>();
@@ -162,8 +166,7 @@ public class GetLayerTileHandler extends ActionHandler {
                 urlParams.put(paramName, params.getHttpParam(paramName));
             }
         }
-        final String url = IOHelper.constructUrl(layer.getUrl(),urlParams);
-        return url;
+        return IOHelper.constructUrl(layer.getUrl(),urlParams);
     }
 
     /**
