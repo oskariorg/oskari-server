@@ -34,12 +34,20 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
 
         final List<Integer> links = LINK_CACHE.get("" + layerId);
         if(links == null) {
-            // FIXME: very crude way to populate cache
-            findLayerMappings();
-            findAll();
-            return queryForList(getNameSpace() + ".findByMaplayer", layerId);
+            // very crude way to populate cache, but load all if it's empty. Most applications provide layer listing anyways
+            if(LINK_CACHE.getSize() == 0) {
+                findLayerMappings();
+                findAll();
+            }
+            final List<InspireTheme> themes = queryForList(getNameSpace() + ".findByMaplayer", layerId);
+            // populate link cache
+            final List<Integer> newLinks = getLinkCache(layerId);
+            for(InspireTheme theme : themes) {
+                newLinks.add(theme.getId());
+            }
+            return themes;
         }
-        final List<InspireTheme> list = new ArrayList<InspireTheme>();
+        final List<InspireTheme> list = new ArrayList<>();
         for(Integer id : links) {
             list.add(find(id));
         }
