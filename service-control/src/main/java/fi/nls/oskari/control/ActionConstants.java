@@ -25,5 +25,6 @@ public interface ActionConstants {
     public static final String KEY_USER = "user";
     public static final String KEY_LANG = "lang";
     public static final String KEY_STATE = "state";
+    public static final String KEY_CONF = "conf";
     public static final String KEY_CONFIG = "config";
 }
