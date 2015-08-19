@@ -6,6 +6,8 @@
 
 BundleService can now be instructed to cache bundle templates.
 
+Added a metadata field for Views. This will be used to store for example publisher specific information about the view. 
+
 ### service-base
 
 ConversionHelper.asSet(T... type) added as a convenience method to get arrays as sets. 

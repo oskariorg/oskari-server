@@ -25,6 +25,7 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_ISPUBLIC = "isPublic";
     public static final String KEY_PUBDOMAIN = "pubDomain";
     public static final String KEY_VIEWS = "views";
+    public static final String KEY_METADATA = "metadata";
 
     private ViewService viewService = null;
 
@@ -50,6 +51,7 @@ public class GetViewsHandler extends ActionHandler {
         params.requireLoggedInUser();
         final long userId = params.getUser().getId();
 
+        // TODO: send type as second param
         final List<View> views = viewService.getViewsForUser(userId);
         final JSONArray viewArray = new JSONArray();
         for (View view : views) {
@@ -58,7 +60,7 @@ public class GetViewsHandler extends ActionHandler {
                 view.setType(ViewTypes.USER);
             }
 
-            if (viewType.indexOf(view.getType()) == -1) {
+            if (!viewType.equalsIgnoreCase(view.getType())) {
                 continue;
             }
 
@@ -71,6 +73,7 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
                 viewJson.put(KEY_URL, view.getUrl());
+                viewJson.put(KEY_METADATA, view.getMetadata());
 
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
@@ -84,8 +87,6 @@ public class GetViewsHandler extends ActionHandler {
                         log.debug("Status " + bundle.getStartup());
                         log.debug("Config " + bundle.getConfig());
                     }
-
-
                 }
                 viewJson.put(KEY_STATE, stateAccu);
                 viewArray.put(viewJson);

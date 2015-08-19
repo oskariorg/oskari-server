@@ -34,6 +34,7 @@
       <result property="creator" column="creator" />
       <result property="onlyForUuId" column="only_uuid" />
       <result property="isPublic" column="is_public" />
+      <result property="metadata" column="metadata" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
       <result property="bundles" column="id"
               select="View.states-with-conf-by-view-id" />
     </resultMap>
@@ -55,7 +56,7 @@
             resultMap="view-with-conf">
       SELECT   id, name, description, type, uuid, only_uuid,
                application, page, application_dev_prefix, creator,
-	           is_public, domain, lang, old_id
+	           is_public, domain, lang, old_id, metadata
         FROM   portti_view
         ORDER BY created ASC
         OFFSET $offset$ limit $limit$
@@ -66,7 +67,7 @@
             resultMap="view-with-conf">
       SELECT   id, name, description, type, uuid, only_uuid,
                application, page, application_dev_prefix, creator,
-	           is_public, domain, lang, old_id
+	           is_public, domain, lang, old_id, metadata
         FROM   portti_view
        WHERE   name = #name#
     </select>
@@ -76,7 +77,7 @@
             resultMap="view-with-conf">
       SELECT   id, name, description, type, uuid, only_uuid,
                application, page, application_dev_prefix, creator,
-	           is_public, domain, lang, old_id
+	           is_public, domain, lang, old_id, metadata
         FROM   portti_view
        WHERE   id = #id#
     </select>
@@ -86,7 +87,7 @@
             resultMap="view-with-conf">
         SELECT   id, name, description, type, uuid, only_uuid,
                  application, page, application_dev_prefix, creator,
-                 is_public, domain, lang, old_id
+                 is_public, domain, lang, old_id, metadata
         FROM   portti_view
        WHERE   uuid::text = #uuId#
     </select>
@@ -96,7 +97,7 @@
             resultMap="view-with-conf">
         SELECT   id, name, description, type, uuid, only_uuid,
                 application, page, application_dev_prefix, creator,
-                is_public, domain, lang, old_id
+                is_public, domain, lang, old_id, metadata
         FROM   portti_view
        WHERE   old_id = #old_id#
     </select>
@@ -105,7 +106,7 @@
             resultMap="view-with-conf">
         SELECT   id, name, description, type, uuid, only_uuid,
                 application, page, application_dev_prefix, creator,
-                is_public, domain, lang, old_id
+                is_public, domain, lang, old_id, metadata
         FROM   portti_view
        WHERE   creator = #user_id#
     ORDER BY   name ASC
@@ -123,8 +124,8 @@
     <statement id="add-view"
                resultClass="java.lang.Long"
                parameterClass="View">
-      INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application, uuid, only_uuid, domain, lang, creator, is_public, is_default)
-           VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault# )
+      INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application, uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
+           VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault#, #metadata# )
         RETURNING id
     </statement>
 
@@ -140,7 +141,7 @@
       UPDATE portti_view
          SET name = #name#, description = #description#,
         application = #application#, page = #page#, application_dev_prefix = #developmentPath#,
-         domain = #pubDomain#, lang = #lang#, is_public = #isPublic#
+         domain = #pubDomain#, lang = #lang#, is_public = #isPublic#, metadata = #metadata#
        WHERE id = #id#
     </statement>
 
