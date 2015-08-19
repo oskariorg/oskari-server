@@ -52,6 +52,8 @@ GetAppSetupHandler now updates views usages to portti_view usagecount and used c
 
 CreateAnalysisLayerHandler can now be used to generate aggregated values without saving as analysislayer.
 
+GetLayerTileHandler can now be used to get legendImages which need authentication via proxy
+
 ### servlet-map
 
 The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
