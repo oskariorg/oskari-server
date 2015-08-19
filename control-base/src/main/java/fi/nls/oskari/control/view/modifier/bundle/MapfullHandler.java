@@ -10,6 +10,7 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -341,6 +342,7 @@ public class MapfullHandler extends BundleHandler {
                                          final long viewID,
                                          final Set<String> bundleIds) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
+        final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -362,7 +364,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer);
+            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer);
             if (json != null) {
                 layerList.put(json);
             }

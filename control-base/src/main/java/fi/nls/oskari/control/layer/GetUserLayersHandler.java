@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -42,9 +43,10 @@ public class GetUserLayersHandler extends ActionHandler {
         final User user = params.getUser();
         if (!user.isGuest()) {
             final List<UserLayer> list = userLayerService.getUserLayerByUid(user.getUuid());
+            final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer
-                final JSONObject userLayer = userLayerDataService.parseUserLayer2JSON(ul);
+                final JSONObject userLayer = userLayerDataService.parseUserLayer2JSON(ul, baseLayer);
                 JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
                 JSONHelper.putValue(userLayer, "permissions", permissions);
                 layers.put(userLayer);
