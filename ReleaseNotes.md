@@ -71,7 +71,13 @@ GetAppSetupHandler now updates views usages to portti_view usagecount and used c
 
 CreateAnalysisLayerHandler can now be used to generate aggregated values without saving as analysislayer.
 
-GetLayerTileHandler can now be used to get legendImages which need authentication via proxy
+GetLayerTileHandler can now be used to get legendImages which need authentication via proxy.
+
+GetLayerTileHandler now has default timeouts for connect (1 second) and read (5 seconds). These can be configured
+ in oskari-ext.properties (defined in ms):
+ 
+    GetLayerTile.timeout.connection=1000
+    GetLayerTile.timeout.read=5000
 
 ### servlet-map
 
