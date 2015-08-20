@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
+
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
@@ -40,6 +44,8 @@ public class GetLayerTileHandler extends ActionHandler {
     private final Cache<OskariLayer> layerCache = CacheManager.getCache(LAYER_CACHE_NAME);
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
+    private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
+    private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
 
     /**
      *  Init method
@@ -75,7 +81,17 @@ public class GetLayerTileHandler extends ActionHandler {
             throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
 
+        final MetricRegistry metrics = ActionControl.getMetrics();
+
+        Timer.Context actionTimer = null;
+        if(GATHER_METRICS) {
+            final Meter actionDetailsMeter = metrics.meter(METRICS_PREFIX + "." + layerId);
+            actionDetailsMeter.mark();
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId + ".executionTimes");
+            actionTimer = timer.time();
+        }
         // Create connection
+
         final String url = getURL(params, layer);
         final HttpURLConnection con = getConnection(url, layer);
         try {
@@ -111,6 +127,9 @@ public class GetLayerTileHandler extends ActionHandler {
         } catch (Exception e) {
             throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage());
         } finally {
+            if(actionTimer != null) {
+                actionTimer.stop();
+            }
             if(con != null) {
                 con.disconnect();
             }

@@ -6,7 +6,8 @@
 
 Added "Metrics" action route that is accessible by admins. This returns metrics in JSON format including metrics for:
  - processing times and call counts for action routes
- - garbace collector
+ - processing times and call counts for proxied layer tiles
+ - garbage collector
  - threads
  - memory
 
@@ -78,6 +79,11 @@ GetLayerTileHandler now has default timeouts for connect (1 second) and read (5 
  
     GetLayerTile.timeout.connection=1000
     GetLayerTile.timeout.read=5000
+    
+GetLayerTileHandler now records metrics for proxied services by default. To disable metrics gathering add this
+ configuration to oskari-ext.properties:
+
+    GetLayerTile.metrics=false
 
 ### servlet-map
 
