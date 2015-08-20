@@ -11,7 +11,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.DataUtilities;
@@ -40,8 +39,8 @@ public class UserLayerDataService {
     private static final String KEY_SOURCE = "layer-source";
     private static final String KEY_STYLE = "layer-style";
 
-    static final int userlayerBaseLayerId = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
-    static final int userlayerMaxFeaturesCount = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
+    static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
+    static final int USERLAYER_MAX_FEATURES_COUNT = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
 
     /**
      * @param gjsWorker geoJSON and featurecollection items
@@ -142,7 +141,7 @@ public class UserLayerDataService {
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
 
                 count++;
-                if (count > userlayerMaxFeaturesCount && userlayerMaxFeaturesCount != -1) break;
+                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) break;
 
             }
         } catch (Exception e) {
@@ -158,12 +157,12 @@ public class UserLayerDataService {
      * @return
      */
     public OskariLayer getBaseLayer() {
-        if (userlayerBaseLayerId == -1) {
+        if (USERLAYER_BASE_LAYER_ID == -1) {
             log.error("Userlayer baseId not defined. Please define", USERLAYER_BASELAYER_ID,
                     "property with value pointing to the baselayer in database.");
             return null;
         }
-        return mapLayerService.find(userlayerBaseLayerId);
+        return mapLayerService.find(USERLAYER_BASE_LAYER_ID);
     }
 
     /**

@@ -115,7 +115,7 @@ public class AppSetupHandler extends ActionHandler {
         try {
             getPublishTemplate();
         } catch (ActionException ex) {
-            LOG.error("Publish template not available!!");
+            LOG.error(ex, "Publish template not available!!");
         }
 
         // setup roles authorized to enable drawing tools on published map
@@ -330,7 +330,6 @@ public class AppSetupHandler extends ActionHandler {
         }
 
         // Get publisher defaults
-        LOG.debug("Using template to create a new view");
         final View templateView = getPublishTemplate();
 
         // clone a blank view based on template (so template doesn't get updated!!)
