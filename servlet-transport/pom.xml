@@ -14,7 +14,6 @@
 
     <properties>
         <transport.resourceDir>${basedir}/src/main/resources</transport.resourceDir>
-        <metrics.version>3.1.0</metrics.version>
     </properties>
 
     <build>
@@ -53,18 +52,15 @@
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>${metrics.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-json</artifactId>
-            <version>${metrics.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-jvm</artifactId>
-            <version>${metrics.version}</version>
         </dependency>
 
         <dependency>

@@ -1,5 +1,7 @@
 package fi.nls.oskari.control;
 
+import com.codahale.metrics.*;
+import com.codahale.metrics.Timer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
@@ -19,11 +21,20 @@ public class ActionControl {
     
     private static final Logger LOG = LogFactory.getLogger(ActionControl.class);
 	private static final ConcurrentMap<String, ActionHandler> actions = new ConcurrentHashMap<String, ActionHandler>();
+    private static final String METRICS_PREFIX = "Oskari.ActionControl";
     static final String PROPERTY_BLACKLIST = "actioncontrol.blacklist";
     static final String PROPERTY_WHITELIST = "actioncontrol.whitelist";
 
     private static Set<String> BLACKLISTED_ACTIONS = null;
     private static Set<String> WHITELISTED_ACTIONS = null;
+
+    private static final boolean GATHER_METRICS = PropertyUtil.getOptional("actioncontrol.metrics", true);
+
+    private static final MetricRegistry metrics = new MetricRegistry();
+
+    public static MetricRegistry getMetrics() {
+        return metrics;
+    }
 
     /**
      * Adds an action route handler with given route key
@@ -108,6 +119,16 @@ public class ActionControl {
 		    addDefaultControls();
 		}
         if (actions.containsKey(action)) {
+            Timer.Context actionTimer = null;
+            if(GATHER_METRICS) {
+                final Meter actionMeter = getMetrics().meter(METRICS_PREFIX);
+                actionMeter.mark();
+                final Meter actionDetailsMeter = getMetrics().meter(METRICS_PREFIX + "." + action);
+                actionDetailsMeter.mark();
+                final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + action + ".executionTimes");
+                actionTimer = timer.time();
+            }
+
             try {
                 actions.get(action).handleAction(params);
             } catch (Exception ex) {
@@ -117,6 +138,11 @@ public class ActionControl {
                 else {
                     ex.printStackTrace();
                     throw new ActionException("Unhandled exception occured", ex);
+                }
+            }
+            finally {
+                if(actionTimer != null) {
+                    actionTimer.stop();
                 }
             }
         } else {
