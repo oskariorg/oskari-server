@@ -113,7 +113,7 @@ public class PublishPermissionHelper {
                 resource.addPermission(perm);
             }
         } catch (Exception e) {
-            LOG.error("Something went wrong when generating DRAW permissions for myplaces layer");
+            LOG.error(e, "Error generating DRAW permissions for myplaces layer");
         }
         permissionsService.saveResourcePermissions(resource);
     }
@@ -203,8 +203,7 @@ public class PublishPermissionHelper {
             analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());
             // IMPORTANT! delete layer data from redis so transport will get updated layer data
             JedisManager.del(WFSLayerConfiguration.KEY + layerId);
-        }
-        else {
+        } else {
             LOG.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
         }
         return hasPermission;
@@ -234,8 +233,8 @@ public class PublishPermissionHelper {
             LOG.warn("Couldn't find layer with id:", layerId);
             return false;
         }
-        final Long id = new Long(layer.getId());
-        final List<Long> list = new ArrayList<Long>();
+        final Long id = Long.valueOf(layer.getId());
+        final List<Long> list = new ArrayList<>();
         list.add(id);
         final Map<Long, List<Permissions>> map = permissionsService.getPermissionsForLayers(list, Permissions.PERMISSION_TYPE_PUBLISH);
         List<Permissions> permissions = map.get(id);

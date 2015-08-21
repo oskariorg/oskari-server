@@ -10,7 +10,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -117,18 +116,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "formats", formats);
         JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
         JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
-    }
-
-    private boolean useProxy(final OskariLayer layer) {
-        boolean forceProxy = false;
-        if (layer.getAttributes() != null && layer.getAttributes().has("forceProxy")) {
-            try {
-                forceProxy = layer.getAttributes().getBoolean("forceProxy");
-            } catch (JSONException jsonException) {
-                //just ignore
-            }
-        }
-        return ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy;
     }
 
     private String buildLegendUrl(final OskariLayer layer) {

@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +29,14 @@ import java.util.Map;
  */
 public class LayerJSONFormatter {
 
+    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+
     private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
     private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();
-    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+
+    private static final String KEY_ID = "id";
+    private static final String KEY_TYPE = "type";
+
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
     private static Map<String, LayerJSONFormatter> typeMapping = new HashMap<String, LayerJSONFormatter>();
@@ -81,24 +85,24 @@ public class LayerJSONFormatter {
 
         final String externalId = layer.getExternalId();
         if(externalId != null && !externalId.isEmpty()) {
-            JSONHelper.putValue(layerJson, "id", externalId);
+            JSONHelper.putValue(layerJson, KEY_ID, externalId);
         }
         else {
-            JSONHelper.putValue(layerJson, "id", layer.getId());
+            JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
         }
 
         //log.debug("Type", layer.getType());
         if(layer.isCollection()) {
             // fixing frontend type for collection layers
             if(layer.isBaseMap()) {
-                JSONHelper.putValue(layerJson, "type", "base");
+                JSONHelper.putValue(layerJson, KEY_TYPE, "base");
             }
             else {
-                JSONHelper.putValue(layerJson, "type", "groupMap");
+                JSONHelper.putValue(layerJson, KEY_TYPE, "groupMap");
             }
         }
         else {
-            JSONHelper.putValue(layerJson, "type", layer.getType());
+            JSONHelper.putValue(layerJson, KEY_TYPE, layer.getType());
             //log.debug("wmsName", layer.getName());
             // for easier proxy routing on ssl hosts, maps all urls with prefix and a simplified url
             // so tiles can be fetched from same host from browsers p.o.v. and the actual url
@@ -109,20 +113,11 @@ public class LayerJSONFormatter {
             // Adding them here so frontend doesn't break.
             JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "wmsName", layer.getName());
-            
-            boolean forceProxy = false;
-            if (layer.getAttributes() != null && layer.getAttributes().has("forceProxy")) {
-                try {
-                    forceProxy = layer.getAttributes().getBoolean("forceProxy");
-                } catch (JSONException jsonException) {
-                    //just ignore
-                }
-            } 
 
-            if (((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy) {
+            if (useProxy(layer)) {
                 Map<String, String> urlParams = new HashMap<String, String>();
                 urlParams.put("action_route", "GetLayerTile");
-                urlParams.put("id", Integer.toString(layer.getId()));
+                urlParams.put(KEY_ID, Integer.toString(layer.getId()));
                 JSONHelper.putValue(layerJson, "url", IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL),urlParams));
             }
         }
@@ -177,6 +172,14 @@ public class LayerJSONFormatter {
         return layerJson;
     }
 
+    protected boolean useProxy(final OskariLayer layer) {
+        boolean forceProxy = false;
+        if (layer.getAttributes() != null) {
+            forceProxy = layer.getAttributes().optBoolean("forceProxy", false);
+        }
+        return ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy;
+    }
+
 
     public JSONObject createStylesJSON(String name, String title, String legend) {
         final JSONObject style = JSONHelper.createJSONObject("name", name);
@@ -198,7 +201,7 @@ public class LayerJSONFormatter {
                 String[] parameters = url.getQuery().split("&");
                 for (String param : parameters) {
                     String[] keyvalue = param.split("=");
-                    if("uuid".equalsIgnoreCase(keyvalue[0]) || "id".equalsIgnoreCase(keyvalue[0])) {
+                    if("uuid".equalsIgnoreCase(keyvalue[0]) || KEY_ID.equalsIgnoreCase(keyvalue[0])) {
                         return keyvalue[1];
                     }
                 }

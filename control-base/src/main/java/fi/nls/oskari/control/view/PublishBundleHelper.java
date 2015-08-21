@@ -18,7 +18,10 @@ import static fi.nls.oskari.control.ActionConstants.KEY_ID;
 public class PublishBundleHelper {
 
     private static final Set<String> CLASS_WHITELIST =  ConversionHelper.asSet("center", "top", "right", "bottom", "left");
+    private static final String KEY_LOCATION = "location";
+    private static final String KEY_CLASSES = "classes";
 
+    private PublishBundleHelper() {}
 
     /**
      * Removes the plugin and returns the removed value or null if not found.
@@ -64,18 +67,17 @@ public class PublishBundleHelper {
         }
 
         // sanitize plugin.config.location.classes
-        JSONObject location = config.optJSONObject("location");
+        JSONObject location = config.optJSONObject(KEY_LOCATION);
         if (location != null) {
-            String classes = location.optString("classes");
+            String classes = location.optString(KEY_CLASSES);
             if (classes != null && classes.length() > 0) {
                 String[] filteredClasses = filterClasses(classes.split(" "));
-                JSONHelper.putValue(location, "classes", StringUtils.join(filteredClasses, " "));
+                JSONHelper.putValue(location, KEY_CLASSES, StringUtils.join(filteredClasses, " "));
             }
             // Make sure we don't have inline css set
-            location.remove("top");
-            location.remove("right");
-            location.remove("bottom");
-            location.remove("left");
+            for(String str : CLASS_WHITELIST) {
+                location.remove(str);
+            }
         }
 
         return config;

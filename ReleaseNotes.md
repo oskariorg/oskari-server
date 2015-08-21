@@ -2,6 +2,15 @@
 
 ## 1.31
 
+### control-admin
+
+Added "Metrics" action route that is accessible by admins. This returns metrics in JSON format including metrics for:
+ - processing times and call counts for action routes
+ - processing times and call counts for proxied layer tiles
+ - garbage collector
+ - threads
+ - memory
+
 ### service-map
 
 BundleService can now be instructed to cache bundle templates.
@@ -24,7 +33,7 @@ DBHandler now allows further customization using command line parameters/env pro
 3) Command line parameter can be used to reference an override properties-file to be used to f. ex. provide database credentials.
 
 See oskari-server/content-resources/README.md for details.
-    
+
 ### service-control
 
 #### Added white-/blacklist capabilities for action handlers. 
@@ -45,7 +54,16 @@ programmatically adding the custom implementation on startup by calling (true as
 #### ActionParameters - Added a convenience method for boolean type params
  
     boolean bln = actionParams.getHttpParam("booleanParamKey", true);
- 
+
+### Added metrics for ActionControl
+
+Metrics for action route handling (processing time/call counts) are now recorded by default in ActionControl. To 
+ disable metrics gathering add this configuration to oskari-ext.properties:
+
+    actioncontrol.metrics=false
+
+The gathered metrics are available by calling ActionControl.getMetrics().
+
 ### control-base
 
 GetAppSetupHandler now updates views usages to portti_view usagecount and used columns.
@@ -54,7 +72,18 @@ GetAppSetupHandler now updates views usages to portti_view usagecount and used c
 
 CreateAnalysisLayerHandler can now be used to generate aggregated values without saving as analysislayer.
 
-GetLayerTileHandler can now be used to get legendImages which need authentication via proxy
+GetLayerTileHandler can now be used to get legendImages which need authentication via proxy.
+
+GetLayerTileHandler now has default timeouts for connect (1 second) and read (5 seconds). These can be configured
+ in oskari-ext.properties (defined in ms):
+ 
+    GetLayerTile.timeout.connection=1000
+    GetLayerTile.timeout.read=5000
+    
+GetLayerTileHandler now records metrics for proxied services by default. To disable metrics gathering add this
+ configuration to oskari-ext.properties:
+
+    GetLayerTile.metrics=false
 
 ### servlet-map
 
