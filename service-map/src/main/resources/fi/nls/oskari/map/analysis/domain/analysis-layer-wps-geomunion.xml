@@ -54,7 +54,7 @@ version="{version}" srsName="{srsName}" {xmlns} xmlns:ogc="http://www.opengis.ne
         </wps:Input>
     </wps:DataInputs>
     <wps:ResponseForm>
-        <wps:RawDataOutput mimeType="text/xml; subtype=wfs-collection/1.1">
+        <wps:RawDataOutput mimeType="{mimetype}">
             <ows:Identifier>result</ows:Identifier>
         </wps:RawDataOutput>
     </wps:ResponseForm>

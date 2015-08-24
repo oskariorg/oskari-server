@@ -55,11 +55,15 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String PARAM_FILTER1 = "filter1";
     private static final String PARAM_FILTER2 = "filter2";
     private static final String PARAM_SAVE_BLN = "saveAnalyse";
+    private static final String JSONFORMAT = "application/json";
 
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LOCALES = "locales";
     private static final String JSON_KEY_FUNCTIONS = "functions";
+    private static final String JSON_KEY_AGGREGATE_RESULT = "aggregate";
+    private static final String JSON_KEY_GEOJSON = "geojson";
+
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
 
@@ -140,15 +144,27 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
 {"Count":4},"kto_tarkennus":{"Count":4}}
                  */
                 analysisLayer.setResult(aggregateResult);
-                if(!params.getHttpParam(PARAM_SAVE_BLN, true)) {
-                    // Just return result as JSON and don't save to DB
-                    ResponseHelper.writeResponse(params, JSONHelper.createJSONObject(aggregateResult));
-                    return;
-                }
 
-                // NOTE!! Replacing the analysisLayer!
-                analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer);
+                // Get geometry for aggretage features
                 try {
+                    // Just return result as JSON and don't save analysis to DB
+                    if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
+                        // NOTE!! Replacing the analysisLayer!
+                        // Get response as geojson when no db store
+                        analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        featureSet = wpsService.requestFeatureSet(analysisLayer);
+                        // Just return result as JSON and don't save analysis to DB
+                        // Get geometry as geojson for hilighting features of aggregate result
+                        JSONObject geojson = JSONHelper.createJSONObject(featureSet);
+                        JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
+                        JSONObject results = new JSONObject();
+                        JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
+                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggregate);
+                        ResponseHelper.writeResponse(params, results);
+                        return;
+                    }
+                    // NOTE!! Replacing the analysisLayer!  - response is gml
+                    analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, null);
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
@@ -222,9 +238,9 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
     }
 
     private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                      String baseUrl, AnalysisLayer analysisLayer) throws ActionParamsException {
+                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
         try {
-            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl);
+            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
         } catch (ServiceException e) {
             throw new ActionParamsException(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, e.getMessage());
         }

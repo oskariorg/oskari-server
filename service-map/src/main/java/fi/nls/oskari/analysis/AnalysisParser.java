@@ -978,7 +978,7 @@ public class AnalysisParser {
             // A layer
             method.setRetainfieldsA(params.getJSONArray("featuresB1").toString().replace("[","").replace("]","").replace("\"",""));
             // B layer
-            method.setRetainfieldsB(params.getJSONArray("featuresA1").toString().replace("[","").replace("]","").replace("\"",""));
+            method.setRetainfieldsB(params.getJSONArray("featuresA1").toString().replace("[", "").replace("]", "").replace("\"", ""));
 
         } catch (Exception e) {
             throw new ServiceException("Intersect join analysis parameters missing.");
@@ -1649,7 +1649,7 @@ public class AnalysisParser {
         return featureSet;
     }
     public AnalysisLayer parseSwitch2UnionLayer(AnalysisLayer analysisLayer, String analyse, String filter1,
-                                               String filter2, String baseUrl) throws ServiceException {
+                                               String filter2, String baseUrl, String outputFormat) throws ServiceException {
         try {
             JSONObject json = JSONHelper.createJSONObject(analyse);
             // Switch to UNION method
@@ -1658,6 +1658,9 @@ public class AnalysisParser {
 
             AnalysisLayer al2 = this.parseAnalysisLayer(json, filter1, filter2, baseUrl, null);
             al2.setResult(analysisLayer.getResult());
+            if(outputFormat != null){
+                ( (UnionMethodParams) al2.getAnalysisMethodParams()).setMimeTypeFormat(outputFormat);
+            }
             return al2;
         } catch (Exception e) {
             log.debug("WPS method switch failed: ", e);
