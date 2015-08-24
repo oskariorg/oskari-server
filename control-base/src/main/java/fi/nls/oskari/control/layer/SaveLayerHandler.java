@@ -46,7 +46,6 @@ public class SaveLayerHandler extends ActionHandler {
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
-    private boolean permissionFailure = false;
     private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARAM_LAYER_ID = "layer_id";
     private static final String PARAM_LAYER_NAME = "layerName";
@@ -72,13 +71,18 @@ public class SaveLayerHandler extends ActionHandler {
         if(ml == null) {
             throw new ActionException("Couldn't get the saved layer from DB - id:" + layerId);
         }
+        boolean permissionProblem = false;
 
         // update cache - do this before creating json!
         boolean cacheUpdated = ml.isCollection();
         // skip cache update for collections since they don't have the info
         // Skip WFS
         if(!ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
-            cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+            try {
+                cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+            } catch (ActionDeniedException ex) {
+                permissionProblem = true;
+            }
         }
 
         // construct response as layer json
@@ -87,10 +91,9 @@ public class SaveLayerHandler extends ActionHandler {
             // handle error getting JSON failed
             throw new ActionException("Error constructing JSON for layer");
         }
-        if (this.permissionFailure) {
+        if (permissionProblem) {
             JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
             log.debug("Permission failure");
-            this.permissionFailure = false;
         } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
@@ -235,8 +238,7 @@ public class SaveLayerHandler extends ActionHandler {
             if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
                 final String capabilitiesXML = GetWMSCapabilities.getResponse(url, ml.getUsername(), ml.getPassword());
                 if (capabilitiesXML.equals("401")) {
-                    this.permissionFailure = true;
-                    throw new ActionException("Incorrect username or password");
+                    throw new ActionDeniedException("Incorrect username or password");
                 }
                 cc.setData(capabilitiesXML);
             }
@@ -255,6 +257,9 @@ public class SaveLayerHandler extends ActionHandler {
             // flush cache, otherwise only db is updated but code retains the old cached version
             WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
+            if(ex instanceof ActionException) {
+                throw (ActionException)ex;
+            }
             log.info(ex, "Error updating capabilities: ", cc, "from URL:", url);
             return false;
         }
