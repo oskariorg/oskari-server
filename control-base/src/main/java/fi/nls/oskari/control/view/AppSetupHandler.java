@@ -393,7 +393,7 @@ public class AppSetupHandler extends ActionHandler {
                 view.setId(viewId);
             }
         } catch (ViewException e) {
-            LOG.error("Error when trying add/update published view", e);
+            LOG.error(e, "Error when trying add/update published view");
         }
         return view;
     }

@@ -37,6 +37,10 @@ public class View implements Serializable {
         return metadata;
     }
 
+    public String getMetadataAsString() {
+        return getMetadata().toString();
+    }
+
     public void setMetadata(JSONObject metadata) {
         this.metadata = metadata;
     }

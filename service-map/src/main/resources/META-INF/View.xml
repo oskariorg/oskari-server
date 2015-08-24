@@ -12,9 +12,6 @@
     <typeAlias
         alias="Bundle"
         type="fi.nls.oskari.domain.map.view.Bundle" />
-    <typeAlias
-        alias="Bundle"
-        type="fi.nls.oskari.domain.map.view.Bundle" />
 
 
 <!-- View -->
@@ -125,7 +122,7 @@
                resultClass="java.lang.Long"
                parameterClass="View">
       INSERT INTO portti_view ( name, "description", type, application_dev_prefix, page, application, uuid, only_uuid, domain, lang, creator, is_public, is_default, metadata)
-           VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault#, #metadata# )
+           VALUES ( #name#, #description#, #type#, #developmentPath#, #page#, #application#, '$uuid$', true, #pubDomain#, #lang#, #creator#, #isPublic#, #isDefault#, #metadataAsString# )
         RETURNING id
     </statement>
 
@@ -141,7 +138,7 @@
       UPDATE portti_view
          SET name = #name#, description = #description#,
         application = #application#, page = #page#, application_dev_prefix = #developmentPath#,
-         domain = #pubDomain#, lang = #lang#, is_public = #isPublic#, metadata = #metadata#
+         domain = #pubDomain#, lang = #lang#, is_public = #isPublic#, metadata = #metadataAsString#
        WHERE id = #id#
     </statement>
 

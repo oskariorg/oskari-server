@@ -11,8 +11,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ import java.util.UUID;
 public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
 
-    private static final Logger log = LogFactory.getLogger(ViewServiceIbatisImpl.class);
+    private static final Logger LOG = LogFactory.getLogger(ViewServiceIbatisImpl.class);
     private final Map<String, Long> defaultViewIds = new HashMap<String, Long>();
     private String[] viewRoles = new String[0];
     private long defaultViewProperty = -1;
@@ -44,16 +42,16 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             }
         }
         if(viewRoles.length > 0) {
-            log.debug("Added default views for roles:", defaultViewIds);
+            LOG.debug("Added default views for roles:", defaultViewIds);
         }
         else {
-            log.debug("No role based default views configured");
+            LOG.debug("No role based default views configured");
         }
 
         // check properties for global default view
         defaultViewProperty = ConversionHelper.getLong(PropertyUtil.get("view.default"), -1);
         if(defaultViewProperty != -1) {
-            log.debug("Global default view is:", defaultViewProperty);
+            LOG.debug("Global default view is:", defaultViewProperty);
         }
     }
 
@@ -66,22 +64,22 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
 
         // uuids are much longer than 10 actually but check for atleast 10
         if(user.getUuid() == null || user.getUuid().length() < 10) {
-            log.debug("Users uuid is missing or invalid: ", user.getUuid());
+            LOG.debug("Users uuid is missing or invalid: ", user.getUuid());
             // user doesn't have an uuid, he shouldn't have any published maps
             return false;
         }
         if(view == null) {
-            log.debug("View is null");
+            LOG.debug("View is null");
             // view with id not found
             return false;
         }
         if(user.isGuest()) {
-            log.debug("User is default/guest user");
+            LOG.debug("User is default/guest user");
             return false;
         }
         if(view.getCreator() != user.getId()) {
             // check current user id against view creator (is it the same user)
-            log.debug("Users id:", user.getId(), "didn't match view creator:", view.getCreator());
+            LOG.debug("Users id:", user.getId(), "didn't match view creator:", view.getCreator());
             return false;
         }
         return true;
@@ -106,7 +104,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public View getViewWithConfByUuId(String uuId) {
         if (uuId == null)
             return null;
-        log.debug("uuid != null --> view-with-conf-by-uuid");
+        LOG.debug("uuid != null --> view-with-conf-by-uuid");
         View view = (View) queryForObject("View.view-with-conf-by-uuid", uuId);
         return view;
     }
@@ -141,7 +139,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
             session.startTransaction();
             Object ret =  queryForObject("View.add-view", view);
             long id = ((Long) ret).longValue();
-
+            LOG.info("Inserted view with id", id);
             view.setId(id);
             for (Bundle bundle : view.getBundles()) {
                 addBundleForView(view.getId(), bundle);
@@ -225,6 +223,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         // TODO: maybe setup sequencenumber to last if not set?
         bundle.setViewId(viewId);
         queryForObject("View.add-bundle", bundle);
+        LOG.info("Added bundle to view", bundle.getName());
     }
 
     public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException {
@@ -270,19 +269,19 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
      */
     public long getDefaultViewId(final User user) {
         if(user == null) {
-            log.debug("Tried to get default view for <null> user");
+            LOG.debug("Tried to get default view for <null> user");
         }
         else {
             // Check the roles in given order and return the first match
             for(String role : viewRoles) {
                 if(user.hasRole(role) &&
                         defaultViewIds.containsKey(role)) {
-                    log.debug("Default view found for role", role, ":", defaultViewIds.get(role));
+                    LOG.debug("Default view found for role", role, ":", defaultViewIds.get(role));
                     return defaultViewIds.get(role);
                 }
             }
         }
-        log.debug("No properties based default views matched user", user, ". Defaulting to DB.");
+        LOG.debug("No properties based default views matched user", user, ". Defaulting to DB.");
         return getDefaultViewId();
     }
 
