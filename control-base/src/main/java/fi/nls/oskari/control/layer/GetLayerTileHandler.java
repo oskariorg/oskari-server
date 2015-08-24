@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
 
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -85,9 +84,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
         Timer.Context actionTimer = null;
         if(GATHER_METRICS) {
-            final Meter actionDetailsMeter = metrics.meter(METRICS_PREFIX + "." + layerId);
-            actionDetailsMeter.mark();
-            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId + ".executionTimes");
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
             actionTimer = timer.time();
         }
         // Create connection

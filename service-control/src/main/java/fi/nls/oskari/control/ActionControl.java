@@ -123,9 +123,7 @@ public class ActionControl {
             if(GATHER_METRICS) {
                 final Meter actionMeter = getMetrics().meter(METRICS_PREFIX);
                 actionMeter.mark();
-                final Meter actionDetailsMeter = getMetrics().meter(METRICS_PREFIX + "." + action);
-                actionDetailsMeter.mark();
-                final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + action + ".executionTimes");
+                final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + action);
                 actionTimer = timer.time();
             }
 
