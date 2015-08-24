@@ -17,6 +17,10 @@ public class ActionParamsException extends ActionException {
         super(message);
     }
 
+    public ActionParamsException(final String message, final Exception e) {
+        super(message, e);
+    }
+
     public ActionParamsException(final String message, final JSONObject options) {
         super(message);
         this.options = options;
@@ -24,6 +28,11 @@ public class ActionParamsException extends ActionException {
 
     public ActionParamsException(final String message, final String additionalMsg) {
         super(message);
+        this.options = JSONHelper.createJSONObject(KEY_ADDITIONAL_MSG, additionalMsg);
+    }
+
+    public ActionParamsException(final String message, final String additionalMsg, final Exception e) {
+        super(message, e);
         this.options = JSONHelper.createJSONObject(KEY_ADDITIONAL_MSG, additionalMsg);
     }
     
