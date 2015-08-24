@@ -30,10 +30,10 @@ public class ActionControl {
 
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("actioncontrol.metrics", true);
 
-    private static final MetricRegistry metrics = new MetricRegistry();
+    private static final MetricRegistry METRIC_REGISTRY = new MetricRegistry();
 
     public static MetricRegistry getMetrics() {
-        return metrics;
+        return METRIC_REGISTRY;
     }
 
     /**
@@ -123,7 +123,7 @@ public class ActionControl {
             if(GATHER_METRICS) {
                 final Meter actionMeter = getMetrics().meter(METRICS_PREFIX);
                 actionMeter.mark();
-                final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + action);
+                final com.codahale.metrics.Timer timer = METRIC_REGISTRY.timer(METRICS_PREFIX + "." + action);
                 actionTimer = timer.time();
             }
 
@@ -137,8 +137,7 @@ public class ActionControl {
                     ex.printStackTrace();
                     throw new ActionException("Unhandled exception occured", ex);
                 }
-            }
-            finally {
+            } finally {
                 if(actionTimer != null) {
                     actionTimer.stop();
                 }

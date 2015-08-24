@@ -21,7 +21,9 @@ public class PublishBundleHelper {
     private static final String KEY_LOCATION = "location";
     private static final String KEY_CLASSES = "classes";
 
-    private PublishBundleHelper() {}
+    private PublishBundleHelper() {
+
+    }
 
     /**
      * Removes the plugin and returns the removed value or null if not found.
