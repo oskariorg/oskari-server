@@ -15,8 +15,8 @@ public interface MyPlaceMapper {
     MyPlace findPlace(long id);
     MyPlaceCategory find(long categoryId);
     @Update("update categories set " +
-            "   publisher_name = #publisher_name:VarChar#" +
-            "   where uuid = #uuid# and id = #id#")
+            "   publisher_name = #{publisher_name}" +
+            "   where uuid = #{uuid} and id = #{id}")
     int updatePublisherName(Map map);
     List<MyPlaceCategory> findByIds(@Param("list") List<Long> idList);
     List<MyPlaceCategory> freeFind(Map<String, Object> data);
