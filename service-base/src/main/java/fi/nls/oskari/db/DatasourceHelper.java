@@ -28,6 +28,15 @@ public class DatasourceHelper {
         return getOskariDataSourceName(null);
     }
 
+    private static final DatasourceHelper instance = new DatasourceHelper();
+
+    private DatasourceHelper() {
+
+    }
+
+    public static DatasourceHelper getInstance() {
+        return instance;
+    }
     /**
      * Finds a datasource name property matching module (db[.module].jndi.name)
      * @param prefix module name like myplaces, analysis etc null means "core" oskari

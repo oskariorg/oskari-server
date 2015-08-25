@@ -258,7 +258,7 @@ public class SearchKeywordsHandler extends ActionHandler {
     }
 
     private String[] getKeywordsForLayer(final OskariLayer layer) {
-        Set<String> layerKeywords = new HashSet<String>();
+        Set<String> layerKeywords = new HashSet<>();
         try {
             if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
                 WebMapService wms = WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getName());

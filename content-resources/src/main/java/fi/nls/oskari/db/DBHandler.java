@@ -52,7 +52,7 @@ public class DBHandler {
         // replace logger after properties are populated
         log = LogFactory.getLogger(DBHandler.class);
 
-        final DatasourceHelper helper = new DatasourceHelper();
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
         try {
             datasource = helper.createDataSource();
             final String addView = System.getProperty("oskari.addview");

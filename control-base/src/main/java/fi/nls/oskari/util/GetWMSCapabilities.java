@@ -62,16 +62,6 @@ public class GetWMSCapabilities {
         return encodedResponse;
     }
 
-    public static JSONObject parseCapabilities(String response) throws ActionException {
-        try {
-            // convert xml String to JSON
-            return XML.toJSONObject(response);
-
-        } catch (Exception e) {
-            throw new ActionException("XML to JSON failed", e);
-        }
-    }
-
     private static String getUrl(final String url) {
         if (url == null || url.isEmpty()) {
             return "";

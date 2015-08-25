@@ -131,6 +131,15 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
      * @return simplified version of wms url or an empty string if there is any problems creating it.
      */
     public String getSimplifiedUrl() {
+        return getSimplifiedUrl(false);
+    }
+
+    /**
+     * Returns a simplified version of the wms url. Splits it with comma-character, takes the first one.
+     * @param keepProtocol true to include protocol of the url
+     * @return simplified version of wms url or an empty string if there is any problems creating it.
+     */
+    public String getSimplifiedUrl(final boolean keepProtocol) {
         if(simplifiedUrl != null) {
             return simplifiedUrl;
         }
@@ -144,11 +153,9 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
         final String protocolSeparator = "://";
         final int protocolIndex = splitted[0].indexOf(protocolSeparator);
-        if(protocolIndex == -1) {
-            // there was no protocol - weird but possible case
-            simplifiedUrl = splitted[0].trim();
-        }
-        else {
+        simplifiedUrl = splitted[0].trim();
+        if(protocolIndex != -1 && !keepProtocol) {
+            // strip protocol if one was found and keepProtocol is false
             simplifiedUrl = splitted[0].substring(protocolIndex + protocolSeparator.length()).trim();
         }
         return simplifiedUrl;

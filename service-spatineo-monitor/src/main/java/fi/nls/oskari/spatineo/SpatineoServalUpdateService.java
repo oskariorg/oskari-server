@@ -32,7 +32,7 @@ public class SpatineoServalUpdateService {
      */
     public static void scheduledServiceCall() throws Exception {
         log.info("Starting the Spatineo Serval update service call...");
-        final DatasourceHelper helper = new DatasourceHelper();
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
 
         final DataSource dataSource = helper.getDataSource();
         final OskariDao oskariDao = new OskariDao(dataSource);

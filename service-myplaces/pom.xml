@@ -16,10 +16,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>content-resources</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>

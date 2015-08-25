@@ -1,5 +1,12 @@
 package fi.nls.oskari.util;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -202,5 +209,4 @@ public class ConversionHelper {
     public static <T> Set<T> asSet(final T... array) {
         return new HashSet<>(Arrays.asList(array));
     }
-
 }

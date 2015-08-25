@@ -19,7 +19,7 @@ import javax.naming.Context;
  */
 public class WebappHelper {
 
-    private static final DatasourceHelper DS_HELPER = new DatasourceHelper();
+    private static final DatasourceHelper DS_HELPER = DatasourceHelper.getInstance();
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
     private static final String KEY_REDIS_PORT = "redis.port";
     private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";

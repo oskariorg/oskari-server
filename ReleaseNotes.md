@@ -1,5 +1,30 @@
 # Release Notes
 
+## 1.32
+
+### service-base
+
+IOHelper now throws an IOException when getting a HTTP 401 response instead of return the string "401".
+
+### service-map
+
+fi.mml.map.mapwindow.service.db.CapabilitiesCacheService (and -IbatisImpl) has been moved to a new package: fi.nls.oskari.service.capabilities.
+CapabilitiesCacheService.getCapabilities() returns cached capabilities from the db or if not present queries the service and updates the database.
+ 
+The database table portti_capabilities_cache will be replaced with oskari_capabilities_cache table. Capabilities will be
+ mapped based on service url and type (WMS/WMTS) instead of layer ids to prevent duplication. The first maplayer listing will
+ take a long time after upgrading to 1.32 version since all listed maplayers will be queried for capabilities from the 
+ corresponding services.
+
+### control-base
+
+Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
+ fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceIbatisImpl in service-map. 
+
+### content-resources
+
+Moved DataSourceHelper to service-base. It's now a singleton.
+
 ## 1.31
 
 ### control-admin
