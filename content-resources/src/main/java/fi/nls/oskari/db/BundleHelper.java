@@ -16,12 +16,41 @@ import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 public class BundleHelper {
 
     private static final Logger LOG = LogFactory.getLogger(BundleHelper.class);
-    private static final BundleService service = new BundleServiceIbatisImpl();
+    private static final BundleService SERVICE = new BundleServiceIbatisImpl();
 
-    private BundleHelper() {}
+    private static final String BUNDLE_STARTUP_TEMPLATE =
+            "{\n" +
+                    "    \"title\": \"%s\",\n" +
+                    "    \"bundleinstancename\": \"%s\",\n" +
+                    "    \"bundlename\": \"%s\",\n" +
+                    "    \"metadata\": {\n" +
+                    "        \"Import-Bundle\": {\n" +
+                    "            \"%s\": {\n" +
+                    "                \"bundlePath\": \"/Oskari/packages/%s/bundle/\"\n" +
+                    "            }\n" +
+                    "        }\n" +
+                    "    }\n" +
+                    "}";
+
+    private BundleHelper() {
+
+    }
+
+    public static String getDefaultBundleStartup(String namespace, final String bundleid, String title) {
+        if(bundleid == null) {
+            throw new RuntimeException("Missing bundleid");
+        }
+        if(namespace == null) {
+            namespace = "framework";
+        }
+        if(title == null) {
+            title = bundleid;
+        }
+        return String.format(BUNDLE_STARTUP_TEMPLATE, title, bundleid, bundleid, bundleid, namespace);
+    }
 
     public static boolean isBundleRegistered(final String id) {
-        return service.getBundleTemplateByName(id) != null;
+        return SERVICE.getBundleTemplateByName(id) != null;
     }
 
     public static void registerBundle(final Bundle bundle) {
@@ -30,6 +59,6 @@ public class BundleHelper {
             LOG.info("Bundle", bundle.getName(), "already registered - Skipping!");
             return;
         }
-        service.addBundleTemplate(bundle);
+        SERVICE.addBundleTemplate(bundle);
     }
 }
