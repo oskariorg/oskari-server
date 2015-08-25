@@ -7,7 +7,6 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
-import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.Before;
@@ -30,7 +29,6 @@ import static org.junit.Assert.fail;
  * @author SMAKINEN
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {GetWMSCapabilities.class})
 public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     final private  GetWSCapabilitiesHandler handler = new  GetWSCapabilitiesHandler();
