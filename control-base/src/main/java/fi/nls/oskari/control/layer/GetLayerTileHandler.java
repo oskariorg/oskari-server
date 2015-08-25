@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
 
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -32,7 +31,7 @@ import fi.nls.oskari.domain.User;
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(GetLayerTileHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String RESOURCE_CACHE_NAME = "permission_resources";
     private static final String LAYER_CACHE_NAME = "layer_resources";
     private static final String LAYER_ID = "id";
@@ -85,9 +84,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
         Timer.Context actionTimer = null;
         if(GATHER_METRICS) {
-            final Meter actionDetailsMeter = metrics.meter(METRICS_PREFIX + "." + layerId);
-            actionDetailsMeter.mark();
-            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId + ".executionTimes");
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
             actionTimer = timer.time();
         }
         // Create connection
@@ -107,10 +104,10 @@ public class GetLayerTileHandler extends ActionHandler {
             final int responseCode = con.getResponseCode();
             final String contentType = con.getContentType();
             if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
-                log.warn("URL", url, "returned HTTP response code", responseCode,
+                LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
-                log.info("Response was:", msg);
+                LOG.info("Response was:", msg);
                 throw new ActionParamsException("Problematic response from actual service");
             }
 
@@ -125,7 +122,7 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
-            throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage());
+            throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
         } finally {
             if(actionTimer != null) {
                 actionTimer.stop();
@@ -148,7 +145,7 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         layer = layerService.find(id);
         if (layer != null) {
-            log.debug("Caching a layer with id ", id);
+            LOG.debug("Caching a layer with id ", id);
             layerCache.put(id, layer);
         }
         return layer;
@@ -167,11 +164,11 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         resource = permissionsService.findResource(layerResource);
         if (resource != null && !resource.getPermissions().isEmpty()) {
-            log.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
+            LOG.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
             resourceCache.put(layerResource.getMapping(),resource);
         }
         else {
-            log.warn("Trying to cache layer with no resources");
+            LOG.warn("Trying to cache layer with no resources");
         }
         return resource;
     }
@@ -205,7 +202,7 @@ public class GetLayerTileHandler extends ActionHandler {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
-            log.debug("Getting layer tile from url:", url);
+            LOG.debug("Getting layer tile from url:", url);
             return IOHelper.getConnection(url, username, password);
         } catch (Exception e) {
             throw new ActionException("Couldn't get connection to service", e);

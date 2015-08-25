@@ -15,6 +15,8 @@ public class DatabaseUserService extends UserService {
     private IbatisRoleService roleService = new IbatisRoleService();
     private IbatisUserService userService = new IbatisUserService();
 
+    private static final String ERR_USER_MISSING = "User was null";
+
     private static final Logger log = LogFactory.getLogger(DatabaseUserService.class);
 
     @Override
@@ -97,6 +99,9 @@ public class DatabaseUserService extends UserService {
     @Override
     public User createUser(User user, String[] roleIds) throws ServiceException {
         log.debug("createUser #######################");
+        if(user == null) {
+            throw new ServiceException(ERR_USER_MISSING);
+        }
         if(user.getUuid() == null || user.getUuid().isEmpty()) {
             user.setUuid(generateUuid());
         }
@@ -122,6 +127,9 @@ public class DatabaseUserService extends UserService {
      */
     @Override
     public User modifyUser(User user) throws ServiceException {
+        if(user == null) {
+            throw new ServiceException(ERR_USER_MISSING);
+        }
         log.debug("modifyUser");
         userService.updateUser(user);
         User retUser = userService.find(user.getId());
@@ -136,10 +144,10 @@ public class DatabaseUserService extends UserService {
      * @throws ServiceException if given user is null or something went wrong while updating the database
      */
     public User saveUser(final User user) throws ServiceException {
-        log.debug("Saving user:", user, "with roles:", user.getRoles());
         if(user == null) {
-            throw new ServiceException("User was null");
+            throw new ServiceException(ERR_USER_MISSING);
         }
+        log.debug("Saving user:", user, "with roles:", user.getRoles());
         // ensure roles are in DB
         final Set<Role> roles = ensureRolesInDB(user.getRoles());
         user.setRoles(roles);
