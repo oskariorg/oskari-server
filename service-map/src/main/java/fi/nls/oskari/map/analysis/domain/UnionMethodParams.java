@@ -14,8 +14,8 @@ public class UnionMethodParams extends AnalysisMethodParams {
     private final String analysisMethodTemplate2 = "analysis2analysis-layer-wps-geomunion.xml";
     private final String analysisMethodTemplate3 = "analysis2geojson-layer-wps-geomunion.xml";
 
-    private final String DEFAULT_MIMETYPE = "text/xml; subtype=wfs-collection/1.1";
-    private final String MIMETYPE = "{mimetype}";
+    private static final String DEFAULT_MIMETYPE = "text/xml; subtype=wfs-collection/1.1";
+    private static final String MIMETYPE = "{mimetype}";
 
     private String mimeTypeFormat = null;
 
@@ -59,8 +59,7 @@ public class UnionMethodParams extends AnalysisMethodParams {
         //Final response output format
         if(this.getMimeTypeFormat() != null){
             doctemp = doctemp.replace(MIMETYPE, this.getMimeTypeFormat());
-        }
-        else {
+        } else {
             doctemp = doctemp.replace(MIMETYPE, DEFAULT_MIMETYPE);
         }
 

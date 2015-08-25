@@ -11,40 +11,20 @@ import java.sql.Connection;
  */
 public class V1_31_6__register_admin_and_metrics_bundles implements JdbcMigration {
 
-    public void migrate(Connection connection)
-            throws Exception {
+    private static final String ADMIN = "admin";
+    private static final String METRICS = "metrics";
+
+    public void migrate(Connection connection) {
         // BundleHelper checks if these bundles are already registered
 
         Bundle admin = new Bundle();
-        admin.setName("admin");
-        admin.setStartup("{\n" +
-                "    \"title\": \"Generic Admin\",\n" +
-                "    \"bundleinstancename\": \"admin\",\n" +
-                "    \"bundlename\": \"admin\",\n" +
-                "    \"metadata\": {\n" +
-                "        \"Import-Bundle\": {\n" +
-                "            \"admin\": {\n" +
-                "                \"bundlePath\": \"/Oskari/packages/admin/bundle/\"\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}");
+        admin.setName(ADMIN);
+        admin.setStartup(BundleHelper.getDefaultBundleStartup(ADMIN, ADMIN, "Generic Admin"));
         BundleHelper.registerBundle(admin);
 
         Bundle metrics = new Bundle();
-        metrics.setName("metrics");
-        metrics.setStartup("{\n" +
-                "    \"title\": \"Admin metrics panel\",\n" +
-                "    \"bundleinstancename\": \"metrics\",\n" +
-                "    \"bundlename\": \"metrics\",\n" +
-                "    \"metadata\": {\n" +
-                "        \"Import-Bundle\": {\n" +
-                "            \"metrics\": {\n" +
-                "                \"bundlePath\": \"/Oskari/packages/admin/bundle/\"\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}");
+        metrics.setName(METRICS);
+        metrics.setStartup(BundleHelper.getDefaultBundleStartup(ADMIN, METRICS, "Admin metrics panel"));
         BundleHelper.registerBundle(metrics);
 
     }
