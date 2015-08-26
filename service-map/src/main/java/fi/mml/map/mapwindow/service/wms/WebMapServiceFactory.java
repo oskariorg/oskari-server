@@ -28,18 +28,20 @@ public class WebMapServiceFactory {
 	 * Builds new WMS interface with correct version
 	 * 
 	 * @param layerId id of the map layer
-	 * @param layerName name of the map layer
 	 * 
 	 * @return WebMapService implementation that service url is implemented
 	 * @throws WebMapServiceParseException if something goes wrong when parsing
 	 * @throws RemoteServiceDownException if Web Map service is down
 	 */
-	public static WebMapService buildWebMapService(int layerId, String layerName) throws WebMapServiceParseException {
-        final String cacheKey = "wmsCache_" + layerId;
+	public static WebMapService buildWebMapService(int layerId) throws WebMapServiceParseException {
+        return buildWebMapService(service.find(layerId));
+    }
+
+    public static WebMapService buildWebMapService(OskariLayer layer) throws WebMapServiceParseException {
+        final String cacheKey = "wmsCache_" + layer.getId();
 		WebMapService wms = wmsCache.get(cacheKey);
         // caching since this is called whenever a layer JSON is created!!
 		if (wms == null) {
-            OskariLayer layer = service.find(layerId);
             OskariLayerCapabilities cc = getCaps(layer);
             if(cc == null) {
                 // setup empty capabilities so we don't try to parse again before cache flush
@@ -50,9 +52,9 @@ public class WebMapServiceFactory {
             try {
                 final String data = cc.getData().trim();
                 if (isVersion1_3_0(data)) {
-                    wms = new WebMapServiceV1_3_0_Impl("from DataBase", data, layerName);
+                    wms = new WebMapServiceV1_3_0_Impl("from DataBase", data, layer.getName());
                 } else if (isVersion1_1_1(data)) {
-                    wms = new WebMapServiceV1_1_1_Impl("from DataBase", data, layerName);
+                    wms = new WebMapServiceV1_1_1_Impl("from DataBase", data, layer.getName());
                 }
                 // cache the parsed value
                 wmsCache.put(cacheKey, wms);

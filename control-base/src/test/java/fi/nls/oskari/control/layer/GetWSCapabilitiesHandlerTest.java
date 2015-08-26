@@ -9,6 +9,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void addLocales() throws Exception {
+        PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
             properties.load(GetWSCapabilitiesHandlerTest.class.getResourceAsStream("test.properties"));
@@ -45,6 +47,10 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+    }
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Before

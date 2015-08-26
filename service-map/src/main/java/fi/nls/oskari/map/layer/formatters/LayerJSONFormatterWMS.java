@@ -133,7 +133,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      */
     private WebMapService buildWebMapService(final OskariLayer layer) {
         try {
-            return WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getName());
+            return WebMapServiceFactory.buildWebMapService(layer);
         } catch (WebMapServiceParseException e) {
             log.error("Failed to create WebMapService for layer id '" + layer.getId() + "'. No Styles available");
         }

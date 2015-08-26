@@ -41,7 +41,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	private String getCapabilitiesUrl;	
 	
 	/**
-	 * Creates a new 1.1.1 implemaentation 
+	 * Creates a new 1.1.1 implementation
 	 * @param data
 	 * @param layerName
 	 * 

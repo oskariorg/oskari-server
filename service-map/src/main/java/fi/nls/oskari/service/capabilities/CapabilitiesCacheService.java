@@ -24,6 +24,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
+    public abstract OskariLayerCapabilities find(final OskariLayer layer);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
 
     public OskariLayerCapabilities getCapabilities(String url, String serviceType) throws ServiceException {
@@ -46,20 +47,29 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         return getCapabilities(layer, null, loadFromService);
     }
 
-    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, final String encoding, final boolean loadFromService) throws ServiceException {
+    public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) throws ServiceException {
+        return getCapabilities(layer, encoding, loadFromService, false);
+    }
+
+    private OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService, final boolean norecursion) throws ServiceException {
         final String url = contructCapabilitiesUrl(layer);
         try {
             // prefer saved db version over network call by default (only when encoding null == don't check twice)
             if(!loadFromService && encoding == null) {
-                OskariLayerCapabilities cap = find(layer.getSimplifiedUrl(true), layer.getType());
+                OskariLayerCapabilities cap = find(layer);
                 if(cap != null) {
                     LOG.debug("Got capabilitiesfrom DB", cap);
                     return cap;
                 }
             }
+            if(encoding == null) {
+                encoding = IOHelper.DEFAULT_CHARSET;
+            }
             final String response = IOHelper.getURL(url, layer.getUsername(), layer.getPassword(), Collections.EMPTY_MAP, encoding);
             final String charset = getEncodingFromXml(response);
-            if(charset == null || IOHelper.DEFAULT_CHARSET.equalsIgnoreCase(charset)) {
+            if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
+                LOG.debug("saving capabilities with charset", charset, "encoding:", encoding);
+
                 OskariLayerCapabilities cap = new OskariLayerCapabilities();
                 cap.setUrl(layer.getSimplifiedUrl(true));
                 cap.setLayertype(layer.getType());
@@ -70,7 +80,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 LOG.debug("Saved capabilities", cap.getId());
                 return cap;
             }
-            return getCapabilities(layer, charset, loadFromService);
+            return getCapabilities(layer, charset, loadFromService, true);
         } catch (IOException e) {
             throw new ServiceException("Error loading capabilities from URL:" + url, e);
         }

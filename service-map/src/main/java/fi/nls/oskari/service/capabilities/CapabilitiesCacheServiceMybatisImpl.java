@@ -2,6 +2,7 @@ package fi.nls.oskari.service.capabilities;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.ibatis.mapping.Environment;
@@ -44,6 +45,13 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
+    /**
+     * Tries to load capabilities from the database
+     * @return null if not saved to db
+     */
+    public OskariLayerCapabilities find(final OskariLayer layer) {
+        return find(layer.getSimplifiedUrl(true), layer.getType());
+    }
     /**
      * Tries to load capabilities from the database
      * @return null if not saved to db
