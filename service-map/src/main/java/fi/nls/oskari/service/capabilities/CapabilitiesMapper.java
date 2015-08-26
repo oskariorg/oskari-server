@@ -15,7 +15,7 @@ public interface CapabilitiesMapper {
     OskariLayerCapabilities find(@Param("url") final String url, @Param("type")final String type);
 
     @Insert("INSERT INTO oskari_capabilities_cache(layertype, url, data) VALUES (lower(#{layertype}), lower(#{url}), #{data})")
-    long insert(OskariLayerCapabilities capabilities);
+    void insert(OskariLayerCapabilities capabilities);
 
     @Update("UPDATE oskari_capabilities_cache SET " +
             "   data = #{data}," +

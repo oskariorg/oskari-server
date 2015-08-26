@@ -58,7 +58,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             if(!loadFromService && encoding == null) {
                 OskariLayerCapabilities cap = find(layer);
                 if(cap != null) {
-                    LOG.debug("Got capabilitiesfrom DB", cap);
+                    LOG.debug("Got capabilitiesfrom DB", cap.getId());
                     return cap;
                 }
             }
@@ -74,7 +74,6 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 cap.setUrl(layer.getSimplifiedUrl(true));
                 cap.setLayertype(layer.getType());
                 cap.setData(response);
-                LOG.debug("Got capabilities", cap);
                 // save before returning
                 save(cap);
                 LOG.debug("Saved capabilities", cap.getId());

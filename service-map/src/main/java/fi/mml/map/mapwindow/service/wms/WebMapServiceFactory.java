@@ -56,8 +56,10 @@ public class WebMapServiceFactory {
                 } else if (isVersion1_1_1(data)) {
                     wms = new WebMapServiceV1_1_1_Impl("from DataBase", data, layer.getName());
                 }
-                // cache the parsed value
-                wmsCache.put(cacheKey, wms);
+                if(wms != null) {
+                    // cache the parsed value
+                    wmsCache.put(cacheKey, wms);
+                }
             } catch (WebMapServiceParseException ex) {
                 // setup empty capabilities so we don't try to parse again before cache flush
                 wmsCache.put(cacheKey, new WMSCapabilities());

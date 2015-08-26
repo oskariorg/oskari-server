@@ -90,8 +90,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
                 mapper.updateData(capabilities);
             }
             else {
-                long id = mapper.insert(capabilities);
-                capabilities.setId(id);
+                mapper.insert(capabilities);
             }
             session.commit();
             LOG.debug("Saved cap with id", capabilities.getId());
