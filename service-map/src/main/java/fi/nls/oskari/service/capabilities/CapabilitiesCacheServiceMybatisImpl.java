@@ -58,11 +58,9 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      */
     public OskariLayerCapabilities find(final String url, final String layertype) {
         if(url == null ||layertype == null) {
-            LOG.debug("Incomplete params:", url, layertype);
+            LOG.warn("Incomplete params for capabilities loading:", url, layertype);
             return null;
         }
-
-        LOG.debug("Load caps with params:", url, layertype);
 
         final SqlSession session = factory.openSession();
         try {
