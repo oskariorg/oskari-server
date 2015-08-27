@@ -189,6 +189,7 @@ CREATE TABLE portti_view (
    domain character varying(512) DEFAULT ''::character varying,
    lang character varying(2) DEFAULT 'en'::character varying,
    is_public boolean DEFAULT FALSE,
+   metadata TEXT DEFAULT '{}'::TEXT,
    old_id bigint DEFAULT (-1),
    created timestamp DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT portti_view_pkey PRIMARY KEY (id),
