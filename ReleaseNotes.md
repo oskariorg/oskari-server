@@ -25,6 +25,11 @@ Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
 
 Moved DataSourceHelper to service-base. It's now a singleton.
 
+## 1.31.1
+
+Fixed portti_view metadata column upgrade so it's part of the "empty db" setup so views can be inserted by DBHandler.
+  Flyway SQL-script changed to a Java-upgrade which checks if the column is already part of the setup.
+
 ## 1.31
 
 ### control-admin
