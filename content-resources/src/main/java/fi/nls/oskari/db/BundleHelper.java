@@ -19,17 +19,17 @@ public class BundleHelper {
     private static final BundleService SERVICE = new BundleServiceIbatisImpl();
 
     private static final String BUNDLE_STARTUP_TEMPLATE =
-            "{\n" +
-                    "    \"title\": \"%s\",\n" +
-                    "    \"bundleinstancename\": \"%s\",\n" +
-                    "    \"bundlename\": \"%s\",\n" +
-                    "    \"metadata\": {\n" +
-                    "        \"Import-Bundle\": {\n" +
-                    "            \"%s\": {\n" +
-                    "                \"bundlePath\": \"/Oskari/packages/%s/bundle/\"\n" +
-                    "            }\n" +
-                    "        }\n" +
-                    "    }\n" +
+            "{%n" +
+                    "    \"title\": \"%s\",%n" +
+                    "    \"bundleinstancename\": \"%s\",%n" +
+                    "    \"bundlename\": \"%s\",%n" +
+                    "    \"metadata\": {%n" +
+                    "        \"Import-Bundle\": {%n" +
+                    "            \"%s\": {%n" +
+                    "                \"bundlePath\": \"/Oskari/packages/%s/bundle/\"%n" +
+                    "            }%n" +
+                    "        }%n" +
+                    "    }%n" +
                     "}";
 
     private BundleHelper() {
@@ -40,13 +40,9 @@ public class BundleHelper {
         if(bundleid == null) {
             throw new RuntimeException("Missing bundleid");
         }
-        if(namespace == null) {
-            namespace = "framework";
-        }
-        if(title == null) {
-            title = bundleid;
-        }
-        return String.format(BUNDLE_STARTUP_TEMPLATE, title, bundleid, bundleid, bundleid, namespace);
+        final String ns = namespace == null ? "framework" : namespace;
+        final String label = title == null ? bundleid : title;
+        return String.format(BUNDLE_STARTUP_TEMPLATE, label, bundleid, bundleid, bundleid, ns);
     }
 
     public static boolean isBundleRegistered(final String id) {

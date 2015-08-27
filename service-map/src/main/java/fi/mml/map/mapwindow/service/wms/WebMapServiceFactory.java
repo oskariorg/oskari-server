@@ -17,8 +17,8 @@ import fi.nls.oskari.wms.WMSCapabilities;
  */
 public class WebMapServiceFactory {
 
-    private static final CapabilitiesCacheService capabilitiesCacheService = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
-    private static final OskariLayerService service = new OskariLayerServiceIbatisImpl();
+    private static final CapabilitiesCacheService CAPABILITIES_SERVICE = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
+    private static final OskariLayerService LAYER_SERVICE = new OskariLayerServiceIbatisImpl();
     private static Cache<WebMapService> wmsCache = CacheManager.getCache(WebMapServiceFactory.class.getName());
     static {
         wmsCache.setExpiration(12L*60L*60L*1000L);
@@ -34,7 +34,7 @@ public class WebMapServiceFactory {
 	 * @throws RemoteServiceDownException if Web Map service is down
 	 */
 	public static WebMapService buildWebMapService(int layerId) throws WebMapServiceParseException {
-        return buildWebMapService(service.find(layerId));
+        return buildWebMapService(LAYER_SERVICE.find(layerId));
     }
 
     public static WebMapService buildWebMapService(OskariLayer layer) throws WebMapServiceParseException {
@@ -71,7 +71,7 @@ public class WebMapServiceFactory {
 
     private static OskariLayerCapabilities getCaps(OskariLayer layer) throws WebMapServiceParseException {
         try {
-            return capabilitiesCacheService.getCapabilities(layer);
+            return CAPABILITIES_SERVICE.getCapabilities(layer);
         } catch (Exception ex) {
             throw new WebMapServiceParseException(ex);
         }

@@ -20,22 +20,26 @@ public class DatasourceHelper {
 
     private static final Logger LOGGER = LogFactory.getLogger(DatasourceHelper.class);
     private static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
+    private static final String MSG_CHECKING_POOL = " - checking existance of database pool: %s";
+    private static final String PREFIX_DB = "db.";
+    private static final DatasourceHelper INSTANCE = new DatasourceHelper();
+
     private List<BasicDataSource> localDataSources = new ArrayList<BasicDataSource>();
     private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
+
+    private DatasourceHelper() {
+        // use getInstance()
+    }
 
     public String getOskariDataSourceName() {
         return getOskariDataSourceName(null);
     }
 
-    private static final DatasourceHelper instance = new DatasourceHelper();
 
-    private DatasourceHelper() {
-
-    }
 
     public static DatasourceHelper getInstance() {
-        return instance;
+        return INSTANCE;
     }
     /**
      * Finds a datasource name property matching module (db[.module].jndi.name)
@@ -44,7 +48,7 @@ public class DatasourceHelper {
      */
     public String getOskariDataSourceName(final String prefix) {
         final String poolToken = (prefix == null) ? "" : prefix + ".";
-        return PropertyUtil.get("db." + poolToken + "jndi.name", DEFAULT_DATASOURCE_NAME);
+        return PropertyUtil.get(PREFIX_DB + poolToken + "jndi.name", DEFAULT_DATASOURCE_NAME);
     }
 
     /**
@@ -92,7 +96,7 @@ public class DatasourceHelper {
         final String poolToken = (prefix == null) ? "" : prefix + ".";
         final String poolName = getOskariDataSourceName(prefix);
 
-        LOGGER.info(" - checking existance of database pool: " + poolName);
+        LOGGER.info(String.format(MSG_CHECKING_POOL, poolName));
         final DataSource ds = getDataSource(ctx, poolName);
         boolean success = ds != null;
         if(success) {
@@ -103,7 +107,7 @@ public class DatasourceHelper {
             LOGGER.info(" - creating a DataSource with defaults based on configured properties");
             final DataSource dataSource = createDataSource(null);
             addDataSource(ctx, poolName, dataSource);
-            LOGGER.info(" - checking existance of database pool: " + poolName);
+            LOGGER.info(String.format(MSG_CHECKING_POOL, poolName));
             success = (getDataSource(ctx, poolName) != null);
         }
         return success;
@@ -122,9 +126,9 @@ public class DatasourceHelper {
         final String poolToken = (prefix == null) ? "" : prefix + ".";
         final BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"));
-        dataSource.setUrl(PropertyUtil.get("db." + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
-        dataSource.setUsername(PropertyUtil.get("db." + poolToken + "username", ""));
-        dataSource.setPassword(PropertyUtil.get("db." + poolToken + "password", ""));
+        dataSource.setUrl(PropertyUtil.get(PREFIX_DB + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
+        dataSource.setUsername(PropertyUtil.get(PREFIX_DB + poolToken + "username", ""));
+        dataSource.setPassword(PropertyUtil.get(PREFIX_DB + poolToken + "password", ""));
         dataSource.setTimeBetweenEvictionRunsMillis(-1);
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");

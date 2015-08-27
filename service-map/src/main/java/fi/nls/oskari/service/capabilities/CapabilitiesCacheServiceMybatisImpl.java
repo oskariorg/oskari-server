@@ -27,8 +27,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);
-        }
-        else {
+        } else {
             LOG.error("Couldn't get datasource for", getClass().getName());
         }
     }
@@ -65,8 +64,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
         final SqlSession session = factory.openSession();
         try {
             final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
-            OskariLayerCapabilities capabilities = mapper.find(url.toLowerCase(), layertype.toLowerCase());
-            return capabilities;
+            return mapper.find(url.toLowerCase(), layertype.toLowerCase());
         } catch (Exception e) {
             throw new RuntimeException("Failed to load capabilities", e);
         } finally {
@@ -86,8 +84,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             if(db != null) {
                 capabilities.setId(db.getId());
                 mapper.updateData(capabilities);
-            }
-            else {
+            } else {
                 mapper.insert(capabilities);
             }
             session.commit();

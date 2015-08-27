@@ -15,6 +15,7 @@ import java.util.Map;
 public abstract class CapabilitiesCacheService extends OskariComponent {
 
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesCacheService.class);
+    private static final String ENCODE_ATTRIBUTE =  "encoding=\"";
 
     private static final Map<String, String> TYPE_MAPPING = new HashMap<>(5);
     static {
@@ -102,7 +103,6 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     // TODO: maybe use some lib instead?
-    private static final String ENCODE_ATTRIBUTE =  "encoding=\"";
     private String getEncodingFromXml(final String response) {
         if(response == null) {
             return null;
@@ -117,8 +117,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         int encodeAttributeStart = processingSplit[0].indexOf(ENCODE_ATTRIBUTE);
         if (encodeAttributeStart > 0) {
             encodeAttributeStart = encodeAttributeStart + ENCODE_ATTRIBUTE.length();
-            String charset = processingSplit[0].substring(encodeAttributeStart, processingSplit[0].indexOf("\"", encodeAttributeStart));
-            return charset;
+            return processingSplit[0].substring(encodeAttributeStart, processingSplit[0].indexOf('"', encodeAttributeStart));
         }
 
         return null;
