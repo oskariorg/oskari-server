@@ -13,6 +13,10 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import fi.nls.oskari.utils.GeometryJSONOutputModule;
 
+/**
+ * This uses the Jackson 1.x version since it's used by the current version of CometD.
+ * Don't upgrade if not upgrading CometD.
+ */
 public class JacksonCounterJsonResultProcessor extends CounterJsonResultProcessor {
 
     protected ObjectMapper json = new ObjectMapper();

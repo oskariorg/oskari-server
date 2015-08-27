@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.myplaces.MyPlaceMapper">
+
+    <resultMap id="CategoryResult" type="MyPlaceCategory">
+	    <result property="id" column="id" /> 
+	    <result property="category_name" column="category_name" />
+        <result property="stroke_width" column="stroke_width" />
+        <result property="stroke_color" column="stroke_color" />
+        <result property="fill_color" column="fill_color" />
+        <result property="uuid" column="uuid" />
+        <result property="dot_color" column="dot_color" />
+        <result property="dot_size" column="dot_size" />
+        <result property="border_width" column="border_width" />
+        <result property="border_color" column="border_color" />
+        <result property="publisher_name" column="publisher_name" />
+    </resultMap>
+
+    <resultMap id="PlaceResult" type="MyPlace">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="categoryId" column="category_id" />
+        <result property="name" column="name" />
+        <result property="desc" column="place_desc" />
+        <result property="link" column="link" />
+        <result property="imageUrl" column="image_url" />
+        <result property="attentionText" column="attention_text" />
+    </resultMap>
+
+    <select id="findPlace"
+            resultMap="PlaceResult">
+        select
+            id,
+            uuid,
+            category_id,
+            name,
+            place_desc,
+            link,
+            image_url,
+            attention_text
+        from
+            my_places
+        where id = #{id}
+    </select>
+
+    <select id="find"
+        resultMap="CategoryResult">
+        select 
+            id, 
+            category_name,
+            stroke_width,
+            stroke_color,
+            fill_color,
+            uuid,
+            dot_color,
+            dot_size,
+            border_width,
+            border_color,
+            publisher_name
+	    from 
+	        categories 
+	    where id = #{id}
+    </select>
+    
+     <select id="findByIds"
+             parameterType="list"
+             resultMap="CategoryResult">
+        select 
+            id, 
+            category_name,
+            stroke_width,
+            stroke_color,
+            fill_color,
+            uuid,
+            dot_color,
+            dot_size,
+            border_width,
+            border_color,
+            publisher_name
+        from 
+            categories 
+        where id in
+		  <foreach item="item" collection="list" open="(" close=")" separator=",">
+              #{item}
+		  </foreach>
+    </select>
+
+    <select id="findAll" 
+        resultMap="CategoryResult">
+        select 
+            id, 
+            category_name,
+            stroke_width,
+            stroke_color,
+            fill_color,
+            uuid,
+            dot_color,
+            dot_size,
+            border_width,
+            border_color,
+            publisher_name
+        from 
+            categories
+         where publisher_name is not null
+    </select>
+    
+     <select id="freeFind"
+        resultMap="CategoryResult">
+         <![CDATA[
+        select 
+            id, 
+            category_name,
+            stroke_width,
+            stroke_color,
+            fill_color,
+            uuid,
+            dot_color,
+            dot_size,
+            border_width,
+            border_color,
+            publisher_name
+        from 
+            categories 
+         WHERE 
+            to_tsvector(category_name  || ' ' || publisher_name) @@ to_tsquery(#{searchKey}) AND
+            categories.publisher_name is not null UNION 
+                SELECT 
+                   categories.id, 
+                   categories.category_name,
+                   categories.stroke_width,
+                   categories.stroke_color,
+                   categories.fill_color,
+                   categories.uuid,
+                   categories.dot_color,
+                   categories.dot_size,
+                   categories.border_width,
+                   categories.border_color,
+                   categories.publisher_name
+                FROM 
+                   my_places,categories
+                WHERE 
+                    to_tsvector(name || ' ' || place_desc) @@ to_tsquery(#{searchKey}) AND
+                    my_places.category_id = categories.id and
+                    categories.publisher_name is not null
+          ]]>       
+    </select>
+</mapper>

@@ -19,8 +19,6 @@ import org.geotools.data.wms.xml.MetadataURL;
 import org.geotools.data.ows.HTTPClient;
 import org.geotools.data.ows.SimpleHttpClient;
 
-import org.geotools.data.wms.WebMapServer;
-import org.geotools.data.wms.xml.MetadataURL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.URL;

@@ -1,5 +1,26 @@
 # Migration guide
 
+## 1.31.0
+
+### servlet-map replacement
+
+The servlet-map module has been replaced with spring-based packaging. This uses servlet 3 webapp initialization without 
+ web.xml. If you are using the Jetty-bundle downloadable from oskari.org. Add this row to {JETTY_HOME}/start.ini. Take a look at 
+ the new Jetty-bundle for example:
+ 
+    etc/jetty-annotations.xml
+
+HTML-loading and action route handling has been separated with HTML response coming from the root path (/) and action routes
+are now handled with path /action. This propably requires a change in oskari-ext.properties for the property:
+
+    # url path to call for ajax requests/action routes
+    oskari.ajax.url.prefix=/action?
+
+The Maven artifactId was changed to clearly signal the change:
+
+    <groupId>fi.nls.oskari</groupId>
+    <artifactId>servlet-map</artifactId>
+
 ## 1.30
 
 ### Java update

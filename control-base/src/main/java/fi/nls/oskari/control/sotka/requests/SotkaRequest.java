@@ -1,11 +1,11 @@
 package fi.nls.oskari.control.sotka.requests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.StringWriter;
 import java.net.HttpURLConnection;

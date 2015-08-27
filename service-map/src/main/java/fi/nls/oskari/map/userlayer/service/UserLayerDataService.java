@@ -11,7 +11,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.DataUtilities;
@@ -40,8 +39,8 @@ public class UserLayerDataService {
     private static final String KEY_SOURCE = "layer-source";
     private static final String KEY_STYLE = "layer-style";
 
-    final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
-    final int userlayerMaxFeaturesCount = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
+    static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
+    static final int USERLAYER_MAX_FEATURES_COUNT = PropertyUtil.getOptional(USERLAYER_MAXFEATURES_COUNT, -1);
 
     /**
      * @param gjsWorker geoJSON and featurecollection items
@@ -142,7 +141,7 @@ public class UserLayerDataService {
                 userLayerDataService.insertUserLayerDataRow(userLayerData);
 
                 count++;
-                if (count > userlayerMaxFeaturesCount && userlayerMaxFeaturesCount != -1) break;
+                if (count > USERLAYER_MAX_FEATURES_COUNT && USERLAYER_MAX_FEATURES_COUNT != -1) break;
 
             }
         } catch (Exception e) {
@@ -153,29 +152,54 @@ public class UserLayerDataService {
         return count;
     }
 
+    /**
+     * Returns the base WFS-layer for userlayers
+     * @return
+     */
+    public OskariLayer getBaseLayer() {
+        if (USERLAYER_BASE_LAYER_ID == -1) {
+            log.error("Userlayer baseId not defined. Please define", USERLAYER_BASELAYER_ID,
+                    "property with value pointing to the baselayer in database.");
+            return null;
+        }
+        return mapLayerService.find(USERLAYER_BASE_LAYER_ID);
+    }
 
     /**
+     * Creates the layer JSON for userlayer. When creating a bunch of layer JSONs prefer the overloaded version
+     * with baselayer as parameter.
+     * @param ulayer
+     * @return
+     */
+    public JSONObject parseUserLayer2JSON(UserLayer ulayer) {
+        return parseUserLayer2JSON(ulayer, getBaseLayer());
+    }
+    /**
      * @param ulayer data in user_layer table
+     * @param baseLayer base WFS-layer for userlayers
      * @return
      * @throws ServiceException
      */
-    public JSONObject parseUserLayer2JSON(UserLayer ulayer) {
+    public JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer) {
 
         try {
-            int id = ConversionHelper.getInt(userlayerBaseLayerId, 0);
-            if (id == 0) return null;
-
-            final OskariLayer wfsuserLayer = mapLayerService.find(id);
+            final String id = baseLayer.getExternalId();
+            final String name = baseLayer.getName();
+            final String type = baseLayer.getType();
 
             // Merge userlayer values
-            wfsuserLayer.setExternalId(USERLAYER_LAYER_PREFIX + ulayer.getId());
-            wfsuserLayer.setName(ulayer.getLayer_name());
-            wfsuserLayer.setType(OskariLayer.TYPE_USERLAYER);
+            baseLayer.setExternalId(USERLAYER_LAYER_PREFIX + ulayer.getId());
+            baseLayer.setName(ulayer.getLayer_name());
+            baseLayer.setType(OskariLayer.TYPE_USERLAYER);
+            // create the JSON
+            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, ulayer);
 
-            JSONObject json = FORMATTER.getJSON(wfsuserLayer, PropertyUtil.getDefaultLanguage(), false, ulayer);
+            // restore the previous values for baseLayer
+            baseLayer.setExternalId(id);
+            baseLayer.setName(name);
+            baseLayer.setType(type);
 
             return json;
-
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse userlayer to json");
             return null;

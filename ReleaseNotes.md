@@ -1,5 +1,206 @@
 # Release Notes
 
+## 1.31
+
+### control-admin
+
+Added "Metrics" action route that is accessible by admins. This returns metrics in JSON format including metrics for:
+ - processing times and call counts for action routes
+ - processing times and call counts for proxied layer tiles
+ - garbage collector
+ - threads
+ - memory
+
+### service-map
+
+BundleService can now be instructed to cache bundle templates.
+
+Added a metadata field for Views. This will be used to store for example publisher specific information about the view. 
+
+### service-base
+
+ConversionHelper.asSet(T... type) added as a convenience method to get arrays as sets. 
+
+### content-resources
+
+DBHandler now allows further customization using command line parameters/env properties (thanks hatapitk): 
+
+1) Using env property 'oskari.resourceOverlayDir' one can override default setup files by providing an overriding file
+ with the same name and in the same directory structure in the referenced 'overlay' directory.
+ 
+2) Maven assembly plugin can be used to create a bundled runnable jar for standalone use
+ 
+3) Command line parameter can be used to reference an override properties-file to be used to f. ex. provide database credentials.
+
+See oskari-server/content-resources/README.md for details.
+
+### service-control
+
+#### Added white-/blacklist capabilities for action handlers. 
+
+To blacklist/block action routes define existing route keys as comma-separated value for property:
+
+    actioncontrol.blacklist=Users, ManageRoles
+    
+To whitelist (use only mentioned) action routes define existing route keys as comma-separated value for property:
+
+    actioncontrol.whitelist=GetAppSetup, GetSupportedLocales
+
+Note! This can also be used to replace existing handler with a custom implementation by blacklisting the existing one and
+programmatically adding the custom implementation on startup by calling (true as third parameter to skip black/whitelist check):
+
+    ActionControl.addAction("ActionKey", new MyActionHandler(), true);
+    
+#### ActionParameters - Added a convenience method for boolean type params
+ 
+    boolean bln = actionParams.getHttpParam("booleanParamKey", true);
+
+### Added metrics for ActionControl
+
+Metrics for action route handling (processing time/call counts) are now recorded by default in ActionControl. To 
+ disable metrics gathering add this configuration to oskari-ext.properties:
+
+    actioncontrol.metrics=false
+
+The gathered metrics are available by calling ActionControl.getMetrics().
+
+### control-base
+
+GetAppSetupHandler now updates views usages to portti_view usagecount and used columns.
+* usagecount column tells how many times view has been used
+* used column tells the last time when view was used 
+
+CreateAnalysisLayerHandler can now be used to generate aggregated values without saving as analysislayer.
+
+GetLayerTileHandler can now be used to get legendImages which need authentication via proxy.
+
+GetLayerTileHandler now has default timeouts for connect (1 second) and read (5 seconds). These can be configured
+ in oskari-ext.properties (defined in ms):
+ 
+    GetLayerTile.timeout.connection=1000
+    GetLayerTile.timeout.read=5000
+    
+GetLayerTileHandler now records metrics for proxied services by default. To disable metrics gathering add this
+ configuration to oskari-ext.properties:
+
+    GetLayerTile.metrics=false
+
+### servlet-map
+
+The servlet-map module has been replaced with Spring-based servlet (https://github.com/nls-oskari/oskari-spring/).
+It uses programmatic initialization instead of a web.xml and can utilize SAML-security module (servlet-saml-config),
+ but drops configurable database JNDI-names and JAAS-support. JNDI-names need to be configured in Ibatis SQLMapConfig.xml
+ in addition to oskari-ext.properties if not using the defaults. Ibatis will be replaced with Mybatis in the future which
+ will solve this issue.
+ 
+ See MigrationGuide.md for further info.
+ 
+Added localization support for server-side HTML/Login form.
+ 
+TODO: 
+- Thymeleaf support
+- LDAP login
+- spring-boot setup (or otherwise try to restore standalone-jetty packaging)
+- documentation of SAML features to oskari.org
+- documentation about customizing the webapp
+- Mybatis at least for Userlayers/Analysis (Myplaces already migrated)
+
+### servlet-saml-config
+
+New module providing SAML2 support for servlet-map. Add it to your webapp with servlet-map to gain SAML-functionality:
+
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>servlet-saml-config</artifactId>
+        </dependency>
+        
+### webapp-map
+
+Has been updated to use the new servlet-map.
+
+### standalone-jetty
+
+Moved out of oskari-server modules and Jetty-bundle from oskari.org should be used instead. 
+
+### service-webapp
+
+This new module has some common helper classes for webapps.
+
+### service-myplaces
+
+Myplaces services have been moved from service-map to service-myplaces. 
+The database access library has been updated from Ibatis to Mybatis.
+
+### service-routing (POC)
+
+New service requests route from the defined route service provider and parses data to geoJson and route instructions.
+Uses OpenTripPlanner route interface by default.
+To be able to use this you need to have the following parameters defined in properties:
+- routing.url (route service url)
+- routing.user (username required by the route service provider)
+- routing.password (password required by the route service provider)
+- routing.srs (coordinate system used bu route service provider)
+
+### control-routing (POC)
+
+New action route "RoutingHandler" added for handling route request. 
+Gets route parameters from frotend end returns route geometry as geoJson and route instructions as json.
+
+### Library upgrades
+
+Servlet-API upgraded from 2.4 to 3.1.0 in preparation of replacing current servlet-map/webapp-map with spring
+ counterparts from oskari-spring repository.
+
+Other updates: 
+* Jackson 1.9.11 -> 2.5.4
+* Jedis 2.6.0 -> 2.7.2
+* Axiom 1.2.14 -> 1.2.15
+* org.codehaus.woodstox:stax2-api 3.1.1 -> 3.1.4
+* com.fasterxml.woodstox:woodstox-core 4.4.1 -> 5.0.1
+
+Note that both Jackson 1.x and 2.x are used currently. 1.x is mostly used in WFS/transport since CometD needs it.
+
+### Property changes
+
+db.additional.pools has been changed to db.additional.modules to better describe it. 
+The default value is the same (under servlet-map/src/main/resources/oskari.properties).
+It is now used to keep track of DB-modules for the FlywayDB migration.
+
+### Automated database upgrade
+
+The database is now automatically upgraded using FlywayDB library. The default upgrade setup is configured in
+servlet-map/src/main/resources/oskari.properties and the migration is triggered by 
+fi.nls.oskari.map.servlet.OskariContextInitializer. The database is separated to 4 modules: oskari, myplaces, analysis
+ and userlayer. Each has its own status table for keeping track of the database. 
+ 
+Application specific update scripts can be added by adding a module in the property: 
+
+    db.additional.modules=myplaces,analysis,userlayer,myapplication
+    
+This will result a table called oskari_status_myapplication to the database and migration scripts will be searched 
+ from the classpath under the path /flyway/myapplication by default. The scripts are executed with the default Oskari 
+ datasource. To customize the used datasource, script locations, status table name in the database define these 
+ properties in oskari-ext.properties:
+   
+    db.myapplication.jndi.name=jdbc/MyApplicationDS
+    db.myapplication.url=[db url]
+    db.myapplication.username=[db user]
+    db.myapplication.password=[db pass]
+    db.myapplication.status_table=my_status_table
+    db.myapplication.script.locations=/flyway/myapplication,/upgrade/scripts/in/here/also
+    
+For further information about script naming etc see http://flywaydb.org/
+
+### servlet-transport
+
+Session id is now always sent as cookie when getting layer permissions. The default cookie name is 'JSESSIONID' and can be 
+overridden in transport-ext.properties with 'oskari.cookie.session' as before.
+
+### flyway migrates
+
+* add coordinatetool bundle to portti_bundle table
+* add used and usagecount for portti_view
+
 ## 1.30.1
 
 ### servlet-transport

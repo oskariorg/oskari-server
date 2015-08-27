@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -29,12 +29,12 @@ import fi.nls.oskari.util.ConversionHelper;
 public class GetLayerIds extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetLayerIds.class);
-    
+
     private static final String LAYER_IDS = "layerIds";
     private static final String ID = "id";
 
     private static final List<Integer> extra_layers = new ArrayList<Integer>();
-    
+
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     @Override
@@ -56,10 +56,11 @@ public class GetLayerIds extends ActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        
+
         String result = null;
 
         String jsessionid = params.getRequest().getSession().getId();
+        log.debug("Getting layerIds for session:", jsessionid);
 
         // check cache
 	    boolean cache = ConversionHelper.getBoolean(params.getHttpParam("no-cache"), false);
@@ -71,10 +72,10 @@ public class GetLayerIds extends ActionHandler {
 	        	return;
 	        }
 	    }
-        
+
         List<Map<String,Object>> listOfLayers = permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), true);
         ObjectMapper mapper = new ObjectMapper();
-        
+
         try {
             List<Integer> idList = new ArrayList<Integer>();
             for (Map<String,Object> entry : listOfLayers) {
@@ -85,17 +86,17 @@ public class GetLayerIds extends ActionHandler {
             Map<String,List<Integer>> layerIds = new HashMap<String,List<Integer>>();
             layerIds.put(LAYER_IDS, idList);
             result = mapper.writeValueAsString(layerIds);
-            
+
             // put to cache
             log.debug("saving session:", jsessionid);
 	        WFSLayerPermissionsStore permissions = WFSLayerPermissionsStore.setJSON(result);
 	        permissions.save(jsessionid);
-            
+
         } catch (Exception e) {
             log.error(e);
             result = JSONHelper.createJSONObject("error", e.toString()).toString();
         }
-       
+
         ResponseHelper.writeResponse(params, result);
     }
 }

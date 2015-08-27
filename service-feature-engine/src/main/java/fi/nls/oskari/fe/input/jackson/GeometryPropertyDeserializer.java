@@ -56,9 +56,6 @@ public class GeometryPropertyDeserializer extends
             handlers.put(qname, new FEPullParser.ElementPullParserHandler(
                     qname, gml));
         }
-
-        ;
-
     }
 
 
@@ -101,8 +98,7 @@ public class GeometryPropertyDeserializer extends
 
     @Override
     public GeometryProperty deserialize(JsonParser jp,
-            DeserializationContext ctxt) throws IOException,
-            JsonProcessingException {
+            DeserializationContext ctxt) throws IOException {
         Geometry geom = null;
 
         FromXmlParser parser = (FromXmlParser) ctxt.getParser();

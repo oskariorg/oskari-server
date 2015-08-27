@@ -7,10 +7,7 @@ import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
@@ -20,6 +17,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AggregateMethodParams;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
@@ -55,11 +54,16 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String PARAM_ANALYSE = "analyse";
     private static final String PARAM_FILTER1 = "filter1";
     private static final String PARAM_FILTER2 = "filter2";
+    private static final String PARAM_SAVE_BLN = "saveAnalyse";
+    private static final String JSONFORMAT = "application/json";
 
     private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LOCALES = "locales";
     private static final String JSON_KEY_FUNCTIONS = "functions";
+    private static final String JSON_KEY_AGGREGATE_RESULT = "aggregate";
+    private static final String JSON_KEY_GEOJSON = "geojson";
+
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
 
@@ -84,17 +88,15 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      */
     public void handleAction(ActionParameters params) throws ActionException {
 
-        // TODO: use params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING); instead
-        final String analyse = params.getHttpParam(PARAM_ANALYSE);
-        JSONObject analyseJson = JSONHelper.createJSONObject(analyse);
-        if (analyseJson == null) {
-            this.MyError(ERROR_ANALYSE_PARAMETER_MISSING, params, null);
-            return;
-        }
-        // </TODO>
-
         if (params.getUser().isGuest()) {
             throw new ActionDeniedException("Session expired");
+        }
+
+        final String analyse = params.getRequiredParam(PARAM_ANALYSE, ERROR_ANALYSE_PARAMETER_MISSING);
+        JSONObject analyseJson = JSONHelper.createJSONObject(analyse);
+        if (analyseJson == null) {
+            // json corrupted/parsing failed
+            throw new ActionParamsException(ERROR_ANALYSE_PARAMETER_MISSING);
         }
 
         // filter conf data
@@ -103,18 +105,12 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
-        AnalysisLayer analysisLayer = null;
 
         // User
         String uuid = params.getUser().getUuid();
-        try {
-            analysisLayer = analysisParser.parseAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
-        } catch (ServiceException e) {
-            this.MyError(ERROR_UNABLE_TO_PARSE_ANALYSE, params, e);
-            return;
-        }
+        // note! analysisLayer is replaced in aggregate handling!!
+        AnalysisLayer analysisLayer = getAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
         Analysis analysis = null;
-
 
         if (analysisLayer.getMethod().equals(AnalysisParser.LAYER_UNION)) {
             // no WPS for merge analysis
@@ -122,24 +118,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     analysisLayer, analyse, params.getUser());
         } else {
             // Generate WPS XML
-            String featureSet;
-            try {
-                featureSet = this.requestFeatureSets(analysisLayer);
-            } catch (ServiceException e) {
-                this.MyError(ERROR_UNABLE_TO_GET_WPS_FEATURES, params, e);
-                return;
-            }
-            // Check, if exception result set
-            if (featureSet.indexOf("ows:Exception") > -1) {
-                this.MyError(ERROR_WPS_EXECUTE_RETURNS_EXCEPTION, params, featureSet);
-                return;
-            }
-
-            // Check, if any data in result set
-            if (featureSet.isEmpty() || featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
-                this.MyError(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES, params, null);
-                return;
-            }
+            String featureSet = executeWPSprocess(analysisLayer);
             if (analysisLayer.getMethod().equals(AnalysisParser.UNION)
                     || analysisLayer.getMethod().equals(AnalysisParser.INTERSECT)
                     || analysisLayer.getMethod().equals(AnalysisParser.SPATIAL_JOIN)) {
@@ -153,26 +132,53 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 // response
                 //Save analysis results - use union of input data
                 analysisLayer.setWpsLayerId(-1);
-                analysisLayer.setResult(this.localiseAggregateResult(analysisParser.parseAggregateResults(featureSet,
-                        analysisLayer), analyseJson));
+                final String aggregateResult = this.localiseAggregateResult(
+                        analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
+                log.debug("\nAggregate results:\n", aggregateResult, "\n");
+                /*
+Aggregate results:
+ {"fi_url_1":{"Count":4},"tmp_id":{"Sum":45301,"Median":12232,"Count":4,"Standar
+d deviation":3186.3551571505645,"Maximum":14592,"Average":11325.25,"Minimum":624
+5},"fi_url_3":{"Count":4},"postinumero":{"Count":4},"fi_url_2":{"Count":4},"fi_s
+posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
+{"Count":4},"kto_tarkennus":{"Count":4}}
+                 */
+                analysisLayer.setResult(aggregateResult);
 
+                // Get geometry for aggretage features
                 try {
-                    analysisLayer = analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl);
-                } catch (ServiceException e) {
-                    this.MyError(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, params, e);
-                    return;
-                }
-                try {
+                    // Just return result as JSON and don't save analysis to DB
+                    if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
+                        // NOTE!! Replacing the analysisLayer!
+                        // Get response as geojson when no db store
+                        analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        featureSet = wpsService.requestFeatureSet(analysisLayer);
+                        // Just return result as JSON and don't save analysis to DB
+                        // Get geometry as geojson for hilighting features of aggregate result
+                        JSONObject geojson = JSONHelper.createJSONObject(featureSet);
+                        JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
+                        JSONObject results = new JSONObject();
+                        JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
+                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggregate);
+                        ResponseHelper.writeResponse(params, results);
+                        return;
+                    }
+                    // NOTE!! Replacing the analysisLayer!  - response is gml
+                    analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, null);
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
                     featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer);
                 } catch (ServiceException e) {
-                    this.MyError(ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION, params, e);
-                    return;
+                    throw new ActionException(ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION, e);
                 }
 
             }
+            // Add extra TypeNames (depends on wps method)
+            analysisParser.fixTypeNames(analysisLayer);
+
+            // Fix geometry property name for WFST (could be any, depends on Wps method )
+            fixGeometryPropertyName(analysisLayer);
 
             analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
@@ -189,7 +195,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         analysisLayer.setNativeFields(analysis);
 
         // copy permissions from source layer to new analysis
-        final Resource sourceResource = getSourcePermission(analyseJson, params.getUser());
+        final Resource sourceResource =
+                getSourcePermission(analysisParser.getSourceLayerId(analyseJson), params.getUser());
         if(sourceResource != null) {
             final Resource analysisResource = new Resource();
             analysisResource.setType(AnalysisLayer.TYPE);
@@ -230,8 +237,44 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         ResponseHelper.writeResponse(params, analysisLayerJSON);
     }
 
-    private Resource getSourcePermission(final JSONObject analyseData, final User user) {
-        final String layerId = analysisParser.getSourceLayerId(analyseData);
+    private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
+                                      String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
+        try {
+            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
+        } catch (ServiceException e) {
+            throw new ActionParamsException(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, e.getMessage());
+        }
+    }
+
+    private AnalysisLayer getAnalysisLayer(JSONObject analyseJson, String filter1, String filter2, String baseUrl,
+                                           String uuid) throws ActionParamsException {
+        try {
+            return analysisParser.parseAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
+        } catch (ServiceException e) {
+            throw new ActionParamsException(ERROR_UNABLE_TO_PARSE_ANALYSE, e.getMessage());
+        }
+    }
+
+    private String executeWPSprocess(AnalysisLayer analysisLayer) throws ActionParamsException {
+        String featureSet;
+        try {
+            featureSet = this.requestFeatureSets(analysisLayer);
+        } catch (ServiceException e) {
+            throw new ActionParamsException(ERROR_UNABLE_TO_GET_WPS_FEATURES, e.getMessage());
+        }
+        // Check, if exception result set
+        if (featureSet == null || featureSet.indexOf("ows:Exception") > -1) {
+            throw new ActionParamsException(ERROR_WPS_EXECUTE_RETURNS_EXCEPTION, featureSet);
+        }
+
+        // Check, if any data in result set
+        if (featureSet.isEmpty() || featureSet.indexOf("numberOfFeatures=\"0\"") > -1) {
+            throw new ActionParamsException(ERROR_WPS_EXECUTE_RETURNS_NO_FEATURES);
+        }
+        return featureSet;
+    }
+
+    private Resource getSourcePermission(final String layerId, final User user) {
         if(layerId == null) {
             return null;
         }
@@ -397,5 +440,28 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
         }
         return result;
     }
+
+    /**
+     * Fix the geometry property name for WFST transform
+     * Geometry property name in WPS method result is not the same as in input featurecollections
+     * @param analysisLayer
+     */
+    private void fixGeometryPropertyName(AnalysisLayer analysisLayer) {
+
+        try {
+
+            AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
+            if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
+                params.setGeom("z_"+ ((SpatialJoinStatisticsMethodParams) params).getGeom2());
+            }
+
+
+        } catch (Exception e) {
+            log.warn("WPS geometry property name fix failed ", e);
+
+        }
+
+    }
+
 
 }

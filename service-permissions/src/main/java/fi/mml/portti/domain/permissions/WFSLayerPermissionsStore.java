@@ -3,18 +3,18 @@ package fi.mml.portti.domain.permissions;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.cache.JedisManager;
 
 /**
  * handles user's permissions
- * 
+ *
  * Contains a list of layers that user may use.
  *
  * Similar WFSLayerPermissionsStore class can be found in transport.
@@ -23,7 +23,7 @@ public class WFSLayerPermissionsStore {
 
 	private static final Logger log = LogFactory.getLogger(WFSLayerPermissionsStore.class);
     public static ObjectMapper mapper = new ObjectMapper();
-    
+
 	public static final String KEY = "Permission_";
 
 	private List<Long> layerIds;
@@ -36,7 +36,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Gets list of layer ids
-	 * 
+	 *
 	 * @return layerIds
 	 */
 	public List<Long> getLayerIds() {
@@ -45,7 +45,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Sets layer ids
-	 * 
+	 *
 	 * @param layerIds
 	 */
 	public void setLayerIds(List<Long> layerIds) {
@@ -54,7 +54,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Checks if user has permissions for a layer
-	 * 
+	 *
 	 * @param id
 	 * @return <code>true</code> if user may use the layer; <code>false</code>
 	 *         otherwise.
@@ -66,7 +66,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Saves into redis
-	 * 
+	 *
 	 * @param session
 	 */
 	public void save(String session) {
@@ -93,7 +93,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Transforms object to JSON String
-	 * 
+	 *
 	 * @return JSON String
 	 */
 	@JsonIgnore
@@ -112,7 +112,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Transforms JSON String to object
-	 * 
+	 *
 	 * @param json
 	 * @return object
 	 */
@@ -125,7 +125,7 @@ public class WFSLayerPermissionsStore {
 
 	/**
 	 * Gets saved permissions for certain session from redis
-	 * 
+	 *
 	 * @param session
 	 * @return permissions as JSON String
 	 */

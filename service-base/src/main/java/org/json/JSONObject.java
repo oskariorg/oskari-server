@@ -25,6 +25,7 @@ SOFTWARE.
 */
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -86,7 +87,7 @@ import java.util.TreeSet;
  * @author JSON.org
  * @version 2009-03-06
  */
-public class JSONObject {
+public class JSONObject implements Serializable {
 
     /**
      * JSONObject.NULL is equivalent to the value that JavaScript calls null,

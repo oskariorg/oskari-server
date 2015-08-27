@@ -6,14 +6,13 @@ import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -80,13 +79,19 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             return;
         }
 
+        final boolean useProxy = useProxy(layer);
         final Map<String, String> stylesMap = capabilities.getSupportedStyles();
         final JSONArray styles = new JSONArray();
         try {
             final Map<String, String> legends = capabilities.getSupportedLegends();
             final boolean hasLegendImage = layer.getLegendImage() != null && !layer.getLegendImage().isEmpty();
             for (String styleName : stylesMap.keySet()) {
-                final String styleLegend = legends.get(styleName);
+                final String styleLegend;
+                if (useProxy) {
+                    styleLegend = buildLegendUrl(layer);
+                } else {
+                    styleLegend = legends.get(styleName);
+                }
                 JSONObject obj = createStylesJSON(styleName, stylesMap.get(styleName), styleLegend);
                 styles.put(obj);
                 if(hasLegendImage) {
@@ -101,11 +106,24 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         } catch (Exception e) {
             log.warn(e, "Populating layer styles failed!");
         }
+
+        if (useProxy) {
+            JSONHelper.putValue(layerJson, "legendImage", buildLegendUrl(layer));
+        }
+
         JSONHelper.putValue(layerJson, "styles", styles);
         JSONObject formats = getFormatsJSON(capabilities);
         JSONHelper.putValue(layerJson, "formats", formats);
         JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
         JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
+    }
+
+    private String buildLegendUrl(final OskariLayer layer) {
+        Map<String, String> urlParams = new HashMap<String, String>();
+        urlParams.put("action_route", "GetLayerTile");
+        urlParams.put("id", Integer.toString(layer.getId()));
+        urlParams.put("legend", "true");
+        return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
     /**

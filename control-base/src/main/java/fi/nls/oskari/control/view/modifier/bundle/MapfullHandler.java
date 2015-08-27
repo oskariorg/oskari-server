@@ -10,6 +10,7 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -19,13 +20,13 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.view.modifier.ModifierException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -65,12 +66,16 @@ public class MapfullHandler extends BundleHandler {
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
 
-    private static final MyPlacesService myPlaceService = new MyPlacesServiceIbatisImpl();
+    private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
     private static final UserLayerDbService userLayerService = new UserLayerDbServiceIbatisImpl();
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
+
+    public void init() {
+        myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+    }
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
         final JSONObject mapfullConfig = getBundleConfig(params.getConfig());
@@ -337,6 +342,7 @@ public class MapfullHandler extends BundleHandler {
                                          final long viewID,
                                          final Set<String> bundleIds) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
+        final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -358,7 +364,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer);
+            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer);
             if (json != null) {
                 layerList.put(json);
             }

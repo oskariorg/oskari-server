@@ -1,12 +1,12 @@
 package fi.nls.oskari.work;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.pojo.*;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.wfs.*;
 
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;

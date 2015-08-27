@@ -1,8 +1,5 @@
 package fi.nls.oskari.domain.map.wfs;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-
 /**
  * Handles WFS Parser config data
  *

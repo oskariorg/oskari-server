@@ -1,9 +1,27 @@
 package fi.nls.oskari.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Conversion helper methods
  */
 public class ConversionHelper {
+
+    /**
+     * Returns the first of the given parameters that is not null or null if all are null
+     * @param strings
+     * @return
+     */
+    public static String firstNonNull(final String ... strings) {
+        for (final String s : strings) {
+            if (null != s) {
+                return s;
+            }
+        }
+        return null;
+    }
 
     /**
      * Count the number of instances of substring within a string.
@@ -104,7 +122,7 @@ public class ConversionHelper {
             return Long.parseLong(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
@@ -122,7 +140,7 @@ public class ConversionHelper {
             return Integer.parseInt(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
@@ -137,7 +155,7 @@ public class ConversionHelper {
             return Double.parseDouble(strToParse);
         } catch (Exception e) {
             return defaultValue;
-        }   
+        }
     }
 
     /**
@@ -156,6 +174,33 @@ public class ConversionHelper {
         } catch (Exception ex) {
             return defaultValue;
         }
+    }
+
+    /**
+     * Parses boolean from on/off String. Returns defaultValue if strToParse is null.
+     *
+     * @param strToParse
+     * @param defaultValue
+     * @return
+     */
+    public static final boolean getOnOffBoolean(final String strToParse, final boolean defaultValue) {
+        if(strToParse == null) {
+            return defaultValue;
+        }
+        try {
+            return "ON".equalsIgnoreCase(strToParse);
+        } catch (Exception ex) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Wraps an array of values to a Set of the same type
+     * @param array values
+     * @return Set wrapped values
+     */
+    public static <T> Set<T> asSet(final T... array) {
+        return new HashSet<>(Arrays.asList(array));
     }
 
 }

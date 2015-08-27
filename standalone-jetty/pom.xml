@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.30.1</version>
+        <version>1.30.0</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>
@@ -60,6 +60,14 @@
             <artifactId>postgresql</artifactId>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>oskari_org</id>
+            <name>Oskari.org release repository</name>
+            <url>http://oskari.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <resources>

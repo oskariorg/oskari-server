@@ -3,21 +3,20 @@ package fi.nls.oskari.wfs.pojo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.JsonMappingException;
 
 import fi.nls.oskari.log.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -239,7 +238,7 @@ public class WFSLayerStore extends WFSLayerConfiguration {
         WFSLayerStore store = new WFSLayerStore();
 
         JsonFactory factory = new JsonFactory();
-        JsonParser parser = factory.createJsonParser(json);
+        JsonParser parser = factory.createParser(json);
         parser.nextToken();
         if (parser.getCurrentToken() != JsonToken.START_OBJECT) {
             throw new IllegalStateException("Configuration is not an object!");
@@ -399,7 +398,9 @@ public class WFSLayerStore extends WFSLayerConfiguration {
                 }
             } else if (PARSE_CONFIG.equals(fieldName)) {
                     store.setParseConfig(parser.getText());
-           } else {
+             }else if (ATTRIBUTES.equals(fieldName)) {
+                store.setAttributes(parser.getText());
+            } else {
                 log.warn("Unrecognized field while parsing layer JSON:", fieldName);
                 // exception is thrown since the parser state should be fixed here if we don't
                 // maybe calling parser.nextToken() might fix it but it seems not to be working

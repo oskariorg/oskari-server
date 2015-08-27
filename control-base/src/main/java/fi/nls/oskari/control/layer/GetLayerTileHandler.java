@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Enumeration;
+
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
@@ -21,21 +24,27 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ServiceFactory;
 import fi.nls.oskari.domain.User;
 
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(GetLayerTileHandler.class);
-    final private static String RESOURCE_CACHE_NAME = "permission_resources";
-    final private static String LAYER_CACHE_NAME = "layer_resources";
-    final private static String LAYER_ID = "id";
-    final private static List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, ActionControl.PARAM_ROUTE});
+    private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
+    private static final String RESOURCE_CACHE_NAME = "permission_resources";
+    private static final String LAYER_CACHE_NAME = "layer_resources";
+    private static final String LAYER_ID = "id";
+    private static final String LEGEND = "legend";
+    private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {LAYER_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private OskariLayerService layerService = null;
     private PermissionsService permissionsService = null;
     private final Cache<Resource> resourceCache = CacheManager.getCache(RESOURCE_CACHE_NAME);
     private final Cache<OskariLayer> layerCache = CacheManager.getCache(LAYER_CACHE_NAME);
+    private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
+    private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
+    private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
+    private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
 
     /**
      *  Init method
@@ -71,12 +80,22 @@ public class GetLayerTileHandler extends ActionHandler {
             throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
 
+        final MetricRegistry metrics = ActionControl.getMetrics();
+
+        Timer.Context actionTimer = null;
+        if(GATHER_METRICS) {
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
+            actionTimer = timer.time();
+        }
         // Create connection
+
         final String url = getURL(params, layer);
         final HttpURLConnection con = getConnection(url, layer);
         try {
             con.setRequestMethod("GET");
             con.setDoOutput(false);
+            con.setConnectTimeout(TIMEOUT_CONNECTION);
+            con.setReadTimeout(TIMEOUT_READ);
             con.setDoInput(true);
             con.setFollowRedirects(true);
             con.setUseCaches(false);
@@ -85,10 +104,10 @@ public class GetLayerTileHandler extends ActionHandler {
             final int responseCode = con.getResponseCode();
             final String contentType = con.getContentType();
             if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
-                log.warn("URL", url, "returned HTTP response code", responseCode,
+                LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
-                log.info("Response was:", msg);
+                LOG.info("Response was:", msg);
                 throw new ActionParamsException("Problematic response from actual service");
             }
 
@@ -103,8 +122,11 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
-            throw new ActionException("Couldn't proxy request to actual service", e);
+            throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
         } finally {
+            if(actionTimer != null) {
+                actionTimer.stop();
+            }
             if(con != null) {
                 con.disconnect();
             }
@@ -123,7 +145,7 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         layer = layerService.find(id);
         if (layer != null) {
-            log.debug("Caching a layer with id ", id);
+            LOG.debug("Caching a layer with id ", id);
             layerCache.put(id, layer);
         }
         return layer;
@@ -142,19 +164,22 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         resource = permissionsService.findResource(layerResource);
         if (resource != null && !resource.getPermissions().isEmpty()) {
-            log.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
+            LOG.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
             resourceCache.put(layerResource.getMapping(),resource);
         }
         else {
-            log.warn("Trying to cache layer with no resources");
+            LOG.warn("Trying to cache layer with no resources");
         }
         return resource;
     }
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
+        if (params.getHttpParam(LEGEND, false)) {
+            return layer.getLegendImage();
+        }
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();
-        Map<String, String> urlParams = new HashMap<String, String>();
+        Map<String, String> urlParams = new HashMap<>();
         // Refine parameters
         while (paramNames.hasMoreElements()){
             String paramName = paramNames.nextElement();
@@ -162,8 +187,7 @@ public class GetLayerTileHandler extends ActionHandler {
                 urlParams.put(paramName, params.getHttpParam(paramName));
             }
         }
-        final String url = IOHelper.constructUrl(layer.getUrl(),urlParams);
-        return url;
+        return IOHelper.constructUrl(layer.getUrl(),urlParams);
     }
 
     /**
@@ -178,7 +202,7 @@ public class GetLayerTileHandler extends ActionHandler {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
-            log.debug("Getting layer tile from url:", url);
+            LOG.debug("Getting layer tile from url:", url);
             return IOHelper.getConnection(url, username, password);
         } catch (Exception e) {
             throw new ActionException("Couldn't get connection to service", e);

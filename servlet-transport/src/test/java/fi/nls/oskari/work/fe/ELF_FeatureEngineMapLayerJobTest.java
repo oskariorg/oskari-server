@@ -2,7 +2,6 @@ package fi.nls.oskari.work.fe;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +9,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fi.nls.oskari.work.JobType;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.impl.DefaultPrettyPrinter;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.eclipse.jetty.util.ajax.JSON;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,9 +16,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.Layer;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.utils.GeometryJSONOutputModule;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.ResultProcessor;
 
 public class ELF_FeatureEngineMapLayerJobTest {
     protected static final Logger log = LogFactory

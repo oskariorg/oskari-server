@@ -6,9 +6,9 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.30.1</version>
+        <version>1.31.0</version>
 	</parent>
-    
+
     <groupId>fi.nls.oskari.service</groupId>
     <artifactId>oskari-map</artifactId>
     <packaging>jar</packaging>
@@ -22,6 +22,14 @@
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-permissions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>

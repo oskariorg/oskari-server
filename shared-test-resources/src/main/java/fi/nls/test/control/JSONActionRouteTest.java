@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -112,12 +113,7 @@ public class JSONActionRouteTest {
         // mock possible payload inputstream
         if(payload != null) {
             try {
-                ServletInputStream wrapper = new ServletInputStream() {
-                    @Override
-                    public int read() throws IOException {
-                        return payload.read();
-                    }
-                };
+                ServletInputStream wrapper = new MockServletInputStream(payload);
                 doReturn(wrapper).when(req).getInputStream();
             }
             catch (IOException ignored ) {}

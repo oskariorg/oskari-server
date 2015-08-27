@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamException;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_wfs_Parser;
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 public class TestJacksonParser {
 
     /**
-     * 
+     *
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IOException

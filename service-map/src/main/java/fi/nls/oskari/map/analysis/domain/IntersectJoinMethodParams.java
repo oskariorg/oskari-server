@@ -175,7 +175,7 @@ public class IntersectJoinMethodParams extends AnalysisMethodParams {
         reference1 = reference1.replace(FILTER, wfsfilter);
 
         //Properties and filter - reference 2
-        if (this.getProperties() != null) {
+        if (this.getProperties2() != null) {
             reference2 = reference2.replace(PROPERTIES, this.getProperties2());
         }
         else

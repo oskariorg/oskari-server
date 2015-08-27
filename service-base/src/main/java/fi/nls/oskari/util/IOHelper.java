@@ -27,6 +27,7 @@ public class IOHelper {
 
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String HEADER_CONTENTTYPE = "Content-Type";
+    public static final String HEADER_USERAGENT = "User-Agent";
     public static final String HEADER_ACCEPT = "Accept";
 
     public static final String DEFAULT_CHARSET = "UTF-8";
@@ -109,7 +110,7 @@ public class IOHelper {
          * there's no more data to read. We use the StringWriter class to
          * produce the string.
          */
-    	
+
         if (is == null) {
             return "";
         }

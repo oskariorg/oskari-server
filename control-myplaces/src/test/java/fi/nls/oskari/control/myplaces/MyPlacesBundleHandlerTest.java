@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.myplaces;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -9,6 +7,8 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class MyPlacesBundleHandlerTest extends JSONActionRouteTest {
     @Before
     public void setUp() throws Exception {
 
-        service = mock(MyPlacesServiceIbatisImpl.class);
+        service = mock(MyPlacesServiceMybatisImpl.class);
         handler.setMyPlacesService(service);
         final List<MyPlaceCategory> list = new ArrayList<MyPlaceCategory>();
         MyPlaceCategory cat = new MyPlaceCategory();

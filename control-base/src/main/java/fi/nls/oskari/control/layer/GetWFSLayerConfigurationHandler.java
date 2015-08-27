@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.MyPlacesService;
-import fi.mml.map.mapwindow.service.db.MyPlacesServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.UserDataLayer;
@@ -9,6 +7,8 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
+import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
 
 import fi.nls.oskari.control.ActionException;
@@ -33,7 +33,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
     private AnalysisDataService analysisDataService = new AnalysisDataService();
     private UserLayerDbService userLayerDbService = new UserLayerDbServiceIbatisImpl();
-    private MyPlacesService myPlacesService = new MyPlacesServiceIbatisImpl();
+    private MyPlacesService myPlacesService = null;
 
     private final static String PARAMS_ID = "id";
 
@@ -52,6 +52,10 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
     // User layer
     public static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
     public static final String USERLAYER_PREFIX = "userlayer_";
+
+    public void init() {
+        myPlacesService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+    }
 
     public void handleAction(ActionParameters params) throws ActionException {
 
@@ -99,7 +103,7 @@ public class GetWFSLayerConfigurationHandler extends ActionHandler {
         }
         // Extra manage for myplaces
         else if (requestedLayerId.startsWith(MYPLACES_PREFIX)) {
-            userLayer = myPlacesService.find((int)userDataLayerId);
+            userLayer = myPlacesService.findCategory(userDataLayerId);
         }
         // Extra manage for imported data
         else if (requestedLayerId.startsWith(USERLAYER_PREFIX)) {

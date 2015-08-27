@@ -17,7 +17,6 @@
     },
     "role_permissions": {
         "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
-        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
-        "Admin" : ["PUBLISH"]
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
     }
 }

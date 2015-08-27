@@ -4,6 +4,7 @@
         "pubDomain":"paikkis.fi",
         "description":"test view",
         "name":"test",
+        "metadata": {},
         "state":{
             "mapfull": {
                 "state": {

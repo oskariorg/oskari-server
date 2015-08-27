@@ -1,140 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
-        <version>1.30.1</version>
-	</parent>
-	<groupId>fi.nls.oskari</groupId>
-	<artifactId>map-servlet</artifactId>
-	<packaging>jar</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.nls.oskari</groupId>
+        <artifactId>oskari-parent</artifactId>
+        <version>1.31.0</version>
+    </parent>
+    <artifactId>servlet-map</artifactId>
+    <packaging>jar</packaging>
+    <name>Oskari Map Servlet</name>
 
-	<name>Oskari map Servlet</name>
+    <dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-webapp-helpers</artifactId>
+        </dependency>
 
-	<dependencies>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-users</artifactId>
+        </dependency>
 
-		<!-- Managed deps -->
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-map</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-control-base</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>fi.nls.oskari</groupId>
-			<artifactId>content-resources</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-users</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>service-scheduler</artifactId>
-		</dependency>
-
-		<!-- artifactId "oskari-control-base" is implied by adding extended actions -->
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-control-example</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-control-myplaces</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-control-admin</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-	</dependencies>
-
-	<!-- ==== Build Settings ==== -->
-	<properties>
-		<!-- This is the default properties if no profile is selected on the command 
-			line -->
-		<filter-profile>template</filter-profile>
-		<filter-path>${basedir}/filter</filter-path>
-	</properties>
-
-	<build>
-		<filters>
-			<!-- The base filtering path and file should always be hardcoded, it's 
-				not dependent on any profile change -->
-			<filter>${filter-path}/filter-base.properties</filter>
-			<!-- filter>${filter-path}/${filter-profile}.properties</filter -->
-		</filters>
-
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
-
-	<profiles>
-		<profile>
-			<id>tomcat-profile</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-					<app.server>tomcat</app.server>
-					<filter-profile>tomcat-template</filter-profile>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<containerConfigXML>src/main/resources/META-INF/context.xml</containerConfigXML>
-							<webResources>
-								<resource>
-									<directory>src/main/resources/META-INF</directory>
-									<filtering>true</filtering>
-									<targetPath>META-INF</targetPath>
-								</resource>
-								<resource>
-									<directory>src/main/resources/WEB-INF/${app.server}</directory>
-									<filtering>true</filtering>
-									<targetPath>WEB-INF</targetPath>
-									<includes>
-										<include>*.xml</include>
-									</includes>
-								</resource>
-							</webResources>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- PowerMock can be used to mock static/private methods -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

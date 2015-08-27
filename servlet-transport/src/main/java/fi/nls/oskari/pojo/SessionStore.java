@@ -9,17 +9,17 @@ import java.util.Map;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.transport.MessageParseHelper;
+
+import com.vividsolutions.jts.geom.Coordinate;
+
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -28,7 +28,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class SessionStore {
 	private static final Logger log = LogFactory.getLogger(SessionStore.class);
 
+    /*
+     * This uses the Jackson 1.x version since it's used anyway by the current version of CometD.
+     * Using Jackson 2.x results in problems with serialization/deserialization.
+     * Perhaps needs a custom serializer...
+     */
 	private static final ObjectMapper mapper = new ObjectMapper();
+
 	public static final String KEY = "Session_";
 
 	private String client; // bayeux session (used in redis key)

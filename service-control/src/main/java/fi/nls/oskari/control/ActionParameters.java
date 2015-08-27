@@ -18,7 +18,7 @@ import fi.nls.oskari.util.RequestHelper;
  * ActionHandlers use this to process a request.
  */
 public class ActionParameters {
-    
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private User user;
@@ -112,6 +112,23 @@ public class ActionParameters {
             throw new ActionParamsException(errMsg);
         }
     }
+    /**
+     * Returns a cleaned up (think XSS) value for the requested parameter
+     * @param key parameter name
+     * @return cleaned up value for the parameter as double
+     * @throws ActionParamsException if parameter is not found, is empty or can't be parsed as double
+     */
+    public double getRequiredParamDouble(final String key) throws ActionParamsException {
+        final String errMsg = "Required parameter '" + key + "' missing!";
+        final String val = getRequiredParam(key, errMsg);
+
+        try {
+            return Double.parseDouble(val);
+        } catch (Exception e) {
+            throw new ActionParamsException(errMsg);
+        }
+    }
+
 
     /**
      * Returns a cleaned up (think XSS) value for the requested parameter
@@ -174,6 +191,15 @@ public class ActionParameters {
      */
     public long getHttpParam(final String key, final long defaultValue) {
         return ConversionHelper.getLong(getHttpParam(key), defaultValue);
+    }
+    /**
+     * Returns a parameter as boolean or default value if not present/can't be parsed
+     * @param key parameter name for a boolean parameter
+     * @param defaultValue value to be returned if parameter is not present in the request or can't be parsed
+     * @return cleaned up value for the parameter or given defaultValue if not found
+     */
+    public boolean getHttpParam(final String key, final boolean defaultValue) {
+        return ConversionHelper.getBoolean(getHttpParam(key), defaultValue);
     }
     /**
      * Returns value of a header field matching given key

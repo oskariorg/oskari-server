@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ public class View implements Serializable {
     private String description = null;
     private String uuid = null;
     private boolean onlyForUuId = false;
+    private JSONObject metadata = null;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public String getUrl() {
@@ -26,6 +28,21 @@ public class View implements Serializable {
 
         String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
         return sub.replace(baseUrl);
+    }
+
+    public JSONObject getMetadata() {
+        if(metadata == null) {
+            metadata = new JSONObject();
+        }
+        return metadata;
+    }
+
+    public String getMetadataAsString() {
+        return getMetadata().toString();
+    }
+
+    public void setMetadata(JSONObject metadata) {
+        this.metadata = metadata;
     }
 
     private String getBaseUrlForView(final String type, final String lang) {

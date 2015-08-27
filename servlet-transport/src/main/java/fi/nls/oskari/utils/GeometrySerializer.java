@@ -2,19 +2,20 @@ package fi.nls.oskari.utils;
 
 import java.io.IOException;
 
+import com.vividsolutions.jts.geom.Geometry;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import com.vividsolutions.jts.geom.Geometry;
-
+/**
+ * This uses the Jackson 1.x version since it's used by the current version of CometD.
+ * Don't upgrade if not upgrading CometD.
+ */
 class GeometrySerializer extends JsonSerializer<Geometry> {
 
     @Override
     public void serialize(Geometry value, JsonGenerator jgen,
-            SerializerProvider provider) throws IOException,
-            JsonProcessingException {
+            SerializerProvider provider) throws IOException {
         if (value == null) {
             provider.defaultSerializeNull(jgen);
             return;

@@ -28,7 +28,8 @@ public class JobHelper {
     private static String SERVICE_URL = null; // default value perhaps?
     private static String SERVICE_URL_PATH = null;
     private static String SERVICE_URL_QUERYSTRING = null;
-    private static String SERVICE_URL_SESSION_PARAM = PropertyUtil.get("oskari.cookie.session", null);
+    private static String SESSION_COOKIE_NAME = PropertyUtil.get("oskari.cookie.session", "JSESSIONID") + "=";
+    public static final String PARAM_MANUAL_REFRESH = "manualRefresh";
 
     // COOKIE
     public static final String ROUTE_COOKIE_NAME = PropertyUtil.get("oskari.cookie.route", "ROUTEID") + "=";
@@ -71,9 +72,8 @@ public class JobHelper {
 
     public static String getCookiesValue(String sessionId, String route) {
         StringWriter writer = new StringWriter();
-        if(SERVICE_URL_SESSION_PARAM != null && sessionId != null && !sessionId.isEmpty()) {
-            writer.append(SERVICE_URL_SESSION_PARAM);
-            writer.append("=");
+        if(sessionId != null && !sessionId.isEmpty()) {
+            writer.append(SESSION_COOKIE_NAME);
             writer.append(sessionId);
             writer.append("; ");
         }
@@ -149,6 +149,7 @@ public class JobHelper {
         double scale = mapScales.get(zoomLevel);
         return isRequestScalesInRange(scale, layer, targetSRS);
     }
+
     /**
      * Checks if the map scale is valid
      *
