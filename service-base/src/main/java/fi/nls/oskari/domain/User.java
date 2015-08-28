@@ -32,10 +32,10 @@ public class User implements Serializable {
     private JSONObject attributes = new JSONObject();
 
     private String uuid = "";
-    private Set<Role> roles = new HashSet<Role>();
+    private Set<Role> roles = new LinkedHashSet<>();
 
     public void clearRoles() {
-        roles = new HashSet<Role>();
+        roles = new LinkedHashSet<>();
     }
 
     /**
@@ -247,5 +247,34 @@ public class User implements Serializable {
             log.error("Error parsing user from JSON:", json);
             return new GuestUser();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        User user = (User) o;
+
+        if (getId() != user.getId()) {
+            return false;
+        }
+        if (!getEmail().equals(user.getEmail())) {
+            return false;
+        }
+        return getUuid().equals(user.getUuid());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getEmail().hashCode();
+        result = 31 * result + getUuid().hashCode();
+        return result;
     }
 }

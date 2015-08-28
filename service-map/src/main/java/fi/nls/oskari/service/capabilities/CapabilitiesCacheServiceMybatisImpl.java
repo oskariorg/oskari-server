@@ -48,13 +48,6 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      * Tries to load capabilities from the database
      * @return null if not saved to db
      */
-    public OskariLayerCapabilities find(final OskariLayer layer) {
-        return find(layer.getSimplifiedUrl(true), layer.getType());
-    }
-    /**
-     * Tries to load capabilities from the database
-     * @return null if not saved to db
-     */
     public OskariLayerCapabilities find(final String url, final String layertype) {
         if(url == null ||layertype == null) {
             LOG.warn("Incomplete params for capabilities loading:", url, layertype);

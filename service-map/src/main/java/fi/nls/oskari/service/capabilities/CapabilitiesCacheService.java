@@ -25,8 +25,15 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
-    public abstract OskariLayerCapabilities find(final OskariLayer layer);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
+
+    /**
+     * Tries to load capabilities from the database
+     * @return null if not saved to db
+     */
+    public OskariLayerCapabilities find(final OskariLayer layer) {
+        return find(layer.getSimplifiedUrl(true), layer.getType());
+    }
 
     public OskariLayerCapabilities getCapabilities(String url, String serviceType) throws ServiceException {
         return getCapabilities(url, serviceType, null, null);
