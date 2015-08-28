@@ -21,6 +21,9 @@ The database table portti_capabilities_cache will be replaced with oskari_capabi
 Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
  fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceIbatisImpl in service-map. 
 
+New action route 'GetLayerCapabilities' returns the cached capabilities for a registered layer (if the user has
+ permission for requested layer). This enables Oskari to get rid of Openlayers 2 specific JSON format for WMTS-layers.
+
 ### content-resources
 
 Moved DataSourceHelper to service-base. It's now a singleton.
