@@ -31,7 +31,6 @@
         <parameter property="metadataId" />
 
         <parameter property="tileMatrixSetId" />
-        <parameter property="tileMatrixSetData" />
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
@@ -73,7 +72,6 @@
         <parameter property="metadataId" />
 
         <parameter property="tileMatrixSetId" />
-        <parameter property="tileMatrixSetData" />
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
@@ -121,7 +119,6 @@
         l.metadataId,
 
         l.tile_matrix_set_id,
-        l.tile_matrix_set_data,
         l.params,
         l.options,
         l.attributes,
@@ -174,7 +171,6 @@
         l.metadataId,
 
         l.tile_matrix_set_id,
-        l.tile_matrix_set_data,
         l.params,
         l.options,
         l.attributes,
@@ -227,7 +223,6 @@
         l.metadataId,
 
         l.tile_matrix_set_id,
-        l.tile_matrix_set_data,
         l.params,
         l.options,
         l.attributes,
@@ -281,7 +276,6 @@
         l.metadataId,
 
         l.tile_matrix_set_id,
-        l.tile_matrix_set_data,
         l.params,
         l.options,
         l.attributes,
@@ -335,7 +329,6 @@
         l.metadataId,
 
         l.tile_matrix_set_id,
-        l.tile_matrix_set_data,
         l.params,
         l.options,
         l.attributes,
@@ -388,7 +381,6 @@
     l.metadataId,
 
     l.tile_matrix_set_id,
-    l.tile_matrix_set_data,
     l.params,
     l.options,
     l.attributes,
@@ -441,7 +433,6 @@
             metadataId,
 
             tile_matrix_set_id,
-            tile_matrix_set_data,
             params,
             options,
             attributes,
@@ -461,7 +452,7 @@
 
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -484,7 +475,6 @@
         metadataId = ?,
 
         tile_matrix_set_id = ?,
-        tile_matrix_set_data = ?,
         params = ?,
         options = ?,
         attributes = ?,

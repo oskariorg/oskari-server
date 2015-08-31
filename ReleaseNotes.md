@@ -11,10 +11,12 @@ IOHelper now throws an IOException when getting a HTTP 401 response instead of r
 fi.mml.map.mapwindow.service.db.CapabilitiesCacheService (and -IbatisImpl) has been moved to a new package: fi.nls.oskari.service.capabilities.
 CapabilitiesCacheService.getCapabilities() returns cached capabilities from the db or if not present queries the service and updates the database.
  
-The database table portti_capabilities_cache will be replaced with oskari_capabilities_cache table. Capabilities will be
- mapped based on service url and type (WMS/WMTS) instead of layer ids to prevent duplication. The first maplayer listing will
- take a long time after upgrading to 1.32 version since all listed maplayers will be queried for capabilities from the 
- corresponding services.
+The database table portti_capabilities_cache is replaced with oskari_capabilities_cache table. Capabilities are
+ mapped based on service url and type (WMS/WMTS) instead of layer ids to prevent duplication. The migration for 1.32 will
+ take some time since the cache is prepopulated from the services as a flyway migration. This depends on the amount of layers that need to be fetched.
+
+WMTS layer capabilities have been dropped from the oskari_maplayer table. The are now cached as the original XML in oskari_capabilities_cache.
+ This makes Openlayers 3 migration easier since the JSON was OL2 specific.
 
 ### control-base
 
