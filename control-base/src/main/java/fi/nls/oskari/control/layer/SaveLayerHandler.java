@@ -295,7 +295,6 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setLegendImage(params.getHttpParam("legendImage", ml.getLegendImage()));
         ml.setMetadataId(params.getHttpParam("metadataId", ml.getMetadataId()));
         ml.setTileMatrixSetId(params.getHttpParam("tileMatrixSetId"));
-        ml.setTileMatrixSetData(params.getHttpParam("tileMatrixSetData"));
 
         final String gfiContent = request.getParameter("gfiContent");
         if (gfiContent != null) {
@@ -447,7 +446,6 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         ml.setTileMatrixSetId(params.getHttpParam("matrixSetId", ml.getTileMatrixSetId()));
-        ml.setTileMatrixSetData(params.getHttpParam("matrixSet", ml.getTileMatrixSetData()));
     }
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
