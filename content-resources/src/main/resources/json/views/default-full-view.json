@@ -10,15 +10,30 @@
         "development_prefix" : "/applications/sample"
     },
     "selectedLayers" : [
-        "wmslayer-openstreetmap-demo-fi.json"
+		"wmslayer-openstreetmap-demo-worldwide.json",
+        "wmslayer-openstreetmap-demo-landsat.json"
     ],
     "bundles" : [
         { "id" : "openlayers-default-theme" },
         {
             "id" : "mapfull",
             "config" : {
+				"mapOptions": {
+					"maxExtent" : {
+						"left" : -180.0000,
+						"bottom" : -90.0000,
+						"right" : 180.0000,
+						"top" :  90.0000
+					},
+					"units": "degrees",
+					"srsName": "EPSG:4326",
+					"projection": "EPSG:4326"
+				},
                 "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
                 "imageLocation": "/Oskari/resources",
+				"projectionDefs" : {
+					"EPSG:4326" : "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+				},
                 "plugins" : [
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.WmsLayerPlugin" },
@@ -43,8 +58,8 @@
                 "layers": []
             },
             "state" : {
-                "east": "517620",
-                "north": "6874042",
+                "east": "0",
+                "north": "0",
                 "selectedLayers": [],
                 "zoom": 1
             }
@@ -64,7 +79,12 @@
         { "id" : "metadatacatalogue" },
         { "id" : "layerselector2" },
         { "id" : "layerselection2" },
-        { "id" : "coordinatedisplay" },
+        { 
+			"id" : "coordinatedisplay", 
+			"config": {
+				"roundToDecimals": 6
+			} 
+		},
         { "id" : "metadataflyout" },
         { "id" : "personaldata" },
         { "id" : "publisher" },
