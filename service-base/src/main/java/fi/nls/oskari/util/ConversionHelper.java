@@ -2,6 +2,7 @@ package fi.nls.oskari.util;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -200,6 +201,6 @@ public class ConversionHelper {
      * @return Set wrapped values
      */
     public static <T> Set<T> asSet(final T... array) {
-        return new HashSet<>(Arrays.asList(array));
+        return new LinkedHashSet<>(Arrays.asList(array));
     }
 }
