@@ -1,9 +1,9 @@
 package fi.nls.oskari.util;
 
 /**
- * Used if the operation results in duplicate data.
+ * Generic Oskari specific runtime exception.
  */
-public class OskariRuntimeException extends Exception {
+public class OskariRuntimeException extends RuntimeException {
 
     public OskariRuntimeException(final String message, final Exception e) {
         super(message, e);
