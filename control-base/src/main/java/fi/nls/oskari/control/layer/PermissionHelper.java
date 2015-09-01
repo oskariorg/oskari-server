@@ -92,8 +92,7 @@ public class PermissionHelper {
         if (resource != null && !resource.getPermissions().isEmpty()) {
             LOG.debug("Caching a layer permission resource", resource, "Permissions", resource.getPermissions());
             resourceCache.put(layerResource.getMapping(),resource);
-        }
-        else {
+        } else {
             LOG.warn("Trying to cache layer with no resources");
         }
         return resource;

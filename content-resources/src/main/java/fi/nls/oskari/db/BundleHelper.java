@@ -6,6 +6,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.OskariRuntimeException;
 
 import java.io.IOException;
 
@@ -27,7 +28,7 @@ public class BundleHelper {
         try {
             startupTemplate = IOHelper.readString(BundleHelper.class.getResourceAsStream(BUNDLE_STARTUP_TEMPLATE));
         } catch (IOException ex) {
-            throw new RuntimeException("Error reading startup template", ex);
+            throw new OskariRuntimeException("Error reading startup template", ex);
         }
     }
 
@@ -36,7 +37,7 @@ public class BundleHelper {
 
     public static String getDefaultBundleStartup(String namespace, final String bundleid, String title) {
         if(bundleid == null) {
-            throw new RuntimeException("Missing bundleid");
+            throw new OskariRuntimeException("Missing bundleid");
         }
         final String ns = namespace == null ? "framework" : namespace;
         final String label = title == null ? bundleid : title;
