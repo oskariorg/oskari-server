@@ -5,6 +5,7 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
+import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -22,8 +23,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -58,6 +59,8 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         ActionParameters params = createActionParams(httpParams);
         // only gave logged in user role permission so this should throw ActionDeniedException
         handler.handleAction(params);
+
+        fail("Should have thrown exception");
     }
 
     @Test
@@ -71,6 +74,17 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(TEST_DATA);
     }
 
+    @Test(expected = ActionException.class)
+    public void testHandleServiceException()
+            throws Exception {
+        Map<String, String> httpParams = new HashMap<>();
+        httpParams.put(ActionConstants.KEY_ID, "2");
+        ActionParameters params = createActionParams(httpParams, getLoggedInUser());
+        handler.handleAction(params);
+
+        fail("Should have thrown exception");
+    }
+
     /* *********************************************
      * Service mocks
      * ********************************************
@@ -80,7 +94,11 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         OskariLayerService layerService = mock(OskariLayerServiceIbatisImpl.class);
 
         OskariLayer layer = new OskariLayer();
-        doReturn(layer).when(layerService).find(anyString());
+        layer.setType("WMTS");
+        doReturn(layer).when(layerService).find("1");
+        OskariLayer errorLayer = new OskariLayer();
+        errorLayer.setType("ERROR");
+        doReturn(errorLayer).when(layerService).find("2");
         return layerService;
     }
     private PermissionsService getPermissionsService() {
