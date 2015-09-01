@@ -2,6 +2,10 @@
 
 ## 1.32
 
+### Database initialization
+
+Changed default views to show two OpenStreetMap layers. Also changed map coordinate reference system from EPSG:3067 to EPSG:4326.
+
 ### service-base
 
 IOHelper now throws an IOException when getting a HTTP 401 response instead of return the string "401".
