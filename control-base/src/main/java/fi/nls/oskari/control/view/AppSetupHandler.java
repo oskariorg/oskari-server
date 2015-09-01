@@ -13,6 +13,7 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -31,7 +32,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
  * This will replace the PublishHandler functionality for publisher2 bundle
  */
 @OskariActionRoute("AppSetup")
-public class AppSetupHandler extends ActionHandler {
+public class AppSetupHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(AppSetupHandler.class);
 
@@ -41,27 +42,32 @@ public class AppSetupHandler extends ActionHandler {
 
     static final String KEY_PUBDATA = "pubdata";
     static final String KEY_METADATA = "metadata";
-    static final String KEY_VIEWDATA = "view";
+    static final String KEY_VIEWCONFIG = "configuration";
 
     public static final String KEY_DOMAIN = "domain";
-    public static final String KEY_LAYOUT = "layout";
     public static final String KEY_LANGUAGE = "language";
     public static final String KEY_PLUGINS = "plugins";
-    public static final String KEY_SIZE = "size";
-    public static final String KEY_MAPSTATE = "mapstate";
     public static final String KEY_LAYERS = "layers";
     public static final String KEY_SELLAYERS = "selectedLayers";
-    public static final String KEY_RESPONSIVE = "responsive";
-    public static final String VIEW_RESPONSIVE = "responsive";
-    public static final String APP_RESPONSIVE = "responsive-published-map";
-
-    public static final String KEY_GRIDSTATE = "gridState";
 
     private static final boolean VIEW_ACCESS_UUID = PropertyUtil.getOptional(PROPERTY_VIEW_UUID, true);
+    // Simple bundles don't require extra processing
+    private static final Set<String> SIMPLE_BUNDLES = ConversionHelper.asSet(
+            ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR,
+            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2);
+
+    // Bundles that require divmanazer to be loaded for them to work
+    private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
+            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2);
+
+    // List of bundles that the user is able to publish
+    // mapfull not included since it's assumed to be part of publisher template handled anyways
     private static final Set<String> BUNDLE_WHITELIST = ConversionHelper.asSet(
-            ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_TOOLBAR,
-            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, ViewModifier.BUNDLE_FEATUREDATA2,
-            ViewModifier.BUNDLE_DIVMANAZER);
+            ViewModifier.BUNDLE_PUBLISHEDMYPLACES2,ViewModifier.BUNDLE_DIVMANAZER);
+    static {
+        // add all "simple" bundles to the whitelist
+        BUNDLE_WHITELIST.addAll(SIMPLE_BUNDLES);
+    }
 
     private static long PUBLISHED_VIEW_TEMPLATE_ID = -1;
 
@@ -127,24 +133,56 @@ public class AppSetupHandler extends ActionHandler {
         }
     }
 
+    public void preProcess(ActionParameters params) throws ActionException {
+        params.requireLoggedInUser();
 
-    public void handleAction(ActionParameters params) throws ActionException {
+        // check permission if modifying existing view
+        final String viewUuid = params.getHttpParam(PARAM_UUID);
+        if(viewUuid == null) {
+            return;
+        }
+        // verify this is users own view
+        final View view = viewService.getViewWithConfByUuId(viewUuid);
+        final boolean hasPermission = viewService.hasPermissionToAlterView(view, params.getUser());
+        if(!hasPermission) {
+            throw new ActionDeniedException("Not allowed to modify view with uuid: " + viewUuid);
+        }
+    }
+
+    public void handleGet(ActionParameters params) throws ActionException {
+        final String viewUuid = params.getRequiredParam(PARAM_UUID);
+        final View view = viewService.getViewWithConfByUuId(viewUuid);
+        final JSONObject response = new JSONObject();
+        try {
+            JSONHelper.putValue(response, KEY_VIEWCONFIG, ViewHelper.getConfiguration(view));
+        } catch (ViewException ex) {
+            throw new ActionException("Couldn't restore view data", ex);
+        }
+        JSONHelper.putValue(response, KEY_METADATA, view.getMetadata());
+
+        ResponseHelper.writeResponse(params, response);
+    }
+
+    public void handlePut(ActionParameters params) throws ActionException {
+        handlePost(params);
+    }
+    public void handlePost(ActionParameters params) throws ActionException {
 
         final User user = params.getUser();
 
-        // Parse stuff sent by JS
-        final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
-        final long viewId = publisherData.optLong("id", -1);
-        final View view = getBaseView(viewId, user);
+        final String viewUuid = params.getHttpParam(PARAM_UUID);
+        final View view = getBaseView(viewUuid, user);
         LOG.debug("Processing view with UUID: " + view.getUuid());
 
-        // TODO: setup db-operations for metadata
+        // Parse stuff sent by JS
+        final JSONObject publisherData = getPublisherInput(params.getRequiredParam(KEY_PUBDATA));
+
         // setup metadata for publisher
         view.setMetadata(publisherData.optJSONObject(KEY_METADATA));
         parseMetadata(view, user);
 
         // setup view modifications
-        final JSONObject viewdata = publisherData.optJSONObject(KEY_VIEWDATA);
+        final JSONObject viewdata = publisherData.optJSONObject(KEY_VIEWCONFIG);
         if(viewdata == null) {
             throw new ActionParamsException("Missing configuration for the view to be saved");
         }
@@ -160,8 +198,23 @@ public class AppSetupHandler extends ActionHandler {
         // setup map state
         setupMapState(mapFullBundle, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL));
 
-        // Setup toolbar bundle if user has configured it
-        setupBundle(view, viewdata, ViewModifier.BUNDLE_INFOBOX);
+        // check if we need to add divmanazer
+        for(String bundleid : BUNDLE_REQUIRES_DIVMANAZER) {
+            if(viewdata.has(bundleid)) {
+                // Found bundles that require divmanazer
+                // add it to the view before handling them
+                LOG.info("Adding bundle", ViewModifier.BUNDLE_DIVMANAZER);
+                addBundle(view, ViewModifier.BUNDLE_DIVMANAZER);
+                // break so we don't add it more than once
+                break;
+            }
+        }
+        // setup all the bundles that don't need extra processing
+        for(String bundleid : SIMPLE_BUNDLES) {
+            if(viewdata.has(bundleid)) {
+                setupBundle(view, viewdata, bundleid);
+            }
+        }
 
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(!user.hasAnyRoleIn(drawToolsEnabledRoles)) {
@@ -172,25 +225,6 @@ public class AppSetupHandler extends ActionHandler {
 
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
         handleMyplacesDrawLayer(myplaces, user);
-
-        // Setup toolbar bundle if user has configured it
-        setupBundle(view, viewdata, ViewModifier.BUNDLE_TOOLBAR);
-
-        // TODO: ...... setup rest of view modifications
-
-        // Setup feature data bundle if user has configured it
-        final JSONObject featureData = viewdata.optJSONObject(ViewModifier.BUNDLE_FEATUREDATA2);
-        if (featureData != null) {
-            // Add divmanazer first since feature data uses flyout
-            LOG.info("Adding bundle", ViewModifier.BUNDLE_DIVMANAZER);
-            addBundle(view, ViewModifier.BUNDLE_DIVMANAZER);
-            // then setup feature data
-            final Bundle bundle = addBundle(view, ViewModifier.BUNDLE_FEATUREDATA2);
-            PublishBundleHelper.mergeBundleConfiguration(bundle, featureData.optJSONObject(KEY_CONF), featureData.optJSONObject(KEY_STATE));
-        }
-
-        // Setup thematic map/published grid bundle
-        setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDGRID);
 
         final View newView = saveView(view);
 
@@ -248,19 +282,6 @@ public class AppSetupHandler extends ActionHandler {
             // failed to put layers correctly
             throw new ActionParamsException("Could not override layers selections");
         }
-
-        // Set layout
-        // FIXME: seems this is only saved so publisher can restore the state - migration needed for older maps -> move to metadata
-        //final String layout = JSONHelper.getStringFromJSON(input, KEY_LAYOUT, "lefthanded");
-        //JSONHelper.putValue(mapfullBundle.getConfigJSON(), KEY_LAYOUT, layout);
-
-        // TODO: ...... does size matter?
-        // Set size
-        /*final JSONObject size = input.optJSONObject(KEY_SIZE);
-        if(!JSONHelper.putValue(mapfullBundle.getConfigJSON(), KEY_SIZE, size)) {
-            throw new ActionParamsException("Could not set size for map");
-        }
-        */
 
         final JSONArray plugins = mapfullBundle.getConfigJSON().optJSONArray(KEY_PLUGINS);
         if(plugins == null) {
@@ -323,7 +344,7 @@ public class AppSetupHandler extends ActionHandler {
         }
     }
 
-    private View getBaseView(final long viewId, final User user) throws ActionException {
+    private View getBaseView(final String viewUuid, final User user) throws ActionException {
 
         if (user.isGuest()) {
             throw new ActionDeniedException("Trying to publish map, but couldn't determine user");
@@ -334,12 +355,13 @@ public class AppSetupHandler extends ActionHandler {
 
         // clone a blank view based on template (so template doesn't get updated!!)
         final View view = templateView.cloneBasicInfo();
-        if(viewId != -1) {
+        if(viewUuid != null) {
             // check loaded view against user if we are updating a view
-            LOG.debug("Loading view for editing:", viewId);
-            final View existingView = viewService.getViewWithConf(viewId);
-            if (user.getId() != existingView.getCreator()) {
-                throw new ActionDeniedException("No permissions to update view with id:" + viewId);
+            LOG.debug("Loading view for editing:", viewUuid);
+            final View existingView = viewService.getViewWithConfByUuId(viewUuid);
+            // double check
+            if(viewService.hasPermissionToAlterView(existingView, user)) {
+                throw new ActionDeniedException("No permissions to update view with id:" + viewUuid);
             }
             // setup ids for updating a view
             view.setId(existingView.getId());
