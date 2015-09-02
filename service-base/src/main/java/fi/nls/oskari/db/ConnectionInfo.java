@@ -18,19 +18,19 @@ import java.util.Map;
 /**
  * Created by SMAKINEN on 11.6.2015.
  */
-public class DatasourceHelper {
+public class ConnectionInfo {
 
-    private static final Logger LOGGER = LogFactory.getLogger(DatasourceHelper.class);
+    private static final Logger LOGGER = LogFactory.getLogger(ConnectionInfo.class);
     private static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
     private static final String MSG_CHECKING_POOL = " - checking existance of database pool: %s";
     private static final String PREFIX_DB = "db.";
-    private static final DatasourceHelper INSTANCE = new DatasourceHelper();
+    private static final ConnectionInfo INSTANCE = new ConnectionInfo();
 
     private List<BasicDataSource> localDataSources = new ArrayList<BasicDataSource>();
     private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
-    private DatasourceHelper() {
+    private ConnectionInfo() {
         // use getInstance()
     }
 
@@ -40,7 +40,7 @@ public class DatasourceHelper {
 
 
 
-    public static DatasourceHelper getInstance() {
+    public static ConnectionInfo getInstance() {
         return INSTANCE;
     }
     /**
@@ -125,13 +125,12 @@ public class DatasourceHelper {
      * @return
      */
     public BasicDataSource createDataSource(final String prefix) {
+        final String poolToken = (prefix == null) ? "" : prefix + ".";
         final BasicDataSource dataSource = new BasicDataSource();
-        ConnectionInfo info = getPropsForDS(prefix);
-
-        dataSource.setDriverClassName(info.driver);
-        dataSource.setUrl(info.url);
-        dataSource.setUsername(info.user);
-        dataSource.setPassword(info.pass);
+        dataSource.setDriverClassName(PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"));
+        dataSource.setUrl(PropertyUtil.get(PREFIX_DB + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
+        dataSource.setUsername(PropertyUtil.get(PREFIX_DB + poolToken + "username", ""));
+        dataSource.setPassword(PropertyUtil.get(PREFIX_DB + poolToken + "password", ""));
         dataSource.setTimeBetweenEvictionRunsMillis(-1);
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
@@ -141,14 +140,14 @@ public class DatasourceHelper {
         return dataSource;
     }
 
-    public ConnectionInfo getPropsForDS(final String prefix) {
-        ConnectionInfo info = new ConnectionInfo();
+    public Map<String, String> getPropsForDS(final String prefix) {
+        Map<String, String> props = new HashMap<>(4);
         final String poolToken = (prefix == null) ? "" : prefix + ".";
-        info.driver = PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver");
-        info.url = PropertyUtil.get(PREFIX_DB + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb");
-        info.user = PropertyUtil.get(PREFIX_DB + poolToken + "username", "");
-        info.pass = PropertyUtil.get(PREFIX_DB + poolToken + "password", "");
-        return info;
+        PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver"));
+        dataSource.setUrl(PropertyUtil.get(PREFIX_DB + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
+        dataSource.setUsername(PropertyUtil.get(PREFIX_DB + poolToken + "username", ""));
+        dataSource.setPassword(PropertyUtil.get(PREFIX_DB + poolToken + "password", ""));
+
     }
 
     private void addDataSource(final Context ctx, final String name, final DataSource ds) {
