@@ -72,6 +72,7 @@ public class MapfullHandler extends BundleHandler {
     private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
 
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
+    private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
 
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
@@ -142,6 +143,10 @@ public class MapfullHandler extends BundleHandler {
 
         // setup URLs for LogoPlugin if available
         LOGO_PLUGIN_HANDLER.setupLogoPluginConfig(getPlugin(LOGO_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig));
+
+        // setup isPublished view for mapwfs2 plugin
+        WFSLAYER_PLUGIN_HANDLER.setupWfsLayerPluginConfig(getPlugin(WFSLAYER_PLUGIN_HANDLER.PLUGIN_NAME, mapfullConfig),
+                                                          params.getViewType());
 
         return false;
     }
