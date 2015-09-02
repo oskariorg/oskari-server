@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 
@@ -24,5 +26,12 @@ public class CapabilitiesCacheServiceMock extends CapabilitiesCacheService {
     @Override
     public OskariLayerCapabilities save(OskariLayerCapabilities capabilities) {
         return null;
+    }
+
+    public OskariLayerCapabilities getCapabilities(OskariLayer layer) throws ServiceException {
+        if(layer.getType().equals("ERROR")) {
+            throw new ServiceException("Testcase");
+        }
+        return super.getCapabilities(layer);
     }
 }

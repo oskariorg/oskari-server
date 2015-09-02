@@ -263,18 +263,28 @@ public class User implements Serializable {
         if (getId() != user.getId()) {
             return false;
         }
-        if (!getEmail().equals(user.getEmail())) {
-            return false;
-        }
-        return getUuid().equals(user.getUuid());
+        return equalOrNull(getEmail(), user.getEmail()) && equalOrNull(getUuid(), user.getUuid());
 
+    }
+    private boolean equalOrNull(final String actual, final String expected) {
+        if(actual == null && expected == null) {
+            return true;
+        }
+        if(actual != null) {
+            return actual.equals(expected);
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + getEmail().hashCode();
-        result = 31 * result + getUuid().hashCode();
+        if(getEmail() != null) {
+            result = 31 * result + getEmail().hashCode();
+        }
+        if(getUuid() != null) {
+            result = 31 * result + getUuid().hashCode();
+        }
         return result;
     }
 }

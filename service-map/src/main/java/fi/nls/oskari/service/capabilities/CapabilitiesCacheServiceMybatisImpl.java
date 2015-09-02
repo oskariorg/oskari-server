@@ -2,7 +2,6 @@ package fi.nls.oskari.service.capabilities;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.ibatis.mapping.Environment;
