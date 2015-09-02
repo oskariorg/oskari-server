@@ -1,11 +1,15 @@
 package fi.nls.oskari.wms;
 
+import fi.mml.map.mapwindow.service.wms.WebMapService;
+import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -14,6 +18,8 @@ import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.ows.StyleImpl;
 import org.geotools.data.ows.Service;
+import org.geotools.data.wms.xml.Dimension;
+import org.geotools.data.wms.xml.Extent;
 import org.geotools.data.wms.xml.MetadataURL;
 
 import org.geotools.data.ows.HTTPClient;
@@ -22,8 +28,7 @@ import org.geotools.data.ows.SimpleHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  *  Methods for parsing WMS capabilities data
@@ -31,6 +36,7 @@ import java.util.List;
 public class GetGtWMSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWMSCapabilities.class);
+    private static final CapabilitiesCacheService capabilitiesCacheService = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
 
     private final static String KEY_GROUPS = "groups";
     private final static String KEY_LAYERS = "layers";
@@ -158,39 +164,11 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         }
 
         try {
-
-            // Populating capabilities
-            final fi.nls.oskari.wms.WMSCapabilities capabilities = new fi.nls.oskari.wms.WMSCapabilities();
-            // gfi
-            capabilities.setQueryable(capabilitiesLayer.isQueryable());
-            // Keywords
-            capabilities.setKeywords(capabilitiesLayer.getKeywords());
-            capabilities.setVersion(caps.getVersion());
-
-            // List<String> caps.getRequest().getGetFeatureInfo().getFormats()
-            if(caps.getRequest() != null && caps.getRequest().getGetFeatureInfo() != null) {
-                capabilities.setFormats(caps.getRequest().getGetFeatureInfo().getFormats());
-            }
-
-            // Styles
-            final List<StyleImpl> styles = capabilitiesLayer.getStyles();
-            if (styles != null) {
-                for (Iterator ii = styles.iterator(); ii.hasNext(); ) {
-                    StyleImpl style = (StyleImpl) ii.next();
-                    WMSStyle ostyle = new WMSStyle();
-                    ostyle.setTitle(style.getTitle().toString());
-                    if(style.getLegendURLs().size() > 0) ostyle.setLegend((String) style.getLegendURLs().get(0));
-                    ostyle.setName(style.getName());
-                    capabilities.addStyle(ostyle);
-                }
-            }
-
-            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, capabilities);
+            JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
             JSONHelper.putValue(json, "title", capabilitiesLayer.getTitle());
-
             // NOTE! Important to remove id since this is at template
             json.remove("id");
             // ---------------
