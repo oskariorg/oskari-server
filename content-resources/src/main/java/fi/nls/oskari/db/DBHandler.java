@@ -157,7 +157,7 @@ public class DBHandler {
     }
 
     @SuppressWarnings("resource")
-    private static InputStream getInputStreamFromResource(String propertySetupFile) {
+    static InputStream getInputStreamFromResource(String propertySetupFile) {
         InputStream is = null;
         try {
             // If resource overlay directory has been specified prefer the files in there
