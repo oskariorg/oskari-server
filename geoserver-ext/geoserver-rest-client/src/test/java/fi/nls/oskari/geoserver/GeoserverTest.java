@@ -14,6 +14,8 @@ import java.io.*;
 
 /**
  * Created by SMAKINEN on 1.9.2015.
+ * http://docs.geoserver.org/stable/en/user/rest/
+ * http://code.google.com/p/gsrcj/source/browse/trunk/src/main/java/org/geopublishing/GsRest.java
  */
 public class GeoserverTest {
     @Test
