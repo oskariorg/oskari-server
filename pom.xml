@@ -887,6 +887,7 @@
     <modules>
         <!-- basic oskari map requirements -->
         <module>shared-test-resources</module>
+        <module>geoserver-ext/geoserver-rest-client</module>
 
         <module>service-base</module>
         <module>service-users</module>

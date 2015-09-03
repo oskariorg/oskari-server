@@ -92,6 +92,11 @@
             <version>3.2.1</version>
         </dependency>
         <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>geoserver-rest-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.3-1102-jdbc41</version>
