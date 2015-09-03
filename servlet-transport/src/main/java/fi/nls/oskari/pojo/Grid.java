@@ -80,6 +80,8 @@ public class Grid {
 
 	/**
 	 * Checks if bounds are on boundary
+	 * Not a save algoritm, because of OpenLayers TileStrategy grid
+	 * (border tile could be on a second column or a second last, etc...
 	 * 
 	 * @param index
 	 * @return <code>true</code> if bounds of the given index are on the boundary; <code>false</code>
@@ -89,12 +91,38 @@ public class Grid {
 	public boolean isBoundsOnBoundary(int index) {
 		if(index < columns) // first
 			return true;
-		else if(index > (rows*columns) - columns) // last
+		else if(index >= (rows*columns) - columns) // last
 			return true;
 		else if(index % columns == 0) // left
 			return true;
 		else if((index+1) % columns == 0) // right
 			return true;
+		return false;
+	}
+
+    /**
+     * Checks if bounds are on boundary, use coordinates
+     *
+     * @param location map location
+     * @param bbox   grid tile bbox  left,bottom - right,top
+     * @return <code>true</code> if bbox is not inside map location ; <code>false</code>
+     *         otherwise.
+     */
+	@JsonIgnore
+	public boolean isBoundsOnBoundary2(Location location, Double[] bbox) {
+
+		if(bbox[0] < location.getLeft()  ){  // left check outside
+			return true;
+		}
+		else if (bbox[2] > location.getRight()  ) {  // right check outside
+			return true;
+		}
+		else if (bbox[1] < location.getBottom()  ) {  // bottom check outside
+			return true;
+		}
+		else if (bbox[3] > location.getTop()  ) {  // top check outside
+			return true;
+		}
 		return false;
 	}
 }
