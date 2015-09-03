@@ -73,13 +73,8 @@ public class GeoServerProxyService {
                 con.setRequestProperty("Content-type", "text/xml; charset=UTF-8");
                 log.debug("Posted XML:", request.getPostData());
                 IOHelper.writeToConnection(con, request.getPostData());
-
-                GZIPInputStream gis =
-                        new GZIPInputStream(con.getInputStream());
-                return IOHelper.readString(gis);
-            } else {
-                return IOHelper.readString(con.getInputStream());
             }
+            return IOHelper.readString(con);
         } finally {
             con.disconnect();
         }
