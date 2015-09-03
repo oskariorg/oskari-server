@@ -39,12 +39,14 @@ interface Geoserver {
     @Headers("Content-Type: application/json")
     void createFeatureType(FeatureType ds, @Param("ns") String namespace, @Param("ds") String dataStore);
 
-    @RequestLine("POST /styles/?name={name}")
+    // Use raw-param: https://github.com/boundlessgeo/gsconfig/pull/94
+    @RequestLine("POST /styles.sld?name={name}&raw=true")
     @Headers("Content-Type: application/vnd.ogc.sld+xml") // , Accept: application/vnd.ogc.sld+xml
     @Body("{content}") // Body template is needed so content isn't transformed by Jackson
     void createSLD(@Param("name") final String name, @Param("content") final String content);
 
-    @RequestLine("POST /workspaces/{ws}/styles?name={name}")
+    // Use raw-param: https://github.com/boundlessgeo/gsconfig/pull/94
+    @RequestLine("POST /workspaces/{ws}/styles.sld?name={name}&raw=true")
     @Headers("Content-Type: application/vnd.ogc.sld+xml") // , Accept: application/vnd.ogc.sld+xml
     @Body("{content}") // Body template is needed so content isn't transformed by Jackson
     void createSLD(@Param("name") final String name, @Param("content") final String content, @Param("ws") final String workspace);
