@@ -361,7 +361,7 @@ public class AppSetupHandler extends RestActionHandler {
             final View existingView = viewService.getViewWithConfByUuId(viewUuid);
             // double check
             if(viewService.hasPermissionToAlterView(existingView, user)) {
-                throw new ActionDeniedException("No permissions to update view with id:" + viewUuid);
+                throw new ActionDeniedException("No permissions to update view with uuid:" + viewUuid);
             }
             // setup ids for updating a view
             view.setId(existingView.getId());
