@@ -141,13 +141,21 @@ public class DatasourceHelper {
         return dataSource;
     }
 
+    /**
+     * Tries prefixed properties and defaults to non-prefixed versions
+     * @param prefix
+     * @return
+     */
     public ConnectionInfo getPropsForDS(final String prefix) {
         ConnectionInfo info = new ConnectionInfo();
         final String poolToken = (prefix == null) ? "" : prefix + ".";
         info.driver = PropertyUtil.get("db.jndi.driverClassName", "org.postgresql.Driver");
-        info.url = PropertyUtil.get(PREFIX_DB + poolToken + "url", "jdbc:postgresql://localhost:5432/oskaridb");
-        info.user = PropertyUtil.get(PREFIX_DB + poolToken + "username", "");
-        info.pass = PropertyUtil.get(PREFIX_DB + poolToken + "password", "");
+        info.url = PropertyUtil.get(PREFIX_DB + poolToken + "url",
+                PropertyUtil.get(PREFIX_DB + "url", "jdbc:postgresql://localhost:5432/oskaridb"));
+        info.user = PropertyUtil.get(PREFIX_DB + poolToken + "username",
+                PropertyUtil.get(PREFIX_DB + "username", ""));
+        info.pass = PropertyUtil.get(PREFIX_DB + poolToken + "password",
+                PropertyUtil.get(PREFIX_DB + "password", ""));
         return info;
     }
 
