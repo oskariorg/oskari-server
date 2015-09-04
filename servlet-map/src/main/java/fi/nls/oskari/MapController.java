@@ -4,6 +4,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.geoserver.GeoserverPopulator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
@@ -61,10 +62,9 @@ public class MapController {
 
         // check if we have development flag -> serve non-minified js
         isDevelopmentMode = ConversionHelper.getBoolean(PropertyUtil.get(PROPERTY_DEVELOPMENT), false);
-        // Get version from init params or properties, prefer version from properties and default to init param
+        // Get version from properties
         version = PropertyUtil.get(PROPERTY_VERSION);
     }
-
 
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
