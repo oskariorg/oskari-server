@@ -8,6 +8,7 @@
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
         <version>1.32.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>geoserver-rest-client</artifactId>
     <packaging>jar</packaging>
