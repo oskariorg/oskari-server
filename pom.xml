@@ -931,6 +931,8 @@
 
         <!-- printout -->
         <module>servlet-printout</module>
+        <!-- setup -->
+        <module>webapp-setup</module>
     </modules>
 
 </project>
