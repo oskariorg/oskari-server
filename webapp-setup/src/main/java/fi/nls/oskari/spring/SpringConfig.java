@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 /**
  * Initializes resources needed for Oskari and sorts HandlerMethodArgumentResolvers so the
@@ -33,6 +34,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
             throws Exception {
         // check DB connections/content
         WebappHelper.loadProperties();
+        WebappHelper.initializeOskariContext();
     }
 
 /*
@@ -56,4 +58,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
+    @PreDestroy
+    public void tearDown() {
+        log.info("Teardown");
+        WebappHelper.teardown();
+    }
 }

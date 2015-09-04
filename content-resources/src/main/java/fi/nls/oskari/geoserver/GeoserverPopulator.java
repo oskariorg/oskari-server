@@ -3,16 +3,18 @@ package fi.nls.oskari.geoserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import feign.Feign;
-import feign.FeignException;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import fi.nls.oskari.db.ConnectionInfo;
-import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
 /**
  * Created by SMAKINEN on 1.9.2015.
@@ -20,23 +22,43 @@ import fi.nls.oskari.util.PropertyUtil;
 public class GeoserverPopulator {
 
     public static final String NAMESPACE = "oskari";
-    public static final String DEFAULT_SRS = "EPSG:3067";
     private static final Logger LOG = LogFactory.getLogger(GeoserverPopulator.class);
 
-    public static void setupAll() throws Exception {
-        setupAll(DEFAULT_SRS);
-    }
-    public static void setupAll(final String srs) throws Exception {
-        setupMyplaces(srs);
-        setupAnalysis(srs);
-        setupUserlayers(srs);
+    private static final WFSLayerConfigurationService WFS_SERVICE = new WFSLayerConfigurationServiceIbatisImpl();
+
+    public static final String KEY_URL = "url";
+    public static final String KEY_USER = "user";
+    public static final String KEY_PASSWD = "password";
+
+    public static void setupAll(final String srs)
+            throws Exception {
+        MyplacesHelper.setupMyplaces(srs);
+        AnalysisHelper.setupAnalysis(srs);
+        UserlayerHelper.setupUserlayers(srs);
     }
 
-    private static Geoserver getGeoserver(String module) {
+    public static String getGeoserverProp(final String module, final String part) {
+        final String preferProp = "geoserver." + module + "." + part;
+        final String fallbackProp = "geoserver." + part;
 
-        final String geoserverBaseUrl = PropertyUtil.getNecessary("geoserver." + module  + ".url"); // http://localhost:8080/geoserver
-        final String geoserverUser = PropertyUtil.getNecessary("geoserver." + module  + ".user"); // admin
-        final String geoserverPasswd = PropertyUtil.getNecessary("geoserver." + module  + ".password"); // geoserver
+        final String prop = PropertyUtil.get(preferProp,
+                PropertyUtil.getOptional(fallbackProp));
+
+        if (prop == null) {
+            throw new OskariRuntimeException("Geoserver properties not configured! Tried: " + preferProp + " and " + fallbackProp);
+        }
+        return prop;
+    }
+
+    public static Geoserver getGeoserver(String module) {
+
+        final String geoserverBaseUrl = getGeoserverProp(module, KEY_URL); // http://localhost:8080/geoserver
+        final String geoserverUser = getGeoserverProp(module, KEY_USER); // admin
+        final String geoserverPasswd = getGeoserverProp(module, KEY_PASSWD); // geoserver
+
+        if (geoserverBaseUrl == null || geoserverUser == null || geoserverPasswd == null) {
+            throw new OskariRuntimeException("Geoserver properties not configured!");
+        }
 
         // https://github.com/Netflix/feign/wiki/Custom-error-handling
         ObjectMapper mapper = new ObjectMapper();
@@ -50,265 +72,102 @@ public class GeoserverPopulator {
                 .target(Geoserver.class, geoserverBaseUrl + "/rest");
     }
 
-    public static void setupMyplaces(final String srs) throws Exception {
-        final String module = "myplaces";
-        Geoserver geoserver = getGeoserver(module);
-
-        // Creating a namespace creates a workspace
-        // (with ws you can only give a name, with ns you can also provide the uri)
-        Namespace ns = new Namespace();
-        try {
-
-            ns.prefix = NAMESPACE;
-            ns.uri = "http://www.oskari.org";
-            geoserver.createNamespace(ns);
-            LOG.info("Added namespace:", ns);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding namespace");
-        }
-
-        final String storeName = module;
-        try {
-            DBDatastore ds = new DBDatastore();
-            ds.name = storeName;
-
-
-            DatasourceHelper helper = DatasourceHelper.getInstance();
-            ConnectionInfo info = helper.getPropsForDS(module);
-
-            ds.connectionParameters.user = info.user;
-            ds.connectionParameters.passwd = info.pass;
-            ds.connectionParameters.database = info.getDBName();
-            // in 2.5.2 namespace = NAMESPACE, in 2.7.1 it needs to be the uri?
-            ds.connectionParameters.namespace = ns.uri;
-            ds.addEntry("Loose bbox", "true");
-            //System.out.println(mapper.writeValueAsString(ds));
-            geoserver.createDBDatastore(ds, NAMESPACE);
-            LOG.info("Added store:", ds);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding store");
-        }
-
-        // for data modification (WFS) - layers
-        try {
-            FeatureType featureCategories = new FeatureType();
-            featureCategories.enabled = true;
-            featureCategories.name = "categories";
-            featureCategories.srs = srs;
-
-            geoserver.createFeatureType(featureCategories, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureCategories);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype categories");
-        }
-
-        // for data modification (WFS) - places
-        try {
-            FeatureType featurePlaces = new FeatureType();
-            featurePlaces.enabled = true;
-            featurePlaces.name = "my_places";
-            featurePlaces.srs = srs;
-
-            geoserver.createFeatureType(featurePlaces, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featurePlaces);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype my_places");
-        }
-
-        // for viewing the places (WMS) - combination for layers/places
-        FeatureType featurePlacesCategories = new FeatureType();
-        try {
-            featurePlacesCategories.enabled = true;
-            featurePlacesCategories.name = "my_places_categories";
-            featurePlacesCategories.srs = srs;
-
-            geoserver.createFeatureType(featurePlacesCategories, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featurePlacesCategories);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype my_places_categories");
-        }
-
-        final String sld = IOHelper.readString(GeoserverPopulator.class.getResourceAsStream("/sld/myplaces/MyPlacesDefaultStyle.sld"));
-        final String sldName = "MyPlacesDefaultStyle";
-        try {
-            geoserver.createSLD(sldName, sld);
-            LOG.info("Added SLD:", sldName);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding SLD");
-        }
-        try {
-            geoserver.linkStyleToLayer(sldName, featurePlacesCategories.name, NAMESPACE);
-            LOG.info("Linked SLD", sldName, " to layer", featurePlacesCategories.name, "in namespace", NAMESPACE);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error linking SLD");
-        }
-        geoserver.setDefaultStyleForLayer(sldName, featurePlacesCategories.name, NAMESPACE);
-        LOG.info("Set default SLD", sldName, " for layer", featurePlacesCategories.name, "in namespace", NAMESPACE);
+    public static void setupGeoserverConf(OskariLayer layer, String module) {
+        layer.setUrl(getGeoserverProp(module, KEY_URL) + "/" + NAMESPACE + "/ows");
+        layer.setUsername(getGeoserverProp(module, KEY_USER));
+        layer.setPassword(getGeoserverProp(module, KEY_PASSWD));
     }
 
-    public static void setupAnalysis(final String srs) throws Exception {
-        final String module = "analysis";
-        Geoserver geoserver = getGeoserver(module);
-
-        // Creating a namespace creates a workspace
-        // (with ws you can only give a name, with ns you can also provide the uri)
-        Namespace ns = new Namespace();
-        try {
-
-            ns.prefix = NAMESPACE;
-            ns.uri = "http://www.oskari.org";
-            geoserver.createNamespace(ns);
-            LOG.info("Added namespace:", ns);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding namespace");
+    public static int setupMyplacesLayer(final String srs) {
+        final String name = NAMESPACE + ":my_places";
+        OskariLayer baseLayer = LayerHelper.getLayerWithName(name);
+        boolean doInsert = baseLayer == null;
+        if (doInsert) {
+            baseLayer = new OskariLayer();
+            baseLayer.setType(OskariLayer.TYPE_WFS);
+            baseLayer.setVersion("1.1.0");
+            baseLayer.setName(name);
+            baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat paikat\"},sv:{name:\"My places\"},en:{name:\"My places\"}}"));
+            baseLayer.setOpacity(50);
         }
-
-        final String storeName = module;
-        try {
-            DBDatastore ds = new DBDatastore();
-            ds.name = storeName;
-
-            DatasourceHelper helper = DatasourceHelper.getInstance();
-            ConnectionInfo info = helper.getPropsForDS(module);
-
-            ds.connectionParameters.user = info.user;
-            ds.connectionParameters.passwd = info.pass;
-            ds.connectionParameters.database = info.getDBName();
-            // !! in 2.5.2 namespace = NS PREFIX, in 2.7.1 it needs to be the NS URI!!
-            ds.connectionParameters.namespace = ns.uri;
-            ds.addEntry("Loose bbox", "true");
-            //System.out.println(mapper.writeValueAsString(ds));
-            geoserver.createDBDatastore(ds, NAMESPACE);
-            LOG.info("Added store:", ds);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding store");
+        // setup data producer/layergroup since original doesn't have one
+        baseLayer.addGroup(LayerHelper.getGroup());
+        setupGeoserverConf(baseLayer, MyplacesHelper.MODULE_NAME);
+        baseLayer.setSrs_name(srs);
+        if (!doInsert) {
+            LayerHelper.update(baseLayer);
+            return baseLayer.getId();
         }
+        // insert
+        LayerHelper.insert(baseLayer);
 
-        // for data modification (WFS) - data
-        try {
-            FeatureType featureData = new FeatureType();
-            featureData.enabled = true;
-            featureData.name = "analysis_data";
-            featureData.srs = srs;
-
-            geoserver.createFeatureType(featureData, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureData);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype analysis_data");
-        }
-
-        // for viewing (WMS) - combination for data/style
-        FeatureType featureStyledData = new FeatureType();
-        try {
-            featureStyledData.enabled = true;
-            featureStyledData.name = "analysis_data_style";
-            featureStyledData.srs = srs;
-
-            geoserver.createFeatureType(featureStyledData, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureStyledData);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype analysis_data_style");
-        }
-
-        final String sld = IOHelper.readString(GeoserverPopulator.class.getResourceAsStream("/sld/analysis/AnalysisDefaultStyle.sld"));
-        final String sldName = "AnalysisDefaultStyle";
-        try {
-            geoserver.createSLD(sldName, sld);
-            LOG.info("Added SLD:", sldName);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding SLD");
-        }
-        try {
-            geoserver.linkStyleToLayer(sldName, featureStyledData.name, NAMESPACE);
-            LOG.info("Linked SLD", sldName, " to layer", featureStyledData.name, "in namespace", NAMESPACE);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error linking SLD");
-        }
-        geoserver.setDefaultStyleForLayer(sldName, featureStyledData.name, NAMESPACE);
-        LOG.info("Set default SLD", sldName, " for layer", featureStyledData.name, "in namespace", NAMESPACE);
+        // setup WFS conf with defaults
+        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
+        conf.setFeatureElement("my_places");
+        conf.setFeatureParamsLocales("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
+        WFS_SERVICE.insert(conf);
+        return baseLayer.getId();
     }
 
-
-    public static void setupUserlayers(final String srs) throws Exception {
-        final String module = "userlayer";
-        Geoserver geoserver = getGeoserver(module);
-
-        // Creating a namespace creates a workspace
-        // (with ws you can only give a name, with ns you can also provide the uri)
-        Namespace ns = new Namespace();
-        try {
-
-            ns.prefix = NAMESPACE;
-            ns.uri = "http://www.oskari.org";
-            geoserver.createNamespace(ns);
-            LOG.info("Added namespace:", ns);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding namespace");
+    public static int setupAnalysisLayer(final String srs) {
+        final String name = NAMESPACE + ":analysis_data";
+        OskariLayer baseLayer = LayerHelper.getLayerWithName(name);
+        boolean doInsert = baseLayer == null;
+        if (doInsert) {
+            baseLayer = new OskariLayer();
+            baseLayer.setType(OskariLayer.TYPE_WFS);
+            baseLayer.setVersion("1.1.0");
+            baseLayer.setName(name);
+            baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Analyysitaso\"},sv:{name:\"Analys\"},en:{name:\"Analyse\"}}"));
+            baseLayer.setOpacity(50);
         }
-
-        final String storeName = module;
-        try {
-            DBDatastore ds = new DBDatastore();
-            ds.name = storeName;
-
-            DatasourceHelper helper = DatasourceHelper.getInstance();
-            ConnectionInfo info = helper.getPropsForDS(module);
-
-            ds.connectionParameters.user = info.user;
-            ds.connectionParameters.passwd = info.pass;
-            ds.connectionParameters.database = info.getDBName();
-            // !! in 2.5.2 namespace = NS PREFIX, in 2.7.1 it needs to be the NS URI!!
-            ds.connectionParameters.namespace = ns.uri;
-            ds.addEntry("Loose bbox", "true");
-            ds.addEntry("Primary key metadata table", "gt_pk_metadata_table");
-            //System.out.println(mapper.writeValueAsString(ds));
-            geoserver.createDBDatastore(ds, NAMESPACE);
-            LOG.info("Added store:", ds);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding store");
+        // setup data producer/layergroup since original doesn't have one
+        baseLayer.addGroup(LayerHelper.getGroup());
+        setupGeoserverConf(baseLayer, AnalysisHelper.MODULE_NAME);
+        baseLayer.setSrs_name(srs);
+        if (!doInsert) {
+            LayerHelper.update(baseLayer);
+            return baseLayer.getId();
         }
+        // insert
+        LayerHelper.insert(baseLayer);
 
-        // for data modification (WFS) - data
-        try {
-            FeatureType featureData = new FeatureType();
-            featureData.enabled = true;
-            featureData.name = "vuser_layer_data";
-            featureData.srs = srs;
+        // setup WFS conf with defaults
+        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
+        conf.setFeatureParamsLocales("{}");
+        conf.setFeatureElement("analysis_data");
+        WFS_SERVICE.insert(conf);
+        return baseLayer.getId();
+    }
 
-            geoserver.createFeatureType(featureData, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureData);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype vuser_layer_data");
+    public static int setupUserLayer(final String srs) {
+        final String name = NAMESPACE + ":vuser_layer_data";
+        OskariLayer baseLayer = LayerHelper.getLayerWithName(name);
+        boolean doInsert = baseLayer == null;
+        if (doInsert) {
+            baseLayer = new OskariLayer();
+            baseLayer.setType(OskariLayer.TYPE_WFS);
+            baseLayer.setVersion("1.1.0");
+            baseLayer.setName(name);
+            baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat aineistot\"},sv:{name:\"User layers\"},en:{name:\"User layers\"}}"));
+            baseLayer.setOpacity(80);
         }
-
-        // for viewing (WMS) - combination for data/style
-        FeatureType featureStyledData = new FeatureType();
-        try {
-            featureStyledData.enabled = true;
-            featureStyledData.name = "user_layer_data_style";
-            featureStyledData.srs = srs;
-
-            geoserver.createFeatureType(featureStyledData, NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureStyledData);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype user_layer_data_style");
+        // setup data producer/layergroup since original doesn't have one
+        baseLayer.addGroup(LayerHelper.getGroup());
+        setupGeoserverConf(baseLayer, AnalysisHelper.MODULE_NAME);
+        baseLayer.setSrs_name(srs);
+        if (!doInsert) {
+            LayerHelper.update(baseLayer);
+            return baseLayer.getId();
         }
+        // insert
+        LayerHelper.insert(baseLayer);
 
-        final String sld = IOHelper.readString(GeoserverPopulator.class.getResourceAsStream("/sld/userlayer/UserLayerDefaultStyle.sld"));
-        final String sldName = "UserLayerDefaultStyle";
-        try {
-            geoserver.createSLD(sldName, sld);
-            LOG.info("Added SLD:", sldName);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding SLD");
-        }
-        try {
-            geoserver.linkStyleToLayer(sldName, featureStyledData.name, NAMESPACE);
-            LOG.info("Linked SLD", sldName, " to layer", featureStyledData.name, "in namespace", NAMESPACE);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error linking SLD");
-        }
-        geoserver.setDefaultStyleForLayer(sldName, featureStyledData.name, NAMESPACE);
-        LOG.info("Set default SLD", sldName, " for layer", featureStyledData.name, "in namespace", NAMESPACE);
+        // setup WFS conf with defaults
+        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
+        conf.setFeatureParamsLocales("{}");
+        conf.setFeatureElement("vuser_layer_data");
+        WFS_SERVICE.insert(conf);
+        return baseLayer.getId();
     }
 }

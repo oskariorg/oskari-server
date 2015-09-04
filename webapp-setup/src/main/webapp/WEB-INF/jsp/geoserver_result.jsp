@@ -7,17 +7,14 @@
 </head>
 <body>
 <div>
-    <h1>Populate Geoserver</h1>
-    Using database/geoserver configurations from oskari-ext.properties:<br>
+    <h1>Geoserver setup result</h1>
+    ${message}<br>
+    Check that you have these layer ids configured in oskari-ext.properties:
     <ul>
     <c:forEach var="prop" items="${properties}">
         <li>${prop.key} = ${prop.value}</li>
     </c:forEach>
     </ul>
-    <form action="setup">
-        <input type="text" name="srs" value="EPSG:4326" />
-        <input type="submit" />
-    </form>
 </div>
 </body>
 </html>

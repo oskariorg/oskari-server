@@ -86,7 +86,7 @@ public class WebappHelper {
     /**
      * Main initialization method
      */
-    private static void initializeOskariContext() {
+    public static void initializeOskariContext() {
 
         log.info("- checking default DataSource");
         final Context ctx = DS_HELPER.getContext();
@@ -127,10 +127,12 @@ public class WebappHelper {
     }
 
     public static void teardown() {
-        try {
-            schedulerService.shutdownScheduler();
-        } catch (final SchedulerException e) {
-            log.error(e, "Failed to shut down the Oskari scheduler");
+        if (schedulerService != null) {
+            try {
+                schedulerService.shutdownScheduler();
+            } catch (final SchedulerException e) {
+                log.error(e, "Failed to shut down the Oskari scheduler");
+            }
         }
         DS_HELPER.teardown();
         JedisManager.shutdown();
