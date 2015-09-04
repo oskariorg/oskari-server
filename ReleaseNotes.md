@@ -12,7 +12,8 @@ geoserver-ext/geoserver-rest-client now has a simple REST client for Geoserver. 
  To use the setup webapp copy the setup.war under oskari-server/webapp-setup/target/ to {JETTY_HOME}/webapps. Then access 
  Jetty in http://localhost:8080/setup (default url, modify host/port if needed). It shows the geoserver specific properties 
  needed for by the client and asks for projection. When it completes it shows a message indicating success/error and
-  properties that need updating.
+  properties that need updating. This also updates the baselayers in oskari_maplayer database table for projection,
+   geoserver url and credentials.
 
 The relevant properties are:
     
@@ -21,6 +22,8 @@ The relevant properties are:
     geoserver.password=geoserver
 
 After running the setup you should delete the setup.war under {JETTY_HOME}/webapps since access is not restricted in any way.
+Tested on Geoserver 2.7.1. Atleast on 2.5.2 the REST API is a bit different so this might not work correctly
+ (namespace for datastore is handled with uri instead of prefix to be more specific).
 
 ### Database initialization
 
