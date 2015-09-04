@@ -60,6 +60,9 @@ public class SetupController {
         return version;
     }
 
+    private static final String PROP_MYPLACES = "myplaces.baselayer.id";
+    private static final String PROP_ANALYSIS = "analysis.baselayer.id";
+    private static final String PROP_USERLAYER = "userlayer.baselayer.id";
     /**
      * Configures the geoserver for myplaces, analysis and userlayers
      *
@@ -75,11 +78,19 @@ public class SetupController {
             Map<String, Integer> ids = new HashMap<>(3);
             model.addObject("properties",ids);
             int myplacesId = GeoserverPopulator.setupMyplacesLayer(srs);
-            ids.put("myplaces.baselayer.id", myplacesId);
+            if(PropertyUtil.getOptional(PROP_MYPLACES, -1) != myplacesId) {
+                ids.put(PROP_MYPLACES, myplacesId);
+            }
+
             int analysisId = GeoserverPopulator.setupAnalysisLayer(srs);
-            ids.put("analysis.baselayer.id", analysisId);
+            if(PropertyUtil.getOptional(PROP_ANALYSIS, -1) != analysisId) {
+                ids.put(PROP_ANALYSIS, analysisId);
+            }
+
             int userlayerId = GeoserverPopulator.setupUserLayer(srs);
-            ids.put("userlayer.baselayer.id", userlayerId);
+            if(PropertyUtil.getOptional(PROP_USERLAYER, -1) != analysisId) {
+                ids.put(PROP_USERLAYER, userlayerId);
+            }
 
             return model;
         } catch (Exception e) {

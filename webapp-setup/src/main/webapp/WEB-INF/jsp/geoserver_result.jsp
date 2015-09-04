@@ -8,8 +8,8 @@
 <body>
 <div>
     <h1>Geoserver setup result</h1>
-    ${message}<br>
-    Check that you have these layer ids configured in oskari-ext.properties:
+    Geoserver setup: ${message}<br>
+    These properties need to be added/updated in oskari-ext.properties:
     <ul>
     <c:forEach var="prop" items="${properties}">
         <li>${prop.key} = ${prop.value}</li>
