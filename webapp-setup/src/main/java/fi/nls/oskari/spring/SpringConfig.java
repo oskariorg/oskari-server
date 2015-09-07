@@ -37,16 +37,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
         WebappHelper.initializeOskariContext();
     }
 
-/*
-    @Bean
-    public SpringTemplateEngine templateEngine(MessageSource messageSource, ServletContextTemplateResolver templateResolver) {
-        SpringTemplateEngine engine = new SpringTemplateEngine();
-        engine.setTemplateResolver(templateResolver);
-        engine.setMessageSource(messageSource);
-        return engine;
-    }
-    */
-
     @Bean
     public ViewResolver getDefaultsViewResolver() {
         final InternalResourceViewResolver resolver = new InternalResourceViewResolver();
