@@ -138,6 +138,7 @@ public class WFSFilter {
             filter = initFeatureIdFilter(featureIds);
         } else if(type == JobType.MAP_CLICK) {
             LOG.debug("Filter: map click");
+            // scale based default buffer doesn't work so well with non-metric units -> prefer geojson filter
             setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
             if(geoJSONFilter != null && geoJSONFilter.getGeoJSON() != null) {
@@ -150,6 +151,7 @@ public class WFSFilter {
             }
         } else if(type == JobType.GEOJSON) {
             LOG.debug("Filter: GeoJSON");
+            // scale based default buffer doesn't work so well with non-metric units -> prefer geojson filter
             setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
             GeoJSONFilter geoJSONFilter = session.getFilter();
             filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());

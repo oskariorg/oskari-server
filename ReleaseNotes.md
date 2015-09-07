@@ -57,6 +57,10 @@ New action route 'GetLayerCapabilities' returns the cached capabilities for a re
 
 Moved DataSourceHelper to service-base. It's now a singleton.
 
+### servlet-transport
+
+Fixed an issue where map click handling assumed metric coordinate units.
+
 ## 1.31.1
 
 Fixed portti_view metadata column upgrade so it's part of the "empty db" setup so views can be inserted by DBHandler.
