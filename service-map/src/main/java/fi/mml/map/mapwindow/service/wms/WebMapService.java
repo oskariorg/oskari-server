@@ -1,5 +1,6 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import java.util.List;
 import java.util.Map;
 
 public interface WebMapService {
@@ -53,5 +54,10 @@ public interface WebMapService {
      * @return String
      */
     public String getVersion();
-	
+
+	/**
+	 * Return WMS time extent / dimension value as string
+	 * @return String
+	 */
+	public List<String> getTime();
 }

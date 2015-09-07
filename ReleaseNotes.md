@@ -45,6 +45,8 @@ The database table portti_capabilities_cache is replaced with oskari_capabilitie
 WMTS layer capabilities have been dropped from the oskari_maplayer table. The are now cached as the original XML in oskari_capabilities_cache.
  This makes Openlayers 3 migration easier since the JSON was OL2 specific.
 
+Added time dimension support for WMS layers. WebMapService and JSONs for layers now include time parameter from layers getCapabilities.
+
 ### control-base
 
 Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
