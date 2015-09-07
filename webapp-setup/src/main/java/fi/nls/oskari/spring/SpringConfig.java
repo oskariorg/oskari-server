@@ -27,7 +27,7 @@ import javax.annotation.PreDestroy;
         basePackages = "fi.nls.oskari")
 public class SpringConfig extends WebMvcConfigurerAdapter {
 
-    private static final Logger log = LogFactory.getLogger(SpringConfig.class);
+    private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
 
     @PostConstruct
     public void oskariInit()
@@ -60,7 +60,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 
     @PreDestroy
     public void tearDown() {
-        log.info("Teardown");
+        LOG.info("Teardown");
         WebappHelper.teardown();
     }
 }
