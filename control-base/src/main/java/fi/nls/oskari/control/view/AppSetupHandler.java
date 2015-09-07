@@ -360,7 +360,7 @@ public class AppSetupHandler extends RestActionHandler {
             LOG.debug("Loading view for editing:", viewUuid);
             final View existingView = viewService.getViewWithConfByUuId(viewUuid);
             // double check
-            if(viewService.hasPermissionToAlterView(existingView, user)) {
+            if(!viewService.hasPermissionToAlterView(existingView, user)) {
                 throw new ActionDeniedException("No permissions to update view with uuid:" + viewUuid);
             }
             // setup ids for updating a view
