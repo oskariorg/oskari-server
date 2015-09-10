@@ -63,6 +63,8 @@ Moved DataSourceHelper to service-base. It's now a singleton.
 
 Fixed an issue where map click handling assumed metric coordinate units.
 
+Improvements in the boundary tile check
+
 ## 1.31.1
 
 Fixed portti_view metadata column upgrade so it's part of the "empty db" setup so views can be inserted by DBHandler.
