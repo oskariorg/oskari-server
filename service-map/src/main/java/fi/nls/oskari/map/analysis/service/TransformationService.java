@@ -293,14 +293,18 @@ public class TransformationService {
             JSONObject js = new JSONObject(aggregateResults);
             NodeList featureMembers = wpsDoc.getElementsByTagName("gml:featureMember");
             // We trust that union is in one featureMember
-            // Clone 1st fea member to each aggregate result
+            // Clone 1st fea member so that there is one fea each aggregate result
             if (featureMembers.getLength() > 0) {
                 Iterator<?> keys = js.keys();
+                int cnt = 0;
 
                 while (keys.hasNext()) {
                     keys.next();
-                    Node copiedMember = wpsDoc.importNode(featureMembers.item(0), true);
-                    featureMembers.item(0).getParentNode().appendChild(copiedMember);
+                    if (cnt < js.length() -1) {
+                        Node copiedMember = wpsDoc.importNode(featureMembers.item(0), true);
+                        featureMembers.item(0).getParentNode().appendChild(copiedMember);
+                    }
+                    cnt++;
                 }
 
 
@@ -330,7 +334,7 @@ public class TransformationService {
                 String currow = i < rowOrder.size() ? rowOrder.get(i) : null;
 
                 Iterator<?> keys = js.keys();
-                int jscnt = 0;
+
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     if (js.get(key) instanceof JSONObject) {
@@ -354,8 +358,6 @@ public class TransformationService {
                             }
 
                         }
-                        jscnt++;
-
 
                     }
                 }
