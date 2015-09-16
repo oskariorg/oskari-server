@@ -1,5 +1,10 @@
 # Release Notes
 
+## 1.31.2
+
+Fixes an issue where users myplaces layers were not tagged as "published" when used in an embedded maps. This 
+prevented using previously unpublished myplaces layers in embedded maps. 
+
 ## 1.31.1
 
 Fixed portti_view metadata column upgrade so it's part of the "empty db" setup so views can be inserted by DBHandler.
