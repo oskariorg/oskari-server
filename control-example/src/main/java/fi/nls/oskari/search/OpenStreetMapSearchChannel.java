@@ -16,9 +16,11 @@ import fi.nls.oskari.log.Logger;
 import java.net.URLEncoder;
 
 import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 @Oskari(OpenStreetMapSearchChannel.ID)
 public class OpenStreetMapSearchChannel extends SearchChannel {
@@ -30,11 +32,13 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     public final static String SERVICE_SRS = "EPSG:4326";
 
     private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
+    private boolean forceCoordinateSwitch = false;
 
     @Override
     public void init() {
         super.init();
         serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "http://nominatim.openstreetmap.org/search");
+        forceCoordinateSwitch = PropertyUtil.getOptional("search.channel.OPENSTREETMAP_CHANNEL.forceXY", forceCoordinateSwitch);
         log.debug("ServiceURL set to " + serviceURL);
     }
 
@@ -80,6 +84,12 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         }
 
         try {
+            CoordinateReferenceSystem sourceCrs = CRS.decode(SERVICE_SRS);
+            CoordinateReferenceSystem targetCrs = CRS.decode(srs);
+            // geoserver seems to setup the forced XY direction so check if it's in effect
+            // http://docs.geotools.org/stable/userguide/library/referencing/order.html
+            // TODO: this should be checked in ProjectionHelper
+            final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
             final JSONArray data = getData(searchCriteria);
             for (int i = 0; i < data.length(); i++) {
                 JSONObject dataItem = data.getJSONObject(i);
@@ -90,8 +100,13 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                 item.setLocationTypeCode(JSONHelper.getStringFromJSON(dataItem, "class", ""));
                 item.setType(JSONHelper.getStringFromJSON(dataItem, "class", ""));
                 item.setVillage(JSONHelper.getStringFromJSON(address, "city", ""));
-                item.setLon(JSONHelper.getStringFromJSON(dataItem, "lon", ""));
-                item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
+                if(reverseCoordinates) {
+                    item.setLon(JSONHelper.getStringFromJSON(dataItem, "lon", ""));
+                    item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
+                } else {
+                    item.setLat(JSONHelper.getStringFromJSON(dataItem, "lon", ""));
+                    item.setLon(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
+                }
                 // FIXME: add more automation on result rank scaling
                 try {
                     item.setRank(100*(int)Math.round(dataItem.getDouble("importance")));
@@ -99,20 +114,24 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                     item.setRank(0);
                 }
                 searchResultList.addItem(item);
-                // convert to map projection, give lat first because of service srs
+                // convert to map projection
                 final Point point = ProjectionHelper.transformPoint(
-                        ConversionHelper.getDouble(item.getLat(), -1),
                         ConversionHelper.getDouble(item.getLon(), -1),
-                        SERVICE_SRS,
-                        srs);
-                if(point != null) {
-                    item.setLon("" + point.getLon());
-                    item.setLat("" + point.getLat());
-                }
-                else {
+                        ConversionHelper.getDouble(item.getLat(), -1),
+                        sourceCrs,
+                        targetCrs);
+                if(point == null) {
                     item.setLon("");
                     item.setLat("");
+                    continue;
                 }
+                // switch order again after making the transform if necessary
+                if(!forceCoordinateSwitch && (reverseCoordinates  || ProjectionHelper.isFirstAxisNorth(targetCrs))) {
+                    point.switchLonLat();
+                }
+                item.setLon(point.getLon());
+                item.setLat(point.getLat());
+
             }
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");
