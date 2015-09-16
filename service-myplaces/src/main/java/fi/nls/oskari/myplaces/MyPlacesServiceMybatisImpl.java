@@ -180,6 +180,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
      * @param name
      */
     public int updatePublisherName(final long id, final String uuid, final String name) {
+        LOG.debug("Updating publisher name", id, uuid, name);
 
         final Map<String, Object> data = new HashMap<>();
         data.put("publisher_name", name);
@@ -189,7 +190,9 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
         final SqlSession session = factory.openSession();
         try {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            return mapper.updatePublisherName(data);
+            int rows = mapper.updatePublisherName(data);
+            session.commit();
+            return rows;
         } catch (Exception e) {
             LOG.error(e, "Failed to update publisher name", data);
         } finally {
