@@ -74,9 +74,9 @@ public class GeoServerProxyService {
                 log.debug("Posted XML:", request.getPostData());
                 IOHelper.writeToConnection(con, request.getPostData());
 
-                GZIPInputStream gis =
-                        new GZIPInputStream(con.getInputStream());
-                return IOHelper.readString(gis);
+                //GZIPInputStream gis =
+                //        new GZIPInputStream(con.getInputStream());
+                return IOHelper.readString(con.getInputStream());
             } else {
                 return IOHelper.readString(con.getInputStream());
             }
