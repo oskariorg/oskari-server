@@ -52,6 +52,15 @@ public class ProjectionHelper {
         }
         return null;
     }
+    public static Point transformPoint(final double lon, final double lat, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
+        try {
+            return transformPoint(new Point(lon, lat), sourceCrs, targetCrs);
+
+        } catch (Exception e) {
+            log.error(e, "Transform CRS decoding failed! Params: targetSRS", targetCrs, "Point: ",lon,"  ",lat);
+        }
+        return null;
+    }
     public static Point transformPoint(final Point point, final CoordinateReferenceSystem sourceCrs, final CoordinateReferenceSystem targetCrs) {
         try {
 
@@ -60,9 +69,8 @@ public class ProjectionHelper {
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
 
-            //DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getY(), point.getX());
             DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
-            DirectPosition2D destDirectPosition2D = new DirectPosition2D();
+            DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
             // Switch direction, if 1st coord is to the north on the other but not on the other
             if (isFirstAxisNorth(sourceCrs) != isFirstAxisNorth(targetCrs)) {
