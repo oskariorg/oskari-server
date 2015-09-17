@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -61,6 +62,10 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         // Create connection
         final String url = getURL(params, layer);
+        if(url == null || url.isEmpty()) {
+            ResponseHelper.writeError(params, "Not found", HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         final HttpURLConnection con = getConnection(url, layer);
         try {
             con.setRequestMethod("GET");
