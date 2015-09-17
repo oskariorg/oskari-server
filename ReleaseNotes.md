@@ -30,6 +30,16 @@ Tested on Geoserver 2.7.1. Atleast on 2.5.2 the REST API is a bit different so t
 Improved error handling when client disconnects before WFSJob finishes. 
 References for jobs were not properly cleared which resulted in memory leaks.
 
+### control-example/OpenStreetMapSearchChannel
+
+The search channel should now properly handle coordinate transforms even if coordinate order is forced in geotools using 
+the system property "org.geotools.referencing.forceXY". When using projection that is affected by this setting and have 
+the system property, you need to define an override in oskari-ext.properties:
+
+    search.channel.OPENSTREETMAP_CHANNEL.forceXY=true
+
+Using the system property might affect other parts of Oskari as well. We will fix the issues as they are noticed. 
+
 ### Database initialization
 
 Changed default views to show two OpenStreetMap layers. Also changed map coordinate reference system from EPSG:3067 to EPSG:4326.
@@ -59,6 +69,8 @@ Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
 
 New action route 'GetLayerCapabilities' returns the cached capabilities for a registered layer (if the user has
  permission for requested layer). This enables Oskari to get rid of Openlayers 2 specific JSON format for WMTS-layers.
+
+GetLayerTile no longer tries to connect a service when url (usually legendimage) is null or empty.
 
 ### content-resources
 
