@@ -134,6 +134,7 @@ public class AppSetupHandler extends RestActionHandler {
     }
 
     public void preProcess(ActionParameters params) throws ActionException {
+        // published maps are user content so only available for logged in users
         params.requireLoggedInUser();
 
         // check permission if modifying existing view
@@ -187,16 +188,8 @@ public class AppSetupHandler extends RestActionHandler {
             throw new ActionParamsException("Missing configuration for the view to be saved");
         }
 
-        final Bundle mapFullBundle = view.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
-        if (mapFullBundle == null) {
-            throw new ActionParamsException("Could not find mapfull bundle from template view: " + view.getId());
-        }
-
-        // Save user info - this is overwritten when view is loaded so it's more of an fyi
-        JSONHelper.putValue(mapFullBundle.getConfigJSON(), KEY_USER, user.toJSON());
-
         // setup map state
-        setupMapState(mapFullBundle, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL));
+        setupMapState(view, user, viewdata.optJSONObject(ViewModifier.BUNDLE_MAPFULL));
 
         // check if we need to add divmanazer
         for(String bundleid : BUNDLE_REQUIRES_DIVMANAZER) {
@@ -260,7 +253,12 @@ public class AppSetupHandler extends RestActionHandler {
         view.setOnlyForUuId(VIEW_ACCESS_UUID);
     }
 
-    private void setupMapState(final Bundle mapfullBundle, final User user, final JSONObject input) throws ActionException {
+    private void setupMapState(final View view, final User user, final JSONObject input) throws ActionException {
+
+        final Bundle mapfullBundle = view.getBundleByName(ViewModifier.BUNDLE_MAPFULL);
+        if (mapfullBundle == null) {
+            throw new ActionParamsException("Could not find mapfull bundle from template view: " + view.getId());
+        }
 
         if(input == null) {
             throw new ActionParamsException("Could not get state for mapfull from publisher data");
@@ -291,6 +289,11 @@ public class AppSetupHandler extends RestActionHandler {
         if(mapfullConf == null) {
             throw new ActionParamsException("Could not get map configuration from input");
         }
+        JSONObject finalConfig = mapfullBundle.getConfigJSON();
+
+        // Save user info - this is overwritten when view is loaded so it's more of an fyi
+        JSONHelper.putValue(finalConfig, KEY_USER, user.toJSON());
+
         final JSONArray userConfiguredPlugins = mapfullConf.optJSONArray(KEY_PLUGINS);
         if(userConfiguredPlugins == null) {
             throw new ActionParamsException("Could not get map plugins from input");
@@ -317,7 +320,16 @@ public class AppSetupHandler extends RestActionHandler {
         }
 
         // replace current plugins
-        JSONHelper.putValue(mapfullBundle.getConfigJSON(), KEY_PLUGINS, plugins);
+        JSONHelper.putValue(finalConfig, KEY_PLUGINS, plugins);
+
+        // copy style definition from metadata to mapOptions
+        JSONObject mapOptions = finalConfig.optJSONObject(KEY_MAPOPTIONS);
+        if(mapOptions == null) {
+            // create mapOptions if it doesn't exist
+            mapOptions = new JSONObject();
+            JSONHelper.putValue(finalConfig, KEY_MAPOPTIONS, mapOptions);
+        }
+        JSONHelper.putValue(mapOptions, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
     }
 
     private void handleMyplacesDrawLayer(final Bundle myplaces, final User user) throws ActionException {

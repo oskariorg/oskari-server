@@ -28,4 +28,6 @@ public interface ActionConstants {
     String KEY_STATE = "state";
     String KEY_CONF = "conf";
     String KEY_CONFIG = "config";
+    String KEY_MAPOPTIONS = "mapOptions";
+    String KEY_STYLE = "style";
 }
