@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -44,6 +45,8 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     private static String JSON_IS_VIEW_SELECTED = "isViewSelected";
     private static String JSON_IS_VIEW_PUBLISHED_SELECTED = "isViewPublishedSelected";
     private static String JSON_IS_DOWNLOAD_SELECTED = "isDownloadSelected";
+    
+    List<String> usedPermissionTypes;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -54,19 +57,71 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         String externalId = params.getHttpParam("externalId", "");
         String externalType = params.getHttpParam("externalType", "");
     	
-    	List<String> permissionTypes = Arrays.asList(PropertyUtil.get("permission.types")	.replaceAll("\\s+","").split(","));
+        final Locale locale = params.getLocale();
+        
+        this.usedPermissionTypes = new ArrayList<String>();
+        List<Map<String, String>> permissionsData = new ArrayList<Map<String, String>>();
+        
+        String property = PropertyUtil.get("permission.types").replaceAll("\\s+","");
+        if (property.equals("--permission.types--") == false)
+        {
+        	String[] propertyArray = property.split(",");
+        	for (int i = 0; i < propertyArray.length; i++)
+        	{
+        		HashMap<String, String> permissionData = new HashMap<String, String>();
+        		permissionData.put("id", PropertyUtil.get("permission." + propertyArray[i] + ".id"));
+        		permissionData.put("name", PropertyUtil.get("permission." + propertyArray[i] + ".name." + params.getLocale()));
+        		permissionsData.add(permissionData);
+        		usedPermissionTypes.add(propertyArray[i]);
+        		
+        	}
+        }
     	
-    	List<Map<String, String>> permissionsData = new ArrayList<Map<String, String>>();
+
     	Map<String, List<String>> resourcesMap = new HashMap<String, List<String>>();
-    	for (String permissionType : permissionTypes)
+    	/*if (!usedPermissionTypes.contains("viewLayer"))
     	{
-    		String id = PropertyUtil.get("permission." + permissionType + ".id");
-    		HashMap<String, String> permissionData = new HashMap<String, String>();
-    		permissionData.put("id", id);
-    		permissionData.put("name", PropertyUtil.get("permission." + permissionType + ".name." + params.getLocale()));
-    		permissionsData.add(permissionData);
-    		List<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, id);
-        	resourcesMap.put(id, val);
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "VIEW_LAYER");
+	        		put("name", (locale.equals("fi") ? "View layerFi" : "View layer"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("publish"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "PUBLISH");
+	    	    	put("name", (locale.equals("fi") ? "PublishFi" : "Publish"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("download"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "DOWNLOAD");
+	    	    	put("name", (locale.equals("fi") ? "DownloadFi" : "Download"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("execute"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "EXECUTE");
+	    	    	put("name", (locale.equals("fi") ? "ExecuteFi" : "Execute"));
+	    		}
+	    	});
+    	}*/
+    	
+    	setDefaultPermissions(permissionsData, locale);
+    	
+    	for (Map<String,String> permissionData : permissionsData)
+    	{
+    		List<String> val = permissionsService.getResourcesWithGrantedPermissions(Permissions.RESOURCE_TYPE_MAP_LAYER, externalId, externalType, permissionData.get("id"));
+        	resourcesMap.put(permissionData.get("id"), val);
     	}
 
         List<OskariLayer> layers = mapLayerService.findAll();
@@ -121,5 +176,46 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     		}
     	}
     	return "";
+    }
+    
+    private void setDefaultPermissions(List<Map<String, String>> permissionsData, Locale locale)
+    {
+    	final Locale localeFinal = locale;
+    	if (!usedPermissionTypes.contains("viewLayer"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "VIEW_LAYER");
+	        		put("name", (localeFinal.equals("fi") ? "View layerFi" : "View layer"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("publish"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "PUBLISH");
+	    	    	put("name", (localeFinal.equals("fi") ? "PublishFi" : "Publish"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("download"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "DOWNLOAD");
+	    	    	put("name", (localeFinal.equals("fi") ? "DownloadFi" : "Download"));
+	    		}
+	    	});
+    	}
+    	if (!usedPermissionTypes.contains("execute"))
+    	{
+	    	permissionsData.add(new HashMap<String, String>() {
+	    		{
+	    			put("id", "EXECUTE");
+	    	    	put("name", (localeFinal.equals("fi") ? "ExecuteFi" : "Execute"));
+	    		}
+	    	});
+    	}
     }
 }
