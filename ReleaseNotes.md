@@ -25,6 +25,11 @@ After running the setup you should delete the setup.war under {JETTY_HOME}/webap
 Tested on Geoserver 2.7.1. Atleast on 2.5.2 the REST API is a bit different so this might not work correctly
  (namespace for datastore is handled with uri instead of prefix to be more specific).
 
+### servlet-transport
+
+Improved error handling when client disconnects before WFSJob finishes. 
+References for jobs were not properly cleared which resulted in memory leaks.
+
 ### Database initialization
 
 Changed default views to show two OpenStreetMap layers. Also changed map coordinate reference system from EPSG:3067 to EPSG:4326.
