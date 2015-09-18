@@ -6,10 +6,10 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +24,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         TYPE_MAPPING.put(OskariLayer.TYPE_WFS, "WFS");
         TYPE_MAPPING.put(OskariLayer.TYPE_WMTS, "WMTS");
     }
+    // timeout capabilities request after 15 seconds (configurable)
+    private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 15) * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
@@ -74,8 +76,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 encoding = IOHelper.DEFAULT_CHARSET;
             }
             final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
-            // timeout capabilities request after 15 seconds
-            conn.setReadTimeout(15000);
+            conn.setReadTimeout(TIMEOUT_MS);
             final String response = IOHelper.readString(conn, encoding);
             final String charset = getEncodingFromXml(response);
             if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
