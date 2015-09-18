@@ -77,9 +77,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
                 LOG.debug("saving capabilities with charset", charset, "encoding:", encoding);
 
-                OskariLayerCapabilities cap = new OskariLayerCapabilities();
-                cap.setUrl(layer.getSimplifiedUrl(true));
-                cap.setLayertype(layer.getType());
+                OskariLayerCapabilities cap = createForLayer(layer);
                 cap.setData(response);
                 // save before returning
                 save(cap);
@@ -88,8 +86,19 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             }
             return getCapabilities(layer, charset, loadFromService, true);
         } catch (IOException e) {
+            OskariLayerCapabilities cap = createForLayer(layer);
+            // save empty result so we don't hang the system
+            cap.setData("");
+            save(cap);
             throw new ServiceException("Error loading capabilities from URL:" + url, e);
         }
+    }
+
+    private OskariLayerCapabilities createForLayer(OskariLayer layer) {
+        OskariLayerCapabilities cap = new OskariLayerCapabilities();
+        cap.setUrl(layer.getSimplifiedUrl(true));
+        cap.setLayertype(layer.getType());
+        return cap;
     }
 
     private static String contructCapabilitiesUrl(final OskariLayer layer) {
