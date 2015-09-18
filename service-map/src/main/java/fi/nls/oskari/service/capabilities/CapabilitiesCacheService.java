@@ -8,6 +8,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,10 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             if(encoding == null) {
                 encoding = IOHelper.DEFAULT_CHARSET;
             }
-            final String response = IOHelper.getURL(url, layer.getUsername(), layer.getPassword(), Collections.EMPTY_MAP, encoding);
+            final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
+            // timeout capabilities request after 15 seconds
+            conn.setReadTimeout(15000);
+            final String response = IOHelper.readString(conn, encoding);
             final String charset = getEncodingFromXml(response);
             if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
                 LOG.debug("saving capabilities with charset", charset, "encoding:", encoding);
