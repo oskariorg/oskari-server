@@ -229,6 +229,15 @@ public class DBHandler {
                     ViewHelper.insertView(conn, viewConfFile);
                 }
             }
+            if(setup.has("layers")) {
+                log.info("/- adding layers using ibatis");
+                final JSONArray layersListing = setup.getJSONArray("layers");
+                for(int i = 0; i < layersListing.length(); ++i) {
+                    final String layerConfFile = layersListing.getString(i);
+                    LayerHelper.setupLayer(layerConfFile);
+                }
+            }
+
 
             if(setup.has("sql")) {
                 log.info("/- running additional sql files");
