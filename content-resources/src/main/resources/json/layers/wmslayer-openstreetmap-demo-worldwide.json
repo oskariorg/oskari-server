@@ -7,13 +7,13 @@
     "inspiretheme": "Others",
     "locale": {
         "fi": {
-            "name": "OpenStreetMap WMS"
+            "name": "OSM Worldwide"
         },
         "sv": {
-            "name": "OpenStreetMap WMS"
+            "name": "OSM Worldwide"
         },
         "en": {
-            "name": "OpenStreetMap WMS"
+            "name": "OSM Worldwide"
         }
     },
     "role_permissions": {

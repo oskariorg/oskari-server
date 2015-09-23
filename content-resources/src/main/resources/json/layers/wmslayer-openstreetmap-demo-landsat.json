@@ -7,13 +7,13 @@
     "inspiretheme": "Others",
     "locale": {
         "fi": {
-            "name": "OpenStreetMap WMS Landsat"
+            "name": "OSM Landsat"
         },
         "sv": {
-            "name": "OpenStreetMap WMS Landsat"
+            "name": "OSM Landsat"
         },
         "en": {
-            "name": "OpenStreetMap WMS Landsat"
+            "name": "OSM Landsat"
         }
     },
     "role_permissions": {
