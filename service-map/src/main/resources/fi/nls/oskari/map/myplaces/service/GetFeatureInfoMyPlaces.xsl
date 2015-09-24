@@ -8,9 +8,11 @@
      http://www.paikkatietoikkuna.fi/dataset/analysis/service/ows?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=oskari%3Amy_places_categories
      http://www.opengis.net/wfs 
      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd">
- <xsl:output method="text" omit-xml-declaration="yes" />
- <xsl:strip-space elements="*" />
-   <xsl:template match="/wfs:FeatureCollection/gml:featureMembers">
+    <xsl:output method="text" omit-xml-declaration="yes" />
+    <xsl:strip-space elements="*" />
+    <!-- ignore boundedBy tag in case "Return bounding box with every feature" is enabled in geoserver -->
+    <xsl:template match="gml:boundedBy"></xsl:template>
+    <xsl:template match="/wfs:FeatureCollection/gml:featureMembers">
      {"parsed": {
        "layer" : "<xsl:value-of select="normalize-space(oskari:my_places_categories/oskari:category_name/.)"/>",
        "publisher" : "<xsl:value-of select="normalize-space(oskari:my_places_categories/oskari:publisher_name/.)"/>",
@@ -22,5 +24,5 @@
              "imageUrl" : "<xsl:value-of select="normalize-space(oskari:image_url/.)"/>"
            }</xsl:for-each>]
      }}
-   </xsl:template>
+    </xsl:template>
 </xsl:stylesheet>

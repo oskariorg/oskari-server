@@ -1,6 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -30,21 +31,23 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                                      final boolean isSecure) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
-        JSONHelper.putValue(layerJson, "styles", getStyles(layer));
+        final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
+        JSONHelper.putValue(layerJson, "styles", getStyles(wfsConf.getSLDStyles()));
         JSONHelper.putValue(layerJson, "style", "default");
         JSONHelper.putValue(layerJson, "isQueryable", true);
+        JSONHelper.putValue(layerJson, "wps_params", JSONHelper.createJSONObject(wfsConf.getWps_params()) );
+
         return layerJson;
     }
 
     /**
      * Constructs a style json
      *
-     * @param layer layer of which styles will be retrieved
+     * @param styleList wfs layer styles
      */
-    private JSONArray getStyles(final OskariLayer layer) {
+    private JSONArray getStyles(final List<WFSSLDStyle> styleList) {
         JSONArray arr = new JSONArray();
         try {
-            List<WFSSLDStyle> styleList = wfsService.findWFSLayerStyles(layer.getId());
             for (WFSSLDStyle style : styleList) {
                 JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
                 if (obj.length() > 0) {
@@ -56,4 +59,5 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         }
         return arr;
     }
+
 }

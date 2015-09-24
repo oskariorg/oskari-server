@@ -69,9 +69,13 @@
                 "lastName": "Oskari",
                 "nickName": "Ozkari",
                 "roles": [{
+                    "id": 1,
+                    "name": "User"
+                },{
                   "id": 42,
                   "name": "Karttajulkaisija_Tre"
-                }],
+                }
+                ],
                 "userUUID": "my uuid is secrets",
                 "firstName": "Test",
                 "email": "test@oskari.org"

@@ -211,3 +211,20 @@ If this is a problem please contact
 
 Support for PDF/A is in pdfbox trunk which is not available in maven repositories atm.
 WebContent/WEB-INF/lib contains 2.0.0-SNAPSHOT jars for pdfbox.
+
+# Configuring support for new CRS
+
+1. Clone properties file e.g. servers\jetty-8.1.16-skeleton\jetty-8.1.16-oskari\resources\oskari-printout-backend-4326.properties
+2. Edit in properties file following properties
+
+ ```
+
+epsgCode=EPSG:4326  <--  desired crs / EPSG: must be in Uppercase
+layer.template=EPSG-4326_LAYER_TEMPLATE   <-- rename your own template in geowebcache_template.xml
+gridSubsetName=EPSG-4326  <-- rename your own grid subset  in geowebcache_template.xml
+
+
+ ```
+3. Add your template and grid subset definitions into  servlet-printout\src\main\resources\fi\nls\oskari\printout\output\map\geowebcache_template.xml
+4. Build oskari-server
+

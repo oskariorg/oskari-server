@@ -46,7 +46,7 @@ public class AnalysisParser {
 
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
-    private static final String PARAMS_PROXY = "action_route=GetProxyRequest&serviceId=wfsquery&wfs_layer_id=";
+
     private static final String FILTER_ID_TEMPLATE1 = "{\"filters\":[{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}\"}]}";
     private static final String FILTER_ID_TEMPLATE2 = "{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}\"}";
     private static final String FILTER_ID_TEMPLATE3 = "[{\"caseSensitive\":false,\"attribute\":\"{propertyName}\",\"operator\":\"=\",\"value\":\"{propertyValue}\"}]";
@@ -55,7 +55,7 @@ public class AnalysisParser {
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
     private static final String ANALYSIS_INPUT_TYPE_GEOJSON = "geojson";
     private static final String ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
-    private static final String ANALYSIS_RENDERING_URL = "analysis.rendering.url";
+
     private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
     private static final String ANALYSIS_WPS_ELEMENT_LOCALNAME = "analysis_data";
     private static final String ANALYSIS_PROPERTY_NAME = "analysis_id";
@@ -1669,10 +1669,10 @@ public class AnalysisParser {
 
     }
 
-    public String mergeAggregateResults2FeatureSet(String featureSet, AnalysisLayer analysisLayer){
+    public String mergeAggregateResults2FeatureSet(String featureSet, AnalysisLayer analysisLayer, List<String> rowOrder, List<String> colOrder){
         try {
             // Add aggregate results to FeatureCollection ( only to one feature)
-            featureSet = transformationService.addPropertiesTo1stFeature(featureSet, analysisLayer.getResult());
+            featureSet = transformationService.mergePropertiesToFeatures(featureSet, analysisLayer.getResult(), rowOrder, colOrder);
         } catch (ServiceException e) {
             log.debug("Feature property insert to FeatureCollection failed: ", e);
         }

@@ -6,8 +6,7 @@
 	<parent>
 		<groupId>fi.nls.oskari</groupId>
 		<artifactId>oskari-parent</artifactId>
-        <version>1.31.2</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.32.0</version>
 	</parent>
     <artifactId>content-resources</artifactId>
     <packaging>jar</packaging>
@@ -92,16 +91,20 @@
             <version>3.2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>${commons-dbcp2.version}</version>
-            <scope>compile</scope>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>geoserver-rest-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.3-1102-jdbc41</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

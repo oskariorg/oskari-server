@@ -195,7 +195,50 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 			<yCoordinateFirst>false</yCoordinateFirst>
 		</gridSet>
 
-
+		<!-- gridSet for epsg 4326-->
+		<gridSet>
+			<name>EPSG-4326</name>
+			<description>http://spatialreference.org/ref/epsg/wgs-84/</description>
+			<srs>
+				<number>4326</number>
+			</srs>
+			<extent>
+				<coords>
+					<double>-180.0</double>
+					<double>-90.0</double>
+					<double>180.0</double>
+					<double>90.0</double>
+				</coords>
+			</extent>
+			<alignTopLeft>false</alignTopLeft>
+			<resolutions>
+				<double>0.5</double>
+				<double>0.25</double>
+				<double>0.125</double>
+				<double>0.063</double>
+				<double>0.032</double>
+				<double>0.016</double>
+				<double>0.01</double>
+				<double>0.007</double>
+				<double>0.003</double>
+			</resolutions>
+			<metersPerUnit>111319.4908</metersPerUnit>
+			<pixelSize>0.166666666666667</pixelSize>
+			<scaleNames>
+				<string>4326:0</string>
+				<string>4326:1</string>
+				<string>4326:2</string>
+				<string>4326:3</string>
+				<string>4326:4</string>
+				<string>4326:5</string>
+				<string>4326:6</string>
+				<string>4326:7</string>
+				<string>4326:8</string>
+			</scaleNames>
+			<tileHeight>256</tileHeight>
+			<tileWidth>256</tileWidth>
+			<yCoordinateFirst>false</yCoordinateFirst>
+		</gridSet>
 
 
 	</gridSets>
@@ -276,6 +319,31 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 							<double>6291456.0</double>
 							<double>1548576.0</double>
 							<double>8388608.0</double>
+						</coords>
+					</extent>
+				</gridSubset>
+			</gridSubsets>
+			<useETags>true</useETags>
+			<wmsUrl>
+				<string>http://127.0.0.1:80/geoserver/service/wms</string>
+			</wmsUrl>
+			<wmsLayers>LAYER_TEMPLATE</wmsLayers>
+		</wmsLayer>
+		<wmsLayer>
+			<name>EPSG-4326_LAYER_TEMPLATE</name>
+			<mimeFormats>
+				<string>image/png</string>
+			</mimeFormats>
+
+			<gridSubsets>
+				<gridSubset>
+					<gridSetName>EPSG-4326</gridSetName>
+					<extent>
+						<coords>
+							<double>-180.0</double>
+							<double>-90.0</double>
+							<double>180.0</double>
+							<double>90.0</double>
 						</coords>
 					</extent>
 				</gridSubset>

@@ -18,17 +18,15 @@ import fi.nls.oskari.work.hystrix.metrics.TimingGauge;
 import fi.nls.oskari.worker.Job;
 import fi.nls.oskari.worker.JobQueue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 
 /**
  * Adds support for Hystrix commands, defaults to internal threading solution for non-Hystrix jobs
  */
 public class HystrixJobQueue extends JobQueue {
-    private static final Logger log = LogFactory.getLogger(HystrixJobQueue.class);
+    private static final Logger LOG = LogFactory.getLogger(HystrixJobQueue.class);
     private Map<String, Job<String>> commandsMapping = new ConcurrentHashMap<String, Job<String>>(100);
     private MetricRegistry metrics = new MetricRegistry();
 
@@ -62,10 +60,11 @@ public class HystrixJobQueue extends JobQueue {
              * @return
              */
             @Override
-            public <T> Exception onError(HystrixInvokable<T> commandInstance, HystrixRuntimeException.FailureType failureType, Exception e) {
+            public <T> Exception onError(HystrixInvokable<T> commandInstance,
+                                         HystrixRuntimeException.FailureType failureType, Exception e) {
                 if (commandInstance instanceof HystrixJob) {
                     HystrixJob job = (HystrixJob) commandInstance;
-                    jobEnded(job, false, "Error on job", job.getKey(), failureType, log.getCauseMessages(e));
+                    jobEnded(job, false, "Error on job", job.getKey(), failureType, LOG.getCauseMessages(e));
                 }
                 return super.onError(commandInstance, failureType, e);
             }
@@ -88,56 +87,60 @@ public class HystrixJobQueue extends JobQueue {
     }
 
     /**
-     * Clean up and log.warn if there was an error
+     * Clean up and LOG.warn if there was an error
      * @param job
      * @param success
      * @param args
      */
     private void jobEnded(HystrixJob job, boolean success, Object... args) {
-        if(success) {
-            log.debug(args);
-            onJobSuccess(job, null);
-        }
-        else {
-            log.warn(args);
-            onJobFailed(job, null);
-        }
-
-        // NOTE! job.getExecutionTimeInMilliseconds() doesn't seem to provide correct values
-        // maybe because we use futures/queue() instead of execute()?
-        final long runtimeMS = (System.nanoTime() - job.getStartTime()) / 1000000L;
-        // statistics
-        if(job instanceof HystrixMapLayerJob) {
-            HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
-            // manually call terminate just in case (timeout and such)
-            mlJob.terminate();
-            mlJob.notifyCompleted(success);
-            final String jobId = mlJob.getJobId();
-            final Histogram timing = metrics.histogram(
-                    MetricRegistry.name(HystrixMapLayerJob.class, "exec.time." + jobId));
-            timing.update(runtimeMS);
-
-            TimingGauge gauge = customMetrics.get(jobId);
-            if(gauge == null) {
-                gauge = new TimingGauge();
-                customMetrics.put(jobId, gauge);
-                // first run
-                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.max." + jobId), new MaxJobLengthGauge(gauge));
-                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.min." + jobId), new MinJobLengthGauge(gauge));
-                metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.avg." + jobId), new AvgJobLengthGauge(gauge));
+        try {
+            if(success) {
+                LOG.debug(args);
+                onJobSuccess(job, null);
             }
-            log.debug("Job completed in", runtimeMS);
-            gauge.setupTimingStatistics(runtimeMS);
-
-            if(!success) {
-                final Counter failCounter = metrics.counter(
-                        MetricRegistry.name(HystrixJobQueue.class, "jobs.fails." + jobId));
-                failCounter.inc();
+            else {
+                LOG.warn(args);
+                onJobFailed(job, null);
             }
+
+            // NOTE! job.getExecutionTimeInMilliseconds() doesn't seem to provide correct values
+            // maybe because we use futures/queue() instead of execute()?
+            final long runtimeMS = (System.nanoTime() - job.getStartTime()) / 1000000L;
+            // statistics
+            if(job instanceof HystrixMapLayerJob) {
+                HystrixMapLayerJob mlJob = (HystrixMapLayerJob) job;
+                // manually call terminate just in case (timeout and such)
+                mlJob.terminate();
+                mlJob.notifyCompleted(success);
+                final String jobId = mlJob.getJobId();
+                final Histogram timing = metrics.histogram(
+                        MetricRegistry.name(HystrixMapLayerJob.class, "exec.time." + jobId));
+                timing.update(runtimeMS);
+
+                TimingGauge gauge = customMetrics.get(jobId);
+                if(gauge == null) {
+                    gauge = new TimingGauge();
+                    customMetrics.put(jobId, gauge);
+                    // first run
+                    metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.max." + jobId), new MaxJobLengthGauge(gauge));
+                    metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.min." + jobId), new MinJobLengthGauge(gauge));
+                    metrics.register(MetricRegistry.name(HystrixJobQueue.class, "job.length.avg." + jobId), new AvgJobLengthGauge(gauge));
+                }
+                LOG.debug("Job completed in", runtimeMS);
+                gauge.setupTimingStatistics(runtimeMS);
+
+                if(!success) {
+                    final Counter failCounter = metrics.counter(
+                            MetricRegistry.name(HystrixJobQueue.class, "jobs.fails." + jobId));
+                    failCounter.inc();
+                }
+            }
+            setupTimingStatistics(runtimeMS);
         }
-        setupTimingStatistics(runtimeMS);
-        job.teardown();
-        commandsMapping.remove(job.getKey());
+        finally {
+            commandsMapping.remove(job.getKey());
+            job.teardown();
+        }
     }
 
     public MetricRegistry getMetricsRegistry() {

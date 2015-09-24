@@ -1,10 +1,7 @@
 package fi.mml.map.mapwindow.service.wms;
 
 import java.lang.Exception;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.namespace.QName;
 
@@ -32,6 +29,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	
 	private boolean isQueryable = false;
     private String[] keywords = new String[0];
+	private List<String> time = new ArrayList<>();
 	/** Logger */
 	private static final Logger log = LogFactory.getLogger(WebMapServiceV1_1_1_Impl.class);
 	
@@ -41,7 +39,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	private String getCapabilitiesUrl;	
 	
 	/**
-	 * Creates a new 1.1.1 implemaentation 
+	 * Creates a new 1.1.1 implementation
 	 * @param data
 	 * @param layerName
 	 * 
@@ -115,6 +113,16 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 				isQueryable = true;
 			}
 	    } 
+	}
+
+	private void setTimeValue(Layer layer, String layerName) {
+		if (layerName.equals(layer.getName())) {
+			for (Extent extent : layer.getExtentArray()) {
+				if (extent.getName().equals("time")) {
+					time = new ArrayList(Collections.singletonList(extent.toString()));
+				}
+			}
+		}
 	}
 	
 	/**
@@ -204,6 +212,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 				/* We found the layer we were after, next we must once again 
 				 * gather styles and check for queryable value */
 				gatherStylesAndLegends(layer, foundStyles);
+				setTimeValue(layer, checkedLayerName);
 				setQueryable(layer, checkedLayerName);
                 setKeywords(layer, checkedLayerName);
 				
@@ -266,4 +275,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
     public String[] getKeywords() {
         return keywords;
     }
+
+	public List<String> getTime() {
+		return time;
+	}
 }

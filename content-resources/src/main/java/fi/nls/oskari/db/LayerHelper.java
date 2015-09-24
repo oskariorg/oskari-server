@@ -39,7 +39,7 @@ public class LayerHelper {
     private static final IbatisRoleService roleService = new IbatisRoleService();
 
     public static int setupLayer(final String layerfile) throws IOException, JSONException {
-        final String jsonStr = IOHelper.readString(DBHandler.class.getResourceAsStream("/json/layers/" + layerfile));
+        final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
         final JSONObject json = JSONHelper.createJSONObject(jsonStr);
         final OskariLayer layer = LAYER_JSON_PARSER.parseLayer(json);
         final OskariLayerService service = new OskariLayerServiceIbatisImpl();

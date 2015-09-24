@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.nls.oskari</groupId>
     <artifactId>oskari-parent</artifactId>
-    <version>1.31.2</version>
+    <version>1.32.0</version>
     <packaging>pom</packaging>
 
     <name>Oskari parent POM</name>
@@ -887,6 +887,7 @@
     <modules>
         <!-- basic oskari map requirements -->
         <module>shared-test-resources</module>
+        <module>geoserver-ext/geoserver-rest-client</module>
 
         <module>service-base</module>
         <module>service-users</module>
@@ -930,6 +931,8 @@
 
         <!-- printout -->
         <module>servlet-printout</module>
+        <!-- setup -->
+        <module>webapp-setup</module>
     </modules>
 
 </project>

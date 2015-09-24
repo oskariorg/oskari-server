@@ -116,6 +116,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "formats", formats);
         JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
         JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
+        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(JSONHelper.getJSONObject(layerJson, "attributes"), formatTime(capabilities.getTime())));
     }
 
     private String buildLegendUrl(final OskariLayer layer) {
@@ -126,6 +127,18 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
+    private JSONObject formatTime(List<String> timeList) {
+        final JSONObject time = new JSONObject();
+        final JSONArray values = new JSONArray();
+        for (String string : timeList) {
+            values.put(string);
+        }
+        if (values.length() > 0) {
+            JSONHelper.putValue(time, "time", values);
+        }
+        return time;
+    }
+
     /**
      * Builds a new WebMapService
      * @param layer layer
@@ -133,7 +146,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      */
     private WebMapService buildWebMapService(final OskariLayer layer) {
         try {
-            return WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getName());
+            return WebMapServiceFactory.buildWebMapService(layer);
         } catch (WebMapServiceParseException e) {
             log.error("Failed to create WebMapService for layer id '" + layer.getId() + "'. No Styles available");
         }

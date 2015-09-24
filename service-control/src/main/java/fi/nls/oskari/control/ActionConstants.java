@@ -21,10 +21,13 @@ public interface ActionConstants {
     // JSON keys
     String KEY_NAME = "name";
     String KEY_URL = "url";
-    String KEY_ID = "id";
+    String KEY_ID = PARAM_ID;
+    String KEY_UUID = PARAM_UUID;
     String KEY_USER = "user";
     String KEY_LANG = "lang";
     String KEY_STATE = "state";
     String KEY_CONF = "conf";
     String KEY_CONFIG = "config";
+    String KEY_MAPOPTIONS = "mapOptions";
+    String KEY_STYLE = "style";
 }

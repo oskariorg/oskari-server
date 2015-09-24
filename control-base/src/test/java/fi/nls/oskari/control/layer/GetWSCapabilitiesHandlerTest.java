@@ -7,9 +7,9 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
-import fi.nls.oskari.util.GetWMSCapabilities;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,13 +30,13 @@ import static org.junit.Assert.fail;
  * @author SMAKINEN
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {GetWMSCapabilities.class})
 public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     final private  GetWSCapabilitiesHandler handler = new  GetWSCapabilitiesHandler();
 
     @BeforeClass
     public static void addLocales() throws Exception {
+        PropertyUtil.clearProperties();
         Properties properties = new Properties();
         try {
             properties.load(GetWSCapabilitiesHandlerTest.class.getResourceAsStream("test.properties"));
@@ -47,6 +47,10 @@ public class GetWSCapabilitiesHandlerTest extends JSONActionRouteTest {
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
         }
+    }
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Before

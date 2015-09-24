@@ -239,10 +239,6 @@ public class LayerJSONFormatter {
         layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
         layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
         layer.setTileMatrixSetId(json.optString("tile_matrix_set_id", layer.getTileMatrixSetId()));
-        final JSONObject tilematrix = json.optJSONObject("tile_matrix_set_data");
-        if(tilematrix != null) {
-            layer.setTileMatrixSetData(tilematrix.toString());
-        }
         layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
         layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
         layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));

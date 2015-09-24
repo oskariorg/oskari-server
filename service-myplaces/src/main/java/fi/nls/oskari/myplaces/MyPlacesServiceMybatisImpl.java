@@ -37,7 +37,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
 
     public MyPlacesServiceMybatisImpl() {
 
-        final DatasourceHelper helper = new DatasourceHelper();
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("myplaces"));
         if(dataSource != null) {
             factory = initializeMyBatis(dataSource);

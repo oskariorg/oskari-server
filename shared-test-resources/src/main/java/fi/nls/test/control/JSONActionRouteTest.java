@@ -36,9 +36,6 @@ import static org.mockito.Mockito.never;
 public class JSONActionRouteTest {
 
     private StringWriter response = new StringWriter();
-    private User guestUser = new GuestUser();
-    private User loggedInUser = null;
-    private User adminUser = null;
 
     @Before
     public void jsonActionRouteSetUp() throws Exception {
@@ -193,27 +190,24 @@ public class JSONActionRouteTest {
     }
 
     public User getGuestUser() {
-        return guestUser;
+        return new GuestUser();
     }
 
     public User getLoggedInUser() {
-        if(loggedInUser == null) {
-            loggedInUser = new User();
-            loggedInUser.setId(123);
-            loggedInUser.setEmail("test@oskari.org");
-            loggedInUser.setFirstname("Test");
-            loggedInUser.setLastname("Oskari");
-            loggedInUser.setScreenname("Ozkari");
-            loggedInUser.setUuid("my uuid is secrets");
-        }
+        User loggedInUser = new User();
+        loggedInUser.setId(123);
+        loggedInUser.setEmail("test@oskari.org");
+        loggedInUser.setFirstname("Test");
+        loggedInUser.setLastname("Oskari");
+        loggedInUser.setScreenname("Ozkari");
+        loggedInUser.setUuid("my uuid is secrets");
+        loggedInUser.addRole(1, "User");
         return loggedInUser;
     }
     public User getAdminUser() {
-        if(adminUser == null) {
-            adminUser = mock(User.class);
-            // mock as admin
-            doReturn(true).when(adminUser).isAdmin();
-        }
+        User adminUser = mock(User.class);
+        // mock as admin
+        doReturn(true).when(adminUser).isAdmin();
         return adminUser;
     }
 

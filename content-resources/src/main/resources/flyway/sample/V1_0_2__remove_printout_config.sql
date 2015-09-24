@@ -1,0 +1,2 @@
+-- printout defaults to generic ajax url if config isn't specified so no need to specify urls that causes problems when ajaxurl is changed;
+UPDATE portti_view_bundle_seq SET config = '{}' where bundleinstance = 'printout';

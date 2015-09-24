@@ -1,0 +1,24 @@
+{
+	"srs_name": "EPSG:4326",
+	"type":"wmslayer",
+    "url":"http://irs.gis-lab.info/",
+    "name":"landsat",
+    "organization": "Demo layers",
+    "inspiretheme": "Others",
+    "locale": {
+        "fi": {
+            "name": "OSM Landsat"
+        },
+        "sv": {
+            "name": "OSM Landsat"
+        },
+        "en": {
+            "name": "OSM Landsat"
+        }
+    },
+    "role_permissions": {
+        "Guest" : ["VIEW_LAYER", "VIEW_PUBLISHED"],
+        "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
+    },
+	"version": "1.1.1"
+}
