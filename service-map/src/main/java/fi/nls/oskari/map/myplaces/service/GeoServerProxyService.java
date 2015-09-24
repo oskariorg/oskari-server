@@ -101,7 +101,8 @@ public class GeoServerProxyService {
             factory.setNamespaceAware(true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
-            respInStream = connection.getInputStream();
+            log.debug("Got response for myplaces GFI:");
+            respInStream = IOHelper.debugResponse(connection.getInputStream());
 
             org.w3c.dom.Document document = builder.parse(respInStream);
             xsltInStream = this.getClass().getResourceAsStream(MY_PLACE_FEATURE_FILTER_XSL);
