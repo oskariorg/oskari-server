@@ -52,6 +52,10 @@ IOHelper now throws an IOException when getting a HTTP 401 response instead of r
 
 fi.mml.map.mapwindow.service.db.CapabilitiesCacheService (and -IbatisImpl) has been moved to a new package: fi.nls.oskari.service.capabilities.
 CapabilitiesCacheService.getCapabilities() returns cached capabilities from the db or if not present queries the service and updates the database.
+The capabilities network request timeouts after 15 seconds by default. You can configure the timeout with oskari-ext.properties:
+
+    # seconds for timeout
+    capabilities.timeout=15
  
 The database table portti_capabilities_cache is replaced with oskari_capabilities_cache table. Capabilities are
  mapped based on service url and type (WMS/WMTS) instead of layer ids to prevent duplication. The migration for 1.32 will

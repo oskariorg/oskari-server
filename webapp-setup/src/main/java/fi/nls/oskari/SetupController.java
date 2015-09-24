@@ -89,7 +89,7 @@ public class SetupController {
             }
 
             int userlayerId = GeoserverPopulator.setupUserLayer(srs);
-            if (PropertyUtil.getOptional(PROP_USERLAYER, -1) != analysisId) {
+            if (PropertyUtil.getOptional(PROP_USERLAYER, -1) != userlayerId) {
                 ids.put(PROP_USERLAYER, userlayerId);
             }
 
