@@ -2,10 +2,15 @@ package fi.nls.oskari.control.feature;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,24 +34,32 @@ public class SaveFeatureHandler extends ActionHandler {
 
 		try {
 			JSONObject jsonObject = new JSONObject(featureData);
-			StringBuilder request = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:topp='http://www.openplans.org/topp' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ jsonObject.getString("layerName") +"'>");
+			StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:topp='http://www.openplans.org/topp' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ jsonObject.getString("layerName") +"'>");
 			JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
 			for (int i = 0; i < jsonArray.length(); i++) {
-				 	request.append("<wfs:Property><wfs:Name>" + jsonArray.getJSONObject(i).getString("key") + "</wfs:Name><wfs:Value>" + jsonArray.getJSONObject(i).getString("value") + "</wfs:Value></wfs:Property>");
+				 	requestData.append("<wfs:Property><wfs:Name>" + jsonArray.getJSONObject(i).getString("key") + "</wfs:Name><wfs:Value>" + jsonArray.getJSONObject(i).getString("value") + "</wfs:Value></wfs:Property>");
 			}
-			request.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
+			requestData.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
 			
-			HttpClient client = new DefaultHttpClient();
-	        HttpPost post = new HttpPost(url);
-	        HttpEntity entity = new ByteArrayEntity(request.toString().getBytes("UTF-8"));
-	        post.setEntity(entity);
-	        HttpResponse response = client.execute(post);
-	        String result = EntityUtils.toString(response.getEntity());
-			if (result.indexOf("Exception") > -1)
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			Credentials credentials = new UsernamePasswordCredentials(user, pass);
+			CredentialsProvider credsProvider = new BasicCredentialsProvider();
+			credsProvider.setCredentials( AuthScope.ANY, credentials);
+			
+			httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+			HttpClient httpClient = httpClientBuilder.build();
+			HttpPost request = new HttpPost(url);			
+	        request.addHeader("content-type", "application/xml");
+	        request.setEntity(new StringEntity(requestData.toString(), "UTF-8"));
+	        HttpResponse response = httpClient.execute(request);
+	        HttpEntity entity = response.getEntity();
+	        String responseString = EntityUtils.toString(entity, "UTF-8");
+			
+			if (responseString.indexOf("Exception") > -1)
 			{
 				ResponseHelper.writeResponse(params, "Exception");
 			}
-			else if (result.indexOf("<wfs:totalUpdated>1</wfs:totalUpdated>") > -1)
+			else if (responseString.indexOf("<wfs:totalUpdated>1</wfs:totalUpdated>") > -1)
 			{
 				ResponseHelper.writeResponse(params, "");
 			}
