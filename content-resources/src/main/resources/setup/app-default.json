@@ -13,7 +13,8 @@
         "default-view.json",
         "publisher-template-view.json",
         "default-transport-view.json",
-        "default-full-view.json"
+        "default-full-view.json",
+        "ol3-view.json"
     ],
     "sql" : [
         "add_oskari_wfs_parser_config.sql",
