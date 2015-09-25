@@ -1,8 +1,6 @@
 package flyway.sample;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.view.Bundle;
-import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;

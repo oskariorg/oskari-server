@@ -7,7 +7,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.JSONHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import org.json.JSONArray;
 import org.json.JSONException;

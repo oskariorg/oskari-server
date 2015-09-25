@@ -10,6 +10,7 @@ import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -27,10 +28,10 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
     public void migrate(Connection connection)
             throws Exception {
         // check existing value before inserting
-        final boolean hasCoordinateTool = hasExistingCoordinateTool(connection);
+        final boolean hasCoordinateTool = hasExistingBundle(connection, COORDINATE_TOOL);
         if (!hasCoordinateTool) {
             // check exiting coordinate display before inserting
-            final boolean hasCoordinateDisplay = hasExistingCoordinateDisplay(connection);
+            final boolean hasCoordinateDisplay = hasExistingBundle(connection, COORDINATE_DISPLAY);
             if(!hasCoordinateDisplay) {
                 int page = 1;
                 while (insertViews(page, connection)) {
@@ -43,25 +44,12 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
         }
     }
 
-    private boolean hasExistingCoordinateTool(Connection connection)
+    private boolean hasExistingBundle(Connection connection, String bundle)
             throws Exception {
         final PreparedStatement statement =
                 connection.prepareStatement("SELECT * FROM portti_view_bundle_seq " +
                         "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?)");
-        statement.setString(1,COORDINATE_TOOL);
-        try (ResultSet rs = statement.executeQuery()) {
-            return rs.next();
-        } finally {
-            statement.close();
-        }
-    }
-
-    private boolean hasExistingCoordinateDisplay(Connection connection)
-            throws Exception {
-        final PreparedStatement statement =
-                connection.prepareStatement("SELECT * FROM portti_view_bundle_seq " +
-                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?)");
-        statement.setString(1, COORDINATE_DISPLAY);
+        statement.setString(1,bundle);
         try (ResultSet rs = statement.executeQuery()) {
             return rs.next();
         } finally {
@@ -83,8 +71,7 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
         return list.size() == BATCH_SIZE;
     }
 
-    private void makeInsert(View view, Connection connection)
-            throws Exception {
+    private void makeInsert(View view, Connection connection) throws SQLException {
 
         final PreparedStatement statement =
                 connection.prepareStatement("INSERT INTO portti_view_bundle_seq" +
@@ -96,15 +83,13 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
                         "?, ?, " +
                         "(SELECT startup FROM portti_bundle WHERE name=?), " +
                         "?)");
-
-        statement.setLong(1, view.getId());
-        statement.setString(2, COORDINATE_TOOL);
-        statement.setLong(3, view.getId());
-        statement.setString(4, "{\"roundToDecimals\": 6 }");
-        statement.setString(5, COORDINATE_TOOL);
-        statement.setString(6, COORDINATE_TOOL);
-
         try {
+            statement.setLong(1, view.getId());
+            statement.setString(2, COORDINATE_TOOL);
+            statement.setLong(3, view.getId());
+            statement.setString(4, "{\"roundToDecimals\": 6 }");
+            statement.setString(5, COORDINATE_TOOL);
+            statement.setString(6, COORDINATE_TOOL);
             statement.execute();
         } finally {
             statement.close();
@@ -113,7 +98,7 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
 
 
     private void updateViews(Connection connection)
-            throws Exception {
+            throws SQLException {
 
         final PreparedStatement statement =
                 connection.prepareStatement("UPDATE portti_view_bundle_seq " +
