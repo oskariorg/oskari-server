@@ -43,7 +43,6 @@ public class V1_0_1__add_backgroundlayerselectionplugin_to_mapfull implements Jd
 
     private boolean addPlugin(final Bundle mapfull) throws JSONException {
         final JSONObject config = mapfull.getConfigJSON();
-        final JSONObject state = mapfull.getStateJSON();
         final JSONArray plugins = config.optJSONArray("plugins");
         if(plugins == null) {
             throw new RuntimeException("No plugins" + config.toString(2));
