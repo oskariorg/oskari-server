@@ -1,0 +1,190 @@
+{
+  "name": "OL3",
+  "type": "USER",
+  "default": false,
+  "public": true,
+  "onlyUuid": false,
+  "oskari": {
+    "application": "servlet",
+    "page": "published",
+    "development_prefix": "/applications/sample"
+  },
+  "selectedLayers": [
+    "wmslayer-openstreetmap-demo-fi.json"
+  ],
+  "bundles": [{
+      "id": "mapfull",
+      "startup": {
+        "title": "Map",
+        "bundlename": "mapfull",
+        "metadata": {
+          "Import-Bundle": {
+            "service-base": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "event-map-layer": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "request-map-layer": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "ui-components": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "event-base": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapfull": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "core-base": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "oskariui": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapwfs2": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapuserlayers": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapwmts_ol3": {
+              "bundlePath": "/Oskari/packages/mapping/"
+            },
+            "mapmodule-plugin_ol3": {
+              "bundlePath": "/Oskari/packages/mapping/"
+            },
+            "request-base": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "domain": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "core-map": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "request-map": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "sandbox-base": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "service-map": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "sandbox-map": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "event-map": {
+              "bundlePath": "/Oskari/packages/framework/bundle/"
+            }
+          }
+        }
+      },
+      "config": {
+        "mapOptions": {
+          "srsName": "EPSG:3067",
+          "maxExtent": {
+            "bottom": 6291456,
+            "left": -548576,
+            "right": 1548576,
+            "top": 8388608
+          },
+          "resolutions": [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+        },
+        "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
+        "imageLocation": "/Oskari/resources",
+        "plugins": [
+          {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayersPlugin"
+          }, {
+            "id": "Oskari.mapframework.mapmodule.WmsLayerPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"
+          }, {
+            "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
+          }, {
+            "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin"
+          }, {
+            "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PublisherToolbarPlugin"
+          }, {
+            "id": "Oskari.mapframework.mapmodule.InteractionsPlugin"
+          }, {
+            "id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons"
+          }, {
+            "id": "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin"
+          }
+        ],
+        "layers": []
+      },
+      "state": {
+        "zoom": 3,
+        "srs": "EPSG:3067",
+        "east": 395640.5,
+        "north": 6715992.5,
+        "selectedLayers": []
+      }
+    },
+    {
+      "id": "publishedstatehandler"
+    },
+    {
+      "id": "toolbar",
+      "config": {
+        "history": {
+          "history_back": true,
+          "history_forward": true,
+          "reset": false
+        },
+        "classes": {
+          "history": {
+            "history_back": {
+              "iconCls": "tool-history-back-dark"
+            },
+            "history_forward": {
+              "iconCls": "tool-history-forward-dark"
+            }
+          },
+          "basictools": {
+            "measurearea": {
+              "iconCls": "tool-measure-area-dark"
+            },
+            "measureline": {
+              "iconCls": "tool-measure-line-dark"
+            }
+          }
+        },
+        "basictools": {
+          "select": false,
+          "zoombox": false,
+          "measurearea": true,
+          "measureline": true
+        },
+        "toolbarId": "PublisherToolbar",
+        "hasContentContainer": true,
+        "viewtools": {
+          "link": false,
+          "print": false
+        },
+        "defaultToolbarContainer": ".publishedToolbarContent"
+      }
+    }
+  ]
+}
