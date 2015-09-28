@@ -12,6 +12,8 @@ Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Stil
     # seconds for timeout
     capabilities.timeout=30
 
+SpatineoServalUpdateService now cleans up the datasource it uses correctly.
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp
