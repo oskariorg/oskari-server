@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.32.1
+
+URL-parameters are now properly handled again (fixes the link tool).
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp
