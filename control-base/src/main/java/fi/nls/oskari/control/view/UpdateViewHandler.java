@@ -40,10 +40,21 @@ public class UpdateViewHandler extends ActionHandler {
 
             final String description = RequestHelper.getString(
             		params.getRequest().getParameter("newDescription"), view.getDescription());
-            
-            log.debug("Renaming view to: " + name + " with description :" + description);
+
+            final boolean isDefault = ConversionHelper.getBoolean(
+                    params.getHttpParam("newIsDefault"), false);
+
+
+            log.debug("Renaming view to: " + name + " with description :" + description+" is_default: "+isDefault);
             view.setName(name);
             view.setDescription(description);
+            view.setIsDefault(isDefault);
+            //set is_default to false for all other this user's views.
+            if (isDefault) {
+                log.debug("Reset the user's default views: "+user.getId());
+                vs.resetUsersDefaultViews(user.getId());
+            }
+
             vs.updateView(view);
     
             try {
@@ -51,6 +62,7 @@ public class UpdateViewHandler extends ActionHandler {
                 resp.put("name", view.getName());
                 resp.put("id", view.getId());
                 resp.put("isPublic", view.isPublic());
+                resp.put("isDefault", view.isDefault());
                 ResponseHelper.writeResponse(params, resp);
             } catch (JSONException jsonex) {
                 throw new ActionException("User tried to rename view:" + 
