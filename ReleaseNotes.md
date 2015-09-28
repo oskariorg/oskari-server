@@ -4,6 +4,14 @@
 
 URL-parameters are now properly handled again (fixes the link tool).
 
+If a capabilities document is saved in the database, it will no longer be overwritten with an empty document when capabilities fetch 
+ timeouts or in other problem scenarios.
+ 
+Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Still configurable in oskari-ext.properties: 
+
+    # seconds for timeout
+    capabilities.timeout=30
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp
