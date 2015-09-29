@@ -2,7 +2,11 @@
 
 ## 1.32.1
 
+### servlet-map
+
 URL-parameters are now properly handled again (fixes the link tool).
+
+### service-map
 
 If a capabilities document is saved in the database, it will no longer be overwritten with an empty document when capabilities fetch 
  timeouts or in other problem scenarios.
@@ -12,10 +16,19 @@ Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Stil
     # seconds for timeout
     capabilities.timeout=30
 
+### service-spatineo-monitor
+
 SpatineoServalUpdateService now cleans up the datasource it uses correctly.
 
+### control-base
+
 SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+
+### servlet-printout
+
 Servlet-printout now uses options from layer JSON to get WMTS resourceUrl specific information (previously used the Openlayers2 specific JSON capabilities).
+
+Added initial support for WMTS-layers using KVP urls. 
 
 ## 1.32
 
