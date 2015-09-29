@@ -183,6 +183,12 @@ public class OskariLayerWorker {
         JSONHelper.putValue(adminData, "username", layer.getUsername());
         JSONHelper.putValue(adminData, "password", layer.getPassword());
         JSONHelper.putValue(adminData, "url", layer.getUrl());
+        if(layerJson.has("org_styles")){
+            JSONHelper.putValue(adminData, "styles", JSONHelper.getJSONArray(layerJson, "org_styles"));
+        }
+        if(layerJson.has("org_legendImage")){
+            JSONHelper.putValue(adminData, "legendImage", JSONHelper.getStringFromJSON(layerJson, "org_legendImage", null));
+        }
 
         // for mapping under categories
         JSONHelper.putValue(adminData, "organizationId", layer.getGroupId());
