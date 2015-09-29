@@ -29,7 +29,6 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String LEGEND = "legend";
-    private static final String STYLE_NAME = "style_name";
     private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
@@ -116,7 +115,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
         if (params.getHttpParam(LEGEND, false)) {
-            return this.getLegendURL(layer, params.getHttpParam(STYLE_NAME, null));
+            return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();

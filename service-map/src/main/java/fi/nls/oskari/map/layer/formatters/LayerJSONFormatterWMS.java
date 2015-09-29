@@ -25,6 +25,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
 
+    public static final String KEY_STYLE = "style";
+
     // There working only plain text and html so ranked up
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
             "text/html", "text/plain", "application/vnd.ogc.se_xml",
@@ -132,7 +134,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         urlParams.put("id", Integer.toString(layer.getId()));
         urlParams.put("legend", "true");
         if(styleName != null){
-            urlParams.put("style_name", styleName );
+            urlParams.put(KEY_STYLE, styleName );
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }

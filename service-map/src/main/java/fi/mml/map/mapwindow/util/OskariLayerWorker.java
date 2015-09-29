@@ -117,6 +117,12 @@ public class OskariLayerWorker {
                         // has edit rights, alter JSON/add info for admin bundle
                         modifyCommonFieldsForEditing(layerJson, layer);
                     }
+                    else {
+                        // FIXME: styles/legend should be available in OskariLayer so we can add them on demand
+                        // -> parse capabilities when layer is inserted so we don't need to do this
+                        layerJson.remove("org_styles");
+                        layerJson.remove("org_legendImage");
+                    }
 
                     //log.debug("Adding layer to list");
                     layersList.put(layerJson);

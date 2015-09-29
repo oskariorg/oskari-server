@@ -16,6 +16,8 @@ Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Stil
     # seconds for timeout
     capabilities.timeout=30
 
+Improved feature id handling in query filters (fi.nls.oskari.wfs.WFSFilterBuilder)
+
 ### service-spatineo-monitor
 
 SpatineoServalUpdateService now cleans up the datasource it uses correctly.
@@ -23,6 +25,9 @@ SpatineoServalUpdateService now cleans up the datasource it uses correctly.
 ### control-base
 
 SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+
+GetMapLayers now include the original legendimage urls for password protected layers for users that have permission to edit layers. 
+This fixes an issue where legend image was overwritten with the proxy url when editing layers.
 
 ### servlet-printout
 
