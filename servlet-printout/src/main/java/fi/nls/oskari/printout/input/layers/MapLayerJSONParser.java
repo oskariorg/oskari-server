@@ -298,15 +298,10 @@ public class MapLayerJSONParser {
 
             Object xolayerid = layerObj.get("id");
             String layerid = xolayerid.toString();
-            String wmsname = (String) layerObj.get("wmsName");
+            String wmsname = (String) layerObj.get("layerName");
             Number minScale = (Number) layerObj.get("minScale");
             Number maxScale = (Number) layerObj.get("maxScale");
-            String wmsurl = (String) layerObj.get("wmsUrl");
-
-            String url = (String) layerObj.get("url");
-            if (url != null) {
-                wmsurl = url;
-            }
+            String wmsurl = (String) layerObj.get("url");
 
             String wmsversion = (String) layerObj.get("version");
 
@@ -365,15 +360,11 @@ public class MapLayerJSONParser {
 
                     Object slolayerid = subLayerObj.get("id");
                     String sllayerid = slolayerid.toString();
-                    String slwmsname = (String) subLayerObj.get("wmsName");
+                    String slwmsname = (String) subLayerObj.get("layerName");
                     String slwmsversion = (String) subLayerObj.get("version");
                     Number slminScale = (Number) subLayerObj.get("minScale");
                     Number slmaxScale = (Number) subLayerObj.get("maxScale");
-                    String slwmsurl = (String) subLayerObj.get("wmsUrl");
-                    String slurl = (String) subLayerObj.get("url");
-                    if (slurl != null && !slurl.isEmpty()) {
-                        slwmsurl = slurl;
-                    }
+                    String slwmsurl = (String) subLayerObj.get("url");
                     String sltype = (String) subLayerObj.get("type");
 
                     LayerDefinition subLayerDefinition = new LayerDefinition();
@@ -436,10 +427,9 @@ public class MapLayerJSONParser {
             }
 
             if ("wmtslayer".equals(type)) {
-                adjustTileMatrixSetInfo(layerDefinition,
-                        (Map<String, ?>) layerObj.get("tileMatrixSetData"));
+                adjustTileMatrixSetInfo(layerDefinition, optionsMap);
             }
-            
+
             if( layerDefinition.getFormat()== null) {
                 layerDefinition.setFormat("image/png");
             }
@@ -457,97 +447,17 @@ public class MapLayerJSONParser {
 
     @SuppressWarnings("unchecked")
     private void adjustTileMatrixSetInfo(LayerDefinition layerDefinition,
-            Map<String, ?> layerObj) {
+            Map<String, ?> optionsMap) {
 
-        if (layerObj == null) {
+        if (optionsMap == null) {
             return;
         }
 
-        Map<String, ?> contents = (Map<String, ?>) layerObj.get("contents");
-        if (contents == null) {
-            return;
+        final String reqEncoding = (String)optionsMap.get("requestEncoding");
+        if ("REST".equalsIgnoreCase(reqEncoding)) {
+            final String urlTemplate = (String)optionsMap.get("urlTemplate");
+            layerDefinition.setUrlTemplate(layerDefinition.getFormat(), urlTemplate);
         }
-
-        /* find REST url information for selected layer */
-        /* tileMatrixSetData may contain other layer specs as well */
-
-        Object rawLayers = contents.get("layers");
-        if (rawLayers == null) {
-            return;
-        }
-
-        Map<String, ?> wmtsLayerSpec = null;
-        if (rawLayers instanceof List) {
-            String layerName = layerDefinition.getWmsname();
-            List<Map<String, ?>> wmtsLayers = (List<Map<String, ?>>) rawLayers;
-
-            for (Map<String, ?> wmtsLayerListEl : wmtsLayers) {
-                if (!layerName.equals(wmtsLayerListEl.get("identifier"))) {
-                    continue;
-                }
-
-                wmtsLayerSpec = wmtsLayerListEl;
-                break;
-            }
-
-        } else {
-            wmtsLayerSpec = (Map<String, ?>) rawLayers;
-        }
-
-        if (wmtsLayerSpec == null) {
-            return;
-        }
-
-        /* */
-        {
-            Map<String, ?> resourceUrl = (Map<String, ?>) wmtsLayerSpec
-                    .get("resourceUrl");
-            if (resourceUrl == null) {
-                return;
-            }
-            Map<String, ?> resourceTileInfo = (Map<String, ?>) wmtsLayerSpec
-                    .get("tile");
-            if (resourceTileInfo != null) {
-
-                String format = (String) resourceTileInfo.get("format");
-                if (format != null) {
-                    layerDefinition.setFormat(format);
-                    String template = (String) resourceTileInfo.get("template");
-                    if (template != null) {
-                        layerDefinition.setUrlTemplate(format, template);
-                    }
-                }
-            }
-        }
-
-        List<Map<String, ?>> resourceUrls = (List<Map<String, ?>>) wmtsLayerSpec
-                .get("resourceUrls");
-        if (resourceUrls == null) {
-            return;
-        }
-
-        for (Map<String, ?> resourceTileInfo : resourceUrls) {
-            String format = (String) resourceTileInfo.get("format");
-            if (format != null) {
-                if (layerDefinition.getFormat() == null) {
-                    layerDefinition.setFormat(format);
-                }
-                String template = (String) resourceTileInfo.get("template");
-                if (template != null) {
-                    layerDefinition.setUrlTemplate(format, template);
-                }
-            }
-        }
-
-        /*
-         * "resourceUrl": { "tile": { "format": "image/png", "template":
-         * "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
-         * , "resourceType": "tile" } }, "resourceUrls": [ { "format":
-         * "image/png", "template":
-         * "http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
-         * , "resourceType": "tile" } ]
-         */
-
     }
 
     public MapLink parseMapLinkJSON(InputStream inp, GeometryFactory gf,

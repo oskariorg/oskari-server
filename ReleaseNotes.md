@@ -14,6 +14,9 @@ Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Stil
 
 SpatineoServalUpdateService now cleans up the datasource it uses correctly.
 
+SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+Servlet-printout now uses options from layer JSON to get WMTS resourceUrl specific information (previously used the Openlayers2 specific JSON capabilities).
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp
