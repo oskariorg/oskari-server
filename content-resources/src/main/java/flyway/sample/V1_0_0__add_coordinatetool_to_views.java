@@ -88,8 +88,9 @@ public class V1_0_0__add_coordinatetool_to_views implements JdbcMigration {
             statement.setString(2, COORDINATE_TOOL);
             statement.setLong(3, view.getId());
             statement.setString(4, "{\"roundToDecimals\": 6 }");
-            statement.setString(5, COORDINATE_TOOL);
+            statement.setString(5, "{}");
             statement.setString(6, COORDINATE_TOOL);
+            statement.setString(7, COORDINATE_TOOL);
             statement.execute();
         } finally {
             statement.close();
