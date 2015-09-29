@@ -2,6 +2,11 @@
 
 ## 1.32.1
 
+### database/flywaydb
+
+1.32.4 script goes through all registered WMTS-layers and resolves resourceURL information for them. 
+Updates the options database column when needed.
+
 ### servlet-map
 
 URL-parameters are now properly handled again (fixes the link tool).
@@ -28,6 +33,8 @@ SaveLayer now generates resourceURL information for WMTS-layers and saves them i
 
 GetMapLayers now include the original legendimage urls for password protected layers for users that have permission to edit layers. 
 This fixes an issue where legend image was overwritten with the proxy url when editing layers.
+
+GetLayerTile now supports style-specific legendimages.
 
 ### servlet-printout
 
