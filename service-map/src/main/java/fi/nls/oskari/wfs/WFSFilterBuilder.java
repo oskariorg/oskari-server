@@ -6,9 +6,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
@@ -19,8 +16,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.FilterFactory2;
 
-//import org.opengis.geometry.*;
-//import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.*;
 import fi.nls.oskari.map.geometry.WKTHelper;
 
