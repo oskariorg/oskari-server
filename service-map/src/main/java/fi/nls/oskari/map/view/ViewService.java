@@ -49,11 +49,18 @@ public interface ViewService extends BaseService<Object> {
     public long getDefaultViewIdForRole(final String roleName);
 
     /**
-     * Returns default view id for the user.
+     * Returns default view id for the user (based on role)
      * @param user
      * @return view id
      */
     public long getDefaultViewId(final User user);
+
+    /**
+     * Returns the saved default view id for the user
+     * @param user
+     * @return view id
+     */
+    public long getSavedDefaultViewId(final User user);
 
     public void updatePublishedView(View view) throws ViewException;
 

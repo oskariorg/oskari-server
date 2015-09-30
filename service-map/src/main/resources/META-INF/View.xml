@@ -116,8 +116,17 @@
         SET is_default = FALSE
         WHERE creator = #user_id#
         AND type = 'USER';
-
     </statement>
+
+    <select id="get-default-view-id-by-user-id"
+            resultClass="java.lang.Long"
+            parameterClass="java.lang.Long">
+        SELECT   MAX(id)
+        FROM   portti_view
+        WHERE   is_default = TRUE
+        AND   type = 'USER'
+        AND   creator = #user_id#;
+    </select>
 
     <select id="get-default-view-id"
 	    resultClass="java.lang.Long"

@@ -289,6 +289,23 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
     /**
+     * Returns the saved default view id for the user, if one exists
+     *
+     * @param user to get default view for
+     * @return view id of a saved default view
+     */
+    public long getSavedDefaultViewId(final User user) {
+        if (!user.isGuest() && user.getId() != -1) {
+            Object queryResult = queryForObject("View.get-default-view-id-by-user-id",user.getId());
+            if (queryResult != null) {
+                Long userDefaultViewId = (Long)queryResult;
+                return userDefaultViewId.longValue();
+            }
+        }
+
+        return -1;
+    }
+    /**
      * Returns default view id for given role name
      * @param roleName
      * @return
