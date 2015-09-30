@@ -24,6 +24,10 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
+import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
+import fi.nls.oskari.wmts.domain.ResourceUrl;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,7 +50,7 @@ public class SaveLayerHandler extends ActionHandler {
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
-    private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARAM_LAYER_ID = "layer_id";
     private static final String PARAM_LAYER_NAME = "layerName";
     private static final String PARAM_LAYER_URL = "layerUrl";
@@ -93,11 +97,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
         if (permissionProblem) {
             JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
-            log.debug("Permission failure");
+            LOG.debug("Permission failure");
         } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
-            log.debug("Metadata read failure");
+            LOG.debug("Metadata read failure");
         }
         ResponseHelper.writeResponse(params, layerJSON);
     }
@@ -126,7 +130,7 @@ public class SaveLayerHandler extends ActionHandler {
                 mapLayerService.update(ml);
                 //TODO: WFS spesific property update
 
-                log.debug(ml);
+                LOG.debug(ml);
 
                 return ml.getId();
             }
@@ -230,14 +234,13 @@ public class SaveLayerHandler extends ActionHandler {
         try {
             OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(ml, true);
             capabilitiesService.save(capabilities);
-            // FIXME: check what cache if any to flush!!
             // flush cache, otherwise only db is updated but code retains the old cached version
             WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
             if(ex instanceof ActionException) {
                 throw (ActionException)ex;
             }
-            log.info(ex, "Error updating capabilities from URL:", url);
+            LOG.info(ex, "Error updating capabilities from URL:", url);
             return false;
         }
         return true;
@@ -455,6 +458,21 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         ml.setTileMatrixSetId(params.getHttpParam("matrixSetId", ml.getTileMatrixSetId()));
+
+        try {
+            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(ml, true);
+            WMTSCapabilities caps = new WMTSCapabilitiesParser().parseCapabilities(capabilities.getData());
+            WMTSCapabilitiesLayer layer = caps.getLayer(ml.getName());
+            ResourceUrl resUrl = layer.getResourceUrlByType("tile");
+            if(resUrl != null) {
+                JSONHelper.putValue(ml.getOptions(), "requestEncoding", "REST");
+                JSONHelper.putValue(ml.getOptions(), "format", resUrl.getFormat());
+                JSONHelper.putValue(ml.getOptions(), "urlTemplate", resUrl.getTemplate());
+            }
+
+        } catch (Exception ex) {
+            LOG.warn(ex, "Unable to parse capabilities for layer", ml);
+        }
     }
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
@@ -512,7 +530,7 @@ public class SaveLayerHandler extends ActionHandler {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
         for (long externalId : externalIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -527,7 +545,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
         for (long externalId : publishRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -536,7 +554,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
         for (long externalId : downloadRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -545,7 +563,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
         for (long externalId : viewEmbeddedRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);

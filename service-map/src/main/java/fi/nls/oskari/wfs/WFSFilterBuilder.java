@@ -6,9 +6,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
@@ -19,8 +16,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.FilterFactory2;
 
-//import org.opengis.geometry.*;
-//import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.*;
 import fi.nls.oskari.map.geometry.WKTHelper;
 
@@ -45,6 +40,7 @@ public class WFSFilterBuilder {
     public static final String KEY_BBOX = "bbox";
 
 
+
     public static final String KEY_FILTER_BY_GEOMETRY_METHOD = "filterByGeometryMethod";
 
 
@@ -53,6 +49,9 @@ public class WFSFilterBuilder {
 
     public static final String PROPERTY_TEMPLATE = "<wfs:PropertyName>{property}</wfs:PropertyName>";
     public static final String PROPERTY_PROPERTY = "{property}";
+    public static final String FEATUREID_TEMPLATE = "<ogc:FeatureId fid=\"{fid}\"/>";
+    public static final String FID_ATTRIBUTE = "{fid}";
+    public static final String FILTER_KEY = "</ogc:And></ogc:Filter>";
 
     private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
@@ -83,16 +82,30 @@ public class WFSFilterBuilder {
      */
     public static String parseWfsFilter(final JSONObject filter_js,
                                         String srsName, String geom_elem) {
+
         Filter all = parseWfsJsonFilter(filter_js, srsName, geom_elem);
 
         if (all == null) {
-            return null;
+            // Check if only id filters (more than 1)
+            final Filter ids = getFeatureIdFilters(filter_js);
+            return getFilterAsString(ids);
         }
 
-        //TODO: remove test debugging
-        log.debug("parseWfsFilter, got filter: "+getFilterAsString(all));
+        String wfsfilter = getFilterAsString(all);
 
-        return getFilterAsString(all);
+        if (getCountOfIdFilters(filter_js) > 1) {
+            // Append OR id filters - geotools filter factory stringify does not work on this point
+            // So append by your own code
+            final String sids = "<ogc:Or>" + getFeatureIdFiltersAsString(filter_js) + "</ogc:Or>";
+            if(sids != null){
+                wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
+                wfsfilter = wfsfilter.replace(FILTER_KEY, sids + FILTER_KEY);
+            }
+        }
+
+
+
+        return wfsfilter;
 
     }
 
@@ -187,13 +200,9 @@ public class WFSFilterBuilder {
 
             // include 1st Feature Id filters if any
             final Filter ids = getFeatureIdFilters(filter_js);
-            if (ids != null) {
-                all = ids;
-            }
-            // If there is only one feature to be selected, then other filters must be ignored
-            // Geotools skips id filter, if many overlapping filters
 
-            if (all != null && isOneIdFilter(filter_js)) return all;
+            // If there is only one feature to be selected, then other filters must be ignored
+            if (ids != null && getCountOfIdFilters(filter_js) == 1) return ids;
 
             if (andConditions.size() > 0) {
                 all = appendFilter(all, ff.and(andConditions));
@@ -369,6 +378,8 @@ public class WFSFilterBuilder {
      */
     private static String getFilterAsString(final Filter all) {
 
+        if (all == null) return null;
+
         final Configuration conf2 = new org.geotools.filter.v1_1.OGCConfiguration();
         final Encoder encoder = new Encoder(conf2);
         encoder.setIndenting(true);
@@ -390,8 +401,7 @@ public class WFSFilterBuilder {
      * @return
      * @throws JSONException
      */
-    private static Filter getFeatureIdFilters(final JSONObject filter_js)
-            throws JSONException {
+    private static Filter getFeatureIdFilters(final JSONObject filter_js) {
         Set<FeatureId> selected = new HashSet<FeatureId>();
 
         if (filter_js.has(KEY_FEATUREIDS)) {
@@ -410,21 +420,43 @@ public class WFSFilterBuilder {
     }
 
     /**
-     * Check, if only one featureId filter
+     * Creates WFS filter for selected feature ids
      *
-     * @param filter_js
-     * @return true; only one featureId filter
-     * @throws JSONException
+     * @param filter_js Analysis filter json
+     * @return
      */
-    private static boolean isOneIdFilter(final JSONObject filter_js)
-            throws JSONException {
+    private static String getFeatureIdFiltersAsString(final JSONObject filter_js) {
+        StringBuilder sb = new StringBuilder();
+
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
-            final JSONArray jsIdArray = filter_js.getJSONArray(KEY_FEATUREIDS);
-            if (jsIdArray.length() == 1) return true;
+            final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
+            if (jsIdArray == null || jsIdArray.length() == 0) return null;
+            for (int i = 0; i < jsIdArray.length(); i++) {
+                sb.append(FEATUREID_TEMPLATE.replace(FID_ATTRIBUTE, jsIdArray.optString(i)));
+            }
+            return sb.toString();
+        } else {
+            return null;
         }
-        return false;
+
     }
+
+    /**
+     * get number of id filters
+     *
+     * @param filter_js
+     * @return number of Id filters
+     */
+    private static int getCountOfIdFilters(final JSONObject filter_js){
+        if (filter_js.has(KEY_FEATUREIDS)) {
+            // Get feature ID filter input
+            final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
+            return jsIdArray.length();
+        }
+        return 0;
+    }
+
     public static String parseProperties(List<String> props, String ns, String geom_prop) {
         String query = "";
         for (String prop : props) {

@@ -74,6 +74,11 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
             OskariLayerCapabilities db = mapper.find(capabilities.getUrl(), capabilities.getLayertype());
             if(db != null) {
+                if(db.getData() != null && !db.getData().trim().isEmpty() &&
+                        (capabilities.getData() == null || capabilities.getData().trim().isEmpty())) {
+                    LOG.info("Trying to write empty capabilities on top of existing ones, not saving!");
+                    return db;
+                }
                 capabilities.setId(db.getId());
                 mapper.updateData(capabilities);
             } else {
