@@ -32,10 +32,10 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
         final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
-        JSONHelper.putValue(layerJson, "styles", getStyles(wfsConf.getSLDStyles()));
+        JSONHelper.putValue(layerJson, "styles", getStyles(wfsConf));
         JSONHelper.putValue(layerJson, "style", "default");
         JSONHelper.putValue(layerJson, "isQueryable", true);
-        JSONHelper.putValue(layerJson, "wps_params", JSONHelper.createJSONObject(wfsConf.getWps_params()) );
+        JSONHelper.putValue(layerJson, "wps_params", getWpsParams(wfsConf) );
 
         return layerJson;
     }
@@ -43,10 +43,16 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     /**
      * Constructs a style json
      *
-     * @param styleList wfs layer styles
+     * @param  wfsConf wfs layer configuration
      */
-    private JSONArray getStyles(final List<WFSSLDStyle> styleList) {
+    private JSONArray getStyles(WFSLayerConfiguration wfsConf) {
+
         JSONArray arr = new JSONArray();
+        if (wfsConf == null) return arr;
+
+        final List<WFSSLDStyle> styleList = wfsConf.getSLDStyles();
+        if (styleList == null) return arr;
+
         try {
             for (WFSSLDStyle style : styleList) {
                 JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
@@ -58,6 +64,20 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
           log.warn("Failed to query wfs styles via SQL client");
         }
         return arr;
+    }
+
+    /**
+     * Constructs wps params json
+     *
+     * @param  wfsConf wfs layer configuration
+     */
+    private JSONObject getWpsParams(WFSLayerConfiguration wfsConf) {
+
+        JSONObject json = new JSONObject();
+        if (wfsConf == null) return json;
+
+        return JSONHelper.createJSONObject(wfsConf.getWps_params());
+
     }
 
 }
