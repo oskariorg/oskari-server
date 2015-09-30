@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.33
+
+### Default view functionality
+
+Added functionality for saving / restoring a user defined default view.
+
 ## 1.32.1
 
 ### database/flywaydb

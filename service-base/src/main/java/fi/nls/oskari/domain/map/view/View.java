@@ -211,7 +211,8 @@ public class View implements Serializable {
      */
     public View cloneBasicInfo() {
         View view = new View();
-        // skip id, oldId, uuid, isDefault
+//        // skip id, oldId, uuid, isDefault
+        // skip id, oldId, uuid
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());
@@ -221,6 +222,7 @@ public class View implements Serializable {
         view.setLang(getLang());
         view.setPage(getPage());
         view.setPubDomain(getPubDomain());
+        view.setIsDefault(isDefault());
         for(Bundle bundle : getBundles()) {
             view.addBundle(bundle.clone());
         }

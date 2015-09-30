@@ -5,6 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -128,8 +129,19 @@ public class GetAppSetupHandler extends ActionHandler {
     public void handleAction(final ActionParameters params) throws ActionException {
         // oldId => support for migrated published maps
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
-        final long defaultViewId = viewService.getDefaultViewId(params.getUser());
-        final View view = getView(params, defaultViewId, oldId);
+        final User user = params.getUser();
+        final long defaultViewId = viewService.getDefaultViewId(user);
+        long defaultSavedViewId = -1;
+
+        //fetch the saved default view, if one exists
+        if (!user.isGuest() && user.getId() != -1) {
+            defaultSavedViewId = viewService.getSavedDefaultViewId(user);
+        }
+        //otherwise fall back to the role based default
+        if (defaultSavedViewId == -1) {
+            defaultSavedViewId = defaultViewId;
+        }
+        final View view = getView(params, defaultSavedViewId, oldId);
 
         if (view == null) {
             throw new ActionParamsException("Could not load View");
