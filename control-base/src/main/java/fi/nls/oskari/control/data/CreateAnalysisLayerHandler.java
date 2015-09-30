@@ -405,6 +405,7 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
         }
         else if (analysisLayer.getMethod().equals(AnalysisParser.DIFFERENCE)) {
             // Get feature set via WFS 2.0 GetFeature
+            // WFS join select is not available in wfs 1.1.0
             featureSet = wpsService.requestWFS2FeatureSet(analysisLayer);
 
         } else {

@@ -13,13 +13,15 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ServiceFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import static fi.nls.oskari.control.ActionConstants.*;
 
 @OskariActionRoute("GetLayerTile")
@@ -27,12 +29,14 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String LEGEND = "legend";
+    private static final String STYLE_NAME = "style_name";
     private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
     private PermissionHelper permissionHelper;
+    private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
 
     /**
      *  Init method
@@ -112,7 +116,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
         if (params.getHttpParam(LEGEND, false)) {
-            return layer.getLegendImage();
+            return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();
@@ -127,6 +131,32 @@ public class GetLayerTileHandler extends ActionHandler {
         return IOHelper.constructUrl(layer.getUrl(),urlParams);
     }
 
+    /**
+     * Get Legend image url
+     * @param layer  Oskari layer
+     * @param style_name  style name for legend
+     * @return
+     */
+    private String getLegendURL(final OskariLayer layer, String style_name) {
+        String lurl = layer.getLegendImage();
+        if (style_name != null) {
+            // Get Capabilities style url
+            JSONObject json = FORMATTER.getJSON(layer, PropertyUtil.getDefaultLanguage(), false);
+            if (json.has("org_styles")) {
+
+                JSONArray styles = JSONHelper.getJSONArray(json, "org_styles");
+                for (int i = 0; i < styles.length(); i++) {
+                    final JSONObject style = JSONHelper.getJSONObject(styles, i);
+                    if (JSONHelper.getStringFromJSON(style, "name", "").equals(style_name)) {
+                        return style.optString("legend");
+                    }
+                }
+
+            }
+        }
+        return lurl;
+
+    }
     /**
      * Creates connection
      * @param url URL (with params) to call

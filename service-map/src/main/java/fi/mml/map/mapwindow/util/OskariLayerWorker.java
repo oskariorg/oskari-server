@@ -117,6 +117,12 @@ public class OskariLayerWorker {
                         // has edit rights, alter JSON/add info for admin bundle
                         modifyCommonFieldsForEditing(layerJson, layer);
                     }
+                    else {
+                        // FIXME: styles/legend should be available in OskariLayer so we can add them on demand
+                        // -> parse capabilities when layer is inserted so we don't need to do this
+                        layerJson.remove("org_styles");
+                        layerJson.remove("org_legendImage");
+                    }
 
                     //log.debug("Adding layer to list");
                     layersList.put(layerJson);
@@ -183,6 +189,12 @@ public class OskariLayerWorker {
         JSONHelper.putValue(adminData, "username", layer.getUsername());
         JSONHelper.putValue(adminData, "password", layer.getPassword());
         JSONHelper.putValue(adminData, "url", layer.getUrl());
+        if(layerJson.has("org_styles")){
+            JSONHelper.putValue(adminData, "styles", JSONHelper.getJSONArray(layerJson, "org_styles"));
+        }
+        if(layerJson.has("org_legendImage")){
+            JSONHelper.putValue(adminData, "legendImage", JSONHelper.getStringFromJSON(layerJson, "org_legendImage", null));
+        }
 
         // for mapping under categories
         JSONHelper.putValue(adminData, "organizationId", layer.getGroupId());

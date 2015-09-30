@@ -22,7 +22,7 @@ public class AjaxController {
 
     @RequestMapping("/action")
     @ResponseBody
-    public void getMap(@OskariParam ActionParameters params, @RequestParam("action_route") String route) {
+    public void handleAction(@OskariParam ActionParameters params, @RequestParam("action_route") String route) {
         // ActionHandlers write the response internally.
         // ResponseBody with void return type is needed so Spring doesn't try to show a view/JSP.
 

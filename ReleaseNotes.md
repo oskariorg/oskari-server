@@ -6,6 +6,48 @@
 
 Added functionality for saving / restoring a user defined default view.
 
+## 1.32.1
+
+### database/flywaydb
+
+1.32.4 script goes through all registered WMTS-layers and resolves resourceURL information for them. 
+Updates the options database column when needed.
+
+### servlet-map
+
+URL-parameters are now properly handled again (fixes the link tool).
+
+### service-map
+
+If a capabilities document is saved in the database, it will no longer be overwritten with an empty document when capabilities fetch 
+ timeouts or in other problem scenarios.
+ 
+Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Still configurable in oskari-ext.properties: 
+
+    # seconds for timeout
+    capabilities.timeout=30
+
+Improved feature id handling in query filters (fi.nls.oskari.wfs.WFSFilterBuilder)
+
+### service-spatineo-monitor
+
+SpatineoServalUpdateService now cleans up the datasource it uses correctly.
+
+### control-base
+
+SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+
+GetMapLayers now include the original legendimage urls for password protected layers for users that have permission to edit layers. 
+This fixes an issue where legend image was overwritten with the proxy url when editing layers.
+
+GetLayerTile now supports style-specific legendimages.
+
+### servlet-printout
+
+Servlet-printout now uses options from layer JSON to get WMTS resourceUrl specific information (previously used the Openlayers2 specific JSON capabilities).
+
+Added initial support for WMTS-layers using KVP urls. 
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp
