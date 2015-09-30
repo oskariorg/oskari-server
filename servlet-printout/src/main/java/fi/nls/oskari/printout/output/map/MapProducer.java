@@ -412,7 +412,6 @@ public class MapProducer {
      * 
      * @param layerDefinition
      * @param e
-     * @param p
      * @param tw
      * @param th
      * @param tileIndex
@@ -532,9 +531,32 @@ public class MapProducer {
 
             String urlTemplate = layerDefinition.getUrlTemplate();
             if (urlTemplate == null) {
-                log.debug("WMTS no urlTepmlate assuming png REST");
-                
+                log.debug("WMTS no urlTemplate assuming KVP");
+
+                String format = layerDefinition.getFormat();
+                if (format == null) {
+                    format = "image/png";
+                }
+                String[] gridNames = gridSubset.getGridNames();
+                url = layerUrl
+                        + separator
+                        + "SERVICE=WMTS"
+                        + "&VERSION=" + version
+                        + "&REQUEST=GetTile"
+                        + "&FORMAT=" + URLEncoder.encode(format, "UTF-8")
+                        + "&STYLE=" + (style != null ? URLEncoder.encode(style, "UTF-8") : "")
+                        + "&LAYER=" + layersParam
+                        + "&TILEMATRIXSET=" + tileMatrixSet
+                        + "&TILEMATRIX=" + URLEncoder.encode(gridNames[(int) z], "UTF-8")
+                        + "&TILEROW=" + tileRow
+                        + "&TILECOL=" + tileCol;
+                // default to png
+                /*
                 String imageTypeExtension = "png";
+                String format = layerDefinition.getFormat();
+                if (format != null) {
+                    imageTypeExtension = format.substring(format.indexOf('/') + 1);
+                }*/
 
                 /* REST */
                 /* WMTS 1.0.0 support only */
@@ -542,11 +564,13 @@ public class MapProducer {
                  * This will be replaced by content from
                  * resourceUrl/tile/template
                  */
+                /*
                 String wmtsRestPart = "1.0.0" + "/" + layersParam + "/" + style
                         + "/" + tileMatrixSet + "/" + tileMatrix + "/"
                         + tileRow + "/" + tileCol + "." + imageTypeExtension;
 
                 url = layerUrl + "/" + wmtsRestPart;
+                */
             } else {
                 log.debug("WMTS with urlTemplate");
                 // "template":

@@ -195,6 +195,70 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 			<yCoordinateFirst>false</yCoordinateFirst>
 		</gridSet>
 
+		<!-- gridSet JHS180 TAMPERE -->
+		<gridSet>
+			<name>JHS</name>
+			<description>http://www.jhs-suositukset.fi/web/guest/jhs/recommendations/180</description>
+			<srs>
+				<number>3067</number>
+			</srs>
+			<extent>
+				<coords>
+                    <!--  leftBottom X(E), leftBottom Y(N) , rightTop X(E), rightTop Y(N) ? -->
+                    <double>50199.4814</double>
+                    <double>6582464.0358</double>
+                    <double>761274.6247</double>
+                    <double>7795411.870622758</double>
+				</coords>
+			</extent>
+			<alignTopLeft>false</alignTopLeft>
+			<resolutions>
+				<double>8192.0</double>
+				<double>4096.0</double>
+				<double>2048.0</double>
+				<double>1024.0</double>
+				<double>512.0</double>
+				<double>256.0</double>
+				<double>128.0</double>
+				<double>64.0</double>
+				<double>32.0</double>
+				<double>16.0</double>
+				<double>8.0</double>
+				<double>4.0</double>
+				<double>2.0</double>
+				<double>1.0</double>
+				<double>0.5</double>
+				<double>0.25</double>
+				<double>0.125</double>
+				<double>0.0625</double>
+			</resolutions>
+			<metersPerUnit>1.0</metersPerUnit>
+			<pixelSize>2.8E-4</pixelSize>
+			<scaleNames>
+				<string>JHS:0</string>
+				<string>JHS:1</string>
+				<string>JHS:2</string>
+				<string>JHS:3</string>
+				<string>JHS:4</string>
+				<string>JHS:5</string>
+				<string>JHS:6</string>
+				<string>JHS:7</string>
+				<string>JHS:8</string>
+				<string>JHS:9</string>
+				<string>JHS:10</string>
+				<string>JHS:11</string>
+				<string>JHS:12</string>
+				<string>JHS:13</string>
+				<string>JHS:14</string>
+				<string>JHS:15</string>
+				<string>JHS:16</string>
+				<string>JHS:17</string>
+			</scaleNames>
+			<tileHeight>256</tileHeight>
+			<tileWidth>256</tileWidth>
+			<yCoordinateFirst>false</yCoordinateFirst>
+		</gridSet>
+
 		<!-- gridSet for epsg 4326-->
 		<gridSet>
 			<name>EPSG-4326</name>
@@ -344,6 +408,32 @@ http://geowebcache.org/schema/1.4.0/geowebcache.xsd">
 							<double>-90.0</double>
 							<double>180.0</double>
 							<double>90.0</double>
+						</coords>
+					</extent>
+				</gridSubset>
+			</gridSubsets>
+			<useETags>true</useETags>
+			<wmsUrl>
+				<string>http://127.0.0.1:80/geoserver/service/wms</string>
+			</wmsUrl>
+			<wmsLayers>LAYER_TEMPLATE</wmsLayers>
+		</wmsLayer>
+
+		<wmsLayer>
+			<name>JHS_LAYER_TEMPLATE</name>
+			<mimeFormats>
+				<string>image/png</string>
+			</mimeFormats>
+
+			<gridSubsets>
+				<gridSubset>
+					<gridSetName>JHS</gridSetName>
+					<extent>
+						<coords>
+                            <double>50199.4814</double>
+                            <double>6582464.0358</double>
+                            <double>761274.6247</double>
+                            <double>7795411.870622758</double>
 						</coords>
 					</extent>
 				</gridSubset>

@@ -25,7 +25,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         TYPE_MAPPING.put(OskariLayer.TYPE_WMTS, "WMTS");
     }
     // timeout capabilities request after 15 seconds (configurable)
-    private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 15) * 1000;
+    private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);

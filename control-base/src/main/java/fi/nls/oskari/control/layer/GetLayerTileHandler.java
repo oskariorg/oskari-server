@@ -116,7 +116,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
     private String getURL(final ActionParameters params, final OskariLayer layer) {
         if (params.getHttpParam(LEGEND, false)) {
-            return this.getLegendURL(layer, params.getHttpParam(STYLE_NAME, null));
+            return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
         Enumeration<String> paramNames = httpRequest.getParameterNames();

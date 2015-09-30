@@ -4,7 +4,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.geoserver.GeoserverPopulator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
@@ -56,10 +55,6 @@ public class MapController {
     private EnvHelper env;
 
     public MapController() {
-        // check control params to pass for getappsetup
-        paramHandlers.addAll(ParamControl.getHandlerKeys());
-        log.debug("Checking for params", paramHandlers);
-
         // check if we have development flag -> serve non-minified js
         isDevelopmentMode = ConversionHelper.getBoolean(PropertyUtil.get(PROPERTY_DEVELOPMENT), false);
         // Get version from properties
@@ -68,6 +63,12 @@ public class MapController {
 
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
+        if(paramHandlers.isEmpty()) {
+            // check control params to pass for getappsetup
+            // setup on first call to allow more flexibility regarding timing issues
+            paramHandlers.addAll(ParamControl.getHandlerKeys());
+            log.debug("Checking for params", paramHandlers);
+        }
         writeCustomHeaders(params.getResponse());
         boolean development = PropertyUtil.getOptional("development", false);
         model.addAttribute("preloaded", !development);
