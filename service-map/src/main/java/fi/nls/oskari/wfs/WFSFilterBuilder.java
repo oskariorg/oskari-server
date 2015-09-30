@@ -449,6 +449,8 @@ public class WFSFilterBuilder {
      * @return number of Id filters
      */
     private static int getCountOfIdFilters(final JSONObject filter_js){
+        if(filter_js == null) return 0;
+
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
