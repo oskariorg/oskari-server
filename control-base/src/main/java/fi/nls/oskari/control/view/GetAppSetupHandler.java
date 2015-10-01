@@ -123,7 +123,7 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
+        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "");
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
