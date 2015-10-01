@@ -10,6 +10,7 @@ The prefix is configurable in oskari-ext.properties (defaults to https://):
     maplayer.wmsurl.secure=/secure/
     
 This handling was already present for selected layers and now it's used for GetMapLayers also. 
+The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
 
 ## 1.32.1
 
