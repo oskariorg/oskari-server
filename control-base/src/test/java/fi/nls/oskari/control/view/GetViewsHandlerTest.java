@@ -166,6 +166,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
     @Test
     public void testViewListingWithNoParams() throws Exception {
         // mock returned views
+
         final List<View> views = new ArrayList<View>();
         views.add(ViewTestHelper.createMockView("framework.mapfull"));
         doReturn(views).when(viewService).getViewsForUser(anyLong());
@@ -178,6 +179,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseWritten(params);
 
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-has-views.json", this));
+
     }
 
 }

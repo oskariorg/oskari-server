@@ -23,6 +23,10 @@ Added handling for WMTS-layers with resourceURL.
 LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
 but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
 
+### Default view functionality
+
+Added functionality for saving / restoring a user defined default view.
+
 ## 1.32.1
 
 ### database/flywaydb
