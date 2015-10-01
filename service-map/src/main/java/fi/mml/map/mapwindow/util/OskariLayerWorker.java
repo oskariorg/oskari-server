@@ -40,12 +40,15 @@ public class OskariLayerWorker {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
-
+    
     public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
+        return getListOfAllMapLayers(user, lang, false);
+    }
+
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final boolean isSecure) {
         long start = System.currentTimeMillis();
         final List<OskariLayer> layers = mapLayerService.findAll();
         log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
-        final boolean isSecure = false;
         final boolean isPublished = false;
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }

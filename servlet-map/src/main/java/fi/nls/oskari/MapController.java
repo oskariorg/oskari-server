@@ -176,7 +176,7 @@ public class MapController {
         }
 
 
-        JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
+        JSONHelper.putValue(controlParams, PARAM_SECURE, request.getParameter(PARAM_SECURE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
         model.addAttribute(KEY_PRELOADED, !isDevelopmentMode);

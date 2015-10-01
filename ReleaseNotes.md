@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.33
+
+### control-base
+
+GetMapLayersHandler now provides prefixed urls for maplayers is request.isSecure() or parameter ssl=[true|false] is provided. 
+The prefix is configurable in oskari-ext.properties (defaults to https://):
+
+    maplayer.wmsurl.secure=/secure/
+    
+This handling was already present for selected layers and now it's used for GetMapLayers also. 
+
 ## 1.32.1
 
 ### database/flywaydb

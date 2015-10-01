@@ -28,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
+
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
 
@@ -43,7 +45,6 @@ public class GetAppSetupHandler extends ActionHandler {
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
     public static final String VIEW_DATA = "viewData";
     public static final String STATE = "state";
-    public static final String PARAM_SSL = "ssl";
 
     private static final String KEY_STARTUP = "startupSequence";
     private static final String KEY_CONFIGURATION = "configuration";
@@ -398,7 +399,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
      * @return
      */
     public static boolean isSecure(final ActionParameters params) {
-        return ConversionHelper.getBoolean(params.getHttpParam(PARAM_SSL), false);
+        return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
 
     private void modifyView(final View view, JSONObject myview) {
