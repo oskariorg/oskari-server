@@ -109,16 +109,8 @@ public class LayerJSONFormatter {
             // is proxied with a proxy for example: /proxythis/<actual wmsurl>
             JSONHelper.putValue(layerJson, "url", layer.getUrl(isSecure));
             JSONHelper.putValue(layerJson, "layerName", layer.getName());
-            // TODO: wmsUrl and wmsName are deprecated, use url and layerName instead.
-            // Adding them here so frontend doesn't break.
-            JSONHelper.putValue(layerJson, "wmsUrl", layer.getUrl(isSecure));
-            JSONHelper.putValue(layerJson, "wmsName", layer.getName());
-
             if (useProxy(layer)) {
-                Map<String, String> urlParams = new HashMap<String, String>();
-                urlParams.put("action_route", "GetLayerTile");
-                urlParams.put(KEY_ID, Integer.toString(layer.getId()));
-                JSONHelper.putValue(layerJson, "url", IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL),urlParams));
+                JSONHelper.putValue(layerJson, "url", getProxyUrl(layer));
             }
         }
 
@@ -178,6 +170,13 @@ public class LayerJSONFormatter {
             forceProxy = layer.getAttributes().optBoolean("forceProxy", false);
         }
         return ((layer.getUsername() != null) && (layer.getUsername().length() > 0)) || forceProxy;
+    }
+
+    public String getProxyUrl(final OskariLayer layer) {
+        Map<String, String> urlParams = new HashMap<String, String>();
+        urlParams.put("action_route", "GetLayerTile");
+        urlParams.put(KEY_ID, Integer.toString(layer.getId()));
+        return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
 
