@@ -38,6 +38,13 @@ public class GetLayerTileHandler extends ActionHandler {
     private PermissionHelper permissionHelper;
     private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
 
+    // WMTS rest layers params
+    private static final String KEY_STYLE = "STYLE";
+    private static final String KEY_TILEMATRIXSET = "TILEMATRIXSET";
+    private static final String KEY_TILEMATRIX = "TILEMATRIX";
+    private static final String KEY_TILEROW = "TILEROW";
+    private static final String KEY_TILECOL = "TILECOL";
+
     /**
      *  Init method
      */
@@ -113,12 +120,26 @@ public class GetLayerTileHandler extends ActionHandler {
         }
     }
 
-
     private String getURL(final ActionParameters params, final OskariLayer layer) {
         if (params.getHttpParam(LEGEND, false)) {
             return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
+        if(OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
+            // check for rest url
+            final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
+            if(urlTemplate != null) {
+                LOG.debug("REST WMTS layer proxy");
+
+                return urlTemplate
+                        .replaceFirst("\\{layer\\}", layer.getName())
+                        .replaceFirst("\\{style\\}", params.getHttpParam(KEY_STYLE, KEY_STYLE))
+                        .replaceFirst("\\{TileMatrixSet\\}", params.getHttpParam(KEY_TILEMATRIXSET, KEY_TILEMATRIXSET))
+                        .replaceFirst("\\{TileMatrix\\}", params.getHttpParam(KEY_TILEMATRIX, KEY_TILEMATRIX))
+                        .replaceFirst("\\{TileRow\\}", params.getHttpParam(KEY_TILEROW, KEY_TILEROW))
+                        .replaceFirst("\\{TileCol\\}", params.getHttpParam(KEY_TILECOL, KEY_TILECOL));
+            }
+        }
         Enumeration<String> paramNames = httpRequest.getParameterNames();
         Map<String, String> urlParams = new HashMap<>();
         // Refine parameters

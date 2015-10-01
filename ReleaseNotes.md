@@ -4,13 +4,24 @@
 
 ### control-base
 
-GetMapLayersHandler now provides prefixed urls for maplayers is request.isSecure() or parameter ssl=[true|false] is provided. 
+#### GetMapLayersHandler 
+
+Now provides prefixed urls for maplayers is request.isSecure() or parameter ssl=[true|false] is provided. 
 The prefix is configurable in oskari-ext.properties (defaults to https://):
 
     maplayer.wmsurl.secure=/secure/
     
 This handling was already present for selected layers and now it's used for GetMapLayers also. 
 The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
+
+#### GetLayerTile 
+
+Added handling for WMTS-layers with resourceURL.
+
+### service-map
+
+LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
+but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
 
 ## 1.32.1
 
