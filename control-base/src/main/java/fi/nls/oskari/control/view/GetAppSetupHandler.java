@@ -143,11 +143,9 @@ public class GetAppSetupHandler extends ActionHandler {
                 .getHttpHeader("Referer"));
 
         // ignore saved state when loading:
-        //   - ancient published maps (having oldId)
         //   - views that are not system default views
         //   - when explicitly told with parameter
-        boolean ignoreSavedState = oldId != -1
-                || !viewService.isSystemDefaultView(viewId)
+        boolean ignoreSavedState = !viewService.isSystemDefaultView(viewId)
                 || params.getHttpParam(PARAM_NO_SAVED_STATE, false);
         // restore state from cookie if not
         if (!ignoreSavedState) {
