@@ -129,7 +129,7 @@ public class GetAppSetupHandler extends ActionHandler {
 
     public void handleAction(final ActionParameters params) throws ActionException {
         // oldId => support for migrated published maps
-        final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
+        final long oldId = params.getHttpParam(PARAM_OLD_ID, -1);
         final User user = params.getUser();
         final long defaultViewId = viewService.getDefaultViewId(user);
         final View view = getView(params, defaultViewId, oldId);

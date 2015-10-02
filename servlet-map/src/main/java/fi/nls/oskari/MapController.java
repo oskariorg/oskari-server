@@ -144,14 +144,20 @@ public class MapController {
         log.debug("getting a view and setting Render parameters");
         HttpServletRequest request = params.getRequest();
 
-        final long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID),
-                viewService.getDefaultViewId(params.getUser()));
-
-        log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
-
         final String uuId = params.getHttpParam(PARAM_UUID);
+        long viewId = params.getHttpParam(PARAM_VIEW_ID, -1);
+        boolean useDefault = viewId == -1;
+        if(uuId == null) {
+            // get personalized or system default view
+            if (useDefault) {
+                viewId = viewService.getDefaultViewId(params.getUser());
+            }
+        }
 
-        final View view = getView(uuId, viewId);
+        log.debug("user view: " + viewId);
+
+
+        final View view = getView(uuId, viewId, useDefault);
         if (view == null) {
             log.debug("no such view");
             ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
@@ -210,14 +216,19 @@ public class MapController {
         return viewJSP;
     }
 
-    private View getView(String uuId, long viewId){
+    private View getView(String uuId, long viewId, boolean isDefault){
         if(uuId != null){
-            log.debug("Using Uuid to fetch a view");
+            log.debug("Using Uuid to fetch a view:", uuId);
             return viewService.getViewWithConfByUuId(uuId);
-        }else{
-            log.debug("Using id to fetch a view");
-            return viewService.getViewWithConf(viewId);
         }
+
+        log.debug("Using id to fetch a view:", viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(!isDefault && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
 
     /**
