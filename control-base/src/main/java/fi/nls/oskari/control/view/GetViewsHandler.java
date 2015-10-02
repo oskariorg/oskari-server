@@ -23,6 +23,7 @@ public class GetViewsHandler extends ActionHandler {
 
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_ISPUBLIC = "isPublic";
+    public static final String KEY_ISDEFAULT = "isDefault";
     public static final String KEY_PUBDOMAIN = "pubDomain";
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
@@ -72,6 +73,7 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_ID, view.getId());
                 viewJson.put(KEY_UUID, view.getUuid());
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
+                viewJson.put(KEY_ISDEFAULT, view.isDefault());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
                 viewJson.put(KEY_URL, view.getUrl());
                 viewJson.put(KEY_METADATA, view.getMetadata());

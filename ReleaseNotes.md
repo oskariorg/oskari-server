@@ -1,5 +1,78 @@
 # Release Notes
 
+## 1.33
+
+### servlet-map
+
+Now prevents view loading with id when onlyUUID-flag in on. 
+
+### control-base
+
+#### GetMapLayersHandler 
+
+Now provides prefixed urls for maplayers is request.isSecure() or parameter ssl=[true|false] is provided. 
+The prefix is configurable in oskari-ext.properties (defaults to https://):
+
+    maplayer.wmsurl.secure=/secure/
+    
+This handling was already present for selected layers and now it's used for GetMapLayers also. 
+The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
+
+#### GetLayerTile 
+
+Added handling for WMTS-layers with resourceURL.
+
+### service-map
+
+LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
+but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
+
+### Default view functionality
+
+Added functionality for saving / restoring a user defined default view.
+
+## 1.32.1
+
+### database/flywaydb
+
+1.32.4 script goes through all registered WMTS-layers and resolves resourceURL information for them. 
+Updates the options database column when needed.
+
+### servlet-map
+
+URL-parameters are now properly handled again (fixes the link tool).
+
+### service-map
+
+If a capabilities document is saved in the database, it will no longer be overwritten with an empty document when capabilities fetch 
+ timeouts or in other problem scenarios.
+ 
+Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Still configurable in oskari-ext.properties: 
+
+    # seconds for timeout
+    capabilities.timeout=30
+
+Improved feature id handling in query filters (fi.nls.oskari.wfs.WFSFilterBuilder)
+
+### service-spatineo-monitor
+
+SpatineoServalUpdateService now cleans up the datasource it uses correctly.
+
+### control-base
+
+SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+
+GetMapLayers now include the original legendimage urls for password protected layers for users that have permission to edit layers. 
+This fixes an issue where legend image was overwritten with the proxy url when editing layers.
+
+GetLayerTile now supports style-specific legendimages.
+
+### servlet-printout
+
+Servlet-printout now uses options from layer JSON to get WMTS resourceUrl specific information (previously used the Openlayers2 specific JSON capabilities).
+
+Added initial support for WMTS-layers using KVP urls. 
+
 ## 1.32
 
 ### Geoserver REST client and setup webapp

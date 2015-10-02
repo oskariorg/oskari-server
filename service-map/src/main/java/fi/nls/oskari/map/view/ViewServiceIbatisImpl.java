@@ -2,6 +2,7 @@ package fi.nls.oskari.map.view;
 
 
 import com.ibatis.sqlmap.client.SqlMapSession;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
@@ -13,10 +14,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         ViewService {
@@ -191,6 +189,9 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
 
+    public void resetUsersDefaultViews(long user_id) {
+        update("View.resetUsersDefaultViews", user_id);
+    }
 	public void updateView(View view) {
         update("View.update", view);
     }
@@ -270,21 +271,57 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     public long getDefaultViewId(final User user) {
         if(user == null) {
             LOG.debug("Tried to get default view for <null> user");
+            return getDefaultViewId();
+        }
+        else {
+            final long personalizedId = getPersonalizedDefaultViewId(user);
+            if(personalizedId != -1) {
+                return personalizedId;
+            }
+            return getSystemDefaultViewId(user.getRoles());
+        }
+    }
+
+    public long getSystemDefaultViewId(Set<Role> roles) {
+
+        if(roles == null) {
+            LOG.debug("Tried to get default view for <null> roles");
         }
         else {
             // Check the roles in given order and return the first match
             for(String role : viewRoles) {
-                if(user.hasRole(role) &&
+                if(Role.hasRoleWithName(roles, role) &&
                         defaultViewIds.containsKey(role)) {
                     LOG.debug("Default view found for role", role, ":", defaultViewIds.get(role));
                     return defaultViewIds.get(role);
                 }
             }
         }
-        LOG.debug("No properties based default views matched user", user, ". Defaulting to DB.");
+        LOG.debug("No properties based default views matched user roles:", roles, ". Defaulting to DB.");
         return getDefaultViewId();
     }
 
+    public boolean isSystemDefaultView(final long id) {
+        return defaultViewIds.containsValue(id) || getDefaultViewId() == id;
+    }
+
+    /**
+     * Returns the saved default view id for the user, if one exists
+     *
+     * @param user to get default view for
+     * @return view id of a saved default view
+     */
+    private long getPersonalizedDefaultViewId(final User user) {
+        if (!user.isGuest() && user.getId() != -1) {
+            Object queryResult = queryForObject("View.get-default-view-id-by-user-id",user.getId());
+            if (queryResult != null) {
+                Long userDefaultViewId = (Long)queryResult;
+                return userDefaultViewId.longValue();
+            }
+        }
+
+        return -1;
+    }
     /**
      * Returns default view id for given role name
      * @param roleName

@@ -40,12 +40,15 @@ public class OskariLayerWorker {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
-
+    
     public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
+        return getListOfAllMapLayers(user, lang, false);
+    }
+
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final boolean isSecure) {
         long start = System.currentTimeMillis();
         final List<OskariLayer> layers = mapLayerService.findAll();
         log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
-        final boolean isSecure = false;
         final boolean isPublished = false;
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }
@@ -116,6 +119,12 @@ public class OskariLayerWorker {
                     if(permissions.optBoolean("edit")) {
                         // has edit rights, alter JSON/add info for admin bundle
                         modifyCommonFieldsForEditing(layerJson, layer);
+                    }
+                    else {
+                        // FIXME: styles/legend should be available in OskariLayer so we can add them on demand
+                        // -> parse capabilities when layer is inserted so we don't need to do this
+                        layerJson.remove("org_styles");
+                        layerJson.remove("org_legendImage");
                     }
 
                     //log.debug("Adding layer to list");

@@ -24,10 +24,28 @@ public class WMTSCapabilitiesLayer {
     private String defaultStyle;
     private Set<String> formats = new HashSet<String>();
     private Set<String> infoFormats = new HashSet<String>();
+    private List<ResourceUrl> resourceUrls = new ArrayList<>();
 
     private Map<String, Set<TileMatrixLimits>> links = new HashMap<String, Set<TileMatrixLimits>>();
 
     private Set<String> keywords = new HashSet<String>();
+
+    public List<ResourceUrl> getResourceUrls() {
+        return resourceUrls;
+    }
+
+    public void addResourceUrl(ResourceUrl url) {
+        getResourceUrls().add(url);
+    }
+    public ResourceUrl getResourceUrlByType(final String type) {
+        for(ResourceUrl url : resourceUrls) {
+            if(url.getType().equalsIgnoreCase(type)) {
+                return url;
+            }
+        }
+        return null;
+    }
+
 
     public boolean isQueryable() {
         return infoFormats.size() > 0;

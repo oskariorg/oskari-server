@@ -112,29 +112,29 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         // TRUE CASES
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "true");
-        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'true'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "true");
+        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'true'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
 
         parameters.clear();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "True");
-        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'True'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "True");
+        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'True'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
 
         parameters.clear();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "TRUE");
-        assertTrue("isSecure should be true for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'TRUE'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "TRUE");
+        assertTrue("isSecure should be true for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'TRUE'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
 
         // FALSE CASES
         parameters.clear();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "false");
-        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'false'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "false");
+        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'false'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
 
         parameters.clear();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "1");
-        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value '1'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "1");
+        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value '1'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
 
         parameters.clear();
-        parameters.put(GetAppSetupHandler.PARAM_SSL, "yes");
-        assertFalse("isSecure should be false for request with param '" + GetAppSetupHandler.PARAM_SSL  + "' with value 'yes'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
+        parameters.put(ActionConstants.PARAM_SECURE, "yes");
+        assertFalse("isSecure should be false for request with param '" + ActionConstants.PARAM_SECURE  + "' with value 'yes'", GetAppSetupHandler.isSecure(createActionParams(parameters)));
     }
 
     @Test
@@ -219,6 +219,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
         doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
+
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.USER);
         doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());

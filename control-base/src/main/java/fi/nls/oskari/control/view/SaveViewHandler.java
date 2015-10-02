@@ -2,6 +2,7 @@ package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -36,10 +37,18 @@ public class SaveViewHandler extends ActionHandler {
 
         // Cloned view based on user based default view
         final View view = getBaseView(params);
+        final User user = params.getUser();
 
         // Merge client parameters to view
         mergeViewStates(view, getViewJson(params));
         try {
+
+            //set is_default to false for all other this user's views.
+            if (view.isDefault()) {
+                log.debug("Add View: Reset the user's default views: "+user.getId());
+                viewService.resetUsersDefaultViews(user.getId());
+            }
+
             final long newViewId = viewService.addView(view);
             view.setId(newViewId);
         } catch (ViewException e) {

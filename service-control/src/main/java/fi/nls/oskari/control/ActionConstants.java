@@ -8,6 +8,7 @@ public interface ActionConstants {
     String PARAM_ID = "id";
     String PARAM_UUID = "uuid";
     String PARAM_VIEW_ID = "viewId";
+    String PARAM_SECURE = "ssl";
 
     // used for locale fields as prefix. Params are named 'name_<locale>' f.ex. 'name_en'
     String PARAM_NAME_PREFIX = "name_";

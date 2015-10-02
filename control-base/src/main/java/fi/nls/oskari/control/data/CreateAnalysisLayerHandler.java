@@ -134,31 +134,26 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
                 log.debug("\nAggregate results:\n", aggregateResult, "\n");
-                /*
-Aggregate results:
- {"fi_url_1":{"Count":4},"tmp_id":{"Sum":45301,"Median":12232,"Count":4,"Standar
-d deviation":3186.3551571505645,"Maximum":14592,"Average":11325.25,"Minimum":624
-5},"fi_url_3":{"Count":4},"postinumero":{"Count":4},"fi_url_2":{"Count":4},"fi_s
-posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
-{"Count":4},"kto_tarkennus":{"Count":4}}
-                 */
+
                 analysisLayer.setResult(aggregateResult);
 
                 // Get geometry for aggretage features
                 try {
                     // Just return result as JSON and don't save analysis to DB
                     if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
-                        // NOTE!! Replacing the analysisLayer!
+                        // NOTE!! Replacing the analysisLayer content for executing wps union method!
                         // Get response as geojson when no db store
                         analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        // Get geometry as geojson for hilighting features of aggregate result
                         featureSet = wpsService.requestFeatureSet(analysisLayer);
                         // Just return result as JSON and don't save analysis to DB
-                        // Get geometry as geojson for hilighting features of aggregate result
                         JSONObject geojson = JSONHelper.createJSONObject(featureSet);
                         JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
+                        //reorder resultset columns and row accoding to input params order
+                        JSONArray jsaggreOrdered = analysisParser.reorderAggregateResult(jsaggregate,this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
                         JSONObject results = new JSONObject();
                         JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
-                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggregate);
+                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggreOrdered);
                         ResponseHelper.writeResponse(params, results);
                         return;
                     }
