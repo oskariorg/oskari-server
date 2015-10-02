@@ -132,17 +132,7 @@ public class GetAppSetupHandler extends ActionHandler {
         final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
         final User user = params.getUser();
         final long defaultViewId = viewService.getDefaultViewId(user);
-        long defaultSavedViewId = -1;
-
-        //fetch the saved default view, if one exists
-        if (!user.isGuest() && user.getId() != -1) {
-            defaultSavedViewId = viewService.getSavedDefaultViewId(user);
-        }
-        //otherwise fall back to the role based default
-        if (defaultSavedViewId == -1) {
-            defaultSavedViewId = defaultViewId;
-        }
-        final View view = getView(params, defaultSavedViewId, oldId);
+        final View view = getView(params, defaultViewId, oldId);
 
         if (view == null) {
             throw new ActionParamsException("Could not load View");
@@ -152,11 +142,13 @@ public class GetAppSetupHandler extends ActionHandler {
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader("Referer"));
 
-        // ignore saved state for ancient published maps (having oldId), non-default views or if
-        // explicit param is given
+        // ignore saved state when loading:
+        //   - ancient published maps (having oldId)
+        //   - views that are not system default views
+        //   - when explicitly told with parameter
         boolean ignoreSavedState = oldId != -1
-                || viewId != defaultViewId
-                || ConversionHelper.getBoolean(params.getHttpParam(PARAM_NO_SAVED_STATE), false);
+                || !viewService.isSystemDefaultView(viewId)
+                || params.getHttpParam(PARAM_NO_SAVED_STATE, false);
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");

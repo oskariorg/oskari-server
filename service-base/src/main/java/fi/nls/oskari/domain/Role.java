@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Internal model for user role.
@@ -29,6 +30,18 @@ public class Role implements Serializable {
 
     private long id;
     private String name;
+
+    public static boolean hasRoleWithName(Set<Role> roles, final String name) {
+        if(roles == null || name == null) {
+            return false;
+        }
+        for (Role r : roles) {
+            if (r.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Deprecated - Use getAdminRole() instead.

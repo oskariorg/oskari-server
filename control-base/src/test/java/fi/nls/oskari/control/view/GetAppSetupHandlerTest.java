@@ -219,8 +219,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
         doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
-        //id 1 for logged in user
-        doReturn(1L).when(viewService).getSavedDefaultViewId(getLoggedInUser());
 
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.USER);

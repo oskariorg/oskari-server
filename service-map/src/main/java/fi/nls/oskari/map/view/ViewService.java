@@ -8,70 +8,73 @@ import fi.nls.oskari.service.db.BaseService;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.json.JSONObject;
-
 public interface ViewService extends BaseService<Object> {
 
-    public boolean hasPermissionToAlterView(final View view, final User user);
+    boolean hasPermissionToAlterView(final View view, final User user);
 
-    public List<View> getViews(int page, int pagesize);
+    List<View> getViews(int page, int pagesize);
 
-    public View getViewWithConf(long viewId);
+    View getViewWithConf(long viewId);
 
-    public View getViewWithConfByUuId(String uuId);
+    View getViewWithConfByUuId(String uuId);
 
-    public View getViewWithConfByOldId(long oldId);
+    View getViewWithConfByOldId(long oldId);
 
-    public View getViewWithConf(String viewName);
+    View getViewWithConf(String viewName);
 
-    public List<View> getViewsForUser(long userId);
+    List<View> getViewsForUser(long userId);
 
-    public long addView(View view) throws ViewException;
+    long addView(View view)
+            throws ViewException;
 
-    public void updateAccessFlag(View view);
+    void updateAccessFlag(View view);
 
-    public void updateView(View view);
+    void updateView(View view);
 
-    public void deleteViewById(long id) throws DeleteViewException;
+    void deleteViewById(long id)
+            throws DeleteViewException;
 
-    public void deleteViewByUserId(long id) throws DeleteViewException;
+    void deleteViewByUserId(long id)
+            throws DeleteViewException;
 
-    public long getDefaultViewId();
+    long getDefaultViewId();
 
-    public void updateViewUsage(View view);
+    void updateViewUsage(View view);
 
-    public void resetUsersDefaultViews(long user_id);
+    void resetUsersDefaultViews(long user_id);
+
     /**
      * Returns default view id for given role name
+     *
      * @param roleName
      * @return
      */
-    public long getDefaultViewIdForRole(final String roleName);
+    long getDefaultViewIdForRole(final String roleName);
 
     /**
      * Returns default view id for the user (based on role)
+     *
      * @param user
      * @return view id
      */
-    public long getDefaultViewId(final User user);
+    long getDefaultViewId(final User user);
 
-    /**
-     * Returns the saved default view id for the user
-     * @param user
-     * @return view id
-     */
-    public long getSavedDefaultViewId(final User user);
+    boolean isSystemDefaultView(final long id);
 
-    public void updatePublishedView(View view) throws ViewException;
+    void updatePublishedView(View view)
+            throws ViewException;
 
-    public void addBundleForView(final long viewId, final Bundle bundle) throws SQLException;
+    void addBundleForView(final long viewId, final Bundle bundle)
+            throws SQLException;
 
     /**
      * Updates bundle settings for single bundle in given view.
+     *
      * @param viewId
      * @param bundle
      * @throws ViewException if bundle is not part of the view or update failed.
      */
-    public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException;
+    void updateBundleSettingsForView(final long viewId, final Bundle bundle)
+            throws ViewException;
 
 }
