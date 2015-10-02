@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.view;
 
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
@@ -7,6 +8,7 @@ import fi.nls.oskari.service.db.BaseService;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 public interface ViewService extends BaseService<Object> {
 
@@ -52,14 +54,26 @@ public interface ViewService extends BaseService<Object> {
     long getDefaultViewIdForRole(final String roleName);
 
     /**
-     * Returns default view id for the user (based on role)
+     * Returns default view id for the user (based on role or personalized default view)
      *
      * @param user
      * @return view id
      */
     long getDefaultViewId(final User user);
 
+    /**
+     * Check if view is configured as default in system to distinguish between non-personalized default views
+     * @param id
+     * @return
+     */
     boolean isSystemDefaultView(final long id);
+
+    /**
+     * Returns if for system default view for given role set.
+     * @param roles
+     * @return
+     */
+    long getSystemDefaultViewId(Set<Role> roles);
 
     void updatePublishedView(View view)
             throws ViewException;

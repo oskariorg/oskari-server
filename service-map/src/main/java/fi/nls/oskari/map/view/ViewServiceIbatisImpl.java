@@ -282,7 +282,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         }
     }
 
-    private long getSystemDefaultViewId(Set<Role> roles) {
+    public long getSystemDefaultViewId(Set<Role> roles) {
 
         if(roles == null) {
             LOG.debug("Tried to get default view for <null> roles");
