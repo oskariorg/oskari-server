@@ -2,6 +2,10 @@
 
 ## 1.33
 
+### servlet-map
+
+Now prevents view loading with id when onlyUUID-flag in on. 
+
 ### control-base
 
 #### GetMapLayersHandler 
