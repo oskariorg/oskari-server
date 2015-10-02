@@ -1679,6 +1679,58 @@ public class AnalysisParser {
         return featureSet;
     }
 
+    /**
+     * Reorder rows (keys) and cols (values) of json object
+     * JSONArrays are used for to keep the key order in json
+     * @param jsaggregate input json
+     * @param rowOrder  new order of 1st level keys (key names)
+     * @param colOrder  new order of sub json keys  (key names)
+     * @return  e.g.  [{"vaesto": [{"Kohteiden lukumäärä": "324"}, {"Tietosuojattujen kohteiden lukumäärä": "0"},..}]},{"miehet":[..
+     */
+    public JSONArray reorderAggregateResult(JSONObject jsaggregate, List<String> rowOrder, List<String> colOrder) {
+        JSONArray jsona = new JSONArray();
+        try {
+
+            // Col order values
+            Map<String, String> colvalues = new HashMap<String, String>();
+            for (String col : colOrder) {
+                colvalues.put(col, null);
+            }
+            for (int i = 0; i < rowOrder.size(); i++) {
+                // Put properties to result featureset in predefined order
+                String currow = i < rowOrder.size() ? rowOrder.get(i) : null;
+                JSONArray subjsOrdereda = new JSONArray();
+                Iterator<?> keys = jsaggregate.keys();
+
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (jsaggregate.get(key) instanceof JSONObject) {
+                        if (currow != null && key.equals(currow)) {
+                            JSONObject subjs = jsaggregate.getJSONObject(key);
+                            Iterator<?> subkeys = subjs.keys();
+                            while (subkeys.hasNext()) {
+                                String subkey = (String) subkeys.next();
+                                colvalues.put(subkey, subjs.get(subkey).toString());
+                            }
+                            for (int j = 0; j < colvalues.size(); j++) {
+                                JSONObject subjsOrdered = new JSONObject();
+                                JSONHelper.putValue(subjsOrdered, colOrder.get(j), colvalues.get(colOrder.get(j)));
+                                subjsOrdereda.put(subjsOrdered);
+                            }
+                        }
+                    }
+                }
+                JSONObject json = new JSONObject();
+                JSONHelper.putValue(json, rowOrder.get(i), subjsOrdereda);
+                jsona.put(json);
+            }
+            return jsona;
+        } catch (Exception e) {
+            log.debug("Json resultset reordering failed: ", e);
+        }
+        return jsona;
+    }
+
     private String prepareGeoJsonFeatures(JSONObject json, String id) {
         try {
             if (json.has(JSON_KEY_FEATURES)) {
