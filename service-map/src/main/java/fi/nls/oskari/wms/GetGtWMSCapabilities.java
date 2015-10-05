@@ -23,10 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -41,17 +38,20 @@ public class GetGtWMSCapabilities {
     private final static String GROUP_LAYER_TYPE = "grouplayer";
     private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
 
+    private GetGtWMSCapabilities() {
+
+    }
 
     // based on https://github.com/geotools/geotools/blob/master/modules/extension/wms/src/test/java/org/geotools/data/wms/test/WMS1_0_0_OnlineTest.java#L253-L276
-    public WMSCapabilities createCapabilities( String xml ) throws Exception {
+    public static WMSCapabilities createCapabilities(String xml) {
         if(xml == null || xml.isEmpty()) {
             return null;
         }
-        Map hints = new HashMap();
+        final Map hints = new HashMap();
         hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
         try(InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
 
-            Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
+            final Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
             if(object instanceof WMSCapabilities) {
                 return (WMSCapabilities) object;
             }
@@ -87,6 +87,44 @@ public class GetGtWMSCapabilities {
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url.", ex);
         }
+    }
+
+    /**
+     * Convenience method to filter a layer with given name from the capabilities
+     * @param caps      capabilities
+     * @param layerName layer to find
+     * @return
+     */
+    public static Layer findLayer(final WMSCapabilities caps, final String layerName) {
+        if(caps == null || layerName == null) {
+            return null;
+        }
+
+        return findLayer(caps.getLayer(), layerName);
+    }
+
+    /**
+     * Convenience method to filter a layer with given name from the capabilities
+     * @param root      root layer for current iteration
+     * @param layerName layer to find
+     * @return null if not found or the layer object if found
+     */
+    private static Layer findLayer(final Layer root, final String layerName) {
+
+        if(root == null) {
+            return null;
+        }
+        if(layerName.equalsIgnoreCase(root.getName())) {
+            return root;
+        }
+
+        for (Iterator ii = root.getLayerChildren().iterator(); ii.hasNext(); ) {
+            Layer found = findLayer((Layer) ii.next(), layerName);
+            if(found != null) {
+                return found;
+            }
+        }
+        return null;
     }
 
     /**
@@ -164,7 +202,6 @@ public class GetGtWMSCapabilities {
         oskariLayer.setMaxScale(capabilitiesLayer.getScaleDenominatorMin());
         oskariLayer.setMinScale(capabilitiesLayer.getScaleDenominatorMax());
         oskariLayer.setName(capabilitiesLayer.getName());
-
         // setup UI names for all supported languages
         final String[] languages = PropertyUtil.getSupportedLanguages();
         for (String lang : languages) {
@@ -188,22 +225,8 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
 
             // parse styles from capabilities if available
-            if(capabilitiesLayer.getStyles() != null) {
-                final JSONArray styles = new JSONArray();
-                for(StyleImpl style : capabilitiesLayer.getStyles()) {
-                    String styleLegend = "";
-                    if(style.getLegendURLs() != null && !style.getLegendURLs().isEmpty()) {
-                        styleLegend = (String)style.getLegendURLs().get(0);
-                    }
-                    String title = style.getName();
-                    if(style.getTitle() != null) {
-                        title = style.getTitle().toString();
-                    }
-                    JSONObject styleJSON = FORMATTER.createStylesJSON(style.getName(), title, styleLegend);
-                    styles.put(styleJSON);
-                }
-                JSONHelper.putValue(json, "styles", styles);
-            }
+            final JSONArray styles = getStylesFromCapabilities(capabilitiesLayer);
+            JSONHelper.putValue(json, "styles", styles);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
@@ -216,6 +239,54 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
             log.warn("Couldn't parse wmslayer to json", ex);
             return new JSONObject();
         }
+    }
+
+    /**
+     * Returns formats for GFI request if available. Empty list if parsing fails.
+     * @param caps
+     * @return list of formats
+     */
+    public static List<String> getInfoFormats(final WMSCapabilities caps) {
+        if(caps == null || caps.getRequest() == null || caps.getRequest().getGetFeatureInfo() == null) {
+            return Collections.emptyList();
+        }
+        return caps.getRequest().getGetFeatureInfo().getFormats();
+    }
+
+    /**
+     * Layer capabilities to be saved for OskariLayer.setCapabilities()
+     * @param layer
+     * @return
+     */
+    public static JSONObject getLayerCapabilitiesAsJson(Layer layer) {
+        JSONObject caps = new JSONObject();
+        if(layer == null) {
+            return caps;
+        }
+        final JSONArray styles = getStylesFromCapabilities(layer);
+        JSONHelper.putValue(caps, "styles", styles);
+        JSONHelper.putValue(caps, "isQueryable", layer.isQueryable());
+        return caps;
+    }
+
+    public static JSONArray getStylesFromCapabilities(Layer layer) {
+        final JSONArray styles = new JSONArray();
+        if(layer.getStyles() == null) {
+            return styles;
+        }
+        for(StyleImpl style : layer.getStyles()) {
+            String styleLegend = "";
+            if(style.getLegendURLs() != null && !style.getLegendURLs().isEmpty()) {
+                styleLegend = (String)style.getLegendURLs().get(0);
+            }
+            String title = style.getName();
+            if(style.getTitle() != null) {
+                title = style.getTitle().toString();
+            }
+            JSONObject styleJSON = FORMATTER.createStylesJSON(style.getName(), title, styleLegend);
+            styles.put(styleJSON);
+        }
+        return styles;
     }
 
     /**

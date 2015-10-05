@@ -31,6 +31,9 @@ When adding layers the capabilities parser now includes layer styles correctly.
 LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
 but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
 
+GetGtWMSCapabilities now includes method to parse String into WMSCapabilities to make it work better with cached
+ capabilities XMLs from CapabilitiesService. Also added styles parsing from capabilities.
+
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
