@@ -150,7 +150,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                         JSONObject geojson = JSONHelper.createJSONObject(featureSet);
                         JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
                         //reorder resultset columns and row accoding to input params order
-                        JSONArray jsaggreOrdered = analysisParser.reorderAggregateResult(jsaggregate,this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
+                        JSONArray jsaggreOrdered = analysisParser.reorderAggregateResult(jsaggregate,this.getRowOrder(analyseJson, analysisLayer.getInputAnalysisId()),
+                                this.getColumnOrder(analyseJson));
                         JSONObject results = new JSONObject();
                         JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
                         JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggreOrdered);
@@ -162,7 +163,8 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
+                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson,analysisLayer.getInputAnalysisId()),
+                            this.getColumnOrder(analyseJson));
                     // Redefine column types
                     analysisLayer.setFieldtypeMap(this.getAggregateFieldTypes(this.getColumnOrder(analyseJson)));
                 } catch (ServiceException e) {
@@ -475,22 +477,30 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     /**
      * Get property row order of aggregate result (
      * @param analysejs  analysis params
+     * @param analysisId input is analysis layer, if not null or not empty
      * @return List of row names
      */
-    private List<String> getRowOrder( JSONObject analysejs) {
+    private List<String> getRowOrder( JSONObject analysejs, String analysisId) {
         List<String> list = new ArrayList<String>();
         try {
             JSONArray fields = analysejs.getJSONArray(JSON_KEY_FIELDS);
 
             if (fields != null) {
                 for (int i = 0; i < fields.length(); i++) {
-                    list.add(fields.getString(i));
+                    String field = fields.getString(i);
+                    if(analysisId != null && !analysisId.isEmpty()){
+                        // Switch locale field name
+                      field =  analysisDataService.SwitchField2OriginalField(field,  analysisId);
+                    }
+                    list.add(field);
                 }
             }
         } catch (Exception e) {
             log.warn("Aggregate row order fetch failed ", e);
 
         }
+
+
         return list;
     }
     /**
