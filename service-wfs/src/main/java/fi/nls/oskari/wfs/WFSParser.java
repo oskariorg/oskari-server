@@ -1,22 +1,11 @@
 package fi.nls.oskari.wfs;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.wfs.WFSFeatureTypeParser;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.XMLHelper;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -37,12 +26,12 @@ import org.opengis.referencing.operation.MathTransform;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.wfs.util.XMLHelper;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
     
 public class WFSParser {
     private static final Logger log = LogFactory.getLogger(WFSParser.class);

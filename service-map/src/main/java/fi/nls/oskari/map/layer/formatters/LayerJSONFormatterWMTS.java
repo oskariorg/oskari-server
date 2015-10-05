@@ -45,8 +45,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                 // remove requestEncoding so we always get KVP params when proxying
                 JSONObject options = layerJson.optJSONObject("options");
                 options.remove("requestEncoding");
-            }
-            else {
+            } else {
                 // setup tileURL for REST layers
                 final String originalUrl = layer.getUrl();
                 layer.setUrl(urlTemplate);

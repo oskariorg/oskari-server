@@ -3,10 +3,6 @@ package fi.nls.oskari.util;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
 
 /**
  * Printout utilities for e.g. GetPreviewHandler

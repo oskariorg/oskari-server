@@ -1,31 +1,24 @@
 package fi.nls.oskari.arcgis.pojo;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.json.simple.JSONObject;
-
 import com.esri.core.geometry.Geometry.Type;
 import com.esri.core.geometry.MapGeometry;
 import com.esri.core.geometry.OperatorExportToWkb;
-import com.esri.core.geometry.OperatorExportToWkt;
 import com.esri.core.geometry.OperatorImportFromJson;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.io.WKTReader;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.json.simple.JSONObject;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class ArcGisFeature {
 	private static final Logger log = LogFactory.getLogger(ArcGisFeature.class);

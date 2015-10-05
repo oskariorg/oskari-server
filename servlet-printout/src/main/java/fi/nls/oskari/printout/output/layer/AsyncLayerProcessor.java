@@ -1,8 +1,5 @@
 package fi.nls.oskari.printout.output.layer;
 
-import java.net.ProxySelector;
-
-import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -11,7 +8,6 @@ import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.scheme.SchemeSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
@@ -22,6 +18,8 @@ import org.apache.http.nio.client.HttpAsyncClient;
 import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.params.CoreConnectionPNames;
+
+import java.net.ProxySelector;
 
 /**
  * This class is used to process map tile requests.

@@ -1,9 +1,15 @@
 package fi.nls.oskari.printout.breeding.maplink;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Polygon;
+import fi.nls.oskari.printout.breeding.ChangeSet;
+import fi.nls.oskari.printout.breeding.ChangeSetEntry;
+import fi.nls.oskari.printout.breeding.WorkingSet;
+import fi.nls.oskari.printout.breeding.breeder.ChangeSetEntryTransaction;
+import fi.nls.oskari.printout.breeding.breeder.IChangeSetEntryTransaction;
+import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder;
+import fi.nls.oskari.printout.breeding.breeder.WorkingSetTileBreeder;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.XMLConfiguration;
 import org.geowebcache.filter.request.RequestFilterException;
@@ -12,17 +18,9 @@ import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.OutsideCoverageException;
 import org.geowebcache.layer.TileLayer;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Polygon;
-
-import fi.nls.oskari.printout.breeding.ChangeSet;
-import fi.nls.oskari.printout.breeding.ChangeSetEntry;
-import fi.nls.oskari.printout.breeding.WorkingSet;
-import fi.nls.oskari.printout.breeding.breeder.ChangeSetEntryTransaction;
-import fi.nls.oskari.printout.breeding.breeder.IChangeSetEntryTransaction;
-import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder;
-import fi.nls.oskari.printout.breeding.breeder.WorkingSetTileBreeder;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapLinkWorkingSetTileBreeder extends WorkingSetTileBreeder
 		implements IWorkingSetTileBreeder {

@@ -1,13 +1,13 @@
 package fi.nls.oskari.printout.input.content;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.ColourStyleAttr;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.MetricsStyleAttr;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Col;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Row;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PrintoutContentParser {
 

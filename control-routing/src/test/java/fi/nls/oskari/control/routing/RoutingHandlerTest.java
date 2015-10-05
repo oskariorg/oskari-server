@@ -9,8 +9,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 @Ignore
 public class RoutingHandlerTest extends JSONActionRouteTest {
 

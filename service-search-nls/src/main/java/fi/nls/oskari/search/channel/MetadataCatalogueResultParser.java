@@ -5,14 +5,12 @@ import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.XmlHelper;
-
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.axiom.om.OMAttribute;
 import org.jaxen.SimpleNamespaceContext;
 
 import javax.xml.namespace.QName;
-
 import java.util.*;
 
 /**

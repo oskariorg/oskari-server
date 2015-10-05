@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.elf.recipe.administrativeunits;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.elf.administrativeunits.ELF_MasterLoD1_AdministrativeUnit.AdministrativeUnit;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class ELF_MasterLoD0_AdministrativeUnit_Parser extends GML32 {
 

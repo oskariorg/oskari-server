@@ -10,6 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import static fi.nls.oskari.control.ActionConstants.*;
 
 /**

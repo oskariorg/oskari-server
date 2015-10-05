@@ -1,25 +1,22 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.vividsolutions.jts.geom.Geometry;
-
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.xml.Configuration;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {

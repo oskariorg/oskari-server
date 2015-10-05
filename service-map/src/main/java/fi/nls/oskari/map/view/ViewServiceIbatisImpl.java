@@ -189,8 +189,8 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
     }
 
 
-    public void resetUsersDefaultViews(long user_id) {
-        update("View.resetUsersDefaultViews", user_id);
+    public void resetUsersDefaultViews(long userId) {
+        update("View.resetUsersDefaultViews", userId);
     }
 	public void updateView(View view) {
         update("View.update", view);

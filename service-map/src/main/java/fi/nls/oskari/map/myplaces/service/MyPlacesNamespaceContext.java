@@ -1,11 +1,10 @@
 package fi.nls.oskari.map.myplaces.service;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 
 class MyPlacesNamespaceContext implements NamespaceContext {
 

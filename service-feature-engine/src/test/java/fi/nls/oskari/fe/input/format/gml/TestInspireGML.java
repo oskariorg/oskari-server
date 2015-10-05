@@ -1,17 +1,5 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.log4j.Logger;
-import org.geotools.styling.Style;
-import org.junit.Test;
-
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
@@ -22,6 +10,12 @@ import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+import org.apache.log4j.Logger;
+import org.geotools.styling.Style;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.*;
 
 /**
  * @todo implement some asserts

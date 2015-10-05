@@ -1,26 +1,25 @@
 package fi.nls.oskari.control.layer;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
+import fi.mml.portti.service.db.permissions.PermissionsService;
+import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-
-import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.ConversionHelper;
 
 /**
  * Checks which layers the user has permission to view and writes the layer ids to Redis as JSON.

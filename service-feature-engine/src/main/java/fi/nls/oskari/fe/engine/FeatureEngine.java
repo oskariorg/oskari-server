@@ -1,12 +1,11 @@
 package fi.nls.oskari.fe.engine;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
-
 import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputProcessor;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 
 public interface FeatureEngine {
 

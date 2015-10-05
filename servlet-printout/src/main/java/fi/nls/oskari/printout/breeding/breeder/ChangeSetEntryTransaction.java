@@ -1,7 +1,10 @@
 package fi.nls.oskari.printout.breeding.breeder;
 
-import java.io.IOException;
-
+import fi.nls.oskari.printout.breeding.ChangeSet;
+import fi.nls.oskari.printout.breeding.ChangeSetEntry;
+import fi.nls.oskari.printout.breeding.Constants.Status;
+import fi.nls.oskari.printout.breeding.WorkingSet;
+import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder.StatusChangeCallBack;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.XMLConfiguration;
 import org.geowebcache.filter.request.RequestFilterException;
@@ -10,11 +13,7 @@ import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.OutsideCoverageException;
 import org.geowebcache.layer.TileLayer;
 
-import fi.nls.oskari.printout.breeding.ChangeSet;
-import fi.nls.oskari.printout.breeding.ChangeSetEntry;
-import fi.nls.oskari.printout.breeding.Constants.Status;
-import fi.nls.oskari.printout.breeding.WorkingSet;
-import fi.nls.oskari.printout.breeding.breeder.IWorkingSetTileBreeder.StatusChangeCallBack;
+import java.io.IOException;
 
 public abstract class ChangeSetEntryTransaction implements
 		IChangeSetEntryTransaction {

@@ -1,18 +1,16 @@
 package fi.nls.oskari.printout.ws.jaxrs.resource;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import org.apache.commons.io.IOUtils;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-
-import org.apache.commons.io.IOUtils;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-
-import fi.nls.oskari.printout.output.map.MapProducer;
 
 public class PostJsonTestRunner {
 

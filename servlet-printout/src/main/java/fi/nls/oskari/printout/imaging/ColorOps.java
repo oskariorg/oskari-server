@@ -1,6 +1,6 @@
 package fi.nls.oskari.printout.imaging;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class ColorOps {
 

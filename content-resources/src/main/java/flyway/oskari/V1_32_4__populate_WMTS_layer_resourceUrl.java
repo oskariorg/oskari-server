@@ -6,7 +6,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.JSONHelper;
@@ -17,9 +16,7 @@ import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import java.sql.Connection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Generates resource URL information for WMTS layers

@@ -1,17 +1,15 @@
 package fi.nls.oskari.fe.input.jackson;
 
-import java.util.Calendar;
-
 import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.geotools.xml.Configuration;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.output.jackson.GeometryPropertySerializer;
+import org.geotools.xml.Configuration;
+
+import java.util.Calendar;
 
 public class GmlMapper extends XmlMapper {
 

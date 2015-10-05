@@ -1,10 +1,10 @@
 package fi.nls.oskari.printout.ws;
 
+import fi.nls.oskari.printout.config.ConfigValue;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import fi.nls.oskari.printout.config.ConfigValue;
 
 public class ClientInfoSetup {
 

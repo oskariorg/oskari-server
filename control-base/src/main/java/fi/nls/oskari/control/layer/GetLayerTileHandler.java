@@ -1,28 +1,23 @@
 package fi.nls.oskari.control.layer;
 
-import java.net.HttpURLConnection;
-import java.util.Map;
-import java.util.List;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Enumeration;
-
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import fi.nls.oskari.domain.map.OskariLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static fi.nls.oskari.control.ActionConstants.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.HttpURLConnection;
+import java.util.*;
+
+import static fi.nls.oskari.control.ActionConstants.KEY_ID;
 
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {

@@ -16,11 +16,8 @@
  */
 package org.geotools.gml3.bindings;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import org.geotools.geometry.jts.CompoundCurvedGeometry;
 import org.geotools.geometry.jts.CurvedGeometry;
 import org.geotools.geometry.jts.CurvedGeometryFactory;
@@ -30,8 +27,9 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
+import javax.xml.namespace.QName;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**

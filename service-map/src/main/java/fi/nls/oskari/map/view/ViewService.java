@@ -43,7 +43,7 @@ public interface ViewService extends BaseService<Object> {
 
     void updateViewUsage(View view);
 
-    void resetUsersDefaultViews(long user_id);
+    void resetUsersDefaultViews(long userId);
 
     /**
      * Returns default view id for given role name

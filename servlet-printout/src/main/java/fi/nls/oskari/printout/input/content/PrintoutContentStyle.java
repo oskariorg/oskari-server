@@ -1,10 +1,10 @@
 package fi.nls.oskari.printout.input.content;
 
-import java.awt.Color;
+import fi.nls.oskari.printout.imaging.ColorOps;
+
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import fi.nls.oskari.printout.imaging.ColorOps;
 
 public class PrintoutContentStyle {
 

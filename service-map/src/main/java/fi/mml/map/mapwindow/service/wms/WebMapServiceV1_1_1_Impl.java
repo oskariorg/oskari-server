@@ -1,14 +1,13 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import java.lang.Exception;
-import java.util.*;
-
-import javax.xml.namespace.QName;
-
 import fi.mml.wms.v111.*;
 import fi.mml.wms.v111.Layer.Queryable.Enum;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import javax.xml.namespace.QName;
+import java.lang.Exception;
+import java.util.*;
 
 public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 

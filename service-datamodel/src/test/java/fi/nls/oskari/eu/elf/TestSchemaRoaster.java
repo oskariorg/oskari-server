@@ -1,16 +1,14 @@
 package fi.nls.oskari.eu.elf;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Properties;
-
+import fi.nls.oskari.fe.datamodel.SchemaRoaster;
+import fi.nls.oskari.fe.datamodel.TestHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.nls.oskari.fe.datamodel.SchemaRoaster;
-import fi.nls.oskari.fe.datamodel.TestHelper;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class TestSchemaRoaster extends TestHelper {
 

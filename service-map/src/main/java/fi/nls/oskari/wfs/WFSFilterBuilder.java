@@ -1,10 +1,9 @@
 package fi.nls.oskari.wfs;
 
-import java.io.ByteArrayOutputStream;
-
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.xml.Configuration;
@@ -13,13 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
-import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.identity.FeatureId;
 
-import com.vividsolutions.jts.geom.*;
-import fi.nls.oskari.map.geometry.WKTHelper;
-
-
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

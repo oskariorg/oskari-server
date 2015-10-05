@@ -1,8 +1,8 @@
 package fi.nls.oskari.printout.breeding;
 
-import java.util.Date;
-
 import org.geowebcache.grid.BoundingBox;
+
+import java.util.Date;
 
 class WorkingSetEntry {
 	Long id = null;

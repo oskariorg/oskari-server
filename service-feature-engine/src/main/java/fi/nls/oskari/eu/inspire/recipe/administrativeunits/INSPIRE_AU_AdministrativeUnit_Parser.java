@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.inspire.recipe.administrativeunits;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.inspire.administrativeunits.INSPIRE_au_AdministrativeUnit.AdministrativeUnit;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class INSPIRE_AU_AdministrativeUnit_Parser extends GML32 {
 

@@ -1,10 +1,10 @@
 package fi.nls.oskari.work.fe;
 
-import java.util.HashMap;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.work.ResultProcessor;
+
+import java.util.HashMap;
 
 abstract class CounterJsonResultProcessor implements ResultProcessor {
     protected static final Logger log = LogFactory

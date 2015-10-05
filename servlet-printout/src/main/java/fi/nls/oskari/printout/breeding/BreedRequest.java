@@ -1,9 +1,9 @@
 package fi.nls.oskari.printout.breeding;
 
-import java.util.Date;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
+
+import java.util.Date;
 
 public class BreedRequest implements Constants {
 

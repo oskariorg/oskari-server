@@ -1,20 +1,20 @@
 package fi.nls.oskari.work;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.pojo.*;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.wfs.*;
-
+import fi.nls.oskari.wfs.WFSCommunicator;
+import fi.nls.oskari.wfs.WFSFilter;
+import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.operation.MathTransform;
 

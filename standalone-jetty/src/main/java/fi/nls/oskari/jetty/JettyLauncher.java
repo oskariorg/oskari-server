@@ -1,9 +1,9 @@
 package fi.nls.oskari.jetty;
 
+import fi.nls.oskari.map.servlet.MapFullServlet;
 import fi.nls.oskari.map.servlet.OskariContextInitializer;
 import fi.nls.oskari.map.servlet.OskariRequestFilter;
 import fi.nls.oskari.map.servlet.PrincipalAuthenticationFilter;
-import fi.nls.oskari.map.servlet.MapFullServlet;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.jasper.servlet.JspServlet;
@@ -12,11 +12,8 @@ import org.eclipse.jetty.plus.jndi.EnvEntry;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.authentication.FormAuthenticator;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;

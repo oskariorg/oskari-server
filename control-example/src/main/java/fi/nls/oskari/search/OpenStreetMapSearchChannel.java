@@ -5,22 +5,21 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.geo.Point;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.log.Logger;
-
-import java.net.URLEncoder;
-
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import java.net.URLEncoder;
 
 @Oskari(OpenStreetMapSearchChannel.ID)
 public class OpenStreetMapSearchChannel extends SearchChannel {

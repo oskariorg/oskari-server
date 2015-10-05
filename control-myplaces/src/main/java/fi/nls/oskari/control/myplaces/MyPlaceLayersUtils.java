@@ -1,15 +1,14 @@
 package fi.nls.oskari.control.myplaces;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.domain.map.MyPlaceCategory;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyPlaceLayersUtils {
     

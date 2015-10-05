@@ -1,38 +1,6 @@
 package fi.nls.oskari.printout.input.geojson;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Stack;
-
-import org.apache.log4j.PropertyConfigurator;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
-import org.geotools.map.FeatureLayer;
-import org.geotools.styling.Style;
-import org.geowebcache.config.XMLConfiguration;
-import org.geowebcache.grid.GridSubset;
-import org.geowebcache.layer.TileLayer;
-import org.json.simple.parser.ParseException;
-import org.junit.Before;
-import org.junit.Test;
-import org.opengis.feature.Feature;
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.feature.simple.SimpleFeature;
-
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import fi.nls.oskari.printout.input.layers.MapLayerJSONParser;
 import fi.nls.oskari.printout.input.maplink.MapLink;
@@ -40,6 +8,21 @@ import fi.nls.oskari.printout.output.map.MapProducer;
 import fi.nls.oskari.printout.output.map.MapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import org.apache.log4j.PropertyConfigurator;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.geowebcache.config.XMLConfiguration;
+import org.geowebcache.grid.GridSubset;
+import org.geowebcache.layer.TileLayer;
+import org.json.simple.parser.ParseException;
+import org.junit.Before;
+import org.junit.Test;
+import org.opengis.feature.simple.SimpleFeature;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+
+import static org.junit.Assert.assertTrue;
 
 public class GeoJsonSimpleFeaturesTest {
 

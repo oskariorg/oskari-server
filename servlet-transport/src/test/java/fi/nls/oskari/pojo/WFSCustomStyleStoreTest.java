@@ -1,15 +1,15 @@
 package fi.nls.oskari.pojo;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.test.util.ResourceHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.*;
 
 public class WFSCustomStyleStoreTest {
     private static WFSCustomStyleStore customStyle;

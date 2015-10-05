@@ -21,13 +21,6 @@ package fi.nls.oskari.printout.input.geojson;
  * 
  */
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geojson.DelegatingHandler;
 import org.geotools.geojson.feature.AttributeIO;
@@ -37,6 +30,9 @@ import org.geotools.geojson.feature.FeatureTypeAttributeIO;
 import org.json.simple.parser.ParseException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.io.IOException;
+import java.util.*;
 
 public class MaplinkGeoJsonHandler extends
 		DelegatingHandler<Map<String, Object>> {

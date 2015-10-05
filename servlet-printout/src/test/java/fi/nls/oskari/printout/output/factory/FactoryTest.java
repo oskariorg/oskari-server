@@ -1,8 +1,8 @@
 package fi.nls.oskari.printout.output.factory;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class FactoryTest {
 	@Test

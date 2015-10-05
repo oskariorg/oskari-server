@@ -1,18 +1,10 @@
 package fi.nls.oskari.pojo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.transport.MessageParseHelper;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.transport.MessageParseHelper;
 import fi.nls.oskari.transport.TransportService;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
@@ -21,6 +13,12 @@ import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles user's session (current state)

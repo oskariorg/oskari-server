@@ -1,19 +1,17 @@
 package fi.nls.oskari.control.sotka;
 
-import java.util.Enumeration;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.sotka.requests.SotkaRequest;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.sotka.requests.SotkaRequest;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ResponseHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 /**
  * Data request of Sotkanet and response to Oskari

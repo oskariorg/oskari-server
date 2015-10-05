@@ -1,8 +1,8 @@
 package fi.nls.oskari.pojo;
 
-import java.util.List;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.List;
 
 /**
  * Handles user's active WFS layers

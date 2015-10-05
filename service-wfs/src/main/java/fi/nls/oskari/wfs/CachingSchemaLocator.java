@@ -1,20 +1,19 @@
 package fi.nls.oskari.wfs;
 
+import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import fi.nls.oskari.wfs.util.XMLHelper;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.util.XSDSchemaLocator;
+import org.geotools.xml.Schemas;
+
 import java.io.BufferedInputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.log.LogFactory;
-import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.util.XSDSchemaLocator;
-import org.geotools.xml.Schemas;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.wfs.util.HttpHelper;
-import fi.nls.oskari.wfs.util.XMLHelper;
 
 /**
  * XSD Schema loader with caching for Geotools' XML parser

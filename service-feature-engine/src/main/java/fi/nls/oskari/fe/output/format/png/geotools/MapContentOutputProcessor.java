@@ -1,17 +1,12 @@
 package fi.nls.oskari.fe.output.format.png.geotools;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -26,24 +21,8 @@ import org.geotools.map.MapViewport;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.sld.SLDConfiguration;
-import org.geotools.styling.DefaultResourceLocator;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Fill;
-import org.geotools.styling.Graphic;
-import org.geotools.styling.Mark;
-import org.geotools.styling.NamedLayer;
-import org.geotools.styling.NamedStyle;
-import org.geotools.styling.PointSymbolizer;
-import org.geotools.styling.PolygonSymbolizer;
-import org.geotools.styling.ResourceLocator;
-import org.geotools.styling.Rule;
-import org.geotools.styling.SLD;
+import org.geotools.styling.*;
 import org.geotools.styling.Stroke;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryImpl;
-import org.geotools.styling.StyledLayerDescriptor;
-import org.geotools.styling.UserLayer;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.json.JSONObject;
@@ -55,14 +34,13 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /* PoC which builds GeoTools Map to PNG */
 public class MapContentOutputProcessor extends AbstractOutputStreamProcessor

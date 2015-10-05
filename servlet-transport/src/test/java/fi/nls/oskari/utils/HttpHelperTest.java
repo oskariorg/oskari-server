@@ -1,13 +1,13 @@
 package fi.nls.oskari.utils;
 
-import static org.junit.Assert.*;
+import fi.nls.oskari.wfs.util.HttpHelper;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 
-import fi.nls.oskari.wfs.util.HttpHelper;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 
 public class HttpHelperTest {

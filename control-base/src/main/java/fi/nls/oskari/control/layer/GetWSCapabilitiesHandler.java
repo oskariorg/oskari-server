@@ -8,14 +8,13 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.nls.oskari.util.*;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Get capabilites for layer and returns JSON formatted as Oskari layers

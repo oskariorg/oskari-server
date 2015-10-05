@@ -1,20 +1,18 @@
 package fi.nls.oskari.integration.sotka;
 
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.log.LogFactory;
-
 import com.github.kevinsawicki.http.HttpRequest;
-
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Parser (JSON) for getting Sotka region ids and codes

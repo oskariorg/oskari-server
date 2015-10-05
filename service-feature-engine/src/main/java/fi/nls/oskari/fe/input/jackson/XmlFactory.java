@@ -1,20 +1,5 @@
 package fi.nls.oskari.fe.input.jackson;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
-
-import java.io.*;
-
-import javax.xml.stream.*;
-
-import org.codehaus.stax2.io.Stax2ByteArraySource;
-import org.codehaus.stax2.io.Stax2CharArraySource;
-
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
@@ -22,9 +7,11 @@ import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.core.util.VersionUtil;
+import org.codehaus.stax2.io.Stax2ByteArraySource;
+import org.codehaus.stax2.io.Stax2CharArraySource;
+
+import javax.xml.stream.*;
+import java.io.*;
 /**
 * Factory used for constructing {@link FromXmlParser} and {@link ToXmlGenerator}
 * instances.

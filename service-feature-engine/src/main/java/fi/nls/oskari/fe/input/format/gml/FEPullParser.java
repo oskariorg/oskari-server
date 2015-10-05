@@ -1,21 +1,20 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.geotools.xml.Configuration;
 import org.geotools.xml.impl.ElementHandler;
 import org.geotools.xml.impl.NodeImpl;
 import org.geotools.xml.impl.ParserHandler;
 import org.xml.sax.SAXException;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * XML pull parser capable of streaming.
