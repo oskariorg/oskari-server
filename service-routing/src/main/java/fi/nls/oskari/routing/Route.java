@@ -1,89 +1,92 @@
+
 package fi.nls.oskari.routing;
 
+<<<<<<< HEAD
+=======
 import com.fasterxml.jackson.annotation.*;
 
 import javax.annotation.Generated;
 import java.util.ArrayList;
+>>>>>>> a695feeb16ed7a21af6a1e56a079af63f987ac4d
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-        "length",
-        "duration",
-        "legs"
+    "requestParameters",
+    "plan",
+    "debugOutput"
 })
 public class Route {
 
-    @JsonProperty("length")
-    private Double length;
-    @JsonProperty("duration")
-    private Integer duration;
-    @JsonProperty("legs")
-    private List<Leg> legs = new ArrayList<Leg>();
+    @JsonProperty("requestParameters")
+    private RequestParameters requestParameters;
+    @JsonProperty("plan")
+    private Plan plan;
+    @JsonProperty("debugOutput")
+    private DebugOutput debugOutput;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
+     * 
      * @return
-     * The length
+     *     The requestParameters
      */
-    @JsonProperty("length")
-    public Double getLength() {
-        return length;
+    @JsonProperty("requestParameters")
+    public RequestParameters getRequestParameters() {
+        return requestParameters;
     }
 
     /**
-     *
-     * @param length
-     * The length
+     * 
+     * @param requestParameters
+     *     The requestParameters
      */
-    @JsonProperty("length")
-    public void setLength(Double length) {
-        this.length = length;
+    @JsonProperty("requestParameters")
+    public void setRequestParameters(RequestParameters requestParameters) {
+        this.requestParameters = requestParameters;
     }
 
     /**
-     *
+     * 
      * @return
-     * The duration
+     *     The plan
      */
-    @JsonProperty("duration")
-    public Integer getDuration() {
-        return duration;
+    @JsonProperty("plan")
+    public Plan getPlan() {
+        return plan;
     }
 
     /**
-     *
-     * @param duration
-     * The duration
+     * 
+     * @param plan
+     *     The plan
      */
-    @JsonProperty("duration")
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    @JsonProperty("plan")
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     /**
-     *
+     * 
      * @return
-     * The legs
+     *     The debugOutput
      */
-    @JsonProperty("legs")
-    public List<Leg> getLegs() {
-        return legs;
+    @JsonProperty("debugOutput")
+    public DebugOutput getDebugOutput() {
+        return debugOutput;
     }
 
     /**
-     *
-     * @param legs
-     * The legs
+     * 
+     * @param debugOutput
+     *     The debugOutput
      */
-    @JsonProperty("legs")
-    public void setLegs(List<Leg> legs) {
-        this.legs = legs;
+    @JsonProperty("debugOutput")
+    public void setDebugOutput(DebugOutput debugOutput) {
+        this.debugOutput = debugOutput;
     }
 
     @JsonAnyGetter
@@ -97,4 +100,3 @@ public class Route {
     }
 
 }
-
