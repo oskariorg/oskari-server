@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.32.2
+
+Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
+
+Error handling improved in analysis functionality. 
+
 ## 1.32.1
 
 ### database/flywaydb
