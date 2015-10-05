@@ -35,6 +35,12 @@ but defaults to the basic url. This means that proxying WMTS-layers with resourc
 
 Added functionality for saving / restoring a user defined default view.
 
+## 1.32.2
+
+Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
+
+Error handling improved in analysis functionality. 
+
 ## 1.32.1
 
 ### database/flywaydb
