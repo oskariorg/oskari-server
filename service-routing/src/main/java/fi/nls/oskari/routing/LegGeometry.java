@@ -1,3 +1,4 @@
+
 package fi.nls.oskari.routing;
 
 import java.util.HashMap;
@@ -13,57 +14,56 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-        "x",
-        "y"
+    "points",
+    "length"
 })
+public class LegGeometry {
 
-public class Coord {
-
-    @JsonProperty("x")
-    private Integer x;
-    @JsonProperty("y")
-    private Integer y;
+    @JsonProperty("points")
+    private String points;
+    @JsonProperty("length")
+    private Long length;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     *
+     * 
      * @return
-     * The x
+     *     The points
      */
-    @JsonProperty("x")
-    public Integer getX() {
-        return x;
+    @JsonProperty("points")
+    public String getPoints() {
+        return points;
     }
 
     /**
-     *
-     * @param x
-     * The x
+     * 
+     * @param points
+     *     The points
      */
-    @JsonProperty("x")
-    public void setX(Integer x) {
-        this.x = x;
+    @JsonProperty("points")
+    public void setPoints(String points) {
+        this.points = points;
     }
 
     /**
-     *
+     * 
      * @return
-     * The y
+     *     The length
      */
-    @JsonProperty("y")
-    public Integer getY() {
-        return y;
+    @JsonProperty("length")
+    public Long getLength() {
+        return length;
     }
 
     /**
-     *
-     * @param y
-     * The y
+     * 
+     * @param length
+     *     The length
      */
-    @JsonProperty("y")
-    public void setY(Integer y) {
-        this.y = y;
+    @JsonProperty("length")
+    public void setLength(Long length) {
+        this.length = length;
     }
 
     @JsonAnyGetter
