@@ -1,13 +1,12 @@
 package fi.nls.oskari.map.analysis.domain;
 
-import java.io.IOException;
-import java.util.List;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.util.List;
 
 public class AggregateMethodParams extends AnalysisMethodParams {
 

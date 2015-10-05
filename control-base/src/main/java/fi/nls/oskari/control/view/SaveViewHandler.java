@@ -11,11 +11,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 

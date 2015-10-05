@@ -1,13 +1,12 @@
 package fi.nls.oskari.printout.breeding;
 
-import java.util.Date;
-import java.util.Vector;
-
-import org.geowebcache.grid.BoundingBox;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
+import org.geowebcache.grid.BoundingBox;
+
+import java.util.Date;
+import java.util.Vector;
 
 public class WorkingSet implements Constants {
 

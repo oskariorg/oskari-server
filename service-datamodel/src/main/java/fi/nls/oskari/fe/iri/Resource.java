@@ -1,9 +1,8 @@
 package fi.nls.oskari.fe.iri;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.UUID;
-
-import javax.xml.namespace.QName;
 
 public class Resource implements Serializable {
 

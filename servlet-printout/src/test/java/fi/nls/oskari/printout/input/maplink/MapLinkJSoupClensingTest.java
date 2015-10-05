@@ -1,11 +1,11 @@
 package fi.nls.oskari.printout.input.maplink;
 
-import static org.junit.Assert.assertTrue;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class MapLinkJSoupClensingTest {
 

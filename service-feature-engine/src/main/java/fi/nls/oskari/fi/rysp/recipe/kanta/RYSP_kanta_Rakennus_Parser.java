@@ -1,11 +1,11 @@
 package fi.nls.oskari.fi.rysp.recipe.kanta;
 
-import java.io.IOException;
-
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML31;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Rakennus.Rakennus;
 import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Rakennus.Sijainti;
+
+import java.io.IOException;
 
 public class RYSP_kanta_Rakennus_Parser extends GML31 {
 

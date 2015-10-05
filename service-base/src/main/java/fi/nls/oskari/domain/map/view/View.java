@@ -4,10 +4,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.Serializable;
 import java.util.Map;
 
 public class View implements Serializable {

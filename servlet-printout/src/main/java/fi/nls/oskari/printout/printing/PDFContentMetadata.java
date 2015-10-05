@@ -17,12 +17,12 @@ package fi.nls.oskari.printout.printing;
  * limitations under the License.
  */
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.jempbox.xmp.XMPMetadata;
 import org.apache.jempbox.xmp.XMPSchema;
 import org.w3c.dom.Element;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Define XMP properties used with the Dublin Core specification.

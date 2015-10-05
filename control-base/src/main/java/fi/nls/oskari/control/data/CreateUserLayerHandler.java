@@ -9,34 +9,32 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
-
-import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.*;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
+import fi.nls.oskari.util.FileHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 @OskariActionRoute("CreateUserLayer")
@@ -53,6 +51,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
+    private static final int MAX_FILES_IN_ZIP = 100;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -207,7 +206,13 @@ public class CreateUserLayerHandler extends ActionHandler {
             zis = new ZipInputStream(zipFile.getInputStream());
             ZipEntry ze = zis.getNextEntry();
             String filesBaseName = null;
+            int fileCount = 0;
             while (ze != null) {
+                fileCount++;
+                if(fileCount > MAX_FILES_IN_ZIP) {
+                    // safeguard against infinite loop, userlayers shouldn't have this many files in any case
+                    break;
+                }
 
                 if (ze.isDirectory()) {
                     zis.closeEntry();
@@ -216,6 +221,8 @@ public class CreateUserLayerHandler extends ActionHandler {
                 }
                 FileHelper file = handleZipEntry(ze, zis, filesBaseName);
                 if(file == null) {
+                    zis.closeEntry();
+                    ze = zis.getNextEntry();
                     continue;
                 }
 
@@ -233,6 +240,9 @@ public class CreateUserLayerHandler extends ActionHandler {
             IOHelper.close(zis);
         }
 
+        if(mainFile == null) {
+            return null;
+        }
         return mainFile.getFile();
     }
 
@@ -243,7 +253,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             return null;
         }
 
-        // TODO: "The prefix string must be at least three characters long" maybe check this?
+        // TODO: File.createTempFile() says "The prefix string must be at least three characters long" maybe check this?
         File newFile = null;
         FileOutputStream fos = null;
         try {

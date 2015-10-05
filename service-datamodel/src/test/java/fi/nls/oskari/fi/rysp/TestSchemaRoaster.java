@@ -1,24 +1,14 @@
 package fi.nls.oskari.fi.rysp;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.namespace.QName;
-
+import fi.nls.oskari.fe.datamodel.SchemaRoaster;
+import fi.nls.oskari.fe.datamodel.TestHelper;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
-import fi.nls.oskari.fe.datamodel.SchemaRoaster;
-import fi.nls.oskari.fe.datamodel.TestHelper;
-import fi.nls.oskari.fe.xml.util.Nillable;
-import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Rakennus.A_1_featureMember;
-import fi.nls.oskari.fi.rysp.kantakartta.RYSP_kanta_Rakennus.RakennuksenOsa;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class TestSchemaRoaster extends TestHelper {
     static final Logger logger = Logger.getLogger(TestSchemaRoaster.class);

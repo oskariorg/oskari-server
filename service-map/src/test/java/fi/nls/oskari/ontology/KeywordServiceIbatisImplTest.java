@@ -1,9 +1,9 @@
 package fi.nls.oskari.ontology;
 
-import org.junit.Test;
-import static junit.framework.Assert.*;
-
 import fi.nls.oskari.ontology.service.KeywordServiceIbatisImpl;
+import org.junit.Test;
+
+import static junit.framework.Assert.assertTrue;
 
 public class KeywordServiceIbatisImplTest {
 

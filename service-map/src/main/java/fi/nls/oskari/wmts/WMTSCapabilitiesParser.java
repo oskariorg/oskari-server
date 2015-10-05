@@ -1,7 +1,5 @@
 package fi.nls.oskari.wmts;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wmts.domain.TileMatrixLimits;

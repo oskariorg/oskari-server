@@ -11,7 +11,8 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
-import static fi.nls.oskari.control.statistics.util.Constants.*;
+import static fi.nls.oskari.control.statistics.util.Constants.PARAM_DATASOURCE;
+import static fi.nls.oskari.control.statistics.util.Constants.PARAM_ID;
 
 /**
  * Returns metadata for indicator in statistical datasource registered to Oskari.

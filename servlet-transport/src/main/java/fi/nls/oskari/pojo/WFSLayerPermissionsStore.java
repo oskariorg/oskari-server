@@ -1,19 +1,18 @@
 package fi.nls.oskari.pojo;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.wfs.extension.MyPlacesFilter;
 import fi.nls.oskari.wfs.extension.UserLayerFilter;
 
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.PropertyUtil;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * handles user's permissions

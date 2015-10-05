@@ -1,14 +1,5 @@
 package fi.nls.oskari.eu.elf.hydronetwork;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.log4j.Logger;
-import org.junit.Test;
-
 import fi.nls.oskari.eu.elf.recipe.hydronetwork.ELF_MasterLoD1_WatercourseLink_Parser;
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -17,6 +8,13 @@ import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
+import org.apache.log4j.Logger;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class TestJacksonParser extends TestHelper {
 

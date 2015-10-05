@@ -1,26 +1,16 @@
 package fi.nls.oskari.printout.breeding;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Vector;
+import com.vividsolutions.jts.geom.*;
+import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.config.XMLConfiguration;
+import org.geowebcache.grid.*;
+import org.geowebcache.layer.TileLayer;
 
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
-
-import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.config.XMLConfiguration;
-import org.geowebcache.grid.BoundingBox;
-import org.geowebcache.grid.Grid;
-import org.geowebcache.grid.GridSet;
-import org.geowebcache.grid.GridSetBroker;
-import org.geowebcache.grid.GridSubset;
-import org.geowebcache.layer.TileLayer;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Vector;
 
 public class WorkingSetProcessor {
 

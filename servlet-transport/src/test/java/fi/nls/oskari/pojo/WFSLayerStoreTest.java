@@ -1,11 +1,11 @@
 package fi.nls.oskari.pojo;
 
-import static org.junit.Assert.*;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 public class WFSLayerStoreTest {
 

@@ -1,11 +1,10 @@
 package fi.nls.oskari.printout.breeding;
 
-import java.util.Date;
-import java.util.Vector;
-
+import com.vividsolutions.jts.geom.Polygon;
 import org.geowebcache.grid.BoundingBox;
 
-import com.vividsolutions.jts.geom.Polygon;
+import java.util.Date;
+import java.util.Vector;
 
 
 public class ChangeSet implements Constants {

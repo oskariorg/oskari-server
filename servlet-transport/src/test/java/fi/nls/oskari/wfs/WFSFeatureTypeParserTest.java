@@ -1,16 +1,16 @@
 package fi.nls.oskari.wfs;
 
-import static org.junit.Assert.*;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import fi.nls.oskari.wfs.WFSFeatureTypeParser;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeatureType;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class WFSFeatureTypeParserTest {
 	private static WFSLayerStore layer;

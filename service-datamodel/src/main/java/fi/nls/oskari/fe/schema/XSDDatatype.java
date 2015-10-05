@@ -1,5 +1,8 @@
 package fi.nls.oskari.fe.schema;
 
+import fi.nls.oskari.fe.iri.Resource;
+
+import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -7,10 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import fi.nls.oskari.fe.iri.Resource;
 
 /* copy-paste-mod from Jena's XSDDatatype (jena.apache.org) */
 

@@ -1,14 +1,8 @@
 package fi.nls.oskari.wfs;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import com.vividsolutions.jts.geom.*;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
@@ -25,18 +19,8 @@ import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.math.BigInteger;
+import java.util.*;
 
 public class WFSFeatureTypeParser {
     private static final Logger log = LogFactory.getLogger(WFSFeatureTypeParser.class);

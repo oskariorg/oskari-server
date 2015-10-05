@@ -1,17 +1,5 @@
 package fi.nls.oskari.eu.inspire.roadtransportnetwork;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.log4j.Logger;
-import org.geotools.styling.Style;
-import org.junit.Test;
-
 import fi.nls.oskari.eu.inspire.recipe.roadtransportnetwork.INSPIRE_TN_RoadLink;
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -23,6 +11,12 @@ import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.json.LegacyJsonOutputProcessor;
 import fi.nls.oskari.fe.output.format.jsonld.JsonLdOutputProcessor;
 import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
+import org.apache.log4j.Logger;
+import org.geotools.styling.Style;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.*;
 
 public class TestJacksonParser extends TestHelper {
     static final Logger logger = Logger.getLogger(TestJacksonParser.class);

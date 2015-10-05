@@ -22,6 +22,10 @@ The functionality removes the protocol part of layer url and servers the url pre
 
 Added handling for WMTS-layers with resourceURL.
 
+#### GetWSCapabilities
+
+When adding layers the capabilities parser now includes layer styles correctly.
+
 ### service-map
 
 LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
@@ -30,6 +34,12 @@ but defaults to the basic url. This means that proxying WMTS-layers with resourc
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
+
+## 1.32.2
+
+Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
+
+Error handling improved in analysis functionality. 
 
 ## 1.32.1
 

@@ -1,10 +1,10 @@
 package fi.nls.oskari.map.data.service;
 
-import java.util.List;
-
 import fi.nls.oskari.domain.map.PublishedMapUrl;
 import fi.nls.oskari.domain.map.PublishedMapUsage;
 import fi.nls.oskari.service.db.BaseService;
+
+import java.util.List;
 
 public interface PublishedMapRestrictionService extends BaseService<PublishedMapUsage> {
 

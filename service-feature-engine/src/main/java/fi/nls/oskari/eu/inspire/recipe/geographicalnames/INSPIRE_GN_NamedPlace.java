@@ -1,11 +1,12 @@
 package fi.nls.oskari.eu.inspire.recipe.geographicalnames;
 
-import java.io.IOException;
-
-//import fi.nls.oskari.eu.inspire.gmlas.geographicalnames.NamedPlace;
 import fi.nls.oskari.eu.inspire.geographicalnames.INSPIRE_gn_NamedPlace.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
+
+//import fi.nls.oskari.eu.inspire.gmlas.geographicalnames.NamedPlace;
 
 public class INSPIRE_GN_NamedPlace extends GML32 {
 

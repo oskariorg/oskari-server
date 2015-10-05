@@ -1,6 +1,12 @@
 package fi.nls.oskari.printout.ws.jaxrs.resource;
 
-import static org.junit.Assert.assertTrue;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import fi.nls.oskari.printout.ws.WsTestResources;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,15 +15,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-
-import fi.nls.oskari.printout.output.map.MapProducer;
-import fi.nls.oskari.printout.ws.WsTestResources;
+import static org.junit.Assert.assertTrue;
 
 public class FontPostJsonTest {
 

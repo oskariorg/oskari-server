@@ -3,7 +3,7 @@ package fi.nls.oskari.util;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by SMAKINEN on 15.4.2015.

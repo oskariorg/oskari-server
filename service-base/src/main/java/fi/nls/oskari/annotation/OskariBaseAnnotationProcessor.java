@@ -1,8 +1,6 @@
 package fi.nls.oskari.annotation;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;

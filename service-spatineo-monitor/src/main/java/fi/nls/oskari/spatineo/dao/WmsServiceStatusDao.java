@@ -11,7 +11,6 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * Data access to the Oskari / Portti database WMS service status information.

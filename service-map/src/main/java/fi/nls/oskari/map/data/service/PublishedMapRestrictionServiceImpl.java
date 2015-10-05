@@ -1,15 +1,14 @@
 package fi.nls.oskari.map.data.service;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
-
 import fi.nls.oskari.domain.map.PublishedMapUrl;
 import fi.nls.oskari.domain.map.PublishedMapUsage;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class PublishedMapRestrictionServiceImpl extends BaseIbatisService<PublishedMapUsage> implements PublishedMapRestrictionService {
 

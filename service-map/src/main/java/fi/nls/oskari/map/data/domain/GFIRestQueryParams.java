@@ -1,8 +1,5 @@
 package fi.nls.oskari.map.data.domain;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 

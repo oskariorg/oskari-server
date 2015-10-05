@@ -1,23 +1,18 @@
 package fi.nls.oskari.work.fe;
 
-import static org.junit.Assert.assertTrue;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.Layer;
+import fi.nls.oskari.pojo.SessionStore;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.JobValidator;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.Layer;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.ResultProcessor;
+import static org.junit.Assert.assertTrue;
 
 public class RYSP_FeatureEngineMapLayerJobTest {
     protected static final Logger log = LogFactory

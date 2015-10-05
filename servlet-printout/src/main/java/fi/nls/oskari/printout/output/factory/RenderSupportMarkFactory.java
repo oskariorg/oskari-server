@@ -1,11 +1,10 @@
 package fi.nls.oskari.printout.output.factory;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-
 import org.geotools.renderer.style.MarkFactory;
 import org.opengis.feature.Feature;
 import org.opengis.filter.expression.Expression;
+
+import java.awt.*;
 
 public class RenderSupportMarkFactory implements MarkFactory {
 

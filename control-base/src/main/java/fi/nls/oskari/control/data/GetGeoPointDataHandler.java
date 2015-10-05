@@ -1,25 +1,24 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.data.domain.GFIRequestParams;
+import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.map.data.service.GetGeoPointDataService;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @OskariActionRoute("GetFeatureInfoWMS")
 public class GetGeoPointDataHandler extends ActionHandler {

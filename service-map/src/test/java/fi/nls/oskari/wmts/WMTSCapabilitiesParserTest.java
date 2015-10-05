@@ -3,15 +3,10 @@ package fi.nls.oskari.wmts;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.XmlHelper;
 import fi.nls.test.util.ResourceHelper;
-import org.apache.axiom.om.OMElement;
 import org.json.JSONObject;
-import org.json.XML;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created with IntelliJ IDEA.

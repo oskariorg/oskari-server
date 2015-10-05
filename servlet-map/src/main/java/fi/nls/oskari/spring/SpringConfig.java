@@ -1,9 +1,9 @@
 package fi.nls.oskari.spring;
 
-import fi.nls.oskari.servlet.WebappHelper;
 import fi.nls.oskari.control.ActionControl;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.servlet.WebappHelper;
 import fi.nls.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import fi.nls.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;

@@ -1,27 +1,19 @@
 package fi.nls.oskari.eu.elf.administrativeunits;
 
-import java.net.URI;
-
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import fi.nls.oskari.fe.gml.util.CodeType;
-import fi.nls.oskari.isotc211.gco.Distance;
-import fi.nls.oskari.isotc211.gmd.LocalisedCharacterString;
-import javax.xml.bind.annotation.XmlElement;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import javax.xml.namespace.QName;
-import javax.xml.bind.annotation.XmlAttribute;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-import java.util.Calendar;
-import java.math.BigInteger;
-import java.util.logging.Logger;
-
+import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
 import fi.nls.oskari.fe.gml.util.BoundingProperty;
+import fi.nls.oskari.fe.gml.util.CodeType;
+import fi.nls.oskari.fe.gml.util.GeometryProperty;
 import fi.nls.oskari.fe.gml.util.LocationProperty;
 import fi.nls.oskari.fe.xml.util.NillableType;
-import fi.nls.oskari.fe.gml.util.GeometryProperty;
-import fi.nls.oskari.eu.inspire.schemas.base.Identifier;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
+import java.util.logging.Logger;
 
 public class ELF_MasterLoD1_AdministrativeBoundary
 {

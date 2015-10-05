@@ -16,7 +16,9 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.worker.ScheduledJob;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Scheduled job for retrieving coverage data for maplayers having metadataids.

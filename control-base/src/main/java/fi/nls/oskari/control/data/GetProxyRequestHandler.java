@@ -6,7 +6,6 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
 import fi.nls.oskari.service.ProxyService;
 import fi.nls.oskari.util.ResponseHelper;
 

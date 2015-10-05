@@ -1,6 +1,7 @@
 package fi.nls.oskari.control;
 
-import com.codahale.metrics.*;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

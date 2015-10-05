@@ -11,10 +11,10 @@ import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.LayerGroupServiceIbatisImpl;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import fi.nls.oskari.util.PropertyUtil;
 
 import java.net.URL;
 import java.util.HashMap;

@@ -20,13 +20,11 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
-
-import java.net.URLDecoder;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;

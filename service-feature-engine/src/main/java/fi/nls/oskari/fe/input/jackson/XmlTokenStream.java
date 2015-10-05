@@ -1,16 +1,16 @@
 package fi.nls.oskari.fe.input.jackson;
 
 
-import java.io.IOException;
-
-import javax.xml.stream.*;
-
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
 
 /**
  * Simple helper class used on top of STAX {@link javax.xml.stream.XMLStreamReader} to further

@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.

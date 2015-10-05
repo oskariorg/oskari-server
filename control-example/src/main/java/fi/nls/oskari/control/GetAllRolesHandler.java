@@ -9,9 +9,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Example route returning all roles in the system.
  * @author SMAKINEN

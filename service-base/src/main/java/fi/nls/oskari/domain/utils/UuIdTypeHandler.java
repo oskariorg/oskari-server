@@ -1,17 +1,14 @@
 package fi.nls.oskari.domain.utils;
 
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.UUID;
-
-import org.json.JSONObject;
-
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
 import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.UUID;
 
 public class UuIdTypeHandler implements TypeHandlerCallback {
 

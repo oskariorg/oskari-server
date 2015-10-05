@@ -1,6 +1,5 @@
 package fi.nls.oskari.eu.elf.recipe.addresses;
 
-import fi.nls.oskari.eu.elf.addresses.ELF_MasterLoD0_Address;
 import fi.nls.oskari.eu.elf.addresses.ELF_MasterLoD0_Address.Address;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;

@@ -1,8 +1,8 @@
 package fi.nls.oskari.fe.xml.util;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
+import javax.xml.bind.annotation.XmlAttribute;
 
 public class Nillable extends Reference {
 

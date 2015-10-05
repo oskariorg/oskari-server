@@ -1,8 +1,8 @@
 package fi.nls.oskari.search.util;
 
-import java.util.Comparator;
-
 import fi.mml.portti.service.search.SearchResultItem;
+
+import java.util.Comparator;
 
 public class StreetNameComparator implements Comparator<SearchResultItem>{
 

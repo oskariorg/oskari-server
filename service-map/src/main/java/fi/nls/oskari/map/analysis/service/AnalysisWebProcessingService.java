@@ -1,33 +1,26 @@
 package fi.nls.oskari.map.analysis.service;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
-import fi.nls.oskari.util.JSONHelper;
-
-
-import org.geotools.feature.FeatureCollection;
-import org.geotools.geojson.feature.FeatureJSON;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.w3c.dom.Document;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import java.io.*;
+import java.net.HttpURLConnection;
 
 public class AnalysisWebProcessingService {
 

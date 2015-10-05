@@ -1,15 +1,14 @@
 package fi.nls.oskari.printout.ws.jaxrs.format;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * writes out featurecollection as a JAX-RS result

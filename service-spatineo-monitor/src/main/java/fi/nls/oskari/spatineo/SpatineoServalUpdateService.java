@@ -13,7 +13,6 @@ import fi.nls.oskari.spatineo.dto.PorttiBackendStatusDto;
 import fi.nls.oskari.spatineo.dto.SpatineoResponseDto;
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 /**

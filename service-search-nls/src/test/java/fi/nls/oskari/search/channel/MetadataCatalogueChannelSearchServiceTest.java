@@ -8,11 +8,12 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class MetadataCatalogueChannelSearchServiceTest {
     private MetadataCatalogueChannelSearchService channel = null;

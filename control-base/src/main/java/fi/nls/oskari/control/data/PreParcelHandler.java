@@ -1,7 +1,9 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.myplaces.domain.ProxyRequest;
@@ -15,7 +17,6 @@ import org.jsoup.safety.Whitelist;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-
 import java.util.Enumeration;
 
 /**

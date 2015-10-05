@@ -16,10 +16,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wfs.CachingSchemaLocator;
 import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.work.JobHelper;
-import fi.nls.oskari.work.WFSMapLayerJob;
-import fi.nls.oskari.work.hystrix.HystrixJob;
 import fi.nls.oskari.work.hystrix.HystrixJobQueue;
-import fi.nls.oskari.worker.JobQueue;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

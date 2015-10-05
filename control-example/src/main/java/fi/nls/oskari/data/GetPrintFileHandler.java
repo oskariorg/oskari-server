@@ -1,16 +1,12 @@
 package fi.nls.oskari.data;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.*;
-import org.apache.xmlbeans.impl.xb.ltgfmt.TestCase;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 

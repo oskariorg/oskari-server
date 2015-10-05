@@ -1,30 +1,23 @@
 package fi.nls.oskari.printout.input.layers;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
-
 import fi.nls.oskari.printout.config.ConfigValue;
 import fi.nls.oskari.printout.input.layers.LayerDefinition.Style;
 import fi.nls.oskari.printout.input.maplink.MapLink;
 import fi.nls.oskari.printout.input.maplink.MapLinkParser;
 import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
+import org.geotools.feature.FeatureCollection;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * This class parses layer json and sets up layerdefinition objects. Uses

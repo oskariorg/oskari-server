@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import static fi.nls.oskari.control.ActionConstants.*;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -17,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import static fi.nls.oskari.control.ActionConstants.*;
 
 @OskariActionRoute("GetViews")
 public class GetViewsHandler extends ActionHandler {

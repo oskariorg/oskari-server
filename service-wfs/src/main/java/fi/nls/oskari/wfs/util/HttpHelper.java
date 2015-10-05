@@ -1,14 +1,13 @@
 package fi.nls.oskari.wfs.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 
 /**
  * Implements HTTP request and response methods

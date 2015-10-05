@@ -1,11 +1,11 @@
 package fi.nls.oskari.fe.output.jackson;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import fi.nls.oskari.fe.gml.util.GeometryProperty;
+
+import java.io.IOException;
 
 public class LegacyGeometryPropertySerializer extends
         JsonSerializer<GeometryProperty> {

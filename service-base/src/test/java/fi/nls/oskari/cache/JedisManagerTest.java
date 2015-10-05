@@ -3,13 +3,11 @@ package fi.nls.oskari.cache;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
 
 import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @Ignore
 public class JedisManagerTest {

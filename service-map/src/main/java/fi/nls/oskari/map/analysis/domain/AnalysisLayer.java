@@ -1,16 +1,15 @@
 package fi.nls.oskari.map.analysis.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import fi.mml.portti.domain.permissions.Permissions;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.domain.map.analysis.Analysis;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalysisLayer {
     public static final String TYPE = "analysislayer";

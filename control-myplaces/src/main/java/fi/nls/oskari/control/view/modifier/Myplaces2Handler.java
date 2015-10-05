@@ -3,16 +3,15 @@ package fi.nls.oskari.control.view.modifier;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @OskariViewModifier("myplaces2")
 public class Myplaces2Handler extends BundleHandler {

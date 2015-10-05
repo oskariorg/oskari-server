@@ -8,7 +8,6 @@ import fi.nls.oskari.control.sotka.requests.SotkaRequest;
 import fi.nls.oskari.integration.sotka.SotkaRegionParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;

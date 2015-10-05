@@ -1,13 +1,13 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import fi.mml.map.mapwindow.util.RemoteServiceDownException;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.mml.map.mapwindow.util.RemoteServiceDownException;
-import fi.nls.oskari.cache.Cache;
-import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.wms.WMSCapabilities;
 

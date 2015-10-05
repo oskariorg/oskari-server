@@ -1,10 +1,10 @@
 package fi.nls.oskari.log;
 
-import java.io.StringWriter;
-import java.util.*;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import java.io.StringWriter;
+import java.util.*;
 
 public abstract class Logger {
 

@@ -2,9 +2,10 @@ package fi.nls.oskari.work.fe;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.work.*;
+import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.MapLayerJobProvider;
+import fi.nls.oskari.work.ResultProcessor;
 import fi.nls.oskari.worker.Job;
 
 /**
