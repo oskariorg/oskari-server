@@ -13,12 +13,21 @@ import org.geotools.data.ows.*;
 import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.data.wms.xml.MetadataURL;
+import org.geotools.data.wms.xml.WMSSchema;
+import org.geotools.xml.DocumentFactory;
+import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Methods for parsing WMS capabilities data
@@ -32,6 +41,26 @@ public class GetGtWMSCapabilities {
     private final static String GROUP_LAYER_TYPE = "grouplayer";
     private final static LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
 
+
+    // based on https://github.com/geotools/geotools/blob/master/modules/extension/wms/src/test/java/org/geotools/data/wms/test/WMS1_0_0_OnlineTest.java#L253-L276
+    public WMSCapabilities createCapabilities( String xml ) throws Exception {
+        if(xml == null || xml.isEmpty()) {
+            return null;
+        }
+        Map hints = new HashMap();
+        hints.put(DocumentHandler.DEFAULT_NAMESPACE_HINT_KEY, WMSSchema.getInstance());
+        try(InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
+
+            Object object = DocumentFactory.getInstance(stream, hints, Level.WARNING);
+            if(object instanceof WMSCapabilities) {
+                return (WMSCapabilities) object;
+            }
+        } catch (Exception ex) {
+            log.error(ex, "Error reading WMS capabilities");
+        }
+
+        return null;
+    }
     /**
      * Get all WMS layers data in JSON  ( layer tree groups->groups/layers->groups/layers...
      *
