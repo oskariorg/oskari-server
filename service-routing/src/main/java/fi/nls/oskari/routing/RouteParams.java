@@ -13,14 +13,14 @@ public class RouteParams {
 
     private Point from;
     private Point to;
-    private Point via;
     private Date date;
-    private Boolean isDepartureTime;
-    private int minutesSpentInVia;
-    private String ticketZone;
-    private String transportTypes;
+    private Boolean isArriveBy;
     private String srs;
     private String lang;
+    private String mode;
+    private long maxWalkDistance;
+    private Boolean isWheelChair;
+
 
     private Point createPoint(Double x, Double y) {
         GeometryFactory factory = new GeometryFactory();
@@ -51,14 +51,6 @@ public class RouteParams {
         this.to = createPoint(lat,lon);
     }
 
-    public Point getVia() {
-        return via;
-    }
-
-    public void setVia(Double lat, Double lon) {
-        this.via = createPoint(lat,lon);
-    }
-
     public Date getDate() {
         if(date == null) {
             return null;
@@ -72,35 +64,12 @@ public class RouteParams {
         }
     }
 
-    public Boolean getIsDepartureTime() {
-        return isDepartureTime;
+    public Boolean getIsArriveBy() {
+        return isArriveBy;
     }
 
-    public void setIsDepartureTime(Boolean isDepartureTime) {
-        this.isDepartureTime = isDepartureTime;
-    }
-
-    public int getMinutesSpentInVia() {
-        return minutesSpentInVia;
-    }
-
-    public void setMinutesSpentInVia(int minutesSpentInVia) {
-        this.minutesSpentInVia = minutesSpentInVia;
-    }
-
-    public String getTicketZone() {
-        return ticketZone;
-    }
-    public void setTicketZone(String ticketZone) {
-        this.ticketZone = ticketZone;
-    }
-
-    public String getTransportTypes() {
-        return transportTypes;
-    }
-
-    public void setTransportTypes(String transportTypes) {
-        this.transportTypes = transportTypes;
+    public void setIsArriveBy(Boolean isArriveBy) {
+        this.isArriveBy = isArriveBy;
     }
 
     public String getSrs() {
@@ -112,6 +81,27 @@ public class RouteParams {
     }
 
 
+    public String getMode() {
+        return mode;
+    }
 
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
 
+    public long getMaxWalkDistance() {
+        return maxWalkDistance;
+    }
+
+    public void setMaxWalkDistance(long maxWalkDistance) {
+        this.maxWalkDistance = maxWalkDistance;
+    }
+
+    public Boolean getIsWheelChair() {
+        return isWheelChair;
+    }
+
+    public void setIsWheelChair(Boolean isWheelChair) {
+        this.isWheelChair = isWheelChair;
+    }
 }

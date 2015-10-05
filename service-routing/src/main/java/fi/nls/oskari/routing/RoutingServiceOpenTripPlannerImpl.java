@@ -2,7 +2,10 @@ package fi.nls.oskari.routing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.domain.geo.Point;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
@@ -18,20 +21,24 @@ import java.util.Map;
  * Created by SMAKINEN on 26.6.2015.
  */
 public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
+    private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImpl.class);
+
+    private static final String PARAM_FROM_PLACE = "fromPlace";
+    private static final String PARAM_TO_PLACE = "toPlace";
+    private static final String PARAM_MODE = "mode";
+    private static final String PARAM_MAX_WALK_DISTANCE = "maxWalkDistance";
+    private static final String PARAM_WHEELCHAIR = "wheelchair";
+    private static final String PARAM_LOCALE = "locale";
+    private static final String PROPERTY_USER = "routing.user";
+    private static final String PROPERTY_PASSWORD = "routing.password";
+
 
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public List<RouteResponse> getRoute(RouteParams params) {
-
         RouteParser parser = new RouteParser();
-
         Map<String, String> requestParams = new HashMap<String, String>();
-
-        requestParams.put("user", PropertyUtil.get("routing.user"));
-        requestParams.put("pass", PropertyUtil.get("routing.password"));
-        requestParams.put("request", "route");
-        requestParams.put("detail", "full");
 
         //Transform coordinates for the route service
         String targetSRS = PropertyUtil.get("routing.srs");
@@ -39,36 +46,41 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         Point newFrom = ProjectionHelper.transformPoint(params.getFrom().getX(), params.getFrom().getY(), sourceSRS, targetSRS);
         Point newTo = ProjectionHelper.transformPoint(params.getTo().getX(), params.getTo().getY(), sourceSRS, targetSRS);
 
-        final String from = newFrom.getLatToString() + "," + newFrom.getLonToString();
-        requestParams.put("from", from);
+        final String from =  newFrom.getLonToString() + "," + newFrom.getLatToString();
+        requestParams.put(PARAM_FROM_PLACE, from);
 
-        final String to = newTo.getLatToString() + "," + newTo.getLonToString();
-        requestParams.put("to", to);
+        final String to = newTo.getLonToString() + "," + newTo.getLatToString();
+        requestParams.put(PARAM_TO_PLACE, to);
 
         setupDateAndTime(params, requestParams);
 
-        if (params.getVia() != null) {
-            final String via = params.getVia().getX() + "," + params.getVia().getY();
-            requestParams.put("via", via);
-            final String viatime = "" + params.getMinutesSpentInVia();
-            requestParams.put("via_time", viatime);
-        }
-
-        if (params.getTicketZone() !=null) {
-            requestParams.put("zone", params.getTicketZone());
-        }
-
-        if (params.getTransportTypes() != null) {
-            requestParams.put("transport_types", params.getTransportTypes());
-        }
+        // mode can be a one of this or combine: BUSISH, TRAINISH, AIRPLANE, BICYCLE, WALK, TRANSIT, CAR, CAR_PARK, BICYCLE_PARK
+        requestParams.put(PARAM_MODE, params.getMode());
+        requestParams.put(PARAM_MAX_WALK_DISTANCE, Long.toString(params.getMaxWalkDistance()));
+        requestParams.put(PARAM_WHEELCHAIR, params.getIsWheelChair().toString());
+        requestParams.put(PARAM_LOCALE, params.getLang());
 
 
         final String requestUrl = IOHelper.constructUrl(PropertyUtil.get("routing.url"), requestParams);
-
         List<RouteResponse> result = new ArrayList<>();
 
         try {
-            final String routeJson = IOHelper.getURL(requestUrl);
+            LOGGER.debug(requestUrl);
+            final Map<String, String> headers = new HashMap<String,String>();
+            headers.put("Accecpt", "application/json");
+            String routeJson = null;
+            if(PropertyUtil.get(PROPERTY_USER) != null && PropertyUtil.get(PROPERTY_PASSWORD) != null) {
+                routeJson = IOHelper.getURL(requestUrl, PropertyUtil.get(PROPERTY_USER), PropertyUtil.get(PROPERTY_PASSWORD), headers, "UTF-8");
+            } else {
+                routeJson = IOHelper.getURL(requestUrl,headers, "UTF-8");
+            }
+            LOGGER.debug(routeJson);
+
+            // FIXME route parsing not working anymore because of service change
+            // Point parsing: https://github.com/opentripplanner/OpenTripPlanner/blob/e35ceb7042bd81889b947e38afe30a98a0d8b042/src/main/java/org/opentripplanner/util/PolylineEncoder.java
+            // Geometry is Google encoded polyline, need convert to points and then generate geoJSON
+            // https://developers.google.com/maps/documentation/utilities/polylineutilityiintellij idea
+
 
             List<List<Route>> routeList = mapper.readValue(routeJson, mapper.getTypeFactory().constructCollectionType(List.class, mapper.getTypeFactory().constructCollectionType(List.class, Route.class)));
 
@@ -95,16 +107,21 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         if (params.getDate() == null) {
             return;
         }
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("HHmm");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+        // FIXME use en_US format
+        SimpleDateFormat timeAmPmFormatter = new SimpleDateFormat("a");
+        
         final String date = dateFormatter.format(params.getDate());
         requestParams.put("date", date);
         final String time = timeFormatter.format(params.getDate());
-        requestParams.put("time", time);
-        // if don't have time, we can't have timetype
-        // departure is default
-        if (!params.getIsDepartureTime()) {
-            requestParams.put("timetype", "arrival");
+        final String amOrPm = timeAmPmFormatter.format(params.getDate());
+        requestParams.put("time", time + amOrPm);
+
+        if (params.getIsArriveBy()) {
+            requestParams.put("arriveBy", "true");
+        } else {
+            requestParams.put("arriveBy", "false");
         }
 
     }
