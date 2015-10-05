@@ -374,7 +374,9 @@ public class WFSFilterBuilder {
      */
     private static String getFilterAsString(final Filter all) {
 
-        if (all == null) return null;
+        if (all == null) {
+            return null;
+        }
 
         final Configuration conf2 = new org.geotools.filter.v1_1.OGCConfiguration();
         final Encoder encoder = new Encoder(conf2);
@@ -398,12 +400,14 @@ public class WFSFilterBuilder {
      * @throws JSONException
      */
     private static Filter getFeatureIdFilters(final JSONObject filter_js) {
-        Set<FeatureId> selected = new HashSet<FeatureId>();
+        Set<FeatureId> selected = new HashSet<>();
 
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if(jsIdArray == null || jsIdArray.length() == 0) return null;
+            if(jsIdArray == null || jsIdArray.length() == 0) {
+                return null;
+            }
             for (int i = 0; i < jsIdArray.length(); i++) {
                 final String featureid = jsIdArray.optString(i);
 
@@ -427,7 +431,9 @@ public class WFSFilterBuilder {
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if (jsIdArray == null || jsIdArray.length() == 0) return null;
+            if (jsIdArray == null || jsIdArray.length() == 0) {
+                return null;
+            }
             for (int i = 0; i < jsIdArray.length(); i++) {
                 sb.append(FEATUREID_TEMPLATE.replace(FID_ATTRIBUTE, jsIdArray.optString(i)));
             }
@@ -445,15 +451,16 @@ public class WFSFilterBuilder {
      * @return number of Id filters
      */
     private static int getCountOfIdFilters(final JSONObject filter_js){
-        if(filter_js == null) return 0;
-
-        if (filter_js.has(KEY_FEATUREIDS)) {
-            // Get feature ID filter input
-            final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if(jsIdArray == null) return 0;
-            return jsIdArray.length();
+        if(filter_js == null || !filter_js.has(KEY_FEATUREIDS)) {
+            return 0;
         }
-        return 0;
+
+        // Get feature ID filter input
+        final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
+        if(jsIdArray == null) {
+            return 0;
+        }
+        return jsIdArray.length();
     }
 
     public static String parseProperties(List<String> props, String ns, String geom_prop) {
@@ -463,8 +470,7 @@ public class WFSFilterBuilder {
                     + prop);
             query = query + temp;
         }
-        if(!query.isEmpty())
-        {
+        if(!query.isEmpty()) {
             // geometry is not retreaved, if this is lacking
             String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
             query = query + temp;
