@@ -77,7 +77,7 @@ public class V1_32_1__populate_capabilities_cache implements JdbcMigration {
     }
 
     private void insertCaps(Connection conn, OskariLayerCapabilities caps) throws SQLException {
-        final String sql = "INSERT INTO oskari_capabilities_cache layertype, url, data VALUES(?,?,?)";
+        final String sql = "INSERT INTO oskari_capabilities_cache (layertype, url, data) VALUES(?,?,?)";
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, caps.getLayertype());
             statement.setString(2, caps.getUrl());
