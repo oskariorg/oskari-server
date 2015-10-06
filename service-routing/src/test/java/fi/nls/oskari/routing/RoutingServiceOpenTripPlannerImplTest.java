@@ -6,10 +6,11 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Ignore
 public class RoutingServiceOpenTripPlannerImplTest {
 
     @org.junit.Test
