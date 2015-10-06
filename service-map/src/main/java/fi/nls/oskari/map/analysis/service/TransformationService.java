@@ -354,7 +354,9 @@ public class TransformationService {
 
                             }
                             for (int j = 0; j < colvalues.size(); j++) {
-                                feature.appendChild(colvalues.get(colOrder.get(j)));
+                                if(colvalues.get(colOrder.get(j)) != null) {
+                                    feature.appendChild(colvalues.get(colOrder.get(j)));
+                                }
                             }
 
                         }
