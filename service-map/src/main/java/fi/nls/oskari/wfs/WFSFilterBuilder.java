@@ -307,6 +307,9 @@ public class WFSFilterBuilder {
      */
     private static Filter getBboxFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_BBOX) && srsName != null && geom_elem != null) {
             // Add BBOX filter
             JSONObject bbox = filter_js.getJSONObject(KEY_BBOX);
@@ -327,7 +330,9 @@ public class WFSFilterBuilder {
      */
     private static Filter getSpatialFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
-        
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_FILTER_BY_GEOMETRY_METHOD) && srsName != null && geom_elem != null) {
             JSONArray filterGeometries = filter_js.getJSONArray("geometries"); 
             String filterMethod = filter_js.getString(KEY_FILTER_BY_GEOMETRY_METHOD);
@@ -401,7 +406,9 @@ public class WFSFilterBuilder {
      */
     private static Filter getFeatureIdFilters(final JSONObject filter_js) {
         Set<FeatureId> selected = new HashSet<>();
-
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
@@ -427,7 +434,9 @@ public class WFSFilterBuilder {
      */
     private static String getFeatureIdFiltersAsString(final JSONObject filter_js) {
         StringBuilder sb = new StringBuilder();
-
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
