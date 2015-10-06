@@ -2,6 +2,11 @@
 
 ## 1.33
 
+### content-resources
+
+Fixed earlier Java-based flyway migrations to use SQL instead of existing services. This enables smoother upgrade
+ experience since SQL targets the versioned schema while services assume the most recent schema when used.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 
