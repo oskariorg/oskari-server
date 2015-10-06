@@ -1,22 +1,19 @@
 
 package fi.nls.oskari.routing;
 
-<<<<<<< HEAD
-=======
 import com.fasterxml.jackson.annotation.*;
 
 import javax.annotation.Generated;
-import java.util.ArrayList;
->>>>>>> a695feeb16ed7a21af6a1e56a079af63f987ac4d
+
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "requestParameters",
-    "plan",
-    "debugOutput"
+        "requestParameters",
+        "plan",
+        "debugOutput"
 })
 public class Route {
 
@@ -30,9 +27,7 @@ public class Route {
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * 
-     * @return
-     *     The requestParameters
+     * @return The requestParameters
      */
     @JsonProperty("requestParameters")
     public RequestParameters getRequestParameters() {
@@ -40,9 +35,7 @@ public class Route {
     }
 
     /**
-     * 
-     * @param requestParameters
-     *     The requestParameters
+     * @param requestParameters The requestParameters
      */
     @JsonProperty("requestParameters")
     public void setRequestParameters(RequestParameters requestParameters) {
@@ -50,9 +43,7 @@ public class Route {
     }
 
     /**
-     * 
-     * @return
-     *     The plan
+     * @return The plan
      */
     @JsonProperty("plan")
     public Plan getPlan() {
@@ -60,9 +51,7 @@ public class Route {
     }
 
     /**
-     * 
-     * @param plan
-     *     The plan
+     * @param plan The plan
      */
     @JsonProperty("plan")
     public void setPlan(Plan plan) {
@@ -70,9 +59,7 @@ public class Route {
     }
 
     /**
-     * 
-     * @return
-     *     The debugOutput
+     * @return The debugOutput
      */
     @JsonProperty("debugOutput")
     public DebugOutput getDebugOutput() {
@@ -80,9 +67,7 @@ public class Route {
     }
 
     /**
-     * 
-     * @param debugOutput
-     *     The debugOutput
+     * @param debugOutput The debugOutput
      */
     @JsonProperty("debugOutput")
     public void setDebugOutput(DebugOutput debugOutput) {
