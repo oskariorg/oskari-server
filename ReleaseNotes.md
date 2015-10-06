@@ -39,6 +39,9 @@ but defaults to the basic url. This means that proxying WMTS-layers with resourc
 GetGtWMSCapabilities now includes method to parse String into WMSCapabilities to make it work better with cached
  capabilities XMLs from CapabilitiesService. Also added styles parsing from capabilities.
 
+WMS capabilities are now parsed when layers are added (previously when they are loaded by user). Pre-parsed capabilities 
+are saved to database table oskari_maplayer in the capabilities column. Flyway migration has been implemented for existing layers.
+
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
