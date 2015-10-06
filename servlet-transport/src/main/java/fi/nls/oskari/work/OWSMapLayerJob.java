@@ -385,6 +385,11 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
             log.debug("No feature data!");
             this.sendWFSFeatures(EMPTY_LIST, ResultProcessor.CHANNEL_MAP_CLICK);
         }
+        
+        // geometries
+        if(this.session.isGeomRequest()){
+            this.sendWFSFeatureGeometries(this.geomValuesList, ResultProcessor.CHANNEL_FEATURE_GEOMETRIES);
+        }
         return true;
     }
 

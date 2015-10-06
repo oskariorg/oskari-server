@@ -599,6 +599,7 @@ public class TransportService extends AbstractService {
         double longitude;
         double latitude;
         boolean keepPrevious;
+        boolean geomRequest;
 
         if (params.get(PARAM_LONGITUDE) instanceof Double) {
             longitude = (Double) params.get(PARAM_LONGITUDE);
@@ -613,6 +614,12 @@ public class TransportService extends AbstractService {
 
         keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
 
+        if (params.get(PARAM_GEOM_REQUEST) instanceof Object)
+        {
+        	geomRequest = (Boolean) params.get(PARAM_GEOM_REQUEST);
+        	store.setGeomRequest(geomRequest);
+    	}
+        
         // stores click, but doesn't save
         store.setMapClick(new Coordinate(longitude, latitude));
         store.setKeepPrevious(keepPrevious);

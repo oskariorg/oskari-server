@@ -29,14 +29,15 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
+import fi.nls.oskari.map.layout.OskariLayoutWorker;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 
-@OskariActionRoute("SaveFeature")
-public class SaveFeatureHandler extends ActionHandler {
+@OskariActionRoute("InsertFeature")
+public class InsertFeatureHandler extends ActionHandler {
 	private OskariLayerService layerService;
 	private PermissionsService permissionsService;
 	private WFSLayerConfigurationService layerConfigurationService;
@@ -64,16 +65,21 @@ public class SaveFeatureHandler extends ActionHandler {
             final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER);
             if(hasPermssion) {
             	lc.destroy();
-				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Update typeName='"+ jsonObject.getString("layerName") +"'>");
+				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ jsonObject.getString("layerName") +" xmlns:tampere='tampere.fi'>");
 				JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
 				for (int i = 0; i < jsonArray.length(); i++) {
-					 	requestData.append("<wfs:Property><wfs:Name>" + jsonArray.getJSONObject(i).getString("key") + "</wfs:Name><wfs:Value>" + jsonArray.getJSONObject(i).getString("value") + "</wfs:Value></wfs:Property>");
+					String key = jsonArray.getJSONObject(i).getString("key");
+					String value = jsonArray.getJSONObject(i).getString("value");
+					if (value.isEmpty() == false)
+					{
+					 	requestData.append("<" + key + ">" + value + "</" + key + ">");
+					}
 				}
 				
 				if (jsonObject.has("geometries")) {
 					FillGeometries(requestData, jsonObject.getJSONObject("geometries"));
-				};
-				requestData.append("<ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Update></wfs:Transaction>");
+				}
+				requestData.append("</" + jsonObject.getString("layerName") + "></wfs:Insert></wfs:Transaction>");
 				
 				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 				Credentials credentials = new UsernamePasswordCredentials(user, pass);
@@ -88,12 +94,12 @@ public class SaveFeatureHandler extends ActionHandler {
 		        HttpResponse response = httpClient.execute(request);
 		        HttpEntity entity = response.getEntity();
 		        String responseString = EntityUtils.toString(entity, "UTF-8");
-		        
+				
 				if (responseString.indexOf("Exception") > -1)
 				{
 					ResponseHelper.writeResponse(params, "Exception");
 				}
-				else if (responseString.indexOf("<wfs:totalUpdated>1</wfs:totalUpdated>") > -1)
+				else if (responseString.indexOf("<wfs:totalInserted>1</wfs:totalInserted>") > -1)
 				{
 					ResponseHelper.writeResponse(params, "");
 				}
@@ -104,7 +110,7 @@ public class SaveFeatureHandler extends ActionHandler {
 		}
 	}
 	
-	private void FillGeometries(StringBuilder requestData, JSONObject geometries)
+	private void FillGeometries (StringBuilder requestData, JSONObject geometries)
 	{
 		try {
 			String geometryType = geometries.getString("type");
@@ -132,14 +138,13 @@ public class SaveFeatureHandler extends ActionHandler {
 		try {
 			String tmp = "";	
 			JSONArray data = geometries.getJSONArray("data");
-			//requestData.append("<" + geometryProperty + "><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml'>");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			requestData.append("<" + geometryProperty + "><gml:MultiPoint xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			
 			for (int i = 0; i < data.length(); i++)
 			{
 				requestData.append("<gml:pointMember><gml:Point><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">" + data.getJSONObject(i).getString("x") + "," + data.getJSONObject(i).getString("y") + "</gml:coordinates></gml:Point></gml:pointMember>");
 			}
-			//requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
-			requestData.append("</gml:MultiPoint></wfs:Value></wfs:Property>");
+			requestData.append("</gml:MultiPoint></" + geometryProperty + ">");
 		}
 		catch (Exception ex)
 		{
@@ -152,8 +157,8 @@ public class SaveFeatureHandler extends ActionHandler {
 		try {
 			String tmp = "";	
 			JSONArray data = geometries.getJSONArray("data");
-			//requestData.append("<" + geometryProperty + "><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml'>");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			requestData.append("<" + geometryProperty + "><gml:MultiLineString xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			
 			for (int i = 0; i < data.length(); i++)
 			{
 				requestData.append("<gml:lineStringMember><gml:LineString><gml:coordinates decimal=\".\" cs=\",\" ts=\" \">");
@@ -168,8 +173,7 @@ public class SaveFeatureHandler extends ActionHandler {
 				}
 				requestData.append("</gml:coordinates></gml:LineString></gml:lineStringMember>");
 			}
-			//requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
-			requestData.append("</gml:MultiLineString></wfs:Value></wfs:Property>");
+			requestData.append("</gml:MultiLineString></" + geometryProperty + ">");
 		}
 		catch (Exception ex)
 		{
@@ -180,10 +184,10 @@ public class SaveFeatureHandler extends ActionHandler {
 	private void FillPolygonGeometries (StringBuilder requestData, JSONObject geometries)
 	{
 		try {
-			String tmp = "";	
+			String tmp = "";
 			JSONArray data = geometries.getJSONArray("data");
-			//requestData.append("<" + geometryProperty + "><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
-			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			requestData.append("<" + geometryProperty + "><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
+			
 			for (int i = 0; i < data.length(); i++)
 			{
 				requestData.append("<gml:polygonMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>");
@@ -202,8 +206,7 @@ public class SaveFeatureHandler extends ActionHandler {
 				}
 				requestData.append("</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:polygonMember>");
 			}
-			//requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
-			requestData.append("</gml:MultiPolygon></wfs:Value></wfs:Property>");
+			requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
 		}
 		catch (Exception ex)
 		{
