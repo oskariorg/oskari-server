@@ -26,6 +26,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
 
     public static final String KEY_STYLE = "style";
+    public static final String KEY_LEGEND = "legend";
 
     // There working only plain text and html so ranked up
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
@@ -82,50 +83,96 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
 
         final boolean useProxy = useProxy(layer);
-        final Map<String, String> stylesMap = capabilities.getSupportedStyles();
-        final boolean hasLegendImage = layer.getLegendImage() != null && !layer.getLegendImage().isEmpty();
-        final JSONArray styles = new JSONArray();
-        final JSONArray org_styles = new JSONArray();
         try {
-            final Map<String, String> legends = capabilities.getSupportedLegends();
-            for (String styleName : stylesMap.keySet()) {
-                final String styleLegend;
-                if (useProxy) {
-                    styleLegend = buildLegendUrl(layer, styleName);
-                } else {
-                    styleLegend = legends.get(styleName);
+            List<JSONObject> styleList = createStylesArray(capabilities);
+            final JSONArray styles;
+            if (useProxy) {
+                final JSONArray org_styles = new JSONArray();
+                styles = new JSONArray();
+                // replace legendimage urls
+                for(JSONObject style : styleList) {
+                    // copy the original style definitions so admin can show the real values
+                    org_styles.put(new JSONObject(style, STYLE_KEYS));
+                    if(style.has(KEY_LEGEND)) {
+                        // update url from actual to proxy
+                        JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
+                    }
+                    styles.put(style);
                 }
-                JSONObject obj = createStylesJSON(styleName, stylesMap.get(styleName), styleLegend);
-                styles.put(obj);
-                JSONObject obj_org = createStylesJSON(styleName, stylesMap.get(styleName), legends.get(styleName));
-                org_styles.put(obj_org);
-                if(hasLegendImage) {
-                    continue;
-                }
-                // set legend image from capabilities if admin hasn't configured it
-                if(styleName.equals(layer.getStyle()) && styleLegend != null && !styleLegend.isEmpty()) {
-                    // if default style match and style has legend image - fix legendImage
-                        JSONHelper.putValue(layerJson, "legendImage", styleLegend);
-                        JSONHelper.putValue(layerJson, "org_legendImage", legends.get(styleName));
-                }
-
+                // this is a workaround since we don't know the user here, check OskariLayerWorker for further handling
+                JSONHelper.putValue(layerJson, "org_styles", org_styles);
             }
+            else {
+                styles = new JSONArray(styleList);
+            }
+            JSONHelper.putValue(layerJson, "styles", styles);
+
+            // populate legend image from styles if not available
+            String globalLegend = layer.getLegendImage();
+            if(globalLegend == null || globalLegend.isEmpty()) {
+                globalLegend = getAnyLegendFromStyles(styleList);
+            }
+            // if we now have legend url, setup the JSON
+            if(globalLegend == null || globalLegend.isEmpty()) {
+                if (useProxy) {
+                    JSONHelper.putValue(layerJson, "legendImage", buildLegendUrl(layer, null));
+                    JSONHelper.putValue(layerJson, "org_legendImage", globalLegend);
+                } else {
+                    JSONHelper.putValue(layerJson, "legendImage", globalLegend);
+                }
+            }
+
         } catch (Exception e) {
             log.warn(e, "Populating layer styles failed!");
         }
 
-        // Init legend in proxy case ??
-       if (useProxy && !layerJson.has("legendImage") && !hasLegendImage) {
-            JSONHelper.putValue(layerJson, "legendImage", buildLegendUrl(layer, null));
-        }
-
-        JSONHelper.putValue(layerJson, "styles", styles);
-        JSONHelper.putValue(layerJson, "org_styles", org_styles);
         JSONObject formats = getFormatsJSON(capabilities);
         JSONHelper.putValue(layerJson, "formats", formats);
         JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
         JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
         JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(JSONHelper.getJSONObject(layerJson, "attributes"), formatTime(capabilities.getTime())));
+    }
+
+    /**
+     * Return a legend image from styles, any will do so just use the first one
+     * @param styleList
+     * @return
+     */
+    private String getAnyLegendFromStyles(List<JSONObject> styleList) {
+        for(JSONObject style : styleList) {
+            final String legend = style.optString(KEY_LEGEND);
+            if(legend != null && !legend.isEmpty()) {
+                return legend;
+            }
+        }
+        return null;
+    }
+
+    public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
+
+        JSONObject capabilities = new JSONObject();
+        if(wms == null) {
+            return capabilities;
+        }
+        JSONHelper.putValue(capabilities, "isQueryable", wms.isQueryable());
+        List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
+        JSONHelper.putValue(capabilities, "styles", new JSONArray(styles));
+
+        JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
+        JSONHelper.putValue(capabilities, "formats", formats);
+        JSONHelper.putValue(capabilities, "version", wms.getVersion());
+        JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
+        return capabilities;
+    }
+
+    public static List<JSONObject> createStylesArray(final WebMapService capabilities) {
+        final List<JSONObject> styles = new ArrayList<>();
+        final Map<String, String> stylesMap = capabilities.getSupportedStyles();
+        final Map<String, String> legends = capabilities.getSupportedLegends();
+        for (String styleName : stylesMap.keySet()) {
+            styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legends.get(styleName)));
+        }
+        return styles;
     }
 
     private String buildLegendUrl(final OskariLayer layer, final String styleName) {
@@ -139,7 +186,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-    private JSONObject formatTime(List<String> timeList) {
+    public static JSONObject formatTime(List<String> timeList) {
         final JSONObject time = new JSONObject();
         final JSONArray values = new JSONArray();
         for (String string : timeList) {
@@ -171,7 +218,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      * @param wms WebMapService
      * @return JSONObject containing the most preferred supported format
      */
-    private static JSONObject getFormatsJSON(WebMapService wms) {
+    public static JSONObject getFormatsJSON(WebMapService wms) {
         final Set<String> formats = new HashSet<String>(Arrays.asList(wms.getFormats()));
         return getFormatsJSON(formats);
     }
