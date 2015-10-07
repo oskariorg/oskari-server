@@ -2,6 +2,11 @@
 
 ## 1.33
 
+### content-resources
+
+Fixed earlier Java-based flyway migrations to use SQL instead of existing services. This enables smoother upgrade
+ experience since SQL targets the versioned schema while services assume the most recent schema when used.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 
@@ -31,9 +36,21 @@ When adding layers the capabilities parser now includes layer styles correctly.
 LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
 but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
 
+GetGtWMSCapabilities now includes method to parse String into WMSCapabilities to make it work better with cached
+ capabilities XMLs from CapabilitiesService. Also added styles parsing from capabilities.
+
+WMS capabilities are now parsed when layers are added (previously when they are loaded by user). Pre-parsed capabilities 
+are saved to database table oskari_maplayer in the capabilities column. Flyway migration has been implemented for existing layers.
+
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
+
+## 1.32.2
+
+Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
+
+Error handling improved in analysis functionality. 
 
 ## 1.32.1
 

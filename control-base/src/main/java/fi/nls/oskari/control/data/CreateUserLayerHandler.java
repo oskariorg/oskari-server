@@ -51,6 +51,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
+    private static final int MAX_FILES_IN_ZIP = 100;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -205,7 +206,13 @@ public class CreateUserLayerHandler extends ActionHandler {
             zis = new ZipInputStream(zipFile.getInputStream());
             ZipEntry ze = zis.getNextEntry();
             String filesBaseName = null;
+            int fileCount = 0;
             while (ze != null) {
+                fileCount++;
+                if(fileCount > MAX_FILES_IN_ZIP) {
+                    // safeguard against infinite loop, userlayers shouldn't have this many files in any case
+                    break;
+                }
 
                 if (ze.isDirectory()) {
                     zis.closeEntry();
@@ -214,6 +221,8 @@ public class CreateUserLayerHandler extends ActionHandler {
                 }
                 FileHelper file = handleZipEntry(ze, zis, filesBaseName);
                 if(file == null) {
+                    zis.closeEntry();
+                    ze = zis.getNextEntry();
                     continue;
                 }
 
@@ -231,6 +240,9 @@ public class CreateUserLayerHandler extends ActionHandler {
             IOHelper.close(zis);
         }
 
+        if(mainFile == null) {
+            return null;
+        }
         return mainFile.getFile();
     }
 
@@ -241,7 +253,7 @@ public class CreateUserLayerHandler extends ActionHandler {
             return null;
         }
 
-        // TODO: "The prefix string must be at least three characters long" maybe check this?
+        // TODO: File.createTempFile() says "The prefix string must be at least three characters long" maybe check this?
         File newFile = null;
         FileOutputStream fos = null;
         try {

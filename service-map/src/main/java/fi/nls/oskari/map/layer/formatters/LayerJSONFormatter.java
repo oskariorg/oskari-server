@@ -36,6 +36,7 @@ public class LayerJSONFormatter {
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
+    protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
@@ -180,10 +181,10 @@ public class LayerJSONFormatter {
     }
 
 
-    public JSONObject createStylesJSON(String name, String title, String legend) {
-        final JSONObject style = JSONHelper.createJSONObject("name", name);
-        JSONHelper.putValue(style, "title", title);
-        JSONHelper.putValue(style, "legend", legend);
+    public static JSONObject createStylesJSON(String name, String title, String legend) {
+        final JSONObject style = JSONHelper.createJSONObject(STYLE_KEYS[0], name);
+        JSONHelper.putValue(style, STYLE_KEYS[1], title);
+        JSONHelper.putValue(style, STYLE_KEYS[2], legend);
         return style;
     }
 

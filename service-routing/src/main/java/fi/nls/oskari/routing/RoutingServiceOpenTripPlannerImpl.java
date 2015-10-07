@@ -40,10 +40,10 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         Map<String, String> requestParams = new HashMap<String, String>();
 
         //Transform coordinates for the route service
-        String targetSRS = PropertyUtil.get("routing.srs");
-        String sourceSRS = params.getSrs();
-        Point newFrom = ProjectionHelper.transformPoint(params.getFrom().getX(), params.getFrom().getY(), sourceSRS, targetSRS);
-        Point newTo = ProjectionHelper.transformPoint(params.getTo().getX(), params.getTo().getY(), sourceSRS, targetSRS);
+        final String targetSRS = PropertyUtil.get("routing.srs");
+        final String sourceSRS = params.getSrs();
+        final Point newFrom = ProjectionHelper.transformPoint(params.getFrom().getX(), params.getFrom().getY(), sourceSRS, targetSRS);
+        final Point newTo = ProjectionHelper.transformPoint(params.getTo().getX(), params.getTo().getY(), sourceSRS, targetSRS);
 
         final String from =  newFrom.getLonToString() + "," + newFrom.getLatToString();
         requestParams.put(PARAM_FROM_PLACE, from);
@@ -68,8 +68,10 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             final Map<String, String> headers = new HashMap<String,String>();
             headers.put("Accecpt", "application/json");
             String routeJson = null;
-            if(PropertyUtil.get(PROPERTY_USER) != null && PropertyUtil.get(PROPERTY_PASSWORD) != null) {
-                routeJson = IOHelper.getURL(requestUrl, PropertyUtil.get(PROPERTY_USER), PropertyUtil.get(PROPERTY_PASSWORD), headers, "UTF-8");
+            final String username = PropertyUtil.getOptional(PROPERTY_USER);
+            final String password = PropertyUtil.getOptional(PROPERTY_PASSWORD);
+            if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+                routeJson = IOHelper.getURL(requestUrl, username, password, headers, "UTF-8");
             } else {
                 routeJson = IOHelper.getURL(requestUrl,headers, "UTF-8");
             }
@@ -78,12 +80,25 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             // FIXME route parsing not working anymore because of service change
             // Point parsing: https://github.com/opentripplanner/OpenTripPlanner/blob/e35ceb7042bd81889b947e38afe30a98a0d8b042/src/main/java/org/opentripplanner/util/PolylineEncoder.java
             // Geometry is Google encoded polyline, need convert to points and then generate geoJSON
-            // https://developers.google.com/maps/documentation/utilities/polylineutilityiintellij idea
+            // https://developers.google.com/maps/documentation/utilities/polylineutility
 
 
-            List<List<Route>> routeList = mapper.readValue(routeJson, mapper.getTypeFactory().constructCollectionType(List.class, mapper.getTypeFactory().constructCollectionType(List.class, Route.class)));
+            Route route = mapper.readValue(routeJson,Route.class);
+
+            for(Itinerary itinerary : route.getPlan().getItineraries()){
+                RouteResponse routeresponse = new RouteResponse();
+                final JSONObject responseGeoJson = parser.parseGeoJson(itinerary, params.getSrs());
+                routeresponse.setGeoJson(responseGeoJson);
+/*
+                final JSONObject responseRoute = parser.parseRoute(itinerary, params.getSrs());
+                routeresponse.setInstructions(responseRoute);
+                */
+                result.add(routeresponse);
+            }
+            //Route route = mapper.readValue(routeJson, mapper.getTypeFactory().constructCollectionType(List.class, mapper.getTypeFactory().constructCollectionType(List.class, Route.class)));
 
             //TODO routeList includes three optional routes --> add them all to result
+            /*
             for (Route route : routeList.get(0)) {
                 RouteResponse routeresponse = new RouteResponse();
                 final JSONObject responseGeoJson = parser.parseGeoJson(route, params.getSrs());
@@ -94,6 +109,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 result.add(routeresponse);
 
             }
+            */
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -110,7 +126,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
         // FIXME use en_US format
         SimpleDateFormat timeAmPmFormatter = new SimpleDateFormat("a");
-        
+
         final String date = dateFormatter.format(params.getDate());
         requestParams.put("date", date);
         final String time = timeFormatter.format(params.getDate());

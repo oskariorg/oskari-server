@@ -1713,9 +1713,11 @@ public class AnalysisParser {
                                 colvalues.put(subkey, subjs.get(subkey).toString());
                             }
                             for (int j = 0; j < colvalues.size(); j++) {
-                                JSONObject subjsOrdered = new JSONObject();
-                                JSONHelper.putValue(subjsOrdered, colOrder.get(j), colvalues.get(colOrder.get(j)));
-                                subjsOrdereda.put(subjsOrdered);
+                                if(colvalues.get(colOrder.get(j)) != null) {
+                                    JSONObject subjsOrdered = new JSONObject();
+                                    JSONHelper.putValue(subjsOrdered, colOrder.get(j), colvalues.get(colOrder.get(j)));
+                                    subjsOrdereda.put(subjsOrdered);
+                                }
                             }
                         }
                     }

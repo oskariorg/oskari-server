@@ -69,6 +69,18 @@ public class WebMapServiceFactory {
 		return wms;
 	}
 
+    public static WebMapService createFromXML(final String layerName, final String xml) {
+        try {
+            if (isVersion1_3_0(xml)) {
+                return new WebMapServiceV1_3_0_Impl("from DataBase", xml, layerName);
+            } else if (isVersion1_1_1(xml)) {
+                return new WebMapServiceV1_1_1_Impl("from DataBase", xml, layerName);
+            }
+        } catch (WebMapServiceParseException ex) {
+        }
+        return null;
+    }
+
     private static OskariLayerCapabilities getCaps(OskariLayer layer) throws WebMapServiceParseException {
         try {
             return CAPABILITIES_SERVICE.getCapabilities(layer);
