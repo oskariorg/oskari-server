@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface RoutingService {
 
-    List<RouteResponse> getRoute(RouteParams params);
+    RouteResponse getRoute(RouteParams params);
 }

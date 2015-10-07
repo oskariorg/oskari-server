@@ -7,14 +7,13 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -22,20 +21,28 @@ import java.util.Map;
 public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImpl.class);
 
+
+    private static final String PARAM_ERROR = "error";
+    private static final String PARAM_ERROR_MESSAGE = "message";
     private static final String PARAM_FROM_PLACE = "fromPlace";
     private static final String PARAM_TO_PLACE = "toPlace";
     private static final String PARAM_MODE = "mode";
     private static final String PARAM_MAX_WALK_DISTANCE = "maxWalkDistance";
     private static final String PARAM_WHEELCHAIR = "wheelchair";
     private static final String PARAM_LOCALE = "locale";
+    private static final String PARAM_DATE = "date";
+    private static final String PARAM_TIME = "time";
+    private static final String PARAM_ARRIVE_BY = "arriveBy";
+
     private static final String PROPERTY_USER = "routing.user";
     private static final String PROPERTY_PASSWORD = "routing.password";
+
 
 
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public List<RouteResponse> getRoute(RouteParams params) {
+    public RouteResponse getRoute(RouteParams params) {
         RouteParser parser = new RouteParser();
         Map<String, String> requestParams = new HashMap<String, String>();
 
@@ -61,7 +68,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
 
 
         final String requestUrl = IOHelper.constructUrl(PropertyUtil.get("routing.url"), requestParams);
-        List<RouteResponse> result = new ArrayList<>();
+        RouteResponse result = new RouteResponse();
 
         try {
             LOGGER.debug(requestUrl);
@@ -75,15 +82,32 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             } else {
                 routeJson = IOHelper.getURL(requestUrl,headers, "UTF-8");
             }
-            LOGGER.debug(routeJson);
-
-            // FIXME route parsing not working anymore because of service change
-            // Point parsing: https://github.com/opentripplanner/OpenTripPlanner/blob/e35ceb7042bd81889b947e38afe30a98a0d8b042/src/main/java/org/opentripplanner/util/PolylineEncoder.java
-            // Geometry is Google encoded polyline, need convert to points and then generate geoJSON
-            // https://developers.google.com/maps/documentation/utilities/polylineutility
-
 
             Route route = mapper.readValue(routeJson,Route.class);
+            RouteResponse response = new RouteResponse();
+
+            if(!isErrorMessage(routeJson)){
+                response.setRequestParameters(parser.generateRequestParameters(route, params));
+                response.setPlan(parser.generatePlan(route, params));
+                response.setSuccess(true);
+            } else {
+                response.setSuccess(false);
+                try {
+                    JSONObject error = new JSONObject(routeJson);
+                    if(error.has(PARAM_ERROR_MESSAGE)) {
+                        response.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
+                    } else {
+                        response.setErrorMessage("ERROR");
+                    }
+                } catch (JSONException ex){
+                    LOGGER.warn("Cannot set error message to route response", ex);
+                }
+            }
+
+
+
+
+
 
             for(Itinerary itinerary : route.getPlan().getItineraries()){
                 RouteResponse routeresponse = new RouteResponse();
@@ -97,19 +121,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             }
             //Route route = mapper.readValue(routeJson, mapper.getTypeFactory().constructCollectionType(List.class, mapper.getTypeFactory().constructCollectionType(List.class, Route.class)));
 
-            //TODO routeList includes three optional routes --> add them all to result
-            /*
-            for (Route route : routeList.get(0)) {
-                RouteResponse routeresponse = new RouteResponse();
-                final JSONObject responseGeoJson = parser.parseGeoJson(route, params.getSrs());
-                routeresponse.setGeoJson(responseGeoJson);
 
-                final JSONObject responseRoute = parser.parseRoute(route);
-                routeresponse.setInstructions(responseRoute);
-                result.add(routeresponse);
-
-            }
-            */
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -118,25 +130,50 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         return result;
     }
 
+
+
+
+
+    /**
+     * Check at if route repsonse contains error
+     * @param response route response
+     * @return true if contains error, other false
+     */
+    private boolean isErrorMessage(String response){
+        try {
+            JSONObject job = new JSONObject(response);
+            if(job.has(PARAM_ERROR)) {
+                return true;
+            }
+        } catch(JSONException ex){
+            LOGGER.warn("Cannot check route error message", ex);
+        }
+        return false;
+    }
+
+    /**
+     * Setup date and time parameters
+     * @param params
+     * @param requestParams
+     */
     private void setupDateAndTime(RouteParams params, Map<String, String> requestParams) {
         if (params.getDate() == null) {
             return;
         }
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm");
-        // FIXME use en_US format
-        SimpleDateFormat timeAmPmFormatter = new SimpleDateFormat("a");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+        SimpleDateFormat timeAmPmFormatter = new SimpleDateFormat("a", Locale.ENGLISH);
 
         final String date = dateFormatter.format(params.getDate());
-        requestParams.put("date", date);
+        requestParams.put(PARAM_DATE, date);
         final String time = timeFormatter.format(params.getDate());
         final String amOrPm = timeAmPmFormatter.format(params.getDate());
-        requestParams.put("time", time + amOrPm);
+        requestParams.put(PARAM_TIME, time + amOrPm);
 
         if (params.getIsArriveBy()) {
-            requestParams.put("arriveBy", "true");
+            requestParams.put(PARAM_ARRIVE_BY, "true");
         } else {
-            requestParams.put("arriveBy", "false");
+            requestParams.put(PARAM_ARRIVE_BY, "false");
         }
 
     }

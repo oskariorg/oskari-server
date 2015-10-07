@@ -30,12 +30,13 @@ public class RoutingHandler extends ActionHandler {
 
     private RoutingService service = new RoutingServiceOpenTripPlannerImpl();
 
-    private static final String PARAM_SRS = "srs";
+
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_FROM_LAT = "fromlat";
     private static final String PARAM_FROM_LON = "fromlon";
     private static final String PARAM_TO_LAT = "tolat";
     private static final String PARAM_TO_LON = "tolon";
+    private static final String PARAM_SRS = "srs";
     private static final String PARAM_DATE = "date";
     private static final String PARAM_TIME = "time";
     private static final String PARAM_ARRIVEBY = "arriveby";
@@ -71,17 +72,9 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000));
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 
-        List<RouteResponse> result = service.getRoute(routeparams);
-        JSONArray response = new JSONArray();
+        RouteResponse result = service.getRoute(routeparams);
 
-        for (RouteResponse routeresponse : result) {
-            JSONObject routeResult = new JSONObject();
-            JSONHelper.putValue(routeResult, "geoJson", routeresponse.getGeoJson());
-            JSONHelper.putValue(routeResult, "instructions", routeresponse.getInstructions());
-            response.put(routeResult);
-        }
-
-        ResponseHelper.writeResponse(params, response);
+        ResponseHelper.writeResponse(params, result.toJSON());
 
     }
 }
