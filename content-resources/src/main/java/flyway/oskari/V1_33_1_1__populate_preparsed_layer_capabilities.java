@@ -41,6 +41,7 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
                 }
                 WebMapService wms = WebMapServiceFactory.createFromXML(layer.getName(), xml);
                 if(wms == null) {
+                    LOG.info("Couldn't parse capabilities for service:", url);
                     continue;
                 }
                 JSONObject capabilities = LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
@@ -59,6 +60,7 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, capabilities.toString(2));
             statement.setInt(2, layerId);
+            statement.execute();
         }
         catch (JSONException ignored) {}
     }
