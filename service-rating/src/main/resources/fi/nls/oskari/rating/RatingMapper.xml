@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fi.nls.oskari.rating.RatingMapper">
+
+    <resultMap id="RatingResult" type="Rating">
+        <result property="id" column="id" />
+        <result property="userId" column="userId" />
+        <result property="rating" column="rating" />
+        <result property="category" column="category" />
+        <result property="categoryItem" column="categoryItem" />
+        <result property="comment" column="comment" />
+        <result property="userRole" column="userRole" />
+    </resultMap>
+
+    <select id="findAllFor"
+            resultType="Rating">
+        select *
+        from
+            ratings
+        where category = #{category} and categoryItem = #{categoryItem}
+    </select>
+
+    <select id="find"
+            resultMap="RatingResult">
+        select *
+        from
+            ratings
+        where id = #{id}
+    </select>
+
+    <insert id="insertRating"
+            parameterType="Rating"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into ratings (userId,rating,category,categoryItem,comment,userRole)
+        values (#{userId},#{rating},#{category},#{categoryItem},#{comment},#{userRole})
+        RETURNING id
+    </insert>
+
+    <update id="updateRating"
+            parameterType="Rating">
+        update ratings set
+        userId = #{userId},
+        rating = #{rating},
+        category = #{category},
+        categoryItem = #{categoryItem}
+        comment = #{comment}
+        userRole = #{userRole}
+        where id = #{id}
+    </update>
+</mapper>
