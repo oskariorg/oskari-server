@@ -511,16 +511,14 @@ public class TransportService extends AbstractService {
     	if(store.containsLayer(layerId)) {
             Layer tmpLayer = store.getLayers().get(layerId);
 
-            if(!tmpLayer.getStyleName().equals(layerStyle) || layerStyle.startsWith(WFSImage.PREFIX_CUSTOM_STYLE)) {
-                tmpLayer.setStyleName(layerStyle);
-                this.save(store);
-                if(tmpLayer.isVisible()) {
-                    // init bounds to tiles (render all)
-                    tmpLayer.setTiles(store.getGrid().getBounds());
-                    // only update normal tiles
-                    Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.NORMAL, store, layerId, false, false, true, false);
-                    jobs.add(job);
-                }
+            tmpLayer.setStyleName(layerStyle);
+            this.save(store);
+            if(tmpLayer.isVisible()) {
+                // init bounds to tiles (render all)
+                tmpLayer.setTiles(store.getGrid().getBounds());
+                // only update normal tiles
+                Job job = createOWSMapLayerJob(createResultProcessor(parseRequestId(params)), JobType.NORMAL, store, layerId, false, false, true, false);
+                jobs.add(job);
             }
     	}
     }

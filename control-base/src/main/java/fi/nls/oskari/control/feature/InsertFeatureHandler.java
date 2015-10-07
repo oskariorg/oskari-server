@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.feature;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,6 +21,7 @@ import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -29,7 +30,6 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
-import fi.nls.oskari.map.layout.OskariLayoutWorker;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -42,6 +42,8 @@ public class InsertFeatureHandler extends ActionHandler {
 	private PermissionsService permissionsService;
 	private WFSLayerConfigurationService layerConfigurationService;
 	private String geometryProperty;
+	
+	public final static String KEY = "WFSImage_";
 	
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
@@ -64,7 +66,7 @@ public class InsertFeatureHandler extends ActionHandler {
 			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
             final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER);
             if(hasPermssion) {
-            	lc.destroy();
+            	ClearLayerTiles(lay.getId());
 				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ jsonObject.getString("layerName") +" xmlns:tampere='tampere.fi'>");
 				JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -211,6 +213,16 @@ public class InsertFeatureHandler extends ActionHandler {
 		catch (Exception ex)
 		{
 			
+		}
+	}
+	
+	private void ClearLayerTiles(int layerId)
+	{
+		Set<String> keys = JedisManager.keys(KEY + Integer.toString(layerId));
+		
+		for(String key : keys)
+		{
+			JedisManager.del(key);
 		}
 	}
 }
