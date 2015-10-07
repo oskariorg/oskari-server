@@ -6,9 +6,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
-import fi.nls.oskari.util.JSONHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,26 +24,27 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
 
     private static final Logger LOG = LogFactory.getLogger(V1_33_1_1__populate_preparsed_layer_capabilities.class);
 
-    public void migrate(Connection connection) throws SQLException {
+    public void migrate(Connection connection)
+            throws SQLException {
         List<OskariLayer> layers = getLayers(connection);
 
         LOG.info("Start generating prepopulated capabilities for WMS layers - count:", layers.size());
         int progress = 0;
-        for(OskariLayer layer : layers) {
+        for (OskariLayer layer : layers) {
             try {
                 final String url = layer.getSimplifiedUrl(true);
                 final String xml = getCaps(url, connection);
-                if(xml == null) {
+                if (xml == null) {
                     LOG.info("Couldn't load capabilities for service:", url);
                     continue;
                 }
                 WebMapService wms = WebMapServiceFactory.createFromXML(layer.getName(), xml);
-                if(wms == null) {
+                if (wms == null) {
                     LOG.info("Couldn't parse capabilities for service:", url);
                     continue;
                 }
                 JSONObject capabilities = LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
-                if(capabilities != null) {
+                if (capabilities != null) {
                     updateLayerCaps(layer.getId(), capabilities, connection);
                 }
                 progress++;
@@ -55,36 +54,41 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
             }
         }
     }
-    private void updateLayerCaps(int layerId, JSONObject capabilities, Connection conn) throws SQLException {
+
+    private void updateLayerCaps(int layerId, JSONObject capabilities, Connection conn)
+            throws SQLException {
         final String sql = "UPDATE oskari_maplayer SET capabilities=? where id=?";
-        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, capabilities.toString(2));
             statement.setInt(2, layerId);
             statement.execute();
+        } catch (JSONException ignored) {
         }
-        catch (JSONException ignored) {}
     }
 
-    private String getCaps(String url, Connection conn) throws SQLException {
+    private String getCaps(String url, Connection conn)
+            throws SQLException {
         // only process wms-layers
         final String sql = "SELECT data FROM oskari_capabilities_cache WHERE layertype='wmslayer' AND url=?";
-        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, url);
             try (ResultSet rs = statement.executeQuery()) {
-                if(rs.next()) {
+                if (rs.next()) {
                     return rs.getString("data");
                 }
                 return null;
             }
         }
     }
-    private List<OskariLayer> getLayers(Connection conn) throws SQLException {
+
+    private List<OskariLayer> getLayers(Connection conn)
+            throws SQLException {
         List<OskariLayer> layers = new ArrayList<>();
         // only process wms-layers
         final String sql = "SELECT id, url, type, name FROM oskari_maplayer where type='wmslayer'";
-        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet rs = statement.executeQuery()) {
-                while(rs.next()) {
+                while (rs.next()) {
                     OskariLayer layer = new OskariLayer();
                     layer.setId(rs.getInt("id"));
                     layer.setUrl(rs.getString("url"));
