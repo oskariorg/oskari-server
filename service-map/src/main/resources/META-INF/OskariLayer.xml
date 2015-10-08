@@ -34,6 +34,7 @@
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="capabilities" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
 
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
@@ -75,6 +76,7 @@
         <parameter property="params" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="options" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
         <parameter property="attributes" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
+        <parameter property="capabilities" jdbcType="VARCHAR" javaType="org.json.JSONObject" />
 
         <parameter property="gfiXslt" />
         <parameter property="gfiType" />
@@ -122,6 +124,7 @@
         l.params,
         l.options,
         l.attributes,
+        l.capabilities,
 
         l.gfi_xslt,
         l.gfi_type,
@@ -174,6 +177,7 @@
         l.params,
         l.options,
         l.attributes,
+        l.capabilities,
 
         l.gfi_xslt,
         l.gfi_type,
@@ -226,6 +230,7 @@
         l.params,
         l.options,
         l.attributes,
+        l.capabilities,
 
         l.gfi_xslt,
         l.gfi_type,
@@ -279,6 +284,7 @@
         l.params,
         l.options,
         l.attributes,
+        l.capabilities,
 
         l.gfi_xslt,
         l.gfi_type,
@@ -332,6 +338,7 @@
         l.params,
         l.options,
         l.attributes,
+        l.capabilities,
 
         l.gfi_xslt,
         l.gfi_type,
@@ -384,6 +391,7 @@
     l.params,
     l.options,
     l.attributes,
+    l.capabilities,
 
     l.gfi_xslt,
     l.gfi_type,
@@ -436,6 +444,7 @@
             params,
             options,
             attributes,
+            capabilities,
 
             gfi_xslt,
             gfi_type,
@@ -452,7 +461,7 @@
 
             created,
             updated)
-        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     </statement>
 
     <statement id="update" parameterMap="LayerUpdateParameter">
@@ -478,6 +487,7 @@
         params = ?,
         options = ?,
         attributes = ?,
+        capabilities = ?,
 
         gfi_xslt = ?,
         gfi_type=?,

@@ -10,6 +10,7 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,10 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         TYPE_MAPPING.put(OskariLayer.TYPE_WFS, "WFS");
         TYPE_MAPPING.put(OskariLayer.TYPE_WMTS, "WMTS");
     }
-    // timeout capabilities request after 15 seconds (configurable)
-    private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
+    // timeout capabilities request after 30 seconds (configurable)
+    private static final String PROP_TIMEOUT = "capabilities.timeout";
+    private static final int TIMEOUT_SECONDS = PropertyUtil.getOptional(PROP_TIMEOUT, 30);
+    private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
@@ -76,7 +79,12 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             save(cap);
             LOG.debug("Saved capabilities", cap.getId());
             return cap;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
+            if(e instanceof SocketTimeoutException) {
+                LOG.warn("Getting capabilities for layer timed out. You can adjust timeout with property",
+                        PROP_TIMEOUT, ". Current value is:", TIMEOUT_SECONDS, "seconds");
+            }
             // save empty result so we don't hang the system when having multiple layers from problematic service
             cap.setData("");
             save(cap);
