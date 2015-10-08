@@ -49,6 +49,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private JSONObject params = new JSONObject();
     private JSONObject options = new JSONObject();
     private JSONObject attributes = new JSONObject();
+    private JSONObject capabilities = new JSONObject();
 
     private boolean realtime = false;
     private int refreshRate;
@@ -336,6 +337,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setAttributes(JSONObject attributes) {
         this.attributes = attributes;
+    }
+
+    public JSONObject getCapabilities() {
+        return capabilities;
+    }
+
+    public void setCapabilities(JSONObject capabilities) {
+        this.capabilities = capabilities;
     }
 
     public String getGfiType() {
