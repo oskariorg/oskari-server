@@ -13,7 +13,7 @@ import fi.nls.oskari.rating.RatingService;
 import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.List;
@@ -36,13 +36,11 @@ public class UserFeedbackHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        if(log.isDebugEnabled()) printRequestData(params.getHttpParam("data"));
         JSONArray result = new JSONArray();
         try {
-            JSONParser parser = new JSONParser();
-            JSONObject jsonData = (JSONObject)parser.parse(params.getHttpParam("data"));
-            String resource = (String)jsonData.get("primaryTargetCodeSpace");
-            String resourceId = (String)jsonData.get("primaryTargetCode");
+            JSONObject jsonData = getRequestParameters(params.getHttpParam("data"));
+            String resource = (String)jsonData.get("category");
+            String resourceId = (String)jsonData.get("categoryItem");
 
             String average = ratingService.getAverageRatingFor(resource, resourceId);
             log.debug("average: " + average);
@@ -64,7 +62,6 @@ public class UserFeedbackHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
-        if(log.isDebugEnabled()) printRequestData(params.getHttpParam("data"));
 
         try {
             Rating result = saveFeedBackToServer(params);
@@ -79,6 +76,8 @@ public class UserFeedbackHandler extends RestActionHandler {
         try{
             JSONObject requestParameters = getRequestParameters(params.getHttpParam("data"));
             Rating feedback = createRatingFromRequest(requestParameters, params.getUser());
+            if (!ratingService.validateRequiredStrings(feedback))
+                throw new ActionException("Failed to save feedback, category information missing");
             return ratingService.saveRating(feedback);
         } catch (Exception e){
             log.error(e.getMessage());
@@ -98,13 +97,13 @@ public class UserFeedbackHandler extends RestActionHandler {
 
     private Rating createRatingFromRequest(JSONObject requestParameters, User user) throws JSONException {
         Rating rating = new Rating();
-        if (requestParameters.get("id") != null) {
-            rating.setId((long)requestParameters.get("id"));
+        if (requestParameters.get("id") != null && !((String) requestParameters.get("id")).isEmpty()) {
+            rating.setId(Long.valueOf((String) requestParameters.get("id")));
         }
-        rating.setCategory((String) requestParameters.get("primaryTargetCodeSpace"));
-        rating.setCategoryItem((String) requestParameters.get("primaryTargetCode"));
+        rating.setCategory((String) requestParameters.get("category"));
+        rating.setCategoryItem((String) requestParameters.get("categoryItem"));
         rating.setComment((String) requestParameters.get("userComment"));
-        rating.setRating((int) requestParameters.get("score"));
+        rating.setRating(Integer.parseInt((String) requestParameters.get("score")));
         rating.setUserId(user.getId());
         rating.setUserRole((String) requestParameters.get("userRole"));
 
@@ -112,7 +111,7 @@ public class UserFeedbackHandler extends RestActionHandler {
     }
 
     private JSONObject getRequestParameters(String data) throws ActionException {
-
+        if(log.isDebugEnabled()) printRequestData(data);
         try {
             JSONParser parser = new JSONParser();
             JSONObject jsonData = (JSONObject) parser.parse(data);
@@ -126,26 +125,17 @@ public class UserFeedbackHandler extends RestActionHandler {
 
 
     private String printRequestData(String data) throws ActionException{
-        log.debug("data: " + data);
-        log.debug("Got from FrontEnd:" + data);
+        log.debug("data from FrontEnd: " + data);
         try{
             JSONParser parser = new JSONParser();
-            org.json.simple.JSONObject jsonData = (org.json.simple.JSONObject)parser.parse(data);
-            log.debug(jsonData.get("subject"));
+            JSONObject jsonData = (JSONObject)parser.parse(data);
+            log.debug(jsonData.get("id"));
             log.debug(jsonData.get("score"));
-            log.debug(jsonData.get("justification"));
             log.debug(jsonData.get("userRole"));
             log.debug(jsonData.get("userComment"));
-            log.debug(jsonData.get("primaryTargetCode"));
-            log.debug(jsonData.get("primaryTargetCodeSpace"));
-            log.debug(jsonData.get("natureOfTarget"));
-            log.debug(jsonData.get("expertiseLevel"));
-            log.debug(jsonData.get("genUserRole"));
+            log.debug(jsonData.get("categoryItem"));
+            log.debug(jsonData.get("category"));
             log.debug(jsonData.get("username"));
-            log.debug(jsonData.get("organisation"));
-            log.debug(jsonData.get("position"));
-            log.debug(jsonData.get("ciRole"));
-            log.debug(jsonData.get("onlineReference"));
         }catch(Exception e){
             e.printStackTrace();
             log.debug(e.toString());

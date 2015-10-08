@@ -185,7 +185,7 @@ public class JSONHelper {
             json.accumulate(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -195,7 +195,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }
@@ -205,7 +205,7 @@ public class JSONHelper {
             json.put(key, value);
             return true;
         } catch (Exception ignore) {
-            log.warn("Cant put", key, "value", value, "to json");
+            log.warn("Can't put", key, "value", value, "to json");
         }
         return false;
     }

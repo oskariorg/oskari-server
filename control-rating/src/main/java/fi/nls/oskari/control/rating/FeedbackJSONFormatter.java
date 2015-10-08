@@ -9,17 +9,17 @@ import org.json.JSONObject;
  */
 public class FeedbackJSONFormatter {
 
-    public static JSONObject getAverageJSON(JSONObject data, String average) throws JSONException {
+    public static JSONObject getAverageJSON(org.json.simple.JSONObject data, String average) throws JSONException {
         JSONObject item = new JSONObject();
-        item.put("id", data.get("primaryTargetCode"));
-        item.put("rating", average);
+        item.put("id", data.get("categoryItem"));
+        item.put("score", average);
         return item;
     }
 
     public static JSONObject getRatingsJSON(Rating rating) throws JSONException {
         JSONObject item = new JSONObject();
         item.put("id", rating.getId());
-        item.put("rating", rating.getRating());
+        item.put("score", rating.getRating());
         item.put("category", rating.getCategory());
         item.put("categoryItem", rating.getCategoryItem());
         item.put("comment", rating.getComment());

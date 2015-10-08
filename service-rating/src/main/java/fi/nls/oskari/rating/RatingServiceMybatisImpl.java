@@ -50,20 +50,26 @@ public class RatingServiceMybatisImpl extends RatingService {
     }
 
     public Rating saveRating(Rating rating) {
-        if ((Long)rating.getId() == null) {
+        if (rating.getId() == 0) {
              return insertRating(rating);
         } else {
             return updateRating(rating);
         }
     }
 
+    public boolean validateRequiredStrings(Rating rating) {
+        if (rating.getCategory().isEmpty()) return false;
+        if (rating.getCategoryItem().isEmpty()) return false;
+        return true;
+    }
+
     private Rating insertRating(Rating rating) {
         final SqlSession session = factory.openSession();
         try {
             final RatingMapper mapper = session.getMapper(RatingMapper.class);
-            long id = mapper.insertRating(rating);
+            mapper.insertRating(rating);
             session.commit();
-            return findRating(id);
+            return rating;
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to insert new rating");
         } finally {

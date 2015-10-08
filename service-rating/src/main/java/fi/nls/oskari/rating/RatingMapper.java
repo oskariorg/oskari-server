@@ -11,6 +11,6 @@ import java.util.Map;
 public interface RatingMapper {
     Rating find(@Param("id") long id);
     List<Rating> findAllFor(@Param("category") String category, @Param("categoryItem") String categoryItem);
-    long insertRating(Rating rating);
+    void insertRating(Rating rating);
     void updateRating(Rating rating);
 }

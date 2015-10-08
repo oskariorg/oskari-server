@@ -63,6 +63,11 @@ GetGtWMSCapabilities now includes method to parse String into WMSCapabilities to
 WMS capabilities are now parsed when layers are added (previously when they are loaded by user). Pre-parsed capabilities 
 are saved to database table oskari_maplayer in the capabilities column. Flyway migration has been implemented for existing layers.
 
+OskariLayer now has a field for pre-parsed capabilities JSON. This is generated when saving a layer and served to browser
+ instead of parsed just-in-time when layers are loaded.
+ 
+LayerJSONFormatter now has convenience methods to operate the "admin" only data.
+
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
