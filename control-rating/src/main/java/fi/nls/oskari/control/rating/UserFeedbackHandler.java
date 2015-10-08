@@ -103,7 +103,7 @@ public class UserFeedbackHandler extends RestActionHandler {
         rating.setCategory((String) requestParameters.get("category"));
         rating.setCategoryItem((String) requestParameters.get("categoryItem"));
         rating.setComment((String) requestParameters.get("userComment"));
-        rating.setRating(Integer.getInteger((String) requestParameters.get("score")));
+        rating.setRating(Integer.parseInt((String) requestParameters.get("score")));
         rating.setUserId(user.getId());
         rating.setUserRole((String) requestParameters.get("userRole"));
 
