@@ -97,13 +97,13 @@ public class UserFeedbackHandler extends RestActionHandler {
 
     private Rating createRatingFromRequest(JSONObject requestParameters, User user) throws JSONException {
         Rating rating = new Rating();
-        if (requestParameters.get("id") != null) {
-            rating.setId((long)requestParameters.get("id"));
+        if (requestParameters.get("id") != null && !((String) requestParameters.get("id")).isEmpty()) {
+            rating.setId(Long.valueOf((String) requestParameters.get("id")));
         }
         rating.setCategory((String) requestParameters.get("category"));
         rating.setCategoryItem((String) requestParameters.get("categoryItem"));
         rating.setComment((String) requestParameters.get("userComment"));
-        rating.setRating((int) requestParameters.get("score"));
+        rating.setRating(Integer.getInteger((String) requestParameters.get("score")));
         rating.setUserId(user.getId());
         rating.setUserRole((String) requestParameters.get("userRole"));
 
@@ -125,8 +125,7 @@ public class UserFeedbackHandler extends RestActionHandler {
 
 
     private String printRequestData(String data) throws ActionException{
-        log.debug("data: " + data);
-        log.debug("Got from FrontEnd:" + data);
+        log.debug("data from FrontEnd: " + data);
         try{
             JSONParser parser = new JSONParser();
             JSONObject jsonData = (JSONObject)parser.parse(data);
