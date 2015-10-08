@@ -2,6 +2,27 @@
 
 ## 1.33
 
+### service-routing (POC)
+
+Changed service to support OpenTripPlanner services. Service parses data to plan, requestParameters and success parameter.
+If OpenTripPlanner response contains error block then success response param is false and there are no plan block
+
+Service response is same as OpenTripPlanner response with these conditions:
+- point lat and lon coordinates are transferred to map projection
+- geoJSON presentation added to each itinerary (plan/itineraries/itenerary) . GeoJSON tells whole route each itinerary.
+- geoJSON presentation added to each leg legGeometry (plan/itineraries/itinerary/legs/leg/legGeometry). GeoJSON tells leg route.
+
+To be able to use this you need to have the following parameters defined in properties:
+- routing.url (route service url)
+- routing.srs (coordinate system used by route service provider)
+- routing.default.maxwalkdistance (default max walk distance in meters)
+- routing.default.mode (default mode)
+
+Optional parameters in properties:
+- routing.user (username required by the route service provider)
+- routing.password (password required by the route service provider)
+- routing.forceXY (force change XY axels)
+
 ### content-resources
 
 Fixed earlier Java-based flyway migrations to use SQL instead of existing services. This enables smoother upgrade
