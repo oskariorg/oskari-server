@@ -4,14 +4,17 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.routing.pojo.*;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.
@@ -105,25 +108,20 @@ public class RouteParser {
     private static final String PARAM_LEGS_TO_ARRIVAL = "arrival";
     private static final String PARAM_LEGS_TO_ORIG = "orig";
     private static final String PARAM_LEGS_TO_VERTEX_TYPE = "vertexType";
+    private static final String PARAM_LEGS_TO_ZONE_ID= "zoneId";
+    private static final String PARAM_LEGS_TO_STOP_INDEX = "stopIndex";
+    private static final String PARAM_LEGS_TO_STOP_SEQUENCE = "stopSequence";
+    private static final String PARAM_LEGS_TO_STOP_ID = "stopId";
+    private static final String PARAM_LEGS_TO_STOP_CODE = "stopCode";
     private static final String PARAM_LEGS_LEG_GEOMETRY = "legGeometry";
     private static final String PARAM_LEGS_LEG_GEOMETRY_POINTS = "points";
     private static final String PARAM_LEGS_LEG_GEOMETRY_LENGTH = "length";
-    private static final String PARAM_LEGS_ALERTS = "alerts";
-    private static final String PARAM_LEGS_ALERTS_ALERT_HEADER_TEXT = "alertHeaderText";
+    private static final String PARAM_LEGS_LEG_GEOJSON = "geoJSON";
     private static final String PARAM_LEGS_STEPS = "steps";
-    private static final String PARAM_LEGS_STEPS_DISTANCE = "distance";
-    private static final String PARAM_LEGS_STEPS_RELATIVE_DIRECTION = "relativeDirection";
-    private static final String PARAM_LEGS_STEPS_STREET_NAME = "streetName";
-    private static final String PARAM_LEGS_STEPS_ABSOLUTE_DIRECTION = "absoluteDirection";
-    private static final String PARAM_LEGS_STEPS_STAY_ON = "stayOn";
-    private static final String PARAM_LEGS_STEPS_AREA = "area";
-    private static final String PARAM_LEGS_STEPS_BOGUS_NAME = "bogusName";
     private static final String PARAM_LEGS_STEPS_LON = "lon";
     private static final String PARAM_LEGS_STEPS_LAT = "lat";
-    private static final String PARAM_LEGS_STEPS_ELEVATION = "elevation";
-    private static final String PARAM_LEGS_STEPS_ALERTS = "alerts";
-    private static final String PARAM_LEGS_STEPS_ALERT_HEADER_TEXT = "alertHeaderText";
 
+    private static final Boolean FORCE_XY = ConversionHelper.getBoolean(PropertyUtil.get("routing.forceXY", "false"),false);
 
     public JSONObject generatePlan(Route route, RouteParams params){
         final JSONObject planJSON = new JSONObject();
@@ -137,7 +135,7 @@ public class RouteParser {
             planJSON.put(PARAM_FROM, getFromJSON(plan, params));
 
             // to
-            planJSON.put(PARAM_TO, getToJSON(plan,params));
+            planJSON.put(PARAM_TO, getToJSON(plan, params));
 
             // itineraries
             planJSON.put(PARAM_ITINERARIES, getItinerariesJSON(plan, params));
@@ -158,7 +156,12 @@ public class RouteParser {
 
         try {
             fromJSON.put(PARAM_FROM_NAME, from.getName());
-            final Point newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+            Point newFrom;
+            if(!FORCE_XY) {
+                newFrom=ProjectionHelper.transformPoint(from.getLat(), from.getLon(), sourceSRS, targetSRS);
+            } else {
+                newFrom=ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+            }
             fromJSON.put(PARAM_FROM_LON, newFrom.getLon());
             fromJSON.put(PARAM_FROM_LAT, newFrom.getLat());
             fromJSON.put(PARAM_FROM_ORIG, from.getOrig());
@@ -177,7 +180,12 @@ public class RouteParser {
 
         try {
             toJSON.put(PARAM_TO_NAME, to.getName());
-            final Point newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+            Point newTo;
+            if(!FORCE_XY){
+                newTo = ProjectionHelper.transformPoint(to.getLat(), to.getLon(), sourceSRS, targetSRS);
+            } else {
+                newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+            }
             toJSON.put(PARAM_TO_LON, newTo.getLon());
             toJSON.put(PARAM_TO_LAT, newTo.getLat());
             toJSON.put(PARAM_TO_ORIG, to.getOrig());
@@ -254,9 +262,14 @@ public class RouteParser {
                 JSONObject fromJSON = new JSONObject();
                 fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, from.getArrival());
                 fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, from.getDeparture());
-                // FIXME lon lat change SRS to map projection
-                fromJSON.put(PARAM_LEGS_FROM_LAT, from.getLat());
-                fromJSON.put(PARAM_LEGS_FROM_LON, from.getLon());
+                Point newFrom;
+                if(!FORCE_XY){
+                   newFrom = ProjectionHelper.transformPoint(from.getLat(), from.getLon(), sourceSRS, targetSRS);
+                } else {
+                    newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+                }
+                fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLat());
+                fromJSON.put(PARAM_LEGS_FROM_LON, newFrom.getLon());
                 fromJSON.put(PARAM_LEGS_FROM_NAME, from.getName());
                 fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, from.getStopCode());
                 fromJSON.put(PARAM_LEGS_FROM_STOP_ID, from.getStopId());
@@ -266,10 +279,65 @@ public class RouteParser {
                 fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, from.getZoneId());
                 legJSON.put(PARAM_LEGS_FROM, fromJSON);
 
-                // FIXME check these
-                legJSON.put(PARAM_LEGS_MODE, leg.getLegGeometry());
-                legJSON.put(PARAM_LEGS_MODE, leg.getSteps());
-                legJSON.put(PARAM_LEGS_MODE, leg.getTo());
+                To_ to = leg.getTo();
+                JSONObject toJSON = new JSONObject();
+                toJSON.put(PARAM_LEGS_TO_ARRIVAL, to.getArrival());
+                Point newTo;
+                if(!FORCE_XY) {
+                    newTo = ProjectionHelper.transformPoint(to.getLat(), to.getLon(), sourceSRS, targetSRS);
+                } else {
+                    newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+                }
+                toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLat());
+                toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
+                toJSON.put(PARAM_LEGS_TO_NAME, to.getName());
+                toJSON.put(PARAM_LEGS_TO_ORIG, to.getOrig());
+                toJSON.put(PARAM_LEGS_TO_STOP_CODE, to.getStopCode());
+                toJSON.put(PARAM_LEGS_TO_STOP_ID, to.getStopId());
+                toJSON.put(PARAM_LEGS_TO_STOP_INDEX, to.getStopIndex());
+                toJSON.put(PARAM_LEGS_TO_STOP_SEQUENCE, to.getStopSequence());
+                toJSON.put(PARAM_LEGS_TO_VERTEX_TYPE, to.getVertexType());
+                toJSON.put(PARAM_LEGS_TO_ZONE_ID, to.getZoneId());
+                legJSON.put(PARAM_LEGS_TO, toJSON);
+                LegGeometry geometry = leg.getLegGeometry();
+                JSONObject geometryJSON = new JSONObject();
+                geometryJSON.put(PARAM_LEGS_LEG_GEOJSON, parseGeoJson(leg, targetSRS));
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_LENGTH, geometry.getLength());
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_POINTS, geometry.getPoints());
+                legJSON.put(PARAM_LEGS_LEG_GEOMETRY, geometryJSON);
+
+                List<Object> steps = leg.getSteps();
+                JSONArray stepsJSON = new JSONArray();
+
+                for (int i = 0; i < steps.size(); i++) {
+                    LinkedHashMap lhm = (LinkedHashMap)steps.get(i);
+                    Iterator iterator = lhm.entrySet().iterator();
+                    JSONObject stepJSON = new JSONObject();
+                    while(iterator.hasNext()){
+                        Map.Entry me = (Map.Entry)iterator.next();
+                        stepJSON.put(me.getKey().toString(), me.getValue().toString());
+                    }
+
+                    // convert coordinates
+                    if(stepJSON.has(PARAM_LEGS_STEPS_LON) && stepJSON.has(PARAM_LEGS_STEPS_LAT)){
+                        String stepLon = stepJSON.getString(PARAM_LEGS_STEPS_LON);
+                        String stepLat = stepJSON.getString(PARAM_LEGS_STEPS_LAT);
+
+                        Point stepPoint;
+                        if(!FORCE_XY) {
+                            stepPoint = ProjectionHelper.transformPoint(stepLat, stepLon, sourceSRS, targetSRS);
+                        } else {
+                            stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
+                        }
+                        stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLon());
+                        stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLat());
+                    }
+
+                    stepsJSON.put(stepJSON);
+                }
+
+                legJSON.put(PARAM_LEGS_STEPS, stepsJSON);
+
                 legsJSON.put(legJSON);
             }
         } catch (JSONException ex){
@@ -297,11 +365,18 @@ public class RouteParser {
             final String[] fromPoints = rp.getFromPlace().split(",");
             final String[] toPoints = rp.getToPlace().split(",");
 
-            final Point newFrom = ProjectionHelper.transformPoint(fromPoints[0], fromPoints[1], sourceSRS, targetSRS);
-            final Point newTo = ProjectionHelper.transformPoint(toPoints[0], toPoints[1], sourceSRS, targetSRS);
-
+            Point newFrom;
+            Point newTo;
+            if(!FORCE_XY){
+                newFrom = ProjectionHelper.transformPoint(fromPoints[0], fromPoints[1], sourceSRS, targetSRS);
+                newTo = ProjectionHelper.transformPoint(toPoints[0], toPoints[1], sourceSRS, targetSRS);
+            } else {
+                newFrom = ProjectionHelper.transformPoint(fromPoints[1], fromPoints[0], sourceSRS, targetSRS);
+                newTo = ProjectionHelper.transformPoint(toPoints[1], toPoints[0], sourceSRS, targetSRS);
+            }
             requestParameters.put(PARAM_FROM_PLACE, getPointJSON(newFrom.getLon(), newFrom.getLat()));
             requestParameters.put(PARAM_TO_PLACE, getPointJSON(newTo.getLon(), newTo.getLat()));
+
         } catch(JSONException ex){
             LOG.error("Cannot generate routing request parameters", ex);
         }
@@ -322,43 +397,43 @@ public class RouteParser {
         return pointJSON;
     }
 
-    public JSONObject parseGeoJson(Itinerary params, String targetSRS) {
+    public JSONObject parseGeoJson(Leg leg, String targetSRS) {
 
         LOG.debug("----------------------Trying to parse geoJson");
 
         JSONObject featureCollection = new JSONObject();
 
-        List<Leg> legs = params.getLegs();
-
         try {
             featureCollection.put("type", "FeatureCollection");
             JSONArray featureList = new JSONArray();
 
-            for (Leg leg: legs) {
-                JSONObject line = new JSONObject();
-                line.put(PARAM_TYPE, "LineString");
+            JSONObject line = new JSONObject();
+            line.put(PARAM_TYPE, "LineString");
 
-                LegGeometry legGeom = leg.getLegGeometry();
-                String encodedPolyLine = legGeom.getPoints();
-                JSONArray coordinates = decode(encodedPolyLine, targetSRS);
+            LegGeometry legGeom = leg.getLegGeometry();
+            String encodedPolyLine = legGeom.getPoints();
+            JSONArray coordinates = decode(encodedPolyLine, targetSRS);
 
-                line.put("coordinates", coordinates);
-                JSONObject feature = new JSONObject();
-                feature.put(PARAM_TYPE, "Feature");
-                feature.put("geometry", line);
+            line.put("coordinates", coordinates);
+            JSONObject feature = new JSONObject();
+            feature.put(PARAM_TYPE, "Feature");
+            feature.put("geometry", line);
 
-                JSONObject properties = new JSONObject();
-                properties.put("transportType", leg.getMode());
-                feature.put("properties", properties);
+            JSONObject properties = new JSONObject();
+            properties.put(PARAM_LEGS_MODE, leg.getMode());
+            properties.put(PARAM_LEGS_DISTANCE, leg.getDistance());
+            properties.put(PARAM_LEGS_START_TIME, leg.getStartTime());
+            properties.put(PARAM_LEGS_END_TIME, leg.getEndTime());
+            feature.put("properties", properties);
 
-                featureList.put(feature);
-            }
+            featureList.put(feature);
             featureCollection.put("features", featureList);
 
         } catch (JSONException e) {
             LOG.error("can't save json object: " + e.toString());
         }
 
+        LOG.debug(featureCollection.toString());
         return featureCollection;
     }
 
@@ -380,7 +455,12 @@ public class RouteParser {
                 lon = lon + rLon[0] * 1e-5;
                 strIndex = rLon[1];
 
-                Point coordsInAppSRS = ProjectionHelper.transformPoint(lat, lon, currentSRS, targetSRS);
+                Point coordsInAppSRS;
+                if(!FORCE_XY) {
+                    coordsInAppSRS = ProjectionHelper.transformPoint(lat, lon, currentSRS, targetSRS);
+                } else {
+                    coordsInAppSRS = ProjectionHelper.transformPoint(lon, lat, currentSRS, targetSRS);
+                }
                 JSONArray coordinate = new JSONArray("[" + coordsInAppSRS.getLonToString() + "," + coordsInAppSRS.getLatToString() + "]");
                 coordinates.put(coordinate);
             }
@@ -418,48 +498,6 @@ public class RouteParser {
         return new int[] { num, index };
     }
 
-
-    public JSONObject parseRoute (Route params) {
-
-        JSONObject instructions = new JSONObject();
-        /*
-        JSONArray legList = new JSONArray();
-
-        try {
-            Double routeLength = params.getLength();
-            Number routeDuration = params.getDuration();
-
-            instructions.put("length", routeLength);
-            instructions.put("duration", routeDuration);
-
-            List<Leg> legs = params.getLegs();
-
-            for (Leg leg : legs) {
-                JSONObject routeLeg = new JSONObject();
-
-                Integer legLength = leg.getLength();
-                routeLeg.put("length", legLength);
-
-                Number legDuration = leg.getDuration();
-                routeLeg.put("duration", legDuration);
-
-                // transport type can be "walk" or number
-                String legTransportType = leg.getType();
-                routeLeg.put("type", legTransportType);
-
-                String lineCode = leg.getCode();
-                if (lineCode != null) {
-                    routeLeg.put("code", lineCode);
-                }
-                legList.put(routeLeg);
-            }
-            instructions.put("legs", legList);
-        } catch (JSONException e) {
-            LOG.error("couldn,t parse instructions" + e.toString());
-        }
-*/
-        return instructions;
-    }
 
 
 

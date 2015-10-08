@@ -1,5 +1,5 @@
 
-package fi.nls.oskari.routing;
+package fi.nls.oskari.routing.pojo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

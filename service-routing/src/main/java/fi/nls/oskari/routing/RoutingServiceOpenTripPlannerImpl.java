@@ -5,9 +5,10 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.routing.pojo.Itinerary;
+import fi.nls.oskari.routing.pojo.Route;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,23 +22,20 @@ import java.util.*;
 public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImpl.class);
 
-
-    private static final String PARAM_ERROR = "error";
-    private static final String PARAM_ERROR_MESSAGE = "message";
-    private static final String PARAM_FROM_PLACE = "fromPlace";
-    private static final String PARAM_TO_PLACE = "toPlace";
-    private static final String PARAM_MODE = "mode";
-    private static final String PARAM_MAX_WALK_DISTANCE = "maxWalkDistance";
-    private static final String PARAM_WHEELCHAIR = "wheelchair";
-    private static final String PARAM_LOCALE = "locale";
-    private static final String PARAM_DATE = "date";
-    private static final String PARAM_TIME = "time";
-    private static final String PARAM_ARRIVE_BY = "arriveBy";
+    public static final String PARAM_ERROR = "error";
+    public static final String PARAM_ERROR_MESSAGE = "message";
+    public static final String PARAM_FROM_PLACE = "fromPlace";
+    public static final String PARAM_TO_PLACE = "toPlace";
+    public static final String PARAM_MODE = "mode";
+    public static final String PARAM_MAX_WALK_DISTANCE = "maxWalkDistance";
+    public static final String PARAM_WHEELCHAIR = "wheelchair";
+    public static final String PARAM_LOCALE = "locale";
+    public static final String PARAM_DATE = "date";
+    public static final String PARAM_TIME = "time";
+    public static final String PARAM_ARRIVE_BY = "arriveBy";
 
     private static final String PROPERTY_USER = "routing.user";
     private static final String PROPERTY_PASSWORD = "routing.password";
-
-
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -65,7 +63,6 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         requestParams.put(PARAM_MAX_WALK_DISTANCE, Long.toString(params.getMaxWalkDistance()));
         requestParams.put(PARAM_WHEELCHAIR, params.getIsWheelChair().toString());
         requestParams.put(PARAM_LOCALE, params.getLang());
-
 
         final String requestUrl = IOHelper.constructUrl(PropertyUtil.get("routing.url"), requestParams);
         RouteResponse result = new RouteResponse();
@@ -103,26 +100,6 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                     LOGGER.warn("Cannot set error message to route response", ex);
                 }
             }
-
-
-
-
-
-
-            for(Itinerary itinerary : route.getPlan().getItineraries()){
-                RouteResponse routeresponse = new RouteResponse();
-                final JSONObject responseGeoJson = parser.parseGeoJson(itinerary, params.getSrs());
-                routeresponse.setGeoJson(responseGeoJson);
-/*
-                final JSONObject responseRoute = parser.parseRoute(itinerary, params.getSrs());
-                routeresponse.setInstructions(responseRoute);
-                */
-                result.add(routeresponse);
-            }
-            //Route route = mapper.readValue(routeJson, mapper.getTypeFactory().constructCollectionType(List.class, mapper.getTypeFactory().constructCollectionType(List.class, Route.class)));
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -130,16 +107,12 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         return result;
     }
 
-
-
-
-
     /**
      * Check at if route repsonse contains error
      * @param response route response
      * @return true if contains error, other false
      */
-    private boolean isErrorMessage(String response){
+    public boolean isErrorMessage(String response){
         try {
             JSONObject job = new JSONObject(response);
             if(job.has(PARAM_ERROR)) {

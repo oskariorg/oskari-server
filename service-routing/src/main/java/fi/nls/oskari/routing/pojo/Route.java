@@ -1,5 +1,5 @@
 
-package fi.nls.oskari.routing;
+package fi.nls.oskari.routing.pojo;
 
 import com.fasterxml.jackson.annotation.*;
 
