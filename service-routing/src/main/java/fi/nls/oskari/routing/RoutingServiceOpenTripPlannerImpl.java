@@ -81,20 +81,19 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             }
 
             Route route = mapper.readValue(routeJson,Route.class);
-            RouteResponse response = new RouteResponse();
 
             if(!isErrorMessage(routeJson)){
-                response.setRequestParameters(parser.generateRequestParameters(route, params));
-                response.setPlan(parser.generatePlan(route, params));
-                response.setSuccess(true);
+                result.setRequestParameters(parser.generateRequestParameters(route, params));
+                result.setPlan(parser.generatePlan(route, params));
+                result.setSuccess(true);
             } else {
-                response.setSuccess(false);
+                result.setSuccess(false);
                 try {
                     JSONObject error = new JSONObject(routeJson);
                     if(error.has(PARAM_ERROR_MESSAGE)) {
-                        response.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
+                        result.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
                     } else {
-                        response.setErrorMessage("ERROR");
+                        result.setErrorMessage("ERROR");
                     }
                 } catch (JSONException ex){
                     LOGGER.warn("Cannot set error message to route response", ex);
