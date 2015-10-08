@@ -57,6 +57,12 @@ public class RatingServiceMybatisImpl extends RatingService {
         }
     }
 
+    public boolean validateRequiredStrings(Rating rating) {
+        if (rating.getCategory().isEmpty()) return false;
+        if (rating.getCategoryItem().isEmpty()) return false;
+        return true;
+    }
+
     private Rating insertRating(Rating rating) {
         final SqlSession session = factory.openSession();
         try {
