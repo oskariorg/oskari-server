@@ -37,7 +37,6 @@
             keyProperty="id">
         insert into ratings (userId,rating,category,categoryItem,comment,userRole)
         values (#{userId},#{rating},#{category},#{categoryItem},#{comment},#{userRole})
-        RETURNING id
     </insert>
 
     <update id="updateRating"
