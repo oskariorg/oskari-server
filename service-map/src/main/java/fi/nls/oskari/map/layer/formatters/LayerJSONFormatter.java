@@ -36,6 +36,7 @@ public class LayerJSONFormatter {
 
     private static final String KEY_ID = "id";
     private static final String KEY_TYPE = "type";
+    private static final String KEY_ADMIN = "admin";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
@@ -163,6 +164,25 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "subLayer", sublayers);
         }
         return layerJson;
+    }
+    public void removeAdminInfo(final JSONObject layer) {
+        if(layer == null) {
+            return;
+        }
+        layer.remove(KEY_ADMIN);
+    }
+
+    public void addInfoForAdmin(final JSONObject layer, final String key, final Object value) {
+        if(layer == null) {
+            return;
+        }
+        // ensure we have the admin block in place
+        JSONObject additionalData = layer.optJSONObject(KEY_ADMIN);
+        if(additionalData == null) {
+            additionalData = new JSONObject();
+            JSONHelper.putValue(layer, KEY_ADMIN, additionalData);
+        }
+        JSONHelper.putValue(additionalData, key, value);
     }
 
     protected boolean useProxy(final OskariLayer layer) {

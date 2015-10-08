@@ -1,8 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -39,22 +37,11 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                               final String lang,
                               final boolean isSecure) {
 
-        final WebMapService wms = buildWebMapService(layer);
-        return getJSON(layer, lang, isSecure, wms);
-    }
-
-    public JSONObject getJSON(OskariLayer layer,
-                              final String lang,
-                              final boolean isSecure,
-                              final WebMapService capabilities) {
-
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
         JSONHelper.putValue(layerJson, "style", layer.getStyle());
         JSONHelper.putValue(layerJson, "gfiContent", layer.getGfiContent());
 
-        includeCapabilitiesInfo(layerJson, layer, capabilities);
-
-        if(layer.getGfiType() != null && !layer.getGfiType().isEmpty()) {
+        if (layer.getGfiType() != null && !layer.getGfiType().isEmpty()) {
             // setup default if saved
             JSONObject formats = layerJson.optJSONObject("formats");
             if(formats == null) {
@@ -66,6 +53,19 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                 JSONHelper.putValue(formats, "value", layer.getGfiType());
             }
         }
+        includeCapabilitiesInfo(layerJson, layer, layer.getCapabilities());
+        return layerJson;
+    }
+
+    public JSONObject getJSON(OskariLayer layer,
+                              final String lang,
+                              final boolean isSecure,
+                              final WebMapService capabilities) {
+
+        final JSONObject layerJson = getJSON(layer, lang, isSecure);
+        final JSONObject capsJSON = createCapabilitiesJSON(capabilities);
+        includeCapabilitiesInfo(layerJson, layer, capsJSON);
+
         return layerJson;
     }
 
@@ -75,48 +75,46 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      * @param layer
      * @param capabilities
      */
-    public void includeCapabilitiesInfo(final JSONObject layerJson,
-                                        final OskariLayer layer,
-                                        final WebMapService capabilities) {
+    private void includeCapabilitiesInfo(final JSONObject layerJson,
+                                         final OskariLayer layer,
+                                         final JSONObject capabilities) {
         if(capabilities == null) {
             return;
         }
 
         final boolean useProxy = useProxy(layer);
         try {
-            List<JSONObject> styleList = createStylesArray(capabilities);
             final JSONArray styles;
             if (useProxy) {
-                final JSONArray org_styles = new JSONArray();
+                // construct a modified styles list
+                final JSONArray styleList = capabilities.optJSONArray("styles");
                 styles = new JSONArray();
                 // replace legendimage urls
-                for(JSONObject style : styleList) {
-                    // copy the original style definitions so admin can show the real values
-                    org_styles.put(new JSONObject(style, STYLE_KEYS));
-                    if(style.has(KEY_LEGEND)) {
-                        // update url from actual to proxy
-                        JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
+                if(styleList != null) {
+                    for(int i = 0; i < styleList.length(); ++i) {
+                        JSONObject style = styleList.optJSONObject(i);
+                        if (style != null && style.has(KEY_LEGEND)) {
+                            // copy the values to a new object to not affect the original
+                            style = new JSONObject(style, STYLE_KEYS);
+                            // update url from actual to proxied version
+                            JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
+                        }
+                        styles.put(style);
                     }
-                    styles.put(style);
                 }
-                // this is a workaround since we don't know the user here, check OskariLayerWorker for further handling
-                JSONHelper.putValue(layerJson, "org_styles", org_styles);
             }
             else {
-                styles = new JSONArray(styleList);
+                styles = capabilities.optJSONArray("styles");
             }
             JSONHelper.putValue(layerJson, "styles", styles);
 
-            // populate legend image from styles if not available
-            String globalLegend = layer.getLegendImage();
-            if(globalLegend == null || globalLegend.isEmpty()) {
-                globalLegend = getAnyLegendFromStyles(styleList);
-            }
-            // if we now have legend url, setup the JSON
-            if(globalLegend == null || globalLegend.isEmpty()) {
+            final String globalLegend = layer.getLegendImage();
+            // if we have a global legend url, setup the JSON
+            if(globalLegend != null && !globalLegend.isEmpty()) {
                 if (useProxy) {
                     JSONHelper.putValue(layerJson, "legendImage", buildLegendUrl(layer, null));
-                    JSONHelper.putValue(layerJson, "org_legendImage", globalLegend);
+                    // copy the original value so we can show them for admins
+                    addInfoForAdmin(layerJson, "legendImage", globalLegend);
                 } else {
                     JSONHelper.putValue(layerJson, "legendImage", globalLegend);
                 }
@@ -126,26 +124,16 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             log.warn(e, "Populating layer styles failed!");
         }
 
-        JSONObject formats = getFormatsJSON(capabilities);
-        JSONHelper.putValue(layerJson, "formats", formats);
-        JSONHelper.putValue(layerJson, "isQueryable", capabilities.isQueryable());
-        JSONHelper.putValue(layerJson, "version", capabilities.getVersion());
-        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(JSONHelper.getJSONObject(layerJson, "attributes"), formatTime(capabilities.getTime())));
-    }
-
-    /**
-     * Return a legend image from styles, any will do so just use the first one
-     * @param styleList
-     * @return
-     */
-    private String getAnyLegendFromStyles(List<JSONObject> styleList) {
-        for(JSONObject style : styleList) {
-            final String legend = style.optString(KEY_LEGEND);
-            if(legend != null && !legend.isEmpty()) {
-                return legend;
-            }
-        }
-        return null;
+        JSONHelper.putValue(layerJson, "formats", capabilities.optJSONObject("formats"));
+        JSONHelper.putValue(layerJson, "isQueryable", capabilities.optBoolean("isQueryable"));
+        JSONHelper.putValue(layerJson, "version", capabilities.optString("version"));
+        // copy time from capabilities to attributes
+        // only reason for this is that admin can see the values offered by service
+        /*
+        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(
+                JSONHelper.getJSONObject(layerJson, "attributes"),
+                JSONHelper.getJSONObject(capabilities, "time")));
+                */
     }
 
     public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
@@ -181,7 +169,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         urlParams.put("id", Integer.toString(layer.getId()));
         urlParams.put("legend", "true");
         if(styleName != null){
-            urlParams.put(KEY_STYLE, styleName );
+            urlParams.put(KEY_STYLE, styleName);
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
@@ -196,20 +184,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(time, "time", values);
         }
         return time;
-    }
-
-    /**
-     * Builds a new WebMapService
-     * @param layer layer
-     * @return WebMapService or null if something goes wrong.
-     */
-    private WebMapService buildWebMapService(final OskariLayer layer) {
-        try {
-            return WebMapServiceFactory.buildWebMapService(layer);
-        } catch (WebMapServiceParseException e) {
-            log.error("Failed to create WebMapService for layer id '" + layer.getId() + "'. No Styles available");
-        }
-        return null;
     }
 
     /**
