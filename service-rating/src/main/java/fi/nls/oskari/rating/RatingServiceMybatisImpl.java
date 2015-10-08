@@ -50,7 +50,7 @@ public class RatingServiceMybatisImpl extends RatingService {
     }
 
     public Rating saveRating(Rating rating) {
-        if ((Long)rating.getId() == null) {
+        if (rating.getId() == 0 || (Long)rating.getId() == null) {
              return insertRating(rating);
         } else {
             return updateRating(rating);
