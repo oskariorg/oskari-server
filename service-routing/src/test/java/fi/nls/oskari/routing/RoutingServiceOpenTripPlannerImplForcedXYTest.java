@@ -3,6 +3,7 @@ package fi.nls.oskari.routing;
 import fi.nls.oskari.util.PropertyUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * Created by Marko Kuosmanen on 8.10.2015.
