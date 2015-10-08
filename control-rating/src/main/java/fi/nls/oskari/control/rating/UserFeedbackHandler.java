@@ -13,7 +13,7 @@ import fi.nls.oskari.rating.RatingService;
 import fi.nls.oskari.rating.RatingServiceMybatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.List;
