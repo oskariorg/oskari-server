@@ -28,6 +28,8 @@ Optional parameters in properties:
 Fixed earlier Java-based flyway migrations to use SQL instead of existing services. This enables smoother upgrade
  experience since SQL targets the versioned schema while services assume the most recent schema when used.
 
+Removed outdated view description files from resources/json/views.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 
