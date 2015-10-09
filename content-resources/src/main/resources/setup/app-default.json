@@ -9,7 +9,6 @@
         "postgres-add-JAAS",
         "populate-inspire-themes-and-groups"
     ],
-    "flyway" : true,
     "views" : [
         "default-view.json",
         "publisher-template-view.json",

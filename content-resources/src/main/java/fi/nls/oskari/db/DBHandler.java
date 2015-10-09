@@ -223,8 +223,11 @@ public class DBHandler {
                 }
             }
 
-            // needed after db created so views/layers can be registered correctly using services
-            if(setup.optBoolean("flyway", false)) {
+            // core migrations are needed after db is created
+            // since setup can link to other setups which can be described as "partial" setups -> tag these
+            // with isPartial: true to NOT try migrate the db with flyway until the "main" setup has reached this point.
+            // View and layers can be registered correctly using services after db is fully up to date
+            if(!setup.optBoolean("isPartial", false)) {
                 log.info("/- flyway migration for core db");
                 try {
                     FlywaydbMigrator.migrate(getDataSource());
