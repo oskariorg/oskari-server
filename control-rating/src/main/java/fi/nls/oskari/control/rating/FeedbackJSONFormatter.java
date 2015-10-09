@@ -9,10 +9,11 @@ import org.json.JSONObject;
  */
 public class FeedbackJSONFormatter {
 
-    public static JSONObject getAverageJSON(org.json.simple.JSONObject data, String average) throws JSONException {
+    public static JSONObject getAverageJSON(String categoryItem, String[] average) throws JSONException {
         JSONObject item = new JSONObject();
-        item.put("id", data.get("categoryItem"));
-        item.put("score", average);
+        item.put("id", categoryItem);
+        item.put("score", average[0]);
+        item.put("amount", average[1]);
         return item;
     }
 

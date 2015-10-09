@@ -119,16 +119,19 @@ public class RatingServiceMybatisImpl extends RatingService {
         return Collections.emptyList();
     }
 
-    public String getAverageRatingFor(String category, String categoryItem) {
+    public String[] getAverageRatingFor(String category, String categoryItem) {
         List<Rating> ratings = getAllRatingsFor(category, categoryItem);
-        if (ratings.isEmpty())
-            return "0";
+        if (ratings.isEmpty()) {
+            String[] result = {"0","0"};
+            return result;
+        }
         int amount = 0;
         int result = 0;
         for(Rating rating: ratings) {
             result += rating.getRating();
             amount++;
         }
-        return Integer.toString(result / amount);
+        String[] average = {Integer.toString(result / amount), Integer.toString(amount)};
+        return average;
     }
 }

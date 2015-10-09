@@ -42,10 +42,10 @@ public class UserFeedbackHandler extends RestActionHandler {
             String resource = (String)jsonData.get("category");
             String resourceId = (String)jsonData.get("categoryItem");
 
-            String average = ratingService.getAverageRatingFor(resource, resourceId);
-            log.debug("average: " + average);
+            String[] average = ratingService.getAverageRatingFor(resource, resourceId);
+            log.debug("average: " + average[0] + ", amount: " + average[1]);
 
-            result.put(FeedbackJSONFormatter.getAverageJSON(jsonData, average));
+            result.put(FeedbackJSONFormatter.getAverageJSON(resourceId, average));
             result.put(getRatingsJSON(resource, resourceId));
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +65,10 @@ public class UserFeedbackHandler extends RestActionHandler {
 
         try {
             Rating result = saveFeedBackToServer(params);
-            ResponseHelper.writeResponse(params, FeedbackJSONFormatter.getRatingsJSON(result));
+            org.json.JSONObject averageJSON = FeedbackJSONFormatter.getAverageJSON(
+                    result.getCategoryItem(), ratingService.getAverageRatingFor(result.getCategory(), result.getCategoryItem())
+            );
+            ResponseHelper.writeResponse(params, averageJSON);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ActionException("Failed to save feedback");
