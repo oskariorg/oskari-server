@@ -101,6 +101,7 @@ public class DBHandler {
 
     public static void createContentIfNotCreated(DataSource ds) {
         try {
+            datasource = ds;
             Connection conn = ds.getConnection();
             DatabaseMetaData dbmeta = conn.getMetaData();
 
@@ -196,12 +197,12 @@ public class DBHandler {
                     final Object tmp = setupFiles.get(i);
                     if (tmp instanceof JSONObject) {
                         final JSONObject setupObj = (JSONObject) tmp;
-                        System.out.println("/-  as inline JSON");
+                        log.info("/-  as inline JSON");
                         createContent(conn, dbname, setupObj);
                     }
                     else {
                         final String setupFileName = (String) tmp;
-                        System.out.println("/-  " + setupFileName);
+                        log.info("/-  " + setupFileName);
                         createContent(conn, dbname, setupFileName);
                     }
                 }
@@ -221,6 +222,18 @@ public class DBHandler {
                     }
                 }
             }
+
+            // needed after db created so views/layers can be registered correctly using services
+            if(setup.optBoolean("flyway", false)) {
+                log.info("/- flyway migration for core db");
+                try {
+                    FlywaydbMigrator.migrate(getDataSource());
+                    log.info("Oskari core DB migrated successfully");
+                } catch (Exception e) {
+                    log.error(e, "DB migration for Oskari core failed!");
+                }
+            }
+
             if(setup.has("views")) {
                 log.info("/- adding views using ibatis");
                 final JSONArray viewsListing = setup.getJSONArray("views");
