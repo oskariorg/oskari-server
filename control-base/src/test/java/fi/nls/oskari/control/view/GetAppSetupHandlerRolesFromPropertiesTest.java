@@ -28,6 +28,7 @@ import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -96,6 +97,11 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         }
 
         handler.init();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Test

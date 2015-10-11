@@ -20,6 +20,7 @@ import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -62,6 +63,11 @@ public class PublishHandlerTest extends JSONActionRouteTest {
         handler.setBundleService(bundleService);
 
      handler.init();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     private void mockViewService() {

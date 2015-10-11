@@ -14,6 +14,7 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -55,6 +56,11 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         handler.setService(keywordService);
         handler.setPermissionsService(permissionsService);
         handler.init();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     private static Keyword createKeyword(Long id, String value, Long... layers) {
