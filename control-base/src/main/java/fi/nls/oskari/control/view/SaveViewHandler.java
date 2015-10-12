@@ -26,6 +26,7 @@ public class SaveViewHandler extends ActionHandler {
     private final static String VIEW_NAME = "viewName";
     private final static String VIEW_DESCRIPTION = "viewDescription";
     private final static String VIEW_DATA = "viewData";
+    private final static String IS_DEFAULT = "isDefault";
 
     public void handleAction(final ActionParameters params) throws ActionException {
 
@@ -83,6 +84,7 @@ public class SaveViewHandler extends ActionHandler {
 
         final String viewName = params.getHttpParam(VIEW_NAME);
         final String viewDescription = params.getHttpParam(VIEW_DESCRIPTION);
+        final boolean isDefault = params.getHttpParam(IS_DEFAULT, false);
         if (viewName == null) {
             throw new ActionParamsException("Parameter missing:" + VIEW_NAME);
         }
@@ -104,6 +106,8 @@ public class SaveViewHandler extends ActionHandler {
 
         view.setName(viewName);
         view.setDescription(viewDescription);
+
+        view.setIsDefault(isDefault);
         // application/page/devpath should be left as is in "template view"
         return view;
     }
