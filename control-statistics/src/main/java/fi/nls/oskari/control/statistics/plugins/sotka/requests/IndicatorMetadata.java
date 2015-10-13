@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.sotka.requests;
+package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 /**
  * Request class for SotkaNET statistics query to list indicator metadata.

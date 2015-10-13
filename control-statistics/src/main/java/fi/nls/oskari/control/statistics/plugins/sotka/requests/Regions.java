@@ -1,26 +1,25 @@
-package fi.nls.oskari.control.sotka.requests;
+package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 
 /**
- * Request class for SotkaNET statistics query to list indicators.
+ * Request class for SotkaNET statistics query to list regions.
  * @author SMAKINEN
  */
-public class Indicators extends SotkaRequest {
+public class Regions extends SotkaRequest {
 
-    private final static String CACHE_KEY = "oskari_sotka_indicators_list";
+    private final static String CACHE_KEY = "oskari_sotka_regions_list";
 
     @Override
     public String getName() {
-        return "indicators";
+        return "regions";
     }
 
     @Override
     public String getRequestSpecificParams() {
-        return "/indicators";
+        return "/regions";
     }
-
 
     @Override
     public String getData() throws ActionException {

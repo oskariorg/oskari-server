@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.sotka.requests;
+package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 import java.io.StringWriter;
 

@@ -1,4 +1,4 @@
-package fi.nls.oskari.integration.sotka;
+package fi.nls.oskari.control.statistics.plugins.sotka;
 
 
 import com.fasterxml.jackson.core.JsonFactory;
