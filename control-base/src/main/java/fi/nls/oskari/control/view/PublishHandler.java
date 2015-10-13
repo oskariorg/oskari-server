@@ -27,6 +27,10 @@ import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
+/**
+ * Deprecated. Replaced with fi.nls.oskari.control.view.AppSetupHandler which is used by publisher2 bundle.
+ */
+@Deprecated
 @OskariActionRoute("Publish")
 public class PublishHandler extends ActionHandler {
 
