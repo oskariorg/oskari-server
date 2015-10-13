@@ -1,5 +1,13 @@
 # Migration guide
 
+## 1.33.0
+
+The sample application replaces publisher bundle with a refactored version named publisher2. This needs metadata to be
+generated for appsetups/views created with the original publisher. The sample flyway module has 
+an example (flyway/sample/V1_0_5__publisher2_migration.java) how to make the switch in your application when you are ready.
+The script generates the metadata from existing published views and replaces the publisher bundle with publisher2 on all views
+which have the original publisher.
+
 ## 1.32.0
 
 ### content-resources/flyway

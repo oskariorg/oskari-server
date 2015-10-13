@@ -33,6 +33,9 @@ Removed outdated view description files from resources/json/views.
 Flyway migration for Oskari core db is ran when setup files have the base database created (create, setup, bundles phases have been run).
  To disable the migration in "partial" setup scripts, these need to be tagged with "isPartial" : true on the JSON.
 
+Added migration helper for handling the replacement of publisher bundle with publisher2. The sample flyway module has 
+an example V1_0_5__publisher2_migration.java how to use it in application installations.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 

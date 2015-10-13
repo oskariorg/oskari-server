@@ -1,19 +1,21 @@
 package fi.nls.oskari.util;
 
+import fi.nls.oskari.db.BundleHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +25,22 @@ public class Publisher2Migrator {
 
     private static final Logger LOG = LogFactory.getLogger(Publisher2Migrator.class);
     private static final int BATCH_SIZE = 50;
+    private static final String BUNDLE_PUBLISHER_OLD = "publisher";
+    private static final String BUNDLE_PUBLISHER_NEW = "publisher2";
+
 
     private int updatedViewCount = 0;
-    private ViewService service = new ViewServiceIbatisImpl();
+    private ViewService service = null;
+    public Publisher2Migrator(ViewService service) {
+        this.service = service;
+    }
 
-    public void generateViewMetadata(Connection conn) throws Exception {
+    /**
+     * The main method to call for generating metadata for all published views/appsetups
+     * @param conn
+     * @throws Exception
+     */
+    public void migratePublishedAppsetups(Connection conn) throws Exception {
 
         int page = 1;
         while(updateViews(page, conn)) {
@@ -95,39 +108,107 @@ public class Publisher2Migrator {
         Bundle mapfull = view.getBundleByName("mapfull");
         JSONObject config = mapfull.getConfigJSON();
         JSONArray plugins = config.optJSONArray("plugins");
+
+        // some plugins might have font, some might have style. Need to loop all of them to get the whole style...
+        String toolStyle = null;
+        String font = null;
         for(int i = 0; i < plugins.length(); ++i) {
             JSONObject plugin = plugins.optJSONObject(i);
-            JSONObject style = detectStyle(plugin.optJSONObject("config"));
-            if(style != null) {
-                // plugin has style -> use it in metadata (just use the first one we encounter)
-                JSONHelper.putValue(metadata, "style", style);
-                break;
+            JSONObject pluginConfig = plugin.optJSONObject("config");
+            if(toolStyle == null) {
+                toolStyle = getToolStyle(pluginConfig);
+            }
+            if(font == null) {
+                font = getFont(pluginConfig);
             }
         }
+        JSONObject style = new JSONObject();
+        if(font != null) {
+            JSONHelper.putValue(style, "font", font);
+        }
+        if(toolStyle != null) {
+            JSONHelper.putValue(style, "toolStyle", toolStyle);
+        }
+        JSONHelper.putValue(metadata, "style", style);
         return metadata;
     }
 
-    private JSONObject detectStyle(JSONObject pluginConfig) {
+    private String getToolStyle(JSONObject pluginConfig) {
         if(pluginConfig == null) {
             return null;
         }
-        if(!pluginConfig.has("font") && !pluginConfig.has("toolStyle")) {
+
+        if(!pluginConfig.has("toolStyle")) {
             // this plugin has no style
             return null;
         }
-        JSONObject style = new JSONObject();
-        // "font": "georgia",
-        JSONHelper.putValue(style, "font", pluginConfig.optString("font"));
-
         // try object first since optString converts objects to string
         JSONObject obj = pluginConfig.optJSONObject("toolStyle");
         if(obj != null) {
             // "toolStyle": { "val" : "sharp-dark", ... }
-            JSONHelper.putValue(style, "toolStyle", obj.optString("val"));
-            return style;
+            return obj.optString("val", null);
         }
         // "toolStyle": "sharp-dark"
-        JSONHelper.putValue(style, "toolStyle", pluginConfig.optString("toolStyle"));
-        return style;
+        return pluginConfig.optString("toolStyle", null);
+    }
+
+    private String getFont(JSONObject pluginConfig) {
+        if(pluginConfig == null) {
+            return null;
+        }
+        if(!pluginConfig.has("font")) {
+            // this plugin has no font def
+            return null;
+        }
+        // "font": "georgia",
+        return pluginConfig.optString("font", null);
+    }
+
+    /**
+     * Returns view id listing for views having the old publisher.
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    public List<Long> getViewsWithOldPublisher(Connection conn) throws SQLException {
+        List<Long> idList = new ArrayList<>();
+
+        final PreparedStatement statement =
+                conn.prepareStatement("SELECT view_id FROM portti_view_bundle_seq " +
+                        "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?)");
+        statement.setString(1, BUNDLE_PUBLISHER_OLD);
+        try (ResultSet rs = statement.executeQuery()) {
+            while(rs.next()) {
+                idList.add(rs.getLong("view_id"));
+            }
+        } finally {
+            statement.close();
+        }
+        return idList;
+    }
+
+    public void switchPublisherBundles(final long viewId, Connection conn) throws SQLException {
+        Bundle oldBundle = BundleHelper.getRegisteredBundle(BUNDLE_PUBLISHER_OLD, conn);
+        Bundle newBundle = BundleHelper.getRegisteredBundle(BUNDLE_PUBLISHER_NEW, conn);
+        final String sql = "UPDATE portti_view_bundle_seq " +
+                "SET " +
+                "    bundle_id=?, " +
+                "    startup=?, " +
+                "    config=?, " +
+                "    state=?, " +
+                "    bundleinstance=?" +
+                "WHERE bundle_id = ? and view_id=?";
+
+        try (PreparedStatement statement =
+                     conn.prepareStatement(sql)){
+            statement.setLong(1, newBundle.getBundleId());
+            statement.setString(2, newBundle.getStartup());
+            statement.setString(3, newBundle.getConfig());
+            statement.setString(4, newBundle.getState());
+            statement.setString(5, newBundle.getName());
+            statement.setLong(6, oldBundle.getBundleId());
+            statement.setLong(7, viewId);
+            statement.execute();
+        }
     }
 }
