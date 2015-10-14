@@ -12,7 +12,13 @@ import java.util.Map;
  */
 public interface StatisticalIndicator {
     public String getId();
+    /**
+     * Please note that while it would be convenient to just pass untyped JSON here,
+     * it would make developing future plugins more error prone.
+     * @return
+     */
     public Map<String, String> getLocalizedName();
     public List<StatisticalIndicatorLayer> getLayers();
     public StatisticalIndicatorSelectors getSelectors();
+    public Map<String, String> getLocalizedSource();
 }

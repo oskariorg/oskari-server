@@ -16,7 +16,8 @@ import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(PowerMockRunner.class)
 public class SotkaIndicatorsParserTest {
-    private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json");
+    private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json",
+            SotkaIndicatorsParserTest.class);
     @Test
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();

@@ -26,7 +26,7 @@ public class SotkaIndicatorsParser {
                 indicatorList.add(sotkaIndicator);
             }
         } catch (JSONException e) {
-            LOG.error("Error in ", e);
+            LOG.error("Error in mapping Sotka Indicators response to Oskari model: " + e.getMessage(), e);
         }
         return indicatorList;
     }
