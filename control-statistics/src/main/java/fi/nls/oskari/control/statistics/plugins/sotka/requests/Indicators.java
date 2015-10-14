@@ -10,10 +10,11 @@ import fi.nls.oskari.control.ActionException;
 public class Indicators extends SotkaRequest {
 
     private final static String CACHE_KEY = "oskari_sotka_indicators_list";
+    public final static String NAME = "indicators";
 
     @Override
     public String getName() {
-        return "indicators";
+        return NAME;
     }
 
     @Override

@@ -10,10 +10,11 @@ import fi.nls.oskari.control.ActionException;
 public class Regions extends SotkaRequest {
 
     private final static String CACHE_KEY = "oskari_sotka_regions_list";
+    public final static String NAME = "regions";
 
     @Override
     public String getName() {
-        return "regions";
+        return NAME;
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.io.StringWriter;
  * @author SMAKINEN
  */
 public class IndicatorData extends SotkaRequest {
+    public final static String NAME = "data";
 
     public boolean isValid () {
         return getIndicator() != null && getIndicator().isEmpty();
@@ -15,7 +16,7 @@ public class IndicatorData extends SotkaRequest {
 
     @Override
     public String getName() {
-        return "data";
+        return NAME;
     }
 
     @Override

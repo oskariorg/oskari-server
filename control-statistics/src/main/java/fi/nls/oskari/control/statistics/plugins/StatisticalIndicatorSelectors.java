@@ -9,7 +9,9 @@ import java.util.List;
  * The selector values are null if not defined yet.
  */
 public class StatisticalIndicatorSelectors {
-    // The selectors have a defined order.
+    /**
+     * The selectors have a defined order.
+     */
     private List<StatisticalIndicatorSelector> selectors =
             new ArrayList<StatisticalIndicatorSelector>();
     /**

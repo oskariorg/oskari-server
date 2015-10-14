@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Each indicator has:
@@ -10,5 +11,8 @@ import java.util.List;
  *   These could be for example: "Gender": "Male", "Female", "Other", "All", or "Year": "2010", "2011", ....
  */
 public interface StatisticalIndicator {
+    public String getId();
+    public Map<String, String> getLocalizedName();
     public List<StatisticalIndicatorLayer> getLayers();
+    public StatisticalIndicatorSelectors getSelectors();
 }

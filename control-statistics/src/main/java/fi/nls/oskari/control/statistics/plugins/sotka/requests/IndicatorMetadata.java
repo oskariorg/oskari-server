@@ -5,13 +5,14 @@ package fi.nls.oskari.control.statistics.plugins.sotka.requests;
  * @author SMAKINEN
  */
 public class IndicatorMetadata extends SotkaRequest {
+    public final static String NAME = "indicator_metadata";
 
     public boolean isValid () {
         return getIndicator() != null && getIndicator().isEmpty();
     }
     @Override
     public String getName() {
-        return "indicator_metadata";
+        return NAME;
     }
 
     @Override

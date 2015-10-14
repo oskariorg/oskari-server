@@ -2,6 +2,8 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.List;
 
+import fi.nls.oskari.control.ActionException;
+
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
  * where statistical indicator data can be fetched and shown in Oskari.
@@ -25,15 +27,16 @@ import java.util.List;
  *   
  * If in the future the plugin needs to show real-time information, a notification mechanism can be implemented
  * where the plugin notifies Oskari with the plugin name to tell it to fetch the new set of data.
- * Before that, we can pretty much cache all the values. TODO: Cache expiration / flush
+ * Before that, we can pretty much cache all the values using Jedis.
  */
 public interface StatisticalDatasourcePlugin {
     /**
      * Returns a list of statistical data indicators, each with several granularity layers.
      * TODO: Implement a hierarchical tree for the indicators.
      * @return
+     * @throws ActionException 
      */
-    public List<StatisticalIndicator> getIndicators();
+    public List<StatisticalIndicator> getIndicators() throws ActionException;
 
     /**
      * Hook for setting up components that the handler needs to handle requests
