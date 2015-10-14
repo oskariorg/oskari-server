@@ -31,7 +31,7 @@ public class StatisticalDatasourcePluginManager {
     ClassNotFoundException, InstantiationException, IllegalAccessException {
         
         Class<? extends StatisticalDatasourcePlugin> pluginClass =
-                Class.forName("com.duke.MyLocaleServiceProvider").asSubclass(StatisticalDatasourcePlugin.class);
+                Class.forName(className).asSubclass(StatisticalDatasourcePlugin.class);
         StatisticalDatasourcePlugin plugin = pluginClass.newInstance();
         LOG.info("Registering a Statistical Datasource: " + className);
         plugins.put(className, plugin);

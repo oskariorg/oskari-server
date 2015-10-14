@@ -25,8 +25,14 @@ import java.util.List;
  *   
  * If in the future the plugin needs to show real-time information, a notification mechanism can be implemented
  * where the plugin notifies Oskari with the plugin name to tell it to fetch the new set of data.
+ * Before that, we can pretty much cache all the values. TODO: Cache expiration / flush
  */
 public interface StatisticalDatasourcePlugin {
+    /**
+     * Returns a list of statistical data indicators, each with several granularity layers.
+     * TODO: Implement a hierarchical tree for the indicators.
+     * @return
+     */
     public List<StatisticalIndicator> getIndicators();
 
     /**

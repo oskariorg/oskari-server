@@ -17,6 +17,8 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init() {
+        // Note that initialization of the parser is not synchronous and not instant.
+        // TODO: Use Futures to prevent a race condition.
         sotkaParser = new SotkaRegionParser();
     }
 
