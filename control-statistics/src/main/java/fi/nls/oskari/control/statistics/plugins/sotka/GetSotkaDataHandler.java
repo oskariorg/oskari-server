@@ -34,6 +34,7 @@ import java.util.Enumeration;
  * <oskari url>action_route=GetSotkaData&action=data&version=1.0&indicator=127&years=2011&years=2010&genders=female
  * Sotkanet response - only json
  * 
+ * TODO: GetSotkaData is a legacy OskariActionRoute. Move to using plugin API instead when that is implemented.
  */
 @OskariActionRoute("GetSotkaData")
 public class GetSotkaDataHandler extends ActionHandler {

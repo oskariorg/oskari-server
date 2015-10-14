@@ -62,7 +62,7 @@ public class SotkaRequest {
 
     public SotkaRequest() {
         if(this.getClass().equals(SotkaRequest.class)) {
-            throw new RuntimeException("Cannot be instantianed");
+            throw new RuntimeException("Cannot be instantiated");
         }
     }
 

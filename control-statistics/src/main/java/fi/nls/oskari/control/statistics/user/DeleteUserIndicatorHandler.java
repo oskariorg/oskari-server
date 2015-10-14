@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins.sotka;
+package fi.nls.oskari.control.statistics.user;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;

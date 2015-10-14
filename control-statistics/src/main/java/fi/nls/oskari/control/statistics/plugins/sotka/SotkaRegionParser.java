@@ -27,8 +27,8 @@ public class SotkaRegionParser {
 
     private final static Logger log = LogFactory.getLogger(SotkaRegionParser.class);
 
-	private Map<String, Integer> regionsByCode;
-	private Map<Integer, String> regionsById;
+	private Map<String, Integer> idsByCode;
+	private Map<Integer, String> codesById;
     private Map<Integer, Map<String,Object>> regionsObjectsById;
 
 	/**
@@ -36,8 +36,8 @@ public class SotkaRegionParser {
 	 */
 	public SotkaRegionParser() {
 		mapper = new ObjectMapper();
-		regionsByCode = new HashMap<String, Integer>();
-		regionsById = new HashMap<Integer, String>();
+		idsByCode = new HashMap<String, Integer>();
+		codesById = new HashMap<Integer, String>();
         regionsObjectsById = new HashMap<Integer, Map<String,Object>>();
 
 		try {
@@ -53,8 +53,8 @@ public class SotkaRegionParser {
      * @return if in map returns the code, otherwise null
 	 */
     public String getCode(int id) {
-    	if(regionsById.containsKey(id))
-    		return regionsById.get(id);
+    	if(codesById.containsKey(id))
+    		return codesById.get(id);
     	return null;
     }
 
@@ -64,8 +64,8 @@ public class SotkaRegionParser {
      * @return if in map returns the id, otherwise -1
      */
     public int getId(String code) {
-    	if(regionsByCode.containsKey(code))
-    		return regionsByCode.get(code);
+    	if(idsByCode.containsKey(code))
+    		return idsByCode.get(code);
     	return -1;
     }
 
@@ -95,8 +95,8 @@ public class SotkaRegionParser {
             regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
 	        if(region.containsKey(CATEGORY_FIELD)) {
 	        	if(REGION_CATEGORY.equals(region.get(CATEGORY_FIELD))) {
-					regionsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
-					regionsById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
+					idsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
+					codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
 	        	}
 	        }
 		}

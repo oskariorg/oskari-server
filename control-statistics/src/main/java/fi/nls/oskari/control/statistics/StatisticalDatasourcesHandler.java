@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
@@ -20,12 +21,12 @@ import java.util.List;
 @OskariActionRoute("StatisticalDatasources")
 public class StatisticalDatasourcesHandler extends ActionHandler {
     private final static Logger log = LogFactory.getLogger(StatisticalDatasourcesHandler.class);
-	
+    private final StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
+
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
     	ResponseHelper.writeResponse(params, getDataSources());
     }
-    
     
     private JSONObject getDataSources(){
     	

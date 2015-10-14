@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 /**
  * Handler for getting Sotka region id's and codes
+ * TODO: GetSotkaRegionHandler is a legacy OskariActionRoute. Move to using plugin API instead when that is implemented.
  */
 @OskariActionRoute("GetSotkaRegion")
 public class GetSotkaRegionHandler extends ActionHandler {

@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins.sotka;
+package fi.nls.oskari.control.statistics.user;
 
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
@@ -19,8 +19,8 @@ import org.json.JSONObject;
  * Date: 22.11.2013
  * Time: 9:25
  * To change this template use File | Settings | File Templates.
+ * 
  */
-
 @OskariActionRoute("SaveUserIndicator")
 public class SaveUserIndicatorHandler extends ActionHandler {
 
