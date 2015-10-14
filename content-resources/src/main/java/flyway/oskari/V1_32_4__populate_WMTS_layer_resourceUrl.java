@@ -38,7 +38,6 @@ public class V1_32_4__populate_WMTS_layer_resourceUrl implements JdbcMigration {
         LOG.info("Start generating resource URLS for WMTS layers - count:", layers.size());
         int progress = 0;
         for(OskariLayer layer : layers) {
-
             try {
                 // update
                 OskariLayerCapabilities caps = CAPABILITIES_SERVICE.getCapabilities(layer);
@@ -64,6 +63,7 @@ public class V1_32_4__populate_WMTS_layer_resourceUrl implements JdbcMigration {
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, options.toString(2));
             statement.setInt(2, layerId);
+            statement.execute();
         }
         catch (JSONException ignored) {}
     }

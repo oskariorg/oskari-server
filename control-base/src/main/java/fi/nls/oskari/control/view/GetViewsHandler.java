@@ -78,7 +78,8 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
                 viewJson.put(KEY_URL, view.getUrl());
                 viewJson.put(KEY_METADATA, view.getMetadata());
-
+                // publisher 2 doesn't need the view info since it loads it using id
+                // The old publisher and normal view listing need them.
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
 
