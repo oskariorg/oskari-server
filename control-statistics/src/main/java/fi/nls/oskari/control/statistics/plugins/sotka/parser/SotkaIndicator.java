@@ -47,10 +47,10 @@ public class SotkaIndicator implements StatisticalIndicator {
             // Mappings between the same source, different plugin are nontrivial.
             this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
-            // SotkaNET gives indicators with integer values. In the future this might change.
+            // SotkaNET gives indicators with integer and float values. In the future this might change.
             if (jsonObject.getJSONObject("classifications").has("region")) {
                 this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
-                    .getJSONArray("values"), IndicatorValueType.INTEGER, this.id);
+                    .getJSONArray("values"), IndicatorValueType.FLOAT, this.id);
             } else {
                 LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;

@@ -29,16 +29,16 @@ public class SotkaIndicatorsParserTest {
                 "samma åldrar, en=Hospital care for mental disorders, recipients aged 0-17 per 1000 persons of the same " +
                 "age}, localizedSource: {fi=Terveyden ja hyvinvoinnin laitos (THL), sv=" +
                 "Institutet för hälsa och välfärd (THL), en=Institute for Health and Welfare (THL)}, " +
-                "layers: [{id: Kunta, valueType: INTEGER}, {id: Maakunta, valueType: INTEGER}, " +
-                "{id: Erva, valueType: INTEGER}, {id: Aluehallintovirasto, valueType: INTEGER}, " +
-                "{id: Sairaanhoitopiiri, valueType: INTEGER}, {id: Maa, valueType: INTEGER}, " +
-                "{id: Suuralue, valueType: INTEGER}, {id: Seutukunta, valueType: INTEGER}, " +
-                "{id: Nuts1, valueType: INTEGER}], selectors: {[{ id: sex, value: null, allowedValues: " +
+                "layers: [{id: Kunta, valueType: FLOAT}, {id: Maakunta, valueType: FLOAT}, " +
+                "{id: Erva, valueType: FLOAT}, {id: Aluehallintovirasto, valueType: FLOAT}, " +
+                "{id: Sairaanhoitopiiri, valueType: FLOAT}, {id: Maa, valueType: FLOAT}, " +
+                "{id: Suuralue, valueType: FLOAT}, {id: Seutukunta, valueType: FLOAT}, " +
+                "{id: Nuts1, valueType: FLOAT}], selectors: {[{ id: sex, value: null, allowedValues: " +
                 "[male, female, total]}]}},"));
         assertEquals(2434, parsedObject.size());
         assertEquals("245", parsedObject.get(40).getId());
         assertEquals(6, parsedObject.get(40).getLayers().size());
-        assertEquals(IndicatorValueType.INTEGER, parsedObject.get(40).getLayers().get(5).getIndicatorValueType());
+        assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(5).getIndicatorValueType());
         assertEquals("Maa", parsedObject.get(40).getLayers().get(5).getOskariMapLayerId());
         assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}",
                 parsedObject.get(40).getLocalizedName().toString());

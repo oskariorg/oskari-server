@@ -18,6 +18,7 @@ import fi.nls.oskari.log.Logger;
 
 public class SotkaIndicatorDataParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorDataParser.class);
+    private static final SotkaRegionParser regionParser = new SotkaRegionParser();
 
     public Map<String, IndicatorValue> parse(String response) throws JSONException {
         Map<String, IndicatorValue> indicatorMap = new HashMap<>();
@@ -33,9 +34,12 @@ public class SotkaIndicatorDataParser {
             // TODO: We are ignoring the absolute value. This could be handled as a separate indicator.
             try {
                 // The numbers are in Finnish format, so we will convert if necessary.
+                // Note: We will interpret integers also as floats, because some indicators give integers, others floats.
+                // TODO: It might be possible to use heuristics to map the SotkaNET number types to floats and integers,
+                //       but this would easily break with new indicators, considering the nature of Sotka types.
                 Number numberValue = NumberFormat.getNumberInstance(Locale.forLanguageTag("fi_FI")).parse(value);
                 IndicatorValue indicatorValue = new IndicatorValueFloat(numberValue.doubleValue());
-                String regionId = valueRow.getString("region");
+                String regionId = regionParser.getCode(Integer.valueOf(valueRow.getString("region")));
                 indicatorMap.put(regionId, indicatorValue);
             } catch (ParseException e) {
                 e.printStackTrace();

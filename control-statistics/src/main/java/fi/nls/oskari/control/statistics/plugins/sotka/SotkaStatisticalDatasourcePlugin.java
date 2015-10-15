@@ -20,12 +20,15 @@ import fi.nls.oskari.log.Logger;
 public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePlugin {
     private final static Logger LOG = LogFactory.getLogger(SotkaStatisticalDatasourcePlugin.class);
     
-    private SotkaRegionParser regionParser = null;
     private SotkaIndicatorsParser indicatorsParser = null;
     private SotkaSpecificIndicatorParser specificIndicatorParser = null;
     // Used in testing to not to fetch all the indicators completely.
     public static boolean testMode = false;
 
+    public SotkaStatisticalDatasourcePlugin() {
+        indicatorsParser = new SotkaIndicatorsParser();
+        specificIndicatorParser = new SotkaSpecificIndicatorParser();
+    }
     @Override
     public List<? extends StatisticalIndicator> getIndicators() {
         try {
@@ -70,9 +73,6 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init() {
-        regionParser = new SotkaRegionParser();
-        indicatorsParser = new SotkaIndicatorsParser();
-        specificIndicatorParser = new SotkaSpecificIndicatorParser();
     }
 
 }
