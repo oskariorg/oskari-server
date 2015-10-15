@@ -34,9 +34,8 @@ public interface StatisticalDatasourcePlugin {
      * Returns a list of statistical data indicators, each with several granularity layers.
      * TODO: Implement a hierarchical tree for the indicators.
      * @return
-     * @throws ActionException 
      */
-    public List<StatisticalIndicator> getIndicators() throws ActionException;
+    public List<? extends StatisticalIndicator> getIndicators();
 
     /**
      * Hook for setting up components that the handler needs to handle requests

@@ -34,6 +34,7 @@ public class StatisticalDatasourcePluginManager {
                 Class.forName(className).asSubclass(StatisticalDatasourcePlugin.class);
         StatisticalDatasourcePlugin plugin = pluginClass.newInstance();
         LOG.info("Registering a Statistical Datasource: " + className);
+        plugin.init();
         plugins.put(className, plugin);
     }
     

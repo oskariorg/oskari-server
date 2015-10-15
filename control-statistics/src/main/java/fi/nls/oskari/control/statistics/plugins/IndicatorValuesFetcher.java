@@ -4,6 +4,5 @@ import java.util.Map;
 
 public interface IndicatorValuesFetcher {
 
-    Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors);
-
+    public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors);
 }

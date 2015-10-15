@@ -33,7 +33,7 @@ public class SotkaRequest {
     private static final String DATA_SEPARATOR = ";";
     private static final String ROW_SEPARATOR = "\r\n";
 
-    private String version;
+    private String version = "1.1";
     private String indicator;
     private String[] years = new String[0];
     private String gender;
