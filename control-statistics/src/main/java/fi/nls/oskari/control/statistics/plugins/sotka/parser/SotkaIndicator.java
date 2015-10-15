@@ -1,6 +1,7 @@
-package fi.nls.oskari.control.statistics.plugins.sotka;
+package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,15 +15,14 @@ import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
+import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
-import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
 /**
- * 
- * @author tero
- *
+ * This class maps the SotkaNET indicator information to Oskari data model.
  */
 public class SotkaIndicator implements StatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicator.class);
@@ -41,18 +41,21 @@ public class SotkaIndicator implements StatisticalIndicator {
         this.localizedSource = localizedSource;
     }
     public SotkaIndicator(JSONObject jsonObject) {
-        // TODO: Implement
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
-            this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization"));
+            // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
+            // If in the future it is added, the id must be combined with the plugin id to make a global id of the source.
+            // Mappings between the same source, different plugin are nontrivial.
+            this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
             // SotkaNET gives indicators with integer values. In the future this might change.
             this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
                     .getJSONArray("values"), IndicatorValueType.INTEGER);
             // Note that the following will just skip the "region" part already projected into layers.
-            this.selectors = new SotkaIndicatorSelectors(jsonObject.getJSONObject("classifications"));
+            this.selectors = toSotkaIndicatorSelectors(jsonObject.getJSONObject("classifications"));
             
         } catch (JSONException e) {
+            e.printStackTrace();
             LOG.error("Could not read data from Sotka Indicator JSON.", e);
         }
         /*
@@ -96,6 +99,31 @@ public class SotkaIndicator implements StatisticalIndicator {
         ...
       */
     }
+    private StatisticalIndicatorSelectors toSotkaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
+        // Note that the key "region" must be skipped, because it was already serialized as layers.
+        StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
+        @SuppressWarnings("unchecked")
+        Iterator<String> names = jsonObject.keys();
+        while (names.hasNext()) {
+            String key = names.next();
+            if (key.equals("region")) {
+                // This was already handled and put to layers.
+            } else {
+                Collection<String> allowedValues = new ArrayList<>();
+                JSONObject jsonSelector = jsonObject.getJSONObject(key);
+                JSONArray valuesJSON = jsonSelector.getJSONArray("values");
+                for (int i = 0; i < valuesJSON.length(); i++) {
+                    allowedValues.add(valuesJSON.getString(i));
+                }
+                if (allowedValues.size() > 0) {
+                    // Sotka has many indicators with empty allowed values for "sex" for example.
+                    StatisticalIndicatorSelector selector = new StatisticalIndicatorSelector(key, allowedValues);
+                    selectors.addSelector(selector);
+                }
+            }
+        }
+        return selectors;
+    }
     @Override
     public String getId() {
         return this.id;
@@ -135,5 +163,11 @@ public class SotkaIndicator implements StatisticalIndicator {
             layers.add(new SotkaStatisticalIndicatorLayer(json.getString(i), type, fetcher));
         }
         return layers;
+    }
+    @Override
+    public String toString() {
+        return "{id: " + id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
+                String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
+                String.valueOf(selectors)+ "}";
     }
 }

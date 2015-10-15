@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins.sotka;
+package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
 import java.util.Map;
 
@@ -41,4 +41,8 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
         return indicatorValuesFetcher.get(selectors);
     }
 
+    @Override
+    public String toString() {
+        return "{id: " + id + ", valueType: " + valueType + "}";
+    }
 }

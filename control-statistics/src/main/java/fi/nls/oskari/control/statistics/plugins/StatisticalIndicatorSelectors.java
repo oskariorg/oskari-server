@@ -23,4 +23,8 @@ public class StatisticalIndicatorSelectors {
     public void addSelector(StatisticalIndicatorSelector selector) {
         this.selectors.add(selector);
     }
+    @Override
+    public String toString() {
+        return "{" + String.valueOf(selectors) + "}";
+    }
 }

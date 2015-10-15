@@ -9,8 +9,6 @@ import org.json.JSONException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicator;
-
 public class SotkaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorsParser.class);
 
