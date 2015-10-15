@@ -22,7 +22,6 @@ public class SotkaIndicatorsParserTest {
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();
         List<SotkaIndicator> parsedObject = parser.parse(testResponse);
-        // TODO: Fix assertion.
         assertTrue("The parsed object did not match the expected first objects.",
                 parsedObject.toString().startsWith(
                 "[{id: 4, localizedName: {fi=Mielenterveyden häiriöihin sairaalahoitoa saaneet 0 - 17-vuotiaat " +
