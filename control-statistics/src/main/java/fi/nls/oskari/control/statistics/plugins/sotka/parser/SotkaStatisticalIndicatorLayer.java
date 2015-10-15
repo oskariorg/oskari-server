@@ -4,20 +4,22 @@ import java.util.Map;
 
 import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 
 public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
     private String id;
+    private String indicatorId;
     private IndicatorValueType valueType;
-    private IndicatorValuesFetcher indicatorValuesFetcher;
+    private SotkaIndicatorValuesFetcher indicatorValuesFetcher;
     
     public SotkaStatisticalIndicatorLayer(String id, IndicatorValueType valueType,
-            IndicatorValuesFetcher indicatorValuesFetcher) {
+            SotkaIndicatorValuesFetcher indicatorValuesFetcher, String indicatorId) {
         this.id = id;
         this.valueType = valueType;
         this.indicatorValuesFetcher = indicatorValuesFetcher;
+        this.indicatorId = indicatorId;
     }
     
     @Override
@@ -38,7 +40,7 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
 
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        return indicatorValuesFetcher.get(selectors);
+        return indicatorValuesFetcher.get(selectors, this.indicatorId);
     }
 
     @Override

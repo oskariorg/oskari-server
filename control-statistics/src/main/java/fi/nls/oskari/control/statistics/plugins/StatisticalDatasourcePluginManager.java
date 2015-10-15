@@ -45,4 +45,10 @@ public class StatisticalDatasourcePluginManager {
     public Collection<StatisticalDatasourcePlugin> getPlugins() {
         return plugins.values();
     }
+    /**
+     * Used for tests.
+     */
+    public void reset() {
+        plugins.clear();
+    }
 }

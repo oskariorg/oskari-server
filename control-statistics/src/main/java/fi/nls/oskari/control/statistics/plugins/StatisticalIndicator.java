@@ -21,4 +21,5 @@ public interface StatisticalIndicator {
     public List<StatisticalIndicatorLayer> getLayers();
     public StatisticalIndicatorSelectors getSelectors();
     public Map<String, String> getLocalizedSource();
+    public Map<String, String> getLocalizedDescription();
 }

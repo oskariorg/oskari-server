@@ -27,4 +27,20 @@ public class StatisticalIndicatorSelectors {
     public String toString() {
         return "{" + String.valueOf(selectors) + "}";
     }
+    public void merge(StatisticalIndicatorSelectors selectors2) {
+        // A naive array lookup is fastest for small arrays.
+        for (StatisticalIndicatorSelector selector : selectors2.getSelectors()) {
+            StatisticalIndicatorSelector foundSelector = null;
+            for (StatisticalIndicatorSelector originalSelector : this.selectors) {
+                if (originalSelector.getId() == selector.getId()) {
+                    // Found match. We can assume these are identical here.
+                    foundSelector = originalSelector;
+                }
+            }
+            if (foundSelector == null) {
+                // The selector is a new one which does not exist in selectors. Adding.
+                this.selectors.add(selector);
+            }
+        }
+    }
 }

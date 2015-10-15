@@ -27,7 +27,7 @@ public class IndicatorData extends SotkaRequest {
     @Override
     public String getRequestSpecificParams() {
         StringWriter writer = new StringWriter();
-        writer.write("/data/csv?indicator=");
+        writer.write("/csv?indicator=");
         writer.write(getIndicator());
         for (String year : getYears()) {
             if (!year.isEmpty()) {

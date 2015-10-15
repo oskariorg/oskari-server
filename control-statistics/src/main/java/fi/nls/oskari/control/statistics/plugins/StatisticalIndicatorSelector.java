@@ -32,6 +32,9 @@ public class StatisticalIndicatorSelector {
     public String getValue() {
         return value;
     }
+    public Collection<String> getAllowedValues() {
+        return allowedValues;
+    }
     @Override
     public String toString() {
         return "{ id: " + id + ", value: " + value + ", allowedValues: " + String.valueOf(allowedValues) + "}";

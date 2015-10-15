@@ -175,6 +175,7 @@ public class SotkaRequest {
             }
             return data;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ActionException("Couldn't proxy request SOTKAnet server", e);
         } finally {
             try {

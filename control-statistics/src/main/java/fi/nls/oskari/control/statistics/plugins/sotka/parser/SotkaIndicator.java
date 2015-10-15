@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
-import fi.nls.oskari.control.statistics.plugins.IndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
@@ -29,18 +28,18 @@ public class SotkaIndicator implements StatisticalIndicator {
     private String id;
     private Map<String, String> localizedName;
     private Map<String, String> localizedSource;
+    private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
     private StatisticalIndicatorSelectors selectors;
+    private boolean valid = true;
 
-    public SotkaIndicator(String id, Map<String, String> localizedName, List<StatisticalIndicatorLayer> layers,
-            StatisticalIndicatorSelectors selectors, Map<String, String> localizedSource) {
-        this.id = id;
-        this.localizedName = localizedName;
-        this.layers = layers;
-        this.selectors = selectors;
-        this.localizedSource = localizedSource;
+    public SotkaIndicator() {
     }
-    public SotkaIndicator(JSONObject jsonObject) {
+    /**
+     * @param jsonObject
+     * @return true for valid parsing, false for validation errors.
+     */
+    public boolean parse(JSONObject jsonObject) {
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
             // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
@@ -49,15 +48,43 @@ public class SotkaIndicator implements StatisticalIndicator {
             this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
             // SotkaNET gives indicators with integer values. In the future this might change.
-            this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
-                    .getJSONArray("values"), IndicatorValueType.INTEGER);
+            if (jsonObject.getJSONObject("classifications").has("region")) {
+                this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
+                    .getJSONArray("values"), IndicatorValueType.INTEGER, this.id);
+            } else {
+                LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
+                this.valid = false;
+            }
             // Note that the following will just skip the "region" part already projected into layers.
             this.selectors = toSotkaIndicatorSelectors(jsonObject.getJSONObject("classifications"));
-            
+            // TODO: Add information about the "interpretation", "limits", "legislation", and source "description" also here.
+            if (jsonObject.has("description")) {
+                // The description field only exists in the specific Sotka Indicator response, so it is handled
+                // as optional here. This SotkaIndicator class also describes the general indicator information
+                // which is missing from the indicator list JSON.
+                this.localizedDescription = toLocalizationMap(jsonObject.getJSONObject("description"));
+            }
+            if (jsonObject.has("range")) {
+                JSONObject range = jsonObject.getJSONObject("range");
+                Integer start = range.getInt("start");
+                Integer end = range.getInt("end");
+                // TODO: Update this before the year 3000. Validating to prevent a DOS attack using insane numbers.
+                
+                if (start >= 1000 && end <= 3000) {
+                    List<String> allowedYears = new ArrayList<>();
+                    for (int year = start; year <= end; year++) {
+                        allowedYears.add(String.valueOf(year));
+                    }
+                    StatisticalIndicatorSelector yearSelector = new StatisticalIndicatorSelector("year", allowedYears);
+                    this.selectors.addSelector(yearSelector);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             LOG.error("Could not read data from Sotka Indicator JSON.", e);
+            this.valid = false;
         }
+        return this.valid;
         /*
          * Sample JSON message:
         {
@@ -136,6 +163,10 @@ public class SotkaIndicator implements StatisticalIndicator {
     public Map<String, String> getLocalizedSource() {
         return this.localizedSource;
     }
+    @Override
+    public Map<String, String> getLocalizedDescription() {
+        return this.localizedDescription;
+    }
     
     @Override
     public List<StatisticalIndicatorLayer> getLayers() {
@@ -155,12 +186,13 @@ public class SotkaIndicator implements StatisticalIndicator {
         }
         return localizationMap;
     }
-    private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type) throws JSONException {
+    private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type,
+            String indicatorId) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         // TODO: This should come from an upper layer.
-        IndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
+        SotkaIndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
         for (int i = 0; i < json.length(); i++) {
-            layers.add(new SotkaStatisticalIndicatorLayer(json.getString(i), type, fetcher));
+            layers.add(new SotkaStatisticalIndicatorLayer(json.getString(i), type, fetcher, indicatorId));
         }
         return layers;
     }
@@ -169,5 +201,15 @@ public class SotkaIndicator implements StatisticalIndicator {
         return "{id: " + id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
                 String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
                 String.valueOf(selectors)+ "}";
+    }
+    /**
+     * This is used to merge additional selector and description information to the indicator metadata.
+     * @param infoToAdd
+     */
+    public void merge(SotkaIndicator infoToAdd) {
+        this.selectors.merge(infoToAdd.getSelectors());
+        if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
+            this.localizedDescription = infoToAdd.getLocalizedDescription();
+        }
     }
 }
