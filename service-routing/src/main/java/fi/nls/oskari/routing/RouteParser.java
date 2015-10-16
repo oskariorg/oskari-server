@@ -11,9 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -515,7 +512,7 @@ public class RouteParser {
             properties.put(PARAM_LEGS_END_TIME, leg.getEndTime());
             feature.put(PARAM_GEOJSON_PROPERTIES, properties);
         } catch (JSONException e) {
-            LOG.error("can't save json object: " + e.toString());
+            LOG.error(e + "can't save json object: " + e.getMessage());
         }
 
         LOG.debug(feature.toString());
@@ -560,7 +557,7 @@ public class RouteParser {
                 coordinates.put(coordinate);
             }
         } catch (JSONException e){
-            LOG.error("can't get points: " + e.toString());
+            LOG.error(e + "can't get points: " + e.getMessage());
         }
 
         return coordinates;
