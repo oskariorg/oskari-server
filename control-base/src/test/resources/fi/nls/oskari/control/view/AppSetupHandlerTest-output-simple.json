@@ -1,0 +1,11 @@
+{
+"description": "test view",
+"id": 0,
+"lang": "fi",
+"name": "test",
+"oldId": -1,
+"pubDomain": "test",
+"states": [],
+"uuid": "aab9a177-49a5-48f8-8d18-5d6bae2645d6",
+"url": "//domain.com/map?lang=fi&uuid=aab9a177-49a5-48f8-8d18-5d6bae2645d6"
+}

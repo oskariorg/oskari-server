@@ -29,7 +29,7 @@ import java.util.Set;
 import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
- * This will replace the PublishHandler functionality for publisher2 bundle
+ * This replaces the fi.nls.oskari.control.view.PublishHandler. Usable with publisher2 bundle
  */
 @OskariActionRoute("AppSetup")
 public class AppSetupHandler extends RestActionHandler {
@@ -212,8 +212,10 @@ public class AppSetupHandler extends RestActionHandler {
         // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
         if(!user.hasAnyRoleIn(drawToolsEnabledRoles)) {
             // remove myplaces functionality if user doesn't have permission to add them
-            viewdata.remove(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
-            LOG.warn("User tried to add draw tools, but doesn't have any of the permitted roles. Removing draw tools!");
+            Object drawTools = viewdata.remove(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
+            if(drawTools != null) {
+                LOG.warn("User tried to add draw tools, but doesn't have any of the permitted roles. Removing draw tools!");
+            }
         }
 
         final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);

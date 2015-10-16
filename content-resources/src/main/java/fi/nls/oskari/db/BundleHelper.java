@@ -62,14 +62,7 @@ public class BundleHelper {
     }
 
     public static boolean isBundleRegistered(final String id, Connection conn) throws SQLException {
-
-        try(PreparedStatement statement =
-                conn.prepareStatement("SELECT id FROM portti_bundle WHERE name=?")) {
-            statement.setString(1,id);
-            try (ResultSet rs = statement.executeQuery()) {
-                return rs.next();
-            }
-        }
+        return getRegisteredBundle(id, conn) != null;
     }
 
     public static void registerBundle(final Bundle bundle, Connection conn) throws SQLException {
@@ -86,6 +79,25 @@ public class BundleHelper {
             statement.setString(3,bundle.getConfig());
             statement.setString(4,bundle.getState());
             statement.execute();
+        }
+    }
+
+    public static Bundle getRegisteredBundle(final String id, Connection conn) throws SQLException {
+        try(PreparedStatement statement =
+                    conn.prepareStatement("SELECT id, name, startup, config, state FROM portti_bundle WHERE name=?")) {
+            statement.setString(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if(!rs.next()) {
+                    return null;
+                }
+                Bundle b = new Bundle();
+                b.setBundleId(rs.getLong("id"));
+                b.setName(rs.getString("name"));
+                b.setStartup(rs.getString("startup"));
+                b.setConfig(rs.getString("config"));
+                b.setState(rs.getString("state"));
+                return b;
+            }
         }
     }
 }
