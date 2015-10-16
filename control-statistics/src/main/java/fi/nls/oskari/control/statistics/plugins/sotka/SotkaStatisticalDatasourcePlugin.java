@@ -9,7 +9,6 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
-import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaSpecificIndicatorParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorMetadata;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
