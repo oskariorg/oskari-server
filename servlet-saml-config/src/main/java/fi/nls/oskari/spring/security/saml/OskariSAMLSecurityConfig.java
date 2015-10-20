@@ -460,6 +460,7 @@ public class OskariSAMLSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/Oskari/**").permitAll()
                 .antMatchers("/action").permitAll()
                 .antMatchers("/error").permitAll()
                 .antMatchers("/saml/**").permitAll()
