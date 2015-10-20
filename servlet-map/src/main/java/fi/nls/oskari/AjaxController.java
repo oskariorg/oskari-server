@@ -52,7 +52,7 @@ public class AjaxController {
             if(e.getCause() != null) {
                 error = e.getCause();
             }
-            log.error(error, "Couldn't handle action:", route, ". Parameters: ", params.getRequest().getParameterMap());
+            log.error(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             ResponseHelper.writeError(params, e.getMessage());
         }
     }
