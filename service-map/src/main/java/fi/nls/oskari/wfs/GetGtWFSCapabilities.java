@@ -417,7 +417,7 @@ public class GetGtWFSCapabilities {
             }
 
         } catch (Exception ex) {
-            log.warn("Couldn't get wfs feature source data", ex);
+            log.warn(ex, "Couldn't get wfs feature source data");
             throw new ServiceException(ex.getMessage());
         }
 
@@ -450,7 +450,7 @@ public class GetGtWFSCapabilities {
             // ---------------
             return json;
         } catch (Exception ex) {
-            log.warn("Couldn't parse wfslayer to json", ex);
+            log.warn(ex, "Couldn't parse wfslayer to json");
             throw new ServiceException(ex.getMessage());
 
         }
@@ -545,7 +545,7 @@ public class GetGtWFSCapabilities {
 
             return lc;
         } catch (Exception ex) {
-            log.warn("Couldn't get wfs feature source data", ex);
+            log.warn(ex, "Couldn't get wfs feature source data");
             throw new ServiceException(ex.getMessage());
         }
 
@@ -597,7 +597,7 @@ public class GetGtWFSCapabilities {
 
             return lc;
         } catch (Exception ex) {
-            log.warn("Couldn't get wfs feature source data", ex);
+            log.warn(ex, "Couldn't get wfs feature source data");
             throw new ServiceException(ex.getMessage());
         }
 
@@ -655,7 +655,7 @@ public class GetGtWFSCapabilities {
 
             return lc;
         } catch (Exception ex) {
-            log.warn("Couldn't get wfs 1.x.0 feature source data", ex);
+            log.warn(ex, "Couldn't get wfs 1.x.0 feature source data");
             //return null;
             throw new ServiceException(ex.getMessage());
         }
@@ -762,7 +762,7 @@ public class GetGtWFSCapabilities {
             }
 
         } catch (Exception ex) {
-            log.debug("WFS 2.0.0 DescribeFeaturetype failed ", ex);
+            log.debug(ex, "WFS 2.0.0 DescribeFeaturetype failed ");
         }
     }
 
@@ -822,7 +822,7 @@ public class GetGtWFSCapabilities {
             }
 
         } catch (Exception ex) {
-            log.debug("WFS 1.1.0 DescribeFeaturetype parse failed ", ex);
+            log.debug(ex, "WFS 1.1.0 DescribeFeaturetype parse failed ");
         }
         return ft;
     }
