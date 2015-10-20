@@ -222,11 +222,10 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         }
 
         try {
+            // setup capabilities json for layer, styles etc
+            oskariLayer.setCapabilities(getLayerCapabilitiesAsJson(capabilitiesLayer, caps));
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false);
 
-            // parse styles from capabilities if available
-            final JSONArray styles = getStylesFromCapabilities(capabilitiesLayer);
-            JSONHelper.putValue(json, "styles", styles);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
@@ -258,7 +257,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
      * @param layer
      * @return
      */
-    public static JSONObject getLayerCapabilitiesAsJson(Layer layer) {
+    public static JSONObject getLayerCapabilitiesAsJson(Layer layer, WMSCapabilities capabilities) {
         JSONObject caps = new JSONObject();
         if(layer == null) {
             return caps;
@@ -266,6 +265,7 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
         final JSONArray styles = getStylesFromCapabilities(layer);
         JSONHelper.putValue(caps, "styles", styles);
         JSONHelper.putValue(caps, "isQueryable", layer.isQueryable());
+        JSONHelper.putValue(caps, "formats", FORMATTER.getFormatsJSON(getInfoFormats(capabilities)));
         return caps;
     }
 

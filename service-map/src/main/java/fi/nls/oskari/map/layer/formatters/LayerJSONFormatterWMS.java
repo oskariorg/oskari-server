@@ -197,7 +197,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return getFormatsJSON(formats);
     }
 
-    public static JSONObject getFormatsJSON(final Set<String> formats) {
+    public static JSONObject getFormatsJSON(final Collection<String> formats) {
         final JSONObject formatJSON = new JSONObject();
         final JSONArray available = new JSONArray();
         JSONHelper.putValue(formatJSON, "available", available);

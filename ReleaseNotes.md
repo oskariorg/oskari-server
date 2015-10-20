@@ -51,6 +51,7 @@ The prefix is configurable in oskari-ext.properties (defaults to https://):
     
 This handling was already present for selected layers and now it's used for GetMapLayers also. 
 The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
+This enables custom proxying for services that don't have https enabled.
 
 #### GetLayerTile 
 
@@ -58,7 +59,7 @@ Added handling for WMTS-layers with resourceURL.
 
 #### GetWSCapabilities
 
-When adding layers the capabilities parser now includes layer styles correctly.
+When adding layers the capabilities parser now includes layer styles and infoformats correctly.
 
 ### service-map
 
