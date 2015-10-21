@@ -51,7 +51,6 @@ public class SotkaRequest {
         // "http://www.sotkanet.fi/rest";
         sotkaBaseURL = PropertyUtil.get("sotka.baseurl");
 
-        ACCEPTED_VERSIONS.add("1.0");
         ACCEPTED_VERSIONS.add("1.1");
 
         ACCEPTED_GENDERS.add("total");
@@ -185,13 +184,13 @@ public class SotkaRequest {
         }
     }
 
-    /** This method returning json from csv data getJsonFromCSV(String csv)
+    /**
+     * This method returning json from csv data getJsonFromCSV(String csv)
      *
      * @param csv intput csv data
      * @return json
      */
-
-    private String getJsonFromCSV(final String csv) {
+    String getJsonFromCSV(final String csv) {
 
         final ArrayList<Map<String, String>> al = new ArrayList<Map<String, String>>();
         final String[] rows = csv.split(ROW_SEPARATOR);
