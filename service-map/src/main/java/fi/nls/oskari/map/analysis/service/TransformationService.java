@@ -209,6 +209,20 @@ public class TransformationService {
                }
            }
        }
+        else {
+           // Field name could be composed with layer name
+           for (Map.Entry<String,String> entry : fieldTypes.entrySet()) {
+               String key = entry.getKey();
+               String value = entry.getValue();
+               if(fieldName.lastIndexOf(key) > 0 && value.equals(NUMERIC_FIELD_TYPE)){
+                   try {
+                       numericValue = Double.parseDouble(strVal);
+                   } catch (NumberFormatException nfe) {
+                       // ignore
+                   }
+               }
+           }
+       }
         return numericValue;
     }
 
