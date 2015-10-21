@@ -49,7 +49,14 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
         }
         final List<InspireTheme> list = new ArrayList<>();
         for(Integer id : links) {
-            list.add(find(id));
+            InspireTheme theme = find(id);
+            if(theme != null) {
+                list.add(theme);
+            }
+            else {
+                log.warn("Layer with id", layerId, "links to a non-existing theme (id:", id,
+                        "). Rows referencing theme should be removed from oskari_maplayer_themes DB table.");
+            }
         }
         return list;
     }
@@ -180,7 +187,7 @@ public class InspireThemeServiceIbatisImpl extends BaseIbatisService<InspireThem
     private List<Integer> getLinkCache(int maplayerid) {
         List<Integer> themeLayers = LINK_CACHE.get("" + maplayerid);
         if(themeLayers == null) {
-            themeLayers = new ArrayList<Integer>();
+            themeLayers = new ArrayList<>();
             LINK_CACHE.put("" + maplayerid, themeLayers);
         }
         return themeLayers;
