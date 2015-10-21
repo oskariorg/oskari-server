@@ -4,12 +4,15 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
+import fi.nls.oskari.util.DuplicateException;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 
 import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -18,6 +21,7 @@ import static org.hamcrest.CoreMatchers.*;
 public class SotkaIndicatorsParserTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json",
             SotkaIndicatorsParserTest.class);
+    
     @Test
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();

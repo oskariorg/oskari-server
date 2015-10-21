@@ -34,9 +34,17 @@ public class SotkaIndicator implements StatisticalIndicator {
     private List<StatisticalIndicatorLayer> layers;
     private StatisticalIndicatorSelectors selectors;
     private boolean valid = true;
+    /**
+     * The fetcher object is shared between all SotkaIndicators.
+     */
+    private static final SotkaIndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
+    static {
+        fetcher.init();
+    }
 
     public SotkaIndicator() {
     }
+
     /**
      * @param jsonObject
      * @return true for valid parsing, false for validation errors.
@@ -191,8 +199,6 @@ public class SotkaIndicator implements StatisticalIndicator {
     private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type,
             String indicatorId) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
-        // TODO: This should come from an upper layer.
-        SotkaIndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
         for (int i = 0; i < json.length(); i++) {
             layers.add(new SotkaStatisticalIndicatorLayer(json.getString(i), type, fetcher, indicatorId));
         }

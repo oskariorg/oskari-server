@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
+
+import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -32,19 +34,13 @@ public class SotkaRegionParser {
     private Map<Integer, Map<String,Object>> regionsObjectsById;
 
 	/**
-	 * Inits parser and maps and triggers parsing
+	 * Inits parser and maps.
 	 */
 	public SotkaRegionParser() {
 		mapper = new ObjectMapper();
 		idsByCode = new HashMap<String, Integer>();
 		codesById = new HashMap<Integer, String>();
         regionsObjectsById = new HashMap<Integer, Map<String,Object>>();
-
-		try {
-			getData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -91,24 +87,28 @@ public class SotkaRegionParser {
 
     /**
      * Makes HTTP get request and parses the responses JSON into HashMaps.
-     * @throws IOException
      */
-    private void getData() throws IOException{
-    	String json = HttpRequest.get(URL).body();
-		JsonFactory factory = new JsonFactory();
-		JsonParser parser = factory.createParser(json);
+    public void getData() {
+        try {
+            String json = HttpRequest.get(URL).body();
+            JsonFactory factory = new JsonFactory();
+            JsonParser parser = factory.createParser(json);
 
-		Map<String,Object> region = null;
+            Map<String,Object> region = null;
 
-		parser.nextToken();
-		while(parser.nextToken() == JsonToken.START_OBJECT) {
-			region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
-            regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
-	        if(region.containsKey(CATEGORY_FIELD)) {
-	            categoriesByCode.put((String) region.get(CODE_FIELD), (String) region.get(CATEGORY_FIELD));
-                idsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
-                codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
-	        }
-		}
+            parser.nextToken();
+            while(parser.nextToken() == JsonToken.START_OBJECT) {
+                region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
+                regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
+                if(region.containsKey(CATEGORY_FIELD)) {
+                    categoriesByCode.put((String) region.get(CODE_FIELD), (String) region.get(CATEGORY_FIELD));
+                    idsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
+                    codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
+                }
+            }
+        } catch (Throwable e) {
+            // Converting to RuntimeException, because plugins are expected to throw undeclared exceptions.
+            throw new APIException("Something went wrong getting regions from SotkaNET.", e);
+        }
     }
 }

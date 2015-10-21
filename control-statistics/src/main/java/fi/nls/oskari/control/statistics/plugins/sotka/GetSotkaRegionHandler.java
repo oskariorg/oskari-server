@@ -8,6 +8,9 @@ import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaRegionParser;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+
+import java.io.IOException;
+
 import org.json.JSONObject;
 
 /**
@@ -35,6 +38,7 @@ public class GetSotkaRegionHandler extends ActionHandler {
         final JSONObject root = new JSONObject();
         
         sotkaRegionParser = new SotkaRegionParser();
+        sotkaRegionParser.getData();
         
     	if(id != -1) {
     		String resultCode = sotkaRegionParser.getCode(id);

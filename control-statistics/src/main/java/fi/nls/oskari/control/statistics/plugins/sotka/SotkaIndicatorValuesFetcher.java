@@ -24,8 +24,14 @@ import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
  * APIs / plugins might give all the information in the same response, or divide and key the responses differently.
  */
 public class SotkaIndicatorValuesFetcher {
-    private static final SotkaRegionParser regionParser = new SotkaRegionParser();
-    private static final SotkaIndicatorDataParser parser = new SotkaIndicatorDataParser(regionParser);
+    private SotkaRegionParser regionParser;
+    private SotkaIndicatorDataParser parser;
+
+    public void init() {
+        this.regionParser = new SotkaRegionParser();
+        this.parser = new SotkaIndicatorDataParser(regionParser);
+        regionParser.getData();
+    }
 
     /**
      * This returns the indicator data for all the layers, for every region category, from "maakunta" to "kunta", etc.
