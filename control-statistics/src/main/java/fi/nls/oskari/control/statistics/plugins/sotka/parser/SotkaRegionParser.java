@@ -22,11 +22,11 @@ public class SotkaRegionParser {
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
 	public static final String CATEGORY_FIELD = "category";
-	private static final String REGION_CATEGORY = "KUNTA";
 	private ObjectMapper mapper;
 
     private final static Logger log = LogFactory.getLogger(SotkaRegionParser.class);
 
+    private Map<String, String> categoriesByCode;
 	private Map<String, Integer> idsByCode;
 	private Map<Integer, String> codesById;
     private Map<Integer, Map<String,Object>> regionsObjectsById;
@@ -70,6 +70,17 @@ public class SotkaRegionParser {
     }
 
     /**
+     * Gets the category for a certain code
+     * @param code
+     * @return if exists returns the category, for example "KUNTA", otherwise null
+     */
+    public String getCategory(String code) {
+        if(categoriesByCode.containsKey(code))
+            return categoriesByCode.get(code);
+        return null;
+    }
+
+    /**
      * Gets id from the HashMap
      * @param id
      * @return if in map returns the region data else null
@@ -94,10 +105,9 @@ public class SotkaRegionParser {
 			region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
             regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
 	        if(region.containsKey(CATEGORY_FIELD)) {
-	        	if(REGION_CATEGORY.equals(region.get(CATEGORY_FIELD))) {
-					idsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
-					codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
-	        	}
+	            categoriesByCode.put((String) region.get(CODE_FIELD), (String) region.get(CATEGORY_FIELD));
+                idsByCode.put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
+                codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
 	        }
 		}
     }

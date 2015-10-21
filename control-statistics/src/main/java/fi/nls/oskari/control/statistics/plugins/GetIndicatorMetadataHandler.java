@@ -11,10 +11,10 @@ import fi.nls.oskari.control.ActionParameters;
  * This interface gives the relevant information for all the indicators to the frontend.
  * This information can be subsequently used to query the actual indicator data.
  * 
- * - action_route=GetIndicatorMetadataData
+ * - action_route=GetIndicatorMetadata
  * 
  * eg.
- * OSKARI_URL&action_route=GetIndicatorMetaData
+ * OSKARI_URL&action_route=GetIndicatorMetadata
  * Response is in JSON, and contains the indicator metadata for each plugin separately.
  */
 @OskariActionRoute("GetIndicatorMetadata")

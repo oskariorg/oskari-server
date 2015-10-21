@@ -40,7 +40,7 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
 
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        return indicatorValuesFetcher.get(selectors, this.indicatorId);
+        return indicatorValuesFetcher.get(selectors, this.indicatorId, this.id);
     }
 
     @Override

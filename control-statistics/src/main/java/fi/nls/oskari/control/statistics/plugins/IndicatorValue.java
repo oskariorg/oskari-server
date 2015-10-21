@@ -16,5 +16,5 @@ public interface IndicatorValue {
      * }
      * @throws JSONException 
      */
-    void putToJSONObject(JSONObject json, String key) throws JSONException;
+    public void putToJSONObject(JSONObject json, String key) throws JSONException;
 }

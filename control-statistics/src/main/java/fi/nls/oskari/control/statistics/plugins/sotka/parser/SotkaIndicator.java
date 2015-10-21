@@ -17,6 +17,7 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -25,6 +26,7 @@ import fi.nls.oskari.log.Logger;
  */
 public class SotkaIndicator implements StatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicator.class);
+    private String pluginId;
     private String id;
     private Map<String, String> localizedName;
     private Map<String, String> localizedSource;
@@ -197,8 +199,12 @@ public class SotkaIndicator implements StatisticalIndicator {
         return layers;
     }
     @Override
+    public String getPluginId() {
+        return SotkaStatisticalDatasourcePlugin.class.getCanonicalName();
+    }
+    @Override
     public String toString() {
-        return "{id: " + id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
+        return "{pluginId: " + pluginId + ", id: " + id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
                 String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
                 String.valueOf(selectors)+ "}";
     }

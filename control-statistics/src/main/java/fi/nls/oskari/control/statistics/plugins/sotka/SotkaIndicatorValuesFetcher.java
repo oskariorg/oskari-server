@@ -1,8 +1,10 @@
 package fi.nls.oskari.control.statistics.plugins.sotka;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.json.JSONException;
 
@@ -22,9 +24,16 @@ import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
  * APIs / plugins might give all the information in the same response, or divide and key the responses differently.
  */
 public class SotkaIndicatorValuesFetcher {
-    private static final SotkaIndicatorDataParser parser = new SotkaIndicatorDataParser();
+    private static final SotkaRegionParser regionParser = new SotkaRegionParser();
+    private static final SotkaIndicatorDataParser parser = new SotkaIndicatorDataParser(regionParser);
 
-    public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors, String indicator) {
+    /**
+     * This returns the indicator data for all the layers, for every region category, from "maakunta" to "kunta", etc.
+     * @param selectors
+     * @param indicator
+     * @return
+     */
+    public Map<String, IndicatorValue> getAll(StatisticalIndicatorSelectors selectors, String indicator) {
         SotkaRequest request = SotkaRequest.getInstance(IndicatorData.NAME);
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
@@ -48,7 +57,9 @@ public class SotkaIndicatorValuesFetcher {
             request.setYears(yearsArray);
             request.setIndicator(indicator);
             String jsonResponse = request.getData();
-            return parser.parse(jsonResponse);
+            Map<String, IndicatorValue> result = parser.parse(jsonResponse);
+            // FIXME: Cache this result, key by plugin, selectors and indicator id.
+            return result;
             
         } catch (ActionException e) {
             e.printStackTrace();
@@ -59,4 +70,24 @@ public class SotkaIndicatorValuesFetcher {
         }
     }
 
+    /**
+     * @param selectors Used to query SotkaNET with.
+     * @param indicator The indicator we want.
+     * @param regionCategoryId The oskari layer we are interested in. For example: "KUNTA"
+     * @return
+     */
+    public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors, String indicator,
+            String regionCategoryId) {
+        Map<String, IndicatorValue> allValues = getAll(selectors, indicator);
+        Map<String, IndicatorValue> filteredValues = new HashMap<>();
+        for (Entry<String, IndicatorValue> entry: allValues.entrySet()) {
+            String regionCode = entry.getKey();
+            IndicatorValue value = entry.getValue();
+            if (regionParser.getCategory(regionCode) == regionCategoryId) {
+                // We must include this value to the result.
+                filteredValues.put(regionCode, value);
+            }
+        }
+        return filteredValues;
+    }
 }

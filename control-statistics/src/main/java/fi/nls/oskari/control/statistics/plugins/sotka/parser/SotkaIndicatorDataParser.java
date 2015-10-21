@@ -18,8 +18,12 @@ import fi.nls.oskari.log.Logger;
 
 public class SotkaIndicatorDataParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorDataParser.class);
-    private static final SotkaRegionParser regionParser = new SotkaRegionParser();
+    private SotkaRegionParser regionParser;
 
+    public SotkaIndicatorDataParser(SotkaRegionParser regionParser) {
+        this.regionParser = regionParser;
+    }
+    
     public Map<String, IndicatorValue> parse(String response) throws JSONException {
         Map<String, IndicatorValue> indicatorMap = new HashMap<>();
         // The response is a String JSON array with JSONObjects with attributes:
