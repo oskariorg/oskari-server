@@ -146,6 +146,17 @@ public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
         // Filter
         String wfsfilter = this.getWfsFilter1();
 
+        if (this.getNoDataValue() != null) {
+            if(isDoNoDataCount()){
+                // No data count filter  - use WPS count aggregate method
+                // and calculate the count of no data value items
+                wfsfilter = this.appendNoDataCountFilter(wfsfilter, this.getDataAttribute());
+            } else {
+                // Append no_data filter
+                wfsfilter = this.appendNoDataFilter(wfsfilter, this.getDataAttribute());
+            }
+        }
+
         reference1 = reference1.replace(FILTER, wfsfilter);
 
         //Properties and filter - reference 2

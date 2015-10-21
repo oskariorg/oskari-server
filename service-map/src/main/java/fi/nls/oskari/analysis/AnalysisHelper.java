@@ -44,7 +44,9 @@ public class AnalysisHelper {
     private static final String JSKEY_RESULT = "result";
     private static final String JSKEY_METHOD = "method";
     private static final String JSKEY_OVERRIDE_SLD = "override_sld";
-
+    private static final String JSKEY_WPS_PARAMS = "wps_params";
+    private static final String JSKEY_NO_DATA = "no_data";
+    private static final String JSKEY_METHODPARAMS = "methodParams";
     private static final String LAYER_PREFIX = "analysis_";
 
     private static final String ANALYSIS_ORGNAME = ""; // managed in front
@@ -137,6 +139,20 @@ public class AnalysisHelper {
             json.put(JSKEY_METHOD, JSONHelper.getStringFromJSON(analyse_js,
                     JSKEY_METHOD, "n/a"));
             json.put(JSKEY_RESULT, "");
+            if (analyse_js.has(JSKEY_METHODPARAMS)) {
+                // Put nodata value to analysis layer, if it was in analysis source layer
+                JSONObject params = JSONHelper.getJSONObject(analyse_js, JSKEY_METHODPARAMS);
+                try {
+                    if(params.has(JSKEY_NO_DATA)){
+                        json.put(JSKEY_WPS_PARAMS,JSONHelper.createJSONObject(JSKEY_NO_DATA,params.get(JSKEY_NO_DATA)));
+                    }
+
+                } catch (Exception ex) {
+                    log.debug("Unable to get analysis layer method params", ex);
+                }
+
+            }
+
             if (analyse_js.has(JSKEY_OVERRIDE_SLD))json.put(JSKEY_OVERRIDE_SLD, analyse_js.optString(JSKEY_OVERRIDE_SLD));
             //
                 if (analyse_js.has(JSKEY_BBOX)) {
