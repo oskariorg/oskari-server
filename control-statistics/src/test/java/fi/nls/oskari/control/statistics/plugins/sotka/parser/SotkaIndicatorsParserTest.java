@@ -28,17 +28,17 @@ public class SotkaIndicatorsParserTest {
         List<SotkaIndicator> parsedObject = parser.parse(testResponse);
         assertTrue("The parsed object did not match the expected first objects.",
                 parsedObject.toString().startsWith(
-                "[{id: 4, localizedName: {fi=Mielenterveyden häiriöihin sairaalahoitoa saaneet 0 - 17-vuotiaat " +
-                "/ 1 000 vastaavanikäistä, sv=0 - 17-åringar som vårdats på sjukhus för psykiska störningar / 1 000 i " +
-                "samma åldrar, en=Hospital care for mental disorders, recipients aged 0-17 per 1000 persons of the same " +
-                "age}, localizedSource: {fi=Terveyden ja hyvinvoinnin laitos (THL), sv=" +
-                "Institutet för hälsa och välfärd (THL), en=Institute for Health and Welfare (THL)}, " +
-                "layers: [{id: Kunta, valueType: FLOAT}, {id: Maakunta, valueType: FLOAT}, " +
-                "{id: Erva, valueType: FLOAT}, {id: Aluehallintovirasto, valueType: FLOAT}, " +
-                "{id: Sairaanhoitopiiri, valueType: FLOAT}, {id: Maa, valueType: FLOAT}, " +
-                "{id: Suuralue, valueType: FLOAT}, {id: Seutukunta, valueType: FLOAT}, " +
-                "{id: Nuts1, valueType: FLOAT}], selectors: {[{ id: sex, value: null, allowedValues: " +
-                "[male, female, total]}]}},"));
+                "[{pluginId: fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin, id: 4, "
+                + "localizedName: {fi=Mielenterveyden häiriöihin sairaalahoitoa saaneet 0 - 17-vuotiaat / "
+                + "1 000 vastaavanikäistä, sv=0 - 17-åringar som vårdats på sjukhus för psykiska störningar / "
+                + "1 000 i samma åldrar, en=Hospital care for mental disorders, recipients aged 0-17 per 1000 "
+                + "persons of the same age}, localizedSource: {fi=Terveyden ja hyvinvoinnin laitos (THL), "
+                + "sv=Institutet för hälsa och välfärd (THL), en=Institute for Health and Welfare (THL)}, "
+                + "layers: [{id: Kunta, valueType: FLOAT}, {id: Maakunta, valueType: FLOAT}, "
+                + "{id: Erva, valueType: FLOAT}, {id: Aluehallintovirasto, valueType: FLOAT}, "
+                + "{id: Sairaanhoitopiiri, valueType: FLOAT}, {id: Maa, valueType: FLOAT}, "
+                + "{id: Suuralue, valueType: FLOAT}, {id: Seutukunta, valueType: FLOAT}, {id: Nuts1, valueType: FLOAT}], "
+                + "selectors: {[{ id: sex, value: null, allowedValues: [male, female, total]}]}},"));
         assertEquals(2434, parsedObject.size());
         assertEquals("245", parsedObject.get(40).getId());
         assertEquals(6, parsedObject.get(40).getLayers().size());

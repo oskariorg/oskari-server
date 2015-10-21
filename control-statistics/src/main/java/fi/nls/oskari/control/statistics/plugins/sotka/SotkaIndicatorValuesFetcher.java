@@ -89,7 +89,8 @@ public class SotkaIndicatorValuesFetcher {
         for (Entry<String, IndicatorValue> entry: allValues.entrySet()) {
             String regionCode = entry.getKey();
             IndicatorValue value = entry.getValue();
-            if (regionParser.getCategory(regionCode) == regionCategoryId) {
+            // SotkaNET gives "Kunta" in some places, "KUNTA" in others...
+            if (regionParser.getCategory(regionCode).equalsIgnoreCase(regionCategoryId)) {
                 // We must include this value to the result.
                 filteredValues.put(regionCode, value);
             }

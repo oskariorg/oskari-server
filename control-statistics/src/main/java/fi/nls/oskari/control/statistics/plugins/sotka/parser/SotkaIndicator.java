@@ -26,7 +26,6 @@ import fi.nls.oskari.log.Logger;
  */
 public class SotkaIndicator implements StatisticalIndicator {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicator.class);
-    private String pluginId;
     private String id;
     private Map<String, String> localizedName;
     private Map<String, String> localizedSource;
@@ -210,7 +209,8 @@ public class SotkaIndicator implements StatisticalIndicator {
     }
     @Override
     public String toString() {
-        return "{pluginId: " + pluginId + ", id: " + id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
+        return "{pluginId: " + SotkaStatisticalDatasourcePlugin.class.getCanonicalName() + ", id: " +
+                id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
                 String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
                 String.valueOf(selectors)+ "}";
     }
