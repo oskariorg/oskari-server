@@ -32,7 +32,7 @@ public class StatisticalIndicatorSelectors {
         for (StatisticalIndicatorSelector selector : selectors2.getSelectors()) {
             StatisticalIndicatorSelector foundSelector = null;
             for (StatisticalIndicatorSelector originalSelector : this.selectors) {
-                if (originalSelector.getId() == selector.getId()) {
+                if (originalSelector.getId().equals(selector.getId())) {
                     // Found match. We can assume these are identical here.
                     foundSelector = originalSelector;
                 }

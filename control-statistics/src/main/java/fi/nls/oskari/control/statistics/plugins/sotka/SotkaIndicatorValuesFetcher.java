@@ -50,7 +50,7 @@ public class SotkaIndicatorValuesFetcher {
                 gender = selector.getValue();
                 break;
             case "year":
-                // Even though SotkaNEW API supports fetching multiple years, we don't do that here.
+                // Even though SotkaNET API supports fetching multiple years, we don't do that here.
                 // Multiple years can be fetched over several requests.
                 years.add(selector.getValue());
                 break;
