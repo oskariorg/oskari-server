@@ -20,6 +20,7 @@ import java.util.Map;
  * Parser (JSON) for getting Sotka region ids and codes
  */
 public class SotkaRegionParser {
+    // FIXME: Use the property sotka.baseurl
 	private static final String URL = "http://www.sotkanet.fi/rest/1.1/regions";
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
@@ -38,9 +39,10 @@ public class SotkaRegionParser {
 	 */
 	public SotkaRegionParser() {
 		mapper = new ObjectMapper();
-		idsByCode = new HashMap<String, Integer>();
-		codesById = new HashMap<Integer, String>();
-        regionsObjectsById = new HashMap<Integer, Map<String,Object>>();
+		idsByCode = new HashMap<>();
+		codesById = new HashMap<>();
+        regionsObjectsById = new HashMap<>();
+        categoriesByCode = new HashMap<>();
 	}
 
 	/**

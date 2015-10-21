@@ -48,9 +48,6 @@ public class SotkaRequest {
         registerAction(Indicators.class);
         registerAction(Regions.class);
 
-        // "http://www.sotkanet.fi/rest";
-        sotkaBaseURL = PropertyUtil.get("sotka.baseurl");
-
         ACCEPTED_VERSIONS.add("1.1");
 
         ACCEPTED_GENDERS.add("total");
@@ -60,6 +57,9 @@ public class SotkaRequest {
     }
 
     public SotkaRequest() {
+        // "http://www.sotkanet.fi/rest";
+        sotkaBaseURL = PropertyUtil.get("sotka.baseurl");
+
         if(this.getClass().equals(SotkaRequest.class)) {
             throw new RuntimeException("Cannot be instantiated");
         }
