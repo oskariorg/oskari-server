@@ -28,7 +28,7 @@ public class DatasourceHelper {
     private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
-    private DatasourceHelper() {
+    protected DatasourceHelper() {
         // use getInstance()
     }
 

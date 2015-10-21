@@ -41,7 +41,6 @@
             <artifactId>powermock-api-mockito</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
     <build>
     	<pluginManagement>

@@ -29,8 +29,9 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
 
     @Override
     public String getOskariMapLayerVersion() {
-        // FIXME: How can we determine the Oskari map layers version this API gives its responses against? From db?
-        return null;
+        // The layer versioning starts with "1", and is incremented when the Oskari layers are updated and
+        // incremented here when the plugin data source starts reflecting the newly published layers.
+        return "1";
     }
 
     @Override

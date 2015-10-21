@@ -12,6 +12,10 @@ import java.util.Map;
  */
 public interface StatisticalIndicatorLayer {
     public String getOskariMapLayerId();
+    /**
+     * @return The version of the certain Oskari map layer to use. This starts with "1", and is incremented when we publish
+     *         new versions of the Oskari maps. The plugins must know what Oskari map version they are compatible with.
+     */
     public String getOskariMapLayerVersion();
     /**
      * Single layer contains indicators for one type only.

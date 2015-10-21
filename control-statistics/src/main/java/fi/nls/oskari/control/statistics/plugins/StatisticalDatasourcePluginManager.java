@@ -2,12 +2,14 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -27,19 +29,23 @@ public class StatisticalDatasourcePluginManager {
      * We are using a static plugin store, because we don't have a IoC container (e.g. Spring) here yet.
      * This is in any case a singleton, this is making it explicit.
      */
-    private static final Map<String, StatisticalDatasourcePlugin> plugins =
-            new HashMap<String, StatisticalDatasourcePlugin>();
+    private static final Map<String, StatisticalDatasourcePlugin> plugins = new HashMap<>();
+    /**
+     * Localization keys for plugin data sources to show to users in the frontend.
+     */
+    private static final Map<String, String> pluginLocalizationKeys = new HashMap<>();
 
-    private SqlSessionFactory factory;
+    private List<StatisticalDatasource> pluginInfos;
 
     /**
      * Use this method to register plugins as data sources.
      * @param className The fully qualified name of the plugin class. Must be in the classpath.
+     * @param localizationKey The key for the localized text to show in the UI to resolve to the data source name for the plugin.
      * @throws ClassNotFoundException If the class is not found in the classpath.
      * @throws IllegalAccessException If the class no-parameter constructor is not accessible.
      * @throws InstantiationException If there was an exception in instantiating the plugin.
      */
-    public void registerPlugin(String className) throws
+    public void registerPlugin(String className, String localizationKey) throws
     ClassNotFoundException, InstantiationException, IllegalAccessException {
         
         Class<? extends StatisticalDatasourcePlugin> pluginClass =
@@ -48,6 +54,12 @@ public class StatisticalDatasourcePluginManager {
         LOG.info("Registering a Statistical Datasource: " + className);
         plugin.init();
         plugins.put(className, plugin);
+        if (localizationKey == null || localizationKey.equals("")) {
+            // If the localization key was not defined, we will use the class name.
+            pluginLocalizationKeys.put(className, className);
+        } else {
+            pluginLocalizationKeys.put(className, localizationKey);
+        }
     }
     
     /**
@@ -68,7 +80,22 @@ public class StatisticalDatasourcePluginManager {
         // Fetching the plugins from the database.
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
-        factory = initializeIBatis(dataSource);
+        SqlSessionFactory factory = initializeIBatis(dataSource);
+        final SqlSession session = factory.openSession();
+        pluginInfos = session.selectList("getAll");
+        System.out.println("Plugin infos: " + String.valueOf(pluginInfos));
+        for (StatisticalDatasource pluginInfo: pluginInfos) {
+            LOG.info("Adding plugin from database: " + String.valueOf(pluginInfo));
+            try {
+                this.registerPlugin(pluginInfo.getClassName(), pluginInfo.getLocalizedNameId());
+            } catch (ClassNotFoundException e) {
+                LOG.error("Could not find the plugin class: " + pluginInfo.getClassName() + ". Skipping...");
+            } catch (InstantiationException e) {
+                LOG.error("Could not instantiate the plugin class: " + pluginInfo.getClassName() + ". Skipping...");
+            } catch (IllegalAccessException e) {
+                LOG.error("Could not access the plugin class constructor: " + pluginInfo.getClassName() + ". Skipping...");
+            }
+        }
     }
     
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
@@ -83,7 +110,7 @@ public class StatisticalDatasourcePluginManager {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public void getLocalizedPluginName(Class<? extends StatisticalDatasourcePlugin> class1) {
-        
+    public String getPluginLocalizationKey(Class<? extends StatisticalDatasourcePlugin> pluginClass) {
+        return pluginLocalizationKeys.get(pluginClass.getCanonicalName());
     }
 }
