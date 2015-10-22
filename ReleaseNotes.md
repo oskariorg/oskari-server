@@ -69,7 +69,7 @@ Improvements in analysis methods:
  
  - Aggregate, Spatial join and Difference methods improved
  
- - sld_muutos_n1.xml  style updated in Geoserver Styles
+ - sld_muutos_n1.sld  style updated in Geoserver Styles / used in analysis method difference
 
 ### service-map
 

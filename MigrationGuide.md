@@ -10,7 +10,7 @@ which have the original publisher.
 
 ## Geoserver
 
-Update sld_muutos_n1.sld in Geoserver Styles (updated file in oskari\servers\jetty-8.1.16-skeleton\jetty-8.1.16-oskari\geoserver_data\styles)
+Update sld_muutos_n1.sld in Geoserver Styles (updated file in \oskari\oskari-server\content-resources\config\geoserver\data\styles)
 
 ## 1.32.0
 
