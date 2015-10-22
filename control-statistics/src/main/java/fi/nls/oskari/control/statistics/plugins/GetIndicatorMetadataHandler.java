@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -26,6 +27,8 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("GetIndicatorMetadata")
 public class GetIndicatorMetadataHandler extends ActionHandler {
+    private final static String CACHE_KEY = "oskari_get_indicator_metadata_handler";
+
     /**
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
@@ -44,6 +47,14 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
     }
     
     public JSONObject getIndicatorMetadataJSON() throws ActionException {
+        final String cachedData = JedisManager.get(CACHE_KEY);
+        if (cachedData != null && !cachedData.isEmpty()) {
+            try {
+                return new JSONObject(cachedData);
+            } catch (JSONException e) {
+                // Failed serializing. Skipping the cache.
+            }
+        }
         JSONObject response = new JSONObject();
         Collection<StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
         for (StatisticalDatasourcePlugin plugin : plugins) {
@@ -62,6 +73,10 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
                 throw new ActionException("Something went wrong in getting indicator metadata.", e);
             }
         }
+        // Note that there is an another layer of caches in the plugins doing the web queries.
+        // Two layers are necessary, because deserialization and conversion to the internal data model
+        // is pretty heavy operation.
+        JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
     }
 
