@@ -21,7 +21,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * - action_route=GetIndicatorMetadata
  * 
  * eg.
- * OSKARI_URL&action_route=GetIndicatorMetadata
+ * OSKARI_URL?action_route=GetIndicatorMetadata
  * Response is in JSON, and contains the indicator metadata for each plugin separately.
  */
 @OskariActionRoute("GetIndicatorMetadata")

@@ -34,11 +34,10 @@ public class GetIndicatorMetadataHandlerTest {
         @Override
         public DataSource getDataSource(String name) {
             BasicDataSource basicDataSource = new BasicDataSource();
-            // FIXME: Get these from properties.
             basicDataSource.setDriverClassName("org.postgresql.Driver");
-            basicDataSource.setUrl("jdbc:postgresql://localhost:5432/oskaridb");
-            basicDataSource.setUsername("admin");
-            basicDataSource.setPassword("admin");
+            basicDataSource.setUrl(PropertyUtil.get("db.url"));
+            basicDataSource.setUsername(PropertyUtil.get("db.username"));
+            basicDataSource.setPassword(PropertyUtil.get("db.password"));
             return basicDataSource;
         }
     }
