@@ -194,35 +194,31 @@ public class TransformationService {
      * @param fieldTypes  field types like in WFS DescribeFeatureType
      * @return true, if numeric value (int,double,long,..)
      */
-    private Double getFieldAsNumeric(String fieldName, String strVal, Map<String,String> fieldTypes)
-    {
+    private Double getFieldAsNumeric(String fieldName, String strVal, Map<String, String> fieldTypes) {
         Double numericValue = null;
-       if(fieldTypes.containsKey(fieldName))
-       {
-           //Check type
-           if(fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE))
-           {
-               try {
-                   numericValue = Double.parseDouble(strVal);
-               } catch (NumberFormatException nfe) {
-                   // ignore
-               }
-           }
-       }
-        else {
-           // Field name could be composed with layer name
-           for (Map.Entry<String,String> entry : fieldTypes.entrySet()) {
-               String key = entry.getKey();
-               String value = entry.getValue();
-               if(fieldName.lastIndexOf(key) > 0 && value.equals(NUMERIC_FIELD_TYPE)){
-                   try {
-                       numericValue = Double.parseDouble(strVal);
-                   } catch (NumberFormatException nfe) {
-                       // ignore
-                   }
-               }
-           }
-       }
+        if (fieldTypes.containsKey(fieldName)) {
+            //Check type
+            if (fieldTypes.get(fieldName).equals(NUMERIC_FIELD_TYPE)) {
+                try {
+                    numericValue = Double.parseDouble(strVal);
+                } catch (NumberFormatException nfe) {
+                    // ignore
+                }
+            }
+        } else {
+            // Field name could be composed with layer name
+            for (Map.Entry<String, String> entry : fieldTypes.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (fieldName.lastIndexOf(key) > 0 && value.equals(NUMERIC_FIELD_TYPE)) {
+                    try {
+                        numericValue = Double.parseDouble(strVal);
+                    } catch (NumberFormatException nfe) {
+                        // ignore
+                    }
+                }
+            }
+        }
         return numericValue;
     }
 

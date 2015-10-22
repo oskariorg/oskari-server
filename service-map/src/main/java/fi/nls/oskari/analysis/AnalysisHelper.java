@@ -143,8 +143,8 @@ public class AnalysisHelper {
                 // Put nodata value to analysis layer, if it was in analysis source layer
                 JSONObject params = JSONHelper.getJSONObject(analyse_js, JSKEY_METHODPARAMS);
                 try {
-                    if(params.has(JSKEY_NO_DATA)){
-                        json.put(JSKEY_WPS_PARAMS,JSONHelper.createJSONObject(JSKEY_NO_DATA,params.get(JSKEY_NO_DATA)));
+                    if (params.has(JSKEY_NO_DATA)) {
+                        json.put(JSKEY_WPS_PARAMS, JSONHelper.createJSONObject(JSKEY_NO_DATA, params.get(JSKEY_NO_DATA)));
                     }
 
                 } catch (Exception ex) {
