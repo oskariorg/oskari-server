@@ -88,6 +88,13 @@ public class OskariComponentManager {
         return Collections.unmodifiableMap(mods);
     }
 
+    public static void removeComponentsOfType(final Class clazz) {
+        final Map<String, OskariComponent> comps = getComponentsOfType(clazz);
+        for(OskariComponent c: comps.values()) {
+            components.remove(c);
+        }
+    }
+
     /**
      * Cleanup method. Calls teardown on all registered components.
      */

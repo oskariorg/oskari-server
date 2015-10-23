@@ -5,6 +5,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceIbatisImpl;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.OskariRuntimeException;
+
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,35 +22,26 @@ public class BundleHelper {
     private static final Logger LOG = LogFactory.getLogger(BundleHelper.class);
     private static final BundleService SERVICE = new BundleServiceIbatisImpl();
 
-    private static final String BUNDLE_STARTUP_TEMPLATE =
-            "{\n" +
-                    "    \"title\": \"%s\",\n" +
-                    "    \"bundleinstancename\": \"%s\",\n" +
-                    "    \"bundlename\": \"%s\",\n" +
-                    "    \"metadata\": {\n" +
-                    "        \"Import-Bundle\": {\n" +
-                    "            \"%s\": {\n" +
-                    "                \"bundlePath\": \"/Oskari/packages/%s/bundle/\"\n" +
-                    "            }\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}";
+    private static final String BUNDLE_STARTUP_TEMPLATE = "BundleHelper-startup.json";
+    private static String startupTemplate = "";
+    static {
+        try {
+            startupTemplate = IOHelper.readString(BundleHelper.class.getResourceAsStream(BUNDLE_STARTUP_TEMPLATE));
+        } catch (IOException ex) {
+            throw new OskariRuntimeException("Error reading startup template", ex);
+        }
+    }
 
     private BundleHelper() {
-
     }
 
     public static String getDefaultBundleStartup(String namespace, final String bundleid, String title) {
         if(bundleid == null) {
-            throw new RuntimeException("Missing bundleid");
+            throw new OskariRuntimeException("Missing bundleid");
         }
-        if(namespace == null) {
-            namespace = "framework";
-        }
-        if(title == null) {
-            title = bundleid;
-        }
-        return String.format(BUNDLE_STARTUP_TEMPLATE, title, bundleid, bundleid, bundleid, namespace);
+        final String ns = namespace == null ? "framework" : namespace;
+        final String label = title == null ? bundleid : title;
+        return String.format(startupTemplate, label, bundleid, bundleid, bundleid, ns);
     }
 
     public static boolean isBundleRegistered(final String id) {

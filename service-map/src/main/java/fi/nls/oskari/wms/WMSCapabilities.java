@@ -22,7 +22,7 @@ public class WMSCapabilities implements WebMapService {
     private String[] keywords = new String[0];
     private String[] formats = new String[0];
     private List<WMSStyle> styles = new ArrayList<WMSStyle>();
-
+    private List<String> time = new ArrayList<>();
 
     public void setQueryable(boolean val) {
         this.queryable = val;
@@ -99,6 +99,11 @@ public class WMSCapabilities implements WebMapService {
     @Override
     public String[] getFormats() {
         return formats;
+    }
+
+    @Override
+    public List<String> getTime() {
+        return time;
     }
 
 }

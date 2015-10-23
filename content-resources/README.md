@@ -55,6 +55,11 @@ This means that when the view JSON references bundles it's enough to only tell t
 When the view is created the bundle configuration is read from the registered bundles (database table portti_bundle).
 After that the bundle config/startup/state is overwritten with the value in the JSON file IF they are defined (if not, the values from portti_bundle will be used).
 
+## Layers
+
+Additional layer definitions can be listed here. These are not visible by default unlike those listed in "selectedLayers"
+within individual view definitions.
+
 ## Sql
 
 Array of generic sql statements to add map layers/permissions and other content.

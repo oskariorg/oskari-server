@@ -258,10 +258,10 @@ public class SearchKeywordsHandler extends ActionHandler {
     }
 
     private String[] getKeywordsForLayer(final OskariLayer layer) {
-        Set<String> layerKeywords = new HashSet<String>();
+        Set<String> layerKeywords = new HashSet<>();
         try {
             if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
-                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer.getId(), layer.getName());
+                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer);
                 if (wms == null || wms.getKeywords() == null) {
                     log.warn("Error parsing keywords for layer", layer);
                     return EMPTY_RESULT;

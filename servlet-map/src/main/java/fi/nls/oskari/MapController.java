@@ -55,19 +55,20 @@ public class MapController {
     private EnvHelper env;
 
     public MapController() {
-        // check control params to pass for getappsetup
-        paramHandlers.addAll(ParamControl.getHandlerKeys());
-        log.debug("Checking for params", paramHandlers);
-
         // check if we have development flag -> serve non-minified js
         isDevelopmentMode = ConversionHelper.getBoolean(PropertyUtil.get(PROPERTY_DEVELOPMENT), false);
-        // Get version from init params or properties, prefer version from properties and default to init param
+        // Get version from properties
         version = PropertyUtil.get(PROPERTY_VERSION);
     }
 
-
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
+        if(paramHandlers.isEmpty()) {
+            // check control params to pass for getappsetup
+            // setup on first call to allow more flexibility regarding timing issues
+            paramHandlers.addAll(ParamControl.getHandlerKeys());
+            log.debug("Checking for params", paramHandlers);
+        }
         writeCustomHeaders(params.getResponse());
         boolean development = PropertyUtil.getOptional("development", false);
         model.addAttribute("preloaded", !development);

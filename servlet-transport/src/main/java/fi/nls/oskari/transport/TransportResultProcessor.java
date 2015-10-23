@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class TransportResultProcessor implements ResultProcessor {
 
-    private final static Logger log = LogFactory.getLogger(TransportResultProcessor.class);
+    private final static Logger LOG = LogFactory.getLogger(TransportResultProcessor.class);
     private long reqId = -1;
     private ServerSession local;
     private BayeuxServer bayeux;
@@ -38,7 +38,7 @@ public class TransportResultProcessor implements ResultProcessor {
             ((Map)data).put("reqId", reqId);
         }
         else {
-            log.debug("Results data not a map:", data);
+            LOG.debug("Results data not a map:", data);
         }
         send(clientId, channel, data);
     }
@@ -55,6 +55,11 @@ public class TransportResultProcessor implements ResultProcessor {
 
     public static void send(final ServerSession session, final BayeuxServer bayeux, String clientId, String channel, Object data) {
         ServerSession client = bayeux.getSession(clientId);
-        client.deliver(session, channel, data, null);
+        if(client != null) {
+            client.deliver(session, channel, data, null);
+        }
+        else {
+            LOG.info("Client disconnected before results were sent:", clientId);
+        }
     }
 }

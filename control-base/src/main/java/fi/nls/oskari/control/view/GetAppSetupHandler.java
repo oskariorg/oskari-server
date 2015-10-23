@@ -83,8 +83,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if(restrictionService == null) {
             setPublishedMapRestrictionService(new PublishedMapRestrictionServiceImpl());
         }
-        // Loads @OskariViewModifier annotated classes of type ParamHandler from classpath
-        ParamControl.addDefaultControls();
+        // Returns names of @OskariViewModifier annotated classes of type ParamHandler from classpath
         paramHandlers.addAll(ParamControl.getHandlerKeys());
         UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
 

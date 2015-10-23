@@ -11,7 +11,6 @@ import fi.nls.oskari.pojo.PropertyFilter;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
@@ -45,7 +44,7 @@ public class WFSFilter {
     public static final int CIRCLE_POINTS_COUNT = 10;
     public static final double CONVERSION_FACTOR = 2.54/1200; // 12th of an inch
 
-    private static final Logger log = LogFactory.getLogger(WFSFilter.class);
+    private static final Logger LOG = LogFactory.getLogger(WFSFilter.class);
 
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
     private static final GeometryFactory gf = JTSFactoryFinder.getGeometryFactory(null);
@@ -117,49 +116,63 @@ public class WFSFilter {
     public String create(final JobType type, final WFSLayerStore layer, final SessionStore session,
                      final List<Double> bounds, final MathTransform transform, boolean createFilter) {
         if(type == null || layer == null || session == null) {
-            log.error("Parameters not set (type, layer, session)", type, layer, session);
+            LOG.error("Parameters not set (type, layer, session)", type, layer, session);
             return null;
         }
         this.layer = layer;
         this.transform = transform;
 
         if(createFilter) {
-            Filter filter = null;
-            if(type == JobType.HIGHLIGHT) {
-                log.debug("Filter: highlight");
-                List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
-                filter = initFeatureIdFilter(featureIds);
-            } else if(type == JobType.MAP_CLICK) {
-                log.debug("Filter: map click");
-                setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
-                Coordinate coordinate = session.getMapClick();
-                filter = initCoordinateFilter(coordinate);
-            } else if(type == JobType.GEOJSON) {
-                log.debug("Filter: GeoJSON");
-                setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
-                GeoJSONFilter geoJSONFilter = session.getFilter();
-                filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
-            }else if(type == JobType.PROPERTY_FILTER) {
-                log.debug("Filter: Property filter");
-                filter = initPropertyFilter(session, bounds, layer);
-            } else if(type == JobType.NORMAL) {
-                log.debug("Filter: normal");
-                Location location;
-                if(bounds != null) {
-                    location = new Location(session.getLocation().getSrs());
-                    location.setBbox(bounds);
-                } else {
-                    location = session.getLocation();
-                }
-
-                filter = initEnlargedBBOXFilter(location, layer);
-            } else {
-                log.error("Failed to create a filter (invalid type)");
-            }
-
+            Filter filter = getFilter(type, session, bounds);
             return createXML(filter);
         }
         return null;
+    }
+
+    public Filter getFilter(final JobType type, final SessionStore session, final List<Double> bounds) {
+
+        Filter filter = null;
+        if(type == JobType.HIGHLIGHT) {
+            LOG.debug("Filter: highlight");
+            List<String> featureIds = session.getLayers().get(layer.getLayerId()).getHighlightedFeatureIds();
+            filter = initFeatureIdFilter(featureIds);
+        } else if(type == JobType.MAP_CLICK) {
+            LOG.debug("Filter: map click");
+            // scale based default buffer doesn't work so well with non-metric units -> prefer geojson filter
+            setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
+            GeoJSONFilter geoJSONFilter = session.getFilter();
+            if(geoJSONFilter != null && geoJSONFilter.getGeoJSON() != null) {
+                LOG.info("Using geojson filter for map click", geoJSONFilter.getGeoJSON());
+                filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
+            } else {
+                LOG.info("Using coordinate filter for map click", session.getMapClick());
+                Coordinate coordinate = session.getMapClick();
+                filter = initCoordinateFilter(coordinate);
+            }
+        } else if(type == JobType.GEOJSON) {
+            LOG.debug("Filter: GeoJSON");
+            // scale based default buffer doesn't work so well with non-metric units -> prefer geojson filter
+            setDefaultBuffer(session.getMapScales().get((int) session.getLocation().getZoom()));
+            GeoJSONFilter geoJSONFilter = session.getFilter();
+            filter = initGeoJSONFilter(geoJSONFilter, layer.getGMLGeometryProperty());
+        }else if(type == JobType.PROPERTY_FILTER) {
+            LOG.debug("Filter: Property filter");
+            filter = initPropertyFilter(session, bounds, layer);
+        } else if(type == JobType.NORMAL) {
+            LOG.debug("Filter: normal");
+            Location location;
+            if(bounds != null) {
+                location = new Location(session.getLocation().getSrs());
+                location.setBbox(bounds);
+            } else {
+                location = session.getLocation();
+            }
+
+            filter = initEnlargedBBOXFilter(location, layer);
+        } else {
+            LOG.error("Failed to create a filter (invalid type)");
+        }
+        return filter;
     }
 
     /**
@@ -171,7 +184,7 @@ public class WFSFilter {
      */
     public String createXML(Filter filter) {
         if(filter == null) {
-            log.error("Failed to create XML for the filter (null)");
+            LOG.error("Failed to create XML for the filter (null)");
             return null;
         }
 
@@ -181,7 +194,7 @@ public class WFSFilter {
         try {
             this.xml = encoder.encodeAsString(filter, org.geotools.filter.v1_1.OGC.Filter);
         } catch (IOException e) {
-            log.error(e, "Encoding filter to String (xml) failed");
+            LOG.error(e, "Encoding filter to String (xml) failed");
         }
 
         // remove namespacing
@@ -211,7 +224,7 @@ public class WFSFilter {
      * @param mapScale
      */
     public void setDefaultBuffer(double mapScale) {
-        log.debug("Default buffer size", mapScale*CONVERSION_FACTOR);
+        LOG.debug("Default buffer size", mapScale * CONVERSION_FACTOR);
         this.defaultBuffer = mapScale * CONVERSION_FACTOR;
     }
 
@@ -224,7 +237,7 @@ public class WFSFilter {
      */
     public Filter initFeatureIdFilter(List<String> featureIds) {
         if(featureIds == null || featureIds.size() == 0) {
-            log.error("Failed to create feature filter (missing feature ids)");
+            LOG.error("Failed to create feature filter (missing feature ids)");
             return null;
         }
 
@@ -248,7 +261,7 @@ public class WFSFilter {
     public Filter initCoordinateFilter(Coordinate coordinate) {
         if (coordinate == null || this.defaultBuffer == 0.0d) {
             System.out.println("coordinate filter fail");
-            log.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
+            LOG.error("Failed to create coordinate filter (coordinate or default buffer is unset)");
             return null;
         }
 
@@ -260,11 +273,11 @@ public class WFSFilter {
 
         // transform
         if (this.transform != null) {
-            log.debug("transforming mapClick", coordinate);
+            LOG.debug("transforming mapClick", coordinate);
             try {
                 polygon = (Polygon) JTS.transform(polygon, this.transform);
             } catch (Exception e) {
-                log.error(e, "Transforming failed");
+                LOG.error(e, "Transforming failed");
             }
         }
 
@@ -284,7 +297,7 @@ public class WFSFilter {
      */
     public Filter initGeoJSONFilter(GeoJSONFilter geoJSONFilter, String targetGeometryProperty) {
         if(geoJSONFilter == null || geoJSONFilter.getFeatures() == null || this.defaultBuffer == 0.0d) {
-            log.error("Failed to create geoJSON filter (invalid JSON or default buffer unset)");
+            LOG.error("Failed to create geoJSON filter (invalid JSON or default buffer unset)");
             return null;
         }
         Filter filter = null;
@@ -312,8 +325,7 @@ public class WFSFilter {
                     polygon = geom.readPolygon(geometry.toString());
                 } else if (geomType.equals(GT_GEOM_LINESTRING)) {
                     LineString lineGeom = geom.readLine(geometry.toString());
-                    Geometry gtgeom = (Geometry) lineGeom;
-                    polygon = (Polygon) gtgeom.buffer(distance);
+                    polygon = (Polygon) lineGeom.buffer(distance);
                 } else if (geomType.equals(GT_GEOM_POINT)) {
                     Point pointGeom = geom.readPoint(geometry.toString());
                     gsf.setSize(distance);
@@ -331,7 +343,7 @@ public class WFSFilter {
                         polygon = (Polygon) JTS.transform(polygon,
                                 this.transform);
                     } catch (Exception e) {
-                        log.error(e, "Transforming failed");
+                        LOG.error(e, "Transforming failed");
                     }
                 }
 
@@ -340,9 +352,9 @@ public class WFSFilter {
                 geometryFilters.add(tmpFilter);
             }
         } catch (JSONException e) {
-            log.error(e, "Reading geojson data failed");
+            LOG.error(e, "Reading geojson data failed");
         } catch (Exception e) {
-            log.error(e, "Generating geometries from geojson failed");
+            LOG.error(e, "Generating geometries from geojson failed");
         }
 
         if(geometryFilters.size() > 1) {
@@ -374,13 +386,13 @@ public class WFSFilter {
             location = session.getLocation();
         }
         if(propertyFilter == null ) {
-            log.error("Failed to create property filter (invalid JSON for property filter)");
+            LOG.error("Failed to create property filter (invalid JSON for property filter)");
             return null;
         }
         // Bbox filter is always on
         Filter filter = initBBOXFilter(location, layer);
         if(filter == null ) {
-            log.error("Failed to create bbox filter for property filter");
+            LOG.error("Failed to create bbox filter for property filter");
             return null;
         }
         // parse property filters
@@ -409,7 +421,7 @@ public class WFSFilter {
      */
     public static Filter initBBOXFilter(Location location, WFSLayerStore layer) {
         if(location == null || layer == null) {
-            log.error("Failed to create BBOX filter (location or layer is unset)");
+            LOG.error("Failed to create BBOX filter (location or layer is unset)");
             return null;
         }
 
@@ -430,7 +442,7 @@ public class WFSFilter {
      */
     public static Filter initEnlargedBBOXFilter(Location location, WFSLayerStore layer) {
         if(location == null || layer == null) {
-            log.error("Failed to create BBOX filter (location or layer is unset)");
+            LOG.error("Failed to create BBOX filter (location or layer is unset)");
             return null;
         }
 

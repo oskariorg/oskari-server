@@ -114,11 +114,12 @@ public class IOHelper {
         if (is == null) {
             return "";
         }
+
         final Writer writer = new StringWriter();
         final char[] buffer = new char[1024];
         try {
             final Reader reader = new BufferedReader(new InputStreamReader(is,
-                    charset));
+                    charset == null ? DEFAULT_CHARSET : charset ));
             int n;
             while ((n = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, n);
@@ -428,7 +429,7 @@ public class IOHelper {
         final int responseCode = con.getResponseCode();
         // Unauthorized
         if (responseCode == 401) {
-            return Integer.toString(responseCode);
+            throw new IOException("Unauthorized");
         }
         return getURL(con, headers, charset);
     }

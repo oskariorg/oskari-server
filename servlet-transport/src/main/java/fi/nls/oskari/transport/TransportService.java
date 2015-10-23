@@ -297,7 +297,7 @@ public class TransportService extends AbstractService {
         } else if (channel.equals(CHANNEL_SET_MAP_LAYER_CUSTOM_STYLE)) {
             setMapLayerCustomStyle(store, params);
         } else if (channel.equals(CHANNEL_SET_MAP_CLICK)) {
-            setMapClick(store, params);
+            setMapClick(store, json, params);
         } else if (channel.equals(CHANNEL_SET_FILTER)) {
             setFilter(store, json, params);
         } else if (channel.equals(CHANNEL_SET_PROPERTY_FILTER)) {
@@ -573,7 +573,7 @@ public class TransportService extends AbstractService {
 
         customStyle.setDotColor(style.get(WFSCustomStyleStore.PARAM_DOT_COLOR).toString());
         customStyle.setDotShape(((Number)style.get(WFSCustomStyleStore.PARAM_DOT_SHAPE)).intValue());
-        customStyle.setDotSize(((Number)style.get(WFSCustomStyleStore.PARAM_DOT_SIZE)).intValue());
+        customStyle.setDotSize(((Number) style.get(WFSCustomStyleStore.PARAM_DOT_SIZE)).intValue());
 
         customStyle.save();
     }
@@ -586,17 +586,22 @@ public class TransportService extends AbstractService {
      * @param store
      * @param params
      */
-    private void setMapClick(SessionStore store, Map<String, Object> params) {
-        if (!params.containsKey(PARAM_LONGITUDE)
-                || !params.containsKey(PARAM_LATITUDE)
-                || !params.containsKey(PARAM_KEEP_PREVIOUS)){
+    private void setMapClick(SessionStore store, String json, Map<String, Object> params) {
+        // functionality change - geojson instead of point coordinate
+        GeoJSONFilter filter = GeoJSONFilter.setParamsJSON(json);
+
+        if (filter.getFeatures() == null &&
+                (!params.containsKey(PARAM_LONGITUDE) || !params.containsKey(PARAM_LATITUDE))){
             log.warn("Failed to set a map click", params);
             return;
         }
 
+        // stores geojson, but doesn't save
+        store.setFilter(filter);
+
         double longitude;
         double latitude;
-        boolean keepPrevious;
+        boolean keepPrevious = false;
         boolean geomRequest;
 
         if (params.get(PARAM_LONGITUDE) instanceof Double) {
@@ -610,7 +615,9 @@ public class TransportService extends AbstractService {
             latitude = ((Number) params.get(PARAM_LATITUDE)).doubleValue();
         }
 
-        keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
+        if(params.containsKey(PARAM_KEEP_PREVIOUS)) {
+            keepPrevious = (Boolean) params.get(PARAM_KEEP_PREVIOUS);
+        }
 
         if (params.get(PARAM_GEOM_REQUEST) instanceof Object)
         {

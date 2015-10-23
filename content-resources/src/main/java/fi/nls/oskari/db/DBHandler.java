@@ -52,7 +52,7 @@ public class DBHandler {
         // replace logger after properties are populated
         log = LogFactory.getLogger(DBHandler.class);
 
-        final DatasourceHelper helper = new DatasourceHelper();
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
         try {
             datasource = helper.createDataSource();
             final String addView = System.getProperty("oskari.addview");
@@ -157,7 +157,7 @@ public class DBHandler {
     }
 
     @SuppressWarnings("resource")
-    private static InputStream getInputStreamFromResource(String propertySetupFile) {
+    static InputStream getInputStreamFromResource(String propertySetupFile) {
         InputStream is = null;
         try {
             // If resource overlay directory has been specified prefer the files in there
@@ -229,6 +229,15 @@ public class DBHandler {
                     ViewHelper.insertView(conn, viewConfFile);
                 }
             }
+            if(setup.has("layers")) {
+                log.info("/- adding layers using ibatis");
+                final JSONArray layersListing = setup.getJSONArray("layers");
+                for(int i = 0; i < layersListing.length(); ++i) {
+                    final String layerConfFile = layersListing.getString(i);
+                    LayerHelper.setupLayer(layerConfFile);
+                }
+            }
+
 
             if(setup.has("sql")) {
                 log.info("/- running additional sql files");

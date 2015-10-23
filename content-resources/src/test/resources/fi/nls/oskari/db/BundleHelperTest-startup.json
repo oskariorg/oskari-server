@@ -1,0 +1,12 @@
+{
+    "title": "Title",
+    "bundleinstancename": "mybundle",
+    "bundlename": "mybundle",
+    "metadata": {
+        "Import-Bundle": {
+            "mybundle": {
+                "bundlePath": "/Oskari/packages/mynamespace/bundle/"
+            }
+        }
+    }
+}

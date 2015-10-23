@@ -279,7 +279,7 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
 
                 // get from cache
                 BufferedImage bufferedImage = getImageCache(bbox);
-                boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary(index);
+                boolean isboundaryTile = this.session.getGrid().isBoundsOnBoundary2(this.session.getLocation(), bbox);
 
                 if(bufferedImage == null) {
                     if(this.image == null) {

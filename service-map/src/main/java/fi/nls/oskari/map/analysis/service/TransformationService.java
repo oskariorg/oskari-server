@@ -1,13 +1,11 @@
 package fi.nls.oskari.map.analysis.service;
 
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -271,6 +269,105 @@ public class TransformationService {
         return this.getStringFromDocument(wpsDoc);
     }
 
+    /**
+     * Copy union feature geometry to each aggregate result and add aggregate results as feature properties
+     *
+     * @param featureSet       WPS union response
+     * @param aggregateResults Aggregate results ([attribue1:{Count:xx,Sum=yy,..},..])
+     * @return
+     * @throws ServiceException
+     */
+    public String mergePropertiesToFeatures(String featureSet, String aggregateResults, List<String> rowOrder, List<String> colOrder) throws ServiceException
+
+    {
+
+        // Col order values
+        Map<String, Node> colvalues = new HashMap<String, Node>();
+        for (String col : colOrder) {
+            colvalues.put(col, null);
+        }
+
+
+        final Document wpsDoc = createDoc(featureSet);
+        try {
+            JSONObject js = new JSONObject(aggregateResults);
+            NodeList featureMembers = wpsDoc.getElementsByTagName("gml:featureMember");
+            // We trust that union is in one featureMember
+            // Clone 1st fea member so that there is one fea each aggregate result
+            if (featureMembers.getLength() > 0) {
+                Iterator<?> keys = js.keys();
+                int cnt = 0;
+
+                while (keys.hasNext()) {
+                    keys.next();
+                    if (cnt < js.length() -1) {
+                        Node copiedMember = wpsDoc.importNode(featureMembers.item(0), true);
+                        featureMembers.item(0).getParentNode().appendChild(copiedMember);
+                    }
+                    cnt++;
+                }
+
+
+            }
+
+            featureMembers = wpsDoc.getElementsByTagName("gml:featureMember");
+
+            for (int i = 0; i < featureMembers.getLength(); i++) {
+                // we're only interested in featureMembers...
+                if (!"gml:featureMember".equals(featureMembers.item(i)
+                        .getNodeName())) {
+                    continue;
+                }
+                // get features, i.e. all child elements in feature namespace
+                // we trust that featureMember only has one feature...
+                // find the child feature...
+
+                NodeList meh = featureMembers.item(i).getChildNodes();
+                Node feature = null;
+                for (int j = 0; j < meh.getLength(); j++) {
+                    if (meh.item(j).getNodeName().indexOf("feature:") == 0) {
+                        feature = meh.item(j);
+                        break;
+                    }
+                }
+                // Put properties to result featureset in predefined order
+                String currow = i < rowOrder.size() ? rowOrder.get(i) : null;
+
+                Iterator<?> keys = js.keys();
+
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (js.get(key) instanceof JSONObject) {
+                        if (currow != null && key.equals(currow)) {
+                            Node elem = feature.getOwnerDocument().createElement("feature:___");
+                            elem.setTextContent(key);
+                            feature.appendChild(elem);
+
+
+                            JSONObject subjs = js.getJSONObject(key);
+                            Iterator<?> subkeys = subjs.keys();
+                            while (subkeys.hasNext()) {
+                                String subkey = (String) subkeys.next();
+                                Node subelem = feature.getOwnerDocument().createElement("feature:" + subkey.replace(" ", "_"));
+                                subelem.setTextContent(subjs.get(subkey).toString());
+                                colvalues.put(subkey, subelem);
+
+                            }
+                            for (int j = 0; j < colvalues.size(); j++) {
+                                feature.appendChild(colvalues.get(colOrder.get(j)));
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+        } catch (JSONException e) {
+            log.debug("Aggregate feature property insertion failed", e);
+        }
+        return this.getStringFromDocument(wpsDoc);
+    }
 
     //method to convert Document to String
     public String getStringFromDocument(Document doc)
