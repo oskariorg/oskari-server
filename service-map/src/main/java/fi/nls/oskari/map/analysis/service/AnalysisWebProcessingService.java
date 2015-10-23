@@ -32,6 +32,7 @@ public class AnalysisWebProcessingService {
     private static final String GEOJSON_GEOMETRY = "geometry";
     private static final String GEOJSON_PROPERTIES = "properties";
     private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
+    private static final Double NON_AUTHORIZED = -111111111.0D;
 
     /**
      * Get WPS results as wfs FeatureCollection
@@ -201,8 +202,12 @@ public class AnalysisWebProcessingService {
                 final Object valueA = properties.get(fieldA1);
                 final String layer2fea = properties.optString(GEOJSON_LAYER2);
                 double delta = this.findValueDifference(valueA, layer2fea, fieldB1, dnodata);
-                double valueB = valueToDouble(valueA) - delta;
-                delta = -delta;
+                double valueB = valueToDouble(valueA);
+                if(delta != NON_AUTHORIZED){
+                    valueB = valueB - delta;
+                    delta = -delta;
+                }
+
                 JSONObject newproperties = new JSONObject();
                 newproperties.put(keyA1, properties.get(keyA1));
                 newproperties.put("t1__" + lay1.replace(":","_") + "__" + fieldA1, valueA);
@@ -275,7 +280,7 @@ public class AnalysisWebProcessingService {
                 }
             }
             delta = dA1 - dB1;
-            if (!Double.isNaN(nodata) && (dA1 == nodata || dB1 == nodata)) delta = 0;
+            if (!Double.isNaN(nodata) && (dA1 == nodata || dB1 == nodata)) delta = NON_AUTHORIZED;
 
         } catch (Exception e) {
             log.debug("delta value computation failed");

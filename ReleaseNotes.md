@@ -61,6 +61,16 @@ Added handling for WMTS-layers with resourceURL.
 
 When adding layers the capabilities parser now includes layer styles and infoformats correctly.
 
+#### CreateAnalysisLayerHandler
+
+Improvements in analysis methods:
+
+ - Better management of unauthorized data
+ 
+ - Aggregate, Spatial join and Difference methods improved
+ 
+ - sld_muutos_n1.sld  style updated in Geoserver Styles / used in analysis method difference
+
 ### service-map
 
 LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,

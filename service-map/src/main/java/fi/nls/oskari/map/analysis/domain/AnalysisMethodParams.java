@@ -43,6 +43,8 @@ public abstract class AnalysisMethodParams {
     public final String X_UPPER = "{x_upper}";
     public final String Y_UPPER = "{y_upper}";
     public final String GEOJSONFEATURES = "{geoJsonFeatures}";
+    public final String CLEAN_CHARS = "(\\r|\\n)";
+    public final String FILTER_END ="</ogc:And></ogc:Filter>";
 
     public final String REFERENCE_TYPE_WFS = "wfs";
     public final String REFERENCE_TYPE_GS = "gs_vector";
@@ -422,26 +424,26 @@ public abstract class AnalysisMethodParams {
         }
         return wfsfilter;
     }
-    protected String appendNoDataFilter(String wfsfilter, String field){
-        wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
-        String nodatafilter = NO_DATA_FILTER_TEMPLATE.replace("{propertyName}", field);
-        nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
 
-        if(wfsfilter.indexOf("</ogc:And></ogc:Filter>") == -1){
+    protected String appendNoDataFilter(String wfsfilter_in, String field) {
+        String wfsfilter = wfsfilter_in.replaceAll(CLEAN_CHARS, "");
+        String nodatafilter = NO_DATA_FILTER_TEMPLATE.replace("{propertyName}", field);
+        nodatafilter = nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+
+        if (wfsfilter.indexOf(FILTER_END) == -1) {
             // no and conditions
             wfsfilter = wfsfilter.replace("<ogc:Filter>", "<ogc:Filter><ogc:And>");
             wfsfilter = wfsfilter.replace("</ogc:Filter>", nodatafilter);
-        }
-        else {
-            wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>", nodatafilter);
+        } else {
+            wfsfilter = wfsfilter.replace(FILTER_END, nodatafilter);
         }
         return wfsfilter;
     }
     protected String appendNoDataCountFilter(String wfsfilter, String field){
         String nodatafilter = NO_DATACOUNT_FILTER_TEMPLATE.replace("{propertyName}", field);
         nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
-        wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
-        wfsfilter = wfsfilter.replace("</ogc:And></ogc:Filter>",nodatafilter);
+        wfsfilter = wfsfilter.replaceAll( CLEAN_CHARS, "");
+        wfsfilter = wfsfilter.replace(FILTER_END,nodatafilter);
         return wfsfilter;
     }
 

@@ -8,6 +8,10 @@ an example (flyway/sample/V1_0_5__publisher2_migration.java) how to make the swi
 The script generates the metadata from existing published views and replaces the publisher bundle with publisher2 on all views
 which have the original publisher.
 
+## Geoserver
+
+Update sld_muutos_n1.sld in Geoserver Styles (updated file in \oskari\oskari-server\content-resources\config\geoserver\data\styles)
+
 ## 1.32.0
 
 ### content-resources/flyway
