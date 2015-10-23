@@ -150,7 +150,9 @@ public class MapController {
         boolean useDefault = viewId == -1;
         if(uuId == null) {
             // get personalized or system default view
-            if (useDefault) {
+            if(params.getHttpParam(PARAM_RESET, false)) {
+                viewId = viewService.getSystemDefaultViewId(params.getUser().getRoles());
+            } else {
                 viewId = viewService.getDefaultViewId(params.getUser());
             }
         }

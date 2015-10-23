@@ -1899,6 +1899,12 @@ public class AnalysisParser {
                 fieldTypes.put("stddev","numeric");
                 analysisLayer.setFieldsMap(fieldTypes);
             }
+            else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)){
+                // For time being 1st numeric value is used for rendering
+                Map<String,String> fieldTypes =  new HashMap<String,String>();
+                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME,"numeric");
+                analysisLayer.setFieldtypeMap(fieldTypes);
+            }
 
 
         } catch (Exception e) {

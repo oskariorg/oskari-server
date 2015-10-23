@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Internal model for user role.
@@ -31,7 +31,7 @@ public class Role implements Serializable {
     private long id;
     private String name;
 
-    public static boolean hasRoleWithName(Set<Role> roles, final String name) {
+    public static boolean hasRoleWithName(Collection<Role> roles, final String name) {
         if(roles == null || name == null) {
             return false;
         }
