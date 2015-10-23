@@ -91,6 +91,9 @@ LayerJSONFormatter now has convenience methods to operate the "admin" only data.
 
 Added functionality for saving / restoring a user defined default view.
 
+Loading the system default view can be forced by using an additional URL-parameter 'reset=true'. This is useful if the 
+personalized view is faulty.
+
 ## 1.32.2
 
 Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
