@@ -19,15 +19,15 @@ import fi.nls.oskari.util.ResponseHelper;
  * This interface gives the relevant information for all the indicators to the frontend.
  * This information can be subsequently used to query the actual indicator data.
  * 
- * - action_route=GetIndicatorMetadata
+ * - action_route=GetIndicatorsMetadata
  * 
  * eg.
- * OSKARI_URL?action_route=GetIndicatorMetadata
+ * OSKARI_URL?action_route=GetIndicatorsMetadata
  * Response is in JSON, and contains the indicator metadata for each plugin separately.
  */
-@OskariActionRoute("GetIndicatorMetadata")
-public class GetIndicatorMetadataHandler extends ActionHandler {
-    private final static String CACHE_KEY = "oskari_get_indicator_metadata_handler";
+@OskariActionRoute("GetIndicatorsMetadata")
+public class GetIndicatorsMetadataHandler extends ActionHandler {
+    private final static String CACHE_KEY = "oskari_get_indicators_metadata_handler";
 
     /**
      * For now, this uses pretty much static global store for the plugins.

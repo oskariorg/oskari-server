@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DatasourceHelper.class)
 @PowerMockIgnore( {"javax.management.*"}) 
-public class GetIndicatorMetadataHandlerTest {
+public class GetIndicatorsMetadataHandlerTest {
     public static class DatasourceHelperMock extends DatasourceHelper {
         public DatasourceHelperMock() {
             super();
@@ -57,7 +57,7 @@ public class GetIndicatorMetadataHandlerTest {
     }
     @Test(timeout=120000)
     public void testGettingIndicatorMetadata() throws ActionException, JSONException {
-        GetIndicatorMetadataHandler handler = new GetIndicatorMetadataHandler();
+        GetIndicatorsMetadataHandler handler = new GetIndicatorsMetadataHandler();
         handler.init();
         JSONObject result = handler.getIndicatorMetadataJSON();
         JSONObject sotkaIndicatorsInfo = result.getJSONObject("fi.nls.oskari.control.statistics.plugins."
