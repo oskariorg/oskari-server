@@ -37,7 +37,6 @@ public class AppSetupHandler extends RestActionHandler {
     private static final Logger LOG = LogFactory.getLogger(AppSetupHandler.class);
 
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
-    static final String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
     static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     static final String KEY_PUBDATA = "pubdata";
@@ -438,10 +437,10 @@ public class AppSetupHandler extends RestActionHandler {
     private View getPublishTemplate()
             throws ActionException {
         if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
-            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(PROPERTY_PUBLISH_TEMPLATE, -1);
+            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(ViewService.PROPERTY_PUBLISH_TEMPLATE, -1);
             if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
                 // TODO: maybe try checking for view of type PUBLISH from DB?
-                LOG.warn("Publish template id not configured (property:", PROPERTY_PUBLISH_TEMPLATE, ")!");
+                LOG.warn("Publish template id not configured (property:", ViewService.PROPERTY_PUBLISH_TEMPLATE, ")!");
             } else {
                 LOG.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
             }
