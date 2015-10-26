@@ -5,8 +5,11 @@
          "en" : "KaPa interfaces published",
          "sv" : "KaPa gränssnitt publicerade"
       },
-      "classifications" : {
-         "region" : [
+      "description" : {
+         "fi" : "Montako KaPa rajapintaa on julkaistu minäkin vuonna, kumulatiivisesti edelliset vuodet mukaan laskettuna."
+      },
+      "selectors" : {
+         "layer" : [
            "Kunta",
            "Maakunta",
            "Erva",
@@ -39,8 +42,11 @@
             "fi" : "VRK"
          }
       },
-      "classifications" : {
-         "region" : [
+      "description" : {
+         "fi" : "Montako KaPa data-aineistoa on julkaistu minäkin vuonna, kumulatiivisesti edelliset vuodet mukaan laskettuna."
+      },
+      "selectors" : {
+         "layer" : [
            "Kunta",
            "Maakunta",
            "Erva",

@@ -56,16 +56,17 @@ public class KapaIndicator implements StatisticalIndicator {
             // Mappings between the same source, different plugin are nontrivial.
             this.localizedSource = toLocalizationMap(jsonObject.getJSONObject("organization").getJSONObject("title"));
             this.localizedName = toLocalizationMap(jsonObject.getJSONObject("title"));
-            // KaPa can give indicators with integer and float values. Both are handled as floats. In the future this might change.
-            if (jsonObject.getJSONObject("classifications").has("region")) {
-                this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONArray("region"),
+            // KaPa can give indicators with integer and float values. Both are handled as floats.
+            // In the future this might change.
+            if (jsonObject.getJSONObject("selectors").has("layer")) {
+                this.layers = toIndicatorLayers(jsonObject.getJSONObject("selectors").getJSONArray("layer"),
                         IndicatorValueType.FLOAT, this.id);
             } else {
-                LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
+                LOG.error("Layer selector missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;
             }
-            // Note that the following will just skip the "region" part already projected into layers.
-            this.selectors = toKapaIndicatorSelectors(jsonObject.getJSONObject("classifications"));
+            // Note that the following will just skip the "layer" part already projected into layers.
+            this.selectors = toKapaIndicatorSelectors(jsonObject.getJSONObject("selectors"));
             // TODO: Add information about the "interpretation", "limits", "legislation", and source "description" also here.
             if (jsonObject.has("description")) {
                 this.localizedDescription = toLocalizationMap(jsonObject.getJSONObject("description"));
@@ -76,49 +77,8 @@ public class KapaIndicator implements StatisticalIndicator {
             this.valid = false;
         }
         return this.valid;
-        /*
-         * Sample JSON message:
-        {
-            "id" : 1942,
-            "classifications" : {
-               "region" : {
-                  "values" : [
-                     "Kunta",
-                     "Maakunta",
-                     "Erva",
-                     "Aluehallintovirasto",
-                     "Sairaanhoitopiiri",
-                     "Maa",
-                     "Suuralue",
-                     "Seutukunta",
-                     "Nuts1"
-                  ]
-               },
-               "sex" : {
-                  "values" : [
-                     "total"
-                  ]
-               },
-               "year": {
-                  "values" : [
-                     "2007",
-                     "2008",
-                     "2009"
-                  ]
-               }
-            },
-            "organization" : {
-               "title" : {
-                  "fi" : "VRK"
-               }
-            },
-            "title" : {
-               "fi" : "KaPaan julkistettujen rajapintojen määrä alueittain"
-            }
-         }
-        ...
-      */
     }
+
     private StatisticalIndicatorSelectors toKapaIndicatorSelectors(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
         StatisticalIndicatorSelectors selectors = new StatisticalIndicatorSelectors();
@@ -126,7 +86,7 @@ public class KapaIndicator implements StatisticalIndicator {
         Iterator<String> names = jsonObject.keys();
         while (names.hasNext()) {
             String key = names.next();
-            if (key.equals("region")) {
+            if (key.equals("layer")) {
                 // This was already handled and put to layers.
             } else {
                 Collection<String> allowedValues = new ArrayList<>();
