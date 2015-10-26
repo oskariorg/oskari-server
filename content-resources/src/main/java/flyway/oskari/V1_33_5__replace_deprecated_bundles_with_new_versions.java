@@ -2,12 +2,14 @@ package flyway.oskari;
 
 import fi.nls.oskari.db.BundleHelper;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
@@ -16,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -46,6 +49,8 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     private static final String BUNDLE_MAPFULL = "mapfull";
     private static final String BUNDLE_FEATUREDATA = "featuredata";
     private static final String BUNDLE_FEATUREDATA2 = "featuredata2";
+
+    private static final boolean PROP_FORCE_USER_SERVICE = PropertyUtil.getOptional("V1_33_5.force.user.service", false);
 
     private int updatedViewCount = 0;
     private ViewService service = null;
@@ -125,21 +130,30 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
         return service.getSystemDefaultViewId(getRolesForUser(userId, conn));
     }
 
-    private List<Role> getRolesForUser(long userId, Connection conn) throws SQLException {
-
-        final String sql = "SELECT r.id, r.name FROM oskari_roles r " +
-                "WHERE r.id = (SELECT id FROM oskari_role_oskari_user where user_id = ?)";
-        try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setLong(1, userId);
-            try (ResultSet rs = statement.executeQuery()) {
-                List<Role> res = new ArrayList<>();
-                while (rs.next()) {
-                    Role role = new Role();
-                    role.setId(rs.getLong("id"));
-                    role.setName(rs.getString("name"));
-                    res.add(role);
+    private Collection<Role> getRolesForUser(long userId, Connection conn) throws SQLException {
+        if(PROP_FORCE_USER_SERVICE) {
+            try {
+                User user = UserService.getInstance().getUser(userId);
+                return user.getRoles();
+            } catch (Exception ex) {
+                throw new SQLException("Couldn't load user", ex);
+            }
+        }
+        else {
+            final String sql = "SELECT r.id, r.name FROM oskari_roles r " +
+                    "WHERE r.id = (SELECT id FROM oskari_role_oskari_user where user_id = ?)";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setLong(1, userId);
+                try (ResultSet rs = statement.executeQuery()) {
+                    List<Role> res = new ArrayList<>();
+                    while (rs.next()) {
+                        Role role = new Role();
+                        role.setId(rs.getLong("id"));
+                        role.setName(rs.getString("name"));
+                        res.add(role);
+                    }
+                    return res;
                 }
-                return res;
             }
         }
     }
