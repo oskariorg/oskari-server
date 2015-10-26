@@ -25,7 +25,7 @@ public class IndicatorMetadata extends SotkaRequest {
     }
 
     @Override
-    public String getData() throws ActionException {
+    public String getData() {
         final String cacheKey = CACHE_KEY_PREFIX + getIndicator();
         final String cachedData = JedisManager.get(cacheKey);
         if(cachedData != null && !cachedData.isEmpty()) {

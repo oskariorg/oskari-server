@@ -23,7 +23,7 @@ public class Indicators extends SotkaRequest {
     }
 
     @Override
-    public String getData() throws ActionException {
+    public String getData() {
         final String cachedData = JedisManager.get(CACHE_KEY);
         if(cachedData != null && !cachedData.isEmpty()) {
             return cachedData;

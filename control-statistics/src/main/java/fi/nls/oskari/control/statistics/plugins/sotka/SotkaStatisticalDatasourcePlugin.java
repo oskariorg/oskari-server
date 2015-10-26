@@ -55,7 +55,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
                         indicator.merge(infoToAdd);
                         updatedIndicators.add(indicator);
                     }
-                } catch (ActionException e) {
+                } catch (Throwable e) {
                     // The SotkaNET sometimes responds with HTTP 500, for example. For these cases, we should just
                     // remove the indicators in question.
                     LOG.error("There was an error fetching SotkaNET indicator metadata for indicator: "
@@ -64,7 +64,9 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
                 }
             }
             return updatedIndicators;
-        } catch (ActionException e) {
+        } catch (APIException e) {
+            throw e;
+        } catch (Throwable e) {
             e.printStackTrace();
             throw new APIException("Something went wrong calling SotkaNET Indicators interface.", e);
         }

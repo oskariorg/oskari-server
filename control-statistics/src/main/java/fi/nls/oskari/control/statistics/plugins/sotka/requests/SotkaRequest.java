@@ -2,6 +2,7 @@ package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -159,23 +160,20 @@ public class SotkaRequest {
         return false;
     }
 
-    public String getData() throws ActionException {
+    public String getData() throws APIException {
         HttpURLConnection con = null;
         try {
             final String url = getUrl();
             con = IOHelper.getConnection(url);
 
-            // Response encoding
-            //final String enco = IOHelper.getCharset(con, SOTKA_ENCODING);
-
-            final String data = IOHelper.readString(con.getInputStream()); //, SOTKA_ENCODING);
+            final String data = IOHelper.readString(con.getInputStream(), SOTKA_ENCODING);
             if (isCSV()) {
                 return getJsonFromCSV(data);
             }
             return data;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ActionException("Couldn't proxy request SOTKAnet server", e);
+            throw new APIException("Couldn't request data from the SOTKAnet server", e);
         } finally {
             try {
                 con.disconnect();

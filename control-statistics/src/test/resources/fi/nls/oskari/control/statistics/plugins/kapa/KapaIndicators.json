@@ -1,0 +1,64 @@
+[
+   {
+      "title" : {
+         "fi" : "KaPa rajapintoja julkaistu"
+         "en" : "KaPa interfaces published",
+         "sv" : "KaPa gränssnitt publicerade"
+      },
+      "classifications" : {
+         "region" : [
+           "Kunta",
+           "Maakunta",
+           "Erva",
+           "Aluehallintovirasto",
+           "Sairaanhoitopiiri",
+           "Maa",
+           "Suuralue",
+           "Seutukunta",
+           "Nuts1"
+         ],
+         "year" : [
+           "2013",
+           "2014",
+           "2015"
+         ]
+      },
+      "organization" : {
+         "id" : 2,
+         "title" : {
+            "fi" : "VRK"
+         }
+      },
+      "id" : 4
+   },
+   {
+      "id" : 5,
+      "organization" : {
+         "id" : 2,
+         "title" : {
+            "fi" : "VRK"
+         }
+      },
+      "classifications" : {
+         "region" : [
+           "Kunta",
+           "Maakunta",
+           "Erva",
+           "Aluehallintovirasto",
+           "Sairaanhoitopiiri",
+           "Maa",
+           "Suuralue",
+           "Seutukunta",
+           "Nuts1"
+         ],
+         "year" : [
+           "2013",
+           "2014",
+           "2015"
+         ]
+      },
+      "title" : {
+         "fi" : "Data-aineistoja julkaistu KaPa:ssa"
+      }
+   }
+]
