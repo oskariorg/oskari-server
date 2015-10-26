@@ -32,12 +32,14 @@ public class KapaRequest {
         kapaBaseURL = PropertyUtil.get("kapa.baseurl");
     }
 
-    public String getUrl(Map<String, String> params) {
+    public String getUrl(String method, Map<String, String> params) {
         StringWriter writer = new StringWriter();
         writer.write(kapaBaseURL);
         writer.write("/");
         writer.write(version);
-        if (params.size() > 0) {
+        writer.write("/");
+        writer.write(method);
+        if (params != null && params.size() > 0) {
             writer.write("?");
             boolean first = true;
             for (Entry<String, String> keyValue : params.entrySet()) {
@@ -68,12 +70,16 @@ public class KapaRequest {
         for (StatisticalIndicatorSelector selector : selectors.getSelectors()) {
             parameters.put(selector.getId(), selector.getValue());
         }
-        return getData("indicators", parameters);
+        try {
+            return getData("indicators/" + URLEncoder.encode(indicator, "UTF-8"), parameters);
+        } catch (UnsupportedEncodingException e) {
+            throw new APIException("Error while encoding request parameters.", e);
+        }
     }
     public String getData(String method, Map<String, String> params) {
         HttpURLConnection con = null;
         try {
-            final String url = getUrl(params);
+            final String url = getUrl(method, params);
             con = IOHelper.getConnection(url);
 
             final String data = IOHelper.readString(con.getInputStream(), KAPA_ENCODING);
