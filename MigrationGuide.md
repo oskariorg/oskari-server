@@ -8,6 +8,11 @@ an example (flyway/sample/V1_0_5__publisher2_migration.java) how to make the swi
 The script generates the metadata from existing published views and replaces the publisher bundle with publisher2 on all views
 which have the original publisher.
 
+In older Oskari instances users might have saved views that still reference old bundles: mapwfs and featuredata. 
+Views of type USER (portti_view.type) that have these (others shouldn't have them anyways anymore) are automatically
+ updated to replace these with the current implementations. The code for these outdated bundles have been removed from
+ Oskari frontend code a while ago so we need to remove references to them so the personalized default view can work properly. 
+
 ## Geoserver
 
 Update sld_muutos_n1.sld in Geoserver Styles (updated file in \oskari\oskari-server\content-resources\config\geoserver\data\styles)
