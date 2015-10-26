@@ -50,6 +50,7 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     private static final String BUNDLE_FEATUREDATA = "featuredata";
     private static final String BUNDLE_FEATUREDATA2 = "featuredata2";
 
+    private static final String PROP_FORCE_USER_ROLE = PropertyUtil.getOptional("V1_33_5.force.user.role");
     private static final boolean PROP_FORCE_USER_SERVICE = PropertyUtil.getOptional("V1_33_5.force.user.service", false);
 
     private int updatedViewCount = 0;
@@ -131,15 +132,21 @@ public class V1_33_5__replace_deprecated_bundles_with_new_versions implements Jd
     }
 
     private Collection<Role> getRolesForUser(long userId, Connection conn) throws SQLException {
-        if(PROP_FORCE_USER_SERVICE) {
+        if(PROP_FORCE_USER_ROLE != null) {
+            List<Role> roles = new ArrayList<>();
+            Role role = new Role();
+            // default view mapping is done with role name so this will work
+            role.setName(PROP_FORCE_USER_ROLE);
+            roles.add(role);
+            return roles;
+        } else if(PROP_FORCE_USER_SERVICE) {
             try {
                 User user = UserService.getInstance().getUser(userId);
                 return user.getRoles();
             } catch (Exception ex) {
                 throw new SQLException("Couldn't load user", ex);
             }
-        }
-        else {
+        } else {
             final String sql = "SELECT r.id, r.name FROM oskari_roles r " +
                     "WHERE r.id = (SELECT id FROM oskari_role_oskari_user where user_id = ?)";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
