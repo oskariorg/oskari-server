@@ -20,8 +20,8 @@ import org.json.JSONObject;
 @OskariActionRoute("UpdateView")
 public class UpdateViewHandler extends ActionHandler {
 
+    private static final Logger LOG = LogFactory.getLogger(UpdateViewHandler.class);
     private ViewService vs = new ViewServiceIbatisImpl();
-    private static final Logger log = LogFactory.getLogger(UpdateViewHandler.class);
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -44,13 +44,13 @@ public class UpdateViewHandler extends ActionHandler {
                     params.getHttpParam("newIsDefault"), false);
 
 
-            log.debug("Renaming view to: " + name + " with description :" + description+" is_default: "+isDefault);
+            LOG.debug("Renaming view to: " + name + " with description :" + description + " is_default: " + isDefault);
             view.setName(name);
             view.setDescription(description);
             view.setIsDefault(isDefault);
             //set is_default to false for all other this user's views.
             if (isDefault) {
-                log.debug("Reset the user's default views: "+user.getId());
+                LOG.debug("Reset the user's default views: " + user.getId());
                 vs.resetUsersDefaultViews(user.getId());
             }
 
@@ -65,7 +65,7 @@ public class UpdateViewHandler extends ActionHandler {
                 ResponseHelper.writeResponse(params, resp);
             } catch (JSONException jsonex) {
                 throw new ActionException("User tried to rename view:" + 
-                        log.getAsString(view) + "- User:" + log.getAsString(user));
+                        LOG.getAsString(view) + "- User:" + LOG.getAsString(user));
             }
         }
     }
