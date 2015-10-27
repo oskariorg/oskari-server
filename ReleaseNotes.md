@@ -36,6 +36,10 @@ Flyway migration for Oskari core db is ran when setup files have the base databa
 Added migration helper for handling the replacement of publisher bundle with publisher2. The sample flyway module has 
 an example V1_0_5__publisher2_migration.java how to use it in application installations.
 
+Added a temporary setup-script for an app using Openlayers 3 components on published map (setup/app-tmp-ol3.json). This 
+will be modified and removed once the OL3 functionality reaches maturity. After that the original publisher template 
+ will be modified to use OL3.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 
