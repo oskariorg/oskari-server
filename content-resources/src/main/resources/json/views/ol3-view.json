@@ -43,11 +43,11 @@
             "oskariui": {
               "bundlePath": "/Oskari/packages/framework/bundle/"
             },
-            "mapwfs2": {
-              "bundlePath": "/Oskari/packages/framework/bundle/"
-            },
             "mapuserlayers": {
               "bundlePath": "/Oskari/packages/framework/bundle/"
+            },
+            "mapwfs2_ol3": {
+              "bundlePath": "/Oskari/packages/mapping/"
             },
             "mapwmts_ol3": {
               "bundlePath": "/Oskari/packages/mapping/"

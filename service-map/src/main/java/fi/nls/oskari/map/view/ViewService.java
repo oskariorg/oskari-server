@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface ViewService extends BaseService<Object> {
 
+    String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
+
     boolean hasPermissionToAlterView(final View view, final User user);
 
     List<View> getViews(int page, int pagesize);

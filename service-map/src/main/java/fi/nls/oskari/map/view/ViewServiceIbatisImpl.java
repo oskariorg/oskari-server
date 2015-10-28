@@ -224,7 +224,7 @@ public class ViewServiceIbatisImpl extends BaseIbatisService<Object> implements
         // TODO: maybe setup sequencenumber to last if not set?
         bundle.setViewId(viewId);
         queryForObject("View.add-bundle", bundle);
-        LOG.info("Added bundle to view", bundle.getName());
+        LOG.debug("Added bundle to view", bundle.getName());
     }
 
     public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException {
