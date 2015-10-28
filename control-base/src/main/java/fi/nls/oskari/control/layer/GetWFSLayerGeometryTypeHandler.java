@@ -45,6 +45,8 @@ public class GetWFSLayerGeometryTypeHandler extends ActionHandler {
             // Get wfs layer configuration ala Oskari
             WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
             if (lc != null) {
+            	final String geometryField = lc.getGMLGeometryProperty();
+            	
             	final String wfsurl = WFSDescribeFeatureHelper.parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
                 final String wfsResponse = WFSDescribeFeatureHelper.getResponse(wfsurl, lc.getUsername(), lc.getPassword());
                 JSONObject props = WFSDescribeFeatureHelper.xml2JSON(wfsResponse);
@@ -57,7 +59,7 @@ public class GetWFSLayerGeometryTypeHandler extends ActionHandler {
                 JSONArray elements = sequence.getJSONArray("xsd:element");
                 for (int i = 0; i < elements.length(); i++)
                 {
-                	if (elements.getJSONObject(i).getString("name").equals("geom"))
+                	if (elements.getJSONObject(i).getString("name").equals(geometryField))
                 	{
                 		response = elements.getJSONObject(i).getString("type");
                 	}
