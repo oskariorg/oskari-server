@@ -2,10 +2,10 @@ package fi.nls.oskari.control;
 
 import fi.nls.oskari.util.PropertyUtil;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by SMAKINEN on 13.8.2015.

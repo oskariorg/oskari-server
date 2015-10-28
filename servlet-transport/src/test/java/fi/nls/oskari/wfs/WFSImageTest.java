@@ -1,15 +1,9 @@
 package fi.nls.oskari.wfs;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -20,10 +14,15 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import fi.nls.oskari.pojo.SessionStore;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 public class WFSImageTest {
 	private static SessionStore session;

@@ -1,0 +1,30 @@
+{
+  "requestParameters": {
+    "date": "10-07-2015",
+    "mode": "TRANSIT,WALK",
+    "arriveBy": "false",
+    "wheelchair": "false",
+    "fromPlace": "60.22293569880318,24.87957000732422",
+    "toPlace": "160.258210866085996,25.023765563964844",
+    "time": "9:39am",
+    "maxWalkDistance": "804.672",
+    "locale": "en"
+  },
+  "error": {
+    "id": 400,
+    "msg": "Trip is not possible.  You might be trying to plan a trip outside the map data boundary.",
+    "message": "OUTSIDE_BOUNDS",
+    "missing": [
+      "to"
+    ],
+    "noPath": true
+  },
+  "debugOutput": {
+    "precalculationTime": 0,
+    "pathCalculationTime": 0,
+    "pathTimes": [],
+    "renderingTime": 0,
+    "totalTime": 0,
+    "timedOut": false
+  }
+}

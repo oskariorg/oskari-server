@@ -1,16 +1,15 @@
 package fi.nls.oskari.map.view.util;
 
-import java.util.List;
-
 import fi.nls.oskari.domain.map.view.Bundle;
+import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.view.ViewException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.view.ViewException;
+import java.util.List;
 
 public class ViewHelper {
 

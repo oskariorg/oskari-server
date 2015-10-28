@@ -27,11 +27,12 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import static fi.nls.oskari.control.ActionConstants.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 @OskariActionRoute("SystemViews")
 public class SystemViewsHandler extends RestActionHandler {

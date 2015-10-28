@@ -4,5 +4,6 @@
     ],
     "sql": [
         "example-users.sql"
-    ]
+    ],
+    "isPartial" : true
 }

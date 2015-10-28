@@ -1,25 +1,21 @@
 package fi.nls.oskari.fe.input.jackson;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.gml.util.GeometryProperty;
+import fi.nls.oskari.fe.input.format.gml.FEPullParser;
+import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
+import org.geotools.xml.Configuration;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.geotools.xml.Configuration;
-
-import org.xml.sax.SAXException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.gml.util.GeometryProperty;
-import fi.nls.oskari.fe.input.format.gml.FEPullParser;
-import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GeometryPropertyDeserializer extends
         JsonDeserializer<GeometryProperty> {

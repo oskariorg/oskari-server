@@ -1,7 +1,7 @@
 package fi.nls.oskari.analysis;
 
-import fi.nls.oskari.wfs.WFSFilterBuilder;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
@@ -13,7 +13,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.wfs.WFSFilterBuilder;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
@@ -1014,6 +1014,15 @@ public class AnalysisParser {
         try {
 
             parseMethodParams( method, lc, json, gjson, baseUrl);
+            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+            Object no_data = params.opt(JSON_KEY_NO_DATA);
+            if(no_data != null){
+                try {
+                    method.setNoDataValue(no_data.toString());
+                }
+                catch (Exception e){
+                }
+            }
 
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getLayerId()));
@@ -1027,7 +1036,6 @@ public class AnalysisParser {
 
 
             // attribute field name of point layer for to which to compute statistics
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
             // A layer (point layer)
             String dataAttribute = (params.getJSONArray("featuresA1").toString().replace("[","").replace("]","").replace("\"",""));
             // Only one attribute is allowed and its type must be numeric
@@ -1679,6 +1687,60 @@ public class AnalysisParser {
         return featureSet;
     }
 
+    /**
+     * Reorder rows (keys) and cols (values) of json object
+     * JSONArrays are used for to keep the key order in json
+     * @param jsaggregate input json
+     * @param rowOrder  new order of 1st level keys (key names)
+     * @param colOrder  new order of sub json keys  (key names)
+     * @return  e.g.  [{"vaesto": [{"Kohteiden lukumäärä": "324"}, {"Tietosuojattujen kohteiden lukumäärä": "0"},..}]},{"miehet":[..
+     */
+    public JSONArray reorderAggregateResult(JSONObject jsaggregate, List<String> rowOrder, List<String> colOrder) {
+        JSONArray jsona = new JSONArray();
+        try {
+
+            // Col order values
+            Map<String, String> colvalues = new HashMap<String, String>();
+            for (String col : colOrder) {
+                colvalues.put(col, null);
+            }
+            for (int i = 0; i < rowOrder.size(); i++) {
+                // Put properties to result featureset in predefined order
+                String currow = i < rowOrder.size() ? rowOrder.get(i) : null;
+                JSONArray subjsOrdereda = new JSONArray();
+                Iterator<?> keys = jsaggregate.keys();
+
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (jsaggregate.get(key) instanceof JSONObject) {
+                        if (currow != null && key.equals(currow)) {
+                            JSONObject subjs = jsaggregate.getJSONObject(key);
+                            Iterator<?> subkeys = subjs.keys();
+                            while (subkeys.hasNext()) {
+                                String subkey = (String) subkeys.next();
+                                colvalues.put(subkey, subjs.get(subkey).toString());
+                            }
+                            for (int j = 0; j < colvalues.size(); j++) {
+                                if(colvalues.get(colOrder.get(j)) != null) {
+                                    JSONObject subjsOrdered = new JSONObject();
+                                    JSONHelper.putValue(subjsOrdered, colOrder.get(j), colvalues.get(colOrder.get(j)));
+                                    subjsOrdereda.put(subjsOrdered);
+                                }
+                            }
+                        }
+                    }
+                }
+                JSONObject json = new JSONObject();
+                JSONHelper.putValue(json, rowOrder.get(i), subjsOrdereda);
+                jsona.put(json);
+            }
+            return jsona;
+        } catch (Exception e) {
+            log.debug("Json resultset reordering failed: ", e);
+        }
+        return jsona;
+    }
+
     private String prepareGeoJsonFeatures(JSONObject json, String id) {
         try {
             if (json.has(JSON_KEY_FEATURES)) {
@@ -1793,6 +1855,8 @@ public class AnalysisParser {
         method.setY_lower(bbox.optString("bottom"));
         method.setX_upper(bbox.optString("right"));
         method.setY_upper(bbox.optString("top"));
+
+
     }
 
     /** Returns the final wps method id
@@ -1834,6 +1898,12 @@ public class AnalysisParser {
                 fieldTypes.put("avg","numeric");
                 fieldTypes.put("stddev","numeric");
                 analysisLayer.setFieldsMap(fieldTypes);
+            }
+            else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)){
+                // For time being 1st numeric value is used for rendering
+                Map<String,String> fieldTypes =  new HashMap<String,String>();
+                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME,"numeric");
+                analysisLayer.setFieldtypeMap(fieldTypes);
             }
 
 

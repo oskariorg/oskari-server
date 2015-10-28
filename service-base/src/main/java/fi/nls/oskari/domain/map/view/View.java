@@ -4,10 +4,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.Serializable;
 import java.util.Map;
 
 public class View implements Serializable {
@@ -211,7 +211,8 @@ public class View implements Serializable {
      */
     public View cloneBasicInfo() {
         View view = new View();
-        // skip id, oldId, uuid, isDefault
+//        // skip id, oldId, uuid, isDefault
+        // skip id, oldId, uuid
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());
@@ -221,6 +222,7 @@ public class View implements Serializable {
         view.setLang(getLang());
         view.setPage(getPage());
         view.setPubDomain(getPubDomain());
+        view.setIsDefault(isDefault());
         for(Bundle bundle : getBundles()) {
             view.addBundle(bundle.clone());
         }

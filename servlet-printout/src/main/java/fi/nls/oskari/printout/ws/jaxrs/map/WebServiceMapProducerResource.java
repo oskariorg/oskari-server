@@ -1,16 +1,18 @@
 package fi.nls.oskari.printout.ws.jaxrs.map;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.ws.rs.core.StreamingOutput;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
+import com.vividsolutions.jts.geom.*;
+import fi.nls.oskari.printout.config.ConfigValue;
+import fi.nls.oskari.printout.input.geojson.MaplinkGeoJsonParser;
+import fi.nls.oskari.printout.input.layers.MapLayerJSONParser;
+import fi.nls.oskari.printout.input.maplink.MapLink;
+import fi.nls.oskari.printout.input.maplink.MapLinkParser;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import fi.nls.oskari.printout.output.map.MapProducerResource;
+import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
+import fi.nls.oskari.printout.printing.PDFProducer;
+import fi.nls.oskari.printout.printing.PDFProducer.Options;
+import fi.nls.oskari.printout.printing.PDFProducer.Page;
+import fi.nls.oskari.printout.ws.jaxrs.format.*;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -24,29 +26,15 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-
-import fi.nls.oskari.printout.config.ConfigValue;
-import fi.nls.oskari.printout.input.geojson.MaplinkGeoJsonParser;
-import fi.nls.oskari.printout.input.layers.MapLayerJSONParser;
-import fi.nls.oskari.printout.input.maplink.MapLink;
-import fi.nls.oskari.printout.input.maplink.MapLinkParser;
-import fi.nls.oskari.printout.output.map.MapProducer;
-import fi.nls.oskari.printout.output.map.MapProducerResource;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
-import fi.nls.oskari.printout.printing.PDFProducer;
-import fi.nls.oskari.printout.printing.PDFProducer.Options;
-import fi.nls.oskari.printout.printing.PDFProducer.Page;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingDOCXImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingJSONImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPNGImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPPTXImpl;
+import javax.ws.rs.core.StreamingOutput;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Map;
+import java.util.Properties;
 
 /*
  * 

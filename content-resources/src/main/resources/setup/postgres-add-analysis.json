@@ -4,5 +4,6 @@
     ],
     "sql" : [
         "example-analysis-wfs-baselayer.sql"
-    ]
+    ],
+    "isPartial" : true
 }

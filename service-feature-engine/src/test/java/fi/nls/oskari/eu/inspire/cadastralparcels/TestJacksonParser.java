@@ -1,13 +1,5 @@
 package fi.nls.oskari.eu.inspire.cadastralparcels;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.junit.Test;
-
 import fi.nls.oskari.eu.inspire.recipe.cadastralparcels.INSPIRE_CP_CadastralBoundary_Parser;
 import fi.nls.oskari.eu.inspire.recipe.cadastralparcels.INSPIRE_CP_CadastralParcel_Parser;
 import fi.nls.oskari.fe.engine.BasicFeatureEngine;
@@ -16,6 +8,12 @@ import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.fe.output.OutputStreamProcessor;
 import fi.nls.oskari.fe.output.format.json.JsonOutputProcessor;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class TestJacksonParser {
 

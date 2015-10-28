@@ -37,6 +37,23 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         styles.put(createStylesJSON(styleName, styleName, null));
         JSONHelper.putValue(layerJson, "styles", styles);
 
+        // if options have urlTemplate -> use it (treat as a REST layer)
+        final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
+        final boolean needsProxy = useProxy(layer);
+        if(urlTemplate != null) {
+            if(needsProxy) {
+                // remove requestEncoding so we always get KVP params when proxying
+                JSONObject options = layerJson.optJSONObject("options");
+                options.remove("requestEncoding");
+            } else {
+                // setup tileURL for REST layers
+                final String originalUrl = layer.getUrl();
+                layer.setUrl(urlTemplate);
+                JSONHelper.putValue(layerJson, "tileUrl", layer.getUrl(isSecure));
+                // switch back the original url in case it's used down the line
+                layer.setUrl(originalUrl);
+            }
+        }
         return layerJson;
     }
 

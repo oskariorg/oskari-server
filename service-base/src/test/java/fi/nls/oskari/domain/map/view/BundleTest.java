@@ -3,8 +3,8 @@ package fi.nls.oskari.domain.map.view;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class BundleTest {
 

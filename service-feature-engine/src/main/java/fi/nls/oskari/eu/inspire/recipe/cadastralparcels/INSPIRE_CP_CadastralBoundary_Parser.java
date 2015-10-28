@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.inspire.recipe.cadastralparcels;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.inspire.cadastralparcels.INSPIRE_cp_CadastralBoundary.CadastralBoundary;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class INSPIRE_CP_CadastralBoundary_Parser extends GML32 {
 

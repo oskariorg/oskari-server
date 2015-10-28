@@ -1,12 +1,12 @@
 package fi.nls.oskari.search.util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.deegree.model.filterencoding.PropertyName;
 import org.deegree.model.filterencoding.SpatialOperation;
 import org.deegree.model.spatialschema.Geometry;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class GeonetworkSpatialOperation extends SpatialOperation {	
 	String polygon;

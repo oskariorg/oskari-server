@@ -1,13 +1,17 @@
 {
-    "name" : "Postgres/ibatis enabled",
-    "type" : "USER",
-    "default" : false,
+    "name" : "Default view",
+    "type" : "DEFAULT",
+    "default" : true,
     "public" : true,
+    "onlyUuid" : false,
     "oskari" : {
         "application" : "servlet",
         "page" : "index",
         "development_prefix" : "/applications/sample"
     },
+    "selectedLayers" : [
+      "wmslayer-openstreetmap-demo-fi.json"
+    ],
     "bundles" : [
         { "id" : "openlayers-default-theme" },
         {
@@ -21,33 +25,28 @@
                     { "id" : "Oskari.mapframework.mapmodule.MarkersPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.ControlsPlugin" },
                     { "id" : "Oskari.mapframework.mapmodule.GetInfoPlugin",
-                        "config" : {
-                            "ignoredLayerTypes" : ["WFS"],
-                            "infoBox": false
-                        }
-                    },
-                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin",
-                        "config" : {
-                            "lazy" : true,
-                            "disconnectTime" : 30000,
-                            "backoffIncrement": 1000,
-                            "maxBackoff": 60000,
-                            "maxNetworkDelay": 10000
-                        }
-                    },
-                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" } ,
+                      "config" : {
+                        "ignoredLayerTypes" : ["WFS", "MYPLACES"]
+                    }},
+                    { "id" : "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.ScaleBarPlugin" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.Portti2Zoombar" },
                     { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.PanButtons" },
-                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" }
+                    { "id" : "Oskari.mapframework.bundle.mapmodule.plugin.FullScreenPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapmyplaces.plugin.MyPlacesLayerPlugin" },
+                    { "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin" },
+                    { "id" : "Oskari.mapframework.mapmodule.VectorLayerPlugin" }
                 ],
                 "layers": []
             },
             "state" : {
-                "east": "517620",
-                "north": "6874042",
-                "selectedLayers": [{"id": 1}],
-                "zoom": 1
+              "east": "517620",
+              "north": "6874042",
+              "selectedLayers": [],
+              "zoom": 1
             }
         },
         { "id" : "divmanazer" },
@@ -55,19 +54,32 @@
             "id" : "toolbar",
             "config" : {
                 "viewtools": {
-                    "link" : false
+                    "print" : false
                 }
             }
         },
         { "id" : "infobox" },
         { "id" : "statehandler" },
         { "id" : "search" },
+        { "id" : "metadatacatalogue" },
         { "id" : "layerselector2" },
         { "id" : "layerselection2" },
-        { "id" : "coordinatedisplay" },
+        {
+			"id" : "coordinatedisplay",
+			"config": {
+				"roundToDecimals": 6
+			}
+		},
         { "id" : "metadataflyout" },
-        { "id" : "featuredata2" },
         { "id" : "personaldata" },
-        { "id" : "publisher" }
+        { "id" : "publisher2" },
+        { "id" : "maplegend" },
+        { "id" : "userguide" },
+        { "id" : "myplaces2" },
+        { "id" : "printout" },
+        { "id" : "analyse" },
+        { "id" : "myplacesimport" },
+        { "id" : "featuredata2" },
+        { "id" : "heatmap" }
     ]
 }

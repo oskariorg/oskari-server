@@ -6,18 +6,18 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
-import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.swing.*;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 /**
  * @author SMAKINEN
@@ -166,6 +166,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
     @Test
     public void testViewListingWithNoParams() throws Exception {
         // mock returned views
+
         final List<View> views = new ArrayList<View>();
         views.add(ViewTestHelper.createMockView("framework.mapfull"));
         doReturn(views).when(viewService).getViewsForUser(anyLong());
@@ -178,6 +179,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseWritten(params);
 
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-has-views.json", this));
+
     }
 
 }

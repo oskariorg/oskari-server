@@ -1,12 +1,12 @@
 package fi.nls.oskari.utils;
 
-import static org.junit.Assert.*;
-
 import fi.nls.oskari.wfs.util.XMLHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.eclipse.xsd.XSDSchema;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class XMLHelperTest {
 

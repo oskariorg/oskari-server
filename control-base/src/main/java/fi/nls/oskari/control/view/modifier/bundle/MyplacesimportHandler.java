@@ -9,8 +9,6 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpSession;
-
 @OskariViewModifier("myplacesimport")
 public class MyplacesimportHandler extends BundleHandler {
     private static final Logger log = LogFactory.getLogger(MyplacesimportHandler.class);

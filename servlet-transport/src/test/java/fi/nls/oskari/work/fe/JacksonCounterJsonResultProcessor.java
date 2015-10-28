@@ -1,8 +1,6 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
+import fi.nls.oskari.utils.GeometryJSONOutputModule;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.impl.DefaultPrettyPrinter;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -11,7 +9,8 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import fi.nls.oskari.utils.GeometryJSONOutputModule;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * This uses the Jackson 1.x version since it's used by the current version of CometD.

@@ -1,14 +1,9 @@
 package fi.nls.oskari.printout.breeding;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.output.map.MapProducerResource;
+import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
+import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
@@ -17,10 +12,14 @@ import org.geowebcache.layer.TileLayer;
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.output.map.MapProducerResource;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils;
-import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.assertTrue;
 
 public class DefaultGridSetTest {
 

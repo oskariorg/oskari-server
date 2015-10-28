@@ -10,13 +10,12 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
-
-import fi.nls.oskari.util.JSONHelper;
 
 /**
  * Created with IntelliJ IDEA.

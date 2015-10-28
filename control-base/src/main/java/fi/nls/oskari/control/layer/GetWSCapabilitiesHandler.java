@@ -5,17 +5,19 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.*;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Get WMS capabilites and return JSON
+ * Get capabilites for layer and returns JSON formatted as Oskari layers
  */
 @OskariActionRoute("GetWSCapabilities")
 public class GetWSCapabilitiesHandler extends ActionHandler {
@@ -27,6 +29,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
     private static final String PARM_USER = "user";
     private static final String PARM_PW = "pw";
 
+    private final CapabilitiesCacheService capabilitiesService = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
     private String[] permittedRoles = new String[0];
 
     @Override
@@ -58,14 +61,9 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
                     WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
 
                     // setup capabilities URL
-                    Map<String, String> capabilitiesParams = new HashMap<String, String>();
-                    capabilitiesParams.put("service", "WMTS");
-                    capabilitiesParams.put("request", "GetCapabilities");
-                    final String capabilitiesUrl = IOHelper.constructUrl(url, capabilitiesParams);
-
-                    final String capabilities = IOHelper.getURL(capabilitiesUrl, user, pw);
-                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(capabilities, url);
-                    JSONHelper.putValue(resultJSON, "xml", capabilities);
+                    final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw);
+                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url);
+                    JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);
                 }
                 else if(OskariLayer.TYPE_WFS.equals(layerType)) {

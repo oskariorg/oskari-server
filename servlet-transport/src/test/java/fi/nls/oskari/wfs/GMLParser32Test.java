@@ -1,10 +1,5 @@
 package fi.nls.oskari.wfs;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.io.StringReader;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import fi.nls.oskari.cache.JedisManager;
@@ -12,10 +7,14 @@ import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.geotools.xml.Parser;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class GMLParser32Test {
 	private static WFSLayerStore layer;

@@ -12,7 +12,6 @@ import fi.nls.oskari.search.util.QueryParser;
 import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
-
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.xmlbeans.XmlObject;
 import org.jsoup.Jsoup;

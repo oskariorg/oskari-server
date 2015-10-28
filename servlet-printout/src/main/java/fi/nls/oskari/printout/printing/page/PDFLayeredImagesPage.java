@@ -1,29 +1,17 @@
 package fi.nls.oskari.printout.printing.page;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.imageio.ImageIO;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.printing.PDFProducer.Options;
+import fi.nls.oskari.printout.printing.PDFProducer.Page;
+import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
+import fi.nls.oskari.printout.printing.PDPageContentStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
-//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
@@ -37,22 +25,17 @@ import org.jsoup.safety.Whitelist;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 
-import fi.nls.oskari.printout.input.content.PrintoutContent;
-import fi.nls.oskari.printout.input.content.PrintoutContentPage;
-import fi.nls.oskari.printout.input.content.PrintoutContentPart;
-import fi.nls.oskari.printout.input.content.PrintoutContentStyle;
-import fi.nls.oskari.printout.input.content.PrintoutContentStyle.ColourStyleAttr;
-import fi.nls.oskari.printout.input.content.PrintoutContentStyle.MetricsStyleAttr;
-import fi.nls.oskari.printout.input.content.PrintoutContentTable;
-import fi.nls.oskari.printout.input.content.PrintoutContentTable.Col;
-import fi.nls.oskari.printout.input.content.PrintoutContentTable.Row;
-import fi.nls.oskari.printout.printing.PDFProducer.Options;
-import fi.nls.oskari.printout.printing.PDFProducer.Page;
-import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
-import fi.nls.oskari.printout.printing.PDPageContentStream;
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 
 /**
  * This class embeds layers of map images as PDF optional contents.

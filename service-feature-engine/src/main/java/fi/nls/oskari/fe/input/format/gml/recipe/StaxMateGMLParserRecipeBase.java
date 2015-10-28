@@ -1,18 +1,16 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
+import fi.nls.oskari.fe.input.format.gml.FEPullParser;
+import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
 import org.codehaus.staxmate.in.SMInputCursor;
 import org.geotools.xml.Configuration;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.fe.input.format.gml.FEPullParser;
-import fi.nls.oskari.fe.input.format.gml.FEPullParser.PullParserHandler;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class StaxMateGMLParserRecipeBase extends
         StaxMateXMLParserRecipeBase implements ParserRecipe {

@@ -134,31 +134,27 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
                 log.debug("\nAggregate results:\n", aggregateResult, "\n");
-                /*
-Aggregate results:
- {"fi_url_1":{"Count":4},"tmp_id":{"Sum":45301,"Median":12232,"Count":4,"Standar
-d deviation":3186.3551571505645,"Maximum":14592,"Average":11325.25,"Minimum":624
-5},"fi_url_3":{"Count":4},"postinumero":{"Count":4},"fi_url_2":{"Count":4},"fi_s
-posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
-{"Count":4},"kto_tarkennus":{"Count":4}}
-                 */
+
                 analysisLayer.setResult(aggregateResult);
 
                 // Get geometry for aggretage features
                 try {
                     // Just return result as JSON and don't save analysis to DB
                     if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
-                        // NOTE!! Replacing the analysisLayer!
+                        // NOTE!! Replacing the analysisLayer content for executing wps union method!
                         // Get response as geojson when no db store
                         analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        // Get geometry as geojson for hilighting features of aggregate result
                         featureSet = wpsService.requestFeatureSet(analysisLayer);
                         // Just return result as JSON and don't save analysis to DB
-                        // Get geometry as geojson for hilighting features of aggregate result
                         JSONObject geojson = JSONHelper.createJSONObject(featureSet);
                         JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
+                        //reorder resultset columns and row accoding to input params order
+                        JSONArray jsaggreOrdered = analysisParser.reorderAggregateResult(jsaggregate,this.getRowOrder(analyseJson, analysisLayer.getInputAnalysisId()),
+                                this.getColumnOrder(analyseJson));
                         JSONObject results = new JSONObject();
                         JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
-                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggregate);
+                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggreOrdered);
                         ResponseHelper.writeResponse(params, results);
                         return;
                     }
@@ -167,7 +163,8 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
+                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson,analysisLayer.getInputAnalysisId()),
+                            this.getColumnOrder(analyseJson));
                     // Redefine column types
                     analysisLayer.setFieldtypeMap(this.getAggregateFieldTypes(this.getColumnOrder(analyseJson)));
                 } catch (ServiceException e) {
@@ -480,22 +477,30 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
     /**
      * Get property row order of aggregate result (
      * @param analysejs  analysis params
+     * @param analysisId input is analysis layer, if not null or not empty
      * @return List of row names
      */
-    private List<String> getRowOrder( JSONObject analysejs) {
+    private List<String> getRowOrder( JSONObject analysejs, String analysisId) {
         List<String> list = new ArrayList<String>();
         try {
             JSONArray fields = analysejs.getJSONArray(JSON_KEY_FIELDS);
 
             if (fields != null) {
                 for (int i = 0; i < fields.length(); i++) {
-                    list.add(fields.getString(i));
+                    String field = fields.getString(i);
+                    if(analysisId != null && !analysisId.isEmpty()){
+                        // Switch locale field name
+                      field =  analysisDataService.SwitchField2OriginalField(field,  analysisId);
+                    }
+                    list.add(field);
                 }
             }
         } catch (Exception e) {
             log.warn("Aggregate row order fetch failed ", e);
 
         }
+
+
         return list;
     }
     /**

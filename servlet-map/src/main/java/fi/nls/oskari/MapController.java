@@ -14,7 +14,6 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import static fi.nls.oskari.control.ActionConstants.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * Handles the map UI based on requested application and user role default applications
@@ -144,14 +145,22 @@ public class MapController {
         log.debug("getting a view and setting Render parameters");
         HttpServletRequest request = params.getRequest();
 
-        final long viewId = ConversionHelper.getLong(params.getHttpParam(PARAM_VIEW_ID),
-                viewService.getDefaultViewId(params.getUser()));
-
-        log.debug("user view: " + viewService.getDefaultViewId(params.getUser()));
-
         final String uuId = params.getHttpParam(PARAM_UUID);
+        long viewId = params.getHttpParam(PARAM_VIEW_ID, -1);
+        boolean useDefault = viewId == -1;
+        if(uuId == null) {
+            // get personalized or system default view
+            if(params.getHttpParam(PARAM_RESET, false)) {
+                viewId = viewService.getSystemDefaultViewId(params.getUser().getRoles());
+            } else {
+                viewId = viewService.getDefaultViewId(params.getUser());
+            }
+        }
 
-        final View view = getView(uuId, viewId);
+        log.debug("user view: " + viewId);
+
+
+        final View view = getView(uuId, viewId, useDefault);
         if (view == null) {
             log.debug("no such view");
             ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
@@ -176,7 +185,7 @@ public class MapController {
         }
 
 
-        JSONHelper.putValue(controlParams, "ssl", request.getParameter("ssl"));
+        JSONHelper.putValue(controlParams, PARAM_SECURE, request.getParameter(PARAM_SECURE));
         model.addAttribute(KEY_CONTROL_PARAMS, controlParams.toString());
 
         model.addAttribute(KEY_PRELOADED, !isDevelopmentMode);
@@ -210,14 +219,19 @@ public class MapController {
         return viewJSP;
     }
 
-    private View getView(String uuId, long viewId){
+    private View getView(String uuId, long viewId, boolean isDefault){
         if(uuId != null){
-            log.debug("Using Uuid to fetch a view");
+            log.debug("Using Uuid to fetch a view:", uuId);
             return viewService.getViewWithConfByUuId(uuId);
-        }else{
-            log.debug("Using id to fetch a view");
-            return viewService.getViewWithConf(viewId);
         }
+
+        log.debug("Using id to fetch a view:", viewId);
+        View view = viewService.getViewWithConf(viewId);
+        if(!isDefault && view.isOnlyForUuId()) {
+            log.warn("View can only be loaded by uuid. ViewId:", viewId);
+            return null;
+        }
+        return view;
     }
 
     /**

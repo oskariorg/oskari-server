@@ -10,6 +10,7 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,10 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         TYPE_MAPPING.put(OskariLayer.TYPE_WFS, "WFS");
         TYPE_MAPPING.put(OskariLayer.TYPE_WMTS, "WMTS");
     }
-    // timeout capabilities request after 15 seconds (configurable)
-    private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
+    // timeout capabilities request after 30 seconds (configurable)
+    private static final String PROP_TIMEOUT = "capabilities.timeout";
+    private static final int TIMEOUT_SECONDS = PropertyUtil.getOptional(PROP_TIMEOUT, 30);
+    private static final int TIMEOUT_MS = TIMEOUT_SECONDS * 1000;
 
     public abstract OskariLayerCapabilities find(final String url, final String layertype);
     public abstract OskariLayerCapabilities save(final OskariLayerCapabilities capabilities);
@@ -59,54 +62,64 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     public OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService) throws ServiceException {
-        return getCapabilities(layer, encoding, loadFromService, false);
-    }
 
-    private OskariLayerCapabilities getCapabilities(final OskariLayer layer, String encoding, final boolean loadFromService, final boolean norecursion) throws ServiceException {
-        final String url = contructCapabilitiesUrl(layer);
+        final OskariLayerCapabilities cap = createTemplate(layer);
         try {
             // prefer saved db version over network call by default (only when encoding null == don't check twice)
-            if(!loadFromService && encoding == null) {
-                OskariLayerCapabilities cap = find(layer);
-                if(cap != null) {
-                    return cap;
+            if(!loadFromService) {
+                OskariLayerCapabilities dbCapabilities = find(layer);
+                if(dbCapabilities != null) {
+                    return dbCapabilities;
                 }
             }
-            if(encoding == null) {
-                encoding = IOHelper.DEFAULT_CHARSET;
+            // get xml from service
+            final String xml = loadCapabilitiesFromService(layer, encoding, loadFromService);
+            cap.setData(xml);
+            // save before returning
+            save(cap);
+            LOG.debug("Saved capabilities", cap.getId());
+            return cap;
+        }
+        catch (IOException e) {
+            if(e instanceof SocketTimeoutException) {
+                LOG.warn("Getting capabilities for layer timed out. You can adjust timeout with property",
+                        PROP_TIMEOUT, ". Current value is:", TIMEOUT_SECONDS, "seconds");
             }
-            final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
-            conn.setReadTimeout(TIMEOUT_MS);
-            final String response = IOHelper.readString(conn, encoding);
-            final String charset = getEncodingFromXml(response);
-            if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
-                LOG.debug("saving capabilities with charset", charset, "encoding:", encoding);
-
-                OskariLayerCapabilities cap = createForLayer(layer);
-                cap.setData(response);
-                // save before returning
-                save(cap);
-                LOG.debug("Saved capabilities", cap.getId());
-                return cap;
-            }
-            return getCapabilities(layer, charset, loadFromService, true);
-        } catch (IOException e) {
-            OskariLayerCapabilities cap = createForLayer(layer);
-            // save empty result so we don't hang the system
+            // save empty result so we don't hang the system when having multiple layers from problematic service
             cap.setData("");
             save(cap);
-            throw new ServiceException("Error loading capabilities from URL:" + url, e);
+            throw new ServiceException("Error loading capabilities from URL:" + layer.getUrl(), e);
         }
     }
 
-    private OskariLayerCapabilities createForLayer(OskariLayer layer) {
+    public static String loadCapabilitiesFromService(OskariLayer layer, String encoding) throws IOException {
+        return loadCapabilitiesFromService(layer, encoding, false);
+    }
+
+    private static String loadCapabilitiesFromService(OskariLayer layer, String encoding, final boolean norecursion) throws IOException {
+
+        final String url = contructCapabilitiesUrl(layer);
+        if(encoding == null) {
+            encoding = IOHelper.DEFAULT_CHARSET;
+        }
+        final HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
+        conn.setReadTimeout(TIMEOUT_MS);
+        final String response = IOHelper.readString(conn, encoding);
+        final String charset = getEncodingFromXml(response);
+        if(norecursion || charset == null || encoding.equalsIgnoreCase(charset)) {
+            return response;
+        }
+        return loadCapabilitiesFromService(layer, charset, true);
+    }
+
+    public static OskariLayerCapabilities createTemplate(OskariLayer layer) {
         OskariLayerCapabilities cap = new OskariLayerCapabilities();
         cap.setUrl(layer.getSimplifiedUrl(true));
         cap.setLayertype(layer.getType());
         return cap;
     }
 
-    private static String contructCapabilitiesUrl(final OskariLayer layer) {
+    public static String contructCapabilitiesUrl(final OskariLayer layer) {
         if (layer == null) {
             return "";
         }
@@ -124,7 +137,7 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
     }
 
     // TODO: maybe use some lib instead?
-    private String getEncodingFromXml(final String response) {
+    private static String getEncodingFromXml(final String response) {
         if(response == null) {
             return null;
         }

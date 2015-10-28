@@ -16,9 +16,12 @@
  */
 package org.geotools.renderer.oskari;
 
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import org.geotools.renderer.style.MarkFactory;
+import org.geotools.renderer.style.shape.ExplicitBoundsShape;
+import org.opengis.feature.Feature;
+import org.opengis.filter.expression.Expression;
+
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
@@ -26,11 +29,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.geotools.renderer.style.shape.ExplicitBoundsShape;
-import org.geotools.renderer.style.MarkFactory;
-import org.opengis.feature.Feature;
-import org.opengis.filter.expression.Expression;
 
 /**
  * This factory accepts mark paths in the <code>oskari://fontName#code</code>

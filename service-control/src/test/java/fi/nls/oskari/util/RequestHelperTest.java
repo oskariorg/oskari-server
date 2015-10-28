@@ -1,14 +1,13 @@
 package fi.nls.oskari.util;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 

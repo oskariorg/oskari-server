@@ -50,5 +50,6 @@
         "analysis" : [
             "001-analyse.sql"
         ]
-    }
+    },
+    "isPartial" : true
 }

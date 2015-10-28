@@ -1,5 +1,24 @@
 package fi.nls.oskari.printout.ws.jaxrs.format;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.imaging.ScaleOps;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.input.maplink.MapLink;
+import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.usermodel.*;
+import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.filter.request.RequestFilterException;
+import org.opengis.referencing.operation.TransformException;
+
+import javax.imageio.ImageIO;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,32 +28,6 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.util.Units;
-import org.apache.poi.xwpf.usermodel.Document;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.filter.request.RequestFilterException;
-import org.opengis.referencing.operation.TransformException;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.printout.imaging.ScaleOps;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.input.maplink.MapLink;
-import fi.nls.oskari.printout.output.layer.AsyncLayerProcessor;
-import fi.nls.oskari.printout.output.map.MapProducer;
 
 /**
  * support for M$ format documents - this does not work atm

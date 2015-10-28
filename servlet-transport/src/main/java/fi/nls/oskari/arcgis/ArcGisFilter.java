@@ -2,19 +2,14 @@ package fi.nls.oskari.arcgis;
 
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
-
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.GeoJSONFilter;
 import fi.nls.oskari.pojo.Location;
-
-import com.vividsolutions.jts.util.GeometricShapeFactory;
-
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.SessionStore;
-
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.OWSMapLayerJob;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geojson.geom.GeometryJSON;

@@ -1,23 +1,21 @@
 package fi.nls.oskari.fe.output.format.jsonld;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.github.jsonldjava.utils.JSONUtils;
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.github.jsonldjava.utils.JSONUtils;
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
-import org.json.JSONObject;
 
 /* PoC that builds JSON-LD output */
 public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor

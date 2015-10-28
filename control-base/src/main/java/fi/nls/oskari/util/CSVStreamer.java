@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by TMIKKOLAINEN on 30.12.2014.

@@ -5,6 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -19,14 +20,14 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.view.modifier.ViewModifierManager;
-
-import java.net.URLDecoder;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.*;
+
+import static fi.nls.oskari.control.ActionConstants.PARAM_SECURE;
 
 @OskariActionRoute("GetAppSetup")
 public class GetAppSetupHandler extends ActionHandler {
@@ -43,7 +44,6 @@ public class GetAppSetupHandler extends ActionHandler {
     public static final String PARAM_NO_SAVED_STATE = "noSavedState";
     public static final String VIEW_DATA = "viewData";
     public static final String STATE = "state";
-    public static final String PARAM_SSL = "ssl";
 
     private static final String KEY_STARTUP = "startupSequence";
     private static final String KEY_CONFIGURATION = "configuration";
@@ -122,13 +122,14 @@ public class GetAppSetupHandler extends ActionHandler {
                 }
             }
         }
-        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix");
+        SECURE_AJAX_PREFIX = PropertyUtil.get("actionhandler.GetAppSetup.secureAjaxUrlPrefix", "");
     }
 
     public void handleAction(final ActionParameters params) throws ActionException {
         // oldId => support for migrated published maps
-        final long oldId = ConversionHelper.getLong(params.getHttpParam(PARAM_OLD_ID), -1);
-        final long defaultViewId = viewService.getDefaultViewId(params.getUser());
+        final long oldId = params.getHttpParam(PARAM_OLD_ID, -1);
+        final User user = params.getUser();
+        final long defaultViewId = viewService.getDefaultViewId(user);
         final View view = getView(params, defaultViewId, oldId);
 
         if (view == null) {
@@ -139,11 +140,11 @@ public class GetAppSetupHandler extends ActionHandler {
         final String referer = RequestHelper.getDomainFromReferer(params
                 .getHttpHeader("Referer"));
 
-        // ignore saved state for ancient published maps (having oldId), non-default views or if
-        // explicit param is given
-        boolean ignoreSavedState = oldId != -1
-                || viewId != defaultViewId
-                || ConversionHelper.getBoolean(params.getHttpParam(PARAM_NO_SAVED_STATE), false);
+        // ignore saved state when loading:
+        //   - views that are not system default views
+        //   - when explicitly told with parameter
+        boolean ignoreSavedState = !viewService.isSystemDefaultView(viewId)
+                || params.getHttpParam(PARAM_NO_SAVED_STATE, false);
         // restore state from cookie if not
         if (!ignoreSavedState) {
             log.debug("Modifying map view if saved state is available");
@@ -398,7 +399,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
      * @return
      */
     public static boolean isSecure(final ActionParameters params) {
-        return ConversionHelper.getBoolean(params.getHttpParam(PARAM_SSL), false);
+        return params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
     }
 
     private void modifyView(final View view, JSONObject myview) {

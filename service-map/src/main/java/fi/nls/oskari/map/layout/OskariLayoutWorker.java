@@ -6,9 +6,7 @@ import fi.nls.oskari.util.IOHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Loads and manages printout templates for table data layout

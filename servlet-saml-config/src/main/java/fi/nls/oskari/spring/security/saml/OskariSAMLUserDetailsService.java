@@ -7,16 +7,17 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.spring.security.OskariUserHelper;
 import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.util.PropertyUtil;
-import org.springframework.security.core.GrantedAuthority;
+import org.opensaml.saml2.core.Attribute;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import org.opensaml.saml2.core.Attribute;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**

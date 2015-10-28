@@ -1,19 +1,11 @@
 package fi.nls.oskari.wfs;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.Location;
+import fi.nls.oskari.pojo.Tile;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
@@ -36,9 +28,13 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.Location;
-import fi.nls.oskari.pojo.Tile;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Image drawing for WFS layers 

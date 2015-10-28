@@ -6,5 +6,6 @@
         "create-keyword-tables.sql",
         "create-user-tables.sql",
         "create-JAAS-user-tables.sql"
-    ]
+    ],
+    "isPartial" : true
 }

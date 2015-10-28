@@ -1,7 +1,20 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import static org.junit.Assert.assertTrue;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
+import fi.nls.oskari.fe.input.XMLInputProcessor;
+import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
+import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONObject;
+import org.junit.Test;
 
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,23 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONObject;
-import org.junit.Test;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
-import fi.nls.oskari.fe.input.XMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyCodeSource;
+import static org.junit.Assert.assertTrue;
 
 /*
  * Test threaded Groovy script execution

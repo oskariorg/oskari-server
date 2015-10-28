@@ -2,7 +2,6 @@ package fi.nls.oskari.util;
 
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>oskari-parent</artifactId>
+        <groupId>fi.nls.oskari</groupId>
+        <version>1.33.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fi.nls.oskari.service</groupId>
+    <artifactId>oskari-rating</artifactId>
+    <packaging>jar</packaging>
+    <name>Rating Service</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-permissions</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

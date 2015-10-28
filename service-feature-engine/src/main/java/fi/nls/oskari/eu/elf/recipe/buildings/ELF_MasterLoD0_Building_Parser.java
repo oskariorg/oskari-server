@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.elf.recipe.buildings;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.elf.buildings.ELF_MasterLoD0_Building.Building;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class ELF_MasterLoD0_Building_Parser extends GML32 {
 

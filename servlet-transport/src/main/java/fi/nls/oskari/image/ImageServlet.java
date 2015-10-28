@@ -1,31 +1,25 @@
 package fi.nls.oskari.image;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.pojo.WFSLayerPermissionsStore;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.WFSParser;
 import fi.nls.oskari.wfs.WFSProcess;
-import fi.nls.oskari.work.WFSMapLayerJob;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Serves images from cache (also temp)

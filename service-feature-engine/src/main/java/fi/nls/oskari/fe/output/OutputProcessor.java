@@ -1,15 +1,13 @@
 package fi.nls.oskari.fe.output;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.vividsolutions.jts.geom.Geometry;
-
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 public interface OutputProcessor {
 

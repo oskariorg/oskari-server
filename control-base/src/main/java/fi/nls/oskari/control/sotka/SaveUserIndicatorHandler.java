@@ -13,8 +13,6 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
-import java.util.logging.Logger;
-
 /**
  * Created with IntelliJ IDEA.
  * User: EVAARASMAKI

@@ -1,22 +1,7 @@
 package fi.nls.oskari.printout.output.layer;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-
+import fi.nls.oskari.printout.caching.jedis.JedisCache;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -28,8 +13,19 @@ import org.geotools.map.MapContent;
 import org.geotools.map.MapViewport;
 import org.opengis.feature.simple.SimpleFeature;
 
-import fi.nls.oskari.printout.caching.jedis.JedisCache;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 

@@ -1,7 +1,5 @@
 package fi.mml.portti.service.db.permissions;
 
-import java.util.*;
-
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.domain.permissions.UniqueResourceName;
 import fi.mml.portti.domain.permissions.WFSLayerPermissionsStore;
@@ -12,6 +10,8 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.permission.domain.Resource;
 import fi.nls.oskari.service.db.BaseIbatisService;
+
+import java.util.*;
 
 public class PermissionsServiceIbatisImpl extends BaseIbatisService<Permissions> implements PermissionsService {		
 	

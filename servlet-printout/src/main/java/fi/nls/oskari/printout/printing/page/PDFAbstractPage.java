@@ -1,36 +1,31 @@
 package fi.nls.oskari.printout.printing.page;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
-//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
-import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
-import org.apache.pdfbox.pdmodel.markedcontent.PDPropertyList;
-
 import com.mortennobel.imagescaling.ResampleFilter;
 import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;
-
-import fi.nls.oskari.printout.input.content.PrintoutContent;
-import fi.nls.oskari.printout.input.content.PrintoutContentPage;
-import fi.nls.oskari.printout.input.content.PrintoutContentPart;
-import fi.nls.oskari.printout.input.content.PrintoutContentStyle;
+import fi.nls.oskari.printout.input.content.*;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.ColourStyleAttr;
 import fi.nls.oskari.printout.input.content.PrintoutContentStyle.MetricsStyleAttr;
-import fi.nls.oskari.printout.input.content.PrintoutContentTable;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Col;
 import fi.nls.oskari.printout.input.content.PrintoutContentTable.Row;
 import fi.nls.oskari.printout.printing.PDFProducer.Options;
 import fi.nls.oskari.printout.printing.PDFProducer.Page;
 import fi.nls.oskari.printout.printing.PDFProducer.PageCounter;
 import fi.nls.oskari.printout.printing.PDPageContentStream;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
+import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
+import org.apache.pdfbox.pdmodel.markedcontent.PDPropertyList;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
+
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 
 public class PDFAbstractPage {
 

@@ -1,28 +1,13 @@
 package fi.nls.oskari.printout.output.layer;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Map;
-
+import fi.nls.oskari.printout.imaging.ColorOps;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.FeatureLayer;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Fill;
+import org.geotools.styling.*;
 import org.geotools.styling.Font;
-import org.geotools.styling.Graphic;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.Mark;
-import org.geotools.styling.PointPlacement;
-import org.geotools.styling.Rule;
 import org.geotools.styling.Stroke;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.Symbolizer;
-import org.geotools.styling.TextSymbolizer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryType;
@@ -33,8 +18,11 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 
-import fi.nls.oskari.printout.imaging.ColorOps;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * 

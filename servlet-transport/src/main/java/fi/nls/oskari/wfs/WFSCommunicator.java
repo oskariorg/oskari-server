@@ -1,30 +1,25 @@
 package fi.nls.oskari.wfs;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.XMLHelper;
 import fi.nls.oskari.work.JobType;
 import fi.nls.oskari.work.ResultProcessor;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.*;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.util.XMLHelper;
 import org.opengis.referencing.operation.MathTransform;
+
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * WFS request creators and response parsers

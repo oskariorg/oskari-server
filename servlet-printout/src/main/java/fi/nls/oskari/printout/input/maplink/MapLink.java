@@ -1,16 +1,14 @@
 package fi.nls.oskari.printout.input.maplink;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.printout.input.content.PrintoutContent;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.printing.PDFProducer.Options;
 
 /**
  * 

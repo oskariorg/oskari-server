@@ -1,18 +1,16 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-
+import fi.nls.oskari.fe.input.XMLInputProcessor;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.staxmate.SMInputFactory;
 import org.codehaus.staxmate.in.SMFilterFactory;
 import org.codehaus.staxmate.in.SMHierarchicCursor;
 import org.codehaus.staxmate.in.SMInputCursor;
 
-import fi.nls.oskari.fe.input.XMLInputProcessor;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class StaxGMLInputProcessor implements XMLInputProcessor {
 

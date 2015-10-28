@@ -1,27 +1,8 @@
 package fi.nls.oskari.fe.input.format.gml;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Logger;
-import org.geotools.styling.Style;
-import org.json.JSONObject;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
-
 import fi.nls.oskari.fe.TestHelper;
 import fi.nls.oskari.fe.engine.GroovyFeatureEngine;
 import fi.nls.oskari.fe.input.XMLInputProcessor;
@@ -33,6 +14,18 @@ import fi.nls.oskari.fe.output.format.png.geotools.MapContentOutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
+import org.geotools.styling.Style;
+import org.json.JSONObject;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.*;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 @Deprecated
 public class TestELFGML extends TestHelper {

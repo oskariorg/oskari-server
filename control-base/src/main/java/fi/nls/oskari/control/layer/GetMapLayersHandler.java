@@ -10,6 +10,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
@@ -24,9 +25,10 @@ public class GetMapLayersHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
 
         final String lang = params.getHttpParam(PARAM_LANGUAGE, params.getLocale().getLanguage());
+        final boolean isSecure = params.getHttpParam(PARAM_SECURE, params.getRequest().isSecure());
 
         log.debug("Getting layers");
-        final JSONObject layers = OskariLayerWorker.getListOfAllMapLayers(params.getUser(), lang);
+        final JSONObject layers = OskariLayerWorker.getListOfAllMapLayers(params.getUser(), lang, isSecure);
         JSONArray list = layers.optJSONArray(OskariLayerWorker.KEY_LAYERS);
         // transform WKT for layers now that we know SRS
         for(int i = 0; i < list.length(); ++i) {

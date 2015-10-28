@@ -5,7 +5,7 @@ import fi.nls.oskari.log.Logger;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import javax.measure.unit.*;
+import javax.measure.unit.Unit;
 import java.util.HashMap;
 
 public class Units {

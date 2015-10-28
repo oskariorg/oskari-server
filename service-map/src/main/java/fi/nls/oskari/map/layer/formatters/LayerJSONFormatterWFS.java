@@ -11,7 +11,7 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

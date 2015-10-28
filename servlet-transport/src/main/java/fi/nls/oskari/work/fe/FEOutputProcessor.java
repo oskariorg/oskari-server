@@ -1,12 +1,11 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.data.DataUtilities;
@@ -22,13 +21,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import java.io.IOException;
+import java.util.*;
 
 public class FEOutputProcessor implements OutputProcessor {
     protected static final Logger log = LogFactory

@@ -1,5 +1,103 @@
 # Release Notes
 
+## 1.33
+
+### service-routing (POC)
+
+Changed service to support OpenTripPlanner services. Service parses data to plan, requestParameters and success parameter.
+If OpenTripPlanner response contains error block then success response param is false and there are no plan block
+
+Service response is same as OpenTripPlanner response with these conditions:
+- point lat and lon coordinates are transferred to map projection
+- geoJSON presentation added to each itinerary (plan/itineraries/itenerary) . GeoJSON tells whole route each itinerary.
+- geoJSON presentation added to each leg legGeometry (plan/itineraries/itinerary/legs/leg/legGeometry). GeoJSON tells leg route.
+
+To be able to use this you need to have the following parameters defined in properties:
+- routing.url (route service url)
+- routing.srs (coordinate system used by route service provider)
+- routing.default.maxwalkdistance (default max walk distance in meters)
+- routing.default.mode (default mode)
+
+Optional parameters in properties:
+- routing.user (username required by the route service provider)
+- routing.password (password required by the route service provider)
+- routing.forceXY (force change XY axels)
+
+### content-resources
+
+Fixed earlier Java-based flyway migrations to use SQL instead of existing services. This enables smoother upgrade
+ experience since SQL targets the versioned schema while services assume the most recent schema when used.
+
+Removed outdated view description files from resources/json/views.
+
+Flyway migration for Oskari core db is ran when setup files have the base database created (create, setup, bundles phases have been run).
+ To disable the migration in "partial" setup scripts, these need to be tagged with "isPartial" : true on the JSON.
+
+Added migration helper for handling the replacement of publisher bundle with publisher2. The sample flyway module has 
+an example V1_0_5__publisher2_migration.java how to use it in application installations.
+
+Added a temporary setup-script for an app using Openlayers 3 components on published map (setup/app-tmp-ol3.json). This 
+will be modified and removed once the OL3 functionality reaches maturity. After that the original publisher template 
+ will be modified to use OL3.
+
+### servlet-map
+
+Now prevents view loading with id when onlyUUID-flag in on. 
+
+### control-base
+
+#### GetMapLayersHandler 
+
+Now provides prefixed urls for maplayers is request.isSecure() or parameter ssl=[true|false] is provided. 
+The prefix is configurable in oskari-ext.properties (defaults to https://):
+
+    maplayer.wmsurl.secure=/secure/
+    
+This handling was already present for selected layers and now it's used for GetMapLayers also. 
+The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
+This enables custom proxying for services that don't have https enabled.
+
+#### GetLayerTile 
+
+Added handling for WMTS-layers with resourceURL.
+
+#### GetWSCapabilities
+
+When adding layers the capabilities parser now includes layer styles and infoformats correctly.
+
+#### CreateAnalysisLayerHandler
+
+Improvements in analysis methods:
+
+ - Better management of unauthorized data
+ 
+ - Aggregate, Spatial join and Difference methods improved
+ 
+ - sld_muutos_n1.sld  style updated in Geoserver Styles / used in analysis method difference
+
+### service-map
+
+LayerJSONFormatterWMTS now includes tileUrl to JSON for layers with resourceURLs. The browser code uses this if present,
+but defaults to the basic url. This means that proxying WMTS-layers with resourceURLs now work correctly.
+
+GetGtWMSCapabilities now includes method to parse String into WMSCapabilities to make it work better with cached
+ capabilities XMLs from CapabilitiesService. Also added styles parsing from capabilities.
+
+WMS capabilities are now parsed when layers are added (previously when they are loaded by user). Pre-parsed capabilities 
+are saved to database table oskari_maplayer in the capabilities column. Flyway migration has been implemented for existing layers.
+
+OskariLayer now has a field for pre-parsed capabilities JSON. This is generated when saving a layer and served to browser
+ instead of parsed just-in-time when layers are loaded.
+ 
+LayerJSONFormatter now has convenience methods to operate the "admin" only data.
+
+### Default view functionality
+
+Added functionality for saving / restoring a user defined default view.
+
+Loading the system default view can be forced by using an additional URL-parameter 'reset=true'. This is useful if the 
+personalized view is faulty.
+
 ## 1.32.2
 
 Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  

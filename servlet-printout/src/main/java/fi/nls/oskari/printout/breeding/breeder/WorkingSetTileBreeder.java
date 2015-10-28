@@ -1,13 +1,11 @@
 package fi.nls.oskari.printout.breeding.breeder;
 
-import org.geowebcache.config.XMLConfiguration;
-import org.geowebcache.grid.GridSetBroker;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-
 import fi.nls.oskari.printout.breeding.ChangeSet;
+import org.geowebcache.config.XMLConfiguration;
+import org.geowebcache.grid.GridSetBroker;
 
 public abstract class WorkingSetTileBreeder implements IWorkingSetTileBreeder {
 

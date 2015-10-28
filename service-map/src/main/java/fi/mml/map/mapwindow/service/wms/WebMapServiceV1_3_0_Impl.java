@@ -1,17 +1,16 @@
 package fi.mml.map.mapwindow.service.wms;
 
-import java.util.*;
-
-import javax.xml.namespace.QName;
-
 import fi.mml.capabilities.DimensionDocument.Dimension;
 import fi.mml.capabilities.KeywordDocument;
-import fi.mml.capabilities.WMSCapabilitiesDocument;
 import fi.mml.capabilities.LayerDocument.Layer;
 import fi.mml.capabilities.LegendURLDocument.LegendURL;
 import fi.mml.capabilities.StyleDocument.Style;
+import fi.mml.capabilities.WMSCapabilitiesDocument;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import javax.xml.namespace.QName;
+import java.util.*;
 
 /**
  * 

@@ -1,18 +1,12 @@
 package fi.nls.oskari.eu.elf.recipe.universal;
 
-import com.vividsolutions.jts.geom.Geometry;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe;
-import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
-import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class ELF_path_parse_worker {
 

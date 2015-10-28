@@ -16,9 +16,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,6 +42,7 @@ public class ViewHelper {
             final View view = new View();
             view.setCreator(ConversionHelper.getLong(viewJSON.optString("creator"), -1));
             view.setIsPublic(viewJSON.optBoolean("public", false));
+            // onlyUuid doesn't work since the sql uses hardcoded "true". Needs more testing twith existing views to change the defaults.
             view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
             view.setName(viewJSON.getString("name"));
             view.setType(viewJSON.getString("type"));

@@ -1,33 +1,26 @@
 package fi.nls.oskari.map.analysis.service;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geojson.feature.FeatureJSON;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
-import fi.nls.oskari.util.JSONHelper;
-
-
-import org.geotools.feature.FeatureCollection;
-import org.geotools.geojson.feature.FeatureJSON;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.w3c.dom.Document;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import java.io.*;
+import java.net.HttpURLConnection;
 
 public class AnalysisWebProcessingService {
 
@@ -39,6 +32,7 @@ public class AnalysisWebProcessingService {
     private static final String GEOJSON_GEOMETRY = "geometry";
     private static final String GEOJSON_PROPERTIES = "properties";
     private static final String DELTA_FIELD_NAME = "Muutos_t2-t1";
+    private static final Double NON_AUTHORIZED = -111111111.0D;
 
     /**
      * Get WPS results as wfs FeatureCollection
@@ -208,8 +202,12 @@ public class AnalysisWebProcessingService {
                 final Object valueA = properties.get(fieldA1);
                 final String layer2fea = properties.optString(GEOJSON_LAYER2);
                 double delta = this.findValueDifference(valueA, layer2fea, fieldB1, dnodata);
-                double valueB = valueToDouble(valueA) - delta;
-                delta = -delta;
+                double valueB = valueToDouble(valueA);
+                if(delta != NON_AUTHORIZED){
+                    valueB = valueB - delta;
+                    delta = -delta;
+                }
+
                 JSONObject newproperties = new JSONObject();
                 newproperties.put(keyA1, properties.get(keyA1));
                 newproperties.put("t1__" + lay1.replace(":","_") + "__" + fieldA1, valueA);
@@ -282,7 +280,7 @@ public class AnalysisWebProcessingService {
                 }
             }
             delta = dA1 - dB1;
-            if (!Double.isNaN(nodata) && (dA1 == nodata || dB1 == nodata)) delta = 0;
+            if (!Double.isNaN(nodata) && (dA1 == nodata || dB1 == nodata)) delta = NON_AUTHORIZED;
 
         } catch (Exception e) {
             log.debug("delta value computation failed");
