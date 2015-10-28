@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.31.0</version>
+        <version>1.32.2</version>
     </parent>
     <artifactId>servlet-saml-config</artifactId>
     <packaging>jar</packaging>

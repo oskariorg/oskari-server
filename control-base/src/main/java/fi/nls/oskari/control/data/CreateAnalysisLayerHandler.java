@@ -35,9 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @OskariActionRoute("CreateAnalysisLayer")
 public class CreateAnalysisLayerHandler extends ActionHandler {
@@ -63,6 +61,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String JSON_KEY_AGGREGATE_RESULT = "aggregate";
     private static final String JSON_KEY_GEOJSON = "geojson";
+    private static final String JSON_KEY_FIELDS = "fields";
 
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
@@ -168,7 +167,9 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer);
+                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
+                    // Redefine column types
+                    analysisLayer.setFieldtypeMap(this.getAggregateFieldTypes(this.getColumnOrder(analyseJson)));
                 } catch (ServiceException e) {
                     throw new ActionException(ERROR_UNABLE_TO_GET_FEATURES_FOR_UNION, e);
                 }
@@ -404,6 +405,7 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
         }
         else if (analysisLayer.getMethod().equals(AnalysisParser.DIFFERENCE)) {
             // Get feature set via WFS 2.0 GetFeature
+            // WFS join select is not available in wfs 1.1.0
             featureSet = wpsService.requestWFS2FeatureSet(analysisLayer);
 
         } else {
@@ -440,7 +442,62 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
         }
         return result;
     }
+    /**
+     * Get Aggregate result field types (
+     * @param newcols  new column names in resultset
+     * @return List of localised method names
+     */
+    private Map<String,String> getAggregateFieldTypes( List<String> newcols) {
+        Map<String,String> map = new HashMap<String,String>();
+        for (String col : newcols){
+            map.put(col.replace(" ","_"),"numeric");
+        }
+        return map;
+    }
+    /**
+     * Get property column order of aggregate result (
+     * @param analysejs  analysis params
+     * @return List of localised method names
+     */
+    private List<String> getColumnOrder( JSONObject analysejs) {
+        List<String> list = new ArrayList<String>();
+        try {
+            JSONArray locales = analysejs.getJSONObject(JSON_KEY_METHODPARAMS)
+                    .optJSONArray(JSON_KEY_LOCALES);
+            JSONArray aggre_funcs = analysejs.getJSONObject(
+                    JSON_KEY_METHODPARAMS).optJSONArray(JSON_KEY_FUNCTIONS);
+            if (locales != null && aggre_funcs.length() == locales.length()) {
+                for (int i = 0; i < locales.length(); i++) {
+                    list.add(locales.getString(i));
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Aggregate column order fetch failed ", e);
 
+        }
+        return list;
+    }
+    /**
+     * Get property row order of aggregate result (
+     * @param analysejs  analysis params
+     * @return List of row names
+     */
+    private List<String> getRowOrder( JSONObject analysejs) {
+        List<String> list = new ArrayList<String>();
+        try {
+            JSONArray fields = analysejs.getJSONArray(JSON_KEY_FIELDS);
+
+            if (fields != null) {
+                for (int i = 0; i < fields.length(); i++) {
+                    list.add(fields.getString(i));
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Aggregate row order fetch failed ", e);
+
+        }
+        return list;
+    }
     /**
      * Fix the geometry property name for WFST transform
      * Geometry property name in WPS method result is not the same as in input featurecollections

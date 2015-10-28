@@ -1,8 +1,8 @@
 package fi.nls.oskari.util;
 
 
-import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
-import fi.mml.map.mapwindow.service.db.CapabilitiesCacheServiceIbatisImpl;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -62,7 +62,7 @@ public class ServiceFactory {
 
     public static CapabilitiesCacheService getCapabilitiesCacheService() {
         if (capabilitiesCacheService == null) {
-            capabilitiesCacheService = new CapabilitiesCacheServiceIbatisImpl();
+            capabilitiesCacheService = new CapabilitiesCacheServiceMybatisImpl();
         }
         return capabilitiesCacheService;
     }

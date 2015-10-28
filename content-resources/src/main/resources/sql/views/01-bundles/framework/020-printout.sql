@@ -20,12 +20,3 @@ UPDATE portti_bundle set startup = '{
     },
     "instanceProps": {}
 }' WHERE name = 'printout';
-
-UPDATE portti_bundle set config = '{
-    "backendConfiguration": {
-        "formatProducers": {
-            "image/png": "/?action_route=GetPreview&format=image/png&",
-            "application/pdf": "/?action_route=GetPreview&format=application/pdf&"
-        }
-    }
-}' WHERE name = 'printout';

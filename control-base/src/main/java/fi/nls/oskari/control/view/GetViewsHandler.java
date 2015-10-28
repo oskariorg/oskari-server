@@ -70,6 +70,7 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_DESCRIPTION, view.getDescription());
                 viewJson.put(KEY_LANG, view.getLang());
                 viewJson.put(KEY_ID, view.getId());
+                viewJson.put(KEY_UUID, view.getUuid());
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
                 viewJson.put(KEY_URL, view.getUrl());

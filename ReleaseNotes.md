@@ -1,5 +1,148 @@
 # Release Notes
 
+## 1.32.2
+
+Fixed an issue where unexpected zip contents could result in an infinity loop in CreateUserLayerHandler.  
+
+Error handling improved in analysis functionality. 
+
+## 1.32.1
+
+### database/flywaydb
+
+1.32.4 script goes through all registered WMTS-layers and resolves resourceURL information for them. 
+Updates the options database column when needed.
+
+### servlet-map
+
+URL-parameters are now properly handled again (fixes the link tool).
+
+### service-map
+
+If a capabilities document is saved in the database, it will no longer be overwritten with an empty document when capabilities fetch 
+ timeouts or in other problem scenarios.
+ 
+Capabilities fetch default timeout increased from 15 seconds to 30 seconds. Still configurable in oskari-ext.properties: 
+
+    # seconds for timeout
+    capabilities.timeout=30
+
+Improved feature id handling in query filters (fi.nls.oskari.wfs.WFSFilterBuilder)
+
+### service-spatineo-monitor
+
+SpatineoServalUpdateService now cleans up the datasource it uses correctly.
+
+### control-base
+
+SaveLayer now generates resourceURL information for WMTS-layers and saves them in layers options-field.
+
+GetMapLayers now include the original legendimage urls for password protected layers for users that have permission to edit layers. 
+This fixes an issue where legend image was overwritten with the proxy url when editing layers.
+
+GetLayerTile now supports style-specific legendimages.
+
+### servlet-printout
+
+Servlet-printout now uses options from layer JSON to get WMTS resourceUrl specific information (previously used the Openlayers2 specific JSON capabilities).
+
+Added initial support for WMTS-layers using KVP urls. 
+
+## 1.32
+
+### Geoserver REST client and setup webapp
+
+geoserver-ext/geoserver-rest-client now has a simple REST client for Geoserver. It's used by content-resources
+ GeoserverPopulator which can be used by a new webapp named "setup". This enables you to setup geoserver for myplaces,
+ analysis and userlayers with the projection that is needed and also adds datastores with the credentials and url as
+ configured in oskari-ext.properties.
+ 
+ To use the setup webapp copy the setup.war under oskari-server/webapp-setup/target/ to {JETTY_HOME}/webapps. Then access 
+ Jetty in http://localhost:8080/setup (default url, modify host/port if needed). It shows the geoserver specific properties 
+ needed for by the client and asks for projection. When it completes it shows a message indicating success/error and
+  properties that need updating. This also updates the baselayers in oskari_maplayer database table for projection,
+   geoserver url and credentials.
+
+The relevant properties are:
+    
+    geoserver.url=http://localhost:8080/geoserver
+    geoserver.user=admin
+    geoserver.password=geoserver
+
+After running the setup you should delete the setup.war under {JETTY_HOME}/webapps since access is not restricted in any way.
+Tested on Geoserver 2.7.1. Atleast on 2.5.2 the REST API is a bit different so this might not work correctly
+ (namespace for datastore is handled with uri instead of prefix to be more specific).
+
+### servlet-transport
+
+Improved error handling when client disconnects before WFSJob finishes. 
+References for jobs were not properly cleared which resulted in memory leaks.
+
+### control-example/OpenStreetMapSearchChannel
+
+The search channel should now properly handle coordinate transforms even if coordinate order is forced in geotools using 
+the system property "org.geotools.referencing.forceXY". When using projection that is affected by this setting and have 
+the system property, you need to define an override in oskari-ext.properties:
+
+    search.channel.OPENSTREETMAP_CHANNEL.forceXY=true
+
+Using the system property might affect other parts of Oskari as well. We will fix the issues as they are noticed. 
+
+### Database initialization
+
+Changed default views to show two OpenStreetMap layers. Also changed map coordinate reference system from EPSG:3067 to EPSG:4326.
+
+### service-base
+
+IOHelper now throws an IOException when getting a HTTP 401 response instead of return the string "401".
+
+### service-map
+
+fi.mml.map.mapwindow.service.db.CapabilitiesCacheService (and -IbatisImpl) has been moved to a new package: fi.nls.oskari.service.capabilities.
+CapabilitiesCacheService.getCapabilities() returns cached capabilities from the db or if not present queries the service and updates the database.
+The capabilities network request timeouts after 15 seconds by default. You can configure the timeout with oskari-ext.properties:
+
+    # seconds for timeout
+    capabilities.timeout=15
+ 
+The database table portti_capabilities_cache is replaced with oskari_capabilities_cache table. Capabilities are
+ mapped based on service url and type (WMS/WMTS) instead of layer ids to prevent duplication. The migration for 1.32 will
+ take some time since the cache is prepopulated from the services as a flyway migration. This depends on the amount of layers that need to be fetched.
+
+WMTS layer capabilities have been dropped from the oskari_maplayer table. The are now cached as the original XML in oskari_capabilities_cache.
+ This makes Openlayers 3 migration easier since the JSON was OL2 specific.
+
+Added time dimension support for WMS layers. WebMapService and JSONs for layers now include time parameter from layers getCapabilities.
+
+### control-base
+
+Removed fi.nls.oskari.util.GetWMSCapabilities. Functionality has been moved to
+ fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceIbatisImpl in service-map. 
+
+New action route 'GetLayerCapabilities' returns the cached capabilities for a registered layer (if the user has
+ permission for requested layer). This enables Oskari to get rid of Openlayers 2 specific JSON format for WMTS-layers.
+
+GetLayerTile no longer tries to connect a service when url (usually legendimage) is null or empty.
+
+### content-resources
+
+Moved DataSourceHelper to service-base. It's now a singleton.
+
+### servlet-transport
+
+Fixed an issue where map click handling assumed metric coordinate units.
+
+Improvements in the boundary tile check
+
+### Analysis  / aggregate method
+
+Resultset content format is changed. There is now one record for each property with aggregate function values
+
+## 1.31.2
+
+Fixes an issue where users myplaces layers were not tagged as "published" when used in an embedded maps. This 
+prevented using previously unpublished myplaces layers in embedded maps. 
+
 ## 1.31.1
 
 Fixed portti_view metadata column upgrade so it's part of the "empty db" setup so views can be inserted by DBHandler.

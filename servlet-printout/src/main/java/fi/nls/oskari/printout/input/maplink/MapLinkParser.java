@@ -71,6 +71,9 @@ public class MapLinkParser {
 
 			Integer zoomLevel = ((Number) stateInfo.get("zoom")).intValue();
 			zoomLevel += zoomOffset;
+            if(zoomLevel >= resolutions.length) {
+                zoomLevel = resolutions.length - 1;
+            }
 
 			mapLink.setZoom(zoomLevel);
 			mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
@@ -151,6 +154,9 @@ public class MapLinkParser {
 				.get("ZOOMLEVEL") : Integer.valueOf(
 				(String) values.get("ZOOMLEVEL"), 10);
 		zoomLevel += zoomOffset;
+        if(zoomLevel >= resolutions.length) {
+            zoomLevel = resolutions.length - 1;
+        }
 		mapLink.setZoom(zoomLevel);
 		mapLink.setScale(sr.getScaleFromResolution(resolutions[zoomLevel]));
 

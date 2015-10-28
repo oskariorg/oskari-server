@@ -29,9 +29,7 @@ import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -101,6 +99,11 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         handler.init();
     }
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
+    }
+
 
     @Test
     public void testIsSecure() {

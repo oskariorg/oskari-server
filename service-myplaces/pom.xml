@@ -6,7 +6,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.31.0</version>
+        <version>1.32.2</version>
     </parent>
 
     <groupId>fi.nls.oskari.service</groupId>
@@ -15,10 +15,6 @@
     <name>Myplaces Service</name>
 
     <dependencies>
-        <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>content-resources</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>

@@ -46,7 +46,7 @@ import java.util.Locale;
         basePackages="fi.nls.oskari")
 public class SpringConfig extends WebMvcConfigurerAdapter implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final Logger log = LogFactory.getLogger(SpringConfig.class);
+    private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
 
     @PostConstruct
     public void oskariInit() throws Exception {
@@ -94,15 +94,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         adapter.setArgumentResolvers(argumentResolvers);
 
     }
-/*
-    @Bean
-    public SpringTemplateEngine templateEngine(MessageSource messageSource, ServletContextTemplateResolver templateResolver) {
-        SpringTemplateEngine engine = new SpringTemplateEngine();
-        engine.setTemplateResolver(templateResolver);
-        engine.setMessageSource(messageSource);
-        return engine;
-    }
-    */
+
     @Bean
     public ViewResolver getExtensionHookViewResolver() {
         // OskariViewResolver extends InternalResourceViewResolver but let's missing views
@@ -130,7 +122,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
 
     @PreDestroy
     public void tearDown() {
-        log.info("Teardown");
+        LOG.info("Teardown");
         ActionControl.teardown();
         WebappHelper.teardown();
         cleanupIbatis();
@@ -166,9 +158,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
             ReflectionUtils.makeAccessible(factorySettings);
             factorySettings.set(null, null);
         } catch (final IllegalAccessException e) {
-            log.error(e, "Could not clean up the iBatis ResultObjectFactoryUtil ThreadLocal memory leak");
+            LOG.error(e, "Could not clean up the iBatis ResultObjectFactoryUtil ThreadLocal memory leak");
         } catch (final ClassNotFoundException e) {
-            log.error(e, "Did not need to clean up the IBATIS-540 memory leak, the relevant class wasn't around");
+            LOG.error(e, "Did not need to clean up the IBATIS-540 memory leak, the relevant class wasn't around");
         }
     }
 

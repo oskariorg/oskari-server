@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.map.mapwindow.service.db.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -9,7 +9,6 @@ import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.CapabilitiesCache;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -21,9 +20,14 @@ import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.*;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
+import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
+import fi.nls.oskari.wmts.domain.ResourceUrl;
+import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,7 +50,7 @@ public class SaveLayerHandler extends ActionHandler {
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
-    private static final Logger log = LogFactory.getLogger(SaveLayerHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(SaveLayerHandler.class);
     private static final String PARAM_LAYER_ID = "layer_id";
     private static final String PARAM_LAYER_NAME = "layerName";
     private static final String PARAM_LAYER_URL = "layerUrl";
@@ -79,7 +83,7 @@ public class SaveLayerHandler extends ActionHandler {
         // Skip WFS
         if(!ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             try {
-                cacheUpdated = updateCache(ml, params.getRequiredParam("version"));
+                cacheUpdated = updateCache(ml);
             } catch (ActionDeniedException ex) {
                 permissionProblem = true;
             }
@@ -93,11 +97,11 @@ public class SaveLayerHandler extends ActionHandler {
         }
         if (permissionProblem) {
             JSONHelper.putValue(layerJSON, "warn", "permissionFailure");
-            log.debug("Permission failure");
+            LOG.debug("Permission failure");
         } else if(!cacheUpdated && !ml.isCollection() && !OskariLayer.TYPE_WFS.equals(ml.getType()) ) {
             // Cache update failed, no biggie
             JSONHelper.putValue(layerJSON, "warn", "metadataReadFailure");
-            log.debug("Metadata read failure");
+            LOG.debug("Metadata read failure");
         }
         ResponseHelper.writeResponse(params, layerJSON);
     }
@@ -126,7 +130,7 @@ public class SaveLayerHandler extends ActionHandler {
                 mapLayerService.update(ml);
                 //TODO: WFS spesific property update
 
-                log.debug(ml);
+                LOG.debug(ml);
 
                 return ml.getId();
             }
@@ -211,7 +215,7 @@ public class SaveLayerHandler extends ActionHandler {
         return set;
     }
 
-    private boolean updateCache(OskariLayer ml, final String version) throws ActionException {
+    private boolean updateCache(OskariLayer ml) throws ActionException {
         if(ml == null) {
             return false;
         }
@@ -219,63 +223,27 @@ public class SaveLayerHandler extends ActionHandler {
             // just be happy for collection layers, nothing to do
             return true;
         }
-        if(version == null) {
+        // TODO: is version needed?
+        if(ml.getVersion() == null) {
             // check this here since it's not always required (for collection layers)
             throw new ActionParamsException("Version is required!");
         }
         // retrieve capabilities
-        final String url = getSingleLayerUrl(ml.getUrl());
-        CapabilitiesCache cc = null;
+        final String url = ml.getSimplifiedUrl(true);
+        //CapabilitiesCache cc = null;
         try {
-            cc = capabilitiesService.find(ml.getId());
-            boolean isNew = false;
-            if (cc == null) {
-                cc = new CapabilitiesCache();
-                cc.setLayerId(ml.getId());
-                isNew = true;
-            }
-            cc.setVersion(version);
-            if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
-                final String capabilitiesXML = GetWMSCapabilities.getResponse(url, ml.getUsername(), ml.getPassword());
-                if (capabilitiesXML.equals("401")) {
-                    throw new ActionDeniedException("Incorrect username or password");
-                }
-                cc.setData(capabilitiesXML);
-            }
-            else if(OskariLayer.TYPE_WMTS.equals(ml.getType())) {
-                // TODO: maybe it a bit more elegant solution
-                final String capabilitiesXML = IOHelper.getURL(url + "?service=WMTS&request=GetCapabilities", ml.getUsername(), ml.getPassword());
-                cc.setData(capabilitiesXML);
-            }
-
-            // update cache by updating db
-            if (isNew) {
-                capabilitiesService.insert(cc);
-            } else {
-                capabilitiesService.update(cc);
-            }
+            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(ml, true);
+            capabilitiesService.save(capabilities);
             // flush cache, otherwise only db is updated but code retains the old cached version
             WebMapServiceFactory.flushCache(ml.getId());
         } catch (Exception ex) {
             if(ex instanceof ActionException) {
                 throw (ActionException)ex;
             }
-            log.info(ex, "Error updating capabilities: ", cc, "from URL:", url);
+            LOG.info(ex, "Error updating capabilities from URL:", url);
             return false;
         }
         return true;
-    }
-
-    private String getSingleLayerUrl(String wmsUrl) {
-        if(wmsUrl == null) {
-            return null;
-        }
-        //check if comma separated urls
-        if (wmsUrl.indexOf(",http:") > 0) {
-            wmsUrl = wmsUrl.substring(0, wmsUrl.indexOf(",http:"));
-        }
-        return wmsUrl;
-
     }
 
     private void handleRequestToMapLayer(final ActionParameters params, OskariLayer ml) throws ActionException {
@@ -306,6 +274,8 @@ public class SaveLayerHandler extends ActionHandler {
         InspireTheme theme = inspireThemeService.find(params.getHttpParam("inspireTheme", -1));
         ml.addInspireTheme(theme);
 
+        ml.setVersion(params.getHttpParam("version"));
+
         ml.setBaseMap(ConversionHelper.getBoolean(params.getHttpParam("isBase"), false));
 
         if(ml.isCollection()) {
@@ -316,8 +286,9 @@ public class SaveLayerHandler extends ActionHandler {
         }
 
         ml.setName(params.getRequiredParam(PARAM_LAYER_NAME, ERROR_MANDATORY_FIELD_MISSING + PARAM_LAYER_NAME));
-        final String url = validateUrl(params.getRequiredParam(PARAM_LAYER_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_LAYER_URL));
+        final String url = params.getRequiredParam(PARAM_LAYER_URL, ERROR_MANDATORY_FIELD_MISSING + PARAM_LAYER_URL);
         ml.setUrl(url);
+        validateUrl(ml.getSimplifiedUrl(true));
 
         ml.setOpacity(params.getHttpParam("opacity", ml.getOpacity()));
         ml.setStyle(params.getHttpParam("style", ml.getStyle()));
@@ -327,7 +298,6 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setLegendImage(params.getHttpParam("legendImage", ml.getLegendImage()));
         ml.setMetadataId(params.getHttpParam("metadataId", ml.getMetadataId()));
         ml.setTileMatrixSetId(params.getHttpParam("tileMatrixSetId"));
-        ml.setTileMatrixSetData(params.getHttpParam("tileMatrixSetData"));
 
         final String gfiContent = request.getParameter("gfiContent");
         if (gfiContent != null) {
@@ -354,14 +324,23 @@ public class SaveLayerHandler extends ActionHandler {
         ml.setUsername(params.getHttpParam("username", ml.getUsername()));
         ml.setPassword(params.getHttpParam("password", ml.getPassword()));
 
-        String attributes = (String)params.getHttpParam("attributes");
+        String attributes = params.getHttpParam("attributes");
         if (attributes == null || attributes.equals("")) {
             attributes = "{}";
         }
 
         ml.setAttributes(JSONHelper.createJSONObject(attributes));
 
-        ml.setSrs_name(params.getHttpParam("srs_name",ml.getSrs_name()));
+        String parameters = params.getHttpParam("params");
+        if (parameters == null || parameters.equals("")) {
+            parameters = "{}";
+        }
+        if (!parameters.startsWith("{")) {
+            parameters = "{time="+parameters+"}";
+        }
+        ml.setParams(JSONHelper.createJSONObject(parameters));
+
+        ml.setSrs_name(params.getHttpParam("srs_name", ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("version",ml.getVersion()));
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
@@ -479,7 +458,21 @@ public class SaveLayerHandler extends ActionHandler {
 
     private void handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
         ml.setTileMatrixSetId(params.getHttpParam("matrixSetId", ml.getTileMatrixSetId()));
-        ml.setTileMatrixSetData(params.getHttpParam("matrixSet", ml.getTileMatrixSetData()));
+
+        try {
+            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(ml, true);
+            WMTSCapabilities caps = new WMTSCapabilitiesParser().parseCapabilities(capabilities.getData());
+            WMTSCapabilitiesLayer layer = caps.getLayer(ml.getName());
+            ResourceUrl resUrl = layer.getResourceUrlByType("tile");
+            if(resUrl != null) {
+                JSONHelper.putValue(ml.getOptions(), "requestEncoding", "REST");
+                JSONHelper.putValue(ml.getOptions(), "format", resUrl.getFormat());
+                JSONHelper.putValue(ml.getOptions(), "urlTemplate", resUrl.getTemplate());
+            }
+
+        } catch (Exception ex) {
+            LOG.warn(ex, "Unable to parse capabilities for layer", ml);
+        }
     }
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
@@ -498,7 +491,7 @@ public class SaveLayerHandler extends ActionHandler {
     private String validateUrl(final String url) throws ActionParamsException {
         try {
             // check that it's a valid url by creating an URL object...
-            new URL(getSingleLayerUrl(url));
+            new URL(url);
         } catch (MalformedURLException e) {
             throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_LAYER_URL);
         }
@@ -537,7 +530,7 @@ public class SaveLayerHandler extends ActionHandler {
 
         OskariLayerResource res = new OskariLayerResource(ml);
         // insert permissions
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_LAYER, "for roles:", externalIds);
         for (long externalId : externalIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -552,7 +545,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_PUBLISH, "for roles:", publishRoleIds);
         for (long externalId : publishRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -561,7 +554,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_DOWNLOAD, "for roles:", downloadRoleIds);
         for (long externalId : downloadRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
@@ -570,7 +563,7 @@ public class SaveLayerHandler extends ActionHandler {
             res.addPermission(permission);
         }
 
-        log.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
+        LOG.debug("Adding permission", Permissions.PERMISSION_TYPE_VIEW_PUBLISHED, "for roles:", viewEmbeddedRoleIds);
         for (long externalId : viewEmbeddedRoleIds) {
             Permission permission = new Permission();
             permission.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);

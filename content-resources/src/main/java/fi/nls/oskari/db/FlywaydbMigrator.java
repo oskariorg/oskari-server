@@ -32,6 +32,10 @@ public class FlywaydbMigrator {
             flyway.setBaselineVersionAsString("0.1");
             flyway.baseline();
         }
+        if(PropertyUtil.getOptional("db.flyway.autorepair", false)) {
+            // https://github.com/flyway/flyway/issues/253
+            flyway.repair();
+        }
         flyway.migrate();
     }
 

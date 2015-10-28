@@ -1,6 +1,7 @@
 package flyway.oskari;
 
 import fi.nls.oskari.db.BundleHelper;
+import fi.nls.oskari.db.ViewHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 

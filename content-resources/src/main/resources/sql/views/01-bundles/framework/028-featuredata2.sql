@@ -19,3 +19,7 @@ UPDATE portti_bundle set startup = '{
     },
     "instanceProps" : {}
 }' WHERE name = 'featuredata2';
+
+UPDATE portti_bundle set config = '{
+    "selectionTools": true
+}' WHERE name = 'featuredata2';

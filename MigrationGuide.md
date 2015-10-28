@@ -1,5 +1,15 @@
 # Migration guide
 
+## 1.32.0
+
+### content-resources/flyway
+
+Flyway checksum validation fails if line-endings change in files for example between development environments:
+https://github.com/flyway/flyway/issues/253. 
+To work around this, oskari-ext.properties can be used to autorepair the checksums: 
+
+    db.flyway.autorepair=true
+
 ## 1.31.0
 
 ### servlet-map replacement

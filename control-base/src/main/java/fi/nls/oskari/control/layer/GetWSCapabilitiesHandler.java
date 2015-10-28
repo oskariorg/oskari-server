@@ -9,11 +9,9 @@ import fi.nls.oskari.util.*;
 import fi.nls.oskari.wms.GetGtWMSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**

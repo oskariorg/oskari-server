@@ -73,6 +73,9 @@
                 "lastName": "Oskari",
                 "nickName": "Ozkari",
                 "roles": [{
+                  "id": 1,
+                  "name": "User"
+                },{
                   "id": 66,
                   "name": "Administrator"
                 }],

@@ -73,7 +73,11 @@ public class MapLink {
 				return self;
 			} else if (minScale == null && scale >= maxScale) {
 				return self;
+			} else if (minScale == null) {
+				return self;
 			} else if (minScale >= scale && maxScale == null) {
+				return self;
+			} else if (maxScale == null) {
 				return self;
 			} else if (minScale >= scale && scale >= maxScale) {
 				return self;

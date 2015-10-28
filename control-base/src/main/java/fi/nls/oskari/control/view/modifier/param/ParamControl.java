@@ -75,6 +75,9 @@ public class ParamControl {
      * @return
      */
 	public static Set<String> getHandlerKeys() {
+        if (actions.isEmpty()) {
+            addDefaultControls();
+        }
 	    return actions.keySet();
 	}
 
@@ -83,6 +86,9 @@ public class ParamControl {
      * @see ViewModifierManager
      */
     public static void addDefaultControls() {
+        if (!actions.isEmpty()) {
+            return;
+        }
         final Map<String, ParamHandler> handlers = ViewModifierManager.getModifiersOfType(ParamHandler.class);
         for(String key : handlers.keySet()) {
             addHandler(key, handlers.get(key));

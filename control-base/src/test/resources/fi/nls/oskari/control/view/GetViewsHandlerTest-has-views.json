@@ -1,6 +1,7 @@
 {
     "views" : [{
         "id":123,
+        "uuid" : "aaaa-bbbbb-cccc",
         "pubDomain":"paikkis.fi",
         "description":"test view",
         "name":"test",

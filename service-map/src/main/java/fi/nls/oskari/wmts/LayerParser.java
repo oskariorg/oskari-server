@@ -6,6 +6,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wms.WMSStyle;
+import fi.nls.oskari.wmts.domain.ResourceUrl;
 import fi.nls.oskari.wmts.domain.TileMatrixLimits;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.apache.axiom.om.OMElement;
@@ -58,6 +59,22 @@ public class LayerParser {
         while(infoFormatIterator.hasNext()) {
             OMElement elem = infoFormatIterator.next();
             result.addInfoFormat(elem.getText());
+        }
+
+        // setup resource urls
+/*
+        <ResourceURL format="image/jpeg" resourceType="tile"
+        template="http://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/ortokuva_vaaravari/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg" />
+*/
+        Iterator<OMElement> urlIterator = capabilitiesLayer.getChildrenWithLocalName("ResourceURL");
+        while(urlIterator.hasNext()) {
+            OMElement elem = urlIterator.next();
+            Map<String, String> attrs = XmlHelper.getAttributesAsMap(elem);
+            ResourceUrl url = new ResourceUrl();
+            url.setFormat(attrs.get("format"));
+            url.setType(attrs.get("resourceType"));
+            url.setTemplate(attrs.get("template"));
+            result.addResourceUrl(url);
         }
 
         // setup matrix link and limits

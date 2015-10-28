@@ -273,7 +273,10 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 	public void setLon(String lon) {
 		this.lon = lon;
-	}	
+	}
+	public void setLon(double lon) {
+		this.lon = "" + lon;
+	}
 	public String getWestBoundLongitude() {
 		return westBoundLongitude;
 	}
@@ -303,6 +306,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 	public void setLat(String lat) {
 		this.lat = lat;
+	}
+	public void setLat(double lat) {
+		this.lat = "" + lat;
 	}
 	public String getLocationName() {
 		return locationName;

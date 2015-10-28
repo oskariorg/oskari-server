@@ -35,7 +35,7 @@ public class ViewHelper {
 
     public static long insertView(Connection conn, final String viewfile) throws IOException, SQLException {
         log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(DBHandler.class.getResourceAsStream("/json/views/" + viewfile));
+        String json = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/views/" + viewfile));
         JSONObject viewJSON = JSONHelper.createJSONObject(json);
         log.debug(viewJSON);
         try {

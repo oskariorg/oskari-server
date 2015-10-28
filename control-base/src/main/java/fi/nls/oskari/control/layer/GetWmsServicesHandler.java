@@ -134,8 +134,6 @@ public class GetWmsServicesHandler extends ActionHandler {
 
                 mapProperties.put("layerType", ml.getType());
                 mapProperties.put("tileMatrixSetId", ml.getTileMatrixSetId());
-                mapProperties.put("tileMatrixSetData", ml
-                        .getTileMatrixSetData());
 /*
                 mapProperties.put("wms_dcp_http", ml.getWms_dcp_http());
                 mapProperties.put("wms_parameter_layers", ml
