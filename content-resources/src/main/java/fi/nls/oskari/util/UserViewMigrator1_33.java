@@ -82,6 +82,13 @@ public class UserViewMigrator1_33 {
                     updBundle.setState(b.getState());
                 }
             }
+
+            // reset sequence, shouldn't affect order but removes possible duplicates
+            int seqNo = 0;
+            for(Bundle b : updated.getBundles()) {
+                b.setSeqNo(++seqNo);
+            }
+
             service.updatePublishedView(updated);
             updatedViewCount++;
             LOG.info("Updated view:", view.getId(), "Updates count:", updatedViewCount);
