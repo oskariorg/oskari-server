@@ -42,11 +42,11 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
     
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        JSONObject response = getIndicatorMetadataJSON();
+        JSONObject response = getIndicatorsMetadataJSON();
         ResponseHelper.writeResponse(ap, response);
     }
     
-    public JSONObject getIndicatorMetadataJSON() throws ActionException {
+    public JSONObject getIndicatorsMetadataJSON() throws ActionException {
         final String cachedData = JedisManager.get(CACHE_KEY);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {

@@ -13,10 +13,24 @@ import java.util.Collection;
 public class StatisticalIndicatorSelector {
     private String id;
     private String value = null;
-    private Collection<String> allowedValues;
+    private Collection<String> allowedValues = null;
+    /**
+     * Use this in selections to be sent to the frontend.
+     * @param id
+     * @param value
+     */
     public StatisticalIndicatorSelector(String id, Collection<String> allowedValues) {
         this.id = id;
         this.allowedValues = allowedValues;
+    }
+    /**
+     * Use this in selections received from the frontend.
+     * @param id
+     * @param value
+     */
+    public StatisticalIndicatorSelector(String id, String value) {
+        this.id = id;
+        this.value = value;
     }
     public String getId() {
         return id;

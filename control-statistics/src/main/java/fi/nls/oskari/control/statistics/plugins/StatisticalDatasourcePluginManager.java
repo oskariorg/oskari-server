@@ -70,6 +70,13 @@ public class StatisticalDatasourcePluginManager {
         return plugins.values();
     }
     /**
+     * 
+     * @return One plugin.
+     */
+    public StatisticalDatasourcePlugin getPlugin(String id) {
+        return plugins.get(id);
+    }
+    /**
      * Used for tests.
      */
     public void reset() {

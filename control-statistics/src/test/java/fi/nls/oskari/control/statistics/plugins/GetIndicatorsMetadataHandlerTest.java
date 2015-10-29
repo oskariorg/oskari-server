@@ -59,7 +59,7 @@ public class GetIndicatorsMetadataHandlerTest {
     public void testGettingIndicatorMetadata() throws ActionException, JSONException {
         GetIndicatorsMetadataHandler handler = new GetIndicatorsMetadataHandler();
         handler.init();
-        JSONObject result = handler.getIndicatorMetadataJSON();
+        JSONObject result = handler.getIndicatorsMetadataJSON();
         JSONObject sotkaIndicatorsInfo = result.getJSONObject("fi.nls.oskari.control.statistics.plugins."
                 + "sotka.SotkaStatisticalDatasourcePlugin");
         JSONObject sotkaIndicators = sotkaIndicatorsInfo.getJSONObject("indicators");
