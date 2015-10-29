@@ -108,7 +108,10 @@
                     }, {
                         "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"
                     }, {
-                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin"
+                        "id": "Oskari.mapframework.mapmodule.MarkersPlugin",
+                        "config" : {
+                            "markerButton" : false
+                        }
                     }, {
                         "id": "Oskari.mapframework.mapmodule.VectorLayerPlugin"
                     }
@@ -148,6 +151,8 @@
             }
         },
         { "id" : "publishedstatehandler" },
+        { "id" : "drawtools_ol3" },
+        { "id" : "routingService" },
         { "id" : "rpc" }
     ]
 }
