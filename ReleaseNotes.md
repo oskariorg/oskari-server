@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.33.1
+
+Legend image handling fixed for layers that require credentials. Style-specific legends are now used correctly when proxying.
+
 ## 1.33
 
 ### service-routing (POC)

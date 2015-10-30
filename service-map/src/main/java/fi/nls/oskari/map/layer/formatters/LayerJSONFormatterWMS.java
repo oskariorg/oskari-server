@@ -87,7 +87,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             final JSONArray styles;
             if (useProxy) {
                 // construct a modified styles list
-                final JSONArray styleList = capabilities.optJSONArray("styles");
+                final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
                 styles = new JSONArray();
                 // replace legendimage urls
                 if(styleList != null) {
@@ -104,9 +104,9 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                 }
             }
             else {
-                styles = capabilities.optJSONArray("styles");
+                styles = capabilities.optJSONArray(KEY_STYLES);
             }
-            JSONHelper.putValue(layerJson, "styles", styles);
+            JSONHelper.putValue(layerJson, KEY_STYLES, styles);
 
             final String globalLegend = layer.getLegendImage();
             // if we have a global legend url, setup the JSON
@@ -144,7 +144,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
         JSONHelper.putValue(capabilities, "isQueryable", wms.isQueryable());
         List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
-        JSONHelper.putValue(capabilities, "styles", new JSONArray(styles));
+        JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
 
         JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, "formats", formats);
