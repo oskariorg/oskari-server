@@ -66,7 +66,7 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
         }
     }
 
-    private String getCaps(String url, Connection conn)
+    String getCaps(String url, Connection conn)
             throws SQLException {
         // only process wms-layers
         final String sql = "SELECT data FROM oskari_capabilities_cache WHERE layertype='wmslayer' AND url=?";
@@ -81,7 +81,7 @@ public class V1_33_1_1__populate_preparsed_layer_capabilities implements JdbcMig
         }
     }
 
-    private List<OskariLayer> getLayers(Connection conn)
+    List<OskariLayer> getLayers(Connection conn)
             throws SQLException {
         List<OskariLayer> layers = new ArrayList<>();
         // only process wms-layers
