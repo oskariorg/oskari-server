@@ -9,22 +9,6 @@
             <Title>Default</Title>
             <FeatureTypeStyle>
                 <Rule>
-                    <PointSymbolizer>
-                        <Graphic>
-                            <Mark>
-                                <WellKnownName>triangle</WellKnownName>
-                                <Fill>
-                                    <CssParameter name="fill">#ff0000</CssParameter>
-                                    <CssParameter name="fill-opacity">0.5</CssParameter>
-                                </Fill>
-                                <Stroke>
-                                    <CssParameter name="stroke">#ffffff</CssParameter>
-                                    <CssParameter name="stroke-width">1</CssParameter>
-                                </Stroke>
-                            </Mark>
-                            <Size>16</Size>
-                        </Graphic>
-                    </PointSymbolizer>
                     <LineSymbolizer>
                         <Stroke>
                             <CssParameter name="stroke">#0000ff</CssParameter>

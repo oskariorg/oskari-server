@@ -181,19 +181,7 @@ public class FERequestTemplate {
             }
 
         }
-
-        if (featureName != null) {
-            XPathExpression expr = xpath
-                    .compile("//*[@typeNames='tns:[FEATURENAME]']");
-
-            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
-            if (nd != null) {
-                nd.getAttributes().getNamedItem("typeNames")
-                        .setTextContent("tns:" + featureName);
-            }
-
-        }
-        if (featureName != null && featurePrefix != null) {
+        if (featureName != null && featurePrefix != null && !featurePrefix.isEmpty()) {
             XPathExpression expr = xpath
                     .compile("//*[@typeNames='[FEATURENAME]']");
 
@@ -202,8 +190,35 @@ public class FERequestTemplate {
                 nd.getAttributes().getNamedItem("typeNames")
                         .setTextContent(featurePrefix+ ":" + featureName);
             }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@typeName='[FEATURENAME]']");
 
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("typeName")
+                        .setTextContent(featurePrefix + ":" + featureName);
+            }
         }
+
+        else if (featureName != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@typeNames='tns:[FEATURENAME]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("typeNames")
+                        .setTextContent("tns:" + featureName);
+            }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@typeName='[FEATURENAME]']");
+
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("typeName")
+                        .setTextContent(featureName);
+            }
+        }
+
 
         String addns = doc.getDocumentElement().getAttribute("xmlns:tns");
 
@@ -211,7 +226,6 @@ public class FERequestTemplate {
             doc.getDocumentElement().removeAttribute("xmlns:tns");
             doc.getDocumentElement().setAttribute("xmlns:"+featurePrefix,featureNs);
         }
-
         if (maxcount != null) {
             XPathExpression expr = xpath
                     .compile("//*[@count='[MAXCOUNT]']");
@@ -220,6 +234,25 @@ public class FERequestTemplate {
             if (nd != null) {
                 nd.getAttributes().getNamedItem("count")
                         .setTextContent(maxcount);
+            }
+            XPathExpression expr2 = xpath
+                    .compile("//*[@maxFeatures='[MAXCOUNT]']");
+
+            Node nd2 = (Node) expr2.evaluate(doc, XPathConstants.NODE);
+            if (nd2 != null) {
+                nd2.getAttributes().getNamedItem("maxFeatures")
+                        .setTextContent(maxcount);
+            }
+        }
+
+        if (featureNs != null) {
+            XPathExpression expr = xpath
+                    .compile("//*[@targetNamespace='[ADD_NSURI]']");
+
+            Node nd = (Node) expr.evaluate(doc, XPathConstants.NODE);
+            if (nd != null) {
+                nd.getAttributes().getNamedItem("targetNamespace")
+                        .setTextContent(featureNs);
             }
 
         }

@@ -3,6 +3,7 @@ package fi.nls.oskari.work;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSImage;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.worker.AbstractJob;
@@ -84,6 +85,9 @@ public abstract class OWSMapLayerJob extends AbstractJob<String> {
     protected List<List<Object>> geomValuesList;
 
     protected WFSImage image = null;
+
+    public static final int FE_READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.wfs.read.timeout", 30000);
+
 
 
     protected static final List<List<Object>> EMPTY_LIST = new ArrayList();
