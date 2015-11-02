@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.33.2
+
+Re-run fixed version of a flyway migration pre-populating capabilities information in the database (oskari_maplayer.capabilities).
+ The previous script didn't work correctly for layers having capital letters in the URL since the URL is normalized to 
+ lowercase in oskari_capabilities_cache.
+
 ## 1.33.1
 
 Legend image handling fixed for layers that require credentials. Style-specific legends are now used correctly when proxying.
