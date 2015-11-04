@@ -8,6 +8,7 @@ import fi.nls.oskari.fe.input.XMLInputProcessor;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
 import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.wfs.WFSFilter;
@@ -192,6 +193,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if(parseConfig != null){
             ELF_path_parse_worker worker = new ELF_path_parse_worker(parseConfig);
             featureEngine.getRecipe().setParseWorker(worker);
+            WFS11_path_parse_worker wfs11worker = new WFS11_path_parse_worker(parseConfig);
+            featureEngine.getRecipe().setWFS11ParseWorker(wfs11worker);
         }
 
         final FeatureEngine engine = featureEngine;
@@ -287,8 +290,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             /* Backend HTTP Executor */
             final HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, IOHelper.getConnectionTimeoutMs());
-            HttpConnectionParams.setSoTimeout(httpParams, IOHelper.getReadTimeoutMs());
+            HttpConnectionParams.setConnectionTimeout(httpParams, this.FE_READ_TIMEOUT_MS); //IOHelper.getConnectionTimeoutMs());
+            HttpConnectionParams.setSoTimeout(httpParams, this.FE_READ_TIMEOUT_MS);
             DefaultHttpClient backendHttpClient = new DefaultHttpClient(httpParams);
             try {
                 HttpHost backendHttpHost = new HttpHost(url.getHost(),

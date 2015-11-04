@@ -7,6 +7,7 @@ import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.xml.Configuration;
 
@@ -27,6 +28,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     protected final List<Pair<Resource, Object>> O_linkProperties = new ArrayList<Pair<Resource, Object>>();
     protected final List<Pair<Resource, String>> O_geometryProperties = new ArrayList<Pair<Resource, String>>();
     protected ELF_path_parse_worker parseWorker = null;
+    protected WFS11_path_parse_worker wfs11ParseWorker = null;
 
     public static abstract class GML32 extends JacksonParserRecipe {
         public GML32() {
@@ -82,6 +84,9 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
     public void setParseWorker(ELF_path_parse_worker worker) {
         this.parseWorker = worker;
+    }
+    public void setWFS11ParseWorker(WFS11_path_parse_worker worker) {
+        this.wfs11ParseWorker = worker;
     }
 
     public void setLenient(boolean l) {

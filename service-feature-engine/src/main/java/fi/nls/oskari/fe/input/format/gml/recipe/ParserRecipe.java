@@ -7,6 +7,7 @@ import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.xml.namespace.QName;
@@ -52,4 +53,5 @@ public interface ParserRecipe {
     public Resource xsd(XSDDatatype xsd);
 
     public void setParseWorker(ELF_path_parse_worker worker);
+    public void setWFS11ParseWorker(WFS11_path_parse_worker worker);
 }
