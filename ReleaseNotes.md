@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.34
+
+### webapp-map
+
+Moved override JSP-files from webapp/jsp to webapp/WEB-INF/jsp as this is the default override location for JSP-files.
+
 ## 1.33.2
 
 Re-run fixed version of a flyway migration pre-populating capabilities information in the database (oskari_maplayer.capabilities).
