@@ -126,7 +126,21 @@
                 "selectedLayers": []
             }
         },
-        { "id" : "infobox" },
+        {
+            "id" : "infobox",
+            "startup" : {
+                "title": "Infobox",
+                "bundleinstancename": "infobox",
+                "bundlename": "infobox",
+                "metadata": {
+                    "Import-Bundle": {
+                        "infobox": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        }
+                    }
+                }
+            }
+        },
         {
             "id" : "toolbar",
             "config" : {
