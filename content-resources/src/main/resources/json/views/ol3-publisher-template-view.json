@@ -143,6 +143,18 @@
         },
         {
             "id" : "toolbar",
+            "startup" : {
+                "title": "Toolbar",
+                "bundleinstancename": "toolbar",
+                "bundlename": "toolbar",
+                "metadata": {
+                    "Import-Bundle": {
+                        "toolbar": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        }
+                    }
+                }
+            },
             "config" : {
                 "basictools": {
                     "measurearea": false,
