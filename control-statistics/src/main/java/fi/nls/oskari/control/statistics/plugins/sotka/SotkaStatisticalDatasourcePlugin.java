@@ -2,6 +2,9 @@ package fi.nls.oskari.control.statistics.plugins.sotka;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.statistics.plugins.APIException;
@@ -23,6 +26,11 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private SotkaSpecificIndicatorParser specificIndicatorParser = null;
     // Used in testing to not to fetch all the indicators completely.
     public static boolean testMode = false;
+
+    /**
+     * For scheduling the cache refresh for the plugin list.
+     */
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public SotkaStatisticalDatasourcePlugin() {
         indicatorsParser = new SotkaIndicatorsParser();
@@ -74,6 +82,14 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init() {
+        // Refreshing the cache.
+        this.getIndicators();
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                SotkaStatisticalDatasourcePlugin.this.getIndicators();
+            }
+        }, 8, 8, TimeUnit.HOURS);
     }
 
 }

@@ -185,7 +185,7 @@ public class SotkaRequest {
     /**
      * This method returning json from csv data getJsonFromCSV(String csv)
      *
-     * @param csv intput csv data
+     * @param csv input csv data
      * @return json
      */
     String getJsonFromCSV(final String csv) {

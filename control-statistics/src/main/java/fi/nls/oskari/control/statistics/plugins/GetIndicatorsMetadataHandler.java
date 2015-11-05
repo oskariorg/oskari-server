@@ -3,6 +3,9 @@ package fi.nls.oskari.control.statistics.plugins;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +16,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -35,9 +39,32 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      */
     private static final StatisticalDatasourcePluginManager pluginManager = new StatisticalDatasourcePluginManager();
     
+    /**
+     * For scheduling the cache refresh for the indicator lists.
+     */
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     @Override
     public void init() {
         pluginManager.init();
+
+        // Refreshing the cache at boot.
+        try {
+            this.requestIndicatorsMetadataJSON();
+        } catch (ActionException e) {
+            e.printStackTrace();
+        }
+        // Refreshing in the background for every 8 hours also.
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GetIndicatorsMetadataHandler.this.requestIndicatorsMetadataJSON();
+                } catch (ActionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 8, 8, TimeUnit.HOURS);
     }
     
     @Override
@@ -46,15 +73,12 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
         ResponseHelper.writeResponse(ap, response);
     }
     
-    public JSONObject getIndicatorsMetadataJSON() throws ActionException {
-        final String cachedData = JedisManager.get(CACHE_KEY);
-        if (cachedData != null && !cachedData.isEmpty()) {
-            try {
-                return new JSONObject(cachedData);
-            } catch (JSONException e) {
-                // Failed serializing. Skipping the cache.
-            }
-        }
+    /**
+     * Requests new data skipping the cache. Used for cache refresh before expiration.
+     * @return
+     * @throws ActionException
+     */
+    private JSONObject requestIndicatorsMetadataJSON() throws ActionException {
         JSONObject response = new JSONObject();
         Collection<StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
         for (StatisticalDatasourcePlugin plugin : plugins) {
@@ -78,6 +102,18 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
         // is pretty heavy operation.
         JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
+    }
+    
+    public JSONObject getIndicatorsMetadataJSON() throws ActionException {
+        final String cachedData = JedisManager.get(CACHE_KEY);
+        if (cachedData != null && !cachedData.isEmpty()) {
+            try {
+                return new JSONObject(cachedData);
+            } catch (JSONException e) {
+                // Failed serializing. Skipping the cache.
+            }
+        }
+        return requestIndicatorsMetadataJSON();
     }
 
     private JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
