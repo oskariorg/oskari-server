@@ -27,11 +27,6 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     // Used in testing to not to fetch all the indicators completely.
     public static boolean testMode = false;
 
-    /**
-     * For scheduling the cache refresh for the plugin list.
-     */
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
     public SotkaStatisticalDatasourcePlugin() {
         indicatorsParser = new SotkaIndicatorsParser();
         specificIndicatorParser = new SotkaSpecificIndicatorParser();
@@ -82,14 +77,6 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init() {
-        // Refreshing the cache.
-        this.getIndicators();
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                SotkaStatisticalDatasourcePlugin.this.getIndicators();
-            }
-        }, 8, 8, TimeUnit.HOURS);
     }
 
 }
