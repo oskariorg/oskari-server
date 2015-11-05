@@ -102,7 +102,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
     private JSONObject toJSON(Map<String, IndicatorValue> values) throws JSONException {
         JSONObject json = new JSONObject();
         for (Entry<String, IndicatorValue> entry : values.entrySet()) {
-            json.put(entry.getKey(), entry.getValue());
+            entry.getValue().putToJSONObject(json, entry.getKey());
         }
         return json;
     }
