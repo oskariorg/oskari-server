@@ -6,6 +6,11 @@
 
 Moved override JSP-files from webapp/jsp to webapp/WEB-INF/jsp as this is the default override location for JSP-files.
 
+### servlet-map
+
+Disabled X-Frame-Options header set by spring security by default. It prevented published maps from loading when used
+ directly from Jetty without front-proxy (for example localhost) to override this behaviour.
+
 ## 1.33.2
 
 Re-run fixed version of a flyway migration pre-populating capabilities information in the database (oskari_maplayer.capabilities).
