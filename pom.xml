@@ -176,6 +176,12 @@
                 <artifactId>oskari-control-admin</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+			
+			<dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-control-users</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
@@ -977,6 +983,7 @@
         <module>control-statistics</module>
         <module>content-resources</module>
         <module>control-routing</module>
+		<module>control-users</module>
 
         <!-- oskari map -->
         <module>servlet-map</module>
