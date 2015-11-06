@@ -28,9 +28,9 @@ public class SotkaIndicatorsParserTest {
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();
         Map<String, String> layerMap = new HashMap<>();
-        layerMap.put("Kunta", "OskariKunta");
-        layerMap.put("Maakunta", "OskariMaakunta");
-        layerMap.put("Maa", "OskariMaa");
+        layerMap.put("kunta", "OskariKunta");
+        layerMap.put("maakunta", "OskariMaakunta");
+        layerMap.put("maa", "OskariMaa");
         List<SotkaIndicator> parsedObject = parser.parse(testResponse, layerMap);
         assertTrue("The parsed object did not match the expected first objects.",
                 parsedObject.toString().startsWith(

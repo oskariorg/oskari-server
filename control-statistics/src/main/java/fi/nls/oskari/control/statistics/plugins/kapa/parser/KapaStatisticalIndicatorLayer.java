@@ -16,10 +16,12 @@ public class KapaStatisticalIndicatorLayer implements StatisticalIndicatorLayer 
     
     public KapaStatisticalIndicatorLayer(String layerName,
             IndicatorValueType valueType,
-            KapaIndicatorValuesFetcher indicatorValuesFetcher) {
+            KapaIndicatorValuesFetcher indicatorValuesFetcher,
+            String indicatorId) {
         this.layerName = layerName;
         this.valueType = valueType;
         this.indicatorValuesFetcher = indicatorValuesFetcher;
+        this.indicatorId = indicatorId;
     }
     
     @Override
