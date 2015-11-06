@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.statistics;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.AfterClass;
@@ -57,8 +58,8 @@ public class GetRegionInfoHandlerTest {
         GetRegionInfoHandler handler = new GetRegionInfoHandler();
         handler.init();
         JSONObject result = handler.getRegionInfoJSON("oskari:kunnat2013", "005");
-        assertEquals("{\"name\":\"Alajärvi\"}",
-                result.toString());
+        assertEquals("Alajärvi",
+                result.getJSONObject("005").getString("name").toString());
     }
 }
 

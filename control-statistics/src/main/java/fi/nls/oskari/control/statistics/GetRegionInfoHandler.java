@@ -25,7 +25,8 @@ import javax.xml.stream.XMLStreamException;
  * Returns the region information.
  * Sample response:
  * {
- * "name": "Ikaalinen"
+ * "005": {
+ *   "name": "Ikaalinen"
  * }
  */
 @OskariActionRoute("GetRegionInfo")
@@ -39,7 +40,7 @@ public class GetRegionInfoHandler extends ActionHandler {
     
     public void handleAction(ActionParameters ap) throws ActionException {
         final String layerId = ap.getRequiredParam("layer_id");
-        final String regionId = ap.getRequiredParam("region_id");
+        final String regionId = ap.getHttpParam("region_id");
         JSONObject response = getRegionInfoJSON(layerId, regionId);
         ResponseHelper.writeResponse(ap, response);
     }
@@ -47,8 +48,8 @@ public class GetRegionInfoHandler extends ActionHandler {
     /**
      * 
      * @param layerId For example: "oskari:kunnat2013"
-     * @param regionId: For example: "005"
-     * @return For example: {"name": "Alajärvi"}
+     * @param regionId: For example: "005", or null
+     * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
     public JSONObject getRegionInfoJSON(String layerId, String regionId) throws ActionException {
@@ -86,8 +87,10 @@ public class GetRegionInfoHandler extends ActionHandler {
                 xmlGeoserverResponseWithAllRegions = IOHelper.getURL(url);
                 List<RegionCodeNamePair> result = WfsXmlParser.parse(xmlGeoserverResponseWithAllRegions, idTag, nameTag);
                 for (RegionCodeNamePair codeName : result) {
-                    if (codeName.getCode().equals(regionId)) {
-                        response.put("name", codeName.getName());
+                    if (regionId == null || codeName.getCode().equals(regionId)) {
+                        JSONObject regionJSON = new JSONObject();
+                        regionJSON.put("name", codeName.getName());
+                        response.put(codeName.getCode(), regionJSON);
                     }
                 }
             } catch (IOException e) {
