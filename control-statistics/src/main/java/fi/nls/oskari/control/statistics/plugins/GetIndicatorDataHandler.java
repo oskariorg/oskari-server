@@ -70,7 +70,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
                 if (indicator.getId().equals(indicatorId)) {
                     // This is fast, because there are only 10 or so layers at most.
                     for (StatisticalIndicatorLayer layer : indicator.getLayers()) {
-                        if (layer.getOskariMapLayerId().equals(layerId)) {
+                        if (layer.getOskariLayerName().equals(layerId)) {
                             // Note: Layer version is handled already in the indicator metadata.
                             // We found the correct indicator and the layer.
                             JSONObject selectorJSON = new JSONObject(selectorsStr);

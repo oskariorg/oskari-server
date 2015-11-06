@@ -16,7 +16,6 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -157,8 +156,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
         for (StatisticalIndicatorLayer layer: layers) {
             JSONObject layerJSON = new JSONObject();
             layerJSON.put("type", layer.getIndicatorValueType().toString());
-            layerJSON.put("layerId", layer.getOskariMapLayerId());
-            layerJSON.put("layerVersion", layer.getOskariMapLayerVersion());
+            layerJSON.put("layerId", layer.getOskariLayerName());
             layersJSON.put(layerJSON);
         }
         return layersJSON;

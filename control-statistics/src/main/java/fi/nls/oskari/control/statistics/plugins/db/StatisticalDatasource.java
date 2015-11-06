@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.statistics.plugins;
+package fi.nls.oskari.control.statistics.plugins.db;
 
 /**
  * This is the value object for the statistical indicator data source plugin definition rows in the database.

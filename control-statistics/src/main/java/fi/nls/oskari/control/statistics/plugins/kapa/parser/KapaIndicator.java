@@ -141,7 +141,7 @@ public class KapaIndicator implements StatisticalIndicator {
             String indicatorId) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
-            layers.add(new KapaStatisticalIndicatorLayer(json.getString(i), type, fetcher, indicatorId));
+            layers.add(new KapaStatisticalIndicatorLayer(json.getString(i), type, fetcher));
         }
         return layers;
     }

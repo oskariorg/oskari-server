@@ -48,7 +48,7 @@ public class SotkaIndicator implements StatisticalIndicator {
      * @param jsonObject
      * @return true for valid parsing, false for validation errors.
      */
-    public boolean parse(JSONObject jsonObject) {
+    public boolean parse(JSONObject jsonObject, Map<String, String> sotkaLayersToOskariLayers) {
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
             // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
@@ -59,7 +59,7 @@ public class SotkaIndicator implements StatisticalIndicator {
             // SotkaNET gives indicators with integer and float values. In the future this might change.
             if (jsonObject.getJSONObject("classifications").has("region")) {
                 this.layers = toIndicatorLayers(jsonObject.getJSONObject("classifications").getJSONObject("region")
-                    .getJSONArray("values"), IndicatorValueType.FLOAT, this.id);
+                    .getJSONArray("values"), IndicatorValueType.FLOAT, this.id, sotkaLayersToOskariLayers);
             } else {
                 LOG.error("Region missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;
@@ -196,10 +196,16 @@ public class SotkaIndicator implements StatisticalIndicator {
         return localizationMap;
     }
     private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type,
-            String indicatorId) throws JSONException {
+            String indicatorId, Map<String, String> sotkaLayersToOskariLayers) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
-            layers.add(new SotkaStatisticalIndicatorLayer(json.getString(i), type, fetcher, indicatorId));
+            String sotkaLayerName = json.getString(i);
+            String oskariLayerName = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
+            if (oskariLayerName == null) {
+                // Important for layers that don't exist in Oskari, for example "Maa".
+                oskariLayerName = sotkaLayerName;
+            }
+            layers.add(new SotkaStatisticalIndicatorLayer(oskariLayerName, type, fetcher, indicatorId));
         }
         return layers;
     }

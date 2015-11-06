@@ -23,18 +23,6 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     }
     
     @Override
-    public String getOskariMapLayerId() {
-        return id;
-    }
-
-    @Override
-    public String getOskariMapLayerVersion() {
-        // The layer versioning starts with "1", and is incremented when the Oskari layers are updated and
-        // incremented here when the plugin data source starts reflecting the newly published layers.
-        return "1";
-    }
-
-    @Override
     public IndicatorValueType getIndicatorValueType() {
         return valueType;
     }
@@ -47,5 +35,10 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     @Override
     public String toString() {
         return "{id: " + id + ", valueType: " + valueType + "}";
+    }
+
+    @Override
+    public String getOskariLayerName() {
+        return id;
     }
 }

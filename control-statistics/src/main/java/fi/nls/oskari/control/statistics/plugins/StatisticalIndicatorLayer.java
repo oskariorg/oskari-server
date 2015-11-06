@@ -4,19 +4,17 @@ import java.util.Map;
 
 /**
  * Each different granularity layer has:
- * - A reference to a certain map layer and version in use in Oskari.
+ * - A reference to a certain map layer in use in Oskari.
  *   This map layer version can be the current one in use, or a previous one. Old layers are preserved in Oskari to
  *   show indicators defined for some older sets of municipalities or so.
  * - A table of data indexed by selectors so that Oskari user can select values for selectors and Oskari can then show
  *   the data for a given granularity level.
  */
 public interface StatisticalIndicatorLayer {
-    public String getOskariMapLayerId();
     /**
-     * @return The version of the certain Oskari map layer to use. This starts with "1", and is incremented when we publish
-     *         new versions of the Oskari maps. The plugins must know what Oskari map version they are compatible with.
+     *  The layer name in Oskari, for example: "oskari:kunnat2013". This maps to the name in the oskari_maplayers table.
      */
-    public String getOskariMapLayerVersion();
+    public String getOskariLayerName();
     /**
      * Single layer contains indicators for one type only.
      * @return "BOOLEAN" for JSON/Java booleans, "INTEGER" for JSON integers/Java Longs, "FLOAT" for JSON numbers/Java Doubles.

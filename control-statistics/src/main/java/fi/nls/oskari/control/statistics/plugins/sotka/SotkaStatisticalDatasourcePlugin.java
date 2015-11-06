@@ -2,20 +2,31 @@ package fi.nls.oskari.control.statistics.plugins.sotka;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
 
-import fi.nls.oskari.control.ActionException;
+import javax.sql.DataSource;
+
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayer;
+import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayerMapper;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaSpecificIndicatorParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorMetadata;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -24,6 +35,12 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     
     private SotkaIndicatorsParser indicatorsParser = null;
     private SotkaSpecificIndicatorParser specificIndicatorParser = null;
+
+    /**
+     * Maps the SotkaNET layer identifiers to Oskari layers.
+     */
+    private Map<String, String> layerMappings;
+
     // Used in testing to not to fetch all the indicators completely.
     public static boolean testMode = false;
 
@@ -41,7 +58,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
             String jsonResponse = request.getData();
 
             // We will now need to add the year range information to the preliminary information using separate requests.
-            List<SotkaIndicator> preliminaryIndicatorInformation = indicatorsParser.parse(jsonResponse);
+            List<SotkaIndicator> preliminaryIndicatorInformation = indicatorsParser.parse(jsonResponse, layerMappings);
             List<SotkaIndicator> updatedIndicators = new ArrayList<>();
             for (SotkaIndicator indicator : preliminaryIndicatorInformation) {
                 try {
@@ -53,7 +70,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
                         continue;
                     }
                     String specificIndicatorJsonResponse = specificIndicatorRequest.getData();
-                    SotkaIndicator infoToAdd = specificIndicatorParser.parse(specificIndicatorJsonResponse);
+                    SotkaIndicator infoToAdd = specificIndicatorParser.parse(specificIndicatorJsonResponse, layerMappings);
                     if (infoToAdd != null) {
                         indicator.merge(infoToAdd);
                         updatedIndicators.add(indicator);
@@ -77,6 +94,29 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
 
     @Override
     public void init() {
+        // Fetching the layer mapping from the database.
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
+        final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
+        SqlSessionFactory factory = initializeIBatis(dataSource);
+        final SqlSession session = factory.openSession();
+        final List<SotkaLayer> layerRows = session.selectList("getAll");
+        layerMappings = new HashMap<>();
+        for (SotkaLayer row : layerRows) {
+            layerMappings.put(row.getSotkaLayerId().toLowerCase(), row.getOskariLayerName());
+        }
+        System.out.println("SotkaNET layer mappings: " + String.valueOf(layerMappings));
+    }
+    
+    private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, dataSource);
+
+        final Configuration configuration = new Configuration(environment);
+        configuration.getTypeAliasRegistry().registerAlias(SotkaLayer.class);
+        configuration.setLazyLoadingEnabled(true);
+        configuration.addMapper(SotkaLayerMapper.class);
+
+        return new SqlSessionFactoryBuilder().build(configuration);
     }
 
 }
