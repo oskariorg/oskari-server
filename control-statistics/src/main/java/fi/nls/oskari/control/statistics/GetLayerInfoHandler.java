@@ -30,10 +30,12 @@ import javax.sql.DataSource;
 /**
  * Returns the layer information. This specifies the name and id attributes in the geoserver layer.
  * Sample response:
- * "oskari:kunnat2013": {
- *   "nameTag": "kuntanimi",
- *   "idTag": "kuntakoodi",
- *   "url": " http://localhost:8080/geoserver"
+ * {
+ *   "oskari:kunnat2013": {
+ *     "nameTag": "kuntanimi",
+ *     "idTag": "kuntakoodi",
+ *     "url": " http://localhost:8080/geoserver"
+ *   }
  * }
  */
 @OskariActionRoute("GetLayerInfo")
@@ -46,16 +48,18 @@ public class GetLayerInfoHandler extends ActionHandler {
         ResponseHelper.writeResponse(ap, response);
     }
 
-    private JSONObject getLayerInfoJSON() throws ActionException {
+    JSONObject getLayerInfoJSON() throws ActionException {
         JSONObject response = new JSONObject();
         for (Layer layer : layers) {
             LayerMetadata metadata = layerMetadata.get(layer.getOskariLayerName());
             JSONObject tags = new JSONObject();
             try {
-                tags.put("nameTag", layer.getOskariNameIdTag());
-                tags.put("idTag", layer.getOskariRegionIdTag());
-                tags.put("url", metadata.getUrl());
-                response.put(layer.getOskariLayerName(), tags);
+                if (metadata != null) {
+                    tags.put("nameTag", layer.getOskariNameIdTag());
+                    tags.put("idTag", layer.getOskariRegionIdTag());
+                    tags.put("url", metadata.getUrl());
+                    response.put(layer.getOskariLayerName(), tags);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 throw new ActionException("Something went wrong serializing the layer infos.", e);
