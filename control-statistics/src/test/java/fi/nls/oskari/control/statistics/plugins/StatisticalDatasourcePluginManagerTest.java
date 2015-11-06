@@ -1,30 +1,59 @@
 package fi.nls.oskari.control.statistics.plugins;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import fi.nls.oskari.control.statistics.GetRegionInfoHandlerTest.DatasourceHelperMock;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(DatasourceHelper.class)
+@PowerMockIgnore( {"javax.management.*"}) 
 public class StatisticalDatasourcePluginManagerTest {
 
     final private StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
 
+    public static class DatasourceHelperMock extends DatasourceHelper {
+        public DatasourceHelperMock() {
+            super();
+        }
+        @Override
+        public DataSource getDataSource(String name) {
+            BasicDataSource basicDataSource = new BasicDataSource();
+            basicDataSource.setDriverClassName("org.postgresql.Driver");
+            basicDataSource.setUrl(PropertyUtil.get("db.url"));
+            basicDataSource.setUsername(PropertyUtil.get("db.username"));
+            basicDataSource.setPassword(PropertyUtil.get("db.password"));
+            return basicDataSource;
+        }
+    }
+    
     @BeforeClass
-    public static void init() {
+    public static void init() throws IllegalArgumentException, IllegalAccessException {
         PropertyUtil.loadProperties("/oskari-ext.properties");
+        Field field = PowerMockito.field(DatasourceHelper.class, "INSTANCE");
+        field.set(DatasourceHelper.class, new DatasourceHelperMock());
         SotkaStatisticalDatasourcePlugin.testMode = true;
     }
     @AfterClass

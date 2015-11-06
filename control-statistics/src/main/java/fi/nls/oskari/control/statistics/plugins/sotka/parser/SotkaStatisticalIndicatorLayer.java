@@ -9,14 +9,16 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 
 public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
-    private String id;
+    private String sotkaId;
+    private String oskariId;
     private String indicatorId;
     private IndicatorValueType valueType;
     private SotkaIndicatorValuesFetcher indicatorValuesFetcher;
     
-    public SotkaStatisticalIndicatorLayer(String id, IndicatorValueType valueType,
+    public SotkaStatisticalIndicatorLayer(String sotkaId, String oskariId, IndicatorValueType valueType,
             SotkaIndicatorValuesFetcher indicatorValuesFetcher, String indicatorId) {
-        this.id = id;
+        this.sotkaId = sotkaId;
+        this.oskariId = oskariId;
         this.valueType = valueType;
         this.indicatorValuesFetcher = indicatorValuesFetcher;
         this.indicatorId = indicatorId;
@@ -29,16 +31,16 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
 
     @Override
     public Map<String, IndicatorValue> getIndicatorValues(StatisticalIndicatorSelectors selectors) {
-        return indicatorValuesFetcher.get(selectors, this.indicatorId, this.id);
+        return indicatorValuesFetcher.get(selectors, this.indicatorId, this.sotkaId);
     }
 
     @Override
     public String toString() {
-        return "{id: " + id + ", valueType: " + valueType + "}";
+        return "{id: " + oskariId + ", valueType: " + valueType + "}";
     }
 
     @Override
     public String getOskariLayerName() {
-        return id;
+        return oskariId;
     }
 }

@@ -205,7 +205,7 @@ public class SotkaIndicator implements StatisticalIndicator {
                 // Important for layers that don't exist in Oskari, for example "Maa".
                 oskariLayerName = sotkaLayerName;
             }
-            layers.add(new SotkaStatisticalIndicatorLayer(oskariLayerName, type, fetcher, indicatorId));
+            layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerName, type, fetcher, indicatorId));
         }
         return layers;
     }
