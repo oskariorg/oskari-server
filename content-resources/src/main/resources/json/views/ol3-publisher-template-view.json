@@ -4,7 +4,7 @@
     "default" : false,
     "public" : false,
     "oskari" : {
-        "application" : "servlet",
+        "application" : "servlet_published_ol3",
         "page" : "published",
         "development_prefix" : "/applications/sample"
     },
@@ -16,6 +16,24 @@
                 "bundlename": "mapfull",
                 "metadata": {
                     "Import-Bundle": {
+                        "mapwmts_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
+                        "mapwfs2_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
+                        "mapanalysis_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
+                        "mapuserlayers_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
+                        "maparcgis_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
+                        "mapmodule_ol3": {
+                            "bundlePath": "/Oskari/packages/mapping/"
+                        },
                         "service-base": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
@@ -39,18 +57,6 @@
                         },
                         "oskariui": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "mapuserlayers": {
-                            "bundlePath": "/Oskari/packages/framework/bundle/"
-                        },
-                        "mapwfs2_ol3": {
-                            "bundlePath": "/Oskari/packages/mapping/"
-                        },
-                        "mapwmts_ol3": {
-                            "bundlePath": "/Oskari/packages/mapping/"
-                        },
-                        "mapmodule-plugin_ol3": {
-                            "bundlePath": "/Oskari/packages/mapping/"
                         },
                         "request-base": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -127,34 +133,10 @@
             }
         },
         {
-            "id" : "infobox",
-            "startup" : {
-                "title": "Infobox",
-                "bundleinstancename": "infobox",
-                "bundlename": "infobox",
-                "metadata": {
-                    "Import-Bundle": {
-                        "infobox": {
-                            "bundlePath": "/Oskari/packages/mapping/"
-                        }
-                    }
-                }
-            }
+            "id" : "infobox_ol3"
         },
         {
-            "id" : "toolbar",
-            "startup" : {
-                "title": "Toolbar",
-                "bundleinstancename": "toolbar",
-                "bundlename": "toolbar",
-                "metadata": {
-                    "Import-Bundle": {
-                        "toolbar": {
-                            "bundlePath": "/Oskari/packages/mapping/"
-                        }
-                    }
-                }
-            },
+            "id" : "toolbar_ol3",
             "config" : {
                 "basictools": {
                     "measurearea": false,
