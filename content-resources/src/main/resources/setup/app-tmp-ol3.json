@@ -12,7 +12,7 @@
     "views" : [
         "default-finnish-view.json",
         "ol3-publisher-template-view.json",
-        "ol3-view.json"
+        "ol2-publisher-template-view.json"
     ],
     "sql" : [
         "add_oskari_wfs_parser_config.sql",
