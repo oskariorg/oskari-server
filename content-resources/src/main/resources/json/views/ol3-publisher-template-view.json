@@ -132,63 +132,69 @@
                 "selectedLayers": []
             }
         },
-        {
-            "id" : "infobox",
-            "startup": {
-                "title": "Infobox OL3",
-                "bundlename": "infobox",
-                "metadata": {
-                  "infobox": {
-                    "bundlePath": "/Oskari/packages/mapping/ol3/"
-                  }
-                }
-            }
-        },
-        {
-            "id" : "toolbar",
-            "startup": {
-              "title": "Toolbar OL3",
-              "bundlename": "toolbar",
-              "metadata": {
-                "toolbar": {
-                  "bundlePath": "/Oskari/packages/mapping/ol3/"
-                }
+      {
+        "id" : "infobox",
+        "startup": {
+          "title": "Infobox OL3",
+          "bundlename": "infobox",
+          "metadata": {
+            "Import-Bundle": {
+              "infobox": {
+                "bundlePath": "/Oskari/packages/mapping/ol3/"
               }
-            },
-            "config" : {
-                "basictools": {
-                    "measurearea": false,
-                    "measureline": false,
-                    "select": false,
-                    "zoombox": false
-
-                },
-                "history": {
-                    "history_back": false,
-                    "history_forward": false,
-                    "reset": false
-                },
-                "viewtools": {
-                    "link": false
-                },
-                "toolbarId": "PublisherToolbar",
-                "hasContentContainer": true,
-                "defaultToolbarContainer": ".publishedToolbarContent"
             }
-        },
-        { "id" : "publishedstatehandler" },
-        { "id" : "drawtools",
-          "startup": {
-            "title": "Drawtools OL3",
-            "bundlename": "drawtools",
-            "metadata": {
-              "drawtools": {
+          }
+        }
+      },
+      {
+        "id" : "toolbar",
+        "startup": {
+          "title": "Toolbar OL3",
+          "bundlename": "toolbar",
+          "metadata": {
+            "Import-Bundle": {
+              "toolbar": {
                 "bundlePath": "/Oskari/packages/mapping/ol3/"
               }
             }
           }
         },
-        { "id" : "routingService" },
-        { "id" : "rpc" }
+        "config" : {
+          "basictools": {
+            "measurearea": false,
+            "measureline": false,
+            "select": false,
+            "zoombox": false
+
+          },
+          "history": {
+            "history_back": false,
+            "history_forward": false,
+            "reset": false
+          },
+          "viewtools": {
+            "link": false
+          },
+          "toolbarId": "PublisherToolbar",
+          "hasContentContainer": true,
+          "defaultToolbarContainer": ".publishedToolbarContent"
+        }
+      },
+      { "id" : "publishedstatehandler" },
+      { "id" : "drawtools",
+        "startup": {
+          "title": "Drawtools OL3",
+          "bundlename": "drawtools",
+          "metadata": {
+            "Import-Bundle": {
+              "drawtools": {
+                "bundlePath": "/Oskari/packages/mapping/ol3/"
+              }
+            }
+          }
+        }
+      },
+      { "id" : "routingService" },
+      { "id" : "rpc" }
     ]
 }
