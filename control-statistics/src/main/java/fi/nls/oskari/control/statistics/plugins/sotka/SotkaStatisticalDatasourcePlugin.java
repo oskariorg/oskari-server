@@ -27,6 +27,7 @@ import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorMetadata
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -49,7 +50,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         specificIndicatorParser = new SotkaSpecificIndicatorParser();
     }
     @Override
-    public List<? extends StatisticalIndicator> getIndicators() {
+    public List<? extends StatisticalIndicator> getIndicators(User user) {
         try {
             // First getting general information of all the indicator layers.
             // Note that some mandatory information about the layers is not given here,
@@ -117,6 +118,10 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         configuration.addMapper(SotkaLayerMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
+    }
+    @Override
+    public boolean canCache() {
+        return true;
     }
 
 }

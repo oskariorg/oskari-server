@@ -108,7 +108,7 @@ public class KapaPluginTest {
         assertNotNull("KaPa plugin was not found.", kapaPlugin);
         
         // Getting indicators.
-        List<? extends StatisticalIndicator> indicators = kapaPlugin.getIndicators();
+        List<? extends StatisticalIndicator> indicators = kapaPlugin.getIndicators(null);
         assertTrue("Indicators result was too small.", indicators.size() > 1);
         
         StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();

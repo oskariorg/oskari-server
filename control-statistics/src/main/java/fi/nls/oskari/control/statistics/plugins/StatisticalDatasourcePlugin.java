@@ -3,6 +3,7 @@ package fi.nls.oskari.control.statistics.plugins;
 import java.util.List;
 
 import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.domain.User;
 
 /**
  * Each statistical datasource plugin encapsulates access to a single external API
@@ -33,12 +34,18 @@ public interface StatisticalDatasourcePlugin {
     /**
      * Returns a list of statistical data indicators, each with several granularity layers.
      * TODO: Implement a hierarchical tree for the indicators.
+     * @param user 
      * @return
      */
-    public List<? extends StatisticalIndicator> getIndicators();
+    public List<? extends StatisticalIndicator> getIndicators(User user);
 
     /**
      * Hook for setting up components that the handler needs to handle requests
      */
     public void init();
+
+    /**
+     * Generally true, if the data does not change all the time, for example based on the user doing the query.
+     */
+    public boolean canCache();
 }

@@ -16,6 +16,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -47,28 +48,23 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
     public void init() {
         pluginManager.init();
 
-        // Refreshing the cache at boot.
-        try {
-            this.requestIndicatorsMetadataJSON();
-        } catch (ActionException e) {
-            e.printStackTrace();
-        }
+        // Refreshing the cache at boot, everything but the user indicators.
         // Refreshing in the background for every 8 hours also.
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    GetIndicatorsMetadataHandler.this.requestIndicatorsMetadataJSON();
+                    GetIndicatorsMetadataHandler.this.requestIndicatorsMetadataJSON(null);
                 } catch (ActionException e) {
                     e.printStackTrace();
                 }
             }
-        }, 8, 8, TimeUnit.HOURS);
+        }, 0, 8, TimeUnit.HOURS);
     }
     
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        JSONObject response = getIndicatorsMetadataJSON();
+        JSONObject response = getIndicatorsMetadataJSON(ap.getUser());
         ResponseHelper.writeResponse(ap, response);
     }
     
@@ -77,7 +73,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      * @return
      * @throws ActionException
      */
-    private JSONObject requestIndicatorsMetadataJSON() throws ActionException {
+    private JSONObject requestIndicatorsMetadataJSON(User user) throws ActionException {
         JSONObject response = new JSONObject();
         Collection<StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
         for (StatisticalDatasourcePlugin plugin : plugins) {
@@ -86,7 +82,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
             try {
                 pluginMetadata.put("localizationKey", localizationKey);
                 JSONObject pluginIndicators = new JSONObject();
-                for (StatisticalIndicator indicator : plugin.getIndicators()) {
+                for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
                     JSONObject pluginIndicatorJSON = toJSON(indicator);
                     pluginIndicators.put(indicator.getId(), pluginIndicatorJSON);
                 }
@@ -103,7 +99,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
         return response;
     }
     
-    public JSONObject getIndicatorsMetadataJSON() throws ActionException {
+    public JSONObject getIndicatorsMetadataJSON(User user) throws ActionException {
         final String cachedData = JedisManager.get(CACHE_KEY);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {
@@ -112,7 +108,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
                 // Failed serializing. Skipping the cache.
             }
         }
-        return requestIndicatorsMetadataJSON();
+        return requestIndicatorsMetadataJSON(user);
     }
 
     private JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {

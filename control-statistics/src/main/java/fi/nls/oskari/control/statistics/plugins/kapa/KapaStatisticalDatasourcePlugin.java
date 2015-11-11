@@ -7,6 +7,7 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicator;
 import fi.nls.oskari.control.statistics.plugins.kapa.parser.KapaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.kapa.requests.KapaRequest;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -19,7 +20,7 @@ public class KapaStatisticalDatasourcePlugin implements StatisticalDatasourcePlu
     }
 
     @Override
-    public List<? extends StatisticalIndicator> getIndicators() {
+    public List<? extends StatisticalIndicator> getIndicators(User user) {
         // Getting the general information of all the indicator layers.
         KapaRequest request = new KapaRequest();
         String jsonResponse = request.getIndicators();
@@ -29,5 +30,10 @@ public class KapaStatisticalDatasourcePlugin implements StatisticalDatasourcePlu
 
     @Override
     public void init() {
+    }
+
+    @Override
+    public boolean canCache() {
+        return true;
     }
 }

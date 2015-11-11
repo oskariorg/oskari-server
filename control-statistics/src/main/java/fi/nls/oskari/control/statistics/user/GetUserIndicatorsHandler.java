@@ -23,6 +23,7 @@ import java.util.List;
  * Date: 22.11.2013
  * Time: 16:49
  * To change this template use File | Settings | File Templates.
+ * 
  */
 @OskariActionRoute("GetUserIndicators")
 public class GetUserIndicatorsHandler extends ActionHandler {

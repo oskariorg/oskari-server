@@ -87,7 +87,7 @@ public class StatisticalDatasourcePluginManagerTest {
         assertNotNull("SotkaNET plugin was not found.", sotkaPlugin);
         
         // Getting indicators.
-        List<? extends StatisticalIndicator> indicators = sotkaPlugin.getIndicators();
+        List<? extends StatisticalIndicator> indicators = sotkaPlugin.getIndicators(null);
         assertTrue("Indicators result was too small.", indicators.size() > 10);
         
         StatisticalIndicatorSelectors selectors = indicators.get(0).getSelectors();

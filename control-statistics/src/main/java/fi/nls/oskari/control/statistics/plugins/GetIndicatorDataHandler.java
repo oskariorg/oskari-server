@@ -12,6 +12,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -44,29 +45,32 @@ public class GetIndicatorDataHandler extends ActionHandler {
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
         final String layerId = ap.getRequiredParam(PARAM_LAYER_ID);
         final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
-        JSONObject response = getIndicatorDataJSON(pluginId, indicatorId, layerId, selectors);
+        JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectors);
         ResponseHelper.writeResponse(ap, response);
     }
 
-    public JSONObject getIndicatorDataJSON(String pluginId, String indicatorId, String layerId, String selectorsStr)
+    public JSONObject getIndicatorDataJSON(User user, String pluginId, String indicatorId,
+            String layerId, String selectorsStr)
             throws ActionException {
         final String cacheKey = CACHE_KEY_PREFIX + pluginId + ":" + indicatorId + ":" + layerId + ":" + selectorsStr;
         final String cachedData = JedisManager.get(cacheKey);
-        if (cachedData != null && !cachedData.isEmpty()) {
-            try {
-                return new JSONObject(cachedData);
-            } catch (JSONException e) {
-                // Failed serializing. Skipping the cache.
+        StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
+        if (plugin.canCache()) {
+            if (cachedData != null && !cachedData.isEmpty()) {
+                try {
+                    return new JSONObject(cachedData);
+                } catch (JSONException e) {
+                    // Failed serializing. Skipping the cache.
+                }
             }
         }
         JSONObject response = new JSONObject();
         try {
-            StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
 
             // TODO: Might be faster to store the indicator id to indicator map in a proper map.
             //       Who should do this, though? We don't want to put this functionality into the plugins.
             //       It should be in a common wrapper for the plugins.
-            for (StatisticalIndicator indicator : plugin.getIndicators()) {
+            for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
                 if (indicator.getId().equals(indicatorId)) {
                     // This is fast, because there are only 10 or so layers at most.
                     for (StatisticalIndicatorLayer layer : indicator.getLayers()) {
@@ -94,8 +98,10 @@ public class GetIndicatorDataHandler extends ActionHandler {
         }
         // Note that there is an another layer of caches in the plugins doing the web queries.
         // Two layers are necessary, because deserialization and conversion to the internal data model
-        // is pretty heavy operation.
-        JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
+        // is a pretty heavy operation.
+        if (plugin.canCache()) {
+            JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
+        }
         return response;
     }
 
