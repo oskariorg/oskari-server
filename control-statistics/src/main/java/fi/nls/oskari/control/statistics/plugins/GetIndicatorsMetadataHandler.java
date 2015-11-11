@@ -31,7 +31,7 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("GetIndicatorsMetadata")
 public class GetIndicatorsMetadataHandler extends ActionHandler {
-    private final static String CACHE_KEY = "oskari_get_indicators_metadata_handler";
+    private final static String CACHE_PREFIX = "oskari_get_indicators_metadata_handler_";
 
     /**
      * For now, this uses pretty much static global store for the plugins.
@@ -54,7 +54,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
             @Override
             public void run() {
                 try {
-                    GetIndicatorsMetadataHandler.this.requestIndicatorsMetadataJSON(null);
+                    GetIndicatorsMetadataHandler.this.getIndicatorsMetadataJSON(null, true);
                 } catch (ActionException e) {
                     e.printStackTrace();
                 }
@@ -64,7 +64,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
     
     @Override
     public void handleAction(ActionParameters ap) throws ActionException {
-        JSONObject response = getIndicatorsMetadataJSON(ap.getUser());
+        JSONObject response = getIndicatorsMetadataJSON(ap.getUser(), false);
         ResponseHelper.writeResponse(ap, response);
     }
     
@@ -73,10 +73,22 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
      * @return
      * @throws ActionException
      */
-    private JSONObject requestIndicatorsMetadataJSON(User user) throws ActionException {
+    JSONObject getIndicatorsMetadataJSON(User user, boolean refreshCache) throws ActionException {
         JSONObject response = new JSONObject();
         Collection<StatisticalDatasourcePlugin> plugins = pluginManager.getPlugins();
         for (StatisticalDatasourcePlugin plugin : plugins) {
+            String cacheKey = CACHE_PREFIX + plugin.getClass().getCanonicalName();
+            if (plugin.canCache() && !refreshCache) {
+                final String cachedData = JedisManager.get(cacheKey);
+                if (cachedData != null && !cachedData.isEmpty()) {
+                    try {
+                        response.put(plugin.getClass().getCanonicalName(), new JSONObject(cachedData));
+                        continue;
+                    } catch (JSONException e) {
+                        // Failed serializing. Skipping the cache.
+                    }
+                }
+            }
             String localizationKey = pluginManager.getPluginLocalizationKey(plugin.getClass());
             JSONObject pluginMetadata = new JSONObject();
             try {
@@ -88,29 +100,19 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
                 }
                 pluginMetadata.put("indicators", pluginIndicators);
                 response.put(plugin.getClass().getCanonicalName(), pluginMetadata);
+                // Note that there is an another layer of caches in the plugins doing the web queries.
+                // Two layers are necessary, because deserialization and conversion to the internal data model
+                // is pretty heavy operation.
+                if (plugin.canCache()) {
+                    JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, pluginMetadata.toString());
+                }
             } catch (JSONException e) {
                 throw new ActionException("Something went wrong in getting indicator metadata.", e);
             }
         }
-        // Note that there is an another layer of caches in the plugins doing the web queries.
-        // Two layers are necessary, because deserialization and conversion to the internal data model
-        // is pretty heavy operation.
-        JedisManager.setex(CACHE_KEY, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
     }
     
-    public JSONObject getIndicatorsMetadataJSON(User user) throws ActionException {
-        final String cachedData = JedisManager.get(CACHE_KEY);
-        if (cachedData != null && !cachedData.isEmpty()) {
-            try {
-                return new JSONObject(cachedData);
-            } catch (JSONException e) {
-                // Failed serializing. Skipping the cache.
-            }
-        }
-        return requestIndicatorsMetadataJSON(user);
-    }
-
     private JSONObject toJSON(StatisticalIndicator indicator) throws JSONException {
         JSONObject pluginIndicatorJSON = new JSONObject();
         Map<String, String> name = indicator.getLocalizedName();

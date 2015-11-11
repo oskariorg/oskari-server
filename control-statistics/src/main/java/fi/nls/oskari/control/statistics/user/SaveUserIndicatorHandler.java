@@ -67,7 +67,11 @@ public class SaveUserIndicatorHandler extends ActionHandler {
         ui.setUserId(params.getUser().getId());
         ui.setTitle(params.getHttpParam(PARAM_INDICATOR_TITLE));
         ui.setSource(params.getHttpParam(PARAM_INDICATOR_SOURCE));
-        ui.setMaterial(Long.parseLong(params.getHttpParam(PARAM_INDICATOR_MATERIAL)));
+        String material = params.getHttpParam(PARAM_INDICATOR_MATERIAL);
+        if (material != null) {
+            // New user indicators do not store material id, because mapping to layers is done through Oskari names.
+            ui.setMaterial(Long.parseLong(material));
+        }
         ui.setDescription(params.getHttpParam(PARAM_INDICATOR_DESCRIPTION));
         ui.setYear(Integer.parseInt(params.getHttpParam(PARAM_INDICATOR_YEAR)));
         ui.setData(params.getHttpParam(PARAM_INDICATOR_DATA));

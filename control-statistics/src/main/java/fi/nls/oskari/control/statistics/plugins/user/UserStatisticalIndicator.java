@@ -37,7 +37,6 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
     private Boolean published;
     private String layerName;
     private String data;
-    private String material;
     private long userId;
 
     public UserStatisticalIndicator(UserIndicator userIndicator) {
@@ -49,7 +48,6 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
         this.published = userIndicator.isPublished();
         this.layerName = categoryToLayerName(userIndicator.getCategory());
         this.data = userIndicator.getData();
-        this.material = String.valueOf(userIndicator.getMaterial());
         this.userId = userIndicator.getUserId();
     }
 
@@ -133,10 +131,14 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
 
     @Override
     public Map<String, String> getLocalizedName() {
-        Map<String, String> localizedName = new HashMap<String, String>();
-        // Simply filling up one language label, which will be used by default.
-        localizedName.put("fi", this.name);
-        return localizedName;
+        // The value is an already serialized JSON for legacy and backward compatibility reasons.
+        try {
+            JSONObject localizedValue = new JSONObject(this.name);
+            return toMap(localizedValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
     }
 
     @Override
@@ -160,19 +162,19 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
                 e.printStackTrace();
             }
         }
-        return null;
+        return map;
     }
 
     @Override
     public Map<String, String> getLocalizedDescription() {
-        Map<String, String> localizedSource = new HashMap<String, String>();
-        // Simply filling up one language label, which will be used by default.
-        localizedSource.put("fi", this.description);
-        return localizedSource;
-    }
-
-    public String getMaterial() {
-        return material;
+        // The value is an already serialized JSON for legacy and backward compatibility reasons.
+        try {
+            JSONObject localizedValue = new JSONObject(this.description);
+            return toMap(localizedValue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
     }
 
     public long getUserId() {

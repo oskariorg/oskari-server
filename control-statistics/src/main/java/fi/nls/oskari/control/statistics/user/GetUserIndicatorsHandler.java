@@ -69,12 +69,12 @@ public class GetUserIndicatorsHandler extends ActionHandler {
     private JSONArray makeJson(List<UserIndicator> uiList) {
         JSONArray arr = new JSONArray();
         for (UserIndicator ui : uiList ) {
-             arr.put(makeJson(ui.getId(), ui.getTitle(),  ui.getDescription(), ui.getSource(), ui.getYear(), ui.isPublished(), ui.getMaterial(), ui.getCategory()));
+             arr.put(makeJson(ui.getId(), ui.getTitle(),  ui.getDescription(), ui.getSource(), ui.getYear(), ui.isPublished(), ui.getCategory()));
         }
         return arr;
     }
 
-    private JSONObject makeJson(long id, String title, String desc, String source, int year, Boolean pub, long layer_id, String category) {
+    private JSONObject makeJson(long id, String title, String desc, String source, int year, Boolean pub, String category) {
         JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "id",id);
         JSONHelper.putValue(obj, "title", JSONHelper.createJSONObject(title));
@@ -84,7 +84,6 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         JSONHelper.putValue(obj, "organization", orgJSON);
         JSONHelper.putValue(obj, "year", year);
         JSONHelper.putValue(obj, "public" , pub);
-        JSONHelper.putValue(obj, "layerId", layer_id);
         JSONHelper.putValue(obj, "category", category);
         return  obj;
     }
@@ -100,7 +99,6 @@ public class GetUserIndicatorsHandler extends ActionHandler {
         JSONHelper.putValue(obj, "description", descJSON);
         JSONHelper.putValue(obj, "organization", organizationJSON);
         JSONHelper.putValue(obj, "public" , ui.isPublished());
-        JSONHelper.putValue(obj, "layerId", ui.getMaterial());
         JSONHelper.putValue(obj, "year", ui.getYear());
         JSONHelper.putValue(obj, "data", dataJSON);
         JSONHelper.putValue(obj, "category", ui.getCategory());

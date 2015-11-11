@@ -72,8 +72,6 @@ public class SotkaRequest {
 
     private static void registerAction(final Class req) {
         try {
-            log.debug("Adding req ", req);
-            log.debug("reg name: " + getInstance(req).getName());
             requests.put(getInstance(req).getName(), req); // .getClass()
         }
         catch (Exception ex) {
@@ -82,10 +80,8 @@ public class SotkaRequest {
     }
 
     public static SotkaRequest getInstance(final String action) {
-    	log.debug("action: " + action);
         Class c = requests.get(action);
         if(c != null) {
-        	log.debug("Class name : " + c.getName());
             return getInstance(c);
         }
         throw new RuntimeException("Unregistered action requested:" + action);
@@ -93,7 +89,6 @@ public class SotkaRequest {
 
     private static SotkaRequest getInstance(final Class req) {
         try {
-        	log.debug("Palautetaan SotkaRequest (luokasta otetaan instanssi)");
             return (SotkaRequest) req.newInstance();
         } catch (Exception ignored) { }
         throw new RuntimeException("Unable to craft request instance, shouldn't happen...");
@@ -209,7 +204,6 @@ public class SotkaRequest {
         try {
             return mapper.writeValueAsString(al);
         } catch (Exception e) {
-            log.warn(e, "Error transforming CSV to JSON", csv);
             return "{error:" + e.toString() + "}";
         }
     }
