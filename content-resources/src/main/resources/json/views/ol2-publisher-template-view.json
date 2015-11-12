@@ -29,6 +29,9 @@
                         "mapuserlayers": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
+                        "mapstats": {
+                          "bundlePath": "/Oskari/packages/framework/bundle/"
+                        },
                         "maparcgis": {
                             "bundlePath": "/Oskari/packages/arcgis/bundle/"
                         },
@@ -108,6 +111,8 @@
                         "id": "Oskari.mapframework.bundle.mapwfs2.plugin.WfsLayerPlugin"
                     }, {
                         "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
+                    }, {
+                      "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"
                     }, {
