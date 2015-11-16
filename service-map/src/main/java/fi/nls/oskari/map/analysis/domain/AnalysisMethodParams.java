@@ -443,7 +443,13 @@ public abstract class AnalysisMethodParams {
         String nodatafilter = NO_DATACOUNT_FILTER_TEMPLATE.replace("{propertyName}", field);
         nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
         wfsfilter = wfsfilter.replaceAll( CLEAN_CHARS, "");
-        wfsfilter = wfsfilter.replace(FILTER_END,nodatafilter);
+        if (wfsfilter.indexOf(FILTER_END) == -1) {
+            // no and conditions
+            wfsfilter = wfsfilter.replace("<ogc:Filter>", "<ogc:Filter><ogc:And>");
+            wfsfilter = wfsfilter.replace("</ogc:Filter>", nodatafilter);
+        } else {
+            wfsfilter = wfsfilter.replace(FILTER_END, nodatafilter);
+        }
         return wfsfilter;
     }
 
