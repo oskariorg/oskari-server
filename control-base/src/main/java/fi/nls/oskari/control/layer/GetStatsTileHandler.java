@@ -65,7 +65,7 @@ public class GetStatsTileHandler extends ActionHandler {
             printParameters(params);
         }
 /*
-        // GetMap with post is horrible broken with hard coded GetMap xml.
+        // GetMap with post is horribly broken with hard coded GetMap xml.
         // never use it before it's fixed!!
         if (sldServerUrl == null) {
             // if SLD server is not configured, use POSTing a GetMap XML-request
@@ -89,7 +89,7 @@ public class GetStatsTileHandler extends ActionHandler {
                 final byte[] presponse = IOHelper.readBytes(con.getInputStream());
 
                 final HttpServletResponse response = params.getResponse();
-                response.setContentType("image/png");
+                response.setContentType(con.getContentType());
                 response.getOutputStream().write(presponse, 0, presponse.length);
                 response.getOutputStream().flush();
                 response.getOutputStream().close();
@@ -175,7 +175,7 @@ public class GetStatsTileHandler extends ActionHandler {
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_FILTER_PROPERTY) ||
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_CLASSES) ||
                     keyStr.equals(GetStatsLayerSLDHandler.PARAM_VISUALIZATION_VIS)) {
-                // ignore SLD-paremeters
+                // ignore SLD-parameters
                 continue;
             }
             queryString.append("&");
