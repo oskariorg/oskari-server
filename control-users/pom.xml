@@ -18,11 +18,7 @@
 
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
+            <artifactId>oskari-control-base</artifactId>
         </dependency>
 
         <dependency>
