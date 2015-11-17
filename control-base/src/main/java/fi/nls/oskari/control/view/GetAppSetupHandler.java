@@ -136,7 +136,7 @@ public class GetAppSetupHandler extends ActionHandler {
         // Strictly necessary only if oldId used
         final long viewId = view.getId();
         final String referer = RequestHelper.getDomainFromReferer(params
-                .getHttpHeader("Referer"));
+                .getHttpHeader(IOHelper.HEADER_REFERER));
 
         // ignore saved state when loading:
         //   - views that are not system default views

@@ -176,7 +176,7 @@ public class MapController {
             } else {
                 log.debug("Referer: ", params.getHttpHeader(IOHelper.HEADER_REFERER), " -> ", referer);
                 log.warn("Denied access to published view in domain:", pubDomain, "for referer", referer);
-                ResponseHelper.writeError(params, "Access denied to view (" + view.getUuid() + ")");
+                ResponseHelper.writeError(params, "Denied access to published view for domain: " + referer);
                 return null;
             }
         }
