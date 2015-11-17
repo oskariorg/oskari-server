@@ -15,11 +15,9 @@ import java.util.List;
 public class ViewHelper {
 
     private static final Logger log = LogFactory.getLogger(ViewHelper.class);
-    private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
+    private static String[] UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
 
-    private ViewHelper() {
-        UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
-    }
+    private ViewHelper() {}
 
     public static JSONArray getStartupSequence(final View view) throws ViewException {
         final JSONArray startupSequence = new JSONArray();
@@ -53,6 +51,7 @@ public class ViewHelper {
         if(referer == null) {
             return false;
         }
+        log.debug("Unrestricted domains:", UNRESTRICTED_USAGE_DOMAINS);
         for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
             if(domain.equals("*") || referer.endsWith(domain)) {
                 return true;
