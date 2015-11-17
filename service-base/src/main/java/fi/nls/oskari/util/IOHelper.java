@@ -28,6 +28,7 @@ public class IOHelper {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String HEADER_CONTENTTYPE = "Content-Type";
     public static final String HEADER_USERAGENT = "User-Agent";
+    public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
 
     public static final String DEFAULT_CHARSET = "UTF-8";

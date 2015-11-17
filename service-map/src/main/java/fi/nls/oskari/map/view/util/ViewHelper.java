@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewException;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +15,12 @@ import java.util.List;
 public class ViewHelper {
 
     private static final Logger log = LogFactory.getLogger(ViewHelper.class);
-    
+    private static String[] UNRESTRICTED_USAGE_DOMAINS = new String[0];
+
+    private ViewHelper() {
+        UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
+    }
+
     public static JSONArray getStartupSequence(final View view) throws ViewException {
         final JSONArray startupSequence = new JSONArray();
         final List<Bundle> bundles = view.getBundles();
@@ -37,6 +43,23 @@ public class ViewHelper {
         return startupSequence;
     }
 
+    /**
+     * Checks if it's ok to continue loading requested map based on referer/views pubdomain.
+     * @param referer from headers
+     * @param pubdomain domain the map is published to
+     * @return true if referer ends with domains in UNRESTRICTED_USAGE_DOMAINS or the domain defined for the view.
+     */
+    public static boolean isRefererDomain(final String referer, final String pubdomain) {
+        if(referer == null) {
+            return false;
+        }
+        for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
+            if(domain.equals("*") || referer.endsWith(domain)) {
+                return true;
+            }
+        }
+        return referer.endsWith(pubdomain);
+    }
 
     public static JSONObject getConfiguration(final View view) throws ViewException {
         final JSONObject configuration = new JSONObject();
