@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Emails">
+
+    <typeAlias alias="Email" type="fi.nls.oskari.control.users.model.Email" />
+
+    <resultMap id="EmailResult" class="Email">
+        <result property="id" column="id" />        
+        <result property="email" column="email" />
+        <result property="uuid" column="uuid" />
+        <result property="screenname" column="user_name" />    
+        <result property="expiryTimestamp" column="expiry_timestamp"/>
+    </resultMap>
+
+    <statement id="addEmail" resultClass="Long" parameterClass="Email">
+        INSERT INTO oskari_email_expiry (            
+            user_name,
+            email,
+            uuid,
+            expiry_timestamp
+        )
+        VALUES (           
+            #screenname#,
+            #email#,
+            #uuid#,
+            #expiryTimestamp#
+        )
+        RETURNING id
+    </statement>   
+
+</sqlMap>
