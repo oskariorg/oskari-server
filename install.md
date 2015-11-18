@@ -63,7 +63,6 @@ build
 
 ```
 mvn clean install
-mvn clean install -f transport-pom.xml
 ```
 
 and copy war files (site and transport)
