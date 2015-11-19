@@ -74,10 +74,5 @@
             <artifactId>spring-webmvc</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>servlet-map</artifactId>
-        </dependency>
-
     </dependencies>
 </project>
