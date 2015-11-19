@@ -15,16 +15,24 @@ import fi.nls.oskari.log.Logger;
 public class UserController {
 
     private final static Logger log = LogFactory.getLogger(UserController.class);
-   
+    
     public UserController() {
     	
     }
     
+    /**
+     * "passwordReset" jsp view should ALWAYS be used by user to reset password
+     * @param model
+     * @param uuid
+     * @return
+     */
     @RequestMapping("/resetPassword/{uuid}")
-    public String getMap(Model model, @ModelAttribute String uuid) {
-         System.out.println("Test2");
-         return null;
+    public String resetPassword(
+    		Model model,
+    		@ModelAttribute String uuid) {
+                   
+         return "passwordReset";
     }
-    
+   
 }
 
