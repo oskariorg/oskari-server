@@ -39,7 +39,6 @@
             <artifactId>metrics-jvm</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -69,6 +68,16 @@
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.5.4</version>
 		</dependency>
+		
+		 <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>fi.nls.oskari</groupId>
+            <artifactId>servlet-map</artifactId>
+        </dependency>
 
     </dependencies>
 </project>
