@@ -11,6 +11,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,9 +48,9 @@ public class PasswordResetHandler extends ActionHandler {
     	email.setExpiryTimestamp(createExpiryTime());
     	
     	IbatisEmailService emailService = new IbatisEmailService();
-    	emailService.addEmail(email);
+    	//emailService.addEmail(email);
     	
-    	sendEmail(requestEmail, uuid);
+    	sendEmail(requestEmail, uuid, params.getRequest());
         JSONObject result = new JSONObject();
         try {
             result.put("status", "SUCCESS");
@@ -74,8 +75,9 @@ public class PasswordResetHandler extends ActionHandler {
      * 		oskari.email.host=smtp.domain.com
      * @param to Receiver's email address
      * @param uuid Token number to be sent with email.
+     * @param request HttpServletRequest.
      */
-    private void sendEmail(String to, String uuid){
+    private void sendEmail(String to, String uuid, HttpServletRequest request){
     	String from;
     	Properties properties;
     	
@@ -94,11 +96,17 @@ public class PasswordResetHandler extends ActionHandler {
     		 mimeMessage.setFrom(new InternetAddress(from));
     		 mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
     		 mimeMessage.setSubject("TEST");
-    		 mimeMessage.setContent("<h1>Token : " + uuid + " </h1>", "text/html" );
+    		 String serverAddress = getServerAddress(request);
+    		 mimeMessage.setContent("<h3> Please use this link to reset your password : "
+    				 + serverAddress + "/resetPassword/" + uuid + " </h3>", "text/html" );
              Transport.send(mimeMessage);
           } catch (MessagingException ex) {
              ex.printStackTrace();
           }
+    }
+    
+    private final String getServerAddress(final HttpServletRequest request) {
+    	return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
 
 }
