@@ -13,4 +13,8 @@ public class IbatisEmailService  extends BaseIbatisService<Email>{
 	public Long addEmail(Email email) {
         return queryForObject(getNameSpace() + ".addEmail", email);
     }
+	
+	public Email findByToken(String uuid) {
+        return queryForObject(getNameSpace() + ".findByToken", uuid);
+    }
 }
