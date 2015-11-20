@@ -30,6 +30,12 @@
             #expiryTimestamp#
         )
         RETURNING id
-    </statement>   
+    </statement>
+    
+     <select id="findByToken" parameterClass="String" resultMap="EmailResult">
+        SELECT id, user_name, email, uuid, expiry_timestamp 
+        FROM oskari_email_expiry 
+        WHERE uuid = #uuid#
+    </select>   
 
 </sqlMap>
