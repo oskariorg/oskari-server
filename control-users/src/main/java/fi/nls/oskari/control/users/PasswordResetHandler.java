@@ -1,9 +1,17 @@
 package fi.nls.oskari.control.users;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -30,6 +38,10 @@ public class PasswordResetHandler extends ActionHandler {
 
 	private String requestEmail = "";
 	
+	private static final String PARAM_UUID = "uuid";
+	private static final String PARAM_EMAIL = "email";
+	private static final String PARAM_PASSWORD = "password";
+	
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         // TODO should only handle POST requests (but best to do that last, it is easier to develop/debug with GET requests)
@@ -38,20 +50,60 @@ public class PasswordResetHandler extends ActionHandler {
         // Return SUCCESS status. Do this even if nothing was sent because client should not be allowed to know whether the
         // provided email address exists in the database.
     	
-    	requestEmail = params.getRequest().getParameter("email");
-    	String uuid = UUID.randomUUID().toString();
+    	requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
+    	if (requestEmail != null && !requestEmail.isEmpty()) {
+    		String uuid = UUID.randomUUID().toString();
+        	
+        	Email email = new Email();
+        	email.setEmail(requestEmail);
+        	email.setScreenname("Test");
+        	email.setUuid(uuid);
+        	email.setExpiryTimestamp(createExpiryTime());
+        	
+        	IbatisEmailService emailService = new IbatisEmailService();
+        	emailService.addEmail(email);
+        	
+        	sendEmail(requestEmail, uuid, params.getRequest());
+            
+    	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
+    		InputStream inputStream;
+    		Email tempEmail = new Email();
+    		try {
+				inputStream = params.getRequest().getInputStream();
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	            byte[] buffer = new byte[32];
+	            int i = 0;
+	            while (i >= 0) {
+	            	i = inputStream.read(buffer);
+	                if (i >= 0)
+	                	outputStream.write(buffer, 0, i);
+	            }
+	            String jsonString = new String(outputStream.toByteArray(), "UTF-8");
+	            Map<String,String> jsonObjectMap = createJsonObjectMap(jsonString);
+	            
+	            //JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
+	            if (jsonObjectMap.size() > 2) {
+	            	 ResponseHelper.writeError(params);
+	            }
+	            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
+	        		if(entry.getKey().equals(PARAM_PASSWORD)){
+	        			tempEmail.setPassword(entry.getValue());
+	        		}
+	        		if(entry.getKey().equals(PARAM_UUID)){
+	        			tempEmail.setUuid(entry.getValue());
+	        		}
+	        	}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    		
+    		System.out.println(tempEmail.getPassword());
+    			    		
+    	} else {
+    		
+    	}
     	
-    	Email email = new Email();
-    	email.setEmail(requestEmail);
-    	email.setScreenname("Test");
-    	email.setUuid(uuid);
-    	email.setExpiryTimestamp(createExpiryTime());
-    	
-    	IbatisEmailService emailService = new IbatisEmailService();
-    	//emailService.addEmail(email);
-    	
-    	sendEmail(requestEmail, uuid, params.getRequest());
-        JSONObject result = new JSONObject();
+    	JSONObject result = new JSONObject();
         try {
             result.put("status", "SUCCESS");
         } catch (JSONException e) {
@@ -108,5 +160,24 @@ public class PasswordResetHandler extends ActionHandler {
     private final String getServerAddress(final HttpServletRequest request) {
     	return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
+    
+    private final Map<String, String> createJsonObjectMap(String query) throws UnsupportedEncodingException {
+        String[] params = query.split(",");
+        Map<String, String> jsonObjectMap = new HashMap<String, String>();
+        for (String param : params) {
+            String[] split = param.split(":");
+            jsonObjectMap.put(getStringWithoutQuotes(split[0]), getStringWithoutQuotes(split[1]));
+        }
+        return jsonObjectMap;
+    }
 
+    private final String getStringWithoutQuotes(final String value) {
+    	String regex = "\"([^\"]*)\"";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.find())
+            return matcher.group(1);
+        else
+        	return "";
+    }
 }
