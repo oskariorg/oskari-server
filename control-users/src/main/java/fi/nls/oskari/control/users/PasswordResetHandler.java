@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -66,22 +67,33 @@ public class PasswordResetHandler extends ActionHandler {
         	sendEmail(requestEmail, uuid, params.getRequest());
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
-    		Email tempEmail = new Email();
+    		Email email = new Email();
             String jsonString = readJsonFromStream(params.getRequest());
             Map<String, String> jsonObjectMap;
 			try {
 				jsonObjectMap = createJsonObjectMap(jsonString);
 				  //JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
 	            if (jsonObjectMap.size() != 2) {
-	            	 ResponseHelper.writeError(params);
+	            	 ResponseHelper.writeError(params, "JSON object MUST contain only 2 attributes:"
+	            	 		+ " 'uuid' and 'password'");
 	            	 return;
 	            }
 	            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
-	            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)){
+	            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)) {
 	            		if(entry.getKey().equals(PARAM_PASSWORD)) {
-		        			tempEmail.setPassword(entry.getValue());
+		        			email.setPassword(entry.getValue());
 	            		} else {
-	            			tempEmail.setUuid(entry.getValue());
+	            			String uuid = entry.getValue();
+	            			Email tempEmail = emailService.findByToken(uuid);
+	            			if(tempEmail == null)
+	            				throw new ActionException("UUID is not found.");
+	            			
+	            			if(tempEmail.getExpiryTimestamp().after(new Date())) {
+	            				email.setUuid(uuid);
+	            			} else {
+	            				 ResponseHelper.writeError(params, "Invalid UUID token");
+	            				 return;
+	            			}
 	            		}
 	            	} else {
 	            		 ResponseHelper.writeError(params);
@@ -92,6 +104,8 @@ public class PasswordResetHandler extends ActionHandler {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
+			
+			
 			
     	} else {
     		
