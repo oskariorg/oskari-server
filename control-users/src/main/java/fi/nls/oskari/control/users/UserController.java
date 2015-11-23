@@ -44,11 +44,11 @@ public class UserController {
          
          ModelAndView mv = new ModelAndView("passwordReset");
          if (email.getExpiryTimestamp().after(new Date())) {
-        	 System.out.println("valid");
              mv.addObject("uuid", email.getUuid());
          }
-         else
-        	 System.out.println("Invalid");
+         else{
+        	 
+         }
         
          return mv;
     }

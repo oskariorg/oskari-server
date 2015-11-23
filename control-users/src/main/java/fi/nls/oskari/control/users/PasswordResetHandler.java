@@ -22,6 +22,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,7 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -67,7 +69,7 @@ public class PasswordResetHandler extends ActionHandler {
         	sendEmail(requestEmail, uuid, params.getRequest());
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
-    		Email email = new Email();
+    		Email token = new Email();
             String jsonString = readJsonFromStream(params.getRequest());
             Map<String, String> jsonObjectMap;
 			try {
@@ -81,7 +83,7 @@ public class PasswordResetHandler extends ActionHandler {
 	            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
 	            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)) {
 	            		if(entry.getKey().equals(PARAM_PASSWORD)) {
-		        			email.setPassword(entry.getValue());
+		        			token.setPassword(entry.getValue());
 	            		} else {
 	            			String uuid = entry.getValue();
 	            			Email tempEmail = emailService.findByToken(uuid);
@@ -89,8 +91,8 @@ public class PasswordResetHandler extends ActionHandler {
 	            				throw new ActionException("UUID is not found.");
 	            			
 	            			if(tempEmail.getExpiryTimestamp().after(new Date())) {
-	            				email.setUuid(uuid);
-	            				email.setEmail(tempEmail.getEmail());
+	            				token.setUuid(uuid);
+	            				token.setEmail(tempEmail.getEmail());
 	            			} else {
 	            				 ResponseHelper.writeError(params, "Invalid UUID token");
 	            				 return;
@@ -104,9 +106,19 @@ public class PasswordResetHandler extends ActionHandler {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			String username = emailService.findUsernameForEmail(email.getEmail());
-			System.out.println("Username: " + username);
 						
+			String username = emailService.findUsernameForEmail(token.getEmail());
+			IbatisUserService userService = new IbatisUserService();
+			if (username != null && !username.isEmpty()) {
+				String password = userService.getPassword(username);
+				if (password == null)
+					throw new ActionException("Username is not found in Jaas users.");
+				
+				//TODO: Need to change encryption method to BCrypt. Currently oskari_jaas_users table has password field of length of 50, which is not enough of BCrypt. Default(60)
+				final String hashedPass = "MD5:" + DigestUtils.md5Hex(token.getPassword());
+				userService.updatePassword(username, hashedPass);
+			}
+				
     	} else {
     		
     	}
