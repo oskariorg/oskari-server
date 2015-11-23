@@ -15,6 +15,15 @@ Published maps are now checked for referer domain correctly when opened.
  To disable check you can define unrestricted domains in oskari-ext.properties (* = allow all):
 
     view.published.usage.unrestrictedDomains=localhost, my.domain.com
+    
+### Transport
+
+New property for wfs read timeout in transport-ext.properties
+
+#### Wfs read response timeout default is 30000 ms (use together with oskari.transport.job.timeoutms)
+oskari.wfs.read.timeout=20000
+#### Transport Job execute timeout  default is 15000 ms
+oskari.transport.job.timeoutms=25000
 
 ## 1.33.2
 
