@@ -36,6 +36,12 @@
         SELECT id, user_name, email, uuid, expiry_timestamp 
         FROM oskari_email_expiry 
         WHERE uuid = #uuid#
-    </select>   
+    </select>
+    
+     <select id="findUsernameForEmail" parameterClass="String" resultClass="String">
+        SELECT user_name 
+        FROM oskari_users 
+        WHERE email = #email#
+    </select>
 
 </sqlMap>

@@ -90,6 +90,7 @@ public class PasswordResetHandler extends ActionHandler {
 	            			
 	            			if(tempEmail.getExpiryTimestamp().after(new Date())) {
 	            				email.setUuid(uuid);
+	            				email.setEmail(tempEmail.getEmail());
 	            			} else {
 	            				 ResponseHelper.writeError(params, "Invalid UUID token");
 	            				 return;
@@ -99,14 +100,13 @@ public class PasswordResetHandler extends ActionHandler {
 	            		 ResponseHelper.writeError(params);
 		            	 return;
 	            	}
-	        		
 	        	}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			
-			
-			
+			String username = emailService.findUsernameForEmail(email.getEmail());
+			System.out.println("Username: " + username);
+						
     	} else {
     		
     	}
