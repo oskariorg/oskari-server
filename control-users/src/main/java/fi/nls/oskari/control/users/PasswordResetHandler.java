@@ -51,54 +51,48 @@ public class PasswordResetHandler extends ActionHandler {
         // provided email address exists in the database.
     	
     	requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
+    	IbatisEmailService emailService = new IbatisEmailService();
+    	
     	if (requestEmail != null && !requestEmail.isEmpty()) {
     		String uuid = UUID.randomUUID().toString();
         	
         	Email email = new Email();
         	email.setEmail(requestEmail);
-        	email.setScreenname("Test");
         	email.setUuid(uuid);
         	email.setExpiryTimestamp(createExpiryTime());
         	
-        	IbatisEmailService emailService = new IbatisEmailService();
         	emailService.addEmail(email);
         	
         	sendEmail(requestEmail, uuid, params.getRequest());
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
-    		InputStream inputStream;
     		Email tempEmail = new Email();
-    		try {
-				inputStream = params.getRequest().getInputStream();
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	            byte[] buffer = new byte[32];
-	            int i = 0;
-	            while (i >= 0) {
-	            	i = inputStream.read(buffer);
-	                if (i >= 0)
-	                	outputStream.write(buffer, 0, i);
-	            }
-	            String jsonString = new String(outputStream.toByteArray(), "UTF-8");
-	            Map<String,String> jsonObjectMap = createJsonObjectMap(jsonString);
-	            
-	            //JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
-	            if (jsonObjectMap.size() > 2) {
+            String jsonString = readJsonFromStream(params.getRequest());
+            Map<String, String> jsonObjectMap;
+			try {
+				jsonObjectMap = createJsonObjectMap(jsonString);
+				  //JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
+	            if (jsonObjectMap.size() != 2) {
 	            	 ResponseHelper.writeError(params);
+	            	 return;
 	            }
 	            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
-	        		if(entry.getKey().equals(PARAM_PASSWORD)){
-	        			tempEmail.setPassword(entry.getValue());
-	        		}
-	        		if(entry.getKey().equals(PARAM_UUID)){
-	        			tempEmail.setUuid(entry.getValue());
-	        		}
+	            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)){
+	            		if(entry.getKey().equals(PARAM_PASSWORD)) {
+		        			tempEmail.setPassword(entry.getValue());
+	            		} else {
+	            			tempEmail.setUuid(entry.getValue());
+	            		}
+	            	} else {
+	            		 ResponseHelper.writeError(params);
+		            	 return;
+	            	}
+	        		
 	        	}
-			} catch (IOException e) {
+			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-    		
-    		System.out.println(tempEmail.getPassword());
-    			    		
+			
     	} else {
     		
     	}
@@ -159,6 +153,26 @@ public class PasswordResetHandler extends ActionHandler {
     
     private final String getServerAddress(final HttpServletRequest request) {
     	return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    }
+    
+    private final String readJsonFromStream(HttpServletRequest request) {
+    	InputStream inputStream;
+    	String jsonString = "";
+    	try {
+			inputStream = request.getInputStream();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[32];
+            int i = 0;
+            while (i >= 0) {
+            	i = inputStream.read(buffer);
+                if (i >= 0)
+                	outputStream.write(buffer, 0, i);
+            }
+            jsonString = new String(outputStream.toByteArray(), "UTF-8");
+    	} catch (IOException e) {
+				e.printStackTrace();
+		}
+        return jsonString;
     }
     
     private final Map<String, String> createJsonObjectMap(String query) throws UnsupportedEncodingException {
