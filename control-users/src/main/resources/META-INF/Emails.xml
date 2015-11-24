@@ -32,16 +32,22 @@
         RETURNING id
     </statement>
     
-     <select id="findByToken" parameterClass="String" resultMap="EmailResult">
+    <select id="findByToken" parameterClass="String" resultMap="EmailResult">
         SELECT id, user_name, email, uuid, expiry_timestamp 
         FROM oskari_email_expiry 
         WHERE uuid = #uuid#
     </select>
     
-     <select id="findUsernameForEmail" parameterClass="String" resultClass="String">
+    <select id="findUsernameForEmail" parameterClass="String" resultClass="String">
         SELECT user_name 
         FROM oskari_users 
         WHERE email = #email#
+    </select>
+    
+    <select id="findUsernameForLogin" parameterClass="String" resultClass="String">
+        SELECT login 
+        FROM oskari_jaas_users 
+        WHERE login = #user_name#
     </select>
 
 </sqlMap>

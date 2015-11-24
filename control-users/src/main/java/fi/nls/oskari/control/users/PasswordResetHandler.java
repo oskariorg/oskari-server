@@ -45,6 +45,8 @@ public class PasswordResetHandler extends ActionHandler {
 	private static final String PARAM_EMAIL = "email";
 	private static final String PARAM_PASSWORD = "password";
 	
+	private final IbatisEmailService emailService = new IbatisEmailService();
+	
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         // TODO should only handle POST requests (but best to do that last, it is easier to develop/debug with GET requests)
@@ -54,19 +56,19 @@ public class PasswordResetHandler extends ActionHandler {
         // provided email address exists in the database.
     	
     	requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
-    	IbatisEmailService emailService = new IbatisEmailService();
     	
     	if (requestEmail != null && !requestEmail.isEmpty()) {
-    		String uuid = UUID.randomUUID().toString();
-        	
-        	Email email = new Email();
-        	email.setEmail(requestEmail);
-        	email.setUuid(uuid);
-        	email.setExpiryTimestamp(createExpiryTime());
-        	
-        	emailService.addEmail(email);
-        	
-        	sendEmail(requestEmail, uuid, params.getRequest());
+    		if (isUsernameExistsForLogin(requestEmail)) {
+    			String uuid = UUID.randomUUID().toString();
+            	Email email = new Email();
+            	email.setEmail(requestEmail);
+            	email.setUuid(uuid);
+            	email.setExpiryTimestamp(createExpiryTime());
+            	emailService.addEmail(email);
+            	sendEmail(requestEmail, uuid, params.getRequest());
+    		} else {
+    			// TODO: What should be done if username doesn't exist.
+    		}
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
     		Email token = new Email();
@@ -140,7 +142,28 @@ public class PasswordResetHandler extends ActionHandler {
         Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
         return expiryTime;
     }
-
+    
+    /**
+     * Checks if the username exists for login, for the email Address being sent.
+     * @param emailAddress
+     * @return
+     * @throws ActionException
+     */
+    private final boolean isUsernameExistsForLogin(final String emailAddress) throws ActionException {
+    	// Retrieves username , if exists in oskari_users table.
+    	String username = emailService.findUsernameForEmail(emailAddress);
+    	if (username == null)
+    		throw new ActionException("Username is not found.");
+    	
+    	// Retrieves username for login, if exists in oskari_jaas_users table.
+    	String loginUsername = emailService.findUsernameForLogin(username);
+    	if (loginUsername == null)
+    		return false;
+    	else
+    		return true;
+    }
+    
+    
     /**
      * While sending email smtp host and sender should be added to oskari-ext.properties
      * e.g: oskari.email.sender=abc@def.com
