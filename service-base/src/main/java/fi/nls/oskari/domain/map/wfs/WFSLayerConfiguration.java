@@ -115,7 +115,7 @@ public class WFSLayerConfiguration {
     private JSONObject tileBuffer;
 	private String WMSLayerId;
     private String wps_params;  // WPS params for WFS layer eg {input_type:gs_vector}
-    private int templateModelId;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
+    private int templateModelId = 0;  //id of portti_wfs_template_model row (FE configs when jobtype=feature-engine
     private String jobType;
     private String requestImpulse;
     private JSONObject attributes = new JSONObject();

@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.nls.oskari</groupId>
         <artifactId>oskari-parent</artifactId>
-        <version>1.33.2</version>
+        <version>1.34.0</version>
     </parent>
 
     <groupId>fi.nls.oskari</groupId>

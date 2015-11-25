@@ -35,6 +35,7 @@ public class OskariDatabaseSecurityConfig extends WebSecurityConfigurerAdapter {
  */
         http.authenticationProvider( new OskariAuthenticationProvider() );
         http.csrf().disable();
+        http.headers().frameOptions().disable();
 
         final String loginurl = env.getLoginUrl();
         http

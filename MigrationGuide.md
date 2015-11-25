@@ -1,5 +1,16 @@
 # Migration guide
 
+## 1.34.0
+
+A new publisher template has been added: content-resources/src/main/resources/json/views/ol3-publisher-template-view.json.
+This can be inserted to database and configured as a publish template in oskari-ext.properties to use Openlayers 3 as the
+map-engine for published maps:
+
+    view.template.publish=[view id]
+
+This will affect all new maps that are published after the change. The previous ones will remain the same. If a view 
+ that is published earlier is edited and saved it will use the new publish template.
+
 ## 1.33.0
 
 The sample application replaces publisher bundle with a refactored version named publisher2. This needs metadata to be

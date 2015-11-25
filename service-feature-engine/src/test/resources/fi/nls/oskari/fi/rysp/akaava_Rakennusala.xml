@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:akaava="http://www.paikkatietopalvelu.fi/gml/asemakaava" xmlns:yht="http://www.paikkatietopalvelu.fi/gml/yhteiset" xmlns:tilastot="http://www.ymparisto.fi" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd http://www.tekla.com/schemas/kuntagml http://opaskartta.turku.fi/TeklaOGCWeb/WFS.ashx?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;typeName=akaava:Rakennusala " timeStamp="2015-10-25T21:24:39+02:00" numberOfFeatures="4">
+    <gml:boundedBy>
+        <gml:Envelope srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+            <gml:lowerCorner>240186.571 6710979.606</gml:lowerCorner>
+            <gml:upperCorner>240265.023 6711059.237</gml:upperCorner>
+        </gml:Envelope>
+    </gml:boundedBy><gml:featureMember>
+    <akaava:Rakennusala gml:id="Rakennusala.229489291">
+        <akaava:tunnus>229489291</akaava:tunnus>
+        <akaava:kohdekoodi>11000</akaava:kohdekoodi>
+        <akaava:kaavatunnus>85330/2007</akaava:kaavatunnus>
+        <akaava:kaavamerkinta>Rakennusala</akaava:kaavamerkinta>
+        <akaava:poistettava>false</akaava:poistettava>
+        <akaava:maanalainen>false</akaava:maanalainen>
+        <akaava:kohteenvaihe>lainvoimainen</akaava:kohteenvaihe>
+        <akaava:ymparistoministerionkoodi codeSpace="YM opas 12">113</akaava:ymparistoministerionkoodi>
+        <akaava:sijainti>
+            <akaava:AlueSijainti>
+                <akaava:reunaviiva>
+                    <gml:LineString>
+                        <gml:pos>240208.354 6711035.416</gml:pos>
+                        <gml:pos>240220.901 6711028.081</gml:pos>
+                        <gml:pos>240209.730 6711008.970</gml:pos>
+                        <gml:pos>240203.685 6711012.504</gml:pos>
+                        <gml:pos>240199.031 6711004.545</gml:pos>
+                        <gml:pos>240199.879 6710980.037</gml:pos>
+                        <gml:pos>240187.380 6710979.606</gml:pos>
+                        <gml:pos>240186.571 6711003.051</gml:pos>
+                        <gml:pos>240204.241 6711033.280</gml:pos>
+                        <gml:pos>240208.354 6711035.416</gml:pos>
+                    </gml:LineString>
+                </akaava:reunaviiva>
+            </akaava:AlueSijainti>
+        </akaava:sijainti>
+        <akaava:sijaintiepavarmuus>0.15</akaava:sijaintiepavarmuus>
+        <akaava:luontitapa>Digitointi</akaava:luontitapa>
+        <akaava:sitova>sitova</akaava:sitova>
+        <akaava:tyyppi>rakennusala</akaava:tyyppi>
+    </akaava:Rakennusala>
+</gml:featureMember><gml:featureMember>
+    <akaava:Rakennusala gml:id="Rakennusala.225068154">
+        <akaava:tunnus>225068154</akaava:tunnus>
+        <akaava:kohdekoodi>11000</akaava:kohdekoodi>
+        <akaava:kaavatunnus>8532/2004</akaava:kaavatunnus>
+        <akaava:kaavamerkinta>Rakennusala</akaava:kaavamerkinta>
+        <akaava:poistettava>false</akaava:poistettava>
+        <akaava:maanalainen>false</akaava:maanalainen>
+        <akaava:kohteenvaihe>lainvoimainen</akaava:kohteenvaihe>
+        <akaava:ymparistoministerionkoodi codeSpace="YM opas 12">113</akaava:ymparistoministerionkoodi>
+        <akaava:sijainti>
+            <akaava:AlueSijainti>
+                <akaava:reunaviiva>
+                    <gml:LineString>
+                        <gml:pos>240261.473 6711059.237</gml:pos>
+                        <gml:pos>240258.979 6711056.194</gml:pos>
+                        <gml:pos>240259.582 6711055.699</gml:pos>
+                        <gml:pos>240258.517 6711054.399</gml:pos>
+                        <gml:pos>240261.329 6711052.118</gml:pos>
+                        <gml:pos>240265.023 6711056.657</gml:pos>
+                        <gml:pos>240261.473 6711059.237</gml:pos>
+                    </gml:LineString>
+                </akaava:reunaviiva>
+            </akaava:AlueSijainti>
+        </akaava:sijainti>
+        <akaava:sijaintiepavarmuus>0.15</akaava:sijaintiepavarmuus>
+        <akaava:luontitapa>Digitointi</akaava:luontitapa>
+        <akaava:sitova>sitova</akaava:sitova>
+        <akaava:tyyppi>rakennusala</akaava:tyyppi>
+    </akaava:Rakennusala>
+</gml:featureMember><gml:featureMember>
+    <akaava:Rakennusala gml:id="Rakennusala.229593828">
+        <akaava:tunnus>229593828</akaava:tunnus>
+        <akaava:kohdekoodi>11028</akaava:kohdekoodi>
+        <akaava:kaavatunnus>85325/1984</akaava:kaavatunnus>
+        <akaava:kaavamerkinta>Rakennusala</akaava:kaavamerkinta>
+        <akaava:poistettava>false</akaava:poistettava>
+        <akaava:maanalainen>false</akaava:maanalainen>
+        <akaava:kohteenvaihe>lainvoimainen</akaava:kohteenvaihe>
+        <akaava:ymparistoministerionkoodi codeSpace="YM opas 12">113</akaava:ymparistoministerionkoodi>
+        <akaava:sijainti>
+            <akaava:AlueSijainti>
+                <akaava:alue>
+                    <gml:Polygon>
+                        <gml:exterior>
+                            <gml:LinearRing>
+                                <gml:pos>240187.380 6710979.606</gml:pos>
+                                <gml:pos>240186.571 6711003.051</gml:pos>
+                                <gml:pos>240204.241 6711033.280</gml:pos>
+                                <gml:pos>240208.354 6711035.416</gml:pos>
+                                <gml:pos>240220.901 6711028.081</gml:pos>
+                                <gml:pos>240209.730 6711008.970</gml:pos>
+                                <gml:pos>240203.685 6711012.504</gml:pos>
+                                <gml:pos>240199.031 6711004.545</gml:pos>
+                                <gml:pos>240199.879 6710980.037</gml:pos>
+                                <gml:pos>240187.380 6710979.606</gml:pos>
+                            </gml:LinearRing>
+                        </gml:exterior>
+                    </gml:Polygon>
+                </akaava:alue>
+            </akaava:AlueSijainti>
+        </akaava:sijainti>
+        <akaava:sijaintiepavarmuus>0.15</akaava:sijaintiepavarmuus>
+        <akaava:sitova>sitova</akaava:sitova>
+    </akaava:Rakennusala>
+</gml:featureMember><gml:featureMember>
+    <akaava:Rakennusala gml:id="Rakennusala.225188019">
+        <akaava:tunnus>225188019</akaava:tunnus>
+        <akaava:kohdekoodi>11036</akaava:kohdekoodi>
+        <akaava:kaavatunnus>8532/2004</akaava:kaavatunnus>
+        <akaava:kaavamerkinta>Rakennusala</akaava:kaavamerkinta>
+        <akaava:poistettava>false</akaava:poistettava>
+        <akaava:maanalainen>false</akaava:maanalainen>
+        <akaava:kohteenvaihe>lainvoimainen</akaava:kohteenvaihe>
+        <akaava:ymparistoministerionkoodi codeSpace="YM opas 12">113</akaava:ymparistoministerionkoodi>
+        <akaava:sijainti>
+            <akaava:AlueSijainti>
+                <akaava:alue>
+                    <gml:Polygon>
+                        <gml:exterior>
+                            <gml:LinearRing>
+                                <gml:pos>240258.979 6711056.194</gml:pos>
+                                <gml:pos>240261.473 6711059.237</gml:pos>
+                                <gml:pos>240265.023 6711056.657</gml:pos>
+                                <gml:pos>240261.329 6711052.118</gml:pos>
+                                <gml:pos>240258.517 6711054.399</gml:pos>
+                                <gml:pos>240259.582 6711055.699</gml:pos>
+                                <gml:pos>240258.979 6711056.194</gml:pos>
+                            </gml:LinearRing>
+                        </gml:exterior>
+                    </gml:Polygon>
+                </akaava:alue>
+            </akaava:AlueSijainti>
+        </akaava:sijainti>
+        <akaava:sijaintiepavarmuus>0.15</akaava:sijaintiepavarmuus>
+        <akaava:sitova>sitova</akaava:sitova>
+    </akaava:Rakennusala>
+</gml:featureMember></wfs:FeatureCollection>

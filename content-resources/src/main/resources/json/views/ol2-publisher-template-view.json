@@ -1,14 +1,15 @@
 {
-    "name" : "Publisher template for OL3",
+    "name" : "Publisher template for OL2",
     "type" : "PUBLISH",
     "default" : false,
     "public" : false,
     "oskari" : {
-        "application" : "servlet_published_ol3",
+        "application" : "servlet",
         "page" : "published",
         "development_prefix" : "/applications/sample"
     },
     "bundles" : [
+        { "id" : "openlayers-default-theme" },
         {
             "id": "mapfull",
             "startup": {
@@ -17,25 +18,25 @@
                 "metadata": {
                     "Import-Bundle": {
                         "mapwmts": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "mapwfs2": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "mapanalysis": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "mapuserlayers": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
-                        },
-                        "maparcgis": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "mapstats": {
-                          "bundlePath": "/Oskari/packages/mapping/ol3/"
+                          "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
-                        "mapmodule": {
-                            "bundlePath": "/Oskari/packages/mapping/ol3/"
+                        "maparcgis": {
+                            "bundlePath": "/Oskari/packages/arcgis/bundle/"
+                        },
+                        "mapmodule-plugin": {
+                            "bundlePath": "/Oskari/packages/framework/bundle/"
                         },
                         "service-base": {
                             "bundlePath": "/Oskari/packages/framework/bundle/"
@@ -111,15 +112,11 @@
                     }, {
                         "id": "Oskari.mapframework.wmts.mapmodule.plugin.WmtsLayerPlugin"
                     }, {
-                        "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
+                      "id": "Oskari.mapframework.bundle.mapstats.plugin.StatsLayerPlugin"
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.RealtimePlugin"
                     }, {
                         "id": "Oskari.mapframework.bundle.mapmodule.plugin.LogoPlugin"
-                    }, {
-                        "id" : "Oskari.mapframework.bundle.myplacesimport.plugin.UserLayersLayerPlugin"
-                    }, {
-                        "id" : "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin"
                     }, {
                         "id": "Oskari.arcgis.bundle.maparcgis.plugin.ArcGisLayerPlugin"
                     }, {
@@ -141,69 +138,47 @@
                 "selectedLayers": []
             }
         },
-      {
-        "id" : "infobox",
-        "startup": {
-          "title": "Infobox OL3",
-          "bundlename": "infobox",
-          "metadata": {
-            "Import-Bundle": {
-              "infobox": {
-                "bundlePath": "/Oskari/packages/mapping/ol3/"
-              }
+        {
+            "id" : "infobox"
+        },
+        {
+            "id" : "toolbar",
+            "config" : {
+                "basictools": {
+                    "measurearea": false,
+                    "measureline": false,
+                    "select": false,
+                    "zoombox": false
+
+                },
+                "history": {
+                    "history_back": false,
+                    "history_forward": false,
+                    "reset": false
+                },
+                "viewtools": {
+                    "link": false
+                },
+                "toolbarId": "PublisherToolbar",
+                "hasContentContainer": true,
+                "defaultToolbarContainer": ".publishedToolbarContent"
             }
-          }
-        }
-      },
-      {
-        "id" : "toolbar",
-        "startup": {
-          "title": "Toolbar OL3",
-          "bundlename": "toolbar",
-          "metadata": {
-            "Import-Bundle": {
-              "toolbar": {
-                "bundlePath": "/Oskari/packages/mapping/ol3/"
+        },
+        { "id" : "publishedstatehandler" },
+        { "id" : "drawtools",
+          "config" : {},
+          "state" : {},
+          "startup": {
+            "title": "Drawtools OL2",
+            "bundlename": "drawtools",
+            "metadata": {
+              "drawtools": {
+                "bundlePath": "/Oskari/packages/mapping/ol2/"
               }
             }
           }
         },
-        "config" : {
-          "basictools": {
-            "measurearea": false,
-            "measureline": false,
-            "select": false,
-            "zoombox": false
-
-          },
-          "history": {
-            "history_back": false,
-            "history_forward": false,
-            "reset": false
-          },
-          "viewtools": {
-            "link": false
-          },
-          "toolbarId": "PublisherToolbar",
-          "hasContentContainer": true,
-          "defaultToolbarContainer": ".publishedToolbarContent"
-        }
-      },
-      { "id" : "publishedstatehandler" },
-      { "id" : "drawtools",
-        "startup": {
-          "title": "Drawtools OL3",
-          "bundlename": "drawtools",
-          "metadata": {
-            "Import-Bundle": {
-              "drawtools": {
-                "bundlePath": "/Oskari/packages/mapping/ol3/"
-              }
-            }
-          }
-        }
-      },
-      { "id" : "routingService" },
-      { "id" : "rpc" }
+        { "id" : "routingService" },
+        { "id" : "rpc" }
     ]
 }

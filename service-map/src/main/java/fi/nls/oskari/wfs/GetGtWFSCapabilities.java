@@ -42,6 +42,7 @@ public class GetGtWFSCapabilities {
     private static final String KEY_LAYERS_WITH_ERRORS = "layersWithErrors";
     private static final String DEFAULT_VERSION = "1.1.0";
     private static final String WFS2_0_0_VERSION = "2.0.0";
+    private static final String DEFAULT_GEOMETRY_NAME = "geometry";
     private static final LayerJSONFormatterWFS FORMATTER = new LayerJSONFormatterWFS();
     private static final List<String> GEOMTYPES = new ArrayList<>(Arrays.asList("gml:PolygonPropertyType", "gml:SurfacePropertyType",
             "gml:PolyhedralSurfacePropertyType", "gml:TriangulatedSurfacePropertyType", "gml:TinPropertyType",
@@ -50,6 +51,10 @@ public class GetGtWFSCapabilities {
             "gml:PointPropertyType",
             "gml:MultiSurfacePropertyType",
             "gml:MultiPointPropertyType"));
+
+    //TODO: use resource file for config predefined uris
+    private static final Map<String,String>  uris = new HashMap<String,String>();
+
 
     /**
      * Get all WFS layers (featuretypes) data in JSON
@@ -790,9 +795,15 @@ public class GetGtWFSCapabilities {
 
             String nsuri = doc.getDocumentElement().getAttribute("targetNamespace");
 
+            if(nsuri == null || nsuri.isEmpty()){
+                // try to get uri via well known prefix mapping
+                nsuri = getPreDefinedUri(name);
+            }
+
             if (nsuri != null) {
                 ft.setNsUri(nsuri);
             }
+
             //Get Elements
             NodeList elements = doc.getDocumentElement().getElementsByTagName("xs:element");
             if (elements.getLength() == 0) {
@@ -804,7 +815,9 @@ public class GetGtWFSCapabilities {
             if (elements.getLength() == 0) {
                 elements = doc.getDocumentElement().getElementsByTagNameNS(null, "element");
             }
-            //Loop elements
+            //Loop elements get geometry property name
+            //Default
+            ft.setGeomPropertyName(DEFAULT_GEOMETRY_NAME);
 
             for (int i = 0; i < elements.getLength(); i++) {
 
@@ -887,7 +900,20 @@ public class GetGtWFSCapabilities {
 
         return val;
     }
+    public static String getPreDefinedUri(String name) {
+        String uri = null;
+        String prefix = name.split(":")[0];
+        //TODO: use resource file for config
+        uris.put("akaava","http://www.paikkatietopalvelu.fi/gml/asemakaava");
+        uris.put("kanta","http://www.paikkatietopalvelu.fi/gml/kantakartta");
+        uris.put("mkos","http://www.paikkatietopalvelu.fi/gml/opastavattiedot/osoitteet");
+        uris.put("mkok","http://www.paikkatietopalvelu.fi/gml/opastavattiedot/opaskartta");
+        uris.put("rakval","http://www.paikkatietopalvelu.fi/gml/rakennusvalvonta");
 
+        uri = uris.get(prefix);
+
+        return uri;
+    }
 
     public static class _FeatureType {
         private String name;

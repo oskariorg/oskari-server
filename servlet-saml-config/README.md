@@ -1,6 +1,6 @@
-# SAML supprot for oskari-server/servlet-map
+# SAML support for oskari-server/servlet-map
 
-Adds SAML-security module to the portlet. Out of the box authenticates against ssocircle.com if SAML is enabled.
+Adds SAML-security module for the servlet. Out of the box authenticates against ssocircle.com if SAML is enabled.
 
 Registering Oskari as Service Provider to an Identity provider:
 - define configuration in oskari-ext.properties (at least 'oskari.saml.sp.entityId'). Example properties below.
