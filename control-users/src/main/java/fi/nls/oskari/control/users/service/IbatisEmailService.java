@@ -1,5 +1,8 @@
 package fi.nls.oskari.control.users.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
@@ -24,5 +27,11 @@ public class IbatisEmailService  extends BaseIbatisService<Email>{
 	
 	public String findUsernameForLogin(String username) {
 		return (String) queryForRawObject(getNameSpace() + ".findUsernameForLogin", username);
+	}
+	
+	public void deleteEmailToken(String uuid) {
+		Map<String, String> params = new HashMap<String, String>(2);
+        params.put("uuid", uuid);
+	    delete(getNameSpace() + ".deleteEmailToken", params);
 	}
 }

@@ -32,13 +32,17 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("UserPasswordReset")
 public class PasswordResetHandler extends ActionHandler {
-
+	
+	private static final Logger log = LogFactory.getLogger(PasswordResetHandler.class);
+	
 	private String requestEmail = "";
 	
 	private static final String PARAM_UUID = "uuid";
@@ -67,7 +71,7 @@ public class PasswordResetHandler extends ActionHandler {
             	emailService.addEmail(email);
             	sendEmail(requestEmail, uuid, params.getRequest());
     		} else {
-    			// TODO: What should be done if username doesn't exist.
+    			log.info("Username for login doesn't exist for email address: " + requestEmail);
     		}
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
@@ -119,6 +123,8 @@ public class PasswordResetHandler extends ActionHandler {
 				//TODO: Need to change encryption method to BCrypt. Currently oskari_jaas_users table has password field of length of 50, which is not enough of BCrypt. Default(60)
 				final String hashedPass = "MD5:" + DigestUtils.md5Hex(token.getPassword());
 				userService.updatePassword(username, hashedPass);
+				//After password update, delete the entry related to token from database
+				emailService.deleteEmailToken(token.getUuid());
 			}
 				
     	} else {
@@ -153,7 +159,7 @@ public class PasswordResetHandler extends ActionHandler {
     	// Retrieves username , if exists in oskari_users table.
     	String username = emailService.findUsernameForEmail(emailAddress);
     	if (username == null)
-    		throw new ActionException("Username is not found.");
+    		throw new ActionException("Username for given email is not found.");
     	
     	// Retrieves username for login, if exists in oskari_jaas_users table.
     	String loginUsername = emailService.findUsernameForLogin(username);

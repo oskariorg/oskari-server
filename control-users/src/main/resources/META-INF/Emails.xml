@@ -49,5 +49,11 @@
         FROM oskari_jaas_users 
         WHERE login = #user_name#
     </select>
+    
+    <delete id="deleteEmailToken" parameterClass="java.util.HashMap">
+        DELETE 
+        FROM oskari_email_expiry 
+        WHERE uuid = #uuid#
+    </delete>
 
 </sqlMap>
