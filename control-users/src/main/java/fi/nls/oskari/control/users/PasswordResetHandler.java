@@ -9,17 +9,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -31,11 +24,12 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.model.Email;
+import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
+import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.user.IbatisUserService;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("UserPasswordReset")
@@ -48,8 +42,12 @@ public class PasswordResetHandler extends ActionHandler {
 	private static final String PARAM_UUID = "uuid";
 	private static final String PARAM_EMAIL = "email";
 	private static final String PARAM_PASSWORD = "password";
+	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Link for changing password";
+	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Please use this link to change "
+			+ "password. The link is active for ONLY 2 days.";
 	
 	private final IbatisEmailService emailService = new IbatisEmailService();
+	private final MailSenderService mailSenderService = new MailSenderService();
 	
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -64,61 +62,66 @@ public class PasswordResetHandler extends ActionHandler {
     	if (requestEmail != null && !requestEmail.isEmpty()) {
     		if (isUsernameExistsForLogin(requestEmail)) {
     			String uuid = UUID.randomUUID().toString();
-            	Email email = new Email();
-            	email.setEmail(requestEmail);
-            	email.setUuid(uuid);
-            	email.setExpiryTimestamp(createExpiryTime());
-            	emailService.addEmail(email);
-            	sendEmail(requestEmail, uuid, params.getRequest());
+            	Email emailToken = new Email();
+            	emailToken.setEmail(requestEmail);
+            	emailToken.setUuid(uuid);
+            	emailToken.setExpiryTimestamp(createExpiryTime());
+            	emailService.addEmail(emailToken);
+            	
+            	EmailMessage emailMessage = new EmailMessage();
+            	emailMessage.setTo(requestEmail);
+            	emailMessage.setSubject(EMAIL_SUBJECT_PASSWORD_CHANGE);
+            	emailMessage.setContent(EMAIL_CONTENT_PASSWORD_CHANGE);
+            	mailSenderService.sendEmail(emailMessage, uuid, params.getRequest());
+            	
     		} else {
     			log.info("Username for login doesn't exist for email address: " + requestEmail);
+    			return;
     		}
             
     	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
     		Email token = new Email();
             String jsonString = readJsonFromStream(params.getRequest());
-            Map<String, String> jsonObjectMap;
-			try {
-				jsonObjectMap = createJsonObjectMap(jsonString);
-				  //JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
-	            if (jsonObjectMap.size() != 2) {
-	            	 ResponseHelper.writeError(params, "JSON object MUST contain only 2 attributes:"
-	            	 		+ " 'uuid' and 'password'");
+            Map<String, String> jsonObjectMap = new HashMap<String, String>();           
+            jsonObjectMap = createJsonObjectMap(jsonString);
+			
+			//JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
+            if (jsonObjectMap.size() != 2) {
+            	 ResponseHelper.writeError(params, "JSON object MUST contain only 2 attributes:"
+            	 		+ " 'uuid' and 'password'");
+            	 return;
+            }
+            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
+            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)) {
+            		if(entry.getKey().equals(PARAM_PASSWORD)) {
+	        			token.setPassword(entry.getValue());
+            		} else {
+            			String uuid = entry.getValue();
+            			Email tempEmail = emailService.findByToken(uuid);
+            			if(tempEmail == null)
+            				throw new ActionException("UUID is not found.");
+            			
+            			if(tempEmail.getExpiryTimestamp().after(new Date())) {
+            				token.setUuid(uuid);
+            				token.setEmail(tempEmail.getEmail());
+            			} else {
+            				 ResponseHelper.writeError(params, "Invalid UUID token");
+            				 return;
+            			}
+            		}
+            	} else {
+            		 ResponseHelper.writeError(params, "JSON object MUST contain attributes: "
+            		 		+ "'uuid' and 'password'.");
 	            	 return;
-	            }
-	            for (Map.Entry<String, String> entry : jsonObjectMap.entrySet()) {
-	            	if(entry.getKey().equals(PARAM_PASSWORD) || entry.getKey().equals(PARAM_UUID)) {
-	            		if(entry.getKey().equals(PARAM_PASSWORD)) {
-		        			token.setPassword(entry.getValue());
-	            		} else {
-	            			String uuid = entry.getValue();
-	            			Email tempEmail = emailService.findByToken(uuid);
-	            			if(tempEmail == null)
-	            				throw new ActionException("UUID is not found.");
-	            			
-	            			if(tempEmail.getExpiryTimestamp().after(new Date())) {
-	            				token.setUuid(uuid);
-	            				token.setEmail(tempEmail.getEmail());
-	            			} else {
-	            				 ResponseHelper.writeError(params, "Invalid UUID token");
-	            				 return;
-	            			}
-	            		}
-	            	} else {
-	            		 ResponseHelper.writeError(params);
-		            	 return;
-	            	}
-	        	}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-						
+            	}
+        	}
+			
 			String username = emailService.findUsernameForEmail(token.getEmail());
 			IbatisUserService userService = new IbatisUserService();
 			if (username != null && !username.isEmpty()) {
 				String password = userService.getPassword(username);
 				if (password == null)
-					throw new ActionException("Username is not found in Jaas users.");
+					throw new ActionException("Username is not found as a login user.");
 				
 				//TODO: Need to change encryption method to BCrypt. Currently oskari_jaas_users table has password field of length of 50, which is not enough of BCrypt. Default(60)
 				final String hashedPass = "MD5:" + DigestUtils.md5Hex(token.getPassword());
@@ -127,7 +130,7 @@ public class PasswordResetHandler extends ActionHandler {
 				emailService.deleteEmailToken(token.getUuid());
 			}
 				
-    	} else {
+    	} /*else {
     		
     	}
     	
@@ -137,9 +140,13 @@ public class PasswordResetHandler extends ActionHandler {
         } catch (JSONException e) {
             throw new ActionException("Could not construct JSON", e);
         }
-        ResponseHelper.writeResponse(params, result);
+        ResponseHelper.writeResponse(params, result);*/
     }
     
+    /**
+     * Create timestamp for 2 days as expirytime.
+     * @return
+     */
     public Timestamp createExpiryTime(){
     	Calendar calender = Calendar.getInstance();
         Timestamp currentTime = new java.sql.Timestamp(calender.getTime().getTime());
@@ -169,47 +176,11 @@ public class PasswordResetHandler extends ActionHandler {
     		return true;
     }
     
-    
     /**
-     * While sending email smtp host and sender should be added to oskari-ext.properties
-     * e.g: oskari.email.sender=abc@def.com
-     * 		oskari.email.host=smtp.domain.com
-     * @param to Receiver's email address
-     * @param uuid Token number to be sent with email.
-     * @param request HttpServletRequest.
+     * Reads JSON data from stream
+     * @param request
+     * @return
      */
-    private void sendEmail(String to, String uuid, HttpServletRequest request){
-    	String from;
-    	Properties properties;
-    	
-    	try {
-    		from = PropertyUtil.get("oskari.email.sender");
-        	properties = System.getProperties();
-        	properties.setProperty("mail.smtp.host", PropertyUtil.get("oskari.email.host"));
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    		return;
-    	}
-    	
-    	Session session = Session.getDefaultInstance(properties);
-    	 try {
-    		 MimeMessage mimeMessage = new MimeMessage(session);
-    		 mimeMessage.setFrom(new InternetAddress(from));
-    		 mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-    		 mimeMessage.setSubject("TEST");
-    		 String serverAddress = getServerAddress(request);
-    		 mimeMessage.setContent("<h3> Please use this link to reset your password : "
-    				 + serverAddress + "/resetPassword/" + uuid + " </h3>", "text/html" );
-             Transport.send(mimeMessage);
-          } catch (MessagingException ex) {
-             ex.printStackTrace();
-          }
-    }
-    
-    private final String getServerAddress(final HttpServletRequest request) {
-    	return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-    }
-    
     private final String readJsonFromStream(HttpServletRequest request) {
     	InputStream inputStream;
     	String jsonString = "";
@@ -225,12 +196,17 @@ public class PasswordResetHandler extends ActionHandler {
             }
             jsonString = new String(outputStream.toByteArray(), "UTF-8");
     	} catch (IOException e) {
-				e.printStackTrace();
+			log.debug("Unable to read from stream.");
 		}
         return jsonString;
     }
     
-    private final Map<String, String> createJsonObjectMap(String query) throws UnsupportedEncodingException {
+    /**
+     * Creates JSON object as HashMap.
+     * @param query
+     * @return
+     */
+    private final Map<String, String> createJsonObjectMap(String query) {
         String[] params = query.split(",");
         Map<String, String> jsonObjectMap = new HashMap<String, String>();
         for (String param : params) {
@@ -249,4 +225,5 @@ public class PasswordResetHandler extends ActionHandler {
         else
         	return "";
     }
+    
 }
