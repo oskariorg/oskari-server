@@ -36,7 +36,7 @@ public class MailSenderService {
         	properties = System.getProperties();
         	properties.setProperty("mail.smtp.host", PropertyUtil.get("oskari.email.host"));
     	} catch (Exception e) {
-    		e.printStackTrace();
+    		log.debug("Unable to read the properties for sending email.");
     		return;
     	}
     	
