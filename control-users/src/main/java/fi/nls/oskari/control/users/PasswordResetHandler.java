@@ -118,29 +118,22 @@ public class PasswordResetHandler extends ActionHandler {
 			
 			String username = emailService.findUsernameForEmail(token.getEmail());
 			IbatisUserService userService = new IbatisUserService();
-			if (username != null && !username.isEmpty()) {
-				String password = userService.getPassword(username);
-				if (password == null)
-					throw new ActionException("Username is not found as a login user.");
-				
+			if (username == null) {
+				throw new ActionException("Username doesn't exist.");
+			} else {
+				String loginPassword = userService.getPassword(username);
 				//TODO: Need to change encryption method to BCrypt. Currently oskari_jaas_users table has password field of length of 50, which is not enough of BCrypt. Default(60)
 				final String hashedPass = "MD5:" + DigestUtils.md5Hex(token.getPassword());
-				userService.updatePassword(username, hashedPass);
-				//After password update, delete the entry related to token from database
+				if (loginPassword != null && !loginPassword.isEmpty()) {
+					userService.updatePassword(username, hashedPass);
+				} else {
+					//Create entry in oskari_jaas_user table
+					userService.setPassword(username, hashedPass);
+				}
+				//After password updated/created, delete the entry related to token from database
 				emailService.deleteEmailToken(token.getUuid());
-			}
-				
-    	} /*else {
-    		
-    	}
-    	
-    	JSONObject result = new JSONObject();
-        try {
-            result.put("status", "SUCCESS");
-        } catch (JSONException e) {
-            throw new ActionException("Could not construct JSON", e);
-        }
-        ResponseHelper.writeResponse(params, result);*/
+			}			
+    	} 
     }
     
     /**
