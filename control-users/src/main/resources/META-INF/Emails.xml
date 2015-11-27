@@ -55,5 +55,11 @@
         FROM oskari_email_expiry 
         WHERE uuid = #uuid#
     </delete>
+    
+     <select id="findEmailForUsername" parameterClass="String" resultClass="String">
+        SELECT email 
+        FROM oskari_users 
+        WHERE user_name = #user_name#
+    </select>   
 
 </sqlMap>

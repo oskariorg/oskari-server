@@ -34,4 +34,8 @@ public class IbatisEmailService  extends BaseIbatisService<Email>{
         params.put("uuid", uuid);
 	    delete(getNameSpace() + ".deleteEmailToken", params);
 	}
+	
+	public String findEmailForUsername(String username) {
+		return (String) queryForRawObject(getNameSpace() + ".findEmailForUsername", username);
+	}
 }
