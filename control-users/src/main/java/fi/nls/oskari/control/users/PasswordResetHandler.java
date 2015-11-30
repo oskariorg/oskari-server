@@ -27,8 +27,10 @@ import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.control.users.service.MailSenderService;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.user.IbatisRoleService;
 import fi.nls.oskari.user.IbatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -45,6 +47,8 @@ public class PasswordResetHandler extends ActionHandler {
 	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Link for changing password";
 	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Please use this link to change "
 			+ "password. The link is active for ONLY 2 days.";
+	
+	private static final String ROLE_USER = "User";
 	
 	private final IbatisEmailService emailService = new IbatisEmailService();
 	private final MailSenderService mailSenderService = new MailSenderService();
@@ -129,6 +133,13 @@ public class PasswordResetHandler extends ActionHandler {
 				} else {
 					//Create entry in oskari_jaas_user table
 					userService.setPassword(username, hashedPass);
+					
+					//Create link between User and Role (oskari_role_oskari_user); For logged user's default view.
+					User user = userService.findByUserName(username);
+					int roleId = emailService.findUserRoleId(ROLE_USER);
+					IbatisRoleService roleService = new IbatisRoleService();
+					roleService.linkRoleToNewUser(roleId, user.getId());
+					
 				}
 				//After password updated/created, delete the entry related to token from database
 				emailService.deleteEmailToken(token.getUuid());

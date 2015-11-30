@@ -56,10 +56,16 @@
         WHERE uuid = #uuid#
     </delete>
     
-     <select id="findEmailForUsername" parameterClass="String" resultClass="String">
+    <select id="findEmailForUsername" parameterClass="String" resultClass="String">
         SELECT email 
         FROM oskari_users 
         WHERE user_name = #user_name#
+    </select>  
+     
+    <select id="findUserRoleId" parameterClass="String" resultClass="Integer">
+        SELECT id 
+        FROM oskari_roles 
+        WHERE name = #name#
     </select>   
 
 </sqlMap>

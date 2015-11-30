@@ -38,4 +38,8 @@ public class IbatisEmailService  extends BaseIbatisService<Email>{
 	public String findEmailForUsername(String username) {
 		return (String) queryForRawObject(getNameSpace() + ".findEmailForUsername", username);
 	}
+	
+	public Integer findUserRoleId(String name) {
+		return (Integer) queryForRawObject(getNameSpace() + ".findUserRoleId", name);
+	}
 }
