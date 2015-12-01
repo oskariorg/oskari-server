@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.UUID;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,17 +17,24 @@ import fi.nls.oskari.control.users.model.Email;
 import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.control.users.service.MailSenderService;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.user.DatabaseUserService;
+import fi.nls.oskari.user.IbatisUserService;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("UserRegistration")
 public class UserRegistrationHandler extends ActionHandler {
 
 	private static final Logger log = LogFactory.getLogger(UserRegistrationHandler.class);
+	
+	private static final String PARAM_REGISTER = "register";
+	private static final String PARAM_EDIT = "edit";
+	private static final String PARAM_UPDATE = "update";
 	
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
@@ -41,35 +49,72 @@ public class UserRegistrationHandler extends ActionHandler {
     private final DatabaseUserService userService = new DatabaseUserService();
     private final IbatisEmailService emailService = new IbatisEmailService();
     private final MailSenderService mailSenderService = new MailSenderService();
+    private final IbatisUserService ibatisUserService = new IbatisUserService();
     
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
+		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);
+	
 		User user = new User();
-		getUserParams(user, params);
-		
-		if (isEmailAlreadyExist(user.getEmail())) {
-			throw new ActionException("Email already exists.");
+		if (params.getRequest().getQueryString().contains(PARAM_REGISTER)) {
+			getUserParams(user, params);
+			if (isEmailAlreadyExist(user.getEmail())) {
+				throw new ActionException("Email already exists.");
+			}
+			if (isUsernameAlreadyExist(user.getScreenname())) {
+				throw new ActionException("Username already exists.");
+			}
+			try {
+				userService.createUser(user);
+			} catch (ServiceException se) {			
+				throw new ActionException(se.getMessage(), se);
+			}
+			
+	    	Email emailToken = new Email();
+	    	emailToken.setEmail(user.getEmail());
+	    	emailToken.setUuid(user.getUuid());
+	    	emailToken.setExpiryTimestamp(createExpiryTime());
+	    	emailService.addEmail(emailToken);
+	    	
+			EmailMessage emailMessage = new EmailMessage();
+	    	emailMessage.setTo(user.getEmail());
+	    	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
+	    	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
+	    	mailSenderService.sendEmail(emailMessage, user.getUuid(), params.getRequest());
+	    	
+		} else if (requestEdit != null && !requestEdit.isEmpty()) {
+			User retUser = null;
+			try {
+				Integer userId = Integer.parseInt(requestEdit);
+				retUser = userService.getUser(userId);				
+				if (retUser == null) {
+					throw new ActionException("User doesn't exists.");
+				}
+			} catch (ServiceException se) {			
+				throw new ActionException(se.getMessage(), se);
+			}			
+			JSONObject response = null;
+	        try {
+	            response = user2Json(retUser);
+	        } catch (JSONException je) {
+	            throw new ActionException(je.getMessage(), je);
+	        }
+	        ResponseHelper.writeResponse(params, response);
+			
+		} else if (params.getRequest().getQueryString().contains(PARAM_UPDATE)) {
+			getUserParams(user, params);
+			try {
+				/*Since user passes only firstname, lastname, username and email, so need to get userId. As while modifying user, userId is needed*/
+				User retUser = ibatisUserService.findByUserName(user.getScreenname());
+				user.setId(retUser.getId());
+				userService.modifyUser(user);
+			} catch (ServiceException se) {			
+				throw new ActionException(se.getMessage(), se);
+			}
+			
+		} else {
+			throw new ActionException("Request URL should contain either 'register' OR 'update'.");
 		}
-		if (isUsernameAlreadyExist(user.getScreenname())) {
-			throw new ActionException("Username already exists.");
-		}
-		try {
-			userService.createUser(user);
-		} catch (ServiceException se) {			
-			throw new ActionException(se.getMessage(), se);
-		}
-		
-    	Email emailToken = new Email();
-    	emailToken.setEmail(user.getEmail());
-    	emailToken.setUuid(user.getUuid());
-    	emailToken.setExpiryTimestamp(createExpiryTime());
-    	emailService.addEmail(emailToken);
-    	
-		EmailMessage emailMessage = new EmailMessage();
-    	emailMessage.setTo(user.getEmail());
-    	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
-    	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
-    	mailSenderService.sendEmail(emailMessage, user.getUuid(), params.getRequest());
 	}
 		
 	private final boolean isEmailAlreadyExist(final String emailAddress) {
@@ -104,5 +149,15 @@ public class UserRegistrationHandler extends ActionHandler {
         calender.add(Calendar.DAY_OF_MONTH, 2);
         Timestamp expiryTime = new java.sql.Timestamp(calender.getTime().getTime());
         return expiryTime;
+    }
+    
+    private JSONObject user2Json(User user) throws JSONException {
+        JSONObject uo = new JSONObject();
+        uo.put("id", user.getId());
+        uo.put("firstName", user.getFirstname());
+        uo.put("lastName", user.getLastname());
+        uo.put("userName", user.getScreenname());
+        uo.put("email", user.getEmail());        
+        return uo;
     }
 }
