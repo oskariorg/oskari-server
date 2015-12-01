@@ -48,6 +48,8 @@ public class WFSFilterBuilder {
     public static final String FEATUREID_TEMPLATE = "<ogc:FeatureId fid=\"{fid}\"/>";
     public static final String FID_ATTRIBUTE = "{fid}";
     public static final String FILTER_KEY = "</ogc:And></ogc:Filter>";
+    public static final String CUSTOM_ID_FILTER_START = "<ogc:Filter><ogc:Or>";
+    public static final String CUSTOM_ID_FILTER_END = "</ogc:Or></ogc:Filter>";
 
     private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
@@ -83,8 +85,15 @@ public class WFSFilterBuilder {
 
         if (all == null) {
             // Check if only id filters (more than 1)
-            final Filter ids = getFeatureIdFilters(filter_js);
-            return getFilterAsString(ids);
+            if (getCountOfIdFilters(filter_js) > 1) {
+                // Append OR id filters - geotools filter factory stringify does not work on this point
+                // So append by your own code
+                final String sids = CUSTOM_ID_FILTER_START + getFeatureIdFiltersAsString(filter_js) + CUSTOM_ID_FILTER_END;
+                return sids;
+            } else {
+                final Filter ids = getFeatureIdFilters(filter_js);
+                return getFilterAsString(ids);
+            }
         }
 
         String wfsfilter = getFilterAsString(all);
@@ -93,12 +102,11 @@ public class WFSFilterBuilder {
             // Append OR id filters - geotools filter factory stringify does not work on this point
             // So append by your own code
             final String sids = "<ogc:Or>" + getFeatureIdFiltersAsString(filter_js) + "</ogc:Or>";
-            if(sids != null){
+            if (sids != null) {
                 wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
                 wfsfilter = wfsfilter.replace(FILTER_KEY, sids + FILTER_KEY);
             }
         }
-
 
 
         return wfsfilter;
@@ -434,7 +442,7 @@ public class WFSFilterBuilder {
      */
     private static String getFeatureIdFiltersAsString(final JSONObject filter_js) {
         StringBuilder sb = new StringBuilder();
-        if(filter_js == null){
+        if (filter_js == null) {
             return null;
         }
         if (filter_js.has(KEY_FEATUREIDS)) {

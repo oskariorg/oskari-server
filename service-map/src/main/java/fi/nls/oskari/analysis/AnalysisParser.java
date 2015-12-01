@@ -1014,6 +1014,15 @@ public class AnalysisParser {
         try {
 
             parseMethodParams( method, lc, json, gjson, baseUrl);
+            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+            Object no_data = params.opt(JSON_KEY_NO_DATA);
+            if(no_data != null){
+                try {
+                    method.setNoDataValue(no_data.toString());
+                }
+                catch (Exception e){
+                }
+            }
 
             // Variable values of  input 2
             method.setHref2(baseUrl.replace("&", "&amp;") + String.valueOf(lc2.getLayerId()));
@@ -1027,7 +1036,6 @@ public class AnalysisParser {
 
 
             // attribute field name of point layer for to which to compute statistics
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
             // A layer (point layer)
             String dataAttribute = (params.getJSONArray("featuresA1").toString().replace("[","").replace("]","").replace("\"",""));
             // Only one attribute is allowed and its type must be numeric
@@ -1847,6 +1855,8 @@ public class AnalysisParser {
         method.setY_lower(bbox.optString("bottom"));
         method.setX_upper(bbox.optString("right"));
         method.setY_upper(bbox.optString("top"));
+
+
     }
 
     /** Returns the final wps method id
@@ -1888,6 +1898,12 @@ public class AnalysisParser {
                 fieldTypes.put("avg","numeric");
                 fieldTypes.put("stddev","numeric");
                 analysisLayer.setFieldsMap(fieldTypes);
+            }
+            else if (params.getMethod().equals(AnalysisParser.DIFFERENCE)){
+                // For time being 1st numeric value is used for rendering
+                Map<String,String> fieldTypes =  new HashMap<String,String>();
+                fieldTypes.put(AnalysisParser.DELTA_FIELD_NAME,"numeric");
+                analysisLayer.setFieldtypeMap(fieldTypes);
             }
 
 

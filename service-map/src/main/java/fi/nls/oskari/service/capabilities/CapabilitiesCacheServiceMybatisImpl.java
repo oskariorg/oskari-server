@@ -72,7 +72,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
         final SqlSession session = factory.openSession();
         try {
             final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
-            OskariLayerCapabilities db = mapper.find(capabilities.getUrl(), capabilities.getLayertype());
+            OskariLayerCapabilities db = mapper.find(capabilities.getUrl().toLowerCase(), capabilities.getLayertype().toLowerCase());
             if(db != null) {
                 if(db.getData() != null && !db.getData().trim().isEmpty() &&
                         (capabilities.getData() == null || capabilities.getData().trim().isEmpty())) {

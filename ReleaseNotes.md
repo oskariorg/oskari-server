@@ -1,5 +1,40 @@
 # Release Notes
 
+## 1.34
+
+### webapp-map
+
+Moved override JSP-files from webapp/jsp to webapp/WEB-INF/jsp as this is the default override location for JSP-files.
+
+### servlet-map
+
+Disabled X-Frame-Options header set by spring security by default. It prevented published maps from loading when used
+ directly from Jetty without front-proxy (for example localhost) to override this behaviour.
+
+Published maps are now checked for referer domain correctly when opened.
+ To disable check you can define unrestricted domains in oskari-ext.properties (* = allow all):
+
+    view.published.usage.unrestrictedDomains=localhost, my.domain.com
+    
+### Transport
+
+New property for wfs read timeout in transport-ext.properties
+
+#### Wfs read response timeout default is 30000 ms (use together with oskari.transport.job.timeoutms)
+oskari.wfs.read.timeout=20000
+#### Transport Job execute timeout  default is 15000 ms
+oskari.transport.job.timeoutms=25000
+
+## 1.33.2
+
+Re-run fixed version of a flyway migration pre-populating capabilities information in the database (oskari_maplayer.capabilities).
+ The previous script didn't work correctly for layers having capital letters in the URL since the URL is normalized to 
+ lowercase in oskari_capabilities_cache.
+
+## 1.33.1
+
+Legend image handling fixed for layers that require credentials. Style-specific legends are now used correctly when proxying.
+
 ## 1.33
 
 ### service-routing (POC)
@@ -36,6 +71,10 @@ Flyway migration for Oskari core db is ran when setup files have the base databa
 Added migration helper for handling the replacement of publisher bundle with publisher2. The sample flyway module has 
 an example V1_0_5__publisher2_migration.java how to use it in application installations.
 
+Added a temporary setup-script for an app using Openlayers 3 components on published map (setup/app-tmp-ol3.json). This 
+will be modified and removed once the OL3 functionality reaches maturity. After that the original publisher template 
+ will be modified to use OL3.
+
 ### servlet-map
 
 Now prevents view loading with id when onlyUUID-flag in on. 
@@ -51,6 +90,7 @@ The prefix is configurable in oskari-ext.properties (defaults to https://):
     
 This handling was already present for selected layers and now it's used for GetMapLayers also. 
 The functionality removes the protocol part of layer url and servers the url prefixed by the value defined in properties.
+This enables custom proxying for services that don't have https enabled.
 
 #### GetLayerTile 
 
@@ -58,7 +98,17 @@ Added handling for WMTS-layers with resourceURL.
 
 #### GetWSCapabilities
 
-When adding layers the capabilities parser now includes layer styles correctly.
+When adding layers the capabilities parser now includes layer styles and infoformats correctly.
+
+#### CreateAnalysisLayerHandler
+
+Improvements in analysis methods:
+
+ - Better management of unauthorized data
+ 
+ - Aggregate, Spatial join and Difference methods improved
+ 
+ - sld_muutos_n1.sld  style updated in Geoserver Styles / used in analysis method difference
 
 ### service-map
 
@@ -79,6 +129,9 @@ LayerJSONFormatter now has convenience methods to operate the "admin" only data.
 ### Default view functionality
 
 Added functionality for saving / restoring a user defined default view.
+
+Loading the system default view can be forced by using an additional URL-parameter 'reset=true'. This is useful if the 
+personalized view is faulty.
 
 ## 1.32.2
 

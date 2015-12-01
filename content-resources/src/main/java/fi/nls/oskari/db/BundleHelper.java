@@ -39,13 +39,17 @@ public class BundleHelper {
     private BundleHelper() {
     }
 
-    public static String getDefaultBundleStartup(String namespace, final String bundleid, String title) {
+    public static String getDefaultBundleStartup(final String namespace, final String bundleid, final String title) {
+        final String ns = namespace == null ? "framework" : namespace;
+        final String path = "/Oskari/packages/%s/bundle/";
+        return getBundleStartup(String.format(path, ns), bundleid, title);
+    }
+    public static String getBundleStartup(final String path, final String bundleid, final String title) {
         if(bundleid == null) {
             throw new OskariRuntimeException("Missing bundleid");
         }
-        final String ns = namespace == null ? "framework" : namespace;
         final String label = title == null ? bundleid : title;
-        return String.format(startupTemplate, label, bundleid, bundleid, bundleid, ns);
+        return String.format(startupTemplate, label, bundleid, bundleid, bundleid, path);
     }
 
     public static boolean isBundleRegistered(final String id) {

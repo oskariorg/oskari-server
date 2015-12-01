@@ -10,16 +10,12 @@ import fi.nls.oskari.routing.RouteResponse;
 import fi.nls.oskari.routing.RoutingService;
 import fi.nls.oskari.routing.RoutingServiceOpenTripPlannerImpl;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by SMAKINEN on 26.6.2015.

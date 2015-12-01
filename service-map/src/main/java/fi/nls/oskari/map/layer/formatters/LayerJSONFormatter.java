@@ -29,7 +29,8 @@ import java.util.Map;
  */
 public class LayerJSONFormatter {
 
-    public final static String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+    public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
+    public static final String KEY_STYLES = "styles";
 
     private static final InspireThemeService inspireThemeService = new InspireThemeServiceIbatisImpl();
     private static final LayerGroupService groupService = new LayerGroupServiceIbatisImpl();

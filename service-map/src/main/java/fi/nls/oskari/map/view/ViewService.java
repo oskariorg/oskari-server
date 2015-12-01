@@ -7,10 +7,12 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.service.db.BaseService;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface ViewService extends BaseService<Object> {
+
+    String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
 
     boolean hasPermissionToAlterView(final View view, final User user);
 
@@ -73,7 +75,7 @@ public interface ViewService extends BaseService<Object> {
      * @param roles
      * @return
      */
-    long getSystemDefaultViewId(Set<Role> roles);
+    long getSystemDefaultViewId(Collection<Role> roles);
 
     void updatePublishedView(View view)
             throws ViewException;

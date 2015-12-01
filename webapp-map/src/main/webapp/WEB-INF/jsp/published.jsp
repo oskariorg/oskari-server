@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/Oskari/libraries/jquery/jquery-1.7.1.min.js">
     </script>
 
+
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"

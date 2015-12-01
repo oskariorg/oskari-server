@@ -1,19 +1,19 @@
 package fi.nls.oskari;
 
+import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
 import fi.nls.oskari.domain.map.view.View;
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.ViewServiceIbatisImpl;
+import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.spring.EnvHelper;
 import fi.nls.oskari.spring.extension.OskariParam;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -150,7 +150,9 @@ public class MapController {
         boolean useDefault = viewId == -1;
         if(uuId == null) {
             // get personalized or system default view
-            if (useDefault) {
+            if(params.getHttpParam(PARAM_RESET, false)) {
+                viewId = viewService.getSystemDefaultViewId(params.getUser().getRoles());
+            } else {
                 viewId = viewService.getDefaultViewId(params.getUser());
             }
         }
@@ -163,6 +165,20 @@ public class MapController {
             log.debug("no such view");
             ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
             return null;
+        }
+
+        // Checking referer for published domain
+        if (view.getType().equals(ViewTypes.PUBLISHED)) {
+            final String referer = RequestHelper.getDomainFromReferer(params.getHttpHeader(IOHelper.HEADER_REFERER));
+            final String pubDomain = view.getPubDomain();
+            if (ViewHelper.isRefererDomain(referer, pubDomain)) {
+                log.info("Granted access to published view in domain:",pubDomain, "for referer", referer);
+            } else {
+                log.debug("Referer: ", params.getHttpHeader(IOHelper.HEADER_REFERER), " -> ", referer);
+                log.warn("Denied access to published view in domain:", pubDomain, "for referer", referer);
+                ResponseHelper.writeError(params, "Denied access to published view for domain: " + referer);
+                return null;
+            }
         }
 
         log.debug("Serving view with id:", view.getId());

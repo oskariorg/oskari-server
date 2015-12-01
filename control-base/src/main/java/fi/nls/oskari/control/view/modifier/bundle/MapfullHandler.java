@@ -282,6 +282,9 @@ public class MapfullHandler extends BundleHandler {
 
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
+            if(analysis == null){
+                continue;
+            }
             if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;

@@ -34,6 +34,7 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
         // IMPORTANT! Only antMatch for logoutUrl, otherwise SAML security filters are passed even if active
         // FIXME: When we want to use SAML singleLogout, we should disable this and call /saml/SingleLogout
         http
+                .headers().frameOptions().disable()
             .antMatcher(logoutUrl)
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher(logoutUrl))

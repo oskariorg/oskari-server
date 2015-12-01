@@ -7,6 +7,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.util.*;
 import org.json.JSONArray;
@@ -25,14 +26,12 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String LEGEND = "legend";
     private static final String NAME = "name";
-    private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[] {KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
+    private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[]{KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
-    private static final String ORG_STYLES = "org_styles";
     private PermissionHelper permissionHelper;
-    private static final LayerJSONFormatterWMS FORMATTER = new LayerJSONFormatterWMS();
 
     // WMTS rest layers params
     private static final String KEY_STYLE = "STYLE";
@@ -158,10 +157,10 @@ public class GetLayerTileHandler extends ActionHandler {
         String lurl = layer.getLegendImage();
         if (style_name != null) {
             // Get Capabilities style url
-            JSONObject json = FORMATTER.getJSON(layer, PropertyUtil.getDefaultLanguage(), false);
-            if (json.has(ORG_STYLES)) {
+            JSONObject json = layer.getCapabilities();
+            if (json.has(LayerJSONFormatter.KEY_STYLES)) {
 
-                JSONArray styles = JSONHelper.getJSONArray(json, ORG_STYLES);
+                JSONArray styles = JSONHelper.getJSONArray(json, LayerJSONFormatter.KEY_STYLES);
                 for (int i = 0; i < styles.length(); i++) {
                     final JSONObject style = JSONHelper.getJSONObject(styles, i);
                     if (JSONHelper.getStringFromJSON(style, NAME, "").equals(style_name)) {

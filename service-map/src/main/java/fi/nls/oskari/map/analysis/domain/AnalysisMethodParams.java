@@ -18,6 +18,9 @@ import java.util.Scanner;
 public abstract class AnalysisMethodParams {
 
     private final String bboxFilterTemplate = "<ogc:Filter><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:Filter>";
+    private static final String  NO_DATA_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsNotEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsNotEqualTo></ogc:And></ogc:And></ogc:Filter>";
+    private static final String  NO_DATACOUNT_FILTER_TEMPLATE = "<ogc:And><ogc:PropertyIsEqualTo matchCase=\"false\"><ogc:PropertyName>{propertyName}</ogc:PropertyName><ogc:Literal>{propertyValue}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:And></ogc:And></ogc:Filter>";
+
     public final String wfsReferenceTemplate = "wfs-reference.xml";
     public final String dataReferenceTemplate = "data-reference.xml";
     public final String vectorReferenceTemplate = "vector-reference.xml";
@@ -40,6 +43,8 @@ public abstract class AnalysisMethodParams {
     public final String X_UPPER = "{x_upper}";
     public final String Y_UPPER = "{y_upper}";
     public final String GEOJSONFEATURES = "{geoJsonFeatures}";
+    public final String CLEAN_CHARS = "(\\r|\\n)";
+    public final String FILTER_END ="</ogc:And></ogc:Filter>";
 
     public final String REFERENCE_TYPE_WFS = "wfs";
     public final String REFERENCE_TYPE_GS = "gs_vector";
@@ -70,6 +75,8 @@ public abstract class AnalysisMethodParams {
     private String y_upper = "";
     private String geojson = "";
     private String responsePrefix = "feature";
+    private String noDataValue = null;
+    private boolean doNoDataCount = false;
 
     public String getMethod() {
         return method;
@@ -252,6 +259,22 @@ public abstract class AnalysisMethodParams {
         y_upper = yUpper;
     }
 
+    public String getNoDataValue() {
+        return noDataValue;
+    }
+
+    public void setNoDataValue(String noDataValue) {
+        this.noDataValue = noDataValue;
+    }
+
+    public boolean isDoNoDataCount() {
+        return doNoDataCount;
+    }
+
+    public void setDoNoDataCount(boolean doNoDataCount) {
+        this.doNoDataCount = doNoDataCount;
+    }
+
     public String getGeojson() {
         if(geojson == null) return "";
         return geojson;
@@ -398,6 +421,34 @@ public abstract class AnalysisMethodParams {
             fbbox = fbbox.replace(X_UPPER, this.getX_upper());
             fbbox = fbbox.replace(Y_UPPER, this.getY_upper());
             wfsfilter = fbbox;
+        }
+        return wfsfilter;
+    }
+
+    protected String appendNoDataFilter(String wfsfilter_in, String field) {
+        String wfsfilter = wfsfilter_in.replaceAll(CLEAN_CHARS, "");
+        String nodatafilter = NO_DATA_FILTER_TEMPLATE.replace("{propertyName}", field);
+        nodatafilter = nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+
+        if (wfsfilter.indexOf(FILTER_END) == -1) {
+            // no and conditions
+            wfsfilter = wfsfilter.replace("<ogc:Filter>", "<ogc:Filter><ogc:And>");
+            wfsfilter = wfsfilter.replace("</ogc:Filter>", nodatafilter);
+        } else {
+            wfsfilter = wfsfilter.replace(FILTER_END, nodatafilter);
+        }
+        return wfsfilter;
+    }
+    protected String appendNoDataCountFilter(String wfsfilter, String field){
+        String nodatafilter = NO_DATACOUNT_FILTER_TEMPLATE.replace("{propertyName}", field);
+        nodatafilter =  nodatafilter.replace("{propertyValue}", this.getNoDataValue());
+        wfsfilter = wfsfilter.replaceAll( CLEAN_CHARS, "");
+        if (wfsfilter.indexOf(FILTER_END) == -1) {
+            // no and conditions
+            wfsfilter = wfsfilter.replace("<ogc:Filter>", "<ogc:Filter><ogc:And>");
+            wfsfilter = wfsfilter.replace("</ogc:Filter>", nodatafilter);
+        } else {
+            wfsfilter = wfsfilter.replace(FILTER_END, nodatafilter);
         }
         return wfsfilter;
     }
