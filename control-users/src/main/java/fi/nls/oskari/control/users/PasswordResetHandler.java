@@ -3,7 +3,6 @@ package fi.nls.oskari.control.users;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,15 +15,12 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.domain.User;
@@ -44,10 +40,7 @@ public class PasswordResetHandler extends ActionHandler {
 	private static final String PARAM_UUID = "uuid";
 	private static final String PARAM_EMAIL = "email";
 	private static final String PARAM_PASSWORD = "password";
-	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Link for changing password";
-	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Please use this link to change "
-			+ "password. The link is active for ONLY 2 days.";
-	
+		
 	private static final String ROLE_USER = "User";
 	
 	private final IbatisEmailService emailService = new IbatisEmailService();
@@ -72,12 +65,8 @@ public class PasswordResetHandler extends ActionHandler {
             	emailToken.setExpiryTimestamp(createExpiryTime());
             	emailService.addEmail(emailToken);
             	
-            	EmailMessage emailMessage = new EmailMessage();
-            	emailMessage.setTo(requestEmail);
-            	emailMessage.setSubject(EMAIL_SUBJECT_PASSWORD_CHANGE);
-            	emailMessage.setContent(EMAIL_CONTENT_PASSWORD_CHANGE);
-            	mailSenderService.sendEmail(emailMessage, uuid, params.getRequest());
-            	
+            	mailSenderService.sendEmailForResetPassword(requestEmail, uuid, params.getRequest());
+            	            	
     		} else {
     			log.info("Username for login doesn't exist for email address: " + requestEmail);
     			return;

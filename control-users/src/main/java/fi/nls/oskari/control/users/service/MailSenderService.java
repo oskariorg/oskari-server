@@ -24,7 +24,10 @@ public class MailSenderService {
 	private static final String EMAIL_CONTENT_ACTIVATE_REGISTRATION = "Please use this link to "
 				+ "activate registration and also change password. The link is active for ONLY 2 days."
 				+ "<br>";
-		
+	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Link for changing password";
+	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Please use this link to change "
+			+ "password. The link is active for ONLY 2 days.";
+	
 	 /**
      * While sending email smtp host and sender should be added to oskari-ext.properties
      * e.g: oskari.email.sender=abc@def.com
@@ -71,5 +74,13 @@ public class MailSenderService {
     	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
     	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
     	sendEmail(emailMessage, user.getUuid(), request);
+    }
+    
+    public final void sendEmailForResetPassword(String emailAddress, String uuid, HttpServletRequest request) {
+    	EmailMessage emailMessage = new EmailMessage();
+    	emailMessage.setTo(emailAddress);
+    	emailMessage.setSubject(EMAIL_SUBJECT_PASSWORD_CHANGE);
+    	emailMessage.setContent(EMAIL_CONTENT_PASSWORD_CHANGE);
+    	sendEmail(emailMessage, uuid, request);
     }
 }
