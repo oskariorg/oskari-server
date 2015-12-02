@@ -57,10 +57,13 @@ public class UserRegistrationHandler extends ActionHandler {
 	public void handleAction(ActionParameters params) throws ActionException {		
 		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
 			throw new ActionException("Request URL must contain ONLY ONE parameter.");
+					
+		if(!isParameterValid(params))
+			throw new ActionException("Request URL must contain valid parameter.");
 		
-		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);
+		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);	
 		User user = new User();
-		if (params.getRequest().getQueryString().contains(PARAM_REGISTER)) {
+		if (params.getHttpParam(PARAM_REGISTER) != null) {
 			getUserParams(user, params);
 			if (isEmailAlreadyExist(user.getEmail())) {
 				throw new ActionException("Email already exists.");
@@ -105,7 +108,7 @@ public class UserRegistrationHandler extends ActionHandler {
 	        }
 	        ResponseHelper.writeResponse(params, response);
 			
-		} else if (params.getRequest().getQueryString().contains(PARAM_UPDATE)) {
+		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
 			getUserParams(user, params);
 			try {
 				/*Since user passes only firstname, lastname, username and email, so need to get
@@ -174,5 +177,33 @@ public class UserRegistrationHandler extends ActionHandler {
     			++count;
     	}
     	return count;
+    }
+    
+    /**
+     * Checks if parameter passed is valid or not.
+     * E.g: For register: action_route=UserRegistration&register
+     * 		For edit: action_route=UserRegistration&edit=
+     * 		For update: action_route=UserRegistration&update
+     * @param params {@link ActionParameters}
+     * @return {@link Boolean}
+     */
+    public final boolean isParameterValid(ActionParameters params) {
+    	String paramName = null;
+    	String query = params.getRequest().getQueryString(); 
+    	if ((params.getHttpParam(PARAM_REGISTER) != null) || 
+    			(params.getHttpParam(PARAM_UPDATE) != null)) {
+    		paramName = query.substring(query.indexOf("&") + 1, query.length());
+    		System.out.println(paramName);
+    		if (paramName.equals(PARAM_REGISTER) || paramName.equals(PARAM_UPDATE))
+        		return true;
+    		else
+    			return false;
+    		
+    	} else if (params.getHttpParam(PARAM_EDIT) != null) {
+    		return true;
+    		
+    	} else {
+    		return false;
+    	}
     }
 }
