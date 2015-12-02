@@ -54,6 +54,12 @@ public class PasswordResetHandler extends ActionHandler {
         // Return SUCCESS status. Do this even if nothing was sent because client should not be allowed to know whether the
         // provided email address exists in the database.
     	
+    	if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
+			throw new ActionException("Request URL must contain ONLY ONE parameter.");
+    	
+    	if(!isParameterValid(params))
+			throw new ActionException("Request URL must contain valid parameter.");
+    	
     	requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
     	
     	if (requestEmail != null && !requestEmail.isEmpty()) {
@@ -128,7 +134,6 @@ public class PasswordResetHandler extends ActionHandler {
 					int roleId = emailService.findUserRoleId(ROLE_USER);
 					IbatisRoleService roleService = new IbatisRoleService();
 					roleService.linkRoleToNewUser(roleId, user.getId());
-					
 				}
 				//After password updated/created, delete the entry related to token from database
 				emailService.deleteEmailToken(token.getUuid());
@@ -217,6 +222,40 @@ public class PasswordResetHandler extends ActionHandler {
             return matcher.group(1);
         else
         	return "";
+    }
+    
+    public final int getRequestParameterCount(String query) {   
+    	int count = 0;
+    	for (int i = 0; i < query.length(); i++){
+    		if (query.charAt(i) == '&')
+    			++count;
+    	}
+    	return count;
+    }
+    
+    /**
+     * Checks if parameter passed is valid or not.
+     * E.g: For password change: action_route=UserPasswordReset&password
+     * 		For email: action_route=UserPasswordReset&email=
+     * @param params {@link ActionParameters}
+     * @return {@link Boolean}
+     */
+    public final boolean isParameterValid(ActionParameters params) {
+    	String paramName = null;
+    	String query = params.getRequest().getQueryString(); 
+    	if ((params.getHttpParam(PARAM_PASSWORD) != null)) {
+    		paramName = query.substring(query.indexOf("&") + 1, query.length());
+    		if (paramName.equals(PARAM_PASSWORD))
+        		return true;
+    		else
+    			return false;
+    		
+    	} else if (params.getHttpParam(PARAM_EMAIL) != null) {
+    		return true;
+    		
+    	} else {
+    		return false;
+    	}
     }
     
 }
