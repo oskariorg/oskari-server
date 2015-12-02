@@ -160,11 +160,6 @@
         src="/Oskari/bundles/bundle.js">
 </script>
 
-<!--  OPENLAYERS -->
-<script type="text/javascript"
-        src="/Oskari/packages/openlayers/startup.js">
-</script>
-
 <!-- Q -->
 <script type="text/javascript" src="${urlPrefix}/Oskari/libraries/q/q.min.js">
 </script>
