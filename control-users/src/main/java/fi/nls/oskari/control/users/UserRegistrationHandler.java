@@ -2,11 +2,7 @@ package fi.nls.oskari.control.users;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,17 +12,14 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.users.model.Email;
-import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.control.users.service.IbatisEmailService;
 import fi.nls.oskari.control.users.service.MailSenderService;
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.user.DatabaseUserService;
 import fi.nls.oskari.user.IbatisUserService;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("UserRegistration")
@@ -42,11 +35,6 @@ public class UserRegistrationHandler extends ActionHandler {
     private static final String PARAM_LASTNAME = "lastname";
     private static final String PARAM_SCREENNAME = "username";
     private static final String PARAM_EMAIL = "email";
-    
-    private static final String EMAIL_SUBJECT_ACTIVATE_REGISTRATION = "Activate registration";
-	private static final String EMAIL_CONTENT_ACTIVATE_REGISTRATION = "Please use this link to "
-			+ "activate registration and also change password. The link is active for ONLY 2 days."
-			+ "<br>";
     
     private final DatabaseUserService userService = new DatabaseUserService();
     private final IbatisEmailService emailService = new IbatisEmailService();
@@ -83,12 +71,8 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	emailToken.setExpiryTimestamp(createExpiryTime());
 	    	emailService.addEmail(emailToken);
 	    	
-			EmailMessage emailMessage = new EmailMessage();
-	    	emailMessage.setTo(user.getEmail());
-	    	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
-	    	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
-	    	mailSenderService.sendEmail(emailMessage, user.getUuid(), params.getRequest());
-	    	
+	    	mailSenderService.sendEmailForRegistrationActivation(user, params.getRequest());
+				    	
 		} else if (requestEdit != null && !requestEdit.isEmpty()) {
 			User retUser = null;
 			try {
@@ -193,7 +177,6 @@ public class UserRegistrationHandler extends ActionHandler {
     	if ((params.getHttpParam(PARAM_REGISTER) != null) || 
     			(params.getHttpParam(PARAM_UPDATE) != null)) {
     		paramName = query.substring(query.indexOf("&") + 1, query.length());
-    		System.out.println(paramName);
     		if (paramName.equals(PARAM_REGISTER) || paramName.equals(PARAM_UPDATE))
         		return true;
     		else

@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.users.model.EmailMessage;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
@@ -19,6 +20,11 @@ public class MailSenderService {
 
 	private static final Logger log = LogFactory.getLogger(MailSenderService.class);
 	
+	private static final String EMAIL_SUBJECT_ACTIVATE_REGISTRATION = "Activate registration";
+	private static final String EMAIL_CONTENT_ACTIVATE_REGISTRATION = "Please use this link to "
+				+ "activate registration and also change password. The link is active for ONLY 2 days."
+				+ "<br>";
+		
 	 /**
      * While sending email smtp host and sender should be added to oskari-ext.properties
      * e.g: oskari.email.sender=abc@def.com
@@ -57,5 +63,13 @@ public class MailSenderService {
     
     private final String getServerAddress(final HttpServletRequest request) {
     	return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+    }
+    
+    public final void sendEmailForRegistrationActivation(User user, HttpServletRequest request) {
+    	EmailMessage emailMessage = new EmailMessage();
+    	emailMessage.setTo(user.getEmail());
+    	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
+    	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
+    	sendEmail(emailMessage, user.getUuid(), request);
     }
 }
