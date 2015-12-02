@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,9 +54,11 @@ public class UserRegistrationHandler extends ActionHandler {
     private final IbatisUserService ibatisUserService = new IbatisUserService();
     
 	@Override
-	public void handleAction(ActionParameters params) throws ActionException {
+	public void handleAction(ActionParameters params) throws ActionException {		
+		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
+			throw new ActionException("Request URL must contain ONLY ONE parameter.");
+		
 		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);
-	
 		User user = new User();
 		if (params.getRequest().getQueryString().contains(PARAM_REGISTER)) {
 			getUserParams(user, params);
@@ -104,7 +108,8 @@ public class UserRegistrationHandler extends ActionHandler {
 		} else if (params.getRequest().getQueryString().contains(PARAM_UPDATE)) {
 			getUserParams(user, params);
 			try {
-				/*Since user passes only firstname, lastname, username and email, so need to get userId. As while modifying user, userId is needed*/
+				/*Since user passes only firstname, lastname, username and email, so need to get
+				 * userId. As while modifying user, userId is needed*/
 				User retUser = ibatisUserService.findByUserName(user.getScreenname());
 				user.setId(retUser.getId());
 				userService.modifyUser(user);
@@ -113,7 +118,8 @@ public class UserRegistrationHandler extends ActionHandler {
 			}
 			
 		} else {
-			throw new ActionException("Request URL should contain either 'register' OR 'update'.");
+			throw new ActionException("Request URL should contain ONLY ONE: Either 'register' OR "
+					+ "'edit' OR 'update'.");
 		}
 	}
 		
@@ -159,5 +165,14 @@ public class UserRegistrationHandler extends ActionHandler {
         uo.put("userName", user.getScreenname());
         uo.put("email", user.getEmail());        
         return uo;
+    }
+    
+    public final int getRequestParameterCount(String query) {   
+    	int count = 0;
+    	for (int i = 0; i < query.length(); i++){
+    		if (query.charAt(i) == '&')
+    			++count;
+    	}
+    	return count;
     }
 }
