@@ -20,14 +20,13 @@ public class MailSenderService {
 
 	private static final Logger log = LogFactory.getLogger(MailSenderService.class);
 	
-	private static final String EMAIL_SUBJECT_ACTIVATE_REGISTRATION = "Activate registration";
-	private static final String EMAIL_CONTENT_ACTIVATE_REGISTRATION = "Please use this link to "
-				+ "activate registration and also change password. The link is active for ONLY 2 days."
-				+ "<br>";
-	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Link for changing password";
-	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Please use this link to change "
-			+ "password. The link is active for ONLY 2 days.";
-	
+	private static final String EMAIL_SUBJECT_ACTIVATE_REGISTRATION = "Rekisteröinnin aktivointi";
+	private static final String EMAIL_CONTENT_ACTIVATE_REGISTRATION = "Vahvista rekisteröitymisesi "
+			+ "ja aseta salasanasi alla olevalla linkillä. Linkki on voimassa vain 2 päivää. <br>";
+	private static final String EMAIL_SUBJECT_PASSWORD_CHANGE = "Salasanan vaihto";
+	private static final String EMAIL_CONTENT_PASSWORD_CHANGE = "Vaihda salasanasi alla olevalla "
+			+ "linkillä. Linkki on voimassa vain 2 päivää.<br>";
+		 	
 	 /**
      * While sending email smtp host and sender should be added to oskari-ext.properties
      * e.g: oskari.email.sender=abc@def.com
@@ -57,7 +56,7 @@ public class MailSenderService {
     		 mimeMessage.setSubject(emailMessage.getSubject());
     		 String serverAddress = getServerAddress(request);
     		 mimeMessage.setContent(emailMessage.getContent() + "<br>" + serverAddress + "/resetPassword/" 
-    				 + uuid, "text/html" );
+    				 + uuid, "text/html; charset=UTF-8");
              Transport.send(mimeMessage);
           } catch (MessagingException ex) {
              log.debug("Email can't be sent to email address: " + emailMessage.getTo());
@@ -69,18 +68,40 @@ public class MailSenderService {
     }
     
     public final void sendEmailForRegistrationActivation(User user, HttpServletRequest request) {
+    	String subject, content;
+    	try {
+    		subject = PropertyUtil.getNecessary("oskari.email.subject.register.user");
+    	} catch (RuntimeException re) {
+    		subject = EMAIL_SUBJECT_ACTIVATE_REGISTRATION;
+    	}
+    	try {
+    		content = PropertyUtil.getNecessary("oskari.email.body.register.user");
+    	} catch (RuntimeException re) {
+    		content = EMAIL_CONTENT_ACTIVATE_REGISTRATION;
+    	}
     	EmailMessage emailMessage = new EmailMessage();
     	emailMessage.setTo(user.getEmail());
-    	emailMessage.setSubject(EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
-    	emailMessage.setContent(EMAIL_CONTENT_ACTIVATE_REGISTRATION);
+    	emailMessage.setSubject(subject);
+    	emailMessage.setContent(content);
     	sendEmail(emailMessage, user.getUuid(), request);
     }
     
     public final void sendEmailForResetPassword(String emailAddress, String uuid, HttpServletRequest request) {
+    	String subject, content;
+    	try {
+    		subject = PropertyUtil.getNecessary("oskari.email.subject.password.change");
+    	} catch (RuntimeException re) {
+    		subject = EMAIL_SUBJECT_PASSWORD_CHANGE;
+    	}
+    	try {
+    		content = PropertyUtil.getNecessary("oskari.email.body.password.change");
+    	} catch (RuntimeException re) {
+    		content = EMAIL_CONTENT_PASSWORD_CHANGE;
+    	}
     	EmailMessage emailMessage = new EmailMessage();
     	emailMessage.setTo(emailAddress);
-    	emailMessage.setSubject(EMAIL_SUBJECT_PASSWORD_CHANGE);
-    	emailMessage.setContent(EMAIL_CONTENT_PASSWORD_CHANGE);
+    	emailMessage.setSubject(subject);
+    	emailMessage.setContent(content);
     	sendEmail(emailMessage, uuid, request);
     }
 }
