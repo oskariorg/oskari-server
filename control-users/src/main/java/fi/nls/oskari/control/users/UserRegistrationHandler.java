@@ -31,9 +31,9 @@ public class UserRegistrationHandler extends ActionHandler {
 	private static final String PARAM_EDIT = "edit";
 	private static final String PARAM_UPDATE = "update";
 	
+	private static final String PARAM_ID = "id";
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
-    private static final String PARAM_SCREENNAME = "username";
     private static final String PARAM_EMAIL = "email";
     
     private final DatabaseUserService userService = new DatabaseUserService();
@@ -95,14 +95,14 @@ public class UserRegistrationHandler extends ActionHandler {
 		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
 			getUserParams(user, params);
 			try {
-				/*Since user passes only firstname, lastname, username and email, so need to get
-				 * userId. As while modifying user, userId is needed*/
-				User retUser = ibatisUserService.findByUserName(user.getScreenname());
-				user.setId(retUser.getId());
-				userService.modifyUser(user);
+				User retUser = ibatisUserService.find(user.getId());
+				if (retUser == null)
+					throw new ActionException("User doesn't exist.");
+				user.setScreenname(retUser.getScreenname());
+				userService.modifyUser(user);				
 			} catch (ServiceException se) {			
-				throw new ActionException(se.getMessage(), se);
-			}
+				throw new ActionException(se.getMessage(), se);				
+			} 
 			
 		} else {
 			throw new ActionException("Request URL should contain ONLY ONE: Either 'register' OR "
@@ -123,11 +123,11 @@ public class UserRegistrationHandler extends ActionHandler {
 		else 
 			return false;
 	}
-	
+			
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
+		user.setId(Long.parseLong(params.getRequiredParam(PARAM_ID)));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
-        user.setScreenname(params.getRequiredParam(PARAM_SCREENNAME));
         user.setEmail(params.getRequiredParam(PARAM_EMAIL));
     }
 	
