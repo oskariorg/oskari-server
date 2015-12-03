@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -120,9 +121,8 @@ public class PasswordResetHandler extends ActionHandler {
 			if (username == null) {
 				throw new ActionException("Username doesn't exist.");
 			} else {
-				String loginPassword = userService.getPassword(username);
-				//TODO: Need to change encryption method to BCrypt. Currently oskari_jaas_users table has password field of length of 50, which is not enough of BCrypt. Default(60)
-				final String hashedPass = "MD5:" + DigestUtils.md5Hex(token.getPassword());
+				String loginPassword = userService.getPassword(username);				
+				final String hashedPass = BCrypt.hashpw(token.getPassword(), BCrypt.gensalt());
 				if (loginPassword != null && !loginPassword.isEmpty()) {
 					userService.updatePassword(username, hashedPass);
 				} else {
