@@ -98,6 +98,8 @@ public class UserRegistrationHandler extends ActionHandler {
 				User retUser = ibatisUserService.find(user.getId());
 				if (retUser == null)
 					throw new ActionException("User doesn't exist.");
+				if (!retUser.getEmail().equals(user.getEmail()) && isEmailAlreadyExist(user.getEmail()))
+					throw new ActionException("Email already exists.");
 				user.setScreenname(retUser.getScreenname());
 				userService.modifyUser(user);				
 			} catch (ServiceException se) {			
