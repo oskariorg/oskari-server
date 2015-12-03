@@ -34,6 +34,7 @@ public class UserRegistrationHandler extends ActionHandler {
 	private static final String PARAM_ID = "id";
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
+    private static final String PARAM_USERNAME = "username";
     private static final String PARAM_EMAIL = "email";
     
     private final DatabaseUserService userService = new DatabaseUserService();
@@ -125,11 +126,22 @@ public class UserRegistrationHandler extends ActionHandler {
 		else 
 			return false;
 	}
+	
+	private long getId(ActionParameters params) throws NumberFormatException {
+        // see if params contains an ID
+        long id = -1l;
+        String idString = params.getHttpParam(PARAM_ID, "-1");
+        if (idString != null && idString.length() > 0) {
+            id = Long.parseLong(idString);
+        }
+        return id;
+    }
 			
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
-		user.setId(Long.parseLong(params.getRequiredParam(PARAM_ID)));
+		user.setId(getId(params));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
+        user.setScreenname(params.getRequiredParam(PARAM_USERNAME));
         user.setEmail(params.getRequiredParam(PARAM_EMAIL));
     }
 	
