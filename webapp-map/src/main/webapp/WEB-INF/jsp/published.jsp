@@ -74,10 +74,6 @@
         src="/Oskari/bundles/bundle.js">
 </script>
 
-<!--  OPENLAYERS -->
-<script type="text/javascript"
-        src="/Oskari/packages/openlayers/startup.js">
-</script>
 
 <c:if test="${preloaded}">
     <!-- Pre-compiled application JS, empty unless created by build job -->
