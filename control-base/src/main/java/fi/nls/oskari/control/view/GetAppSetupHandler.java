@@ -58,7 +58,8 @@ public class GetAppSetupHandler extends ActionHandler {
     // for adding extra bundle(s) for users with specific roles
     private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
-    private final Set<String> paramHandlers = new HashSet<String>();
+    // params need to be in a list that keeps order since there is a priority order
+    private final List<String> paramHandlers = new ArrayList<>();
     private final Map<String, BundleHandler> bundleHandlers = new HashMap<String, BundleHandler>();
 
     public void setViewService(final ViewService service) {
@@ -233,6 +234,7 @@ UNRESTRICTED_USAGE_ROLE = PropertyUtil.get("view.published.usage.unrestrictedRol
         int locationModified = 0;
         for (String paramKey : paramHandlers) {
             final String value = params.getHttpParam(paramKey);
+            log.debug("Handling parameter", paramKey);
             modifierParams.setParamValue(value);
             try {
                 if (value != null

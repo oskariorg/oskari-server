@@ -22,6 +22,11 @@ public class AddressParamHandler extends ParamHandler {
     //private static final String PARAM_ADDRESS = "address";
     private static SearchService searchService = new SearchServiceImpl();
 
+    @Override
+    public int getPriority() {
+        return 10;
+    }
+
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {
             return false;

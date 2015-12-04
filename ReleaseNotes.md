@@ -6,6 +6,14 @@
 
 oskari_jaas_users tables login/password field types changed to text to not needlessly restrict the length of password (or username).
 
+## ParamHandler interface
+
+Parameter handlers now implement the Comparable interface and are sorted by priority order (prio 1 is executed before prio 500): 
+- The default priority is 500
+- coord and address handlers have priority of 10 so by default they are executed before others
+- showMarker and isCenterMarker have much lower priority since they use the map center information
+ and any handler that modifies the map location need to be executed before these
+
 ## 1.34
 
 ### webapp-map

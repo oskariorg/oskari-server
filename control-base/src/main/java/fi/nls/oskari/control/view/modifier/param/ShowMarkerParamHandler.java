@@ -17,6 +17,11 @@ public class ShowMarkerParamHandler extends MarkersParamHandler {
 
     private static final Logger log = LogFactory.getLogger(ShowMarkerParamHandler.class);
 
+    @Override
+    public int getPriority() {
+        return DEFAULT_PRIORITY * 10000;
+    }
+
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         if(params.getParamValue() == null) {
             return false;
