@@ -21,7 +21,12 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
     private SqlSessionFactory factory = null;
 
     public CapabilitiesCacheServiceMybatisImpl() {
+    }
 
+    private SqlSessionFactory getFactory() {
+        if(factory != null) {
+            return factory;
+        }
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         if(dataSource != null) {
@@ -29,6 +34,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
         } else {
             LOG.error("Couldn't get datasource for", getClass().getName());
         }
+        return factory;
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -53,7 +59,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
             return null;
         }
 
-        final SqlSession session = factory.openSession();
+        final SqlSession session = getFactory().openSession();
         try {
             final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
             return mapper.find(url.toLowerCase(), layertype.toLowerCase());
@@ -69,7 +75,7 @@ public class CapabilitiesCacheServiceMybatisImpl extends CapabilitiesCacheServic
      */
     public OskariLayerCapabilities save(final OskariLayerCapabilities capabilities) {
 
-        final SqlSession session = factory.openSession();
+        final SqlSession session = getFactory().openSession();
         try {
             final CapabilitiesMapper mapper = session.getMapper(CapabilitiesMapper.class);
             OskariLayerCapabilities db = mapper.find(capabilities.getUrl().toLowerCase(), capabilities.getLayertype().toLowerCase());
