@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.35
+
+## Database changes
+
+oskari_jaas_users tables login/password field types changed to text to not needlessly restrict the length of password (or username).
+
 ## 1.34
 
 ### webapp-map
