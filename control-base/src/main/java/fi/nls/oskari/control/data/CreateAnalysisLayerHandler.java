@@ -201,7 +201,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
             analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
             for(Permission p : sourceResource.getPermissions()) {
                 // check if user has role matching permission?
-                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED)) {
+                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED) || p.isOfType(Permissions.PERMISSION_TYPE_DOWNLOAD)) {
                     analysisResource.addPermission(p.clonePermission());
                 }
             }
