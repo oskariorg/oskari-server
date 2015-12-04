@@ -47,6 +47,7 @@ public class MarkersParamHandler extends ParamHandler {
     private static final String KEY_MESSAGE = "msg";
     private static final String KEY_X = "x";
     private static final String KEY_Y = "y";
+    static final String KEY_TRANSIENT = "transient";
 
     // for parsing mapfull config
     private static final String MARKERSPLUGIN_ID = "MainMapModuleMarkersPlugin";
