@@ -42,10 +42,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -61,6 +58,10 @@ import java.util.logging.Logger;
 public class IntersectionFeatureCollection2 implements GSProcess {
     private static final Logger logger = Logger
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
+
+    // Skip gml attributes
+    private static final List<String> SKIP_GML_FIELDS = Arrays.asList(
+             "metaDataProperty", "description", "boundedBy", "name");
 
     public static enum IntersectionMode {
         INTERSECTION, FIRST, SECOND, SECOND_CONTAINS, SECOND_CLIP
@@ -375,6 +376,10 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 if (!isInRetainList || schema.getGeometryDescriptor() == descriptor) {
                     continue;
                 }
+                // Skip gml specific attributes - namespace is not available - don't use similiar attribute names to gml
+                if( SKIP_GML_FIELDS.contains(descriptor.getLocalName())) {
+                    continue;
+                }
 
                 // build the attribute to return
                 AttributeTypeBuilder builder = new AttributeTypeBuilder();
@@ -593,7 +598,8 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 AttributeDescriptor ad = firstIterator.next();
                 Object firstAttribute = feature.getAttribute(ad.getLocalName());
                 if ((retained == null || retained.contains(ad.getLocalName()))
-                        && !(firstAttribute instanceof Geometry)) {
+                        && ad.toString().indexOf("Geometry") == -1 && !(firstAttribute instanceof Geometry) 
+                        && !SKIP_GML_FIELDS.contains(ad.getLocalName())) {
                     fb.add(feature.getAttribute(ad.getLocalName()));
                 }
             }
