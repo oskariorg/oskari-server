@@ -598,7 +598,7 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 AttributeDescriptor ad = firstIterator.next();
                 Object firstAttribute = feature.getAttribute(ad.getLocalName());
                 if ((retained == null || retained.contains(ad.getLocalName()))
-                        && ad.toString().indexOf("Geometry") == -1 && !(firstAttribute instanceof Geometry) 
+                        && ad.toString().indexOf("Geometry") == -1 && !(firstAttribute instanceof Geometry)
                         && !SKIP_GML_FIELDS.contains(ad.getLocalName())) {
                     fb.add(feature.getAttribute(ad.getLocalName()));
                 }

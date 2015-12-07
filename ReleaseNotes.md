@@ -13,6 +13,11 @@ Parameter handlers now implement the Comparable interface and are sorted by prio
 - coord and address handlers have priority of 10 so by default they are executed before others
 - showMarker and isCenterMarker have much lower priority since they use the map center information
  and any handler that modifies the map location need to be executed before these
+ 
+### Analysis
+
+Geometry clip method (IntersectionFeatureCollection2) improved in Geoserver wps methods
+
 
 ## 1.34
 
