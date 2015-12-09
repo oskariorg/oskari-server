@@ -192,10 +192,16 @@ public class InsertFeatureHandler extends ActionHandler {
 			
 			for (int i = 0; i < data.length(); i++)
 			{
-				requestData.append("<gml:polygonMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>");
+				requestData.append("<gml:polygonMember><gml:Polygon>");
 				JSONArray arr = data.getJSONArray(i);
 				for (int j = 0; j < arr.length(); j++)
 				{
+					if (j > 0) {
+						requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
+					} else {
+						requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
+					}
+					
 					JSONArray arr2 = arr.getJSONArray(j);
 					for (int k = 0; k < arr2.length(); k++)
 					{
@@ -205,8 +211,14 @@ public class InsertFeatureHandler extends ActionHandler {
 							requestData.append(" ");
 						}
 					}
+					
+					if (j > 0) {
+						requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
+					} else {
+						requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+					}
 				}
-				requestData.append("</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:polygonMember>");
+				requestData.append("</gml:Polygon></gml:polygonMember>");
 			}
 			requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
 		}

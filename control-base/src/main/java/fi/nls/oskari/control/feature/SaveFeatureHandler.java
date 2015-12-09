@@ -190,10 +190,16 @@ public class SaveFeatureHandler extends ActionHandler {
 			requestData.append("<wfs:Property><wfs:Name>" + geometryProperty + "</wfs:Name><wfs:Value><gml:MultiPolygon xmlns:gml='http://www.opengis.net/gml' srsName='http://www.opengis.net/gml/srs/epsg.xml#3067'>");
 			for (int i = 0; i < data.length(); i++)
 			{
-				requestData.append("<gml:polygonMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>");
+				requestData.append("<gml:polygonMember><gml:Polygon>");
 				JSONArray arr = data.getJSONArray(i);
 				for (int j = 0; j < arr.length(); j++)
 				{
+					if (j > 0) {
+						requestData.append("<gml:interior><gml:LinearRing><gml:posList>");
+					} else {
+						requestData.append("<gml:exterior><gml:LinearRing><gml:posList>");
+					}
+					
 					JSONArray arr2 = arr.getJSONArray(j);
 					for (int k = 0; k < arr2.length(); k++)
 					{
@@ -203,8 +209,14 @@ public class SaveFeatureHandler extends ActionHandler {
 							requestData.append(" ");
 						}
 					}
+					
+					if (j > 0) {
+						requestData.append("</gml:posList></gml:LinearRing></gml:interior>");
+					} else {
+						requestData.append("</gml:posList></gml:LinearRing></gml:exterior>");
+					}
 				}
-				requestData.append("</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:polygonMember>");
+				requestData.append("</gml:Polygon></gml:polygonMember>");
 			}
 			//requestData.append("</gml:MultiPolygon></" + geometryProperty + ">");
 			requestData.append("</gml:MultiPolygon></wfs:Value></wfs:Property>");
