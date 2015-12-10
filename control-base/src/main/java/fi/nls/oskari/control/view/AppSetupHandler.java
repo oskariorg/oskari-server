@@ -205,6 +205,11 @@ public class AppSetupHandler extends RestActionHandler {
         for(String bundleid : SIMPLE_BUNDLES) {
             if(viewdata.has(bundleid)) {
                 setupBundle(view, viewdata, bundleid);
+
+                //toolbar -> add style info from metadata
+                if (bundleid.equals(ViewModifier.BUNDLE_TOOLBAR)) {
+                    setupToolbarStyleInfo(view);
+                }
             }
         }
 
@@ -229,6 +234,16 @@ public class AppSetupHandler extends RestActionHandler {
             LOG.error(je, "Could not create JSON response.");
             ResponseHelper.writeResponse(params, false);
         }
+    }
+
+    private void setupToolbarStyleInfo(final View view) throws ActionParamsException {
+        final Bundle toolbarBundle = view.getBundleByName(ViewModifier.BUNDLE_TOOLBAR);
+        if (toolbarBundle == null) {
+            throw new ActionParamsException("Could not find toolbar bundle from template view: " + view.getId());
+        }
+
+        JSONObject toolbarConfig = toolbarBundle.getConfigJSON();
+        JSONHelper.putValue(toolbarConfig, KEY_STYLE, view.getMetadata().optJSONObject(KEY_STYLE));
     }
 
     protected void parseMetadata(final View view, final User user) throws ActionException {
