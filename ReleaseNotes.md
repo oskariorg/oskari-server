@@ -18,6 +18,29 @@ Parameter handlers now implement the Comparable interface and are sorted by prio
 
 Geometry clip method (IntersectionFeatureCollection2) improved in Geoserver wps methods
 
+## 1.34.1
+
+### control-base
+
+CreateAnalysisLayer now copies the DOWNLOAD permission from original layer as well as VIEW_LAYER and VIEW_PUBLISHED.
+
+### servlet-map/webapp-map
+
+JSP-files no longer link startup.js as it's no longer needed.
+
+### servlet-map
+
+View loaded by the viewId-parameter now works again for views that have disabled the only_uuid flag.
+
+## service-webapp
+
+Flyway-migration can now be disabled by using oskari-ext.properties with
+
+    db.flyway=false
+
+Using more than one server and starting them simultaneously might result in deadlock on flyway database tables.
+You can use this as a workaroung to have one node migrate the database and the other ones configured to ignore
+ the migration using this property.  
 
 ## 1.34
 
