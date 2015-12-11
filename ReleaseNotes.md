@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.34.1
+
+### control-base
+
+CreateAnalysisLayer now copies the DOWNLOAD permission from original layer as well as VIEW_LAYER and VIEW_PUBLISHED.
+
+### servlet-map/webapp-map
+
+JSP-files no longer link startup.js as it's no longer needed.
+
+### servlet-map
+
+
+
 ## 1.34
 
 ### webapp-map
