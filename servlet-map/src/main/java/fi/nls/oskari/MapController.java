@@ -148,7 +148,7 @@ public class MapController {
         final String uuId = params.getHttpParam(PARAM_UUID);
         long viewId = params.getHttpParam(PARAM_VIEW_ID, -1);
         boolean useDefault = viewId == -1;
-        if(uuId == null) {
+        if(uuId == null && useDefault) {
             // get personalized or system default view
             if(params.getHttpParam(PARAM_RESET, false)) {
                 viewId = viewService.getSystemDefaultViewId(params.getUser().getRoles());
@@ -157,8 +157,7 @@ public class MapController {
             }
         }
 
-        log.debug("user view: " + viewId);
-
+        log.debug("Loading view with id:", viewId);
 
         final View view = getView(uuId, viewId, useDefault);
         if (view == null) {

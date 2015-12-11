@@ -12,7 +12,7 @@ JSP-files no longer link startup.js as it's no longer needed.
 
 ### servlet-map
 
-
+View loaded by the viewId-parameter now works again for views that have disabled the only_uuid flag.
 
 ## 1.34
 
