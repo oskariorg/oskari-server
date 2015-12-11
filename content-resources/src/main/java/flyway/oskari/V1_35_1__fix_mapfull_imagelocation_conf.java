@@ -24,6 +24,7 @@ public class V1_35_1__fix_mapfull_imagelocation_conf implements JdbcMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_35_1__fix_mapfull_imagelocation_conf.class);
     private static final String BUNDLE_MAPFULL = "mapfull";
     private static final String IMAGE_LOCATION = "imageLocation";
+    private static final String IMAGE_LOCATION_VALUE  = "/Oskari/resources";
 
     private ViewService service = null;
     private int updatedViewCount = 0;
@@ -75,7 +76,7 @@ public class V1_35_1__fix_mapfull_imagelocation_conf implements JdbcMigration {
 
     private boolean modifyImageLocation(final Bundle mapfull) throws JSONException {
         final JSONObject config = mapfull.getConfigJSON();
-        if(config.has(IMAGE_LOCATION)) {
+        if(config.has(IMAGE_LOCATION) && IMAGE_LOCATION_VALUE.equals(config.getString(IMAGE_LOCATION))) {
             config.remove(IMAGE_LOCATION);
             return true;
         }
