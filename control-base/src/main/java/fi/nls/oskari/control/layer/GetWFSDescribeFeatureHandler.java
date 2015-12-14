@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import org.json.JSONObject;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -15,7 +17,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import fi.nls.oskari.wfs.util.WFSDescribeFeatureHelper;
-import org.json.JSONObject;
 
 /**
  * Get WMS capabilites and return JSON
@@ -48,19 +49,23 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
         int id = getLayerId(layer_id);
         JSONObject response = new JSONObject();
 
-        if (id != -1) {
-            // Get wfs layer configuration ala Oskari
-            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-            if (lc != null) {
-                // Get wfs feature property names  (gml properties excluded)
-                response = getFeatureTypesTextOrNumeric(lc, layer_id);
-                // Add WPS params
-                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
-            }
-
-        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
-            // Set analysis layer field types
-            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
+        try {
+	        if (id != -1) {
+	            // Get wfs layer configuration ala Oskari
+	            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
+	            if (lc != null) {
+	                // Get wfs feature property names  (gml properties excluded)
+	                response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
+	                // Add WPS params
+	                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
+	            }
+	
+	        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
+	            // Set analysis layer field types
+	            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
+	        }
+        } catch (ServiceException ex) {
+        	
         }
 
         ResponseHelper.writeResponse(params, response);
