@@ -18,6 +18,11 @@ Parameter handlers now implement the Comparable interface and are sorted by prio
 
 Geometry clip method (IntersectionFeatureCollection2) improved in Geoserver wps methods
 
+### service-csw
+
+Fixed the datasource reference issue in CSWCoverageUpdateService. The scheduled job now gets datasource the same way as
+ flyway db migrations.
+
 ## 1.34.1
 
 ### control-base
