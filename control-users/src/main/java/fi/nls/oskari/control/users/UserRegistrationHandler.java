@@ -140,9 +140,11 @@ public class UserRegistrationHandler extends ActionHandler {
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
 		user.setId(getId(params));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
-        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
-        user.setScreenname(params.getRequiredParam(PARAM_USERNAME));
+        user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
         user.setEmail(params.getRequiredParam(PARAM_EMAIL));
+        //check is done because while updating user info, username is not changed.
+        if (params.getRequest().getParameter(PARAM_USERNAME) != null)
+        	 user.setScreenname(params.getRequest().getParameter(PARAM_USERNAME));
     }
 	
 	 /**
