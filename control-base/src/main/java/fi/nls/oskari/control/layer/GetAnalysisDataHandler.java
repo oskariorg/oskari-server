@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * Returns user's analysis data as JSON.
+ * Only for aggregate method
  */
 @OskariActionRoute("GetAnalysisData")
 public class GetAnalysisDataHandler extends ActionHandler {
@@ -56,8 +57,8 @@ public class GetAnalysisDataHandler extends ActionHandler {
             final List<HashMap<String, Object>> list = analysisService.getAnalysisDataByIdUid(id, user.getUuid(), select_items);
             final JSONArray rows = new JSONArray();
             for (HashMap<String, Object> analysisData : list) {
-                final JSONObject row = convertMapToJSON(analysisData);
-                if(row != null) {
+                final JSONObject row = convertToOldResultJSON(analysisData, select_items);
+                if (row != null) {
                     rows.put(row);
                 }
             }
@@ -69,28 +70,29 @@ public class GetAnalysisDataHandler extends ActionHandler {
     }
 
     /**
-     * Converts any stringified JSON in Map values to proper JSON object values
-     * and returns the Map as a JSONObject
+     * Converts aggregate analysis result to old result syntax for multiselect on client side
+     * and returns a JSONObject as aggregate results of one property
+     *
      * @param analysisData
-     * @return
+     * @return JSONObject {property:{aggregate value1, aggregate value2,..}}
      */
-    private JSONObject convertMapToJSON(HashMap<String, Object> analysisData) {
-        if(analysisData == null) {
+    private JSONObject convertToOldResultJSON(HashMap<String, Object> analysisData, String selectColumns) {
+        if (analysisData == null) {
             return null;
         }
-
+        final JSONObject row = new JSONObject();
+        String columnName = null;
         for (Map.Entry<String, Object> entry : analysisData.entrySet()) {
             final Object value = entry.getValue();
-            if(value.toString().indexOf("{") == -1) {
-                // not json, skip to next one
+            final String key = entry.getKey();
+            if (selectColumns.indexOf("As " + key) != -1) {
+                columnName = value.toString();
                 continue;
             }
             // try to map as JSON
-            final JSONObject modifiedValue = JSONHelper.createJSONObject(value.toString());
-            if(modifiedValue != null) {
-                entry.setValue(modifiedValue);
-            }
+            JSONHelper.putValue(row, key, value);
+
         }
-        return new JSONObject(analysisData);
+        return (columnName != null) ? JSONHelper.createJSONObject(columnName, row) : null;
     }
 }
