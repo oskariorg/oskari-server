@@ -100,7 +100,9 @@ public class ELFGeoLocatorParser {
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             InputStream datain = new ByteArrayInputStream(data.getBytes("UTF-8"));
             Document d = db.parse(datain);
-            d.getDocumentElement().removeAttribute("xsi:schemaLocation");
+            if(d.getDocumentElement().hasAttribute("xsi:schemaLocation")){
+                d.getDocumentElement().removeAttribute("xsi:schemaLocation");
+            }
 
             // Back to input stream
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
