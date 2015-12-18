@@ -88,6 +88,12 @@ public class SotkaIndicatorValuesFetcher {
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
         for (Entry<String, IndicatorValue> entry: allValues.entrySet()) {
             String regionCode = entry.getKey();
+            if(regionCode == null) {
+                // sometimes this is null with 0.0 as value.
+                // TODO: check if this is a bug in some other code or an empty row from sotkanet
+                continue;
+            }
+
             
             IndicatorValue value = entry.getValue();
             // SotkaNET gives "Kunta" in some places, "KUNTA" in others...
