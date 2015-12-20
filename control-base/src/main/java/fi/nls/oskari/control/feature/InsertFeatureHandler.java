@@ -1,6 +1,10 @@
 package fi.nls.oskari.control.feature;
 
+import java.io.ByteArrayInputStream;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,6 +20,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.*;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -47,6 +52,7 @@ public class InsertFeatureHandler extends ActionHandler {
 	
 	@Override
 	public void handleAction(ActionParameters params) throws ActionException {
+
 		layerService = new OskariLayerServiceIbatisImpl();
 		permissionsService = new PermissionsServiceIbatisImpl();
 		layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
@@ -103,7 +109,19 @@ public class InsertFeatureHandler extends ActionHandler {
 				}
 				else if (responseString.indexOf("<wfs:totalInserted>1</wfs:totalInserted>") > -1)
 				{
-					ResponseHelper.writeResponse(params, "");
+					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+					DocumentBuilder builder = factory.newDocumentBuilder();
+					
+					
+					ByteArrayInputStream input =  new ByteArrayInputStream(responseString.toString().getBytes("UTF-8"));
+					Document doc = builder.parse(input);
+					Element root = doc.getDocumentElement();
+					
+					NodeList res = doc.getElementsByTagName("ogc:FeatureId");
+					Element res3 = (Element)res.item(0);
+					String fid = res3.getAttribute("fid");
+					
+					ResponseHelper.writeResponse(params, new JSONObject("{ 'fid': " + fid + " }"));
 				}
             }
 		}
