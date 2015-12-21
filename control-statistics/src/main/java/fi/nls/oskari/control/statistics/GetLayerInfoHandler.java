@@ -9,6 +9,8 @@ import fi.nls.oskari.control.statistics.db.LayerMapper;
 import fi.nls.oskari.control.statistics.db.LayerMetadata;
 import fi.nls.oskari.control.statistics.db.LayerMetadataMapper;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 
 import org.apache.ibatis.mapping.Environment;
@@ -40,6 +42,7 @@ import javax.sql.DataSource;
  */
 @OskariActionRoute("GetLayerInfo")
 public class GetLayerInfoHandler extends ActionHandler {
+    private static final Logger LOG = LogFactory.getLogger(GetLayerInfoHandler.class);
     private List<Layer> layers;
     private Map<String, LayerMetadata> layerMetadata;
     
@@ -89,8 +92,8 @@ public class GetLayerInfoHandler extends ActionHandler {
             this.layerMetadata.put(row.getOskariLayerName(),
                     row);
         }
-        System.out.println("Oskari layer infos: " + String.valueOf(this.layers));
-        System.out.println("Oskari layer metadatas: " + String.valueOf(this.layerMetadata));
+        LOG.debug("Oskari layer infos:", this.layers);
+        LOG.debug("Oskari layer metadatas: ", this.layerMetadata);
     }
     
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
