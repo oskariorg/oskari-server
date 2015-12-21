@@ -86,7 +86,7 @@ public class MailSenderService {
     	sendEmail(emailMessage, user.getUuid(), request);
     }
     
-    public final void sendEmailForResetPassword(String emailAddress, String uuid, HttpServletRequest request) {
+    public final void sendEmailForResetPassword(User user, String uuid, HttpServletRequest request) {
     	String subject, content;
     	try {
     		subject = PropertyUtil.getNecessary("oskari.email.subject.password.change");
@@ -94,12 +94,13 @@ public class MailSenderService {
     		subject = EMAIL_SUBJECT_PASSWORD_CHANGE;
     	}
     	try {
-    		content = PropertyUtil.getNecessary("oskari.email.body.password.change");
+    		content = PropertyUtil.getNecessary("oskari.email.body.password.change") 
+    				+ "<br> Käyttäjä/Username : " + user.getScreenname();
     	} catch (RuntimeException re) {
-    		content = EMAIL_CONTENT_PASSWORD_CHANGE;
+    		content = EMAIL_CONTENT_PASSWORD_CHANGE + "<br> Käyttäjä/Username : " + user.getScreenname();
     	}
     	EmailMessage emailMessage = new EmailMessage();
-    	emailMessage.setTo(emailAddress);
+    	emailMessage.setTo(user.getEmail());
     	emailMessage.setSubject(subject);
     	emailMessage.setContent(content);
     	sendEmail(emailMessage, uuid, request);

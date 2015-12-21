@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -46,6 +45,7 @@ public class PasswordResetHandler extends ActionHandler {
 	
 	private final IbatisEmailService emailService = new IbatisEmailService();
 	private final MailSenderService mailSenderService = new MailSenderService();
+	private final IbatisUserService userService = new IbatisUserService();
 	
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -72,7 +72,9 @@ public class PasswordResetHandler extends ActionHandler {
             	emailToken.setExpiryTimestamp(createExpiryTime());
             	emailService.addEmail(emailToken);
             	
-            	mailSenderService.sendEmailForResetPassword(requestEmail, uuid, params.getRequest());
+            	String username = emailService.findUsernameForEmail(requestEmail);
+            	User user = userService.findByUserName(username);
+            	mailSenderService.sendEmailForResetPassword(user, uuid, params.getRequest());
             	            	
     		} else {
     			log.info("Username for login doesn't exist for email address: " + requestEmail);
@@ -117,7 +119,7 @@ public class PasswordResetHandler extends ActionHandler {
         	}
 			
 			String username = emailService.findUsernameForEmail(token.getEmail());
-			IbatisUserService userService = new IbatisUserService();
+			
 			if (username == null) {
 				throw new ActionException("Username doesn't exist.");
 			} else {
