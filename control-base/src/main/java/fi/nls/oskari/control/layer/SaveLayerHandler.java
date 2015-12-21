@@ -7,6 +7,7 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.InspireTheme;
@@ -123,6 +124,11 @@ public class SaveLayerHandler extends ActionHandler {
                 ml.setUpdated(new Date(System.currentTimeMillis()));
                 mapLayerService.update(ml);
                 //TODO: WFS spesific property update
+                if(OskariLayer.TYPE_WFS.equals(ml.getType())) {
+                    // Remove old redis data of WFSLayer_xx, new wfs conf data is inserted automatically
+                    JedisManager.delAll(WFSLayerConfiguration.KEY + Integer.toString(ml.getId()));
+                    JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
+                }
 
                 LOG.debug(ml);
                 result.layerId = ml.getId();

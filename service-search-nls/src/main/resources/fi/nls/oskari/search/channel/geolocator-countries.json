@@ -8,7 +8,7 @@
 	"FR": "Institut Géographique National (IGN-F)",
 	"DE": "Bundesamt für Kartographie und Geodäsie (BKG)",
 	"GR": "Hellenic Military Geographical Service (HMGS)",
-	"HU": "Hrvatski geodetski institut",
+    "HR": "Hrvatski geodetski institut",
 	"IT": "Italian Geonames Authority",
 	"LV": "Latvian Geospatial Information agency",
 	"LT": "GIS-Centras",
@@ -18,5 +18,7 @@
 	"CH": "swisstopo",
 	"GB": "Ordnance Survey;United Kingdom - GN",
 	"DK": "Denmark - GN;Denmark - AD",
-	"PL": "Poland - GN;Poland - AD"
+	"PL": "Poland - GN;Poland - AD",
+    "SE": "Sweden - GN",
+    "NO": "Norway - GN"
 }
