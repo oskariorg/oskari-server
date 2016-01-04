@@ -10,7 +10,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fi.nls.oskari.control.statistics.GetRegionInfoHandlerTest.DatasourceHelperMock;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -22,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -30,7 +28,7 @@ import static org.hamcrest.CoreMatchers.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DatasourceHelper.class)
 @PowerMockIgnore( {"javax.management.*"}) 
-public class StatisticalDatasourcePluginManagerTest {
+public class StatisticalDatasourcePluginManagerIT {
 
     final private StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
 

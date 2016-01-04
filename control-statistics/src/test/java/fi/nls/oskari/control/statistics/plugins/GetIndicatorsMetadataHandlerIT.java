@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DatasourceHelper.class)
 @PowerMockIgnore( {"javax.management.*"}) 
-public class GetIndicatorsMetadataHandlerTest {
+public class GetIndicatorsMetadataHandlerIT {
     public static class DatasourceHelperMock extends DatasourceHelper {
         public DatasourceHelperMock() {
             super();
@@ -65,14 +65,13 @@ public class GetIndicatorsMetadataHandlerTest {
         JSONObject sotkaIndicators = sotkaIndicatorsInfo.getJSONObject("indicators");
         JSONObject demographicsIndicator = sotkaIndicators.getJSONObject("169");
         
-        assertEquals("[{\"id\":\"sex\",\"allowedValues\":[\"male\",\"female\","
-                + "\"total\"]},{\"id\":\"year\",\"allowedValues\":"
-                + "[\"1990\",\"1991\",\"1992\",\"1993\",\"1994\",\"1995\","
-                + "\"1996\",\"1997\",\"1998\",\"1999\",\"2000\",\"2001\","
-                + "\"2002\",\"2003\",\"2004\",\"2005\",\"2006\",\"2007\","
-                + "\"2008\",\"2009\",\"2010\",\"2011\",\"2012\",\"2013\","
-                + "\"2014\"]}]",
-                demographicsIndicator.getJSONArray("selectors").toString());
+        assertEquals(2, demographicsIndicator.getJSONArray("selectors").length());
+        assertEquals("sex", demographicsIndicator.getJSONArray("selectors").getJSONObject(0).getString("id"));
+        assertEquals(3, demographicsIndicator.getJSONArray("selectors").getJSONObject(0)
+                .getJSONArray("allowedValues").length());
+        assertEquals("year", demographicsIndicator.getJSONArray("selectors").getJSONObject(1).getString("id"));
+        assertEquals(25, demographicsIndicator.getJSONArray("selectors").getJSONObject(1)
+                .getJSONArray("allowedValues").length());
     }
 }
 
