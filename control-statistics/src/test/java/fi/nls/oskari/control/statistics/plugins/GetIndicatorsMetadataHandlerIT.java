@@ -13,7 +13,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -48,8 +47,6 @@ public class GetIndicatorsMetadataHandlerIT {
         PropertyUtil.loadProperties("/oskari-ext.properties");
         Field field = PowerMockito.field(DatasourceHelper.class, "INSTANCE");
         field.set(DatasourceHelper.class, new DatasourceHelperMock());
-        
-        SotkaStatisticalDatasourcePlugin.testMode = true;
     }
     @AfterClass
     public static void tearDown() {

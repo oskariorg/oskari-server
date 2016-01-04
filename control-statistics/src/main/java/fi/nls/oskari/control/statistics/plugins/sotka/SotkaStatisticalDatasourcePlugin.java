@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.plugins.sotka;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -14,19 +13,13 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayer;
 import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayerMapper;
-import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicator;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
-import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaSpecificIndicatorParser;
-import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorMetadata;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
 import fi.nls.oskari.db.DatasourceHelper;
@@ -38,19 +31,14 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     private final static Logger LOG = LogFactory.getLogger(SotkaStatisticalDatasourcePlugin.class);
     
     private SotkaIndicatorsParser indicatorsParser = null;
-    private SotkaSpecificIndicatorParser specificIndicatorParser = null;
 
     /**
      * Maps the SotkaNET layer identifiers to Oskari layers.
      */
     private Map<String, String> layerMappings;
 
-    // Used in testing to not to fetch all the indicators completely.
-    public static boolean testMode = false;
-
     public SotkaStatisticalDatasourcePlugin() {
         indicatorsParser = new SotkaIndicatorsParser();
-        specificIndicatorParser = new SotkaSpecificIndicatorParser();
     }
     @Override
     public List<? extends StatisticalIndicator> getIndicators(User user) {
@@ -61,33 +49,8 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
             SotkaRequest request = SotkaRequest.getInstance(Indicators.NAME);
             String jsonResponse = request.getData();
 
-            // We will now need to add the year range information to the preliminary information using separate requests.
-            List<SotkaIndicator> preliminaryIndicatorInformation = indicatorsParser.parse(jsonResponse, layerMappings);
-            List<SotkaIndicator> updatedIndicators = new ArrayList<>();
-            for (SotkaIndicator indicator : preliminaryIndicatorInformation) {
-                try {
-                    SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
-                    specificIndicatorRequest.setIndicator(indicator.getId());
-                    if (SotkaStatisticalDatasourcePlugin.testMode && Long.valueOf(indicator.getId()) > 200) {
-                        // Skipping to speed up tests.
-                        updatedIndicators.add(indicator);
-                        continue;
-                    }
-                    String specificIndicatorJsonResponse = specificIndicatorRequest.getData();
-                    SotkaIndicator infoToAdd = specificIndicatorParser.parse(specificIndicatorJsonResponse, layerMappings);
-                    if (infoToAdd != null) {
-                        indicator.merge(infoToAdd);
-                        updatedIndicators.add(indicator);
-                    }
-                } catch (Throwable e) {
-                    // The SotkaNET sometimes responds with HTTP 500, for example. For these cases, we should just
-                    // remove the indicators in question.
-                    LOG.error("There was an error fetching SotkaNET indicator metadata for indicator: "
-                            + indicator.getId() + ": " + String.valueOf(indicator.getLocalizedName())
-                            + ", removing from Oskari.");
-                }
-            }
-            return updatedIndicators;
+            // We will later need to add the year range information to the preliminary information using separate requests.
+            return indicatorsParser.parse(jsonResponse, layerMappings);
         } catch (APIException e) {
             throw e;
         } catch (Throwable e) {
@@ -126,5 +89,4 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     public boolean canCache() {
         return true;
     }
-
 }

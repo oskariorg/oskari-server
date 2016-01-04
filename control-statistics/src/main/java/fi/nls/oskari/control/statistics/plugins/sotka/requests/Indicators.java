@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.control.ActionException;
 
 /**
  * Request class for SotkaNET statistics query to list indicators.

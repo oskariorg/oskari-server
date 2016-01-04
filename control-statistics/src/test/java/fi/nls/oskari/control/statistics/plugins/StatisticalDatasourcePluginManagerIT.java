@@ -52,7 +52,6 @@ public class StatisticalDatasourcePluginManagerIT {
         PropertyUtil.loadProperties("/oskari-ext.properties");
         Field field = PowerMockito.field(DatasourceHelper.class, "INSTANCE");
         field.set(DatasourceHelper.class, new DatasourceHelperMock());
-        SotkaStatisticalDatasourcePlugin.testMode = true;
     }
     @AfterClass
     public static void tearDown() {

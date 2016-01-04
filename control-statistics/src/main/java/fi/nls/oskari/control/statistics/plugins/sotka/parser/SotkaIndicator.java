@@ -16,6 +16,7 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorLayer;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorSelectorsFetcher;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetcher;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin;
 import fi.nls.oskari.log.LogFactory;
@@ -32,23 +33,36 @@ public class SotkaIndicator implements StatisticalIndicator {
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
     private StatisticalIndicatorSelectors selectors;
+    private Map<String, String> sotkaLayersToOskariLayers;
     private boolean valid = true;
+    /**
+     * If the metadata is not fetched for this indicator, we must fetch it separately.
+     */
+    private boolean metadataFetched = false;
+
+    private static final SotkaIndicatorSelectorsFetcher metadataFetcher = new SotkaIndicatorSelectorsFetcher();
+    static {
+        metadataFetcher.init();
+    }
+
     /**
      * The fetcher object is shared between all SotkaIndicators.
      */
     private static final SotkaIndicatorValuesFetcher fetcher = new SotkaIndicatorValuesFetcher();
     static {
         fetcher.init();
+        metadataFetcher.init();
     }
 
-    public SotkaIndicator() {
+    public SotkaIndicator(Map<String, String> sotkaLayersToOskariLayers) {
+        this.sotkaLayersToOskariLayers = sotkaLayersToOskariLayers;
     }
 
     /**
      * @param jsonObject
      * @return true for valid parsing, false for validation errors.
      */
-    public boolean parse(JSONObject jsonObject, Map<String, String> sotkaLayersToOskariLayers) {
+    public boolean parse(JSONObject jsonObject) {
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
             // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
@@ -72,6 +86,7 @@ public class SotkaIndicator implements StatisticalIndicator {
                 // as optional here. This SotkaIndicator class also describes the general indicator information
                 // which is missing from the indicator list JSON.
                 this.localizedDescription = toLocalizationMap(jsonObject.getJSONObject("description"));
+                this.metadataFetched = true;
             }
             if (jsonObject.has("range")) {
                 JSONObject range = jsonObject.getJSONObject("range");
@@ -87,6 +102,7 @@ public class SotkaIndicator implements StatisticalIndicator {
                     StatisticalIndicatorSelector yearSelector = new StatisticalIndicatorSelector("year", allowedYears);
                     this.selectors.addSelector(yearSelector);
                 }
+                this.metadataFetched = true;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -174,15 +190,27 @@ public class SotkaIndicator implements StatisticalIndicator {
     }
     @Override
     public Map<String, String> getLocalizedDescription() {
+        if (!metadataFetched) {
+            this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
+            metadataFetched = true;
+        }
         return this.localizedDescription;
     }
     
     @Override
     public List<StatisticalIndicatorLayer> getLayers() {
+        if (!metadataFetched) {
+            this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
+            metadataFetched = true;
+        }
         return layers;
     }
     @Override
     public StatisticalIndicatorSelectors getSelectors() {
+        if (!metadataFetched) {
+            this.merge(metadataFetcher.get(id, sotkaLayersToOskariLayers));
+            metadataFetched = true;
+        }
         return selectors;
     }
     private static Map<String, String> toLocalizationMap(JSONObject json) throws JSONException {
@@ -225,6 +253,9 @@ public class SotkaIndicator implements StatisticalIndicator {
      * @param infoToAdd
      */
     public void merge(SotkaIndicator infoToAdd) {
+        if (infoToAdd == null) {
+            return;
+        }
         this.selectors.merge(infoToAdd.getSelectors());
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
             this.localizedDescription = infoToAdd.getLocalizedDescription();

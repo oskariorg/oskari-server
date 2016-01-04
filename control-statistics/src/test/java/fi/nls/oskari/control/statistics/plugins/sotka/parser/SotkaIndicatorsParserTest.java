@@ -1,29 +1,44 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.parser;
 
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import fi.nls.oskari.control.statistics.plugins.IndicatorValueType;
+import fi.nls.oskari.control.statistics.plugins.GetIndicatorsMetadataHandlerIT.DatasourceHelperMock;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(PowerMockRunner.class)
 public class SotkaIndicatorsParserTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json",
             SotkaIndicatorsParserTest.class);
     
+    @BeforeClass
+    public static void init() throws NamingException, IllegalArgumentException,
+        IllegalAccessException {
+        PropertyUtil.loadProperties("/oskari-ext.properties");
+    }
+    @AfterClass
+    public static void tearDown() {
+        PropertyUtil.clearProperties();
+    }
+
     @Test
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();
@@ -56,6 +71,6 @@ public class SotkaIndicatorsParserTest {
                 "en=Institute for Health and Welfare (THL)}",
                 parsedObject.get(40).getLocalizedSource().toString());
         // Note that the selectors are empty here, because this indicator has no allowed values for "sex".
-        assertEquals("{[]}", parsedObject.get(40).getSelectors().toString());
+        assertEquals("{[{ id: year, value: null, allowedValues: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]}]}", parsedObject.get(40).getSelectors().toString());
     }
 }

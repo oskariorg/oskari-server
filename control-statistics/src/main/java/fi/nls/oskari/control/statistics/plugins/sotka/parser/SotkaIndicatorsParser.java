@@ -21,8 +21,8 @@ public class SotkaIndicatorsParser {
             // However, this is unlikely before real-time data, because this data is cached.
             JSONArray responseJSON = new JSONArray(response);
             for (int i = 0; i < responseJSON.length(); i++) {
-                SotkaIndicator sotkaIndicator = new SotkaIndicator();
-                if (sotkaIndicator.parse(responseJSON.getJSONObject(i), sotkaLayersToOskariLayers)) {
+                SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers);
+                if (sotkaIndicator.parse(responseJSON.getJSONObject(i))) {
                     indicatorList.add(sotkaIndicator);
                 }
             }

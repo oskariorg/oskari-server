@@ -2,7 +2,6 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import java.util.List;
 
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.domain.User;
 
 /**

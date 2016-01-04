@@ -17,8 +17,8 @@ public class SotkaSpecificIndicatorParser {
             // Keeping it simple. If performance becomes an issue, this can be reimplemented in a streaming fashion.
             // However, this is unlikely before real-time data, because this data is cached.
             JSONObject responseJSON = new JSONObject(response);
-            SotkaIndicator sotkaIndicator = new SotkaIndicator();
-            if (sotkaIndicator.parse(responseJSON, sotkaLayersToOskariLayers)) {
+            SotkaIndicator sotkaIndicator = new SotkaIndicator(sotkaLayersToOskariLayers);
+            if (sotkaIndicator.parse(responseJSON)) {
                 return sotkaIndicator;
             }
         } catch (JSONException e) {

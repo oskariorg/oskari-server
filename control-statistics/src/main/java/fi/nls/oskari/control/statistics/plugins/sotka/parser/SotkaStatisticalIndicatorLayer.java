@@ -16,7 +16,8 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     private SotkaIndicatorValuesFetcher indicatorValuesFetcher;
     
     public SotkaStatisticalIndicatorLayer(String sotkaId, String oskariId, IndicatorValueType valueType,
-            SotkaIndicatorValuesFetcher indicatorValuesFetcher, String indicatorId) {
+            SotkaIndicatorValuesFetcher indicatorValuesFetcher,
+            String indicatorId) {
         this.sotkaId = sotkaId;
         this.oskariId = oskariId;
         this.valueType = valueType;
