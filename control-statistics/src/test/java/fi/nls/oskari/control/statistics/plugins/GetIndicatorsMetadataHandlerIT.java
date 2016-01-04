@@ -57,17 +57,25 @@ public class GetIndicatorsMetadataHandlerIT {
         GetIndicatorsMetadataHandler handler = new GetIndicatorsMetadataHandler();
         handler.init();
         JSONObject result = handler.getIndicatorsMetadataJSON(null, false);
-        JSONObject sotkaIndicatorsInfo = result.getJSONObject("fi.nls.oskari.control.statistics.plugins."
+        JSONObject sotkaIndicatorsInfo = result.getJSONObject(
+                "fi.nls.oskari.control.statistics.plugins."
                 + "sotka.SotkaStatisticalDatasourcePlugin");
         JSONObject sotkaIndicators = sotkaIndicatorsInfo.getJSONObject("indicators");
         JSONObject demographicsIndicator = sotkaIndicators.getJSONObject("169");
+        assertEquals("25 - 64-vuotiaat, % vÃ¤estÃ¶stÃ¤", demographicsIndicator.getJSONObject("name").getString("fi"));
+
+        GetIndicatorSelectorMetadataHandler metadataHandler = new GetIndicatorSelectorMetadataHandler();
+        metadataHandler.init();
+        JSONObject demographicsResult = metadataHandler.getIndicatorMetadataJSON(null,
+                "fi.nls.oskari.control.statistics.plugins."
+                        + "sotka.SotkaStatisticalDatasourcePlugin", "169");
         
-        assertEquals(2, demographicsIndicator.getJSONArray("selectors").length());
-        assertEquals("sex", demographicsIndicator.getJSONArray("selectors").getJSONObject(0).getString("id"));
-        assertEquals(3, demographicsIndicator.getJSONArray("selectors").getJSONObject(0)
+        assertEquals(2, demographicsResult.getJSONArray("selectors").length());
+        assertEquals("sex", demographicsResult.getJSONArray("selectors").getJSONObject(0).getString("id"));
+        assertEquals(3, demographicsResult.getJSONArray("selectors").getJSONObject(0)
                 .getJSONArray("allowedValues").length());
-        assertEquals("year", demographicsIndicator.getJSONArray("selectors").getJSONObject(1).getString("id"));
-        assertEquals(25, demographicsIndicator.getJSONArray("selectors").getJSONObject(1)
+        assertEquals("year", demographicsResult.getJSONArray("selectors").getJSONObject(1).getString("id"));
+        assertEquals(25, demographicsResult.getJSONArray("selectors").getJSONObject(1)
                 .getJSONArray("allowedValues").length());
     }
 }
