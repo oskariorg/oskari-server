@@ -68,17 +68,8 @@ public class MailSenderService {
     }
     
     public final void sendEmailForRegistrationActivation(User user, HttpServletRequest request) {
-    	String subject, content;
-    	try {
-    		subject = PropertyUtil.getNecessary("oskari.email.subject.register.user");
-    	} catch (RuntimeException re) {
-    		subject = EMAIL_SUBJECT_ACTIVATE_REGISTRATION;
-    	}
-    	try {
-    		content = PropertyUtil.getNecessary("oskari.email.body.register.user");
-    	} catch (RuntimeException re) {
-    		content = EMAIL_CONTENT_ACTIVATE_REGISTRATION;
-    	}
+        String subject = PropertyUtil.get("oskari.email.subject.register.user", EMAIL_SUBJECT_ACTIVATE_REGISTRATION);
+        String content = PropertyUtil.get("oskari.email.body.register.user", EMAIL_CONTENT_ACTIVATE_REGISTRATION);
     	EmailMessage emailMessage = new EmailMessage();
     	emailMessage.setTo(user.getEmail());
     	emailMessage.setSubject(subject);
@@ -87,18 +78,9 @@ public class MailSenderService {
     }
     
     public final void sendEmailForResetPassword(User user, String uuid, HttpServletRequest request) {
-    	String subject, content;
-    	try {
-    		subject = PropertyUtil.getNecessary("oskari.email.subject.password.change");
-    	} catch (RuntimeException re) {
-    		subject = EMAIL_SUBJECT_PASSWORD_CHANGE;
-    	}
-    	try {
-    		content = PropertyUtil.getNecessary("oskari.email.body.password.change") 
-    				+ "<br> Käyttäjä/Username : " + user.getScreenname();
-    	} catch (RuntimeException re) {
-    		content = EMAIL_CONTENT_PASSWORD_CHANGE + "<br> Käyttäjä/Username : " + user.getScreenname();
-    	}
+        String subject = PropertyUtil.get("oskari.email.subject.password.change", EMAIL_SUBJECT_PASSWORD_CHANGE);
+    	String content = PropertyUtil.get("oskari.email.body.password.change", EMAIL_CONTENT_PASSWORD_CHANGE)
+    	        + "<br> Käyttäjä/Username : " + user.getScreenname();
     	EmailMessage emailMessage = new EmailMessage();
     	emailMessage.setTo(user.getEmail());
     	emailMessage.setSubject(subject);
