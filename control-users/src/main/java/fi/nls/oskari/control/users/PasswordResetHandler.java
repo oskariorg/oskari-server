@@ -1,20 +1,20 @@
 package fi.nls.oskari.control.users;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -35,10 +35,9 @@ public class PasswordResetHandler extends ActionHandler {
 	
 	private static final Logger log = LogFactory.getLogger(PasswordResetHandler.class);
 	
-	private String requestEmail = "";
-	
 	private static final String PARAM_UUID = "uuid";
 	private static final String PARAM_EMAIL = "email";
+	private static final String PARAM_SET_PASSWORD = "setPassword";
 	private static final String PARAM_PASSWORD = "password";
 		
 	private static final String ROLE_USER = "User";
@@ -50,18 +49,8 @@ public class PasswordResetHandler extends ActionHandler {
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         // TODO should only handle POST requests (but best to do that last, it is easier to develop/debug with GET requests)
-        // TODO parse email address from params
-        // TODO create password reset token for the email, store it in the database and send a reset link to the address (only if such address is in database)
-        // Return SUCCESS status. Do this even if nothing was sent because client should not be allowed to know whether the
-        // provided email address exists in the database.
     	
-    	if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
-			throw new ActionException("Request URL must contain ONLY ONE parameter.");
-    	
-    	if(!isParameterValid(params))
-			throw new ActionException("Request URL must contain valid parameter.");
-    	
-    	requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
+    	String requestEmail = params.getRequest().getParameter(PARAM_EMAIL);
     	
     	if (requestEmail != null && !requestEmail.isEmpty()) {
     		if (isUsernameExistsForLogin(requestEmail)) {
@@ -81,11 +70,15 @@ public class PasswordResetHandler extends ActionHandler {
     			return;
     		}
             
-    	} else if (params.getRequest().getQueryString().contains(PARAM_PASSWORD)) {
+    	} else if (params.getRequest().getParameter(PARAM_SET_PASSWORD) != null) {
     		Email token = new Email();
-            String jsonString = readJsonFromStream(params.getRequest());
-            Map<String, String> jsonObjectMap = new HashMap<String, String>();           
-            jsonObjectMap = createJsonObjectMap(jsonString);
+    		Map<String, String> jsonObjectMap;
+            try {
+                jsonObjectMap = readJsonFromStream(params.getRequest());
+            } catch (IOException e) {
+                ResponseHelper.writeError(params, "Invalid JSON object received");
+                return;
+            }
 			
 			//JSON object ONLY need to have 2 attributes: 'uuid' and 'password'
             if (jsonObjectMap.size() != 2) {
@@ -140,7 +133,10 @@ public class PasswordResetHandler extends ActionHandler {
 				//After password updated/created, delete the entry related to token from database
 				emailService.deleteEmailToken(token.getUuid());
 			}			
-    	} 
+    	}
+    	else {
+    	    throw new ActionException("Request must contain either " + PARAM_EMAIL + " or " + PARAM_SET_PASSWORD + ".");
+    	}
     }
     
     /**
@@ -165,99 +161,27 @@ public class PasswordResetHandler extends ActionHandler {
     private final boolean isUsernameExistsForLogin(final String emailAddress) throws ActionException {
     	// Retrieves username , if exists in oskari_users table.
     	String username = emailService.findUsernameForEmail(emailAddress);
-    	if (username == null)
-    		throw new ActionException("Username for given email is not found.");
+    	if (username == null) {
+    		return false;
+    	}
     	
     	// Retrieves username for login, if exists in oskari_jaas_users table.
     	String loginUsername = emailService.findUsernameForLogin(username);
-    	if (loginUsername == null)
-    		return false;
-    	else
-    		return true;
+    	return (loginUsername != null);
     }
     
     /**
      * Reads JSON data from stream
      * @param request
      * @return
+     * @throws IOException 
+     * @throws JsonMappingException 
+     * @throws JsonParseException 
      */
-    private final String readJsonFromStream(HttpServletRequest request) {
-    	InputStream inputStream;
-    	String jsonString = "";
-    	try {
-			inputStream = request.getInputStream();
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[32];
-            int i = 0;
-            while (i >= 0) {
-            	i = inputStream.read(buffer);
-                if (i >= 0)
-                	outputStream.write(buffer, 0, i);
-            }
-            jsonString = new String(outputStream.toByteArray(), "UTF-8");
-    	} catch (IOException e) {
-			log.debug("Unable to read from stream.");
-		}
-        return jsonString;
-    }
-    
-    /**
-     * Creates JSON object as HashMap.
-     * @param query
-     * @return
-     */
-    private final Map<String, String> createJsonObjectMap(String query) {
-        String[] params = query.split(",");
-        Map<String, String> jsonObjectMap = new HashMap<String, String>();
-        for (String param : params) {
-            String[] split = param.split(":");
-            jsonObjectMap.put(getStringWithoutQuotes(split[0]), getStringWithoutQuotes(split[1]));
-        }
-        return jsonObjectMap;
-    }
-
-    private final String getStringWithoutQuotes(final String value) {
-    	String regex = "\"([^\"]*)\"";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(value);
-        if (matcher.find())
-            return matcher.group(1);
-        else
-        	return "";
-    }
-    
-    public final int getRequestParameterCount(String query) {   
-    	int count = 0;
-    	for (int i = 0; i < query.length(); i++){
-    		if (query.charAt(i) == '&')
-    			++count;
-    	}
-    	return count;
-    }
-    
-    /**
-     * Checks if parameter passed is valid or not.
-     * E.g: For password change: action_route=UserPasswordReset&password
-     * 		For email: action_route=UserPasswordReset&email=
-     * @param params {@link ActionParameters}
-     * @return {@link Boolean}
-     */
-    public final boolean isParameterValid(ActionParameters params) {
-    	String paramName = null;
-    	String query = params.getRequest().getQueryString(); 
-    	if ((params.getHttpParam(PARAM_PASSWORD) != null)) {
-    		paramName = query.substring(query.indexOf("&") + 1, query.length());
-    		if (paramName.equals(PARAM_PASSWORD))
-        		return true;
-    		else
-    			return false;
-    		
-    	} else if (params.getHttpParam(PARAM_EMAIL) != null) {
-    		return true;
-    		
-    	} else {
-    		return false;
-    	}
+    @SuppressWarnings("unchecked")
+    private final Map<String, String> readJsonFromStream(HttpServletRequest request) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(request.getInputStream(), HashMap.class);
     }
     
 }
