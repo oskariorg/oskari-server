@@ -9,6 +9,9 @@
 
     <script type="text/javascript" src="//code.jquery.com/jquery-1.7.2.min.js">
     </script>
+	<script type="text/javascript" src="/Oskari/libraries/jquery/jquery-ui-1.11.4.js">
+	</script>
+	<link rel="stylesheet" type="text/css" href="/Oskari${path}/css/jquery-ui-1.11.4.css"/>
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"
