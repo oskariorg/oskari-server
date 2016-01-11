@@ -10,6 +10,7 @@ import fi.nls.test.util.ResourceHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opengis.filter.Filter;
 
@@ -161,7 +162,31 @@ public class WFSFilterTest {
         GeoJSONFilter geoJson = GeoJSONFilter.setParamsJSON(input);
         WFSFilter wfsFilter = new WFSFilter();
         wfsFilter.setDefaultBuffer(59d);
-// NOTE!!! This fails with geotools 11.2 and Java 8! With Java 7 it works ok.
+		// NOTE!!! This fails with geotools 11.2/13.1 and Java 8!
+		// With Java 7 it works ok (JSONObject seems to keep the order "correct" for Geotools with Java 7).
+		// See breakGeotoolsGeoJSon() below
+        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
+        assertNotNull(f);
+        System.out.println("F on " + f);
+	}
+
+	@Test(expected = ClassCastException.class)
+	public void breakGeotoolsGeoJSon() throws IOException {
+		String inputInExpectedOrder = "{\n" +
+				"  \"type\": \"Point\",\n" +
+				"  \"coordinates\": [386260, 6676432]\n" +
+				"}";
+		String inputThatBreaksGeometryJSONparsing = "{\n" +
+				"  \"coordinates\": [386260, 6676432],\n" +
+				"  \"type\": \"Point\"\n" +
+				"}";
+		org.geotools.geojson.geom.GeometryJSON geometryJSON = new org.geotools.geojson.geom.GeometryJSON();
+		Object worksOk = geometryJSON.readPoint(inputInExpectedOrder);
+		System.out.println("F on " + worksOk);
+		// works correctly: F on POINT (386260 6676432)
+
+		Object thisFails = geometryJSON.readPoint(inputThatBreaksGeometryJSONparsing);
+		// NOTE!!! This fails with geotools 11.2 and 13.1
         /*
 java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Number
 at org.geotools.geojson.GeoJSONUtil.createCoordinate(GeoJSONUtil.java:218)
@@ -169,8 +194,6 @@ at org.geotools.geojson.geom.GeometryHandlerBase.coordinate(GeometryHandlerBase.
 at org.geotools.geojson.geom.PointHandler.endObject(PointHandler.java:50)
 at org.json.simple.parser.JSONParser.parse(Unknown Source)
          */
-        Filter f = wfsFilter.initGeoJSONFilter(geoJson, "the_geom");
-        assertNotNull(f);
-        System.out.println("F on " + f);
+		System.out.println("Failed on " + thisFails);
 	}
 }
