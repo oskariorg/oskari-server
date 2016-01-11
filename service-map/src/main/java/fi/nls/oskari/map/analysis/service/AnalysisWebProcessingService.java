@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.analysis.service;
 
+import fi.nls.oskari.analysis.AnalysisParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
@@ -21,6 +22,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnalysisWebProcessingService {
 
@@ -126,6 +129,9 @@ public class AnalysisWebProcessingService {
             // Loop geojson features and process property difference values
             featureSet = processDifferenceValueFS(params.getTypeName(), params.getTypeName2(), params.getKeyA1(),
                     params.getFieldA1(), params.getFieldB1(), params.getNoDataValue(), rawFeatureSet);
+            // Set fields order because geojson doesn't keep property order
+            analysisLayer.setFields(this.FieldsOrder(params));
+
         } catch (Exception e) {
             throw new ServiceException("request GetFeature failed due to wfs 2.0 request build", e);
         }
@@ -306,5 +312,18 @@ public class AnalysisWebProcessingService {
 
         }
         return dA1;
+    }
+    private List<String> FieldsOrder(DifferenceMethodParams params) {
+        List<String> fields = new ArrayList<String>();
+
+        if (params.getMethod().equals(AnalysisParser.DIFFERENCE)){
+            fields.add("t1__" + params.getTypeName().replace(":", "_") + "__" + params.getFieldA1());
+            fields.add("t2__" + params.getTypeName2().replace(":", "_") + "__" + params.getFieldB1());
+            fields.add(DELTA_FIELD_NAME);
+            fields.add(params.getKeyA1());
+
+        }
+        return fields;
+
     }
 }

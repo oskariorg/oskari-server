@@ -8,6 +8,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.domain.AnalysisMethodParams;
+import fi.nls.oskari.map.analysis.domain.DifferenceMethodParams;
 import fi.nls.oskari.map.analysis.domain.IntersectJoinMethodParams;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -98,6 +99,8 @@ public class AnalysisDataService {
             // Check, if any inserted data
             if (response.indexOf("totalInserted>0") > -1) return null;
 
+            // Set fields and field order, if fields are known before analysis
+
 
             // Update col mapping and WPS layer Id into analysis table
             // ---------------------------------------
@@ -111,6 +114,9 @@ public class AnalysisDataService {
             }
             // if analysis in analysis and second layer is analysislayer - fix field names to original
             fields = this.SwapSecondAnalysisFieldNames(fields, analysislayer);
+
+            // Reorder  columns for difference method
+            fields = this.FitFixedFieldOrder4Difference(fields, analysislayer);
 
             analysis.setCols(fields);
 
@@ -367,6 +373,40 @@ public class AnalysisDataService {
                 }
 
             }
+
+        return fieldsin;
+    }
+
+    /**
+     * ReOrder analysis columns - only for difference method
+     * @param fieldsin    raw field names mapping based on gml featurecollection
+     * @return List of field names mapping
+     */
+    public List<String> FitFixedFieldOrder4Difference(List<String> fieldsin, AnalysisLayer analysisLayer) {
+
+
+        if (analysisLayer.getAnalysisMethodParams() instanceof DifferenceMethodParams) {
+            List<String> fields = new ArrayList<String>();
+
+            // Reorder analysis field names (t1,...)
+            for (int k = 0; k < analysisLayer.getFields().size(); k++) {
+                String orderedCol = analysisLayer.getFields().get(k);
+
+                for (int i = 0; i < fieldsin.size(); i++) {
+                    String col = fieldsin.get(i);
+                    if (!col.isEmpty()) {
+                        if (col.indexOf(orderedCol) != -1) {
+                           fields.add(col);
+                           break;
+                        }
+                    }
+
+                }
+            }
+            if(fields.size() == fieldsin.size()){
+                return fields;
+            }
+        }
 
         return fieldsin;
     }
