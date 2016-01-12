@@ -84,13 +84,18 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
         serviceURL = PropertyUtil.getOptional(PROPERTY_SERVICE_URL);
 
         log.debug("ServiceURL set to " + serviceURL);
-
-        InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
-        if(inp != null) {
-            InputStreamReader reader = new InputStreamReader(inp);
-            JSONTokener tokenizer = new JSONTokener(reader);
-            this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+        try {
+            InputStream inp = this.getClass().getResourceAsStream(geolocatorCountries);
+            if (inp != null) {
+                InputStreamReader reader = new InputStreamReader(inp, "UTF-8");
+                JSONTokener tokenizer = new JSONTokener(reader);
+                this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
         }
+        catch (Exception e) {
+            log.info("Country mapping setup failed for country based search", e);
+        }
+
 
         InputStream inp2 = this.getClass().getResourceAsStream(LOCATIONTYPE_ATTRIBUTES);
         if(inp2 == null){
