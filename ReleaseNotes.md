@@ -2,6 +2,10 @@
 
 ## 1.35
 
+## servlet-transport
+
+The init-command now uses layer visibility setting and prevents calls to wfs-service for layers that are hidden.
+
 ## Database changes
 
 oskari_jaas_users tables login/password field types changed to text to not needlessly restrict the length of password (or username).
