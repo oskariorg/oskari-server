@@ -73,7 +73,7 @@ public class InsertFeatureHandler extends ActionHandler {
             final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER);
             if(hasPermssion) {
             	ClearLayerTiles(lay.getId());
-				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ jsonObject.getString("layerName") +" xmlns:" + lc.getFeatureNamespace() + "='" + lc.getFeatureNamespaceURI() + "'>");
+				StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Insert><"+ lay.getName() +" xmlns:" + lc.getFeatureNamespace() + "='" + lc.getFeatureNamespaceURI() + "'>");
 				JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
 				for (int i = 0; i < jsonArray.length(); i++) {
 					String key = jsonArray.getJSONObject(i).getString("key");
@@ -87,7 +87,7 @@ public class InsertFeatureHandler extends ActionHandler {
 				if (jsonObject.has("geometries")) {
 					FillGeometries(requestData, jsonObject.getJSONObject("geometries"));
 				}
-				requestData.append("</" + jsonObject.getString("layerName") + "></wfs:Insert></wfs:Transaction>");
+				requestData.append("</" + lay.getName() + "></wfs:Insert></wfs:Transaction>");
 				
 				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 				Credentials credentials = new UsernamePasswordCredentials(user, pass);
