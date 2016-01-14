@@ -91,8 +91,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
                 JSONTokener tokenizer = new JSONTokener(reader);
                 this.elfCountryMap = JSONHelper.createJSONObject4Tokener(tokenizer);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.info("Country mapping setup failed for country based search", e);
         }
 
