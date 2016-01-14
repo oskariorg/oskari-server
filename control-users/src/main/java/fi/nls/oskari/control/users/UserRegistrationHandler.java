@@ -75,6 +75,7 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	mailSenderService.sendEmailForRegistrationActivation(user, params.getRequest());
 				    	
 		} else if (requestEdit != null && !requestEdit.isEmpty()) {
+		    // FIXME: need to check that the user is requesting his/her own details.
 			User retUser = null;
 			try {
 				Integer userId = Integer.parseInt(requestEdit);
@@ -94,7 +95,9 @@ public class UserRegistrationHandler extends ActionHandler {
 	        ResponseHelper.writeResponse(params, response);
 			
 		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
+		    // FIXME: need to check that the user is updating his/her own details.
 			getUserParams(user, params);
+			user.setId(getId(params));
 			try {
 				User retUser = ibatisUserService.find(user.getId());
 				if (retUser == null)
@@ -138,7 +141,6 @@ public class UserRegistrationHandler extends ActionHandler {
     }
 			
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
-		user.setId(getId(params));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
         user.setEmail(params.getRequiredParam(PARAM_EMAIL));
