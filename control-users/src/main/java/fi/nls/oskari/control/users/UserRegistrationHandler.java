@@ -31,7 +31,6 @@ public class UserRegistrationHandler extends ActionHandler {
 	private static final String PARAM_EDIT = "edit";
 	private static final String PARAM_UPDATE = "update";
 	
-	private static final String PARAM_ID = "id";
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
     private static final String PARAM_USERNAME = "username";
@@ -47,9 +46,6 @@ public class UserRegistrationHandler extends ActionHandler {
 		if (getRequestParameterCount(params.getRequest().getQueryString()) != 1)
 			throw new ActionException("Request URL must contain ONLY ONE parameter.");
 					
-		if(!isParameterValid(params))
-			throw new ActionException("Request URL must contain valid parameter.");
-		
 		String requestEdit = params.getRequest().getParameter(PARAM_EDIT);	
 		User user = new User();
 		if (params.getHttpParam(PARAM_REGISTER) != null) {
@@ -75,10 +71,13 @@ public class UserRegistrationHandler extends ActionHandler {
 	    	mailSenderService.sendEmailForRegistrationActivation(user, params.getRequest());
 				    	
 		} else if (requestEdit != null && !requestEdit.isEmpty()) {
-		    // FIXME: need to check that the user is requesting his/her own details.
 			User retUser = null;
 			try {
-				Integer userId = Integer.parseInt(requestEdit);
+			    User sessionUser = params.getUser();
+			    if (sessionUser.isGuest()) {
+			        throw new ActionException("Guest user cannot be edited");
+			    }
+				long userId = sessionUser.getId();
 				retUser = userService.getUser(userId);				
 				if (retUser == null) {
 					throw new ActionException("User doesn't exists.");
@@ -95,9 +94,12 @@ public class UserRegistrationHandler extends ActionHandler {
 	        ResponseHelper.writeResponse(params, response);
 			
 		} else if (params.getHttpParam(PARAM_UPDATE) != null) {
-		    // FIXME: need to check that the user is updating his/her own details.
+		    User sessionUser = params.getUser();
+            if (sessionUser.isGuest()) {
+                throw new ActionException("Guest user cannot be edited");
+            }
 			getUserParams(user, params);
-			user.setId(getId(params));
+			user.setId(sessionUser.getId());
 			try {
 				User retUser = ibatisUserService.find(user.getId());
 				if (retUser == null)
@@ -115,7 +117,7 @@ public class UserRegistrationHandler extends ActionHandler {
 					+ "'edit' OR 'update'.");
 		}
 	}
-		
+	
 	private final boolean isEmailAlreadyExist(final String emailAddress) {
 		if (emailService.findUsernameForEmail(emailAddress) != null)
 			return true;
@@ -130,16 +132,6 @@ public class UserRegistrationHandler extends ActionHandler {
 			return false;
 	}
 	
-	private long getId(ActionParameters params) throws NumberFormatException {
-        // see if params contains an ID
-        long id = -1l;
-        String idString = params.getHttpParam(PARAM_ID, "-1");
-        if (idString != null && idString.length() > 0) {
-            id = Long.parseLong(idString);
-        }
-        return id;
-    }
-			
 	private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));       
@@ -181,30 +173,4 @@ public class UserRegistrationHandler extends ActionHandler {
     	return count;
     }
     
-    /**
-     * Checks if parameter passed is valid or not.
-     * E.g: For register: action_route=UserRegistration&register
-     * 		For edit: action_route=UserRegistration&edit=
-     * 		For update: action_route=UserRegistration&update
-     * @param params {@link ActionParameters}
-     * @return {@link Boolean}
-     */
-    public final boolean isParameterValid(ActionParameters params) {
-    	String paramName = null;
-    	String query = params.getRequest().getQueryString(); 
-    	if ((params.getHttpParam(PARAM_REGISTER) != null) || 
-    			(params.getHttpParam(PARAM_UPDATE) != null)) {
-    		paramName = query.substring(query.indexOf("&") + 1, query.length());
-    		if (paramName.equals(PARAM_REGISTER) || paramName.equals(PARAM_UPDATE))
-        		return true;
-    		else
-    			return false;
-    		
-    	} else if (params.getHttpParam(PARAM_EDIT) != null) {
-    		return true;
-    		
-    	} else {
-    		return false;
-    	}
-    }
 }
