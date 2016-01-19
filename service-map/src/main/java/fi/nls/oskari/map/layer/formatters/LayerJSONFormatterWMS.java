@@ -149,7 +149,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
         JSONHelper.putValue(capabilities, "formats", formats);
         JSONHelper.putValue(capabilities, "version", wms.getVersion());
-        JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
+        capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
         return capabilities;
     }
 
