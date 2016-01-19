@@ -175,10 +175,10 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
 
             }
             // Add extra TypeNames (depends on wps method)
-            analysisParser.fixTypeNames(analysisLayer);
+            analysisParser.fixTypeNames(analysisLayer, analyseJson);
 
-            // Fix geometry property name for WFST (could be any, depends on Wps method )
-            fixGeometryPropertyName(analysisLayer);
+            // Fix property names for WFST (property names might be renamed in Wps method )
+            featureSet = fixPropertyNames(featureSet, analysisLayer);
 
             analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
@@ -511,22 +511,27 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     /**
      * Fix the geometry property name for WFST transform
      * Geometry property name in WPS method result is not the same as in input featurecollections
+     * @param featureSet  xml featureCollection
      * @param analysisLayer
      */
-    private void fixGeometryPropertyName(AnalysisLayer analysisLayer) {
+    private String fixPropertyNames(String featureSet, AnalysisLayer analysisLayer) {
 
         try {
 
             AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
             if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
-                params.setGeom("z_"+ ((SpatialJoinStatisticsMethodParams) params).getGeom2());
+                featureSet = featureSet.replace("feature:z_", "feature:");
+                params.setGeom(((SpatialJoinStatisticsMethodParams) params).getGeom2());
+
             }
 
 
         } catch (Exception e) {
-            log.warn("WPS geometry property name fix failed ", e);
+            log.warn("FeatureCollection property rename  failed ", e);
 
         }
+
+        return featureSet;
 
     }
 
