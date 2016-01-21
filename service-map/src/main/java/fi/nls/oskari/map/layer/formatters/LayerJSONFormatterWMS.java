@@ -128,12 +128,14 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "isQueryable", capabilities.optBoolean("isQueryable"));
         JSONHelper.putValue(layerJson, "version", capabilities.optString("version"));
         // copy time from capabilities to attributes
+        // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
-        /*
-        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(
-                JSONHelper.getJSONObject(layerJson, "attributes"),
-                JSONHelper.getJSONObject(capabilities, "time")));
-                */
+        if(capabilities.has("time")) {
+            JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(
+                    JSONHelper.getJSONObject(layerJson, "attributes"),
+                    createTimesJSON(JSONHelper.getJSONArray(capabilities, "time"))));
+        }
+
     }
 
     public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
@@ -184,6 +186,43 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(time, "time", values);
         }
         return time;
+    }
+
+    public static JSONObject createTimesJSON(final JSONArray time) {
+
+        JSONObject times = new JSONObject();
+        JSONObject timerange = new JSONObject();
+        try {
+
+            if (time == null) {
+                return times;
+            }
+            //Loop array
+            for (int i = 0; i < time.length(); i++) {
+                String tim = time.getString(i);
+                String[] tims = tim.split("/");
+                if(tims.length > 2){
+                    JSONHelper.putValue(timerange, "start", tims[0]);
+                    JSONHelper.putValue(timerange, "end", tims[1]);
+                    JSONHelper.putValue(timerange, "interval", tims[2]);
+                    JSONHelper.putValue(times, "times", timerange);
+                }
+                else {
+                    final JSONArray values = new JSONArray();
+                    String[] atims = tim.split(",");
+                    for (String string : atims) {
+                        values.put(string);
+                    }
+                    JSONHelper.putValue(times, "times", values);
+                }
+                break;
+            }
+
+
+        } catch (Exception e) {
+            log.warn(e, "Populating layer time failed!");
+        }
+        return times;
     }
 
     /**
