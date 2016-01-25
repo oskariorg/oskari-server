@@ -212,7 +212,7 @@ public class AnalysisDataService {
                 for (int j = 1; j < 11; j++) {
                     String colx = analysis.getColx(j);
                     if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
+                        if (colx.contains("=")) {
                             columnNames.put(colx.split("=")[0],
                                     colx.split("=")[1]);
                         }
@@ -385,15 +385,12 @@ public class AnalysisDataService {
                     // Replace internal analysis field names (t1,...)
                     for (int i = 0; i < fieldsin.size(); i++) {
                         String col = fieldsin.get(i);
-                        if (!col.isEmpty()) {
-                            if (col.indexOf("=") != -1) {
-                                String[] cola = col.split("=");
-
-                                if (colnames.containsKey(cola[1])) {
-                                    fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(colnames.get(cola[1])));
-                                }
-
+                        if (!col.isEmpty() && col.contains("=")) {
+                            String[] cola = col.split("=");
+                            if (colnames.containsKey(cola[1])) {
+                                fieldsin.set(i, cola[0] + "=" + transformationService.stripNamespace(colnames.get(cola[1])));
                             }
+
                         }
 
                     }
@@ -427,7 +424,7 @@ public class AnalysisDataService {
                 for (int i = 0; i < fieldsin.size(); i++) {
                     String col = fieldsin.get(i);
                     if (!col.isEmpty()) {
-                        if (col.indexOf(orderedCol) != -1) {
+                        if (col.contains(orderedCol)) {
                             fields.add(col);
                             break;
                         }
@@ -463,7 +460,7 @@ public class AnalysisDataService {
                 for (int i = 0; i < fieldsin.size(); i++) {
                     String col = fieldsin.get(i);
                     if (!col.isEmpty()) {
-                        if (col.indexOf("=") != -1) {
+                        if (col.contains("=")) {
                             String[] cola = col.split("=");
                             if (cola[1].equals(id))
                                 fieldsin.set(i, cola[0] + "=" + label);

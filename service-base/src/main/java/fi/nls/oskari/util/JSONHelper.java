@@ -72,6 +72,17 @@ public class JSONHelper {
             return null;
         }
     }
+    public static final Object get(final JSONObject content, String key) {
+        if(content == null) {
+            return null;
+        }
+        try {
+            return content.get(key);
+        } catch (Exception e) {
+            log.info("Couldn't get Object from ", content, " with key =", key);
+            return null;
+        }
+    }
     public static final JSONObject getJSONObject(final JSONArray content, int key) {
         if(content == null) {
             return null;

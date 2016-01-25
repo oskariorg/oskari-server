@@ -25,6 +25,14 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     public static final String KEY_STYLE = "style";
     public static final String KEY_LEGEND = "legend";
+    public static final String KEY_TIMES = "times";
+    public static final String KEY_VALUE = "value";
+    public static final String KEY_FORMATS = "formats";
+    public static final String KEY_GFICONTENT = "gfiContent";
+    public static final String KEY_LEGENDIMAGE = "legendImage";
+    public static final String KEY_VERSION = "version";
+    public static final String KEY_ISQUERYABLE = "isQueryable";
+    public static final String KEY_ATTRIBUTES = "attributes";
 
     // There working only plain text and html so ranked up
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
@@ -38,19 +46,19 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                               final boolean isSecure) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
-        JSONHelper.putValue(layerJson, "style", layer.getStyle());
-        JSONHelper.putValue(layerJson, "gfiContent", layer.getGfiContent());
+        JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
+        JSONHelper.putValue(layerJson, KEY_GFICONTENT, layer.getGfiContent());
 
         if (layer.getGfiType() != null && !layer.getGfiType().isEmpty()) {
             // setup default if saved
-            JSONObject formats = layerJson.optJSONObject("formats");
+            JSONObject formats = layerJson.optJSONObject(KEY_FORMATS);
             if(formats == null) {
                 // create formats node if not found
-                formats = JSONHelper.createJSONObject("value", layer.getGfiType());
-                JSONHelper.putValue(layerJson, "formats", formats);
+                formats = JSONHelper.createJSONObject(KEY_VALUE, layer.getGfiType());
+                JSONHelper.putValue(layerJson, KEY_FORMATS, formats);
             }
             else {
-                JSONHelper.putValue(formats, "value", layer.getGfiType());
+                JSONHelper.putValue(formats, KEY_VALUE, layer.getGfiType());
             }
         }
         includeCapabilitiesInfo(layerJson, layer, layer.getCapabilities());
@@ -112,11 +120,11 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             // if we have a global legend url, setup the JSON
             if(globalLegend != null && !globalLegend.isEmpty()) {
                 if (useProxy) {
-                    JSONHelper.putValue(layerJson, "legendImage", buildLegendUrl(layer, null));
+                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
                     // copy the original value so we can show them for admins
-                    addInfoForAdmin(layerJson, "legendImage", globalLegend);
+                    addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
                 } else {
-                    JSONHelper.putValue(layerJson, "legendImage", globalLegend);
+                    JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, globalLegend);
                 }
             }
 
@@ -124,16 +132,16 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             log.warn(e, "Populating layer styles failed!");
         }
 
-        JSONHelper.putValue(layerJson, "formats", capabilities.optJSONObject("formats"));
-        JSONHelper.putValue(layerJson, "isQueryable", capabilities.optBoolean("isQueryable"));
-        JSONHelper.putValue(layerJson, "version", capabilities.optString("version"));
+        JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
+        JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
+        JSONHelper.putValue(layerJson, KEY_VERSION, capabilities.optString("version"));
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // only reason for this is that admin can see the values offered by service
-        if(capabilities.has("time")) {
-            JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(
-                    JSONHelper.getJSONObject(layerJson, "attributes"),
-                    createTimesJSON(JSONHelper.getJSONArray(capabilities, "time"))));
+        if(capabilities.has(KEY_TIMES)) {
+            JSONHelper.putValue(layerJson, KEY_ATTRIBUTES, JSONHelper.merge(
+                    JSONHelper.getJSONObject(layerJson, KEY_ATTRIBUTES),
+                    JSONHelper.createJSONObject(KEY_TIMES, JSONHelper.get(capabilities, KEY_TIMES))));
         }
 
     }
@@ -144,13 +152,13 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         if(wms == null) {
             return capabilities;
         }
-        JSONHelper.putValue(capabilities, "isQueryable", wms.isQueryable());
+        JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, wms.isQueryable());
         List<JSONObject> styles = LayerJSONFormatterWMS.createStylesArray(wms);
         JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
 
         JSONObject formats = LayerJSONFormatterWMS.getFormatsJSON(wms);
-        JSONHelper.putValue(capabilities, "formats", formats);
-        JSONHelper.putValue(capabilities, "version", wms.getVersion());
+        JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
+        JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
         capabilities = JSONHelper.merge(capabilities, LayerJSONFormatterWMS.formatTime(wms.getTime()));
         return capabilities;
     }
@@ -169,7 +177,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         Map<String, String> urlParams = new HashMap<String, String>();
         urlParams.put("action_route", "GetLayerTile");
         urlParams.put("id", Integer.toString(layer.getId()));
-        urlParams.put("legend", "true");
+        urlParams.put(KEY_LEGEND, "true");
         if(styleName != null){
             urlParams.put(KEY_STYLE, styleName);
         }
@@ -177,15 +185,11 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     }
 
     public static JSONObject formatTime(List<String> timeList) {
-        final JSONObject time = new JSONObject();
         final JSONArray values = new JSONArray();
         for (String string : timeList) {
             values.put(string);
         }
-        if (values.length() > 0) {
-            JSONHelper.putValue(time, "time", values);
-        }
-        return time;
+        return createTimesJSON(values);
     }
 
     public static JSONObject createTimesJSON(final JSONArray time) {
@@ -205,7 +209,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                     JSONHelper.putValue(timerange, "start", tims[0]);
                     JSONHelper.putValue(timerange, "end", tims[1]);
                     JSONHelper.putValue(timerange, "interval", tims[2]);
-                    JSONHelper.putValue(times, "times", timerange);
+                    JSONHelper.putValue(times, KEY_TIMES, timerange);
                 }
                 else {
                     final JSONArray values = new JSONArray();
@@ -213,7 +217,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                     for (String string : atims) {
                         values.put(string);
                     }
-                    JSONHelper.putValue(times, "times", values);
+                    JSONHelper.putValue(times, KEY_TIMES, values);
                 }
                 break;
             }
@@ -265,7 +269,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                 }
             }
             // default format
-            JSONHelper.putValue(formatJSON, "value", value);
+            JSONHelper.putValue(formatJSON, KEY_VALUE, value);
             return formatJSON;
 
         } catch (Exception e) {

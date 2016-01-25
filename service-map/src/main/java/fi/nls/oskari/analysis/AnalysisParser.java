@@ -594,7 +594,8 @@ public class AnalysisParser {
 
             // aggregate fields
             String aggre_field = null;
-            Boolean isCounFunc = false;  // Is "Count" function in input parameters
+            // Is "Count" function in input parameters
+            Boolean isCountFunc = false;
             analysisLayer.setNodataCount(false);
             try {
 
@@ -628,7 +629,7 @@ public class AnalysisParser {
                                 aggre_funcs.add(aggre_func_in.getString(i));
                             }
                             if(aggre_func_in.getString(i).equals(FUNC_COUNT)){
-                                isCounFunc = true;
+                                isCountFunc = true;
                             }
                         }
                     } catch (JSONException e) {
@@ -658,7 +659,7 @@ public class AnalysisParser {
             analysisLayer.setAnalysisMethodParams(method);
 
             // Filter out text type fields, if there is no count-function computation requested
-            if(!isCounFunc){
+            if(!isCountFunc){
                 this.removeTextTypeFields(analysisLayer);
             }
             // WFS filter
@@ -1974,11 +1975,8 @@ public class AnalysisParser {
             List<String> newfields = new ArrayList<String>();
             if (fields != null  && fieldTypes  != null ) {
                 for (int i = 0; i < fields.size(); i++) {
-                    if (fieldTypes.containsKey(fields.get(i))) {
-                        //Check type
-                        if (fieldTypes.get(fields.get(i)).equals(NUMERIC_FIELD_TYPE)) {
+                    if (fieldTypes.containsKey(fields.get(i)) && fieldTypes.get(fields.get(i)).equals(NUMERIC_FIELD_TYPE)) {
                             newfields.add(fields.get(i));
-                        }
                     }
 
                 }
