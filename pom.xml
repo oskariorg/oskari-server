@@ -231,6 +231,13 @@
                 <artifactId>oskari-search-nls</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-search-opendata</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>oskari-wfs</artifactId>
@@ -911,6 +918,7 @@
 
         <module>service-search</module>
         <module>service-search-nls</module>
+        <module>service-search-opendata</module>
         <module>service-spatineo-monitor</module>
         <module>service-control</module>
         <module>service-scheduler</module>

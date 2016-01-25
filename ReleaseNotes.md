@@ -2,15 +2,23 @@
 
 ## 1.35
 
-## servlet-transport
+### service-search-opendata
+
+New maven module for any open data sources usable for searches.
+ 
+### control-example
+
+OpenStreetMapSearchChannel moved to service-search-opendata which is now a dependency for control-example. 
+
+### servlet-transport
 
 The init-command now uses layer visibility setting and prevents calls to wfs-service for layers that are hidden.
 
-## Database changes
+### Database changes
 
 oskari_jaas_users tables login/password field types changed to text to not needlessly restrict the length of password (or username).
 
-## ParamHandler interface
+### ParamHandler interface
 
 Parameter handlers now implement the Comparable interface and are sorted by priority order (prio 1 is executed before prio 500): 
 - The default priority is 500

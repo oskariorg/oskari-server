@@ -19,6 +19,10 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-control-base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-search-opendata</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
