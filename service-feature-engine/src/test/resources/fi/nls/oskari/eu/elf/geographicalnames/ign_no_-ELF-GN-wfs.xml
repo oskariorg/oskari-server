@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:wfs="http://www.opengis.net/wfs/2.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:gco="http://www.isotc211.org/2005/gco"
+        xmlns:base="http://inspire.ec.europa.eu/schemas/base/3.3"
+        xmlns:base2="http://inspire.ec.europa.eu/schemas/base2/2.0"
+        xmlns:elf-gn="http://www.locationframework.eu/schemas/GeographicalNames/1.0"
+        xmlns:gn="http://inspire.ec.europa.eu/schemas/gn/4.0" timeStamp="2016-01-25T13:28:42+0000">
+    <wfs:boundedBy>
+        <gml:Envelope srsName="urn:ogc:def:crs:EPSG::EPSG:900913">
+            <gml:lowerCorner>2285925.4388507 1.076862472036E7</gml:lowerCorner>
+            <gml:upperCorner>2289811.7840071 1.0770659856238E7</gml:upperCorner>
+        </gml:Envelope>
+    </wfs:boundedBy>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="SE.LM.GN.NP.7020432">
+            <gn:beginLifespanVersion>2012-11-12T12:31:47</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="SE.LM.GN.NP.7020432_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2287395.361 10769305.031</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>7020432</base:localId>
+                    <base:namespace>SE.LM.GN.NP</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>10000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                    <gmd:distance gco:nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gmd:distance>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString>ANLTX</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>1</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                    <gmd:distance gco:nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gmd:distance>
+                </gmd:MD_Resolution>
+            </gn:mostDetailedViewingResolution>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>swe</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"></gn:nativeness>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/official"></gn:nameStatus>
+                    <gn:sourceOfName>Swedish Place Name Registry - Ortnamnsregistret   </gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Treriksröset</gn:text>
+                            <gn:script>Latn</gn:script>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                    <elf-gn:referenceName>true</elf-gn:referenceName>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="building"></gn:type>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="FI_NR_PAIKKA_10903807">
+            <gn:beginLifespanVersion>2014-02-28T00:00:00</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="FI_NR_PAIKKA_10903807_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2287464.861 10769441.351</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>10903807</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>50000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                    <gmd:distance gco:nilReason="unpopulated"></gmd:distance>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString>National boundary mark</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution xsi:nil="true" nilReason="unpopulated"></gn:mostDetailedViewingResolution>
+            <gn:name>
+                <gn:GeographicalName>
+                    <gn:language>fin</gn:language>
+                    <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="unpopulated"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Kolmen valtakunnan rajapyykki</gn:text>
+                            <gn:script>Latn</gn:script>
+                            <gn:transliterationScheme xsi:nil="true" nilReason="unpopulated"></gn:transliterationScheme>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </gn:GeographicalName>
+            </gn:name>
+            <gn:relatedSpatialObject xsi:nil="true" nilReason="unpopulated"></gn:relatedSpatialObject>
+            <gn:type xsi:nil="true"></gn:type>
+            <elf-gn:EGNType></elf-gn:EGNType>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="FI_NR_PAIKKA_10898237">
+            <gn:beginLifespanVersion>2014-08-01T00:00:00</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="FI_NR_PAIKKA_10898237_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2288401.549 10769543.125</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>10898237</base:localId>
+                    <base:namespace>http://paikkatiedot.fi/so/1000783/</base:namespace>
+                    <base:versionId xsi:nil="true" nilReason="unpopulated"></base:versionId>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>50000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                    <gmd:distance gco:nilReason="unpopulated"></gmd:distance>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString>Building</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution xsi:nil="true" nilReason="unpopulated"></gn:mostDetailedViewingResolution>
+            <gn:name>
+                <gn:GeographicalName>
+                    <gn:language>fin</gn:language>
+                    <gn:sourceOfName>National Land Survey of Finland - Place Name Register</gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="unpopulated"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Kuohkimajärvi</gn:text>
+                            <gn:script>Latn</gn:script>
+                            <gn:transliterationScheme xsi:nil="true" nilReason="unpopulated"></gn:transliterationScheme>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </gn:GeographicalName>
+            </gn:name>
+            <gn:relatedSpatialObject xsi:nil="true" nilReason="unpopulated"></gn:relatedSpatialObject>
+            <gn:type xsi:nil="true"></gn:type>
+            <elf-gn:EGNType></elf-gn:EGNType>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="NamedPlace.1110786">
+            <gn:beginLifespanVersion>2007-07-05T00:00:00</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="NamedPlace.1110786_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2287465.564 10769441.962</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>NamedPlace.1110786</base:localId>
+                    <base:namespace>http://data.geonorge.no/stedsnavn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>150000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="no">Grensemerke</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>20000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:mostDetailedViewingResolution>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>nor</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"></gn:nativeness>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised"></gn:nameStatus>
+                    <gn:sourceOfName>Norwegian Central Place Name Register - SSR</gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Treriksrøysa</gn:text>
+                            <gn:script>Latn</gn:script>
+                            <gn:transliterationScheme xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:transliterationScheme>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace"></gn:type>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="NamedPlace.1110787">
+            <gn:beginLifespanVersion>2014-10-30T00:00:00</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="NamedPlace.1110787_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2287465.564 10769441.962</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>NamedPlace.1110787</base:localId>
+                    <base:namespace>http://data.geonorge.no/stedsnavn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>150000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="no">Grensemerke</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>20000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:mostDetailedViewingResolution>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>sme</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"></gn:nativeness>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised"></gn:nameStatus>
+                    <gn:sourceOfName>Norwegian Central Place Name Register - SSR</gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Golddajávri</gn:text>
+                            <gn:script>Latn</gn:script>
+                            <gn:transliterationScheme xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:transliterationScheme>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/populatedPlace"></gn:type>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+    <wfs:member>
+        <elf-gn:NamedPlace gml:id="NamedPlace.310137">
+            <gn:beginLifespanVersion>1999-02-05T00:00:00</gn:beginLifespanVersion>
+            <gn:geometry>
+                <gml:Point gml:id="NamedPlace.310137_GN_GEOMETRY" srsName="EPSG:900913">
+                    <gml:pos>2287526.171 10769397.836</gml:pos>
+                </gml:Point>
+            </gn:geometry>
+            <gn:inspireId>
+                <base:Identifier>
+                    <base:localId>NamedPlace.310137</base:localId>
+                    <base:namespace>http://data.geonorge.no/stedsnavn</base:namespace>
+                </base:Identifier>
+            </gn:inspireId>
+            <gn:leastDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>2000000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:leastDetailedViewingResolution>
+            <gn:localType>
+                <gmd:LocalisedCharacterString locale="no">Annen kulturdetalj</gmd:LocalisedCharacterString>
+            </gn:localType>
+            <gn:mostDetailedViewingResolution>
+                <gmd:MD_Resolution>
+                    <gmd:equivalentScale>
+                        <gmd:MD_RepresentativeFraction>
+                            <gmd:denominator>
+                                <gco:Integer>20000</gco:Integer>
+                            </gmd:denominator>
+                        </gmd:MD_RepresentativeFraction>
+                    </gmd:equivalentScale>
+                </gmd:MD_Resolution>
+            </gn:mostDetailedViewingResolution>
+            <gn:name>
+                <elf-gn:GeographicalName>
+                    <gn:language>nor</gn:language>
+                    <gn:nativeness xlink:href="http://inspire.ec.europa.eu/codelist/NativenessValue/endonym"></gn:nativeness>
+                    <gn:nameStatus xlink:href="http://inspire.ec.europa.eu/codelist/NameStatusValue/standardised"></gn:nameStatus>
+                    <gn:sourceOfName>Norwegian Central Place Name Register - SSR</gn:sourceOfName>
+                    <gn:pronunciation xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:pronunciation>
+                    <gn:spelling>
+                        <gn:SpellingOfName>
+                            <gn:text>Treriksrøysa</gn:text>
+                            <gn:script>Latn</gn:script>
+                            <gn:transliterationScheme xsi:nil="true" nilReason="http://inspire.ec.europa.eu/codelist/VoidReasonValue/Unknown"></gn:transliterationScheme>
+                        </gn:SpellingOfName>
+                    </gn:spelling>
+                </elf-gn:GeographicalName>
+            </gn:name>
+            <gn:type xlink:href="http://inspire.ec.europa.eu/codelist/NamedPlaceTypeValue/administrativeUnit"></gn:type>
+        </elf-gn:NamedPlace>
+    </wfs:member>
+</wfs:FeatureCollection>
