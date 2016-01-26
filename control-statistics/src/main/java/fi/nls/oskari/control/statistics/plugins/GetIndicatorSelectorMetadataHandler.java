@@ -99,6 +99,7 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
         pluginIndicatorJSON.put("name", name);
         pluginIndicatorJSON.put("description", description);
         pluginIndicatorJSON.put("source", source);
+        pluginIndicatorJSON.put("public", indicator.isPublic());
         pluginIndicatorJSON.put("layers", toJSON(layers));
         pluginIndicatorJSON.put("selectors", toJSON(selectors));
         return pluginIndicatorJSON;
