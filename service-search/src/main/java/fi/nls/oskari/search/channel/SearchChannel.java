@@ -18,14 +18,15 @@ import java.util.*;
  */
 public abstract class SearchChannel extends OskariComponent implements SearchableChannel, ConnectionProvider {
 
+
     private static Logger log = LogFactory.getLogger(SearchChannel.class);
     private Map<String, Double> mapScalesForType = new HashMap<String, Double>();
     private double defaultScale = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
 
-    public boolean hasReverseGeocode() {
-        return false;
+    public Capabilities getCapabilities() {
+        return Capabilities.TEXT;
     }
 
     public ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException {
