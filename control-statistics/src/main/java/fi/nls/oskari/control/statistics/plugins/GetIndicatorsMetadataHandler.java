@@ -118,6 +118,7 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
         
         pluginIndicatorJSON.put("name", name);
         pluginIndicatorJSON.put("source", source);
+        pluginIndicatorJSON.put("public", indicator.isPublic());
         return pluginIndicatorJSON;
     }
 }

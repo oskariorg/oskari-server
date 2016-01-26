@@ -155,7 +155,7 @@ public class KapaIndicator implements StatisticalIndicator {
         return "{pluginId: " + KapaStatisticalDatasourcePlugin.class.getCanonicalName() + ", id: " +
                 id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
                 String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
-                String.valueOf(selectors)+ "}";
+                String.valueOf(selectors)+ "}" + ", public: " + isPublic();
     }
     /**
      * This is used to merge additional selector and description information to the indicator metadata.
@@ -166,5 +166,11 @@ public class KapaIndicator implements StatisticalIndicator {
         if (this.localizedDescription == null || this.localizedDescription.size() == 0) {
             this.localizedDescription = infoToAdd.getLocalizedDescription();
         }
+    }
+
+    @Override
+    public Boolean isPublic() {
+        // All Kapa indicators are public.
+        return true;
     }
 }

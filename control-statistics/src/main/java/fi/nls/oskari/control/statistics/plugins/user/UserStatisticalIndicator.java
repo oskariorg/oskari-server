@@ -185,7 +185,8 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
         return year;
     }
 
-    public Boolean getPublished() {
+    @Override
+    public Boolean isPublic() {
         return published;
     }
 }

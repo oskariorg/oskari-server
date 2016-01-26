@@ -14,6 +14,10 @@ import java.util.Map;
 public interface StatisticalIndicator {
     public String getPluginId();
     public String getId();
+    /**
+     * User created indicators can be private so that they are only shown to the user who created them.
+     */
+    public Boolean isPublic();
     public List<StatisticalIndicatorLayer> getLayers();
     public StatisticalIndicatorSelectors getSelectors();
     /*

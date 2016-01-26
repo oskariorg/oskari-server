@@ -241,12 +241,19 @@ public class SotkaIndicator implements StatisticalIndicator {
     public String getPluginId() {
         return SotkaStatisticalDatasourcePlugin.class.getCanonicalName();
     }
+
+    @Override
+    public Boolean isPublic() {
+        // All Sotka indicators are public.
+        return true;
+    }
+
     @Override
     public String toString() {
         return "{pluginId: " + SotkaStatisticalDatasourcePlugin.class.getCanonicalName() + ", id: " +
                 id + ", localizedName: " + String.valueOf(localizedName) + ", localizedSource: " +
                 String.valueOf(localizedSource) + ", layers: " + String.valueOf(layers) + ", selectors: " +
-                String.valueOf(selectors)+ "}";
+                String.valueOf(selectors)+ "}" + ", public: " + isPublic();
     }
     /**
      * This is used to merge additional selector and description information to the indicator metadata.
