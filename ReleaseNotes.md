@@ -2,6 +2,13 @@
 
 ## 1.35
 
+### service-base
+
+Added IOHelper convenience method for just adding one param to an URL:
+ 
+   public static String addUrlParam(final String url, String key, String value)
+   String url = IOHelper.addUrlParam("https://google.com", "q", "test");
+
 ### service-search-opendata
 
 New maven module for any open data sources usable for searches.
