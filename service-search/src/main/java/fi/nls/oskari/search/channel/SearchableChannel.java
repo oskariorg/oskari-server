@@ -33,6 +33,14 @@ public interface SearchableChannel {
 	ChannelSearchResult doSearch(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException;
 
     /**
+     * Make reverse geocoding using the channel implementation
+     * @param searchCriteria
+     * @return
+     * @throws IllegalSearchCriteriaException
+     */
+    ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException;
+
+    /**
      * Returns an id for the search channel
      * @return
      */
@@ -55,16 +63,6 @@ public interface SearchableChannel {
      * @return
      */
     boolean isValidSearchTerm(SearchCriteria criteria);
-
-    /**
-     * Make reverse geocoding using the channel implementation
-     * @param lon
-     * @param lat
-     * @param srs
-     * @return
-     * @throws IllegalSearchCriteriaException
-     */
-    ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException;
 
     /**
      * Setup zoomlevel based on item type etc

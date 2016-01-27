@@ -29,7 +29,11 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
         return Capabilities.TEXT;
     }
 
-    public ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException {
+    public ChannelSearchResult doSearch(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
+        throw new IllegalSearchCriteriaException("Not implemented");
+    }
+
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         throw new IllegalSearchCriteriaException("Not implemented");
     }
 

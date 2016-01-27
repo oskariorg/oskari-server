@@ -15,7 +15,7 @@ SearchableChannel interface changes:
     Capabilities getCapabilities(); // COORD, TEXT or BOTH. Defaults to TEXT on SearchChannel
     boolean isValidSearchTerm(SearchCriteria criteria); // defaults true on SearchChannel
     void calculateCommonFields(final SearchResultItem item); // Setup zoomlevel based on item type on SearchChannel
-    ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException; // reverse geocode impl
+    ChannelSearchResult reverseGeocode(SearchCriteria criteria) throws IllegalSearchCriteriaException; // reverse geocode impl
 
 Any legacy SearchChannel implementation should implement these or inherit the SearchChannel class for defaults.
 

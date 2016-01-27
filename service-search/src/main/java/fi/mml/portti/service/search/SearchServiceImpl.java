@@ -168,7 +168,7 @@ public class SearchServiceImpl implements SearchService {
         try {
             final ChannelSearchResult result;
             if(sc.isReverseGeocode() && channel.getCapabilities().canGeocode()) {
-                result = channel.doSearch(sc.getLat(), sc.getLon(), sc.getSRS());
+                result = channel.reverseGeocode(sc);
             } else if(channel.getCapabilities().canTextSearch()) {
                 result = channel.doSearch(sc);
             } else {
