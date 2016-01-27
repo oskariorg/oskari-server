@@ -104,10 +104,17 @@ public class What3WordsSearchChannel extends SearchChannel {
             final CoordinateReferenceSystem sourceCrs = CRS.decode(sc.getSRS());
             final CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS);
 
+            // TODO: this needs clarification...
+            final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
+            double lon = sc.getLat();
+            double lat = sc.getLon();
+            if(reverseCoordinates) {
+                lon = sc.getLon();
+                lat = sc.getLat();
+            }
+            LOG.debug("Transforming coordinates");
             final Point point = ProjectionHelper.transformPoint(
-                    sc.getLon(), sc.getLat(),
-                    sourceCrs,
-                    targetCrs);
+                    lon, lat, sourceCrs, targetCrs);
             //https://api.what3words.com/position?key=YOURAPIKEY&lang=en&position=51.521251,-0.203586
             final String url = IOHelper.addUrlParam(reverseServiceURL, "position", point.getLat() + "," + point.getLon());
             String data = IOHelper.getURL(url);
