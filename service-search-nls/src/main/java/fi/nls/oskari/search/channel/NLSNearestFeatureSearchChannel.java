@@ -68,14 +68,31 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
         String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_COORDS_HOLDER, coords);
 
         // Search distance
-        request = request.replace(KEY_BUFFER_HOLDER, sc.getParam(PARAM_BUFFER).toString());
+        request = request.replace(KEY_BUFFER_HOLDER, getBuffer(sc.getParam(PARAM_BUFFER)));
         // Max features in response
-        request = request.replace(KEY_MAXFEATURES_HOLDER, sc.getParam(PARAM_MAXFEATURES).toString());
+        request = request.replace(KEY_MAXFEATURES_HOLDER, "" + getMaxResults(sc.getMaxResults()));
         // Srs name
         request = request.replace(KEY_SRSNAME_HOLDER, sc.getSRS());
         buf.append(request);
 
         return IOHelper.readString(getConnection(buf.toString()));
+    }
+
+    public String getMaxResults(int max) {
+        if(max <= 0) {
+            return "1";
+        }
+        return "" + max;
+    }
+
+    public String getBuffer(Object param) {
+        if(param != null && param instanceof String) {
+            String str = (String) param;
+            if(!str.isEmpty()) {
+                return str;
+            }
+        }
+        return "1000";
     }
 
     public boolean isValidSearchTerm(SearchCriteria criteria) {
