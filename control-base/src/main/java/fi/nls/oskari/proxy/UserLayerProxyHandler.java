@@ -25,6 +25,8 @@ public class UserLayerProxyHandler extends ProxyServiceConfig {
     public ProxyServiceConfig getConfig(final ActionParameters params) {
         ProxyServiceConfig config = new ProxyServiceConfig();
         config.setEncoding(getEncoding());
+        config.setUsername(getUsername());
+        config.setPassword(getPassword());
 
         // passing all params - TODO: list allowed params in props
         final Enumeration<String> parmNames = params.getRequest().getParameterNames();
