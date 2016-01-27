@@ -98,21 +98,21 @@ public class What3WordsSearchChannel extends SearchChannel {
         return searchResultList;
     }
 
-    public ChannelSearchResult doSearch(double lon, double lat, final String srs) {
+    public ChannelSearchResult reverseGeocode(SearchCriteria sc) {
         ChannelSearchResult searchResultList = new ChannelSearchResult();
         try {
-            final CoordinateReferenceSystem sourceCrs = CRS.decode(srs);
+            final CoordinateReferenceSystem sourceCrs = CRS.decode(sc.getSRS());
             final CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS);
 
             final Point point = ProjectionHelper.transformPoint(
-                    lon, lat,
+                    sc.getLon(), sc.getLat(),
                     sourceCrs,
                     targetCrs);
             //https://api.what3words.com/position?key=YOURAPIKEY&lang=en&position=51.521251,-0.203586
             final String url = IOHelper.addUrlParam(reverseServiceURL, "position", point.getLat() + "," + point.getLon());
             String data = IOHelper.getURL(url);
             LOG.debug("Result: " + data);
-            SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), srs);
+            SearchResultItem item = parseResult(JSONHelper.createJSONObject(data), sc.getSRS());
 
             searchResultList.addItem(item);
         } catch (Exception e) {
