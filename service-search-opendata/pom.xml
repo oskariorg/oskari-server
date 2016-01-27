@@ -30,6 +30,11 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 		</dependency>
+		<dependency>
+			<groupId>fi.nls.oskari</groupId>
+			<artifactId>shared-test-resources</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 </project>

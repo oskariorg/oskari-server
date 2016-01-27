@@ -9,6 +9,21 @@ import fi.mml.portti.service.search.SearchResultItem;
  * Interface to search service of a single channel.
  */
 public interface SearchableChannel {
+
+    enum Capabilities {
+        TEXT,
+        COORD,
+        BOTH;
+
+        public boolean canGeocode() {
+            return this.equals(COORD) ||
+                    this.equals(BOTH);
+        }
+        public boolean canTextSearch() {
+            return this.equals(TEXT) ||
+                    this.equals(BOTH);
+        }
+    }
     /**
      * Make a search on the channel implementation
      * @param searchCriteria
@@ -29,10 +44,10 @@ public interface SearchableChannel {
     void init();
 
     /**
-     * Should return true if channel implements reverse geocoding
+     * Should return whether channel can be used for searching with text, coordinates (reverse geocode) or both
      * @return
      */
-    boolean hasReverseGeocode();
+    Capabilities getCapabilities();
 
     /**
      * Validates the input if its usable for this channel

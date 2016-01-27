@@ -136,7 +136,7 @@ public class SearchServiceImpl implements SearchService {
                 continue;
             }
             ChannelSearchResult result = handleChannelSearch(searchCriteria, channel);
-            int numResults = 0;
+            int numResults = -1;
             if(result != null) {
                 LOG.debug("Result", result);
                 result.setChannelId(channel.getId());
@@ -166,13 +166,16 @@ public class SearchServiceImpl implements SearchService {
             SearchCriteria sc, SearchableChannel channel)
     {
         try {
-            ChannelSearchResult result;
-            if(sc.isReverseGeocode()) {
+            final ChannelSearchResult result;
+            if(sc.isReverseGeocode() && channel.getCapabilities().canGeocode()) {
                 result = channel.doSearch(sc.getLat(), sc.getLon(), sc.getSRS());
-            } else {
+            } else if(channel.getCapabilities().canTextSearch()) {
                 result = channel.doSearch(sc);
+            } else {
+                result = new ChannelSearchResult();
+                result.setQueryFailed(true);
             }
-            List<SearchResultItem> items = result.getSearchResultItems();
+            final List<SearchResultItem> items = result.getSearchResultItems();
             // calculate zoom scales etc common fields if we have an annotated (non-legacy) channel
             for(SearchResultItem item : items) {
                 channel.calculateCommonFields(item);
@@ -180,7 +183,7 @@ public class SearchServiceImpl implements SearchService {
             return result;
         } catch (Exception e) {
             LOG.error(e, "Search query to", channel.getId(), "failed! Searchstring was '", sc.getSearchString(), "'");
-            ChannelSearchResult result = new ChannelSearchResult();
+            final ChannelSearchResult result = new ChannelSearchResult();
             result.setChannelId(channel.getId());
             result.setQueryFailed(true);
             return result;
