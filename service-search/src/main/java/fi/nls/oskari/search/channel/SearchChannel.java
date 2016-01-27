@@ -1,5 +1,8 @@
 package fi.nls.oskari.search.channel;
 
+import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.IllegalSearchCriteriaException;
+import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -20,6 +23,18 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     private double defaultScale = -1;
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
+
+    public boolean hasReverseGeocode() {
+        return false;
+    }
+
+    public ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException {
+        throw new IllegalSearchCriteriaException("Not implemented");
+    }
+
+    public boolean isValidSearchTerm(SearchCriteria criteria) {
+        return true;
+    }
 
     /**
      * Returns debug data for search channels that can then be shown in UI.
@@ -62,6 +77,10 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
                 log.warn("Property with name", propName, "should be positive integer! Zoom scale for", key, "will not work correctly.");
             }
         }
+    }
+
+    public String getProperty(String key, String defaultValue) {
+        return PropertyUtil.get("search.channel." + getName() + "." + key, defaultValue);
     }
 
     public void calculateCommonFields(final SearchResultItem item) {
@@ -112,12 +131,5 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
             log.error("Couldn't open connection for search channel!");
             throw new RuntimeException("Couldn't open connection!", ex);
         }
-    }
-
-    @Override
-    @Deprecated
-    public void setProperty(String propertyName, String propertyValue) {
-        // this shouldn't be used anymore
-        log.info("SearchableChannel.setProperty() is deprecated! - please change your SearchChannels to use PropertyUtil directly");
     }
 }

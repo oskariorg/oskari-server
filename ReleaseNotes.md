@@ -2,6 +2,30 @@
 
 ## 1.35
 
+### service-search
+
+SearchableChannel interface changes:
+- Removed deprecated method - handle channel specific config in channels code instead:
+ 
+    void setProperty(String propertyName, String propertyValue).
+    
+- Added SearchChannel methods to SearchableChannel interface:
+
+    void init()
+    boolean hasReverseGeocode(); // defaults false on SearchChannel
+    boolean isValidSearchTerm(SearchCriteria criteria); // defaults true on SearchChannel
+    void calculateCommonFields(final SearchResultItem item); // Setup zoomlevel based on item type on SearchChannel
+    ChannelSearchResult doSearch(double lon, double lat, final String srs) throws IllegalSearchCriteriaException;
+
+Any legacy SearchChannel implementation should implement these or inherit the SearchChannel class for defaults.
+
+### service-base
+
+Added IOHelper convenience method for just adding one param to an URL:
+ 
+   public static String addUrlParam(final String url, String key, String value)
+   String url = IOHelper.addUrlParam("https://google.com", "q", "test");
+
 ### service-search-opendata
 
 New maven module for any open data sources usable for searches.
