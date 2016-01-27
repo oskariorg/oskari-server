@@ -45,6 +45,10 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
         log.debug("ServiceURL set to " + serviceURL);
     }
 
+    public Capabilities getCapabilities() {
+        return Capabilities.COORD;
+    }
+
     /**
      * Returns the search raw results.
      *
