@@ -447,6 +447,16 @@ public class SaveLayerHandler extends ActionHandler {
             }
             JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(wms);
             ml.setCapabilities(caps);
+            //TODO: similiar parsing for WMS GetCapabilities for admin layerselector  and this
+            // Parsing is processed twice:
+            // 1st with geotools parsing for admin layerselector (styles are not parsered correct in all cases)
+            // 2nd in this class
+            // Fix default style, if no legendimage setup
+            String style = this.getDefaultStyle(ml, caps);
+            if(style != null) {
+                ml.setStyle(style);
+            }
+
             return true;
         } catch (ServiceException ex) {
             LOG.error(ex, "Couldn't update capabilities for layer", ml);
@@ -502,6 +512,26 @@ public class SaveLayerHandler extends ActionHandler {
             throw new ActionParamsException(ERROR_INVALID_FIELD_VALUE + PARAM_LAYER_URL);
         }
         return url;
+    }
+
+    /**
+     * Get 1st style name of capabilites styles
+     * @param ml  layer data
+     * @param caps  oskari wms capabilities
+     * @return
+     */
+    private String getDefaultStyle(OskariLayer ml, final JSONObject caps) {
+        String style = null;
+        if (ml.getId() == -1 && ml.getLegendImage() == null && caps.has("styles")) {
+            // Take 1st style name for default - geotools parsing is not always correct
+            JSONArray styles = JSONHelper.getJSONArray(caps, "styles");
+            JSONObject jstyle = JSONHelper.getJSONObject(styles, 0);
+            if (jstyle != null) {
+                style = JSONHelper.getStringFromJSON(jstyle, "name", null);
+                return style;
+            }
+        }
+        return style;
     }
 
     private void addPermissionsForRoles(final OskariLayer ml, final User user, final String[] externalIds) {
