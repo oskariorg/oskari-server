@@ -18,6 +18,8 @@ SearchableChannel interface changes:
     ChannelSearchResult reverseGeocode(SearchCriteria criteria) throws IllegalSearchCriteriaException; // reverse geocode impl
 
 Any legacy SearchChannel implementation should implement these or inherit the SearchChannel class for defaults.
+SearchChannels can now be used for text and/or reverse geocoding. The capabilities should be used to indicate if the
+ implementation provides one or both.
 
 ### service-base
 
@@ -29,7 +31,25 @@ Added IOHelper convenience method for just adding one param to an URL:
 ### service-search-opendata
 
 New maven module for any open data sources usable for searches.
- 
+New search channel implementation for What3Words service. Apikey is required:
+
+1. Get it from here https://map.what3words.com/register?dev=true
+2. Configure it to oskari-ext.properties:
+
+    search.channel.WHAT3WORDS_CHANNEL.service.apikey=[YOUR APIKEY]
+    actionhandler.GetSearchResult.channels=[Add "WHAT3WORDS_CHANNEL" to list]
+
+The channel can also be used for reverse geocoding (for example with findbycoordinates frontend-bundle).
+
+### control-base
+
+Action route "GetReverseGeocodingResult" doesn't need the channels configuration any more:
+
+    actionhandler.GetReverseGeocodingResult.channels=NLS_NEAREST_FEATURE_CHANNEL
+
+The action route uses all search channels that have the reverse geocoding capability by default. 
+The channels-property can be used as whitelist search channels to pick which ones to use.
+
 ### control-example
 
 OpenStreetMapSearchChannel moved to service-search-opendata which is now a dependency for control-example. 
