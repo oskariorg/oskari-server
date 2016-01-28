@@ -30,6 +30,7 @@ public class UserRegistrationHandler extends ActionHandler {
 	private static final String PARAM_REGISTER = "register";
 	private static final String PARAM_EDIT = "edit";
 	private static final String PARAM_UPDATE = "update";
+	private static final String PARAM_DELETE = "delete";
 	
     private static final String PARAM_FIRSTNAME = "firstname";
     private static final String PARAM_LASTNAME = "lastname";
@@ -112,9 +113,23 @@ public class UserRegistrationHandler extends ActionHandler {
 				throw new ActionException(se.getMessage(), se);				
 			} 
 			
+		} else if (params.getHttpParam(PARAM_DELETE) != null) {
+			User sessionUser = params.getUser();
+            if (sessionUser.isGuest()) {
+                throw new ActionException("Guest user cannot be deleted.");
+            }				
+			try {
+				User retUser = ibatisUserService.find(sessionUser.getId());
+				if (retUser == null)
+					throw new ActionException("User doesn't exist.");					
+				userService.deleteUser(sessionUser.getId());				
+			} catch (ServiceException se) {			
+				throw new ActionException(se.getMessage(), se);				
+			} 
+		
 		} else {
 			throw new ActionException("Request URL should contain ONLY ONE: Either 'register' OR "
-					+ "'edit' OR 'update'.");
+					+ "'edit' OR 'update' OR 'delete'.");
 		}
 	}
 	
