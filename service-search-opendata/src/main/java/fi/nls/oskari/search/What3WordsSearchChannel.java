@@ -98,23 +98,29 @@ public class What3WordsSearchChannel extends SearchChannel {
         return searchResultList;
     }
 
+    public Point getServiceCoordinates(double lon, double lat, String srs) throws Exception {
+        final CoordinateReferenceSystem sourceCrs = CRS.decode(srs);
+        final CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS);
+
+        Point point = new Point(lon, lat);
+        final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
+        if(reverseCoordinates) {
+            point.switchLonLat();
+        }
+        final Point transformed = ProjectionHelper.transformPoint(point, sourceCrs, targetCrs);
+
+        // switch order again after making the transform if necessary
+        if(!forceCoordinateSwitch && (reverseCoordinates  || ProjectionHelper.isFirstAxisNorth(targetCrs))) {
+            transformed.switchLonLat();
+        }
+        return transformed;
+    }
+
     public ChannelSearchResult reverseGeocode(SearchCriteria sc) {
         ChannelSearchResult searchResultList = new ChannelSearchResult();
         try {
-            final CoordinateReferenceSystem sourceCrs = CRS.decode(sc.getSRS());
-            final CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS);
-
-            // TODO: this needs clarification...
-            final boolean reverseCoordinates = "true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"));
-            double lon = sc.getLat();
-            double lat = sc.getLon();
-            if(reverseCoordinates) {
-                lon = sc.getLon();
-                lat = sc.getLat();
-            }
             LOG.debug("Transforming coordinates");
-            final Point point = ProjectionHelper.transformPoint(
-                    lon, lat, sourceCrs, targetCrs);
+            final Point point = getServiceCoordinates(sc.getLon(), sc.getLat(), sc.getSRS());
             //https://api.what3words.com/position?key=YOURAPIKEY&lang=en&position=51.521251,-0.203586
             final String url = IOHelper.addUrlParam(reverseServiceURL, "position", point.getLat() + "," + point.getLon());
             String data = IOHelper.getURL(url);
