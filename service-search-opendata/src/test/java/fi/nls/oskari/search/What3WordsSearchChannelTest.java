@@ -46,7 +46,5 @@ public class What3WordsSearchChannelTest {
         Point p = channel.getServiceCoordinates(385547.65760422836, 6675293.715526561, "EPSG:3067");
         assertEquals(60.19837505386789, p.getLat(), 0.1);
         assertEquals(24.93546499999964, p.getLon(), 0.1);
-
-
     }
 }
