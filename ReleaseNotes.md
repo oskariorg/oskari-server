@@ -10,14 +10,13 @@ SearchableChannel interface changes:
     void setProperty(String propertyName, String propertyValue).
     
 - Added SearchChannel methods to SearchableChannel interface:
-
-
+```
     void init(); // any initialization should be performed here
     Capabilities getCapabilities(); // COORD, TEXT or BOTH. Defaults to TEXT on SearchChannel
     boolean isValidSearchTerm(SearchCriteria criteria); // defaults true on SearchChannel
     void calculateCommonFields(final SearchResultItem item); // Setup zoomlevel based on item type on SearchChannel
     ChannelSearchResult reverseGeocode(SearchCriteria criteria) throws IllegalSearchCriteriaException; // reverse geocode impl
-
+```
 Any legacy SearchChannel implementation should implement these or inherit the SearchChannel class for defaults.
 SearchChannels can now be used for text and/or reverse geocoding. The capabilities should be used to indicate if the
  implementation provides one or both.
@@ -36,11 +35,10 @@ New search channel implementation for What3Words service. Apikey is required:
 
 1. Get it from here https://map.what3words.com/register?dev=true
 2. Configure it to oskari-ext.properties:
-
-
+```
     search.channel.WHAT3WORDS_CHANNEL.service.apikey=[YOUR APIKEY]
     actionhandler.GetSearchResult.channels=[Add "WHAT3WORDS_CHANNEL" to list]
-
+```
 The channel can also be used for reverse geocoding (for example with findbycoordinates frontend-bundle).
 
 ### control-base
