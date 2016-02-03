@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.layer;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
+import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
 import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -20,11 +21,13 @@ import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.LayerGroupService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.permission.domain.Permission;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.*;
+import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
@@ -55,6 +58,7 @@ public class SaveLayerHandler extends ActionHandler {
     private PermissionsService permissionsService = ServiceFactory.getPermissionsService();
     private LayerGroupService layerGroupService = ServiceFactory.getLayerGroupService();
     private InspireThemeService inspireThemeService = ServiceFactory.getInspireThemeService();
+    private MaplayerProjectionService maplayerProjectionService = ServiceFactory.getMaplayerProjectionService();
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
     private WFSParserConfigs wfsParserConfigs = new WFSParserConfigs();
 
@@ -130,6 +134,10 @@ public class SaveLayerHandler extends ActionHandler {
                     JedisManager.delAll(WFSLayerConfiguration.IMAGE_KEY + Integer.toString(ml.getId()));
                 }
 
+                //update maplayer projections - removes old ones and insert new ones
+                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
+
+
                 LOG.debug(ml);
                 result.layerId = ml.getId();
                 return result;
@@ -181,6 +189,9 @@ public class SaveLayerHandler extends ActionHandler {
                 // update keywords
                 GetLayerKeywords glk = new GetLayerKeywords();
                 glk.updateLayerKeywords(id, ml.getMetadataId());
+
+                //update maplayer projections
+                maplayerProjectionService.insertList(ml.getId(), ml.getSupportedCRSs());
 
                 result.layerId = ml.getId();
                 return result;
@@ -453,9 +464,12 @@ public class SaveLayerHandler extends ActionHandler {
             // 2nd in this class
             // Fix default style, if no legendimage setup
             String style = this.getDefaultStyle(ml, caps);
-            if(style != null) {
+            if (style != null) {
                 ml.setStyle(style);
             }
+
+            ml.setSupportedCRSs(LayerJSONFormatterWMS.getCRSs(wms));
+
 
             return true;
         } catch (ServiceException ex) {
@@ -483,6 +497,12 @@ public class SaveLayerHandler extends ActionHandler {
                 JSONHelper.putValue(ml.getOptions(), "format", resUrl.getFormat());
                 JSONHelper.putValue(ml.getOptions(), "urlTemplate", resUrl.getTemplate());
             }
+
+            JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(caps, layer);
+            ml.setCapabilities(jscaps);
+
+            ml.setSupportedCRSs(LayerJSONFormatterWMTS.getCRSs(caps, layer));
+
             return true;
 
         } catch (Exception ex) {
@@ -492,7 +512,7 @@ public class SaveLayerHandler extends ActionHandler {
     }
 
     private void handleWFSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
-        // these are only in insert
+        // These are only in insert
         ml.setSrs_name(params.getHttpParam("srs_name", ml.getSrs_name()));
         ml.setVersion(params.getHttpParam("WFSVersion",ml.getVersion()));
 
@@ -503,6 +523,10 @@ public class SaveLayerHandler extends ActionHandler {
             JSONHelper.putValue(attributes, "manualRefresh", true);
             ml.setAttributes(attributes);
         }
+        // Get supported projections
+        Map<String, Object> capa = GetGtWFSCapabilities.getGtDataStoreCapabilities(ml.getUrl(), ml.getVersion(), ml.getUsername(), ml.getPassword());
+        ml.setSupportedCRSs(GetGtWFSCapabilities.parseProjections(capa, ml.getVersion(), ml.getName()));
+
     }
     private String validateUrl(final String url) throws ActionParamsException {
         try {
