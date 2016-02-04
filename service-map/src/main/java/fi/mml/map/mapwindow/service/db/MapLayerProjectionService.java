@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * Interface for Maplayer projections service
- * 
  *
  */
 public interface MaplayerProjectionService extends BaseService {
