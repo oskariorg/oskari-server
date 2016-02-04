@@ -32,6 +32,9 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                               final boolean isSecure) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
+
+        // Use capabities in 1st hand for to get matrix id
+
         JSONHelper.putValue(layerJson, "tileMatrixSetId", layer.getTileMatrixSetId());
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
@@ -127,6 +130,25 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             return crss;
         }
 
+        return null;
+    }
+
+    /**
+     * Get matrix id by current crs
+     * @param crs
+     * @return
+     */
+    public static String getTileMatrixSetId(final JSONObject capabilities, final String crs) {
+        if (capabilities.has("tileMatrixIds")) {
+            JSONArray jsa = JSONHelper.getJSONArray(capabilities, "tileMatrixIds");
+
+            for (int i = 0, size = jsa.length(); i < size; i++) {
+                JSONObject js = JSONHelper.getJSONObject(jsa, i);
+                if(js.has(crs)){
+                    return JSONHelper.getStringFromJSON(js,crs,null);
+                }
+            }
+        }
         return null;
     }
 

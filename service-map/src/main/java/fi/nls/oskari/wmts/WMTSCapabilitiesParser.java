@@ -1,5 +1,6 @@
 package fi.nls.oskari.wmts;
 
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wmts.domain.TileMatrixLimits;
@@ -43,7 +44,7 @@ public class WMTSCapabilitiesParser {
         return caps;
     }
 
-    public JSONObject parseCapabilitiesToJSON(final String xml, final String url)
+    public JSONObject parseCapabilitiesToJSON(final String xml, final String url, String current_crs)
             throws Exception {
 
         final WMTSCapabilities caps = parseCapabilities(xml);
@@ -55,25 +56,19 @@ public class WMTSCapabilitiesParser {
         JSONHelper.putValue(result, "layers", layersNode);
         for (WMTSCapabilitiesLayer layer : caps.getLayers()) {
             final Map<String, Set<TileMatrixLimits>> links = layer.getLinks();
-            if (links.size() == 1) {
-                JSONObject layerJson = layer.getAsJSON();
-                if (!layerJson.has("url")) {
-                    JSONHelper.putValue(layerJson, "url", url);
-                }
-                layersNode.put(layerJson);
-            } else if (links.size() > 1) {
-                for (String link : links.keySet()) {
-                    JSONObject layerJson = layer.getAsJSON();
-                    JSONHelper.putValue(layerJson, "title", layer.getTitle() + "/" + link + " (SRS: " + caps.getMatrixCRS(link) + ")");
-                    JSONHelper.putValue(layerJson, "tileMatrixSetId", link);
-                    JSONHelper.putValue(layerJson, "additionalId", link);
-
-                    if (!layerJson.has("url")) {
-                        JSONHelper.putValue(layerJson, "url", url);
-                    }
-                    layersNode.put(layerJson);
-                }
+            JSONObject layerJson = layer.getAsJSON();
+            final String matrixsetid = getMatrixSetId(caps, links, current_crs);
+            if(matrixsetid == null ){
+                JSONHelper.putValue(layerJson, "title", layer.getTitle() + "  *");
             }
+            else {
+                JSONHelper.putValue(layerJson, "tileMatrixSetId", matrixsetid);
+            }
+            if (!layerJson.has("url")) {
+                JSONHelper.putValue(layerJson, "url", url);
+            }
+            layersNode.put(layerJson);
+
         }
 
         final JSONObject matrixNode = new JSONObject();
@@ -83,6 +78,23 @@ public class WMTSCapabilitiesParser {
         }
 
         return result;
+    }
+
+    /**
+     * Get tile matrix set id of current crs
+     * @param caps
+     * @param links
+     * @param current_crs
+     * @return
+     */
+    public String getMatrixSetId(final WMTSCapabilities caps, Map<String, Set<TileMatrixLimits>> links, String current_crs) {
+
+        for (String link : links.keySet()) {
+             if(ProjectionHelper.shortSyntaxEpsg(caps.getMatrixCRS(link)).equals(current_crs)){
+                 return link;
+             }
+        }
+        return null;
     }
 
 }
