@@ -33,6 +33,11 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
+    private static final String PARAM_GEO_NAMES = "geographical_names";
+    private static final String PARAM_ADDRESSES = "addresses";
+    private static final String ELFGEOLOCATOR_CHANNEL = "ELFGEOLOCATOR_CHANNEL";
+    private static final String ELFADDRESSLOCATOR_CHANNEL = "ELFADDRESSLOCATOR_CHANNEL";
+
 
     private final static Logger log = LogFactory.getLogger(GetGeoLocatorSearchResultHandler.class);
 
@@ -43,7 +48,6 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
     public void init()
     {
         channels = PropertyUtil.getCommaSeparatedList("actionhandler.GetSearchResult.channels");
-
     }
 
 
@@ -51,10 +55,15 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
 
         log.debug("in handle action");
 
-        final String search = params.getHttpParam(PARAM_TERM,"foo");
-        if (search == null) {
+        final String search = params.getHttpParam(PARAM_TERM);
+        if (search == null || search.equals("")) {
             throw new ActionParamsException("Search string was null");
         }
+
+        final String geographical_names = params.getHttpParam(PARAM_GEO_NAMES);
+        final String addresses = params.getHttpParam(PARAM_ADDRESSES);
+
+        log.debug(geographical_names + "---" + addresses);
 
         final String epsg = params.getHttpParam(PARAM_EPSG_KEY);
 
@@ -79,9 +88,17 @@ public class GetGeoLocatorSearchResultHandler extends ActionHandler {
             sc.addParam(PARAM_EXONYM, params.getHttpParam(PARAM_EXONYM, "false"));
             sc.addParam(PARAM_LON, params.getHttpParam(PARAM_LON, ""));
             sc.addParam(PARAM_LAT, params.getHttpParam(PARAM_LAT, ""));
+            sc.addParam(PARAM_ADDRESSES, params.getHttpParam(PARAM_ADDRESSES));
 
             for (String channelId : channels) {
-                sc.addChannel(channelId);
+                if(geographical_names != null && geographical_names.equals("true") && channelId.equals(ELFGEOLOCATOR_CHANNEL)){
+                    log.debug("adding channel: ELFGEOLOCATOR_CHANNEL");
+                    sc.addChannel(channelId);
+                }
+                if(addresses != null && addresses.equals("true") && channelId.equals(ELFADDRESSLOCATOR_CHANNEL)){
+                    log.debug("adding channel: ELFADDRESSLOCATOR_CHANNEL");
+                    sc.addChannel(channelId);
+                }
             }
 
             final JSONObject result = SearchWorker.doSearch(sc);
