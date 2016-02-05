@@ -3,6 +3,8 @@ package fi.nls.oskari.util;
 
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.service.db.MaplayerProjectionService;
+import fi.mml.map.mapwindow.service.db.MaplayerProjectionServiceIbatisImpl;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.mml.portti.service.search.SearchService;
@@ -21,6 +23,7 @@ public class ServiceFactory {
 	private static LayerGroupService layerGroupService;
 	private static OskariLayerService mapLayerService;
 	private static InspireThemeService inspireThemeService;
+    private static MaplayerProjectionService maplayerProjectionService;
     private static PermissionsService permissionsService;
     private static SearchService searchService;
     private static CapabilitiesCacheService capabilitiesCacheService;
@@ -46,6 +49,13 @@ public class ServiceFactory {
 		}
 		return inspireThemeService;
 	}
+
+    public static MaplayerProjectionService getMaplayerProjectionService() {
+        if (maplayerProjectionService == null) {
+            maplayerProjectionService = new MaplayerProjectionServiceIbatisImpl();
+        }
+        return maplayerProjectionService;
+    }
     public static PermissionsService getPermissionsService() {
         if (permissionsService == null) {
             permissionsService = new PermissionsServiceIbatisImpl();
