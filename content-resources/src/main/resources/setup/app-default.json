@@ -19,7 +19,6 @@
     ],
     "sql" : [
         "add_oskari_wfs_parser_config.sql",
-        "example-wfslayer.sql",
         "example-permissions.sql"
     ]
 }
