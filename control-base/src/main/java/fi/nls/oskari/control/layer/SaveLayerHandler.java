@@ -68,6 +68,9 @@ public class SaveLayerHandler extends ActionHandler {
     private static final String PARAM_LAYER_URL = "layerUrl";
     private static final String PARAM_SRS_NAME = "srs_name";
 
+    private static final String KEY_STYLES = "styles";
+    private static final String KEY_NAME = "name";
+
 
     private static final String LAYER_NAME_PREFIX = "name_";
     private static final String LAYER_TITLE_PREFIX = "title_";
@@ -328,6 +331,8 @@ public class SaveLayerHandler extends ActionHandler {
 
         ml.setRealtime(ConversionHelper.getBoolean(params.getHttpParam("realtime"), ml.getRealtime()));
         ml.setRefreshRate(ConversionHelper.getInt(params.getHttpParam("refreshRate"), ml.getRefreshRate()));
+        //Default supported crs for unknown crs layers
+        ml.setSupportedCRSs(new HashSet<String>(Arrays.asList(ml.getSrs_name())));
 
         if(OskariLayer.TYPE_WMS.equals(ml.getType())) {
             return handleWMSSpecific(params, ml);
@@ -482,7 +487,7 @@ public class SaveLayerHandler extends ActionHandler {
 
     private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml) throws ActionException {
 
-        final String current_crs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
+        final String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
 
         try {
             OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(ml, true);
@@ -504,7 +509,7 @@ public class SaveLayerHandler extends ActionHandler {
             JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(caps, layer);
             ml.setCapabilities(jscaps);
 
-            ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, current_crs));
+            ml.setTileMatrixSetId(LayerJSONFormatterWMTS.getTileMatrixSetId(jscaps, currentCrs));
 
             ml.setSupportedCRSs(LayerJSONFormatterWMTS.getCRSs(caps, layer));
 
@@ -551,12 +556,12 @@ public class SaveLayerHandler extends ActionHandler {
      */
     private String getDefaultStyle(OskariLayer ml, final JSONObject caps) {
         String style = null;
-        if (ml.getId() == -1 && ml.getLegendImage() == null && caps.has("styles")) {
+        if (ml.getId() == -1 && ml.getLegendImage() == null && caps.has(KEY_STYLES)) {
             // Take 1st style name for default - geotools parsing is not always correct
-            JSONArray styles = JSONHelper.getJSONArray(caps, "styles");
+            JSONArray styles = JSONHelper.getJSONArray(caps, KEY_STYLES);
             JSONObject jstyle = JSONHelper.getJSONObject(styles, 0);
             if (jstyle != null) {
-                style = JSONHelper.getStringFromJSON(jstyle, "name", null);
+                style = JSONHelper.getStringFromJSON(jstyle, KEY_NAME, null);
                 return style;
             }
         }

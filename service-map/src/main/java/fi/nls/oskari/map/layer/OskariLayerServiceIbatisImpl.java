@@ -5,6 +5,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 import fi.mml.map.mapwindow.service.db.InspireThemeService;
 import fi.mml.map.mapwindow.service.db.InspireThemeServiceIbatisImpl;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.InspireTheme;
 import fi.nls.oskari.domain.map.LayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -254,18 +255,29 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
     }
 
     
-    public List<OskariLayer> find(final List<String> idList) {
+    public List<OskariLayer> find(final List<String> idList, String crs) {
         // TODO: break list into external and internalIds -> make 2 "where id/externalID in (...)" SQLs
         // ensure order stays the same
-        final List<OskariLayer> layers = new ArrayList<OskariLayer>();
-        for(String id : idList) {
-            OskariLayer layer = find(id);
-            if(layer != null) {
-                layers.add(layer);
-            }
+        final List<Integer> intList = ConversionHelper.getIntList(idList);
+        final List<String> strList =  ConversionHelper.getStringList(idList);
+        if(intList.size() < 1 && strList.size() < 1){
+            return new ArrayList<OskariLayer>();
         }
-        return layers;
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("strList", strList);
+        params.put("intList", intList);
+        //TODO: replace crs null with crs,  when db migration is done
+        //params.put("crs", crs);
+        params.put("crs", null);
+
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
+        final List<OskariLayer> layers = mapDataList(result);
+
+        //Reorder layers to requested order
+        return OskariLayerWorker.reorderLayers(layers, idList);
+
     }
+
 
     public OskariLayer find(int id) {
         try {
@@ -308,14 +320,19 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         return null;
     }
 
-    public List<OskariLayer> findAll() {
+    public List<OskariLayer> findAll(String crs) {
         long start = System.currentTimeMillis();
-        final List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll");
+        //TODO: replace crs null with crs,  when db migration is done
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", null);
         LOG.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
         start = System.currentTimeMillis();
         final List<OskariLayer> layers = mapDataList(result);
         LOG.debug("Parsing all layers:", System.currentTimeMillis() - start, "ms");
         return layers;
+    }
+
+    public List<OskariLayer> findAll() {
+       return this.findAll(null);
     }
 
     public void update(final OskariLayer layer) {
@@ -392,4 +409,6 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         }
         return Collections.emptyList();
     }
+
+
 }
