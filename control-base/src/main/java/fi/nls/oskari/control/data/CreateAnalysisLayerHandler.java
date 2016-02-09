@@ -61,7 +61,6 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String JSON_KEY_AGGREGATE_RESULT = "aggregate";
     private static final String JSON_KEY_GEOJSON = "geojson";
-    private static final String JSON_KEY_FIELDS = "fields";
 
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
@@ -485,7 +484,7 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
      * @param analysisLayer  analysis params
      * @return List of row names
      */
-    private List<String> getRowOrder( AnalysisLayer analysisLayer) { //JSONObject analysejs, String analysisId) {
+    private List<String> getRowOrder( AnalysisLayer analysisLayer) {
         List<String> list = new ArrayList<String>();
         String analysisId = analysisLayer.getInputAnalysisId();
         try {

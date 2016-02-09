@@ -44,7 +44,7 @@ public class WMTSCapabilitiesParser {
         return caps;
     }
 
-    public JSONObject parseCapabilitiesToJSON(final String xml, final String url, String current_crs)
+    public JSONObject parseCapabilitiesToJSON(final String xml, final String url, String currentCrs)
             throws Exception {
 
         final WMTSCapabilities caps = parseCapabilities(xml);
@@ -57,7 +57,7 @@ public class WMTSCapabilitiesParser {
         for (WMTSCapabilitiesLayer layer : caps.getLayers()) {
             final Map<String, Set<TileMatrixLimits>> links = layer.getLinks();
             JSONObject layerJson = layer.getAsJSON();
-            final String matrixsetid = getMatrixSetId(caps, links, current_crs);
+            final String matrixsetid = getMatrixSetId(caps, links, currentCrs);
             if(matrixsetid == null ){
                 JSONHelper.putValue(layerJson, "title", layer.getTitle() + "  *");
             }
@@ -84,13 +84,13 @@ public class WMTSCapabilitiesParser {
      * Get tile matrix set id of current crs
      * @param caps
      * @param links
-     * @param current_crs
+     * @param currentCrs
      * @return
      */
-    public String getMatrixSetId(final WMTSCapabilities caps, Map<String, Set<TileMatrixLimits>> links, String current_crs) {
+    public String getMatrixSetId(final WMTSCapabilities caps, Map<String, Set<TileMatrixLimits>> links, String currentCrs) {
 
         for (String link : links.keySet()) {
-             if(ProjectionHelper.shortSyntaxEpsg(caps.getMatrixCRS(link)).equals(current_crs)){
+             if(ProjectionHelper.shortSyntaxEpsg(caps.getMatrixCRS(link)).equals(currentCrs)){
                  return link;
              }
         }

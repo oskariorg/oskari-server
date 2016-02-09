@@ -49,7 +49,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         final String version = params.getHttpParam(PARM_VERSION, "");
         final String user = params.getHttpParam(PARM_USER, "");
         final String pw = params.getHttpParam(PARM_PW, "");
-        final String current_crs = params.getHttpParam(PARM_CRS, "EPSG:3067");
+        final String currentCrs = params.getHttpParam(PARM_CRS, "EPSG:3067");
 
         log.debug("Trying to get capabilities for type:", layerType, "with url:", url);
         try {
@@ -64,7 +64,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
 
                     // setup capabilities URL
                     final OskariLayerCapabilities caps  = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMTS, user, pw);
-                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url, current_crs);
+                    JSONObject resultJSON = parser.parseCapabilitiesToJSON(caps.getData(), url, currentCrs);
                     JSONHelper.putValue(resultJSON, "xml", caps.getData());
                     ResponseHelper.writeResponse(params, resultJSON);
                 }
