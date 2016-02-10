@@ -29,10 +29,10 @@ import java.util.Map;
 public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private Logger log = LogFactory.getLogger(this.getClass());
-    private String serviceURL = null;
+    public String serviceURL = null;
 
     public static final String ID = "ELFGEOLOCATOR_CHANNEL";
-    private static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
+    public static final String PROPERTY_SERVICE_URL = "search.channel.ELFGEOLOCATOR_CHANNEL.service.url";
     private static final String PROPERTY_SERVICE_SRS = "search.channel.ELFGEOLOCATOR_CHANNEL.service.srs";
     private static final String PROPERTY_SERVICE_REVERSEGEOCODE_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.reversegeocode.template";
     private static final String PROPERTY_SERVICE_GETFEATUREAU_TEMPLATE = "search.channel.ELFGEOLOCATOR_CHANNEL.service.getfeatureau.template";
@@ -63,20 +63,23 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
 
     private static final String PARAM_NORMAL = "normal";
     private static final String PARAM_REGION = "region";
-    private static final String PARAM_COUNTRY = "country";
+    public static final String PARAM_COUNTRY = "country";
     private static final String PARAM_FILTER = "filter";
     private static final String PARAM_FUZZY = "fuzzy";
     private static final String PARAM_EXONYM = "exonym";
     private static final String PARAM_LON = "lon";
     private static final String PARAM_LAT = "lat";
+    private static final String PARAM_GEO_NAMES = "geographical_names";
+    private static final String PARAM_ADDRESSES = "addresses";
     private static final String METHOD_REVERSE = "reverse";
+
     private static Map<String, Double> elfScalesForType = new HashMap<String, Double>();
     private static Map<String, Integer> elfLocationPriority = new HashMap<String, Integer>();
     private static JSONObject elfCountryMap = null;
     private final String geolocatorCountries = "geolocator-countries.json";
 
 
-    private ELFGeoLocatorParser elfParser = null;
+    public ELFGeoLocatorParser elfParser = null;
 
     @Override
     public void init() {
@@ -153,13 +156,12 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @return Result data in JSON format.
      * @throws Exception
      */
-    private String getData(SearchCriteria searchCriteria) throws Exception {
+    public String getData(SearchCriteria searchCriteria) throws Exception {
 
         if (serviceURL == null) {
             log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
             return null;
         }
-
         // Language
         Locale locale = new Locale(searchCriteria.getLocale());
         String lang3 = locale.getISO3Language();
@@ -203,6 +205,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             buf.append(filter);
         }
 
+
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
@@ -212,7 +215,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      * @param param
      * @return
      */
-    private boolean hasParam(SearchCriteria sc, final String param) {
+    public boolean hasParam(SearchCriteria sc, final String param) {
         final Object obj = sc.getParam(param);
         return obj != null && !obj.toString().isEmpty();
     }
@@ -232,6 +235,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         try {
+
             String data = getData(searchCriteria);
             Locale locale = new Locale(searchCriteria.getLocale());
 
