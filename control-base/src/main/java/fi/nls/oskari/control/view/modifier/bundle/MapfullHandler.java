@@ -23,13 +23,18 @@ import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
+import org.geotools.xml.xsi.XSISimpleTypes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +56,7 @@ public class MapfullHandler extends BundleHandler {
 
 
     private static final String KEY_MAP_OPTIONS = "mapOptions";
+    private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
 
     private static final String KEY_PLUGINS = "plugins";
@@ -122,6 +128,7 @@ public class MapfullHandler extends BundleHandler {
         for (int i = 0; i < fullConfigLayers.length(); ++i) {
             OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
         }
+        setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
         try {
             mapfullConfig.put(KEY_LAYERS, fullConfigLayers);
@@ -183,6 +190,51 @@ public class MapfullHandler extends BundleHandler {
         }
         return DEFAULT_MAP_SRS;
     }
+
+    public void setProjDefsForMapConfig(final JSONObject mapfullConfig, final String mapSRS) {
+        if (mapfullConfig == null) {
+            return;
+        }
+        final String mapSRSProjDef = getMapSRSProjDef(mapSRS);
+
+        if (mapSRSProjDef == null) {
+            return;
+        }
+        final JSONObject projDef = new JSONObject();
+        JSONHelper.putValue(projDef, mapSRS, mapSRSProjDef);
+
+        if (mapfullConfig.isNull(KEY_PROJ_DEFS)) {
+            JSONHelper.putValue(mapfullConfig, KEY_PROJ_DEFS, projDef);
+        } else {
+            final JSONObject configProjDefs = JSONHelper.getJSONObject(mapfullConfig, KEY_PROJ_DEFS);
+            if (!configProjDefs.has(mapSRS)) {
+                JSONHelper.putValue(configProjDefs, mapSRS, mapSRSProjDef);
+            }
+
+        }
+    }
+
+    public String getMapSRSProjDef(final String mapSRS) {
+        final String url = getProjDefsURL(mapSRS);
+        try {
+            final String defaultMapProjDef = IOHelper.getURL(url, "UTF-8");
+            String[] parts = defaultMapProjDef.split("\"");
+            final String defaultProjDef = parts[3];
+            return defaultProjDef;
+        } catch (IOException e) {
+            log.debug("ProjectionDefs not found", url);
+            return null;
+        }
+    }
+
+    public String getProjDefsURL(final String mapSRS) {
+        final String propertyURL = PropertyUtil.get("projectiondefs.url", "http://spatialreference.org/ref/epsg/");
+        String[] epsgParts = mapSRS.split(":");
+        final String epsg = epsgParts[1];
+        final String projDefsURL = propertyURL + epsg + "/proj4js/";
+        return projDefsURL;
+    }
+
 
     /**
      * Creates JSON array of layer configurations.
