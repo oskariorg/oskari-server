@@ -13,6 +13,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
 import java.io.Reader;
 import java.sql.SQLException;
@@ -28,6 +29,7 @@ import java.util.*;
 public class OskariLayerServiceIbatisImpl implements OskariLayerService {
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerServiceIbatisImpl.class);
+    private static boolean crsSupported = PropertyUtil.getOptional("oskari.crs.switch.supported", false);
     private SqlMapClient client = null;
 
     // make it static so we can change this with one call to all services when needed
@@ -266,9 +268,11 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("strList", strList);
         params.put("intList", intList);
-        //TODO: replace crs null with crs,  when db migration is done
-        //params.put("crs", crs);
-        params.put("crs", null);
+        if(crsSupported){
+            params.put("crs", crs);
+        } else {
+            params.put("crs", null);
+        }
 
         List<Map<String,Object>> result = queryForList(getNameSpace() + ".findByIdList", params);
         final List<OskariLayer> layers = mapDataList(result);
@@ -322,8 +326,8 @@ public class OskariLayerServiceIbatisImpl implements OskariLayerService {
 
     public List<OskariLayer> findAll(String crs) {
         long start = System.currentTimeMillis();
-        //TODO: replace crs null with crs,  when db migration is done
-        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", null);
+        String crsIn = crsSupported ? crs : null;
+        List<Map<String,Object>> result = queryForList(getNameSpace() + ".findAll", crsIn);
         LOG.debug("Find all layers:", System.currentTimeMillis() - start, "ms");
         start = System.currentTimeMillis();
         final List<OskariLayer> layers = mapDataList(result);

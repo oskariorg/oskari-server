@@ -499,6 +499,11 @@
                 <isNotEmpty  property="strList" >
                 OR
                 </isNotEmpty>
+                <isEmpty  property="strList" >
+                    <isNotNull  property="crs">
+                        AND
+                    </isNotNull>
+                </isEmpty>
             </isNotEmpty>
             <isNotEmpty  property="strList" >
                  l.externalId in

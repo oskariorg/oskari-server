@@ -117,6 +117,9 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
      * @return Set<String> containing the supported coordinate ref systems of WMS service
      */
     public static Set<String> getCRSs(final WMTSCapabilities wmts, final WMTSCapabilitiesLayer layer) {
+        if(layer == null || wmts == null){
+            return null;
+        }
 
         Set<String>  crss = new HashSet<String>();
 
