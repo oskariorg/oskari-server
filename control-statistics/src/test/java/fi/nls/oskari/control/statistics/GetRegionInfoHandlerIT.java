@@ -60,5 +60,13 @@ public class GetRegionInfoHandlerIT {
         assertEquals("Alajärvi",
                 result.getJSONObject("005").getString("name").toString());
     }
+    @Test(timeout=120000)
+    public void testGettingRegionInfoForErva() throws ActionException, JSONException {
+        GetRegionInfoHandler handler = new GetRegionInfoHandler();
+        handler.init();
+        JSONObject result = handler.getRegionInfoJSON("oskari:erva-alueet", "1");
+        assertEquals("Helsingin Yliopistosairaalan erityisvastuualue",
+                result.getJSONObject("1").getString("name").toString());
+    }
 }
 

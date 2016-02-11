@@ -18,14 +18,18 @@ import fi.nls.oskari.log.Logger;
 
 public class SotkaIndicatorDataParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorDataParser.class);
-    private SotkaRegionParser regionParser;
 
-    public SotkaIndicatorDataParser(SotkaRegionParser regionParser) {
-        this.regionParser = regionParser;
+    public SotkaIndicatorDataParser() {
     }
     
-    public Map<String, IndicatorValue> parse(String response) throws JSONException {
-        Map<String, IndicatorValue> indicatorMap = new HashMap<>();
+    /**
+     * The response is indexed by region id.
+     * @param response
+     * @return
+     * @throws JSONException
+     */
+    public Map<Integer, IndicatorValue> parse(String response) throws JSONException {
+        Map<Integer, IndicatorValue> indicatorMap = new HashMap<>();
         // The response is a String JSON array with JSONObjects with attributes:
         // "region", "indicator", "primary value", "gender", "year", "absolute value"
 
@@ -43,8 +47,8 @@ public class SotkaIndicatorDataParser {
                 //       but this would easily break with new indicators, considering the nature of Sotka types.
                 Number numberValue = NumberFormat.getNumberInstance(Locale.forLanguageTag("fi_FI")).parse(value);
                 IndicatorValue indicatorValue = new IndicatorValueFloat(numberValue.doubleValue());
-                String regionId = regionParser.getCode(Integer.valueOf(valueRow.getString("region")));
-                indicatorMap.put(regionId, indicatorValue);
+                Integer id = Integer.valueOf(valueRow.getString("region"));
+                indicatorMap.put(id, indicatorValue);
             } catch (ParseException e) {
                 e.printStackTrace();
                 throw new APIException("Unable to parse the numbers in response: " + response);

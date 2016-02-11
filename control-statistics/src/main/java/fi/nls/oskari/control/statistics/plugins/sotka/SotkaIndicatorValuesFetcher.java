@@ -24,22 +24,24 @@ import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
  * APIs / plugins might give all the information in the same response, or divide and key the responses differently.
  */
 public class SotkaIndicatorValuesFetcher {
-    private SotkaRegionParser regionParser;
     private SotkaIndicatorDataParser parser;
+    private SotkaRegionParser regionParser;
 
     public void init() {
+        this.parser = new SotkaIndicatorDataParser();
+        // We need to filter by region category and index by codes. Codes are unique within
         this.regionParser = new SotkaRegionParser();
-        this.parser = new SotkaIndicatorDataParser(regionParser);
         regionParser.getData();
     }
 
     /**
      * This returns the indicator data for all the layers, for every region category, from "maakunta" to "kunta", etc.
+     * Note: Indexed by id, because id is unique, code is not.
      * @param selectors
      * @param indicator
      * @return
      */
-    public Map<String, IndicatorValue> getAll(StatisticalIndicatorSelectors selectors, String indicator) {
+    public Map<Integer, IndicatorValue> getAll(StatisticalIndicatorSelectors selectors, String indicator) {
         SotkaRequest request = SotkaRequest.getInstance(IndicatorData.NAME);
         // If there is no defined values for gender or year, we will use "total" and an empty list.
         String gender = "total";
@@ -63,7 +65,7 @@ public class SotkaIndicatorValuesFetcher {
             request.setYears(yearsArray);
             request.setIndicator(indicator);
             String jsonResponse = request.getData();
-            Map<String, IndicatorValue> result = parser.parse(jsonResponse);
+            Map<Integer, IndicatorValue> result = parser.parse(jsonResponse);
             // FIXME: Cache this result, key by plugin, selectors and indicator id.
             return result;
             
@@ -84,22 +86,21 @@ public class SotkaIndicatorValuesFetcher {
      */
     public Map<String, IndicatorValue> get(StatisticalIndicatorSelectors selectors, String indicator,
             String regionCategoryId) {
-        Map<String, IndicatorValue> allValues = getAll(selectors, indicator);
+        Map<Integer, IndicatorValue> allValues = getAll(selectors, indicator);
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
-        for (Entry<String, IndicatorValue> entry: allValues.entrySet()) {
-            String regionCode = entry.getKey();
-            if(regionCode == null) {
+        for (Entry<Integer, IndicatorValue> entry: allValues.entrySet()) {
+            Integer regionId = entry.getKey();
+            if(regionId == null) {
                 // sometimes this is null with 0.0 as value.
                 // TODO: check if this is a bug in some other code or an empty row from sotkanet
                 continue;
             }
-
             
             IndicatorValue value = entry.getValue();
             // SotkaNET gives "Kunta" in some places, "KUNTA" in others...
-            if (regionParser.getCategory(regionCode).equalsIgnoreCase(regionCategoryId)) {
+            if (regionParser.getCategoryById(regionId).equalsIgnoreCase(regionCategoryId)) {
                 // We must include this value to the result.
-                filteredValues.put(regionCode, value);
+                filteredValues.put(regionParser.getCode(regionId), value);
             }
         }
         return filteredValues;

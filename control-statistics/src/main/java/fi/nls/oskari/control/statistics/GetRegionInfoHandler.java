@@ -40,8 +40,8 @@ public class GetRegionInfoHandler extends ActionHandler {
     
     public void handleAction(ActionParameters ap) throws ActionException {
         final String layerId = ap.getRequiredParam("layer_id");
-        final String regionId = ap.getHttpParam("region_id");
-        JSONObject response = getRegionInfoJSON(layerId, regionId);
+        final String regionCode = ap.getHttpParam("region_id");
+        JSONObject response = getRegionInfoJSON(layerId, regionCode);
         ResponseHelper.writeResponse(ap, response);
     }
 
@@ -52,7 +52,7 @@ public class GetRegionInfoHandler extends ActionHandler {
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
-    public JSONObject getRegionInfoJSON(String layerId, String regionId) throws ActionException {
+    public JSONObject getRegionInfoJSON(String layerId, String regionCode) throws ActionException {
         final Layer layerInfo = this.layerInfoMap.get(layerId);
         if (layerInfo == null) {
             return new JSONObject();
@@ -61,12 +61,12 @@ public class GetRegionInfoHandler extends ActionHandler {
         final String nameTag = layerInfo.getOskariNameIdTag();
         final String idTag = layerInfo.getOskariRegionIdTag();
         final String urlBase = layerInfoHandler.getLayerMetadata().get(name).getUrl();
-        JSONObject response = requestRegionInfoJSON(regionId, name, nameTag, idTag, urlBase);
+        JSONObject response = requestRegionInfoJSON(regionCode, name, nameTag, idTag, urlBase);
         return response;
     }
 
-    public JSONObject requestRegionInfoJSON(String regionId, String name, String nameTag, String idTag, String urlBase) throws ActionException {
-        final String cacheKey = CACHE_KEY_PREFIX + regionId;
+    public JSONObject requestRegionInfoJSON(String regionCode, String name, String nameTag, String idTag, String urlBase) throws ActionException {
+        final String cacheKey = CACHE_KEY_PREFIX + regionCode;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {
@@ -87,7 +87,7 @@ public class GetRegionInfoHandler extends ActionHandler {
                 xmlGeoserverResponseWithAllRegions = IOHelper.getURL(url);
                 List<RegionCodeNamePair> result = WfsXmlParser.parse(xmlGeoserverResponseWithAllRegions, idTag, nameTag);
                 for (RegionCodeNamePair codeName : result) {
-                    if (regionId == null || codeName.getCode().equals(regionId)) {
+                    if (regionCode == null || codeName.getCode().equals(regionCode)) {
                         JSONObject regionJSON = new JSONObject();
                         regionJSON.put("name", codeName.getName());
                         response.put(codeName.getCode(), regionJSON);
