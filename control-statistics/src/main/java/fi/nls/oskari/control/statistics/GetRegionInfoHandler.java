@@ -80,29 +80,25 @@ public class GetRegionInfoHandler extends ActionHandler {
         String url = urlBase + "/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=" + name +
                 "&propertyName=" + idTag + "," + nameTag;
         final JSONObject response = new JSONObject();
-        
-        String xmlGeoserverResponseWithAllRegions = JedisManager.get(CACHE_KEY_REGION_XML);
-        if (xmlGeoserverResponseWithAllRegions == null) {
-            try {
-                xmlGeoserverResponseWithAllRegions = IOHelper.getURL(url);
-                List<RegionCodeNamePair> result = WfsXmlParser.parse(xmlGeoserverResponseWithAllRegions, idTag, nameTag);
-                for (RegionCodeNamePair codeName : result) {
-                    if (regionCode == null || codeName.getCode().equals(regionCode)) {
-                        JSONObject regionJSON = new JSONObject();
-                        regionJSON.put("name", codeName.getName());
-                        response.put(codeName.getCode(), regionJSON);
-                    }
+
+        try {
+            String xmlGeoserverResponseWithAllRegions = IOHelper.getURL(url);
+            List<RegionCodeNamePair> result = WfsXmlParser.parse(xmlGeoserverResponseWithAllRegions, idTag, nameTag);
+            for (RegionCodeNamePair codeName : result) {
+                if (regionCode == null || codeName.getCode().equals(regionCode)) {
+                    JSONObject regionJSON = new JSONObject();
+                    regionJSON.put("name", codeName.getName());
+                    response.put(codeName.getCode(), regionJSON);
                 }
-            } catch (IOException e) {
-                throw new ActionException("Something went wrong fetching the region info from the geoserver.", e);
-            } catch (XMLStreamException e) {
-                throw new ActionException("Something went wrong parsing the region info from the geoserver.", e);
-            } catch (JSONException e) {
-                throw new ActionException("Something went wrong serializing the region info response.", e);
             }
-            JedisManager.setex(CACHE_KEY_REGION_XML, JedisManager.EXPIRY_TIME_DAY, xmlGeoserverResponseWithAllRegions);
+        } catch (IOException e) {
+            throw new ActionException("Something went wrong fetching the region info from the geoserver.", e);
+        } catch (XMLStreamException e) {
+            throw new ActionException("Something went wrong parsing the region info from the geoserver.", e);
+        } catch (JSONException e) {
+            throw new ActionException("Something went wrong serializing the region info response.", e);
         }
-        
+
         JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
         return response;
     }
