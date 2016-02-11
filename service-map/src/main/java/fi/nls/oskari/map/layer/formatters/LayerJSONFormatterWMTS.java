@@ -34,7 +34,10 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
 
         // Use capabities in 1st hand for to get matrix id
-
+        String mid = LayerJSONFormatterWMTS.getTileMatrixSetId(layer.getCapabilities(), layer.getSrs_name());
+        if(mid != null){
+            layer.setTileMatrixSetId(mid);
+        }
         JSONHelper.putValue(layerJson, "tileMatrixSetId", layer.getTileMatrixSetId());
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
@@ -117,6 +120,9 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
      * @return Set<String> containing the supported coordinate ref systems of WMS service
      */
     public static Set<String> getCRSs(final WMTSCapabilities wmts, final WMTSCapabilitiesLayer layer) {
+        if(layer == null || wmts == null){
+            return null;
+        }
 
         Set<String>  crss = new HashSet<String>();
 

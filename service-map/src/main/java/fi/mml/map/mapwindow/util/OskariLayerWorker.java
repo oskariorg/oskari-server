@@ -16,10 +16,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -41,13 +38,17 @@ public class OskariLayerWorker {
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
     
-    public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
-        return getListOfAllMapLayers(user, lang, false);
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs) {
+        return getListOfAllMapLayers(user, lang, crs, false);
     }
 
-    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final boolean isSecure) {
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
+        return getListOfAllMapLayers(user, lang, null, false);
+    }
+
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs, final boolean isSecure) {
         long start = System.currentTimeMillis();
-        final List<OskariLayer> layers = mapLayerService.findAll();
+        final List<OskariLayer> layers = mapLayerService.findAll(crs);
         log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
         final boolean isPublished = false;
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
@@ -64,8 +65,8 @@ public class OskariLayerWorker {
      * @return JSONObject containing the selected layers
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
-                                                    final String lang, final boolean isPublished, final boolean isSecure) {
-        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
+                                                    final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
+        final List<OskariLayer> layers = mapLayerService.find(layerIdList, crs);
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }
 
@@ -254,6 +255,29 @@ public class OskariLayerWorker {
         JSONHelper.putValue(permissions, "download", DOWNLOAD_PERMISSION_OK);
 
         return permissions;
+    }
+
+    /**
+     * Reorder Oskari layers in to requested order
+     * @param layers
+     * @param ids  layer ids and externalids
+     * @return  reorder layers
+     */
+    public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
+
+        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
+
+        for (String id : ids) {
+            for (OskariLayer lay : layers) {
+
+                if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
+                    reLayers.add(lay);
+                    break;
+                }
+            }
+
+        }
+        return reLayers;
     }
 
     private static String getPermissionType(final boolean isPublished) {

@@ -2,6 +2,15 @@
 
 ## 1.35
 
+### control-base
+
+MapfullHandler now gets the projection definition for map SRS and adds it to the mapfull config if it is not allready there. This is done to avoid openlayers trying to search the projection definition.
+The url where the projection definion is picked from can be configured to oskari-ext.properties:
+
+    projectionDefs.url = http://spatialreference.org/ref/epsg/
+
+The code is based on that url, so if using any other url you should see if the code is still valid.
+
 ### service-search
 
 SearchableChannel interface changes:

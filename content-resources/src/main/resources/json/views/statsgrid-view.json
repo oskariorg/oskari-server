@@ -10,7 +10,6 @@
         "development_prefix" : "/applications/sample"
     },
     "selectedLayers" : [
-        "wmslayer-openstreetmap-demo-fi.json"
     ],
     "bundles" : [
         { "id" : "openlayers-default-theme" },
