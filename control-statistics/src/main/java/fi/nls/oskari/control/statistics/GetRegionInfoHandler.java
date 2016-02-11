@@ -66,7 +66,7 @@ public class GetRegionInfoHandler extends ActionHandler {
     }
 
     public JSONObject requestRegionInfoJSON(String regionCode, String name, String nameTag, String idTag, String urlBase) throws ActionException {
-        final String cacheKey = CACHE_KEY_PREFIX + regionCode;
+        final String cacheKey = CACHE_KEY_PREFIX + name + ":" + regionCode;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {
