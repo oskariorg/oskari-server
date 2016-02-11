@@ -34,7 +34,10 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure);
 
         // Use capabities in 1st hand for to get matrix id
-
+        String mid = LayerJSONFormatterWMTS.getTileMatrixSetId(layer.getCapabilities(), layer.getSrs_name());
+        if(mid != null){
+            layer.setTileMatrixSetId(mid);
+        }
         JSONHelper.putValue(layerJson, "tileMatrixSetId", layer.getTileMatrixSetId());
 
         // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
