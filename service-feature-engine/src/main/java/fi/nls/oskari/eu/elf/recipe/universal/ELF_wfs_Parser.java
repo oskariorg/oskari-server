@@ -55,6 +55,7 @@ public class ELF_wfs_Parser extends GML32 {
         Map<String, String> typemap = new HashMap<String, String>();
         Map<String, String> nilmap = new HashMap<String, String>();
         Map<String, Resource> resmap = new HashMap<String, Resource>();
+        Map<String, Integer> multiElemmap = new HashMap<String, Integer>();
         Resource hrefRes = null;
         Boolean isGeomMapping = false;
 
@@ -197,7 +198,10 @@ public class ELF_wfs_Parser extends GML32 {
 
 
                                     if (isAdditional) additionalFea.accumulate(elem, textTag);
-                                    else feature.accumulate(elem, textTag);
+                                    else {
+
+                                        feature.accumulate(elem, textTag);
+                                    }
                                     textTag = null;
 
                                 } else if (elem != null && type != null && type.equals(TYPE_OBJECT) && subfea != null) {
@@ -238,8 +242,22 @@ public class ELF_wfs_Parser extends GML32 {
                                     // Get id when it is the only attribute
                                     if (!key.equals(KEY_ID) || feature.length() == 1) {
                                         Object prop = feature.get(key);
-                                        if (prop instanceof JSONArray)
+                                        if (prop instanceof JSONArray) {
                                             prop = JSONHelper.getArrayAsList((JSONArray) prop);
+                                            //get max size
+                                            if (prop instanceof ArrayList) {
+                                                // Map equal element property max count
+                                                if (multiElemmap.containsKey(key)) {
+                                                    if (((ArrayList) prop).size() > multiElemmap.get(key)) {
+                                                        multiElemmap.put(key, ((ArrayList) prop).size());
+                                                    }
+                                                } else {
+                                                    multiElemmap.put(key, ((ArrayList) prop).size());
+                                                }
+                                            }
+
+
+                                        }
                                         if (prop instanceof JSONObject)
                                             prop = JSONHelper.getObjectAsMap((JSONObject) prop);
                                         outputFeature.addProperty(res, prop);
@@ -272,6 +290,10 @@ public class ELF_wfs_Parser extends GML32 {
                 }
 
 
+            }
+             // Flat equal name property elements
+            if (multiElemmap.size() > 0) {
+                this.output.equalizePropertyArraySize(multiElemmap, resmap);
             }
 
             // Merge href features, if any

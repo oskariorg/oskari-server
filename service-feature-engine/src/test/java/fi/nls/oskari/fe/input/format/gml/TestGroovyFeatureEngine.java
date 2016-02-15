@@ -138,6 +138,10 @@ public class TestGroovyFeatureEngine {
 
                 }
 
+                public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
+
+                }
+
                 @Override
                 public void prefix(String prefix, String ns) throws IOException {
 

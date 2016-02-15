@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
@@ -166,6 +167,9 @@ public class LegacyJsonOutputProcessor extends AbstractOutputStreamProcessor
         return new ImmutablePair<Resource, Object>(rc, val);
     }
     public void merge(List<JSONObject> list, Resource res) {
+
+    }
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
     }
 

@@ -41,6 +41,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /* PoC which builds GeoTools Map to PNG */
 public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
@@ -370,6 +371,9 @@ public class MapContentOutputProcessor extends AbstractOutputStreamProcessor
     }
     public void merge(List<JSONObject> list, Resource res) {
 
+
+    }
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
     }
 

@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /* PoC that builds JSON-LD output */
 public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor
@@ -223,6 +224,9 @@ public class JsonLdOutputProcessor extends AbstractOutputStreamProcessor
 
     }
     public void merge(List<JSONObject> list, Resource res) {
+
+    }
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
     }
 }
