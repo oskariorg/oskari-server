@@ -33,7 +33,7 @@ public class SotkaIndicator implements StatisticalIndicator {
     private Map<String, String> localizedDescription;
     private List<StatisticalIndicatorLayer> layers;
     private StatisticalIndicatorSelectors selectors;
-    private Map<String, String> sotkaLayersToOskariLayers;
+    private Map<String, Long> sotkaLayersToOskariLayers;
     private boolean valid = true;
     /**
      * If the metadata is not fetched for this indicator, we must fetch it separately.
@@ -54,7 +54,7 @@ public class SotkaIndicator implements StatisticalIndicator {
         metadataFetcher.init();
     }
 
-    public SotkaIndicator(Map<String, String> sotkaLayersToOskariLayers) {
+    public SotkaIndicator(Map<String, Long> sotkaLayersToOskariLayers) {
         this.sotkaLayersToOskariLayers = sotkaLayersToOskariLayers;
     }
 
@@ -224,16 +224,12 @@ public class SotkaIndicator implements StatisticalIndicator {
         return localizationMap;
     }
     private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type,
-            String indicatorId, Map<String, String> sotkaLayersToOskariLayers) throws JSONException {
+            String indicatorId, Map<String, Long> sotkaLayersToOskariLayers) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
             String sotkaLayerName = json.getString(i);
-            String oskariLayerName = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
-            if (oskariLayerName == null) {
-                // Important for layers that don't exist in Oskari, for example "Maa".
-                oskariLayerName = sotkaLayerName;
-            }
-            layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerName, type, fetcher, indicatorId));
+            Long oskariLayerId = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
+            layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerId, type, fetcher, indicatorId));
         }
         return layers;
     }

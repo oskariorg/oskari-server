@@ -35,7 +35,7 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
     private String description;
     private String year;
     private Boolean published;
-    private String layerName;
+    private long layerId;
     private String data;
     private long userId;
 
@@ -46,7 +46,7 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
         this.description = userIndicator.getDescription();
         this.year = String.valueOf(userIndicator.getYear());
         this.published = userIndicator.isPublished();
-        this.layerName = categoryToLayerName(userIndicator.getCategory());
+        this.layerId = userIndicator.getMaterial();
         this.data = userIndicator.getData();
         this.userId = userIndicator.getUserId();
     }
@@ -61,39 +61,14 @@ public class UserStatisticalIndicator implements StatisticalIndicator {
         return this.id;
     }
 
-    private static Map<String, String> categoriesToLayers = new HashMap<>();
-    static {
-        // Categories are (old) Sotka keywords for legacy and backward compatibility reasons.
-        // We will map them here by hard coding, because these are not updated when Sotka is updated.
-        // The downside is that the oskari layers must follow this convention for the old user indicators.
-        // Note: When kunnat are updated, this should not be updated, hence hardcoded.
-        // Instead, the new indicators will use Oskari layer names directly.
-        categoriesToLayers.put("kunta", "oskari:kunnat2013");
-        categoriesToLayers.put("maakunta", "oskari:maakunta");
-        categoriesToLayers.put("erva", "oskari:erva-alueet");
-        categoriesToLayers.put("aluehallintovirasto", "oskari:avi");
-        categoriesToLayers.put("sairaanhoitopiiri", "oskari:sairaanhoitopiiri");
-        categoriesToLayers.put("ely-keskus", "oskari:ely");
-        categoriesToLayers.put("seutukunta", "oskari:seutukunta");
-        categoriesToLayers.put("nuts1", "oskari:nuts1");
-    }
-    
-    public static String categoryToLayerName(String category) {
-        // If a category is unknown, it is assumed to be an Oskari layer name.
-        if (categoriesToLayers.containsKey(category.toLowerCase())) {
-            return categoriesToLayers.get(category.toLowerCase());
-        }
-        return category;
-    }
-    
     @Override
     public List<StatisticalIndicatorLayer> getLayers() {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         StatisticalIndicatorLayer layer = new StatisticalIndicatorLayer() {
 
             @Override
-            public String getOskariLayerName() {
-                return layerName;
+            public long getOskariLayerId() {
+                return layerId;
             }
 
             @Override

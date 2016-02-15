@@ -35,7 +35,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
     /**
      * Maps the SotkaNET layer identifiers to Oskari layers.
      */
-    private Map<String, String> layerMappings;
+    private Map<String, Long> layerMappings;
 
     public SotkaStatisticalDatasourcePlugin() {
         indicatorsParser = new SotkaIndicatorsParser();
@@ -69,7 +69,7 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         final List<SotkaLayer> layerRows = session.selectList("getAll");
         layerMappings = new HashMap<>();
         for (SotkaLayer row : layerRows) {
-            layerMappings.put(row.getSotkaLayerId().toLowerCase(), row.getOskariLayerName());
+            layerMappings.put(row.getSotkaLayerId().toLowerCase(), row.getOskariLayerId());
         }
         System.out.println("SotkaNET layer mappings: " + String.valueOf(layerMappings));
     }

@@ -42,10 +42,10 @@ public class SotkaIndicatorsParserTest {
     @Test
     public void testParseIndicators() throws Exception {
         SotkaIndicatorsParser parser = new SotkaIndicatorsParser();
-        Map<String, String> layerMap = new HashMap<>();
-        layerMap.put("kunta", "OskariKunta");
-        layerMap.put("maakunta", "OskariMaakunta");
-        layerMap.put("maa", "OskariMaa");
+        Map<String, Long> layerMap = new HashMap<>();
+        layerMap.put("kunta", 9l);
+        layerMap.put("maakunta", 10l);
+        layerMap.put("maa", 11l);
         List<SotkaIndicator> parsedObject = parser.parse(testResponse, layerMap);
         assertTrue("The parsed object did not match the expected first objects.",
                 parsedObject.toString().startsWith(
@@ -64,7 +64,7 @@ public class SotkaIndicatorsParserTest {
         assertEquals("245", parsedObject.get(40).getId());
         assertEquals(6, parsedObject.get(40).getLayers().size());
         assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(5).getIndicatorValueType());
-        assertEquals("OskariMaa", parsedObject.get(40).getLayers().get(5).getOskariLayerName());
+        assertEquals(11, parsedObject.get(40).getLayers().get(5).getOskariLayerId());
         assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}",
                 parsedObject.get(40).getLocalizedName().toString());
         assertEquals("{fi=Terveyden ja hyvinvoinnin laitos (THL), sv=Institutet för hälsa och välfärd (THL), " +

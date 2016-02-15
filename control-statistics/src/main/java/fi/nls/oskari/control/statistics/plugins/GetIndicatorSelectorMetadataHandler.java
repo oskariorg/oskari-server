@@ -130,7 +130,7 @@ public class GetIndicatorSelectorMetadataHandler extends ActionHandler {
         for (StatisticalIndicatorLayer layer: layers) {
             JSONObject layerJSON = new JSONObject();
             layerJSON.put("type", layer.getIndicatorValueType().toString());
-            layerJSON.put("layerId", layer.getOskariLayerName());
+            layerJSON.put("layerId", layer.getOskariLayerId());
             layersJSON.put(layerJSON);
         }
         return layersJSON;

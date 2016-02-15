@@ -12,9 +12,13 @@ public class SotkaLayer {
     private String sotkaLayerId;
     
     /**
-     *  The layer name in Oskari, for example: "oskari:kunnat2013". This maps to the name in the oskari_maplayers table.
+     *  The layer id in Oskari, for example: 7. This maps to the name in the oskari_maplayers table.
      */
-    private String oskariLayerName;
+    private Long oskariLayerId;
+
+    public String getPluginId() {
+        return "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin";
+    }
 
     public String getSotkaLayerId() {
         return sotkaLayerId;
@@ -24,11 +28,11 @@ public class SotkaLayer {
         this.sotkaLayerId = sotkaLayerId;
     }
 
-    public String getOskariLayerName() {
-        return oskariLayerName;
+    public Long getOskariLayerId() {
+        return oskariLayerId;
     }
 
-    public void setOskariLayerName(String oskariLayerName) {
-        this.oskariLayerName = oskariLayerName;
+    public void setOskariLayerId(Long oskariLayerId) {
+        this.oskariLayerId = oskariLayerId;
     }
 }

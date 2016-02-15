@@ -13,7 +13,7 @@ import fi.nls.oskari.log.Logger;
 public class SotkaIndicatorsParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaIndicatorsParser.class);
 
-    public List<SotkaIndicator> parse(String response, Map<String, String> sotkaLayersToOskariLayers) {
+    public List<SotkaIndicator> parse(String response, Map<String, Long> sotkaLayersToOskariLayers) {
         List<SotkaIndicator> indicatorList = new ArrayList<>();
         try {
             // We will simply map the response JSON into Oskari data model without fancy streaming and such.

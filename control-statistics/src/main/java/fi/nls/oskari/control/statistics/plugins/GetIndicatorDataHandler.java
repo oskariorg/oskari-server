@@ -43,14 +43,14 @@ public class GetIndicatorDataHandler extends ActionHandler {
     public void handleAction(ActionParameters ap) throws ActionException {
         final String pluginId = ap.getRequiredParam(PARAM_PLUGIN_ID);
         final String indicatorId = ap.getRequiredParam(PARAM_INDICATOR_ID);
-        final String layerId = ap.getRequiredParam(PARAM_LAYER_ID);
+        final long layerId = new Long(ap.getRequiredParam(PARAM_LAYER_ID));
         final String selectors = ap.getRequiredParam(PARAM_SELECTORS);
         JSONObject response = getIndicatorDataJSON(ap.getUser(), pluginId, indicatorId, layerId, selectors);
         ResponseHelper.writeResponse(ap, response);
     }
 
     public JSONObject getIndicatorDataJSON(User user, String pluginId, String indicatorId,
-            String layerId, String selectorsStr)
+            Long layerId, String selectorsStr)
             throws ActionException {
         final String cacheKey = CACHE_KEY_PREFIX + pluginId + ":" + indicatorId + ":" + layerId + ":" + selectorsStr;
         final String cachedData = JedisManager.get(cacheKey);
@@ -74,7 +74,7 @@ public class GetIndicatorDataHandler extends ActionHandler {
                 if (indicator.getId().equals(indicatorId)) {
                     // This is fast, because there are only 10 or so layers at most.
                     for (StatisticalIndicatorLayer layer : indicator.getLayers()) {
-                        if (layer.getOskariLayerName().equals(layerId)) {
+                        if (layer.getOskariLayerId() == layerId) {
                             // Note: Layer version is handled already in the indicator metadata.
                             // We found the correct indicator and the layer.
                             JSONObject selectorJSON = new JSONObject(selectorsStr);

@@ -11,7 +11,7 @@ import fi.nls.oskari.log.Logger;
 public class SotkaSpecificIndicatorParser {
     private final static Logger LOG = LogFactory.getLogger(SotkaSpecificIndicatorParser.class);
 
-    public SotkaIndicator parse(String response, Map<String, String> sotkaLayersToOskariLayers) {
+    public SotkaIndicator parse(String response, Map<String, Long> sotkaLayersToOskariLayers) {
         try {
             // We will simply map the response JSON into Oskari data model without fancy streaming and such.
             // Keeping it simple. If performance becomes an issue, this can be reimplemented in a streaming fashion.

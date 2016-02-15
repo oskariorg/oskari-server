@@ -12,13 +12,13 @@ public class KapaStatisticalIndicatorLayer implements StatisticalIndicatorLayer 
     private String indicatorId;
     private IndicatorValueType valueType;
     private KapaIndicatorValuesFetcher indicatorValuesFetcher;
-    private String layerName;
+    private long layerId;
     
-    public KapaStatisticalIndicatorLayer(String layerName,
+    public KapaStatisticalIndicatorLayer(long layerId,
             IndicatorValueType valueType,
             KapaIndicatorValuesFetcher indicatorValuesFetcher,
             String indicatorId) {
-        this.layerName = layerName;
+        this.layerId = layerId;
         this.valueType = valueType;
         this.indicatorValuesFetcher = indicatorValuesFetcher;
         this.indicatorId = indicatorId;
@@ -35,7 +35,7 @@ public class KapaStatisticalIndicatorLayer implements StatisticalIndicatorLayer 
     }
 
     @Override
-    public String getOskariLayerName() {
-        return layerName;
+    public long getOskariLayerId() {
+        return layerId;
     }
 }

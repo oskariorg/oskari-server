@@ -28,7 +28,7 @@ public class SotkaIndicatorSelectorsFetcher {
      * @param indicator
      * @return
      */
-    public SotkaIndicator get(String indicatorId, Map<String, String> layerMappings) {
+    public SotkaIndicator get(String indicatorId, Map<String, Long> layerMappings) {
         try {
             SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
             specificIndicatorRequest.setIndicator(indicatorId);

@@ -12,9 +12,9 @@ import java.util.Map;
  */
 public interface StatisticalIndicatorLayer {
     /**
-     *  The layer name in Oskari, for example: "oskari:kunnat2013". This maps to the name in the oskari_maplayers table.
+     *  The layer id in Oskari, for example: 9. This maps to the name in the oskari_maplayers table.
      */
-    public String getOskariLayerName();
+    public long getOskariLayerId();
     /**
      * Single layer contains indicators for one type only.
      * @return "BOOLEAN" for JSON/Java booleans, "INTEGER" for JSON integers/Java Longs, "FLOAT" for JSON numbers/Java Doubles.

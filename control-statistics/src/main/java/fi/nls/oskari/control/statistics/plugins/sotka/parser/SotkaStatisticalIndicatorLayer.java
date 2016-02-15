@@ -10,12 +10,12 @@ import fi.nls.oskari.control.statistics.plugins.sotka.SotkaIndicatorValuesFetche
 
 public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer {
     private String sotkaId;
-    private String oskariId;
+    private long oskariId;
     private String indicatorId;
     private IndicatorValueType valueType;
     private SotkaIndicatorValuesFetcher indicatorValuesFetcher;
     
-    public SotkaStatisticalIndicatorLayer(String sotkaId, String oskariId, IndicatorValueType valueType,
+    public SotkaStatisticalIndicatorLayer(String sotkaId, long oskariId, IndicatorValueType valueType,
             SotkaIndicatorValuesFetcher indicatorValuesFetcher,
             String indicatorId) {
         this.sotkaId = sotkaId;
@@ -41,7 +41,7 @@ public class SotkaStatisticalIndicatorLayer implements StatisticalIndicatorLayer
     }
 
     @Override
-    public String getOskariLayerName() {
+    public long getOskariLayerId() {
         return oskariId;
     }
 }
