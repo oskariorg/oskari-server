@@ -59,7 +59,9 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(new OskariRequestInterceptor());
     }
+    
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
         LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
