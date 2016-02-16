@@ -90,7 +90,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.warn("Couldn't get JSONObject from ", content, " with key =", key);
+            log.warn("Couldn't get JSONObject from ", content, " with key =", key, " - error: ", e);
             return null;
         }
     }

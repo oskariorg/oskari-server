@@ -24,6 +24,7 @@ import org.junit.Test;
 import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -314,6 +315,9 @@ public class TestELFGML extends TestHelper {
             public void merge(List<JSONObject> list, Resource res) throws IOException {
 
             }
+            public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
+
+            }
 
             @Override
             public void prefix(String prefix, String ns) throws IOException {
@@ -488,6 +492,10 @@ public class TestELFGML extends TestHelper {
 
 
             public void merge(List<JSONObject> list, Resource res) throws IOException {
+
+            }
+
+            public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
             }
 

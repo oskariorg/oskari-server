@@ -269,4 +269,56 @@ public class FEOutputProcessor implements OutputProcessor {
         }
     }
 
+    /**
+     * Make property element jsonarrays to equal size
+     *
+     * @param multiElemmap elements to make equal size
+
+     */
+    public void equalizePropertyArraySize(Map<String, Integer> multiElemmap, Map<String, Resource> resmap) {
+        if (multiElemmap.size() < 1) return;
+        try {
+            // loop hashmap
+            Resource res = null;
+            int maxsize = 0;
+            for (Map.Entry<String, Integer> entry : multiElemmap.entrySet()) {
+                res = resmap.get(entry.getKey());
+                maxsize = entry.getValue();
+                // Get index of resource
+                Integer keyInd = selectedPropertiesIndex.get(res);
+                if (keyInd == null) return;
+
+                //Loop features and equalize size
+                for (List lis : list) {
+                    // Href key
+                    Object val = lis.get(keyInd);
+                    if (val instanceof List) {
+                        ArrayList<Object> valList = (ArrayList<Object>) val;
+                        if(valList.size() < maxsize){
+                            for(int i=0; i < (maxsize - valList.size()); i++){
+                                valList.add(null);
+                            }
+                            lis.set(keyInd,valList);
+                        }
+
+                    } else {
+                        ArrayList<Object> newList = new ArrayList<Object>();
+                        newList.add(val);
+                        for(int i=0; i < (maxsize - 1); i++){
+                            newList.add(null);
+                        }
+                        lis.set(keyInd,newList);
+                    }
+                }
+
+
+            }
+        } catch (Exception ee) {
+            log.debug("Array size equalizing failed:", ee);
+        }
+
+
+    }
+
+
 };

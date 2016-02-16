@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class MaplayerProjectionServiceIbatisImpl extends BaseIbatisService implements MaplayerProjectionService {
 
-    private Logger log = LogFactory.getLogger(MaplayerProjectionServiceIbatisImpl.class);
+    private static final Logger log = LogFactory.getLogger(MaplayerProjectionServiceIbatisImpl.class);
 
 
 	@Override
@@ -31,7 +31,7 @@ public class MaplayerProjectionServiceIbatisImpl extends BaseIbatisService imple
 
     public synchronized void insertList(final int maplayerId, final Set<String> CRSs) {
 
-        if(CRSs == null || CRSs.size() == 0){
+        if(CRSs == null || CRSs.isEmpty()){
             return;
         }
 
@@ -62,7 +62,7 @@ public class MaplayerProjectionServiceIbatisImpl extends BaseIbatisService imple
             }
         }
     }
-    private class Crs{
+    static class Crs{
         int maplayerid;
         String name;
 

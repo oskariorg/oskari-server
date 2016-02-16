@@ -2,6 +2,11 @@
 
 ## 1.35
 
+### servlet-map
+
+Now expects UTF-8 input and writes UTF-8 as output. 
+Fixes an issue where user-generated my places with name containing non-ascii characters prevented IE11 from showing my places.
+
 ### control-base
 
 MapfullHandler now gets the projection definition for map SRS and adds it to the mapfull config if it is not allready there. This is done to avoid openlayers trying to search the projection definition.
