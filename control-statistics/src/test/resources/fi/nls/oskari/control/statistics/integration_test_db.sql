@@ -98,42 +98,49 @@ INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari
 
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:kunnat2013',
+  'Kunta',
+--  'oskari:kunnat2013'
   9
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:maakunta',
+  'Maakunta',
+--  'oskari:maakunta'
   10
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:erva-alueet',
+  'Erva',
+--  'oskari:erva-alueet'
   11
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:avi',
+  'Aluehallintovirasto',
+--  'oskari:avi'
   12
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:sairaanhoitopiiri',
+  'Sairaanhoitopiiri',
+--  'oskari:sairaanhoitopiiri'
   13
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:ely',
+  'ELY-KESKUS',
+--  'oskari:ely'
   14
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:seutukunta',
+  'Seutukunta',
+--  'oskari:seutukunta'
   15
 );
 INSERT INTO oskari_statistical_plugin_layers (plugin_id, plugin_layer_id, oskari_layer_id) VALUES (
   'fi.nls.oskari.control.statistics.plugins.kapa.KapaStatisticalDatasourcePlugin',
-  'oskari:nuts1',
+  'Nuts1',
+--  'oskari:nuts1'
   16
 );
-
