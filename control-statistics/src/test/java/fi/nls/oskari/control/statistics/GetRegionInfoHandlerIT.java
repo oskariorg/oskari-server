@@ -56,7 +56,8 @@ public class GetRegionInfoHandlerIT {
     public void testGettingRegionInfo() throws ActionException, JSONException {
         GetRegionInfoHandler handler = new GetRegionInfoHandler();
         handler.init();
-        JSONObject result = handler.getRegionInfoJSON("oskari:kunnat2013", "005");
+        // Note: This test expects "oskari:kunnat2013" to be a layer id 9.
+        JSONObject result = handler.getRegionInfoJSON(9, "005");
         assertEquals("Alajärvi",
                 result.getJSONObject("005").getString("name").toString());
     }
@@ -64,7 +65,8 @@ public class GetRegionInfoHandlerIT {
     public void testGettingRegionInfoForErva() throws ActionException, JSONException {
         GetRegionInfoHandler handler = new GetRegionInfoHandler();
         handler.init();
-        JSONObject result = handler.getRegionInfoJSON("oskari:erva-alueet", "1");
+        // Note: This test expects "oskari:erva-alueet" to be a layer id 11.
+        JSONObject result = handler.getRegionInfoJSON(11, "1");
         assertEquals("Helsingin Yliopistosairaalan erityisvastuualue",
                 result.getJSONObject("1").getString("name").toString());
     }

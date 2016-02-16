@@ -17,8 +17,8 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayer;
-import fi.nls.oskari.control.statistics.plugins.sotka.db.SotkaLayerMapper;
+import fi.nls.oskari.control.statistics.plugins.db.PluginLayer;
+import fi.nls.oskari.control.statistics.plugins.db.PluginLayerMapper;
 import fi.nls.oskari.control.statistics.plugins.sotka.parser.SotkaIndicatorsParser;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.Indicators;
 import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
@@ -66,10 +66,11 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         SqlSessionFactory factory = initializeIBatis(dataSource);
         final SqlSession session = factory.openSession();
-        final List<SotkaLayer> layerRows = session.selectList("getAll");
+        final List<PluginLayer> layerRows = session.selectList("getAllForPlugin",
+                "fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin");
         layerMappings = new HashMap<>();
-        for (SotkaLayer row : layerRows) {
-            layerMappings.put(row.getSotkaLayerId().toLowerCase(), row.getOskariLayerId());
+        for (PluginLayer row : layerRows) {
+            layerMappings.put(row.getPluginLayerId().toLowerCase(), row.getOskariLayerId());
         }
         System.out.println("SotkaNET layer mappings: " + String.valueOf(layerMappings));
     }
@@ -79,9 +80,9 @@ public class SotkaStatisticalDatasourcePlugin implements StatisticalDatasourcePl
         final Environment environment = new Environment("development", transactionFactory, dataSource);
 
         final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(SotkaLayer.class);
+        configuration.getTypeAliasRegistry().registerAlias(PluginLayer.class);
         configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(SotkaLayerMapper.class);
+        configuration.addMapper(PluginLayerMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

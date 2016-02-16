@@ -6,9 +6,9 @@ package fi.nls.oskari.control.statistics.db;
  */
 public class Layer {
     /**
-     *  The layer name in Oskari, for example: "oskari:kunnat2013". This maps to the name in the oskari_maplayers table.
+     *  The layer id in Oskari, for example: 9. This maps to the name in the oskari_maplayers table.
      */
-    private String oskariLayerName;
+    private long oskariLayerId;
     
     /**
      * The attribute name for the region id in the geoserver. For example: "kuntakoodi"
@@ -24,12 +24,12 @@ public class Layer {
      */
     private String oskariNameIdTag;
 
-    public String getOskariLayerName() {
-        return oskariLayerName;
+    public long getOskariLayerId() {
+        return oskariLayerId;
     }
 
-    public void setOskariLayerName(String oskariLayerName) {
-        this.oskariLayerName = oskariLayerName;
+    public void setOskariLayerId(long oskariLayerId) {
+        this.oskariLayerId = oskariLayerId;
     }
 
     public String getOskariRegionIdTag() {

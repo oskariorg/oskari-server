@@ -46,9 +46,10 @@ public class KapaIndicator implements StatisticalIndicator {
 
     /**
      * @param jsonObject
+     * @param layerMappings 
      * @return true for valid parsing, false for validation errors.
      */
-    public boolean parse(JSONObject jsonObject) {
+    public boolean parse(JSONObject jsonObject, Map<String, Long> layerMappings) {
         try {
             this.id = String.valueOf(jsonObject.getInt("id"));
             // Note: Organization id is ignored here. At the moment it doesn't make sense to add to Oskari data model.
@@ -60,7 +61,7 @@ public class KapaIndicator implements StatisticalIndicator {
             // In the future this might change.
             if (jsonObject.getJSONObject("selectors").has("layer")) {
                 this.layers = toIndicatorLayers(jsonObject.getJSONObject("selectors").getJSONArray("layer"),
-                        IndicatorValueType.FLOAT, this.id);
+                        IndicatorValueType.FLOAT, this.id, layerMappings);
             } else {
                 LOG.error("Layer selector missing from indicator: " + this.id + ": " + String.valueOf(this.localizedName));
                 this.valid = false;
@@ -138,11 +139,15 @@ public class KapaIndicator implements StatisticalIndicator {
         return localizationMap;
     }
     private static List<StatisticalIndicatorLayer> toIndicatorLayers(JSONArray json, IndicatorValueType type,
-            String indicatorId) throws JSONException {
+            String indicatorId, Map<String, Long> layerMappings) throws JSONException {
         List<StatisticalIndicatorLayer> layers = new ArrayList<>();
         for (int i = 0; i < json.length(); i++) {
-            layers.add(new KapaStatisticalIndicatorLayer(json.getLong(i), type, fetcher,
-                    indicatorId));
+            String kapaLayerId = json.getString(i).toLowerCase();
+            if (layerMappings.containsKey(kapaLayerId)) {
+                long layerId = layerMappings.get(kapaLayerId);
+                layers.add(new KapaStatisticalIndicatorLayer(layerId, type, fetcher,
+                        indicatorId));
+            }
         }
         return layers;
     }

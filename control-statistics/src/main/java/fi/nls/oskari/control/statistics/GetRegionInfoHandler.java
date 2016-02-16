@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.statistics.db.Layer;
+import fi.nls.oskari.control.statistics.db.LayerMetadata;
 import fi.nls.oskari.control.statistics.xml.RegionCodeNamePair;
 import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
 import fi.nls.oskari.util.IOHelper;
@@ -32,41 +33,42 @@ import javax.xml.stream.XMLStreamException;
 @OskariActionRoute("GetRegionInfo")
 public class GetRegionInfoHandler extends ActionHandler {
     private final static String CACHE_KEY_PREFIX = "oskari_get_layer_info_handler:";
-    private final static String CACHE_KEY_REGION_XML = "oskari_get_layer_info_region_xml";
 
     // TODO: With DI, this could be injected. Here, we just make an another instance.
     private GetLayerInfoHandler layerInfoHandler = new GetLayerInfoHandler();
-    private Map<String, Layer> layerInfoMap;
+    private Map<Long, Layer> layerInfoMap;
     
     public void handleAction(ActionParameters ap) throws ActionException {
         final String layerId = ap.getRequiredParam("layer_id");
         final String regionCode = ap.getHttpParam("region_id");
-        JSONObject response = getRegionInfoJSON(layerId, regionCode);
+        JSONObject response = getRegionInfoJSON(Long.valueOf(layerId), regionCode);
         ResponseHelper.writeResponse(ap, response);
     }
 
     /**
      * 
-     * @param layerId For example: "oskari:kunnat2013"
+     * @param layerId For example: 9
      * @param regionId: For example: "005", or null
      * @return For example: [{"name": "Alajärvi"}]
      * @throws ActionException
      */
-    public JSONObject getRegionInfoJSON(String layerId, String regionCode) throws ActionException {
+    public JSONObject getRegionInfoJSON(long layerId, String regionCode) throws ActionException {
         final Layer layerInfo = this.layerInfoMap.get(layerId);
         if (layerInfo == null) {
             return new JSONObject();
         }
-        final String name = layerInfo.getOskariLayerName();
+        final long id = layerInfo.getOskariLayerId();
         final String nameTag = layerInfo.getOskariNameIdTag();
         final String idTag = layerInfo.getOskariRegionIdTag();
-        final String urlBase = layerInfoHandler.getLayerMetadata().get(name).getUrl();
-        JSONObject response = requestRegionInfoJSON(regionCode, name, nameTag, idTag, urlBase);
+        LayerMetadata layerMetadata = layerInfoHandler.getLayerMetadata().get(id);
+        final String name = layerMetadata.getOskariLayerName();
+        final String urlBase = layerMetadata.getUrl();
+        JSONObject response = requestRegionInfoJSON(regionCode, id, name, nameTag, idTag, urlBase);
         return response;
     }
 
-    public JSONObject requestRegionInfoJSON(String regionCode, String name, String nameTag, String idTag, String urlBase) throws ActionException {
-        final String cacheKey = CACHE_KEY_PREFIX + name + ":" + regionCode;
+    public JSONObject requestRegionInfoJSON(String regionCode, long id, String name, String nameTag, String idTag, String urlBase) throws ActionException {
+        final String cacheKey = CACHE_KEY_PREFIX + id + ":" + regionCode;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
             try {
@@ -108,7 +110,7 @@ public class GetRegionInfoHandler extends ActionHandler {
         this.layerInfoHandler.init();
         this.layerInfoMap = new HashMap<>();
         for (Layer layer : this.layerInfoHandler.getLayers()) {
-            this.layerInfoMap.put(layer.getOskariLayerName(), layer);
+            this.layerInfoMap.put(layer.getOskariLayerId(), layer);
         }
     }
 }

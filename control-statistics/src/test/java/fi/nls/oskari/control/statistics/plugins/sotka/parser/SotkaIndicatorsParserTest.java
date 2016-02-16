@@ -55,16 +55,14 @@ public class SotkaIndicatorsParserTest {
                 + "1 000 i samma åldrar, en=Hospital care for mental disorders, recipients aged 0-17 per 1000 "
                 + "persons of the same age}, localizedSource: {fi=Terveyden ja hyvinvoinnin laitos (THL), "
                 + "sv=Institutet för hälsa och välfärd (THL), en=Institute for Health and Welfare (THL)}, "
-                + "layers: [{id: OskariKunta, valueType: FLOAT}, {id: OskariMaakunta, valueType: FLOAT}, "
-                + "{id: Erva, valueType: FLOAT}, {id: Aluehallintovirasto, valueType: FLOAT}, "
-                + "{id: Sairaanhoitopiiri, valueType: FLOAT}, {id: OskariMaa, valueType: FLOAT}, "
-                + "{id: Suuralue, valueType: FLOAT}, {id: Seutukunta, valueType: FLOAT}, {id: Nuts1, valueType: FLOAT}], "
+                + "layers: [{id: 9, valueType: FLOAT}, {id: 10, valueType: FLOAT}, "
+                + "{id: 11, valueType: FLOAT}], "
                 + "selectors: {[{ id: sex, value: null, allowedValues: [male, female, total]}]}},"));
         assertEquals(2434, parsedObject.size());
         assertEquals("245", parsedObject.get(40).getId());
-        assertEquals(6, parsedObject.get(40).getLayers().size());
-        assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(5).getIndicatorValueType());
-        assertEquals(11, parsedObject.get(40).getLayers().get(5).getOskariLayerId());
+        assertEquals(3, parsedObject.get(40).getLayers().size());
+        assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(2).getIndicatorValueType());
+        assertEquals(11, parsedObject.get(40).getLayers().get(2).getOskariLayerId());
         assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}",
                 parsedObject.get(40).getLocalizedName().toString());
         assertEquals("{fi=Terveyden ja hyvinvoinnin laitos (THL), sv=Institutet för hälsa och välfärd (THL), " +

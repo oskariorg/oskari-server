@@ -6,6 +6,11 @@ package fi.nls.oskari.control.statistics.db;
  */
 public class LayerMetadata {
     /**
+     *  The layer id in Oskari, for example: 9.
+     */
+    private long oskariLayerId;
+    
+    /**
      *  The layer name in Oskari, for example: "oskari:kunnat2013".
      */
     private String oskariLayerName;
@@ -15,6 +20,14 @@ public class LayerMetadata {
      */
     private String url;
     
+    public long getOskariLayerId() {
+        return oskariLayerId;
+    }
+
+    public void setOskariLayerId(long oskariLayerId) {
+        this.oskariLayerId = oskariLayerId;
+    }
+
     public String getOskariLayerName() {
         return oskariLayerName;
     }

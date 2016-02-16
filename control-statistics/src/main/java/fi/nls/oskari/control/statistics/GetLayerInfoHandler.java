@@ -33,7 +33,8 @@ import javax.sql.DataSource;
  * Returns the layer information. This specifies the name and id attributes in the geoserver layer.
  * Sample response:
  * {
- *   "oskari:kunnat2013": {
+ *   "9": {
+ *     "name": "oskari:kunnat2013",
  *     "nameTag": "kuntanimi",
  *     "idTag": "kuntakoodi",
  *     "url": " http://localhost:8080/geoserver"
@@ -44,7 +45,7 @@ import javax.sql.DataSource;
 public class GetLayerInfoHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(GetLayerInfoHandler.class);
     private List<Layer> layers;
-    private Map<String, LayerMetadata> layerMetadata;
+    private Map<Long, LayerMetadata> layerMetadata;
     
     public void handleAction(ActionParameters ap) throws ActionException {
         JSONObject response = getLayerInfoJSON();
@@ -54,14 +55,14 @@ public class GetLayerInfoHandler extends ActionHandler {
     JSONObject getLayerInfoJSON() throws ActionException {
         JSONObject response = new JSONObject();
         for (Layer layer : layers) {
-            LayerMetadata metadata = layerMetadata.get(layer.getOskariLayerName());
+            LayerMetadata metadata = layerMetadata.get(layer.getOskariLayerId());
             JSONObject tags = new JSONObject();
             try {
                 if (metadata != null) {
                     tags.put("nameTag", layer.getOskariNameIdTag());
                     tags.put("idTag", layer.getOskariRegionIdTag());
                     tags.put("url", metadata.getUrl());
-                    response.put(layer.getOskariLayerName(), tags);
+                    response.put(String.valueOf(layer.getOskariLayerId()), tags);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -75,7 +76,7 @@ public class GetLayerInfoHandler extends ActionHandler {
         return this.layers;
     }
 
-    public Map<String, LayerMetadata> getLayerMetadata() {
+    public Map<Long, LayerMetadata> getLayerMetadata() {
         return layerMetadata;
     }
 
@@ -89,7 +90,7 @@ public class GetLayerInfoHandler extends ActionHandler {
         this.layerMetadata = new HashMap<>();
         List<LayerMetadata> layerMetadataRows = session.selectList("getAllMetadata");
         for (LayerMetadata row : layerMetadataRows) {
-            this.layerMetadata.put(row.getOskariLayerName(),
+            this.layerMetadata.put(row.getOskariLayerId(),
                     row);
         }
         LOG.debug("Oskari layer infos:", this.layers);

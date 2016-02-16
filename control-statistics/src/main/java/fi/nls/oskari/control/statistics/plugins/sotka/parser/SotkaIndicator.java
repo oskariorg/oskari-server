@@ -229,7 +229,9 @@ public class SotkaIndicator implements StatisticalIndicator {
         for (int i = 0; i < json.length(); i++) {
             String sotkaLayerName = json.getString(i);
             Long oskariLayerId = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
-            layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerId, type, fetcher, indicatorId));
+            if (oskariLayerId != null) {
+                layers.add(new SotkaStatisticalIndicatorLayer(sotkaLayerName, oskariLayerId, type, fetcher, indicatorId));
+            }
         }
         return layers;
     }

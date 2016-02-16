@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.kapa;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -7,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -16,6 +18,8 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManag
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManagerIT.DatasourceHelperMock;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
@@ -25,26 +29,45 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(IOHelper.class)
-public class KapaPluginTest {
+@PrepareForTest({DatasourceHelper.class, IOHelper.class})
+@PowerMockIgnore( {"javax.management.*"}) 
+public class KapaPluginIT {
 
     final private StatisticalDatasourcePluginManager manager = new StatisticalDatasourcePluginManager();
     private static String testIndicatorsResponse = ResourceHelper.readStringResource("KapaIndicators.json",
-            KapaPluginTest.class);
+            KapaPluginIT.class);
     private static String testIndicatorDataResponse = ResourceHelper.readStringResource("KapaIndicatorData.json",
-            KapaPluginTest.class);
+            KapaPluginIT.class);
     private static String url = "";
 
+    public static class DatasourceHelperMock extends DatasourceHelper {
+        public DatasourceHelperMock() {
+            super();
+        }
+        @Override
+        public DataSource getDataSource(String name) {
+            BasicDataSource basicDataSource = new BasicDataSource();
+            basicDataSource.setDriverClassName("org.postgresql.Driver");
+            basicDataSource.setUrl(PropertyUtil.get("db.url"));
+            basicDataSource.setUsername(PropertyUtil.get("db.username"));
+            basicDataSource.setPassword(PropertyUtil.get("db.password"));
+            return basicDataSource;
+        }
+    }
+    
     @BeforeClass
-    public static void init() throws IOException {
+    public static void init() throws IOException, IllegalArgumentException, IllegalAccessException {
         PropertyUtil.loadProperties("/oskari-ext.properties");
         PowerMockito.mockStatic(IOHelper.class);
         when(IOHelper.getConnection(any(String.class))).then(new Answer<HttpURLConnection>() {
@@ -85,6 +108,8 @@ public class KapaPluginTest {
             }
             
         });
+        Field field = PowerMockito.field(DatasourceHelper.class, "INSTANCE");
+        field.set(DatasourceHelper.class, new DatasourceHelperMock());
     }
     @AfterClass
     public static void tearDown() {
