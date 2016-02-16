@@ -23,21 +23,16 @@ import java.util.*;
 
 public class WFS2_DefaultParser extends GML32 {
 
-    private static final String KEY_PATHS = "paths";
-    private static final String KEY_LABEL = "label";
-    private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
 
-    private static final String TYPE_STRING = "String";
-    private static final String TYPE_HREF = "Href";
-    private static final String TYPE_OBJECT = "Object";
-    private static final String TYPE_GEOMETRY = "Geometry";
+    private static final String KEY_ID = "id";
+
+
     private static final List<String> EXCLUDE_ATTRIBUTES = Arrays.asList("nil");
 
-    private static final String VALUE_UNKNOWN = "unknown";
 
 
-    protected static final Logger log = LogFactory
+
+    private static final Logger log = LogFactory
             .getLogger(WFS2_DefaultParser.class);
 
     public void parse() throws IOException {

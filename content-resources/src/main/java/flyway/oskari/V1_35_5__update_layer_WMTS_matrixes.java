@@ -87,7 +87,9 @@ public class V1_35_5__update_layer_WMTS_matrixes implements JdbcMigration {
             statement.execute();
             statement.close();
         }
-        catch (JSONException ignored) {}
+        catch (JSONException ignored) {
+            LOG.error("Error updating oskari_maplayer.capabilities", layerId);
+        }
     }
 
 

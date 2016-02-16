@@ -433,7 +433,7 @@ public class GetGtWFSCapabilities {
             return crss;
 
         } catch (Exception ex) {
-
+            log.warn("Couldn't get wfs supported feature CRSs - exception: ", ex);
         }
         return null;
     }
@@ -1070,7 +1070,7 @@ public class GetGtWFSCapabilities {
         }
 
         public void setOtherSrs(String[] otherSrs) {
-            OtherSrs = otherSrs;
+            this.OtherSrs = otherSrs;
         }
 
         public String getNsUri() {
