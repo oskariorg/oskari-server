@@ -12,7 +12,6 @@ import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

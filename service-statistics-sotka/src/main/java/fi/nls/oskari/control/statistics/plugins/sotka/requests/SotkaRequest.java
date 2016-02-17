@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -120,19 +119,19 @@ public class SotkaRequest {
         return gender;
     }
 
-    public void setVersion(final String version) throws ActionException {
+    public void setVersion(final String version) {
         final String lowerCaseVersion = version.toLowerCase();
         if (!ACCEPTED_VERSIONS.contains(lowerCaseVersion)) {
-            throw new ActionException("Unknown SOTKAnet version requested "
+            throw new APIException("Unknown SOTKAnet version requested "
                     + version);
         }
         this.version = lowerCaseVersion;
     }
 
-    public void setGender(final String gender) throws ActionException {
+    public void setGender(final String gender) {
         final String lowerCaseGender = gender.toLowerCase();
         if (!ACCEPTED_GENDERS.contains(lowerCaseGender)) {
-            throw new ActionException("Unknown SOTKAnet gender requested "
+            throw new APIException("Unknown SOTKAnet gender requested "
                     + gender);
         }
         this.gender = lowerCaseGender;

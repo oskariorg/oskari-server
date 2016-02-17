@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import org.json.JSONException;
 
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.IndicatorValue;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
@@ -69,9 +68,6 @@ public class SotkaIndicatorValuesFetcher {
             // FIXME: Cache this result, key by plugin, selectors and indicator id.
             return result;
             
-        } catch (ActionException e) {
-            e.printStackTrace();
-            throw new APIException("Something went wrong calling SotkaNET getIndicatorValues API.", e);
         } catch (JSONException e) {
             e.printStackTrace();
             throw new APIException("Something went wrong parsing JSON from SotkaNET getIndicatorValues API.", e);
