@@ -18,7 +18,6 @@ import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManag
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelector;
 import fi.nls.oskari.control.statistics.plugins.StatisticalIndicatorSelectors;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePluginManagerIT.DatasourceHelperMock;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -39,6 +38,11 @@ import javax.sql.DataSource;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * A test for the plugin manager interaction with the KaPa plugin.
+ * @author tero
+ *
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DatasourceHelper.class, IOHelper.class})
 @PowerMockIgnore( {"javax.management.*"}) 

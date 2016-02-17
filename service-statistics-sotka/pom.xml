@@ -10,20 +10,23 @@
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-statistics</artifactId>
+    <artifactId>oskari-statistics-sotka</artifactId>
     <packaging>jar</packaging>
-    <name>Control Service - Statistics Actions</name>
+    <name>Statistics Service for Sotka</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-base</artifactId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-statistics</artifactId>
+            <artifactId>oskari-map</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-statistics-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -209,6 +209,27 @@
 
             <dependency>
                 <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-common</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-sotka</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
+                <artifactId>oskari-statistics-kapa</artifactId>
+                <version>${fi.nls.oskari.service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.nls.oskari.service</groupId>
                 <artifactId>service-csw</artifactId>
                 <version>${fi.nls.oskari.service.version}</version>
             </dependency>
@@ -917,6 +938,11 @@
         <module>service-csw</module>
         <module>service-logging</module>
         <module>service-routing</module>
+        <module>service-statistics-common</module>
+        <module>service-statistics</module>
+        <module>service-statistics-sotka</module>
+        <module>service-statistics-kapa</module>
+        
         <module>service-webapp</module>
 
         <module>control-base</module>

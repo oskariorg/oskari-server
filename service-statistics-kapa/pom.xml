@@ -10,40 +10,22 @@
 	</parent>
 
     <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-statistics</artifactId>
+    <artifactId>oskari-statistics-kapa</artifactId>
     <packaging>jar</packaging>
-    <name>Control Service - Statistics Actions</name>
+    <name>Statistics Service for KaPa</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-base</artifactId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-statistics</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <artifactId>oskari-statistics-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- PowerMock can be used to mock static/private methods -->
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <scope>test</scope>
+            <groupId>fi.nls.oskari.service</groupId>
+            <artifactId>oskari-map</artifactId>
         </dependency>
     </dependencies>
     <build>
