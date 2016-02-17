@@ -94,14 +94,7 @@ public class WFSAnalysisResponseParseTest {
 	
 	@Test
 	public void testAnalysisResponse() throws Exception {
-        // check that we have http connectivity (correct proxy settings etc)
-       // assumeTrue(TestHelper.canDoHttp());
-       // assumeTrue(TestHelper.redisAvailable());
 
-		String payload = WFSCommunicator.createRequestPayload(type, layer, session, bounds, null);
-		
-		// request (analysis layer / demo / )
-		//BufferedReader response = HttpHelper.postRequestReader(layer.getURL(), "text/xml", payload, layer.getUsername(), layer.getPassword());
         BufferedReader response = new BufferedReader(new StringReader(sresponse));
                 assertTrue("Should get valid response", response != null);
 		
