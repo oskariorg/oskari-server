@@ -32,12 +32,14 @@ import org.geotools.xml.xsi.XSISimpleTypes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -70,6 +72,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
+    public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
@@ -79,8 +82,12 @@ public class MapfullHandler extends BundleHandler {
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
     private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
 
+    private static JSONObject epsgMap = null;
+
+
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        epsgInit();
     }
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
@@ -217,25 +224,24 @@ public class MapfullHandler extends BundleHandler {
     }
 
     public String getMapSRSProjDef(final String mapSRS) {
-        final String url = getProjDefsURL(mapSRS);
+
         try {
-            final String defaultMapProjDef = IOHelper.getURL(url, "UTF-8");
-            String[] parts = defaultMapProjDef.split("\"");
-            final String defaultProjDef = parts[3];
-            return defaultProjDef;
-        } catch (IOException e) {
-            log.debug("ProjectionDefs not found", url);
-            return null;
+
+            if(this.epsgMap.has(mapSRS.toUpperCase())){
+                return JSONHelper.getStringFromJSON(this.epsgMap, mapSRS.toUpperCase(), null);
+            }
+            else {
+                log.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
+            }
+        } catch (Exception e) {
+            log.debug("ProjectionDefs read failed in epsg_proj4_formats.json", mapSRS, " - exception: ", e);
         }
+        return null;
     }
 
-    public String getProjDefsURL(final String mapSRS) {
-        final String propertyURL = PropertyUtil.get("projectiondefs.url", "http://spatialreference.org/ref/epsg/");
-        String[] epsgParts = mapSRS.split(":");
-        final String epsg = epsgParts[1];
-        final String projDefsURL = propertyURL + epsg + "/proj4js/";
-        return projDefsURL;
-    }
+
+
+
 
 
     /**
@@ -552,6 +558,20 @@ public class MapfullHandler extends BundleHandler {
         } catch (JSONException jsonex) {
             log.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
+        }
+    }
+
+    private  void epsgInit() {
+
+        try {
+            InputStream inp = this.getClass().getResourceAsStream(EPSG_PROJ4_FORMATS);
+            if (inp != null) {
+                InputStreamReader reader = new InputStreamReader(inp, "UTF-8");
+                JSONTokener tokenizer = new JSONTokener(reader);
+                this.epsgMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
+        } catch (Exception e) {
+            log.info("No setup for epsg proj4 formats found", e);
         }
     }
 }
