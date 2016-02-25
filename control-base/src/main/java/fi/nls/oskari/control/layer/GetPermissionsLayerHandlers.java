@@ -186,7 +186,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "VIEW_LAYER");
-	        		put("name", (localeFinal.equals("fi") ? "View layerFi" : "View layer"));
+	        		put("name", (localeFinal.equals("fi") ? "Katseluoikeus" : "View layer"));
 	    		}
 	    	});
     	}
@@ -195,7 +195,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "PUBLISH");
-	    	    	put("name", (localeFinal.equals("fi") ? "PublishFi" : "Publish"));
+	    	    	put("name", (localeFinal.equals("fi") ? "Julkaisuoikeus" : "Publish"));
 	    		}
 	    	});
     	}
@@ -204,7 +204,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "DOWNLOAD");
-	    	    	put("name", (localeFinal.equals("fi") ? "DownloadFi" : "Download"));
+	    	    	put("name", (localeFinal.equals("fi") ? "Latausoikeus" : "Download"));
 	    		}
 	    	});
     	}
@@ -213,7 +213,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "EXECUTE");
-	    	    	put("name", (localeFinal.equals("fi") ? "ExecuteFi" : "Execute"));
+	    	    	put("name", (localeFinal.equals("fi") ? "Suorittaa" : "Execute"));
 	    		}
 	    	});
     	}
