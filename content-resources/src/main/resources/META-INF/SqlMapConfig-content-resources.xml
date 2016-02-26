@@ -27,5 +27,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
   <sqlMap resource="META-INF/BackendStatus.xml" />
   <sqlMap resource="META-INF/PublishedMap.xml" />
   <sqlMap resource="META-INF/WFSLayerConfiguration.xml" />
+  <sqlMap resource="META-INF/MaplayerProjections.xml" />
   <sqlMap resource="META-INF/Roles.xml" />
 </sqlMapConfig>

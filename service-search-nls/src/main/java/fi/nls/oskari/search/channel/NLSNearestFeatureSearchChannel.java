@@ -45,78 +45,90 @@ public class NLSNearestFeatureSearchChannel extends SearchChannel {
         log.debug("ServiceURL set to " + serviceURL);
     }
 
+    public Capabilities getCapabilities() {
+        return Capabilities.COORD;
+    }
+
     /**
      * Returns the search raw results.
      *
-     * @param searchCriteria Search criteria.
+     * @param sc SearchCriteria
      * @return Result data in JSON format.
      * @throws Exception
      */
-    private String getData(SearchCriteria searchCriteria) throws Exception {
+    private String getData(SearchCriteria sc) throws Exception {
         log.debug("getData");
-        if (serviceURL == null) {
-            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+
+        String coords = nearestFeatureParser.transformLonLat(sc.getLon(), sc.getLat(), sc.getSRS());
+        if (coords == null) {
+            log.warn("Invalid lon/lat coordinates ", sc.getLon(), " ", sc.getLat());
             return null;
         }
-
-        String request = null;
-
         StringBuffer buf = new StringBuffer(serviceURL);
-        if (hasParam(searchCriteria, PARAM_LON) && hasParam(searchCriteria, PARAM_LAT)) {
-            // reverse geocoding
-            // Transform lon,lat
-            String coords = nearestFeatureParser.transformLonLat(searchCriteria.getParam(PARAM_LON).toString(), searchCriteria.getParam(PARAM_LAT).toString(), searchCriteria.getSRS());
-            if (coords == null) {
-                log.warn("Invalid lon/lat coordinates ", searchCriteria.getParam(PARAM_LON).toString(), " ", searchCriteria.getParam(PARAM_LAT).toString());
-                return null;
-            }
-            request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_COORDS_HOLDER, coords);
-        }
-        // Search distance
-        request = request.replace(KEY_BUFFER_HOLDER, searchCriteria.getParam(PARAM_BUFFER).toString());
-        // Max features in response
-        request = request.replace(KEY_MAXFEATURES_HOLDER, searchCriteria.getParam(PARAM_MAXFEATURES).toString());
-        // Srs name
-        request = request.replace(KEY_SRSNAME_HOLDER, searchCriteria.getSRS());
-        buf.append(request);
+        String request = REQUEST_REVERSEGEOCODE_TEMPLATE.replace(KEY_COORDS_HOLDER, coords);
 
+        // Search distance
+        request = request.replace(KEY_BUFFER_HOLDER, getBuffer(sc.getParam(PARAM_BUFFER)));
+        // Max features in response
+        request = request.replace(KEY_MAXFEATURES_HOLDER, "" + getMaxResults(sc.getMaxResults()));
+        // Srs name
+        request = request.replace(KEY_SRSNAME_HOLDER, sc.getSRS());
+        buf.append(request);
 
         return IOHelper.readString(getConnection(buf.toString()));
     }
 
-    /**
-     * Check if criteria has named extra parameter and it's not empty
-     *
-     * @param sc
-     * @param param
-     * @return
-     */
-    private boolean hasParam(SearchCriteria sc, final String param) {
-        final Object obj = sc.getParam(param);
-        return obj != null && !obj.toString().isEmpty();
+    public String getMaxResults(int max) {
+        if(max <= 0) {
+            return "1";
+        }
+        return "" + max;
+    }
+
+    public String getBuffer(Object param) {
+        if(param != null && param instanceof String) {
+            String str = (String) param;
+            if(!str.isEmpty()) {
+                return str;
+            }
+        }
+        return "1000";
+    }
+
+    public boolean isValidSearchTerm(SearchCriteria criteria) {
+        return criteria.isReverseGeocode();
     }
 
     /**
      * Returns the channel search results.
      *
-     * @param searchCriteria Search criteria.
+     * @param sc Search criteria.
      * @return Search results.
      */
-    public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
+    public ChannelSearchResult reverseGeocode(SearchCriteria sc) {
+        if (serviceURL == null) {
+            log.warn("ServiceURL not configured. Add property with key", PROPERTY_SERVICE_URL);
+            return null;
+        }
         try {
-            String data = getData(searchCriteria);
-
-            // Clean xml version for geotools parser for faster par
+            String coords = nearestFeatureParser.transformLonLat(sc.getLon(), sc.getLat(), sc.getSRS());
+            if (coords == null) {
+                log.warn("Invalid lon/lat coordinates ", sc.getLon(), " ", sc.getLat());
+                return null;
+            }
+            String data = getData(sc);
+            // Clean xml version for geotools parser for faster parsing
             data = data.replace(RESPONSE_CLEAN, "");
-            log.debug("DATA: " + data);
+            log.debug("Response: " + data);
             // Language
-            Locale locale = new Locale(searchCriteria.getLocale());
-            String lang3 = locale.getISO3Language();
-            return nearestFeatureParser.parse(data, searchCriteria.getSRS(), lang3);
+            Locale locale = new Locale(sc.getLocale());
+            return nearestFeatureParser.parse(data, sc.getSRS(), locale.getISO3Language());
 
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of NLS nearest feature service");
-            return new ChannelSearchResult();
+            ChannelSearchResult result = new ChannelSearchResult();
+            result.setQueryFailed(true);
+            return result;
         }
     }
 }

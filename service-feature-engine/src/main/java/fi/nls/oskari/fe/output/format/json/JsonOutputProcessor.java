@@ -23,6 +23,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
@@ -218,6 +219,9 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
     }
 
     public void merge(List<JSONObject> list, Resource res) {
+
+    }
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
     }
 }

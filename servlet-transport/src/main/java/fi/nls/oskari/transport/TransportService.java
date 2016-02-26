@@ -330,9 +330,22 @@ public class TransportService extends AbstractService {
 
         // layers
         Map<String, Layer> layers = store.getLayers();
+        int hiddenLayers = 0;
         for (Layer layer : layers.values()) {
+            if(!layer.isVisible()) {
+                hiddenLayers++;
+                continue;
+            }
             layer.setTiles(store.getGrid().getBounds()); // init bounds to tiles (render all)
         	initMapLayerJob(-1, store, layer.getId(), false);
+        }
+        if(hiddenLayers == layers.values().size()) {
+            // notify successful init if no layer jobs are started
+            // frontend expexts a started message for requestId -1 to detect successful init
+            ResultProcessor proc = createResultProcessor(-1);
+            Map<String, String> data = new HashMap<>();
+            data.put("message", "started");
+            proc.addResults(client.getId(), ResultProcessor.CHANNEL_STATUS, data);
         }
     }
 

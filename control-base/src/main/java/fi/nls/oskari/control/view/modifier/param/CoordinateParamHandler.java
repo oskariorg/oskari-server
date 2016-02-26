@@ -10,6 +10,11 @@ import org.json.JSONObject;
 @OskariViewModifier("coord")
 public class CoordinateParamHandler extends ParamHandler {
 
+    @Override
+    public int getPriority() {
+        return 10;
+    }
+
     private static final Logger log = LogFactory.getLogger(CoordinateParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {

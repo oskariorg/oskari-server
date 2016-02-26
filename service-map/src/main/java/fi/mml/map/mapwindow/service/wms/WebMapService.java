@@ -60,4 +60,11 @@ public interface WebMapService {
 	 * @return String
 	 */
 	List<String> getTime();
+
+    /**
+     * Return Array of strings representing supported CRS of layer service
+     * @return String array
+     */
+    String[] getCRSs();
+
 }

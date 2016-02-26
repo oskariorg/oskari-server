@@ -10,7 +10,6 @@
         "development_prefix" : "/applications/sample"
     },
     "selectedLayers" : [
-        "wmslayer-openstreetmap-demo-fi.json"
     ],
     "bundles" : [
         { "id" : "openlayers-default-theme" },
@@ -28,7 +27,6 @@
                     "resolutions": [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
                 },
                 "globalMapAjaxUrl": "[REPLACED BY HANDLER]",
-                "imageLocation": "/Oskari/resources",
 				"projectionDefs" : {
 					"EPSG:4326" : "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 				},

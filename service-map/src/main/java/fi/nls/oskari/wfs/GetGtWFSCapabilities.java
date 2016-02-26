@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -14,11 +15,14 @@ import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.ResourceInfo;
 import org.geotools.data.wfs.WFSDataStore;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -189,9 +193,11 @@ public class GetGtWFSCapabilities {
                 String name = "Name";
                 String title = "Title";
                 String srs = "DefaultCRS";
+                String OtherSrs = "OtherCRS";
                 nameval = scanChildNode(featypes.item(i).getChildNodes(), name, nameval);
                 titleval = scanChildNode(featypes.item(i).getChildNodes(), title, titleval);
                 srsval = scanChildNode(featypes.item(i).getChildNodes(), srs, srsval);
+                String[] otherSrsval  = scanChildNodes(featypes.item(i).getChildNodes(), OtherSrs);
 
                 if (nameval != null) {
                     if (titleval == null) {
@@ -201,6 +207,9 @@ public class GetGtWFSCapabilities {
                     tmpft.setName(nameval);
                     tmpft.setTitle(titleval);
                     tmpft.setDefaultSrs(srsval);
+                    if(otherSrsval.length > 0){
+                        tmpft.setOtherSrs(otherSrsval);
+                    }
                     // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri
                     parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
                     // Append parser type to title
@@ -240,6 +249,30 @@ public class GetGtWFSCapabilities {
         } else if (capa.containsKey("FeatureTypeList")) {
             Map<String, _FeatureType> data = (Map<String, _FeatureType>) capa.get("FeatureTypeList");
             return parseWfs2xLayer(data, version, rurl, user, pw);
+        }
+        return null;
+
+    }
+
+    /**
+     * Parse supported crs Projections  wfs 1.1.0 or wfs 2.0.0
+     *
+     * @param capa  Object WFS datastore or FeatureTypeList
+     * @param version
+     * @param name
+     * @return
+     */
+    public static Set<String> parseProjections(Map<String, Object> capa, String version, String name)
+    {
+        if (capa == null) {
+            return null;
+        }
+        if (capa.containsKey("WFSDataStore")) {
+            WFSDataStore data = (WFSDataStore) capa.get("WFSDataStore");
+            return parseWfs1xProjections(data, version, name);
+        } else if (capa.containsKey("FeatureTypeList")) {
+            Map<String, _FeatureType> data = (Map<String, _FeatureType>) capa.get("FeatureTypeList");
+            return parseWfs2xProjections(data, version, name);
         }
         return null;
 
@@ -349,6 +382,62 @@ public class GetGtWFSCapabilities {
             throw new ServiceException("Couldn't parse wfs 1.x capabilities layer", ex);
         }
     }
+
+    /**
+     * Parse supported layer projections wfs 1.x
+     *
+     * @param data geotools wfs DataStore
+     * @throws fi.nls.oskari.service.ServiceException
+     */
+    public static Set<String> parseWfs1xProjections(WFSDataStore data, String version, String typeName) {
+        if (data == null || typeName == null) {
+            return null;
+        }
+        Set<String> crss = new HashSet<String>();
+        try {
+            //There is no way to get Other crs - maybe next gt version will support it
+            //Get only the default crs
+            String crs = CRS.lookupIdentifier(data.getFeatureSource(typeName).getInfo().getCRS(), true);
+            if(crs != null){
+                crss.add(crs);
+                return crss;
+            }
+
+
+        } catch (Exception ex) {
+
+        }
+        return null;
+    }
+
+    /**
+     * Parse supported layer projections wfs 2.x
+     *
+     * @param typeNames  wfs featuretype list
+     * @throws fi.nls.oskari.service.ServiceException
+     */
+    public static Set<String> parseWfs2xProjections(Map<String, _FeatureType> typeNames, String version, String typeName) {
+
+        if (typeNames == null || typeName == null) {
+            return null;
+        }
+        Set<String> crss = new HashSet<String>();
+        try {
+
+            _FeatureType  featureType = typeNames.get(typeName);
+             crss.add(ProjectionHelper.shortSyntaxEpsg(featureType.defaultSrs));
+            if(featureType.getOtherSrs() != null && featureType.getOtherSrs().length > 0 )
+            for (String s: featureType.getOtherSrs()) {
+                crss.add(ProjectionHelper.shortSyntaxEpsg(s));
+            }
+            return crss;
+
+        } catch (Exception ex) {
+            log.warn("Couldn't get wfs supported feature CRSs - exception: ", ex);
+        }
+        return null;
+    }
+
 
     private static SimpleFeatureType getSchema(WFSDataStore data, String typeName) {
 
@@ -900,6 +989,30 @@ public class GetGtWFSCapabilities {
 
         return val;
     }
+    /**
+     * Scan  node values for to child node
+     *
+     * @param subnodes
+     * @param name     child node name
+     * @return node value
+     */
+    public static String[] scanChildNodes(NodeList subnodes, String name) {
+        List<String> texts = new ArrayList<String>();
+        //if(subnodes == null) return val;
+        for (int k = 0; k < subnodes.getLength(); k++) {
+            String localname = subnodes.item(k).getLocalName();
+            if (localname == null) {
+                localname = subnodes.item(k).getNodeName();
+            }
+            if (localname != null) {
+                if (localname.equals(name)) {
+                    texts.add(subnodes.item(k).getTextContent());
+                }
+            }
+        }
+
+        return texts.toArray(new String[texts.size()]);
+    }
     public static String getPreDefinedUri(String name) {
         String uri = null;
         String prefix = name.split(":")[0];
@@ -919,6 +1032,7 @@ public class GetGtWFSCapabilities {
         private String name;
         private String title;
         private String defaultSrs;
+        private String[] OtherSrs;
         private String nsUri;
         private String templateDescription;
         private String templateType;
@@ -949,6 +1063,14 @@ public class GetGtWFSCapabilities {
 
         public void setDefaultSrs(String defaultSrs) {
             this.defaultSrs = defaultSrs;
+        }
+
+        public String[] getOtherSrs() {
+            return OtherSrs;
+        }
+
+        public void setOtherSrs(String[] otherSrs) {
+            this.OtherSrs = otherSrs;
         }
 
         public String getNsUri() {

@@ -12,6 +12,10 @@ import org.json.JSONObject;
 @OskariViewModifier("zoomLevel")
 public class ZoomParamHandler extends ParamHandler {
 
+    @Override
+    public int getPriority() {
+        return 1;
+    }
     private static final Logger log = LogFactory.getLogger(ZoomParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {

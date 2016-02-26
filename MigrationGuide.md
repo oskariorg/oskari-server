@@ -1,5 +1,11 @@
 # Migration guide
 
+## 1.35.0
+
+Update IntersectionFeatureCollection2-2.7.1.jar in your webapps/geoserver/WEB-INF/lib directory.
+Build updated version in https://github.com/nls-oskari/oskari-server/tree/master/geoserver-ext/wps. 
+This is improvement for analysis Geometry clip method.
+
 ## 1.34.0
 
 A new publisher template has been added: content-resources/src/main/resources/json/views/ol3-publisher-template-view.json.

@@ -52,6 +52,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
     private static final int MAX_FILES_IN_ZIP = 100;
+    private static final int MAX_BASE_FILENAME_LENGHT = 24;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -95,6 +96,11 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             // Store geojson via ibatis
             UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
+
+            // Store failed
+            if (ulayer == null) {
+                throw new ActionException("Couldn't store user data into database  or no features in the input data");
+            }
 
             // workaround because of IE iframe submit json download functionality
             //params.getResponse().setContentType("application/json;charset=utf-8");
@@ -229,6 +235,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 // use the same base name for all files in zip
                 int i = file.getSavedTo().lastIndexOf(".");
                 filesBaseName = file.getSavedTo().substring(0, i);
+                //Cut too long basename
 
                 if (mainFile == null && file.isOfType(ACCEPTED_FORMATS)) {
                     mainFile = file;
@@ -257,7 +264,13 @@ public class CreateUserLayerHandler extends ActionHandler {
         File newFile = null;
         FileOutputStream fos = null;
         try {
-            newFile = File.createTempFile(file.getSafeName(), "." + file.getExtension());
+            String ftmp = file.getBaseName();
+            if(file.getBaseName().length() > MAX_BASE_FILENAME_LENGHT){
+                //Cut too long filename in the middle
+                ftmp = file.getBaseName().substring(0,9) + "_" + file.getBaseName().substring(file.getBaseName().length()-10);
+            }
+
+            newFile = File.createTempFile(ftmp, "." + file.getExtension());
             log.debug("file unzip : " + newFile.getAbsoluteFile());
             fos = new FileOutputStream(newFile);
 

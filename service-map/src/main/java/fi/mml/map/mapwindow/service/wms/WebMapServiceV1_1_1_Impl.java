@@ -4,6 +4,7 @@ import fi.mml.wms.v111.*;
 import fi.mml.wms.v111.Layer.Queryable.Enum;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 import javax.xml.namespace.QName;
 import java.lang.Exception;
@@ -29,6 +30,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	private boolean isQueryable = false;
     private String[] keywords = new String[0];
 	private List<String> time = new ArrayList<>();
+    public String[] CRSs = new String[0];
+
 	/** Logger */
 	private static final Logger log = LogFactory.getLogger(WebMapServiceV1_1_1_Impl.class);
 	
@@ -77,6 +80,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 			}
 			
 			getFormats(wmtms);
+
+			getCRSs(wmtms);
 			
 		} catch (Exception e) {
 			throw new WebMapServiceParseException(e);
@@ -175,6 +180,23 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 			}
 		}
 		
+	}
+
+	/**
+	 * Get supported crss  of the service from the parent layer
+	 *
+	 * @param wmtms
+	 */
+	private void getCRSs(WMTMSCapabilitiesDocument wmtms) {
+
+		SRS[] crss = wmtms.getWMTMSCapabilities().getCapability().getLayer().getSRSArray();
+
+		CRSs = new String[crss.length];
+
+		for (int i = 0; i < crss.length; i++) {
+			CRSs[i] = ProjectionHelper.shortSyntaxEpsg(crss[i].newCursor().getTextValue());
+		}
+
 	}
 	
 	
@@ -278,4 +300,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 	public List<String> getTime() {
 		return time;
 	}
+
+    public String[] getCRSs() {
+        return CRSs;
+    }
 }
