@@ -113,8 +113,7 @@ public class StatsgridParamHandler extends ParamHandler {
             // manualBreaksInput is optional, but we only use the first 5
             return false;
         }
-
-        // Example: 11++1+4++++2
+        // Example: 11+0+1+4+0+0+0+2
         // parse required values
         final String layerId = values[0];
         final String currentColumn = values[1];
@@ -186,7 +185,7 @@ public class StatsgridParamHandler extends ParamHandler {
     	// If values.length <= 7, this is version 1.
     	// Otherwise, if the values.length > 7, this is version values[7].
     	// Example v1 URL: http://www.paikkatietoikkuna.fi/web/fi/kartta?zoomLevel=0&coord=520000_7250000&mapLayers=519+100+&statsgrid=519+indicator42014total+1+5+++-4+2014+total-seq,0,false-1&showMarker=true
-    	// Example v2 URL: http://www.paikkatietoikkuna.fi/web/fi/kartta?zoomLevel=0&coord=520000_7250000&mapLayers=11+100+&statsgrid=11++1+4++++2-fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin:74:11:{"year":"1992"}-seq,0,false-1&showMarker=true
+    	// Example v2 URL: http://www.paikkatietoikkuna.fi/web/fi/kartta?zoomLevel=0&coord=520000_7250000&mapLayers=11+100+&statsgrid=11+0+1+4+0+0+0+2-fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin:167:11:{"sex":"male","year":"1994"}+fi.nls.oskari.control.statistics.plugins.sotka.SotkaStatisticalDatasourcePlugin:179:11:{"year":"1997"}-seq,0,false-1&showMarker=true
 
     	String version = "1";
     	if (values.length > 7) {
