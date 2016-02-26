@@ -191,7 +191,7 @@ public class StatsgridParamHandler extends ParamHandler {
     	if (values.length > 7) {
     	    version = values[7];
     	}
-        final String[] indicators = parts[1].split(",");
+        final String[] indicators = parts[1].split(" ");
         final JSONObject statsgridState = getBundleState(params.getConfig(), BUNDLE_STATSGRID);
 
         if (version.equals("1")) {
