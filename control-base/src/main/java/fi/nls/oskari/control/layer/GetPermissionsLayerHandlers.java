@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.layer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,15 +35,9 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
     private static String JSON_ID = "id";
     private static String JSON_NAME = "name";
-    private static String JSON_RESOURCE_TYPE = "resourcetype";
-    private static String JSON_EXTERNAL = "external";
     private static String JSON_NAMES_SPACE = "namespace";
     private static String JSON_RESOURCE_NAME = "resourceName";
     private static String JSON_RESOURCE = "resource";
-    private static String JSON_IS_SELECTED = "isSelected";
-    private static String JSON_IS_VIEW_SELECTED = "isViewSelected";
-    private static String JSON_IS_VIEW_PUBLISHED_SELECTED = "isViewPublishedSelected";
-    private static String JSON_IS_DOWNLOAD_SELECTED = "isDownloadSelected";
     
     List<String> usedPermissionTypes;
 
@@ -72,49 +65,12 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
         		permissionData.put("id", PropertyUtil.get("permission." + propertyArray[i] + ".id"));
         		permissionData.put("name", PropertyUtil.get("permission." + propertyArray[i] + ".name." + params.getLocale()));
         		permissionsData.add(permissionData);
-        		usedPermissionTypes.add(propertyArray[i]);
-        		
+        		usedPermissionTypes.add(propertyArray[i]);        		
         	}
         }
     	
 
     	Map<String, List<String>> resourcesMap = new HashMap<String, List<String>>();
-    	/*if (!usedPermissionTypes.contains("viewLayer"))
-    	{
-	    	permissionsData.add(new HashMap<String, String>() {
-	    		{
-	    			put("id", "VIEW_LAYER");
-	        		put("name", (locale.equals("fi") ? "View layerFi" : "View layer"));
-	    		}
-	    	});
-    	}
-    	if (!usedPermissionTypes.contains("publish"))
-    	{
-	    	permissionsData.add(new HashMap<String, String>() {
-	    		{
-	    			put("id", "PUBLISH");
-	    	    	put("name", (locale.equals("fi") ? "PublishFi" : "Publish"));
-	    		}
-	    	});
-    	}
-    	if (!usedPermissionTypes.contains("download"))
-    	{
-	    	permissionsData.add(new HashMap<String, String>() {
-	    		{
-	    			put("id", "DOWNLOAD");
-	    	    	put("name", (locale.equals("fi") ? "DownloadFi" : "Download"));
-	    		}
-	    	});
-    	}
-    	if (!usedPermissionTypes.contains("execute"))
-    	{
-	    	permissionsData.add(new HashMap<String, String>() {
-	    		{
-	    			put("id", "EXECUTE");
-	    	    	put("name", (locale.equals("fi") ? "ExecuteFi" : "Execute"));
-	    		}
-	    	});
-    	}*/
     	
     	setDefaultPermissions(permissionsData, locale);
     	
@@ -180,13 +136,12 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
     
     private void setDefaultPermissions(List<Map<String, String>> permissionsData, Locale locale)
     {
-    	final Locale localeFinal = locale;
     	if (!usedPermissionTypes.contains("viewLayer"))
     	{
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "VIEW_LAYER");
-	        		put("name", (localeFinal.equals("fi") ? "Katseluoikeus" : "View layer"));
+	        		put("name", "rightToView");
 	    		}
 	    	});
     	}
@@ -195,7 +150,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "PUBLISH");
-	    	    	put("name", (localeFinal.equals("fi") ? "Julkaisuoikeus" : "Publish"));
+	    	    	put("name", "rightToPublish");
 	    		}
 	    	});
     	}
@@ -204,7 +159,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "DOWNLOAD");
-	    	    	put("name", (localeFinal.equals("fi") ? "Latausoikeus" : "Download"));
+	    	    	put("name", "rightToDownload");
 	    		}
 	    	});
     	}
@@ -213,7 +168,7 @@ public class GetPermissionsLayerHandlers extends ActionHandler {
 	    	permissionsData.add(new HashMap<String, String>() {
 	    		{
 	    			put("id", "EXECUTE");
-	    	    	put("name", (localeFinal.equals("fi") ? "Suorittaa" : "Execute"));
+	    	    	put("name", "rightToPublishView");
 	    		}
 	    	});
     	}
