@@ -1,17 +1,16 @@
 package fi.nls.oskari.printout.ws.jaxrs.map;
 
+import fi.nls.oskari.printout.config.ConfigValue;
+import org.geowebcache.GeoWebCacheException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
-
-import org.geowebcache.GeoWebCacheException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-
-import fi.nls.oskari.printout.config.ConfigValue;
 
 public class SharedMapProducerResource {
 

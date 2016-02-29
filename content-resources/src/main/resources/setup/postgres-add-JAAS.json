@@ -4,5 +4,6 @@
     ],
     "sql": [
         "example-JAAS-users.sql"
-    ]
+    ],
+    "isPartial" : true
 }

@@ -5,14 +5,13 @@ import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.XmlHelper;
-
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.axiom.om.OMAttribute;
 import org.jaxen.SimpleNamespaceContext;
+import org.json.JSONObject;
 
 import javax.xml.namespace.QName;
-
 import java.util.*;
 
 /**
@@ -30,13 +29,11 @@ public class MetadataCatalogueResultParser {
     private AXIOMXPath XPATH_IDENTIFICATION_ORGANIZATION = null;
     private AXIOMXPath XPATH_IDENTIFICATION_BBOX = null;
     private AXIOMXPath XPATH_IDENTIFICATION_UUID = null;
-
+    private AXIOMXPath XPATH_IDENTIFICATION_DATE = null;
+    private AXIOMXPath XPATH_IDENTIFICATION_CODELIST = null;
     private AXIOMXPath XPATH_CODELISTVALUE = null;
-
     private AXIOMXPath XPATH_DISTINFO = null;
-
     private AXIOMXPath XPATH_FILEID = null;
-
     private AXIOMXPath XPATH_LOCALE_MAP = null;
 
     protected SimpleNamespaceContext NAMESPACE_CTX = null;
@@ -46,6 +43,10 @@ public class MetadataCatalogueResultParser {
     // naming ftw (notice capital L in the second LanguageCode tag...)
     private final QName QNAME_lANGUAGECODE = new QName("http://www.isotc211.org/2005/gmd","languageCode", "gmd");
     private final QName QNAME_THE_LANGUAGECODE = new QName("http://www.isotc211.org/2005/gmd","LanguageCode", "gmd");
+
+    public static final String KEY_IDENTIFICATION = "identification";
+    public static final String KEY_IDENTIFICATION_DATE = "date";
+    public static final String KEY_IDENTIFICATION_CODELIST = "code";
 
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
@@ -78,6 +79,10 @@ setResourceNameSpace(serverURL)
         XPATH_IDENTIFICATION_DESC = XmlHelper.buildXPath("./gmd:abstract/gco:CharacterString", NAMESPACE_CTX);
         XPATH_IDENTIFICATION_IMAGE = XmlHelper.buildXPath("./gmd:graphicOverview[position()=last()]/gmd:MD_BrowseGraphic/gmd:fileName/gco:CharacterString", NAMESPACE_CTX);
         XPATH_IDENTIFICATION_ORGANIZATION = XmlHelper.buildXPath("./gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString", NAMESPACE_CTX);
+        XPATH_IDENTIFICATION_CODELIST = XmlHelper.buildXPath("./gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode", NAMESPACE_CTX);
+        XPATH_IDENTIFICATION_DATE = XmlHelper.buildXPath("./gmd:citation/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date", NAMESPACE_CTX);
+
+
         // extend can be gmd or srv namespaced
         XPATH_IDENTIFICATION_BBOX = XmlHelper.buildXPath("./*[local-name()='extent']/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox", NAMESPACE_CTX);
 
@@ -129,13 +134,20 @@ setResourceNameSpace(serverURL)
 
         final List<OMElement> operatesOnNodes = XPATH_IDENTIFICATION_UUID.selectNodes(idNode);
 
+
+        final OMElement codeNode = (OMElement) XPATH_IDENTIFICATION_CODELIST.selectSingleNode(idNode);
+        final OMElement dateNode = (OMElement) XPATH_IDENTIFICATION_DATE.selectSingleNode(idNode);
+
+        JSONObject identification = new JSONObject();
+        identification.put(KEY_IDENTIFICATION_CODELIST, getAttributeValue(codeNode, QName.valueOf("codeListValue")));
+        identification.put(KEY_IDENTIFICATION_DATE, getLocalizedContent(dateNode,pathToLocalizedValue));
+        item.addValue(KEY_IDENTIFICATION, identification);
+
+
         log.debug("==1");
         final OMElement codeListValue = (OMElement) XPATH_CODELISTVALUE.selectSingleNode(elem);
         log.debug("====: " + codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
         item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
-
-
-
 
         for(OMElement operatesOnNode  : operatesOnNodes){
             if(operatesOnNode != null){
@@ -151,12 +163,8 @@ setResourceNameSpace(serverURL)
                 }
             }
         }
-
         item.setContentURL(getLocalizedContent(imageNode, pathToLocalizedValue));
-        log.debug("getLocalizedContent :" + getLocalizedContent(imageNode, pathToLocalizedValue));
-
         item.setResourceId(getLocalizedContent(uuidNode, pathToLocalizedValue));
-
         return item;
     }
 
@@ -289,10 +297,24 @@ setResourceNameSpace(serverURL)
      * @param elem
      * @return
      */
-    private String getText(final OMElement elem) {
+    private String getAttributeValue(final OMElement elem, final QName attributeName) {
+        String text = null;
         if(elem != null) {
-            return elem.getText();
+            text = elem.getAttributeValue(attributeName);
         }
-        return null;
+        return text;
+    }
+
+    /**
+     * Returns text content or null if element is null
+     * @param elem
+     * @return
+     */
+    private String getText(final OMElement elem) {
+        String text = null;
+        if(elem != null) {
+            text = elem.getText();
+        }
+        return text;
     }
 }

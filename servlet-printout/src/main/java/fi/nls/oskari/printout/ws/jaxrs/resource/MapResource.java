@@ -1,37 +1,24 @@
 package fi.nls.oskari.printout.ws.jaxrs.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
-import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.filter.request.RequestFilterException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.operation.TransformException;
-
 import fi.nls.oskari.printout.config.ConfigValue;
 import fi.nls.oskari.printout.ws.jaxrs.format.StreamingJSONImpl;
 import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
 import fi.nls.oskari.printout.ws.jaxrs.map.SharedMapProducerResource;
 import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
+import org.geowebcache.GeoWebCacheException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 

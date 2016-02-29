@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.LayerGroup;
@@ -12,10 +11,10 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 import java.util.Map;
 
-import static fi.nls.oskari.control.ActionConstants.*;
+import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
+import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
 /**
  * Admin insert/update of class layer or class sub layer

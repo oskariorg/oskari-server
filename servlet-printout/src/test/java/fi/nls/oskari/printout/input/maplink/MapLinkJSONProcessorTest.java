@@ -1,19 +1,18 @@
 package fi.nls.oskari.printout.input.maplink;
 
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.output.map.MapProducerResource;
+import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
+import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import org.apache.log4j.PropertyConfigurator;
+import org.junit.Before;
+
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.log4j.PropertyConfigurator;
-import org.junit.Before;
-
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.output.map.MapProducerResource;
-import fi.nls.oskari.printout.ws.jaxrs.map.WebServiceMapProducerResource;
-import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 
 public class MapLinkJSONProcessorTest {
 

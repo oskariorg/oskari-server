@@ -1,12 +1,12 @@
 package fi.nls.oskari.wfs;
 
-import javax.xml.namespace.QName;
-
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Parser;
 import org.picocontainer.MutablePicoContainer;
+
+import javax.xml.namespace.QName;
 
 /**
  * Geotools Parser with GML 3 configuration

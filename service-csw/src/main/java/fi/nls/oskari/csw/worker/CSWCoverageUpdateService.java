@@ -6,7 +6,7 @@ import fi.nls.oskari.csw.dao.OskariLayerMetadataDao;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.dto.OskariLayerMetadataDto;
 import fi.nls.oskari.csw.service.CSWService;
-import fi.nls.oskari.db.DBHandler;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -16,7 +16,9 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.worker.ScheduledJob;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Scheduled job for retrieving coverage data for maplayers having metadataids.
@@ -75,7 +77,7 @@ public class CSWCoverageUpdateService extends ScheduledJob {
 
     private DataSource getDatasource() {
         try {
-            return DBHandler.getDataSource();
+            return DatasourceHelper.getInstance().getDataSource();
         }
         catch (Exception ex) {
             log.error(ex, "Couldn't get datasource");

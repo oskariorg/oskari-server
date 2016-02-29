@@ -1,19 +1,19 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
 import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceIbatisImpl;
@@ -22,18 +22,24 @@ import fi.nls.oskari.map.userlayer.service.UserLayerDbService;
 import fi.nls.oskari.map.userlayer.service.UserLayerDbServiceIbatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
+import fi.nls.oskari.view.modifier.ModifierParams;
+import org.geotools.xml.xsi.XSISimpleTypes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.view.modifier.ModifierParams;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -52,6 +58,7 @@ public class MapfullHandler extends BundleHandler {
 
 
     private static final String KEY_MAP_OPTIONS = "mapOptions";
+    private static final String KEY_PROJ_DEFS = "projectionDefs";
     private static final String KEY_SRS = "srsName";
 
     private static final String KEY_PLUGINS = "plugins";
@@ -65,6 +72,7 @@ public class MapfullHandler extends BundleHandler {
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
+    public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
     private static final AnalysisDbService analysisService = new AnalysisDbServiceIbatisImpl();
@@ -74,8 +82,12 @@ public class MapfullHandler extends BundleHandler {
     private static final LogoPluginHandler LOGO_PLUGIN_HANDLER = new LogoPluginHandler();
     private static final WfsLayerPluginHandler WFSLAYER_PLUGIN_HANDLER = new WfsLayerPluginHandler();
 
+    private static JSONObject epsgMap = null;
+
+
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
+        epsgInit();
     }
 
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
@@ -109,20 +121,23 @@ public class MapfullHandler extends BundleHandler {
         copySelectedLayersToConfigLayers(mfConfigLayers, mfStateLayers);
         final Set<String> bundleIds = getBundleIds(params.getStartupSequence());
         final boolean useDirectURLForMyplaces = false;
+        final String mapSRS = getSRSFromMapConfig(mapfullConfig);
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
                 params.getUser(),
                 params.getLocale().getLanguage(),
+                mapSRS,
                 params.getViewId(),
                 params.getViewType(),
                 bundleIds,
                 useDirectURLForMyplaces,
                 params.isModifyURLs());
 
-        final String mapSRS = getSRSFromMapConfig(mapfullConfig);
+
         // transform WKT for layers now that we know SRS
         for (int i = 0; i < fullConfigLayers.length(); ++i) {
             OskariLayerWorker.transformWKTGeom(fullConfigLayers.optJSONObject(i), mapSRS);
         }
+        setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
         try {
             mapfullConfig.put(KEY_LAYERS, fullConfigLayers);
@@ -152,10 +167,10 @@ public class MapfullHandler extends BundleHandler {
     }
 
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-                                               final User user, final String lang, final long viewID,
+                                               final User user, final String lang, final String crs, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces) {
-        return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false);
+        return getFullLayerConfig(layersArray, user, lang, crs, viewID, viewType, bundleIds, useDirectURLForMyplaces, false);
     }
 
     /**
@@ -185,6 +200,50 @@ public class MapfullHandler extends BundleHandler {
         return DEFAULT_MAP_SRS;
     }
 
+    public void setProjDefsForMapConfig(final JSONObject mapfullConfig, final String mapSRS) {
+        if (mapfullConfig == null) {
+            return;
+        }
+        final String mapSRSProjDef = getMapSRSProjDef(mapSRS);
+
+        if (mapSRSProjDef == null) {
+            return;
+        }
+        final JSONObject projDef = new JSONObject();
+        JSONHelper.putValue(projDef, mapSRS, mapSRSProjDef);
+
+        if (mapfullConfig.isNull(KEY_PROJ_DEFS)) {
+            JSONHelper.putValue(mapfullConfig, KEY_PROJ_DEFS, projDef);
+        } else {
+            final JSONObject configProjDefs = JSONHelper.getJSONObject(mapfullConfig, KEY_PROJ_DEFS);
+            if (!configProjDefs.has(mapSRS)) {
+                JSONHelper.putValue(configProjDefs, mapSRS, mapSRSProjDef);
+            }
+
+        }
+    }
+
+    public String getMapSRSProjDef(final String mapSRS) {
+
+        try {
+
+            if(this.epsgMap.has(mapSRS.toUpperCase())){
+                return JSONHelper.getStringFromJSON(this.epsgMap, mapSRS.toUpperCase(), null);
+            }
+            else {
+                log.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
+            }
+        } catch (Exception e) {
+            log.debug("ProjectionDefs read failed in epsg_proj4_formats.json", mapSRS, " - exception: ", e);
+        }
+        return null;
+    }
+
+
+
+
+
+
     /**
      * Creates JSON array of layer configurations.
      *
@@ -199,7 +258,7 @@ public class MapfullHandler extends BundleHandler {
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-                                               final User user, final String lang, final long viewID,
+                                               final User user, final String lang, final String crs, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean useDirectURLForMyplaces,
                                                final boolean modifyURLs) {
@@ -252,7 +311,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         final JSONObject struct = OskariLayerWorker.getListOfMapLayersById(
-                layerIdList, user, lang, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
+                layerIdList, user, lang, crs, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
 
         if (struct.isNull(KEY_LAYERS)) {
             log.warn("getSelectedLayersStructure did not return layers when expanding:",
@@ -283,6 +342,9 @@ public class MapfullHandler extends BundleHandler {
 
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
+            if(analysis == null){
+                continue;
+            }
             if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
@@ -496,6 +558,20 @@ public class MapfullHandler extends BundleHandler {
         } catch (JSONException jsonex) {
             log.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
+        }
+    }
+
+    private  void epsgInit() {
+
+        try {
+            InputStream inp = this.getClass().getResourceAsStream(EPSG_PROJ4_FORMATS);
+            if (inp != null) {
+                InputStreamReader reader = new InputStreamReader(inp, "UTF-8");
+                JSONTokener tokenizer = new JSONTokener(reader);
+                this.epsgMap = JSONHelper.createJSONObject4Tokener(tokenizer);
+            }
+        } catch (Exception e) {
+            log.info("No setup for epsg proj4 formats found", e);
         }
     }
 }

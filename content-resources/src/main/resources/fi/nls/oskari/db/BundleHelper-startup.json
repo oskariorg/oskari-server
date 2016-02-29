@@ -5,7 +5,7 @@
     "metadata": {
         "Import-Bundle": {
             "%s": {
-                "bundlePath": "/Oskari/packages/%s/bundle/"
+                "bundlePath": "%s"
             }
         }
     }

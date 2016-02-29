@@ -1,16 +1,16 @@
 package fi.nls.oskari.search.channel;
 
-import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannel.RegisterUnitId;
-import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannelImpl;
-import fi.nls.oskari.search.ktjkiiwfs.RegisterUnitParcelSearchResult;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.oskari.search.util.SearchUtil;
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannel.RegisterUnitId;
+import fi.nls.oskari.search.ktjkiiwfs.KTJkiiWFSSearchChannelImpl;
+import fi.nls.oskari.search.ktjkiiwfs.RegisterUnitParcelSearchResult;
+import fi.nls.oskari.search.util.SearchUtil;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.List;

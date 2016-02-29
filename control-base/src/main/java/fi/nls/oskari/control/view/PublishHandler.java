@@ -27,13 +27,16 @@ import java.util.Set;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
+/**
+ * Deprecated. Replaced with fi.nls.oskari.control.view.AppSetupHandler which is used by publisher2 bundle.
+ */
+@Deprecated
 @OskariActionRoute("Publish")
 public class PublishHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(PublishHandler.class);
 
     public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
-    static final String PROPERTY_PUBLISH_TEMPLATE = "view.template.publish";
     static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     public static final String KEY_PUBDATA = "pubdata";
@@ -406,10 +409,10 @@ public class PublishHandler extends ActionHandler {
     private View getPublishTemplate()
             throws ActionException {
         if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
-            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(PROPERTY_PUBLISH_TEMPLATE, -1);
+            PUBLISHED_VIEW_TEMPLATE_ID = PropertyUtil.getOptional(ViewService.PROPERTY_PUBLISH_TEMPLATE, -1);
             if (PUBLISHED_VIEW_TEMPLATE_ID == -1) {
                 // TODO: maybe try checking for view of type PUBLISH from DB?
-                LOG.warn("Publish template id not configured (property:", PROPERTY_PUBLISH_TEMPLATE, ")!");
+                LOG.warn("Publish template id not configured (property:", ViewService.PROPERTY_PUBLISH_TEMPLATE, ")!");
             } else {
                 LOG.info("Using publish template id: ", PUBLISHED_VIEW_TEMPLATE_ID);
             }

@@ -1,13 +1,12 @@
 package fi.nls.oskari.search.ktjkiiwfs;
 
-import java.io.IOException;
-import java.util.List;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
-
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.util.List;
 
 public interface KTJkiiWFSSearchChannel {
 

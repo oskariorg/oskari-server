@@ -1,24 +1,22 @@
 package fi.nls.oskari.printout.input.maplink;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.input.content.PrintoutContentParser;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.input.layers.MapLayerJSON;
+import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolution;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-
-import fi.nls.oskari.printout.input.content.PrintoutContent;
-import fi.nls.oskari.printout.input.content.PrintoutContentParser;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.input.layers.MapLayerJSON;
-import fi.nls.oskari.printout.output.map.MetricScaleResolutionUtils.ScaleResolution;
 
 /**
  * This class parses MapLink from URL or map of URL parameter values.

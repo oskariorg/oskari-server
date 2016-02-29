@@ -1,22 +1,14 @@
 package fi.nls.oskari.wfs;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import fi.nls.oskari.cache.JedisManager;
+import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.transport.TransportService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.utils.TestHelper;
 import fi.nls.oskari.wfs.extension.AnalysisFilter;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.HttpHelper;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.test.util.ResourceHelper;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -26,9 +18,15 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.util.HttpHelper;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 public class WFSCommunicatorTest {
 	private static SessionStore session;

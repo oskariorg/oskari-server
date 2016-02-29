@@ -1,9 +1,5 @@
 package fi.nls.oskari.wfs.pojo;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -14,14 +10,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.log.LogFactory;
-
 import fi.nls.oskari.log.Logger;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

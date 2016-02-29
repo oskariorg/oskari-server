@@ -1,10 +1,8 @@
-TODO: initial non-working draft
-
 {
     "type": "wfslayer",
-    "name": "test2 palvelupisteiden_kyselypalvelu", 
+    "name": "test2 palvelupisteiden_kyselypalvelu",
     "url": "http://kartta.suomi.fi/geoserver/wfs",
-    "organization": "Demo layers", 
+    "organization": "Demo layers",
     "inspiretheme": "Others",
     "locale": {
         "fi": {
@@ -26,99 +24,11 @@ TODO: initial non-working draft
         "Admin" : ["VIEW_LAYER"]
     },
     "gml_geometry_property": "the_geom",
-    "max_features": 1000, 
+    "max_features": 1000,
     "feature_namespace": "pkartta",
-    "srs_name": "EPSG:3067", 
+    "srs_name": "EPSG:3067",
     "feature_element": "toimipaikat",
     "feature_namespace_uri": "www.pkartta.fi",
     "minscale": 15000000,
     "maxscale": 1
 }
-  
-/*
-wfs layer_definition_json:
-{
-    // oskari_maplayer table ------------------------------------------------------------------------------------
-    "type": "wfslayer", // layer type
-    "name": "palvelupisteiden_kyselypalvelu", // Unique layer name
-    "url": "http://kartta.suomi.fi/geoserver/wfs", // WFS service url
-    "username": "", //  credentials for WFS service
-    "password": "",
-    "organization": "State Treasury" // organization is queried using LIKE to recieve an id to oskari_layergroup table
-                                     // (SELECT id FROM oskari_layergroup WHERE locale LIKE '%State Treasury%')
-    "inspiretheme": "Population distribution - demography", // official inspire theme names (we should whitelist these to table portti_inspiretheme.nameen )
-    // INSERT INTO oskari_maplayer_themes(maplayerid,
-    //                               themeid)
-    //   VALUES((SELECT MAX(id) FROM oskari_maplayer),
-    //     (SELECT id FROM portti_inspiretheme WHERE nameen='Population distribution - demography'));
-
-    "opacity": 100, // map layer opacity 0 - 100 - default 100
-    "parentid": -1, // not used for wfslayer - parentId is used for grouping layers
-    "base_map": false, // value is in practice always false
-    "params": { "format": "image/png" } // parameters for OpenLayers
-    "options": { "singleTile: true"} // options for OpenLayers
-    "metadataid": "", // metadata metadataresourceuuid e.g. e3159665-4564-4351-8f1b-7e4a1d0b54dc
-    for service e.g.http: //www.paikkatietohakemisto.fi/catalogue/ui/metadata.html?lang=fi&metadataresourceuuid=e3159665-4564-4351-8f1b-7e4a1d0b54dc
-
-    "minscale": 300000, // whole skandinavia fits to 15 000 000 smallest scale 1:15000000 in practise
-    "maxscale": 1, // largest sclale 1:1  ( scale values should be checked)
-    "locale": { // layer name for UI in Oskari
-        fi: {
-            name: "Palvelupisteiden kyselypalvelu",
-            subtitle: ""
-        },
-        sv: {
-            name: "Söktjänst för serviceställen",
-            subtitle: ""
-        },
-        en: {
-            name: "Public services query service",
-            subtitle: ""
-        }
-    },
-
-    // portti_wfs_maplayer table ---------------------------------------------------------------------------------------
-    "output_format": "", // outputFormat= content in WFS GetFeature request e.g. "text/xml; subtype=gml/3.2.1"
-    // some WFS services needs this as mandatory parameter
-    "gml_geometry_property": // Geometry property name in wfs layer e.g. "the_geom",
-    "gml_version": "3.1.1", // gml version of WFS (featurecollection) (3.1.1 (default) and 3.2 are supported
-    "gml2_separator": false, // special mode for ESRI WFS services
-    "wfs_version": "1.1.0", // Wfs service version - default 1.1.0
-    "max_features": 1000, // default value is 100 max number of features to be allowed to request
-    "feature_namespace": "pkartta", //  Wfs feature name space - use wfs service url+?request=GetCapabilities
-    // http://kartta.suomi.fi/geoserver/wfs?request=GetCapabilities&service=WFS&version=1.1.0 to find out the namespace
-    "wfs_template_model_id": "NULL", // for special gml parsering - should be parsed to NULL
-    "feature_type": {}, // (d) reserved for custom parser
-    "selected_feature_params": {}, // (d) wfs feature properties to be selected for UI - default is all
-    // use wfs service url+?request=DescribeFeatureType for mining the property names
-    // http://kartta.suomi.fi/geoserver/wfs?request=DescribeFeatureType&Typename=toimipaikat&service=WFS&version=1.1.0
-    "feature_params_locales": {}, // (d) locale names for selected properties
-    "geometry_type": "2d", // (d) geometry dimension in GML points are x,y or x,y,z (not in use ?)      
-
-    "selection_sld_style_id": "NULL", // should be parsed to NULL - id to portti_wfs_layer_styles table
-    "get_map_tiles": true, // WFS layer is drawn as image; false -> not drawn at all, only feature data is served to front
-    "get_feature_info": true, // Feature data is served to front
-    "tile_request": false, // Image is managed as one map tile
-    "wms_layer_id": "NULL", // Layer id to oskari_maplayer table, when wfs layer rendering is  should be parsed to NULL
-    "srs_name": "EPSG:3067", // Coordinate reference system for WFS GetFeature request
-    "feature_element": "toimipaikat" //  WFS feature type to be request
-    // use service url+?request=GetCapabilities for to find out feature types
-    "feature_namespace_uri": "www.pkartta.fi", // targetNamespace
-    //  use wfs service url+?request=DescribeFeatureType to find out targetNamespace
-    "geometry_namespace_uri": "", // namespace for geometry property, if not equal to feature_namespace_uri
-    "get_highlight_image": true, // Selected feature is highlighted and highlight image is served to front
-    "wps_params": {}, // params for WPS, if wfs layer is in the same server as WPS e.g. "{"input_type":"gs_vector"}"
-    "tile_buffer": {}, // manages amount tiles to be buffered when drawing in transport. '{"default": 0.0, "oskari_custom": 1.0}' would take 1 additional tile as buffer
-    "custom_parser": false, // custom parsering for WFS GetFeature response
-
-    // oskari_resource table ---------------------------------------------------------------------------------------------    
-    "resource_type": "maplayer"
-    "resource_mapping": "wfs+<oskari_maplayer.name>" // Resource mapping e.g. 'wfs+palvelupisteiden_kyselypalvelu'
-
-    "role_permissions": { // Roles are case-sensitive role names in Oskari
-        "Guest": ["VIEW_LAYER", "VIEW_PUBLISHED"], // permission types are "VIEW_PUBLISHED", "VIEW_LAYER", "PUBLISH", and "EDIT_LAYER"
-        "User": ["VIEW_LAYER", "PUBLISH", "VIEW_PUBLISHED"],
-        "Admin": ["PUBLISH"]
-    }
-}
-*/    

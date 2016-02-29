@@ -17,24 +17,17 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.collection.BaseFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
-import org.opengis.feature.FeatureVisitor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.sort.SortBy;
-import org.opengis.util.ProgressListener;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Abstract base class to ease the implementation of a streaming processing collection, that is, one

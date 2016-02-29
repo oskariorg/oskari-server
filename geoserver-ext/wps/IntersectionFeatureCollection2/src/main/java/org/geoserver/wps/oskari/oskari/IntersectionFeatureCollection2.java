@@ -17,12 +17,8 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.densify.Densifier;
+import com.vividsolutions.jts.geom.*;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -35,30 +31,19 @@ import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
 import org.geotools.process.gs.GSProcess;
-import org.geotools.process.gs.WrappingIterator;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.MultiValuedFilter;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.densify.Densifier;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.GeometryFilter;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * A process providing the intersection between two feature collections
@@ -73,6 +58,10 @@ import com.vividsolutions.jts.geom.Polygon;
 public class IntersectionFeatureCollection2 implements GSProcess {
     private static final Logger logger = Logger
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
+
+    // Skip gml attributes
+    private static final List<String> SKIP_GML_FIELDS = Arrays.asList(
+             "metaDataProperty", "description", "boundedBy", "name");
 
     public static enum IntersectionMode {
         INTERSECTION, FIRST, SECOND, SECOND_CONTAINS, SECOND_CLIP
@@ -387,6 +376,10 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 if (!isInRetainList || schema.getGeometryDescriptor() == descriptor) {
                     continue;
                 }
+                // Skip gml specific attributes - namespace is not available - don't use similiar attribute names to gml
+                if( SKIP_GML_FIELDS.contains(descriptor.getLocalName())) {
+                    continue;
+                }
 
                 // build the attribute to return
                 AttributeTypeBuilder builder = new AttributeTypeBuilder();
@@ -605,7 +598,8 @@ public class IntersectionFeatureCollection2 implements GSProcess {
                 AttributeDescriptor ad = firstIterator.next();
                 Object firstAttribute = feature.getAttribute(ad.getLocalName());
                 if ((retained == null || retained.contains(ad.getLocalName()))
-                        && !(firstAttribute instanceof Geometry)) {
+                        && ad.toString().indexOf("Geometry") == -1 && !(firstAttribute instanceof Geometry)
+                        && !SKIP_GML_FIELDS.contains(ad.getLocalName())) {
                     fb.add(feature.getAttribute(ad.getLocalName()));
                 }
             }

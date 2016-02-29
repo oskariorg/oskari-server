@@ -1,5 +1,20 @@
 package fi.nls.oskari.printout.ws.jaxrs.map;
 
+import fi.nls.oskari.printout.ws.ClientInfoSetup;
+import fi.nls.oskari.printout.ws.ProxySetup;
+import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
+import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPNGImpl;
+import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.filter.request.RequestFilterException;
+import org.junit.Before;
+import org.junit.Test;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.operation.TransformException;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,23 +26,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
-import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.filter.request.RequestFilterException;
-import org.junit.Before;
-import org.junit.Test;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.operation.TransformException;
-
-import fi.nls.oskari.printout.ws.ClientInfoSetup;
-import fi.nls.oskari.printout.ws.ProxySetup;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPDFImpl;
-import fi.nls.oskari.printout.ws.jaxrs.format.StreamingPNGImpl;
-import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 
 /* 2nd generation tests - still valid */
 public class WebServiceMapProducerResourceTest {

@@ -2,14 +2,14 @@ package fi.nls.oskari.search.channel;
 
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MetadataCatalogueChannelSearchServiceFieldsTest {
 

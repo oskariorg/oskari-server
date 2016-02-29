@@ -1,27 +1,21 @@
 package fi.nls.oskari.printout.input.layers;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.util.Map;
-import java.util.Properties;
-
+import com.vividsolutions.jts.io.ParseException;
+import fi.nls.oskari.printout.output.map.MapProducer;
+import fi.nls.oskari.printout.ws.ProxySetup;
+import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vividsolutions.jts.io.ParseException;
+import java.io.*;
+import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
 
-import fi.nls.oskari.printout.output.map.MapProducer;
-import fi.nls.oskari.printout.ws.ProxySetup;
-import fi.nls.oskari.printout.ws.jaxrs.resource.MapResource;
+import static org.junit.Assert.assertTrue;
 
 public class MapLayerJSONTest {
 	private static Log log = LogFactory.getLog(MapLayerJSONTest.class);

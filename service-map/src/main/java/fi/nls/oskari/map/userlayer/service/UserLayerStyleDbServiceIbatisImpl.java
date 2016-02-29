@@ -1,10 +1,8 @@
 package fi.nls.oskari.map.userlayer.service;
 
-import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
 import fi.nls.oskari.domain.map.userlayer.UserLayerStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.service.AnalysisStyleDbService;
 import fi.nls.oskari.service.db.BaseIbatisService;
 
 public class UserLayerStyleDbServiceIbatisImpl extends

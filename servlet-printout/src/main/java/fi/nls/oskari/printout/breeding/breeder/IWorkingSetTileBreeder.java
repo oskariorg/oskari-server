@@ -1,18 +1,16 @@
 package fi.nls.oskari.printout.breeding.breeder;
 
-import java.io.IOException;
-
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.printout.breeding.ChangeSet;
+import fi.nls.oskari.printout.breeding.ChangeSetEntry;
+import fi.nls.oskari.printout.breeding.WorkingSet;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.XMLConfiguration;
 import org.geowebcache.filter.request.RequestFilterException;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.OutsideCoverageException;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.printout.breeding.ChangeSet;
-import fi.nls.oskari.printout.breeding.ChangeSetEntry;
-import fi.nls.oskari.printout.breeding.WorkingSet;
+import java.io.IOException;
 
 public interface IWorkingSetTileBreeder {
 	public interface StatusChangeCallBack {

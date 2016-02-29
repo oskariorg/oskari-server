@@ -1,5 +1,48 @@
 # Migration guide
 
+## 1.35.0
+
+Update IntersectionFeatureCollection2-2.7.1.jar in your webapps/geoserver/WEB-INF/lib directory.
+Build updated version in https://github.com/nls-oskari/oskari-server/tree/master/geoserver-ext/wps. 
+This is improvement for analysis Geometry clip method.
+
+## 1.34.0
+
+A new publisher template has been added: content-resources/src/main/resources/json/views/ol3-publisher-template-view.json.
+This can be inserted to database and configured as a publish template in oskari-ext.properties to use Openlayers 3 as the
+map-engine for published maps:
+
+    view.template.publish=[view id]
+
+This will affect all new maps that are published after the change. The previous ones will remain the same. If a view 
+ that is published earlier is edited and saved it will use the new publish template.
+
+## 1.33.0
+
+The sample application replaces publisher bundle with a refactored version named publisher2. This needs metadata to be
+generated for appsetups/views created with the original publisher. The sample flyway module has 
+an example (flyway/sample/V1_0_5__publisher2_migration.java) how to make the switch in your application when you are ready.
+The script generates the metadata from existing published views and replaces the publisher bundle with publisher2 on all views
+which have the original publisher.
+
+In older Oskari instances users might have saved views that still reference old bundles: mapwfs and featuredata. 
+Views of type USER (portti_view.type) that have these (others shouldn't have them anyways anymore) are automatically
+ updated to replace these with the current implementations. The code for these outdated bundles have been removed from
+ Oskari frontend code a while ago so we need to remove references to them so the personalized default view can work properly. 
+
+Old saved views (that users can save) have the bundle setup that was used when the view was saved. Bundles added to
+ default view after the view was saved are not part of those views. This results in personalized default views not
+ having all of the functionality that is available in the default view.
+ A workaround for this is for the user to click the saved view so the application state is changed based on the view and 
+ then save the current view as a new one. Then use the new view as the personalized default and delete the old saved view.
+To update all views of type USER to current bundle setup automatically, there is an example upgrade script in the sample flyway module
+ (flyway/sample/V1_0_6__upgrade_saved_views_to_include_default_view_bundles.java). This update is not forced since 
+ some Oskari installs might have used the USER-typed views for other purposes than views saved by users. 
+
+## Geoserver
+
+Update sld_muutos_n1.sld in Geoserver Styles (updated file in \oskari\oskari-server\content-resources\config\geoserver\data\styles)
+
 ## 1.32.0
 
 ### content-resources/flyway

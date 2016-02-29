@@ -5,7 +5,6 @@ import fi.nls.oskari.service.db.BaseService;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Interface for InspireTheme service

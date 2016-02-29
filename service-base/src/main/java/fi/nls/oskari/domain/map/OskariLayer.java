@@ -3,6 +3,7 @@ package fi.nls.oskari.domain.map;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -49,6 +50,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private JSONObject params = new JSONObject();
     private JSONObject options = new JSONObject();
     private JSONObject attributes = new JSONObject();
+    private JSONObject capabilities = new JSONObject();
 
     private boolean realtime = false;
     private int refreshRate;
@@ -63,6 +65,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private String version;
     private String srs_name;
+
+    private Set<String> supportedCRSs = null;
 
     private Date created = null;
     private Date updated = null;
@@ -338,6 +342,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.attributes = attributes;
     }
 
+    public JSONObject getCapabilities() {
+        return capabilities;
+    }
+
+    public void setCapabilities(JSONObject capabilities) {
+        this.capabilities = capabilities;
+    }
+
     public String getGfiType() {
         return gfiType;
     }
@@ -414,5 +426,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setSrs_name(String srs_name) {
         this.srs_name = srs_name;
+    }
+
+   // Only available for savelayer handler
+    public Set<String> getSupportedCRSs() {
+        return supportedCRSs;
+    }
+
+    public void setSupportedCRSs(Set<String> supportedCrss) {
+        this.supportedCRSs = supportedCrss;
     }
 }

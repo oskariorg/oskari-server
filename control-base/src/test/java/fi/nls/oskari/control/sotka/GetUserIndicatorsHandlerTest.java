@@ -3,8 +3,6 @@ package fi.nls.oskari.control.sotka;
 import fi.mml.map.mapwindow.service.db.UserIndicatorService;
 import fi.mml.map.mapwindow.service.db.UserIndicatorServiceImpl;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.view.GetAppSetupHandler;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.indicator.UserIndicator;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
@@ -21,7 +19,6 @@ import java.util.Map;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 /**
  * Created with IntelliJ IDEA.

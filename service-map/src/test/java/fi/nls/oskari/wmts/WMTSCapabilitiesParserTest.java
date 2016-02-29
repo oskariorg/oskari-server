@@ -3,15 +3,10 @@ package fi.nls.oskari.wmts;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.XmlHelper;
 import fi.nls.test.util.ResourceHelper;
-import org.apache.axiom.om.OMElement;
 import org.json.JSONObject;
-import org.json.XML;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,13 +29,13 @@ public class WMTSCapabilitiesParserTest {
     @Test
     public void printoutCapabilities() throws Exception {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
-        log.debug(parser.parseCapabilitiesToJSON(capabilitiesInput_Spain, "http://oskari.testing.fi"));
+        log.debug(parser.parseCapabilitiesToJSON(capabilitiesInput_Spain, "http://oskari.testing.fi", "EPSG:4326"));
     }
     @Test
     public void testParseCapabilitiesToJSON() throws Exception {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
 
-        final JSONObject parsed = parser.parseCapabilitiesToJSON(capabilitiesInput_NLS, "http://oskari.testing.fi");
+        final JSONObject parsed = parser.parseCapabilitiesToJSON(capabilitiesInput_NLS, "http://oskari.testing.fi", "EPSG:3067");
         final JSONObject expected = JSONHelper.createJSONObject(expectedJSON_NLS);
         // comparing doesn't work since the JSONArrays are in different order
         //assertTrue("Parsed capabilities XML should match expected", JSONHelper.isEqual(expected, parsed));

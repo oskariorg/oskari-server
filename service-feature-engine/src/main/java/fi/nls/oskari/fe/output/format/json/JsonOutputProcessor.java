@@ -1,17 +1,5 @@
 package fi.nls.oskari.fe.output.format.json;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,13 +10,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.vividsolutions.jts.geom.Geometry;
-
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.AbstractOutputStreamProcessor;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.output.jackson.GeometryPropertySerializer;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class JsonOutputProcessor extends AbstractOutputStreamProcessor
         implements OutputProcessor {
@@ -224,6 +219,9 @@ public class JsonOutputProcessor extends AbstractOutputStreamProcessor
     }
 
     public void merge(List<JSONObject> list, Resource res) {
+
+    }
+    public void equalizePropertyArraySize(Map<String,Integer> multiElemmap,  Map<String, Resource> resmap) {
 
     }
 }

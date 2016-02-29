@@ -105,6 +105,10 @@ public class WebappHelper {
     }
 
     private static void migrateDB() {
+        if(PropertyUtil.getOptional("db.flyway", true) == false) {
+            log.warn("Skipping flyway migration! Remove 'db.flyway' property or set it to 'true' to enable migration");
+            return;
+        }
         // upgrade database structure with http://flywaydb.org/
         log.info("Oskari-map checking DB status");
         try {

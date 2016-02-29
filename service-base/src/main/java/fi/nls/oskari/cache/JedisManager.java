@@ -1,14 +1,14 @@
 package fi.nls.oskari.cache;
 
-import java.util.Collections;
-import java.util.Set;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Manages Jedis connections using JedisPool (connection pool)

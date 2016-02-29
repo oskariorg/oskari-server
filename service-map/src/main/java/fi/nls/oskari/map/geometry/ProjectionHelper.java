@@ -88,4 +88,32 @@ public class ProjectionHelper {
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.UP ||
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP;
     }
+
+    /**
+     * Return epsg short
+     * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635
+     * @param crs
+     * @return  epsg in short syntax
+     */
+    public static String shortSyntaxEpsg(String crs) {
+        if (crs == null) {
+            return null;
+        }
+        try {
+            CoordinateReferenceSystem sourceCRS = CRS.decode(crs);
+            crs = CRS.lookupIdentifier(sourceCRS, true);
+            return crs;
+        } catch (Exception e) {
+            log.debug("EPSG geotools decoding failed", e);
+        }
+        // try own parsing
+        String[] epsg = crs.toUpperCase().split("EPSG");
+        if (epsg.length > 1) {
+            String[] code = epsg[1].split(":");
+            if (code.length > 2) {
+                return "EPSG:" + code[2];
+            }
+        }
+        return crs;
+    }
 }

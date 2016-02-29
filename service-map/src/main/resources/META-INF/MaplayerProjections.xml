@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MaplayerProjections">
+
+
+    <select id="maxId" resultClass="int">
+        select max(id) from oskari_maplayer_projections
+    </select>
+
+    <select id="findByMaplayer" parameterClass="int" resultClass="java.util.HashMap">
+        select id, maplayerid, name from oskari_maplayer_projections where maplayerid = #maplayerid#
+    </select>
+
+    <insert id="insertList" parameterClass="java.util.HashMap">
+        insert into oskari_maplayer_projections (maplayerid, name)
+        <dynamic>
+            <iterate prepend="VALUES" conjunction="," property="list">
+                (
+                #list[].maplayerid#, #list[].name#
+                )
+            </iterate>
+        </dynamic>
+    </insert>
+
+    <delete id="removeLayerProjections" parameterClass="int">
+        delete from oskari_maplayer_projections where maplayerid  = #id#;
+    </delete>
+
+
+    
+</sqlMap>

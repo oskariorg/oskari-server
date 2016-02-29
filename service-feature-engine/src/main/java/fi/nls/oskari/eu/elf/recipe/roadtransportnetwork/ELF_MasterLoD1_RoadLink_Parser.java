@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.elf.recipe.roadtransportnetwork;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.elf.roadtransportnetwork.ELF_TNRO_RoadLink.RoadLink;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class ELF_MasterLoD1_RoadLink_Parser extends GML32 {
 

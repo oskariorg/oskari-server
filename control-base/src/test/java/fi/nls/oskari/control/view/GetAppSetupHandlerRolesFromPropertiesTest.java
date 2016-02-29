@@ -26,10 +26,9 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
@@ -37,7 +36,8 @@ import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Properties;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
@@ -97,6 +97,11 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         }
 
         handler.init();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     @Test

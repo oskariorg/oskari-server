@@ -1,13 +1,11 @@
 package fi.nls.oskari.wfs.extension;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Coordinate;
+import fi.nls.oskari.pojo.GeoJSONFilter;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.wfs.util.XMLHelper;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.WFSMapLayerJob;
 import fi.nls.test.util.ResourceHelper;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
@@ -16,12 +14,12 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import fi.nls.oskari.pojo.GeoJSONFilter;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
-import fi.nls.oskari.wfs.util.XMLHelper;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class AnalysisFilterTest {
     private SessionStore session;

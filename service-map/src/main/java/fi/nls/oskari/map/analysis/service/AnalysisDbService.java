@@ -1,12 +1,11 @@
 package fi.nls.oskari.map.analysis.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.BaseService;
+
+import java.util.HashMap;
+import java.util.List;
 
 public interface AnalysisDbService extends BaseService<Analysis> {    
 

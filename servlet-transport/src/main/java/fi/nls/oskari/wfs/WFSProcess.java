@@ -2,10 +2,14 @@ package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.*;
+import fi.nls.oskari.pojo.Layer;
+import fi.nls.oskari.pojo.Location;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.pojo.Tile;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobHelper;
 import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.RequestResponse;
 import fi.nls.oskari.work.WFSMapLayerJob;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -16,8 +20,6 @@ import org.opengis.referencing.operation.MathTransform;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;
-
-import fi.nls.oskari.work.RequestResponse;
 
 public class WFSProcess {
     private static final Logger log = LogFactory.getLogger(WFSProcess.class);

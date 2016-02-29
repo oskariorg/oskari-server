@@ -48,7 +48,11 @@ public class AjaxController {
             ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, e.getOptions());
         } catch (ActionException e) {
             // Internal failure -> print stack trace
-            log.error(e, "Couldn't handle action:", route, ". Parameters: ", params.getRequest().getParameterMap());
+            Throwable error = e;
+            if(e.getCause() != null) {
+                error = e.getCause();
+            }
+            log.error(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             ResponseHelper.writeError(params, e.getMessage());
         }
     }

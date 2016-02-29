@@ -23,6 +23,7 @@ public class ViewTestHelper {
         view.setUuid("aaaa-bbbbb-cccc");
         view.setId(123);
         view.setIsPublic(true);
+        view.setIsDefault(false);
         view.setPubDomain("paikkis.fi");
         try {
             for(String bundle : bundles) {

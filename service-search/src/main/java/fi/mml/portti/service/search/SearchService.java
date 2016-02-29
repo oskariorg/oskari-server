@@ -1,8 +1,8 @@
 package fi.mml.portti.service.search;
 
-import java.util.Map;
-
 import fi.nls.oskari.search.channel.SearchableChannel;
+
+import java.util.Map;
 
 
 /**

@@ -19,7 +19,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.DataInputStream;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Handler for metadata catalogue search field. Responsible for querying the service for valid options using GetDomain query (#getOptions) and

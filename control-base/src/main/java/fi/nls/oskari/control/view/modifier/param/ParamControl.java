@@ -78,7 +78,14 @@ public class ParamControl {
         if (actions.isEmpty()) {
             addDefaultControls();
         }
-	    return actions.keySet();
+        // sort keys by priority
+        Object[] handlers = actions.values().toArray();
+        Arrays.sort(handlers);
+        Set<String> keys = new LinkedHashSet<>();
+        for(Object h : handlers) {
+            keys.add(((ParamHandler) h).getName());
+        }
+	    return keys;
 	}
 
     /**

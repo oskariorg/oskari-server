@@ -1,9 +1,6 @@
 package fi.nls.oskari.util;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Conversion helper methods
@@ -193,6 +190,40 @@ public class ConversionHelper {
         } catch (Exception ex) {
             return defaultValue;
         }
+    }
+
+    /**
+     * Pickups real string values out of String List - drops int-string values
+     * @param idList
+     * @return
+     */
+    public static final List<String> getStringList(final List<String> idList) {
+        List<String> strList = new ArrayList<String>();
+        for (String id : idList) // or sArray
+        {
+            int iid = getInt(id, -1);
+            if(iid == -1) {
+                strList.add(id);
+            }
+        }
+        return strList;
+    }
+
+    /**
+     * Pickups integer values out of String List
+     * @param idList
+     * @return
+     */
+    public static final List<Integer> getIntList(final List<String> idList) {
+        List<Integer> intList = new ArrayList<Integer>();
+        for (String id : idList) // or sArray
+        {
+            int iid = getInt(id, -1);
+            if(iid != -1) {
+                intList.add(iid);
+            }
+        }
+        return intList;
     }
 
     /**

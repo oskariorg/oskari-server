@@ -61,10 +61,11 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
     private static final String JSON_KEY_FUNCTIONS = "functions";
     private static final String JSON_KEY_AGGREGATE_RESULT = "aggregate";
     private static final String JSON_KEY_GEOJSON = "geojson";
-    private static final String JSON_KEY_FIELDS = "fields";
 
     private static final String AGGREGATE_STDDEV_WPS_IN = "StdDev";
     private static final String AGGREGATE_STDDEV_WPS_OUT = "StandardDeviation";
+
+    private static final String COUNT_FUNCTION = "Count";
 
     private static final String ERROR_ANALYSE_PARAMETER_MISSING = "Analyse_parameter_missing";
     private static final String ERROR_UNABLE_TO_PARSE_ANALYSE = "Unable_to_parse_analysis";
@@ -134,31 +135,27 @@ public class CreateAnalysisLayerHandler extends ActionHandler {
                 final String aggregateResult = this.localiseAggregateResult(
                         analysisParser.parseAggregateResults(featureSet, analysisLayer), analyseJson);
                 log.debug("\nAggregate results:\n", aggregateResult, "\n");
-                /*
-Aggregate results:
- {"fi_url_1":{"Count":4},"tmp_id":{"Sum":45301,"Median":12232,"Count":4,"Standar
-d deviation":3186.3551571505645,"Maximum":14592,"Average":11325.25,"Minimum":624
-5},"fi_url_3":{"Count":4},"postinumero":{"Count":4},"fi_url_2":{"Count":4},"fi_s
-posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
-{"Count":4},"kto_tarkennus":{"Count":4}}
-                 */
+
                 analysisLayer.setResult(aggregateResult);
 
                 // Get geometry for aggretage features
                 try {
                     // Just return result as JSON and don't save analysis to DB
                     if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
-                        // NOTE!! Replacing the analysisLayer!
+                        // NOTE!! Replacing the analysisLayer content for executing wps union method!
                         // Get response as geojson when no db store
                         analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        // Get geometry as geojson for hilighting features of aggregate result
                         featureSet = wpsService.requestFeatureSet(analysisLayer);
                         // Just return result as JSON and don't save analysis to DB
-                        // Get geometry as geojson for hilighting features of aggregate result
                         JSONObject geojson = JSONHelper.createJSONObject(featureSet);
                         JSONObject jsaggregate = JSONHelper.createJSONObject(aggregateResult);
+                        //reorder resultset columns and row accoding to input params order
+                        JSONArray jsaggreOrdered = analysisParser.reorderAggregateResult(jsaggregate,this.getRowOrder(analysisLayer),
+                                this.getColumnOrder(analyseJson));
                         JSONObject results = new JSONObject();
                         JSONHelper.putValue(results, JSON_KEY_GEOJSON, geojson);
-                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggregate);
+                        JSONHelper.putValue(results, JSON_KEY_AGGREGATE_RESULT,jsaggreOrdered);
                         ResponseHelper.writeResponse(params, results);
                         return;
                     }
@@ -167,7 +164,8 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
-                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analyseJson), this.getColumnOrder(analyseJson));
+                    featureSet = analysisParser.mergeAggregateResults2FeatureSet(featureSet, analysisLayer, this.getRowOrder(analysisLayer),
+                            this.getColumnOrder(analyseJson));
                     // Redefine column types
                     analysisLayer.setFieldtypeMap(this.getAggregateFieldTypes(this.getColumnOrder(analyseJson)));
                 } catch (ServiceException e) {
@@ -176,10 +174,10 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
 
             }
             // Add extra TypeNames (depends on wps method)
-            analysisParser.fixTypeNames(analysisLayer);
+            analysisParser.fixTypeNames(analysisLayer, analyseJson);
 
-            // Fix geometry property name for WFST (could be any, depends on Wps method )
-            fixGeometryPropertyName(analysisLayer);
+            // Fix property names for WFST (property names might be renamed in Wps method )
+            featureSet = fixPropertyNames(featureSet, analysisLayer);
 
             analysis = analysisDataService.storeAnalysisData(
                     featureSet, analysisLayer, analyse, params.getUser());
@@ -204,7 +202,7 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
             analysisResource.setMapping("analysis", Long.toString(analysis.getId()));
             for(Permission p : sourceResource.getPermissions()) {
                 // check if user has role matching permission?
-                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED)) {
+                if(p.isOfType(Permissions.PERMISSION_TYPE_PUBLISH) || p.isOfType(Permissions.PERMISSION_TYPE_VIEW_PUBLISHED) || p.isOfType(Permissions.PERMISSION_TYPE_DOWNLOAD)) {
                     analysisResource.addPermission(p.clonePermission());
                 }
             }
@@ -371,22 +369,26 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
             // Temp save  aggregate function setup
             List<String> aggre_funcs = ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).getAggreFunctions();
             List<String> aggre_text_funcs = new ArrayList<String>();
-            aggre_text_funcs.add("Count");
+            aggre_text_funcs.add(COUNT_FUNCTION);
             for (String field : analysisLayer.getFields()) {
                 ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreField1(field);
                 if (analysisLayer.getFieldtypeMap().containsKey(field)) {
                     if (analysisLayer.getFieldtypeMap().get(field).equals("numeric")) {
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_funcs);
-                        if (aggre_funcs.size() == 0) doRequest = false;
+                        if (aggre_funcs.size() == 0) {
+                            doRequest = false;
+                        }
                     } else {
+
                         ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
                         doRequest = true;
+
                     }
                 }
                 sb.append("<fieldResult>");
                 sb.append("<field>" + field + "</field>");
                 if (doRequest) sb.append(wpsService.requestFeatureSet(analysisLayer));
-                if (analysisLayer.isNodataCount()) {
+                if (analysisLayer.isNodataCount() && analysisLayer.getFieldtypeMap().get(field).equals("numeric")) {
                     // Special aggregate process for NoDataCount - use count method with specific filter
                     ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setAggreFunctions(aggre_text_funcs);
                     ((AggregateMethodParams) analysisLayer.getAnalysisMethodParams()).setDoNoDataCount(true);
@@ -479,44 +481,56 @@ posti_1":{"Count":4},"kuntakoodi":{"Count":4},"fi_osoite":{"Count":4},"fi_nimi":
     }
     /**
      * Get property row order of aggregate result (
-     * @param analysejs  analysis params
+     * @param analysisLayer  analysis params
      * @return List of row names
      */
-    private List<String> getRowOrder( JSONObject analysejs) {
+    private List<String> getRowOrder( AnalysisLayer analysisLayer) {
         List<String> list = new ArrayList<String>();
+        String analysisId = analysisLayer.getInputAnalysisId();
         try {
-            JSONArray fields = analysejs.getJSONArray(JSON_KEY_FIELDS);
 
-            if (fields != null) {
-                for (int i = 0; i < fields.length(); i++) {
-                    list.add(fields.getString(i));
+            if (analysisLayer.getFields() != null) {
+                for (int i = 0; i < analysisLayer.getFields().size(); i++) {
+                    String field = analysisLayer.getFields().get(i);
+                    if(analysisId != null && !analysisId.isEmpty()){
+                        // Switch locale field name
+                      field =  analysisDataService.SwitchField2OriginalField(field,  analysisId);
+                    }
+                    list.add(field);
                 }
             }
         } catch (Exception e) {
             log.warn("Aggregate row order fetch failed ", e);
 
         }
+
+
         return list;
     }
     /**
      * Fix the geometry property name for WFST transform
      * Geometry property name in WPS method result is not the same as in input featurecollections
+     * @param featureSet  xml featureCollection
      * @param analysisLayer
      */
-    private void fixGeometryPropertyName(AnalysisLayer analysisLayer) {
+    private String fixPropertyNames(String featureSet, AnalysisLayer analysisLayer) {
 
         try {
 
             AnalysisMethodParams params = analysisLayer.getAnalysisMethodParams();
             if (params.getMethod().equals(AnalysisParser.SPATIAL_JOIN_STATISTICS)){
-                params.setGeom("z_"+ ((SpatialJoinStatisticsMethodParams) params).getGeom2());
+                featureSet = featureSet.replace("feature:z_", "feature:");
+                params.setGeom(((SpatialJoinStatisticsMethodParams) params).getGeom2());
+
             }
 
 
         } catch (Exception e) {
-            log.warn("WPS geometry property name fix failed ", e);
+            log.warn("FeatureCollection property rename  failed ", e);
 
         }
+
+        return featureSet;
 
     }
 

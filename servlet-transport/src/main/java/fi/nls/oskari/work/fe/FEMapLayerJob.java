@@ -1,23 +1,23 @@
 package fi.nls.oskari.work.fe;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
-
+import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
 import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
+import fi.nls.oskari.fe.engine.FEEngineManager;
+import fi.nls.oskari.fe.engine.FeatureEngine;
+import fi.nls.oskari.fe.input.XMLInputProcessor;
+import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
+import fi.nls.oskari.pojo.SessionStore;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.work.*;
+import fi.nls.oskari.wfs.WFSFilter;
+import fi.nls.oskari.wfs.WFSImage;
+import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import fi.nls.oskari.work.JobType;
+import fi.nls.oskari.work.OWSMapLayerJob;
+import fi.nls.oskari.work.RequestResponse;
+import fi.nls.oskari.work.ResultProcessor;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -54,17 +54,17 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
-import fi.nls.oskari.fe.engine.FEEngineManager;
-import fi.nls.oskari.fe.engine.FeatureEngine;
-import fi.nls.oskari.fe.input.XMLInputProcessor;
-import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.wfs.WFSFilter;
-import fi.nls.oskari.wfs.WFSImage;
-import fi.nls.oskari.wfs.pojo.WFSLayerStore;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FEMapLayerJob extends OWSMapLayerJob {
 
@@ -193,6 +193,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
         if(parseConfig != null){
             ELF_path_parse_worker worker = new ELF_path_parse_worker(parseConfig);
             featureEngine.getRecipe().setParseWorker(worker);
+            WFS11_path_parse_worker wfs11worker = new WFS11_path_parse_worker(parseConfig);
+            featureEngine.getRecipe().setWFS11ParseWorker(wfs11worker);
         }
 
         final FeatureEngine engine = featureEngine;
@@ -288,8 +290,8 @@ public class FEMapLayerJob extends OWSMapLayerJob {
 
             /* Backend HTTP Executor */
             final HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, IOHelper.getConnectionTimeoutMs());
-            HttpConnectionParams.setSoTimeout(httpParams, IOHelper.getReadTimeoutMs());
+            HttpConnectionParams.setConnectionTimeout(httpParams, this.FE_READ_TIMEOUT_MS); //IOHelper.getConnectionTimeoutMs());
+            HttpConnectionParams.setSoTimeout(httpParams, this.FE_READ_TIMEOUT_MS);
             DefaultHttpClient backendHttpClient = new DefaultHttpClient(httpParams);
             try {
                 HttpHost backendHttpHost = new HttpHost(url.getHost(),

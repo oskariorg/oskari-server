@@ -32,9 +32,27 @@ public class GeoserverPopulator {
 
     public static void setupAll(final String srs)
             throws Exception {
-        MyplacesHelper.setupMyplaces(srs);
-        AnalysisHelper.setupAnalysis(srs);
-        UserlayerHelper.setupUserlayers(srs);
+
+        try{
+            MyplacesHelper.setupMyplaces(srs);
+        }catch(Exception e){
+            LOG.error(e, "Error when setting my places");
+            LOG.debug(e.getMessage());
+        }
+
+        try{
+            AnalysisHelper.setupAnalysis(srs);
+        }catch(Exception e){
+            LOG.error(e, "Error when setting analysis");
+            LOG.debug(e.getMessage());
+        }
+
+        try{
+            UserlayerHelper.setupUserlayers(srs);
+        }catch(Exception e){
+            LOG.error(e, "Error when setting user layers");
+            LOG.debug(e.getMessage());
+        }
     }
 
     public static String getGeoserverProp(final String module, final String part) {

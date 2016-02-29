@@ -1,17 +1,11 @@
 package fi.nls.oskari.printout.printing;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.xml.transform.TransformerException;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import fi.nls.oskari.printout.input.content.PrintoutContent;
+import fi.nls.oskari.printout.printing.page.PDFContentPage;
+import fi.nls.oskari.printout.printing.page.PDFLayeredImagesPage;
+import fi.nls.oskari.printout.printing.page.PDFLegendPage;
 import org.apache.jempbox.xmp.XMPMetadata;
 import org.apache.jempbox.xmp.XMPSchemaBasic;
 import org.apache.jempbox.xmp.XMPSchemaDublinCore;
@@ -22,20 +16,24 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.graphics.color.PDOutputIntent;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
+import javax.xml.transform.TransformerException;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.GregorianCalendar;
+import java.util.List;
 
-import fi.nls.oskari.printout.input.content.PrintoutContent;
-import fi.nls.oskari.printout.printing.page.PDFContentPage;
-import fi.nls.oskari.printout.printing.page.PDFLayeredImagesPage;
-import fi.nls.oskari.printout.printing.page.PDFLegendPage;
+//import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 
 /**
  * This class produces a basic PDF document.

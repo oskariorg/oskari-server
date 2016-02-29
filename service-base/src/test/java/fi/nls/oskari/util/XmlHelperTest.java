@@ -3,14 +3,12 @@ package fi.nls.oskari.util;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.axiom.om.OMElement;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created with IntelliJ IDEA.

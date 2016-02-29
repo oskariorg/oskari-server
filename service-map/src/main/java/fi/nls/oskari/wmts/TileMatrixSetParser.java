@@ -3,19 +3,12 @@ package fi.nls.oskari.wmts;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.XmlHelper;
 import fi.nls.oskari.wmts.domain.TileMatrix;
 import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import org.apache.axiom.om.OMElement;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.XML;
 
-import javax.xml.namespace.QName;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * NOTE!!! Initial scripblings for WMTS capabilities parsing. Not used anywhere and might change without notice!!

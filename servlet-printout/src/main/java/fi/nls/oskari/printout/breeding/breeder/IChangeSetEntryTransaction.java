@@ -1,9 +1,9 @@
 package fi.nls.oskari.printout.breeding.breeder;
 
-import java.io.IOException;
-
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.grid.OutsideCoverageException;
+
+import java.io.IOException;
 
 public interface IChangeSetEntryTransaction {
 

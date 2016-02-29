@@ -1,11 +1,14 @@
 package fi.nls.oskari.printout.output.map;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Map;
-import java.util.Properties;
-
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
+import fi.nls.oskari.printout.config.ConfigValue;
+import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import fi.nls.oskari.printout.input.layers.MapLayerJSON;
+import fi.nls.oskari.printout.input.layers.MapLayerJSONParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -19,16 +22,11 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
-
-import fi.nls.oskari.printout.config.ConfigValue;
-import fi.nls.oskari.printout.input.layers.LayerDefinition;
-import fi.nls.oskari.printout.input.layers.MapLayerJSON;
-import fi.nls.oskari.printout.input.layers.MapLayerJSONParser;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
 
 /* 
  *

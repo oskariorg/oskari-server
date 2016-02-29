@@ -9,10 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-
 import org.json.JSONArray;
-
-import static fi.nls.oskari.control.statistics.util.Constants.*;
 /**
  * Returns indicators for statistical datasource registered to Oskari.
  */

@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import static fi.nls.oskari.control.ActionConstants.*;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
@@ -18,11 +17,14 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static fi.nls.oskari.control.ActionConstants.*;
+
 @OskariActionRoute("GetViews")
 public class GetViewsHandler extends ActionHandler {
 
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_ISPUBLIC = "isPublic";
+    public static final String KEY_ISDEFAULT = "isDefault";
     public static final String KEY_PUBDOMAIN = "pubDomain";
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
@@ -72,10 +74,12 @@ public class GetViewsHandler extends ActionHandler {
                 viewJson.put(KEY_ID, view.getId());
                 viewJson.put(KEY_UUID, view.getUuid());
                 viewJson.put(KEY_ISPUBLIC, view.isPublic());
+                viewJson.put(KEY_ISDEFAULT, view.isDefault());
                 viewJson.put(KEY_PUBDOMAIN, view.getPubDomain());
                 viewJson.put(KEY_URL, view.getUrl());
                 viewJson.put(KEY_METADATA, view.getMetadata());
-
+                // publisher 2 doesn't need the view info since it loads it using id
+                // The old publisher and normal view listing need them.
                 final JSONObject stateAccu = new JSONObject();
                 for (Bundle bundle : view.getBundles()) {
 

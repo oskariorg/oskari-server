@@ -4,11 +4,11 @@
 
 -- add map layer;
 INSERT INTO oskari_maplayer(type, name, groupId,
-							minscale, maxscale, 
+							minscale, maxscale,
                             opacity,url,username, password, version, srs_name, locale)
   VALUES('wfslayer', 'oskari:analysis_data', (SELECT MAX(id) FROM oskari_layergroup),
-  		 15000000, 1, 
-         50, 'http://localhost:8080/geoserver/oskari/ows', 'admin', 'geoserver','1.1.0','EPSG:3067', '{ fi:{name:"Analyysitaso",subtitle:""},sv:{name:"Analys",subtitle:""},en:{name:"Analyse",subtitle:""}}');
+  		 15000000, 1,
+         50, 'http://localhost:8080/geoserver/oskari/ows', 'admin', 'geoserver','1.1.0','EPSG:4326', '{ fi:{name:"Analyysitaso",subtitle:""},sv:{name:"Analys",subtitle:""},en:{name:"Analyse",subtitle:""}}');
 
 
 -- add wfs specific layer data;

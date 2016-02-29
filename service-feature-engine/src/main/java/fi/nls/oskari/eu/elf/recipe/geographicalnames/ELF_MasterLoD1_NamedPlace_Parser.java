@@ -1,10 +1,10 @@
 package fi.nls.oskari.eu.elf.recipe.geographicalnames;
 
-import java.io.IOException;
-
 import fi.nls.oskari.eu.elf.geographicalnames.ELF_MasterLoD1_NamedPlace.NamedPlace;
 import fi.nls.oskari.fe.input.format.gml.recipe.JacksonParserRecipe.GML32;
 import fi.nls.oskari.fe.iri.Resource;
+
+import java.io.IOException;
 
 public class ELF_MasterLoD1_NamedPlace_Parser extends GML32 {
 

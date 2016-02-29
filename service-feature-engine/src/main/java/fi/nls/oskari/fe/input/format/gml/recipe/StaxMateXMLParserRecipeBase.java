@@ -1,29 +1,21 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.input.InputProcessor;
+import fi.nls.oskari.fe.input.format.gml.FEPullParser;
+import fi.nls.oskari.fe.iri.Resource;
+import fi.nls.oskari.fe.output.OutputProcessor;
+import fi.nls.oskari.fe.schema.XSDDatatype;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.codehaus.staxmate.in.SMEvent;
 import org.codehaus.staxmate.in.SMInputCursor;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.input.InputProcessor;
-import fi.nls.oskari.fe.input.format.gml.FEPullParser;
-import fi.nls.oskari.fe.iri.Resource;
-import fi.nls.oskari.fe.output.OutputProcessor;
-import fi.nls.oskari.fe.schema.XSDDatatype;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.util.*;
 
 /* todo need Exception from within iterable to be exposed */
 public abstract class StaxMateXMLParserRecipeBase {

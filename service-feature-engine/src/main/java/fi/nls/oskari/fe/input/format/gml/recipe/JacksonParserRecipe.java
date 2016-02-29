@@ -1,25 +1,23 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.vividsolutions.jts.geom.Geometry;
-
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.format.gml.StaxGMLInputProcessor;
 import fi.nls.oskari.fe.input.jackson.GeometryPropertyDeserializer;
 import fi.nls.oskari.fe.input.jackson.GmlMapper;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.schema.XSDDatatype;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
+import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.xml.Configuration;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /* helper class to simplify building inspire and rysp schema parsers */
 public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
@@ -30,6 +28,7 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
     protected final List<Pair<Resource, Object>> O_linkProperties = new ArrayList<Pair<Resource, Object>>();
     protected final List<Pair<Resource, String>> O_geometryProperties = new ArrayList<Pair<Resource, String>>();
     protected ELF_path_parse_worker parseWorker = null;
+    protected WFS11_path_parse_worker wfs11ParseWorker = null;
 
     public static abstract class GML32 extends JacksonParserRecipe {
         public GML32() {
@@ -85,6 +84,9 @@ public abstract class JacksonParserRecipe extends StaxMateGMLParserRecipeBase {
 
     public void setParseWorker(ELF_path_parse_worker worker) {
         this.parseWorker = worker;
+    }
+    public void setWFS11ParseWorker(WFS11_path_parse_worker worker) {
+        this.wfs11ParseWorker = worker;
     }
 
     public void setLenient(boolean l) {

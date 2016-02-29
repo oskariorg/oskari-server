@@ -1,9 +1,9 @@
 package fi.nls.oskari.pojo;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * Handles grid for WFS layer's. Contains bounds of tiles

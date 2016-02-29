@@ -1,21 +1,16 @@
 package fi.nls.oskari.arcgis;
 
-import java.awt.Rectangle;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.arcgis.pojo.ArcGisFeature;
 import fi.nls.oskari.arcgis.pojo.ArcGisLayerStore;
 import fi.nls.oskari.arcgis.pojo.ArcGisProperty;
 import fi.nls.oskari.log.LogFactory;
-
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.pojo.Location;
+import fi.nls.oskari.pojo.SessionStore;
+import fi.nls.oskari.pojo.WFSCustomStyleStore;
 import fi.nls.oskari.wfs.pojo.WFSLayerStore;
 import fi.nls.oskari.work.JobType;
-import fi.nls.oskari.work.OWSMapLayerJob;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.simple.JSONArray;
@@ -23,12 +18,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.pojo.Location;
-import fi.nls.oskari.pojo.SessionStore;
-import fi.nls.oskari.pojo.WFSCustomStyleStore;
-
-import com.vividsolutions.jts.geom.Coordinate;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * WFS request creators and response parsers

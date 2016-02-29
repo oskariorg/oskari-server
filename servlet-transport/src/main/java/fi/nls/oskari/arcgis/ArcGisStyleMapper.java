@@ -1,13 +1,12 @@
 package fi.nls.oskari.arcgis;
 
-import java.util.ArrayList;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.pojo.WFSCustomStyleStore;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
 
 public class ArcGisStyleMapper {
 	private static final Logger log = LogFactory.getLogger(ArcGisStyleMapper.class);

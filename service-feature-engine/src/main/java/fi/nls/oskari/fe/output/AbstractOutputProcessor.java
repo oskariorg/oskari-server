@@ -1,13 +1,12 @@
 package fi.nls.oskari.fe.output;
 
+import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.fe.iri.Resource;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.vividsolutions.jts.geom.Geometry;
-
-import fi.nls.oskari.fe.iri.Resource;
 
 public abstract class AbstractOutputProcessor implements OutputProcessor {
 

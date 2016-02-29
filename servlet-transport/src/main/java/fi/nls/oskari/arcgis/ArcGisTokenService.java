@@ -1,16 +1,15 @@
 package fi.nls.oskari.arcgis;
 
-import java.net.HttpURLConnection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.PropertyUtil;
+import java.net.HttpURLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ArcGisTokenService {
 	private static final Logger log = LogFactory.getLogger(ArcGisTokenService.class);

@@ -9,34 +9,32 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
-
-import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.GPXGeoJsonCollection;
+import fi.nls.oskari.map.userlayer.domain.KMLGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.MIFGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.domain.SHPGeoJsonCollection;
 import fi.nls.oskari.map.userlayer.service.GeoJsonWorker;
 import fi.nls.oskari.map.userlayer.service.UserLayerDataService;
-import fi.nls.oskari.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.*;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
+import fi.nls.oskari.util.FileHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 @OskariActionRoute("CreateUserLayer")
@@ -54,6 +52,7 @@ public class CreateUserLayerHandler extends ActionHandler {
     private static final String USERLAYER_MAX_FILE_SIZE_MB = "userlayer.max.filesize.mb";
     final long userlayerMaxFileSizeMb = PropertyUtil.getOptional(USERLAYER_MAX_FILE_SIZE_MB, 10);
     private static final int MAX_FILES_IN_ZIP = 100;
+    private static final int MAX_BASE_FILENAME_LENGHT = 24;
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -97,6 +96,11 @@ public class CreateUserLayerHandler extends ActionHandler {
 
             // Store geojson via ibatis
             UserLayer ulayer = userlayerService.storeUserData(geojsonWorker, user, loadItem.getFparams());
+
+            // Store failed
+            if (ulayer == null) {
+                throw new ActionException("Couldn't store user data into database  or no features in the input data");
+            }
 
             // workaround because of IE iframe submit json download functionality
             //params.getResponse().setContentType("application/json;charset=utf-8");
@@ -231,6 +235,7 @@ public class CreateUserLayerHandler extends ActionHandler {
                 // use the same base name for all files in zip
                 int i = file.getSavedTo().lastIndexOf(".");
                 filesBaseName = file.getSavedTo().substring(0, i);
+                //Cut too long basename
 
                 if (mainFile == null && file.isOfType(ACCEPTED_FORMATS)) {
                     mainFile = file;
@@ -259,7 +264,13 @@ public class CreateUserLayerHandler extends ActionHandler {
         File newFile = null;
         FileOutputStream fos = null;
         try {
-            newFile = File.createTempFile(file.getSafeName(), "." + file.getExtension());
+            String ftmp = file.getBaseName();
+            if(file.getBaseName().length() > MAX_BASE_FILENAME_LENGHT){
+                //Cut too long filename in the middle
+                ftmp = file.getBaseName().substring(0,9) + "_" + file.getBaseName().substring(file.getBaseName().length()-10);
+            }
+
+            newFile = File.createTempFile(ftmp, "." + file.getExtension());
             log.debug("file unzip : " + newFile.getAbsoluteFile());
             fos = new FileOutputStream(newFile);
 

@@ -16,10 +16,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Worker class for rendering json objects from domain objects
@@ -40,12 +37,19 @@ public class OskariLayerWorker {
     private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
 
     private final static LayerJSONFormatter FORMATTER = new LayerJSONFormatter();
+    
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs) {
+        return getListOfAllMapLayers(user, lang, crs, false);
+    }
 
     public static JSONObject getListOfAllMapLayers(final User user, final String lang) {
+        return getListOfAllMapLayers(user, lang, null, false);
+    }
+
+    public static JSONObject getListOfAllMapLayers(final User user, final String lang, final String crs, final boolean isSecure) {
         long start = System.currentTimeMillis();
-        final List<OskariLayer> layers = mapLayerService.findAll();
+        final List<OskariLayer> layers = mapLayerService.findAll(crs);
         log.debug("Layers loaded in", System.currentTimeMillis() - start, "ms");
-        final boolean isSecure = false;
         final boolean isPublished = false;
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }
@@ -61,8 +65,8 @@ public class OskariLayerWorker {
      * @return JSONObject containing the selected layers
      */
     public static JSONObject getListOfMapLayersById(final List<String> layerIdList, final User user,
-                                                    final String lang, final boolean isPublished, final boolean isSecure) {
-        final List<OskariLayer> layers = mapLayerService.find(layerIdList);
+                                                    final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
+        final List<OskariLayer> layers = mapLayerService.find(layerIdList, crs);
         return getListOfMapLayers(layers, user, lang, isPublished, isSecure);
     }
 
@@ -118,10 +122,7 @@ public class OskariLayerWorker {
                         modifyCommonFieldsForEditing(layerJson, layer);
                     }
                     else {
-                        // FIXME: styles/legend should be available in OskariLayer so we can add them on demand
-                        // -> parse capabilities when layer is inserted so we don't need to do this
-                        layerJson.remove("org_styles");
-                        layerJson.remove("org_legendImage");
+                        FORMATTER.removeAdminInfo(layerJson);
                     }
 
                     //log.debug("Adding layer to list");
@@ -183,23 +184,18 @@ public class OskariLayerWorker {
         }
         JSONHelper.putValue(layerJson, "subtitle", subtitles);
 
-        final JSONObject adminData = JSONHelper.createJSONObject("xslt", layer.getGfiXslt());
-        JSONHelper.putValue(layerJson, "admin", adminData);
+        FORMATTER.addInfoForAdmin(layerJson, "xslt", layer.getGfiXslt());
 
-        JSONHelper.putValue(adminData, "username", layer.getUsername());
-        JSONHelper.putValue(adminData, "password", layer.getPassword());
-        JSONHelper.putValue(adminData, "url", layer.getUrl());
-        if(layerJson.has("org_styles")){
-            JSONHelper.putValue(adminData, "styles", JSONHelper.getJSONArray(layerJson, "org_styles"));
-        }
-        if(layerJson.has("org_legendImage")){
-            JSONHelper.putValue(adminData, "legendImage", JSONHelper.getStringFromJSON(layerJson, "org_legendImage", null));
-        }
+        FORMATTER.addInfoForAdmin(layerJson, "username", layer.getUsername());
+        FORMATTER.addInfoForAdmin(layerJson, "password", layer.getPassword());
+        FORMATTER.addInfoForAdmin(layerJson, "url", layer.getUrl());
+        FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
+
+        FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getGroupId());
 
         // for mapping under categories
-        JSONHelper.putValue(adminData, "organizationId", layer.getGroupId());
         if(layer.getInspireTheme() != null) {
-            JSONHelper.putValue(adminData, "inspireId", layer.getInspireTheme().getId());
+            FORMATTER.addInfoForAdmin(layerJson, "inspireId", layer.getInspireTheme().getId());
         }
     }
 
@@ -259,6 +255,29 @@ public class OskariLayerWorker {
         JSONHelper.putValue(permissions, "download", DOWNLOAD_PERMISSION_OK);
 
         return permissions;
+    }
+
+    /**
+     * Reorder Oskari layers in to requested order
+     * @param layers
+     * @param ids  layer ids and externalids
+     * @return  reorder layers
+     */
+    public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
+
+        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
+
+        for (String id : ids) {
+            for (OskariLayer lay : layers) {
+
+                if (Integer.toString(lay.getId()).equals(id) || (lay.getExternalId() != null && lay.getExternalId().equals(id))) {
+                    reLayers.add(lay);
+                    break;
+                }
+            }
+
+        }
+        return reLayers;
     }
 
     private static String getPermissionType(final boolean isPublished) {

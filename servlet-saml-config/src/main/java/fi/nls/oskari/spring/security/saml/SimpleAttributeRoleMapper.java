@@ -7,7 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.security.saml.SAMLCredential;
 
-import java.util.*;
+import java.util.Set;
 
 /**
  * Maps Oskari user roles based on SAMLCredential attribute value.

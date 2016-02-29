@@ -1,12 +1,16 @@
 package fi.nls.oskari.map.data.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.util.HashMap;
-import java.util.Map;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.data.domain.GFIRequestParams;
+import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,20 +20,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-import org.w3c.dom.Document;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.GFIRequestParams;
-import fi.nls.oskari.util.IOHelper;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GetGeoPointDataService {
 

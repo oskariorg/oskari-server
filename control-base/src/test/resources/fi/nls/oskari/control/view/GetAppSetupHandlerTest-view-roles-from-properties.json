@@ -63,6 +63,7 @@
             ],
             "layers": [],
             "imageLocation": "/Oskari/resources",
+            "projectionDefs": {"EPSG:3067": "+proj=utm +zone=35 +ellps=GRS80 +units=m +no_defs"},
             "user": {
                 "apikey": "testkey",
                 "userID": 123,

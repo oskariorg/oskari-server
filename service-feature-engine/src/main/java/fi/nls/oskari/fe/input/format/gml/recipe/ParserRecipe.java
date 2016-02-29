@@ -1,22 +1,19 @@
 package fi.nls.oskari.fe.input.format.gml.recipe;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.vividsolutions.jts.geom.Geometry;
-
+import fi.nls.oskari.eu.elf.recipe.universal.ELF_path_parse_worker;
 import fi.nls.oskari.fe.input.InputProcessor;
 import fi.nls.oskari.fe.input.format.gml.FEPullParser;
 import fi.nls.oskari.fe.iri.Resource;
 import fi.nls.oskari.fe.output.OutputProcessor;
 import fi.nls.oskari.fe.schema.XSDDatatype;
-import org.json.JSONArray;
+import fi.nls.oskari.fi.rysp.generic.WFS11_path_parse_worker;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public interface ParserRecipe {
     public List<Pair<Resource, Geometry>> geometries(
@@ -56,4 +53,5 @@ public interface ParserRecipe {
     public Resource xsd(XSDDatatype xsd);
 
     public void setParseWorker(ELF_path_parse_worker worker);
+    public void setWFS11ParseWorker(WFS11_path_parse_worker worker);
 }

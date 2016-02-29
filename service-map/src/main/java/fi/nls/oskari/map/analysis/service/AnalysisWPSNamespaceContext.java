@@ -1,13 +1,12 @@
 package fi.nls.oskari.map.analysis.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathVariableResolver;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class AnalysisWPSNamespaceContext implements NamespaceContext {
 

@@ -1,12 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import java.util.Collections;
-
-import fi.nls.oskari.service.UserService;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
@@ -16,8 +9,14 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Collections;
 
 @OskariActionRoute("ManageRoles")
 public class ManageRolesHandler extends RestActionHandler {

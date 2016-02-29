@@ -1,14 +1,10 @@
 package fi.nls.oskari.isotc211.gmd;
 
-import java.util.List;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import fi.nls.oskari.fe.xml.util.Reference;
+import fi.nls.oskari.isotc211.gco.Distance;
 
 import javax.xml.bind.annotation.XmlElement;
-
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
-import fi.nls.oskari.fe.xml.util.Reference;
-import fi.nls.oskari.fe.xml.util.ReferencePropertyType;
-import fi.nls.oskari.isotc211.gco.Distance;
 
 public class MD_ResolutionType {
 

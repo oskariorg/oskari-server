@@ -11,6 +11,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
@@ -67,6 +68,11 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
 */
 
         handler.init();
+    }
+
+    @AfterClass
+    public static void teardown() {
+        PropertyUtil.clearProperties();
     }
 
     /**

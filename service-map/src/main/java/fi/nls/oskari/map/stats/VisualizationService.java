@@ -1,18 +1,8 @@
 package fi.nls.oskari.map.stats;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-
+import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.IOHelper;
 import org.apache.axiom.om.OMAbstractFactory;
@@ -21,8 +11,16 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 
-import fi.nls.oskari.domain.map.stats.StatsVisualization;
-import fi.nls.oskari.log.Logger;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.List;
 
 public abstract class VisualizationService extends BaseIbatisService<StatsVisualization> {
     

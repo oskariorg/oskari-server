@@ -1,9 +1,9 @@
 package fi.nls.oskari.printout.input.layers;
 
+import com.vividsolutions.jts.io.WKTReader;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * This cclass

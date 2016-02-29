@@ -1,13 +1,13 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import fi.mml.map.mapwindow.util.RemoteServiceDownException;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.mml.map.mapwindow.util.RemoteServiceDownException;
-import fi.nls.oskari.cache.Cache;
-import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.wms.WMSCapabilities;
 
@@ -68,6 +68,18 @@ public class WebMapServiceFactory {
 		}
 		return wms;
 	}
+
+    public static WebMapService createFromXML(final String layerName, final String xml) {
+        try {
+            if (isVersion1_3_0(xml)) {
+                return new WebMapServiceV1_3_0_Impl("from DataBase", xml, layerName);
+            } else if (isVersion1_1_1(xml)) {
+                return new WebMapServiceV1_1_1_Impl("from DataBase", xml, layerName);
+            }
+        } catch (WebMapServiceParseException ex) {
+        }
+        return null;
+    }
 
     private static OskariLayerCapabilities getCaps(OskariLayer layer) throws WebMapServiceParseException {
         try {

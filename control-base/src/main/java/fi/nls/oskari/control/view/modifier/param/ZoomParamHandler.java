@@ -2,17 +2,20 @@ package fi.nls.oskari.control.view.modifier.param;
 
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.view.modifier.ModifierException;
+import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.view.modifier.ModifierParams;
 
 @OskariViewModifier("zoomLevel")
 public class ZoomParamHandler extends ParamHandler {
 
+    @Override
+    public int getPriority() {
+        return 1;
+    }
     private static final Logger log = LogFactory.getLogger(ZoomParamHandler.class);
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {

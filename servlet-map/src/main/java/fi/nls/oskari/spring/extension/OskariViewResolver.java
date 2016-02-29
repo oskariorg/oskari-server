@@ -1,7 +1,7 @@
 package fi.nls.oskari.spring.extension;
 
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.Locale;
 

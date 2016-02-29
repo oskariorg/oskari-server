@@ -1,15 +1,15 @@
 package fi.nls.oskari.fe.engine;
 
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import fi.nls.oskari.fe.input.format.gml.recipe.GroovyParserRecipe;
 import fi.nls.oskari.fe.input.format.gml.recipe.ParserRecipe;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FEEngineManager {
 

@@ -1,9 +1,9 @@
 package fi.nls.oskari.worker;
 
-import java.util.*;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+
+import java.util.*;
 
 /**
  * Manages workers for different kind of jobs

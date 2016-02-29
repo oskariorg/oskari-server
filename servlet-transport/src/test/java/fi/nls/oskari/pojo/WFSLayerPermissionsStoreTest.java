@@ -1,13 +1,13 @@
 package fi.nls.oskari.pojo;
 
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 public class WFSLayerPermissionsStoreTest {
 	private static WFSLayerPermissionsStore store;

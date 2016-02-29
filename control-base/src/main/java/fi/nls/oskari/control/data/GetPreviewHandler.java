@@ -1,33 +1,31 @@
 package fi.nls.oskari.control.data;
 
-import java.io.FileOutputStream;
-import java.net.HttpURLConnection;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.map.layout.OskariLayoutWorker;
-import fi.nls.oskari.service.ProxyService;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.view.modifier.ViewModifier;
-import org.apache.commons.codec.binary.Base64;
-import org.json.JSONObject;
-import org.json.JSONArray;
-
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.LayersParamHandler;
+import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layout.OskariLayoutWorker;
+import fi.nls.oskari.service.ProxyService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.view.modifier.ViewModifier;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.net.HttpURLConnection;
+import java.util.*;
 
 @OskariActionRoute("GetPreview")
 public class GetPreviewHandler extends ActionHandler {
@@ -43,6 +41,7 @@ public class GetPreviewHandler extends ActionHandler {
     private static final String PARM_TABLE = "tabledata";
     private static final String PARM_SAVE = "saveFile";
     private static final String PARM_TABLETEMPLATE = "tableTemplate";
+    private static final String PARM_SRSNAME = "srsName";
 
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_MAPLINK = "maplink";
@@ -171,6 +170,8 @@ public class GetPreviewHandler extends ActionHandler {
     private JSONObject getPrintJSON(ActionParameters params)
             throws ActionException {
         final JSONObject jsonprint = new JSONObject();
+        final String crs = params.getHttpParam(PARM_SRSNAME,
+                null);
         try {
             final HttpServletRequest httpRequest = params.getRequest();
 
@@ -257,7 +258,7 @@ public class GetPreviewHandler extends ActionHandler {
             // populate layer details
             final JSONArray fullLayersConfigJson = MapfullHandler
                     .getFullLayerConfig(configLayers, params.getUser(), params
-                            .getLocale().getLanguage(),
+                            .getLocale().getLanguage(), crs,
                             PRINT_VIEW, ViewTypes.PRINT, Collections.EMPTY_SET, useDirectURLForMyplaces);
 
             // GeoJson graphics layers + styles

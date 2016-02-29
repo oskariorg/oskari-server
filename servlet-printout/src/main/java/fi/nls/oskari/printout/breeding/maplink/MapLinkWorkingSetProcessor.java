@@ -1,29 +1,26 @@
 package fi.nls.oskari.printout.breeding.maplink;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
-import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.grid.BoundingBox;
-import org.geowebcache.grid.GridSubset;
-import org.geowebcache.layer.TileLayer;
-
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
-
 import fi.nls.oskari.printout.breeding.ChangeSet;
 import fi.nls.oskari.printout.breeding.WorkingSet;
 import fi.nls.oskari.printout.breeding.WorkingSetProcessor;
 import fi.nls.oskari.printout.input.layers.LayerDefinition;
+import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSubset;
+import org.geowebcache.layer.TileLayer;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class MapLinkWorkingSetProcessor extends WorkingSetProcessor {
 

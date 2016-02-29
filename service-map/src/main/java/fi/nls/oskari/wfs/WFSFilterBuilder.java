@@ -1,10 +1,9 @@
 package fi.nls.oskari.wfs;
 
-import java.io.ByteArrayOutputStream;
-
+import com.vividsolutions.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.xml.Configuration;
@@ -13,13 +12,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
-import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.identity.FeatureId;
 
-import com.vividsolutions.jts.geom.*;
-import fi.nls.oskari.map.geometry.WKTHelper;
-
-
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +48,8 @@ public class WFSFilterBuilder {
     public static final String FEATUREID_TEMPLATE = "<ogc:FeatureId fid=\"{fid}\"/>";
     public static final String FID_ATTRIBUTE = "{fid}";
     public static final String FILTER_KEY = "</ogc:And></ogc:Filter>";
+    public static final String CUSTOM_ID_FILTER_START = "<ogc:Filter><ogc:Or>";
+    public static final String CUSTOM_ID_FILTER_END = "</ogc:Or></ogc:Filter>";
 
     private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
@@ -87,8 +85,15 @@ public class WFSFilterBuilder {
 
         if (all == null) {
             // Check if only id filters (more than 1)
-            final Filter ids = getFeatureIdFilters(filter_js);
-            return getFilterAsString(ids);
+            if (getCountOfIdFilters(filter_js) > 1) {
+                // Append OR id filters - geotools filter factory stringify does not work on this point
+                // So append by your own code
+                final String sids = CUSTOM_ID_FILTER_START + getFeatureIdFiltersAsString(filter_js) + CUSTOM_ID_FILTER_END;
+                return sids;
+            } else {
+                final Filter ids = getFeatureIdFilters(filter_js);
+                return getFilterAsString(ids);
+            }
         }
 
         String wfsfilter = getFilterAsString(all);
@@ -97,12 +102,11 @@ public class WFSFilterBuilder {
             // Append OR id filters - geotools filter factory stringify does not work on this point
             // So append by your own code
             final String sids = "<ogc:Or>" + getFeatureIdFiltersAsString(filter_js) + "</ogc:Or>";
-            if(sids != null){
+            if (sids != null) {
                 wfsfilter = wfsfilter.replaceAll("(\\r|\\n)", "");
                 wfsfilter = wfsfilter.replace(FILTER_KEY, sids + FILTER_KEY);
             }
         }
-
 
 
         return wfsfilter;
@@ -311,6 +315,9 @@ public class WFSFilterBuilder {
      */
     private static Filter getBboxFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_BBOX) && srsName != null && geom_elem != null) {
             // Add BBOX filter
             JSONObject bbox = filter_js.getJSONObject(KEY_BBOX);
@@ -331,7 +338,9 @@ public class WFSFilterBuilder {
      */
     private static Filter getSpatialFilter(final JSONObject filter_js,
             String srsName, String geom_elem) throws JSONException {
-        
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_FILTER_BY_GEOMETRY_METHOD) && srsName != null && geom_elem != null) {
             JSONArray filterGeometries = filter_js.getJSONArray("geometries"); 
             String filterMethod = filter_js.getString(KEY_FILTER_BY_GEOMETRY_METHOD);
@@ -378,7 +387,9 @@ public class WFSFilterBuilder {
      */
     private static String getFilterAsString(final Filter all) {
 
-        if (all == null) return null;
+        if (all == null) {
+            return null;
+        }
 
         final Configuration conf2 = new org.geotools.filter.v1_1.OGCConfiguration();
         final Encoder encoder = new Encoder(conf2);
@@ -402,12 +413,16 @@ public class WFSFilterBuilder {
      * @throws JSONException
      */
     private static Filter getFeatureIdFilters(final JSONObject filter_js) {
-        Set<FeatureId> selected = new HashSet<FeatureId>();
-
+        Set<FeatureId> selected = new HashSet<>();
+        if(filter_js == null){
+            return null;
+        }
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if(jsIdArray == null || jsIdArray.length() == 0) return null;
+            if(jsIdArray == null || jsIdArray.length() == 0) {
+                return null;
+            }
             for (int i = 0; i < jsIdArray.length(); i++) {
                 final String featureid = jsIdArray.optString(i);
 
@@ -427,11 +442,15 @@ public class WFSFilterBuilder {
      */
     private static String getFeatureIdFiltersAsString(final JSONObject filter_js) {
         StringBuilder sb = new StringBuilder();
-
+        if (filter_js == null) {
+            return null;
+        }
         if (filter_js.has(KEY_FEATUREIDS)) {
             // Get feature ID filter input
             final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if (jsIdArray == null || jsIdArray.length() == 0) return null;
+            if (jsIdArray == null || jsIdArray.length() == 0) {
+                return null;
+            }
             for (int i = 0; i < jsIdArray.length(); i++) {
                 sb.append(FEATUREID_TEMPLATE.replace(FID_ATTRIBUTE, jsIdArray.optString(i)));
             }
@@ -449,15 +468,16 @@ public class WFSFilterBuilder {
      * @return number of Id filters
      */
     private static int getCountOfIdFilters(final JSONObject filter_js){
-        if(filter_js == null) return 0;
-
-        if (filter_js.has(KEY_FEATUREIDS)) {
-            // Get feature ID filter input
-            final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
-            if(jsIdArray == null) return 0;
-            return jsIdArray.length();
+        if(filter_js == null || !filter_js.has(KEY_FEATUREIDS)) {
+            return 0;
         }
-        return 0;
+
+        // Get feature ID filter input
+        final JSONArray jsIdArray = JSONHelper.getJSONArray(filter_js, KEY_FEATUREIDS);
+        if(jsIdArray == null) {
+            return 0;
+        }
+        return jsIdArray.length();
     }
 
     public static String parseProperties(List<String> props, String ns, String geom_prop) {
@@ -467,8 +487,7 @@ public class WFSFilterBuilder {
                     + prop);
             query = query + temp;
         }
-        if(!query.isEmpty())
-        {
+        if(!query.isEmpty()) {
             // geometry is not retreaved, if this is lacking
             String temp = PROPERTY_TEMPLATE.replace(PROPERTY_PROPERTY, geom_prop);
             query = query + temp;

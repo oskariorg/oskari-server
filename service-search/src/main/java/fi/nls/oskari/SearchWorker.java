@@ -1,29 +1,23 @@
 package fi.nls.oskari;
 
+import fi.mml.portti.service.search.*;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.search.channel.SearchableChannel;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import fi.nls.oskari.search.channel.SearchableChannel;
-import fi.mml.portti.service.search.Query;
-import fi.mml.portti.service.search.SearchCriteria;
-import fi.mml.portti.service.search.SearchResultItem;
-import fi.mml.portti.service.search.SearchService;
-import fi.mml.portti.service.search.SearchServiceImpl;
-
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class SearchWorker {
 
