@@ -1,10 +1,6 @@
 package fi.nls.oskari.control.feature;
 
-import java.io.ByteArrayInputStream;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,9 +14,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.*;
 
 import fi.mml.portti.domain.permissions.Permissions;
 import fi.mml.portti.service.db.permissions.PermissionsService;
@@ -70,7 +64,7 @@ public class DeleteFeatureHandler extends ActionHandler {
 			pass = lc.getPassword();
 			geometryProperty = lc.getGMLGeometryProperty();
 			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
-            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER);
+            final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
             if(hasPermssion) {
             	ClearLayerTiles(lay.getId());
             	StringBuilder requestData = new StringBuilder("<wfs:Transaction service='WFS' version='1.1.0' xmlns:ogc='http://www.opengis.net/ogc' xmlns:wfs='http://www.opengis.net/wfs'><wfs:Delete typeName='"+ lay.getName() +"'><ogc:Filter><ogc:FeatureId fid='" + jsonObject.getString("featureId") + "'/></ogc:Filter></wfs:Delete></wfs:Transaction>");
