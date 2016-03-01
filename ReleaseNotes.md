@@ -45,6 +45,13 @@ Added IOHelper convenience method for just adding one param to an URL:
 
     public static String addUrlParam(final String url, String key, String value)
     String url = IOHelper.addUrlParam("https://google.com", "q", "test");
+    
+### service-map
+
+Data import is improved
+
+1. Long files names do not break the import any more.
+2. There is no empty my data layer any more, if feature geometry import fails.
 
 ### service-search-opendata
 
