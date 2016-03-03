@@ -395,7 +395,7 @@ public class GetGtWFSCapabilities {
         }
         Set<String> crss = new HashSet<String>();
         try {
-            //There is no way to get Other crs - maybe next gt version will support it
+            //There is no way to get Other crs - maybe next gt version will support it - not yet in gt 14.2 or gt 15.0
             //Get only the default crs
             String crs = CRS.lookupIdentifier(data.getFeatureSource(typeName).getInfo().getCRS(), true);
             if(crs != null){
