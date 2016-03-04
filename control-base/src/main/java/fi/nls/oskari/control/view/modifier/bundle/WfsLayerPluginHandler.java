@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 /**
@@ -16,6 +17,11 @@ public class WfsLayerPluginHandler {
     public static final String KEY_ID = "id";
     public static final String KEY_ISPUBLISHED = "isPublished";
     public static final String KEY_CONFIG = "config";
+
+    private static final String KEY_HOST = "hostname";
+    private static final String KEY_PATH = "contextPath";
+    private static final String HOST = PropertyUtil.getOptional("oskari.transport.domain");
+    private static final String PATH = PropertyUtil.getOptional("oskari.transport.url");
 
 
     public JSONObject setupWfsLayerPluginConfig(final JSONObject originalPlugin, final String viewType) {
@@ -31,6 +37,14 @@ public class WfsLayerPluginHandler {
         JSONObject config = getConfig(originalPlugin);
         setupIsPublished(config, viewType);
 
+        // setup env-specific wfs config
+        if(HOST != null && !config.has(KEY_HOST)) {
+            JSONHelper.putValue(config, KEY_HOST, HOST);
+        }
+
+        if(PATH != null && !config.has(KEY_PATH)) {
+            JSONHelper.putValue(config, KEY_PATH, PATH);
+        }
         return originalPlugin;
     }
 
