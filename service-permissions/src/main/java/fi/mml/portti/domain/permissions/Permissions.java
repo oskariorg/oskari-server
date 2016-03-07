@@ -15,6 +15,7 @@ public class Permissions implements Comparable<Permissions> {
 	public final static String PERMISSION_TYPE_PUBLISH = "PUBLISH";
 	public final static String PERMISSION_TYPE_VIEW_LAYER = "VIEW_LAYER";
     public final static String PERMISSION_TYPE_EDIT_LAYER = "EDIT_LAYER";
+    public final static String PERMISSION_TYPE_EDIT_LAYER_CONTENT = "EDIT_LAYER_CONTENT";
 	public final static String PERMISSION_TYPE_VIEW_PUBLISHED = "VIEW_PUBLISHED";
 	public final static String PERMISSION_TYPE_DOWNLOAD = "DOWNLOAD";
 	public final static String PERMISSION_TYPE_EXECUTE = "EXECUTE";

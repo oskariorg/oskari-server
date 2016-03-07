@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import org.json.JSONObject;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -18,26 +16,19 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import fi.nls.oskari.wfs.util.WFSDescribeFeatureHelper;
 
-/**
- * Get WMS capabilites and return JSON
- */
-@OskariActionRoute("GetWFSDescribeFeature")
-public class GetWFSDescribeFeatureHandler extends ActionHandler {
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-    private static final Logger log = LogFactory.getLogger(GetWFSDescribeFeatureHandler.class);
+/**
+ * Get WFS layer geometry type
+ */
+@OskariActionRoute("GetWFSLayerGeometryType")
+public class GetWFSLayerGeometryTypeHandler extends ActionHandler {
+
+    private static final Logger log = LogFactory.getLogger(GetWFSLayerGeometryTypeHandler.class);
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
 
     private static final String PARM_LAYER_ID = "layer_id";
-
-    private static final String WPS_PARAMS = "wps_params";
-    public static final String ANALYSIS_PREFIX = "analysis_";
-    public static final String MYPLACES_PREFIX = "myplaces_";
-    private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
-    public static final String USERLAYER_PREFIX = "userlayer_";
-    private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
-
-    final String myplacesBaseLayerId = PropertyUtil.get(MYPLACES_BASELAYER_ID);
-    final String userlayerBaseLayerId = PropertyUtil.get(USERLAYER_BASELAYER_ID);
 
     @Override
     public void init() {
@@ -47,39 +38,48 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
         int id = getLayerId(layer_id);
-        JSONObject response = new JSONObject();
+        String response = null;
 
         try {
-	        if (id != -1) {
-	            // Get wfs layer configuration ala Oskari
-	            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-	            if (lc != null) {
-	                // Get wfs feature property names  (gml properties excluded)
-	                response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
-	                // Add WPS params
-	                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
-	            }
-	
-	        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
-	            // Set analysis layer field types
-	            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
-	        }
-        } catch (ServiceException ex) {
-        	
+        if (id != -1) {
+            // Get wfs layer configuration ala Oskari
+            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
+            if (lc != null) {
+            	final String geometryField = lc.getGMLGeometryProperty();
+            	
+            	final String wfsurl = WFSDescribeFeatureHelper.parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
+                final String wfsResponse = WFSDescribeFeatureHelper.getResponse(wfsurl, lc.getUsername(), lc.getPassword());
+                JSONObject props = WFSDescribeFeatureHelper.xml2JSON(wfsResponse);
+                
+                JSONObject schema = props.getJSONObject("xsd:schema");
+                JSONObject complexType = schema.getJSONObject("xsd:complexType");
+                JSONObject complexContent = complexType.getJSONObject("xsd:complexContent");
+                JSONObject extension = complexContent.getJSONObject("xsd:extension");
+                JSONObject sequence = extension.getJSONObject("xsd:sequence");
+                JSONArray elements = sequence.getJSONArray("xsd:element");
+                for (int i = 0; i < elements.length(); i++)
+                {
+                	if (elements.getJSONObject(i).getString("name").equals(geometryField))
+                	{
+                		response = elements.getJSONObject(i).getString("type");
+                	}
+                }
+                
+                // Get wfs feature property names  (gml properties excluded)
+                //response = getFeatureTypesTextOrNumeric(lc, layer_id);
+                // Add WPS params
+            }
         }
 
         ResponseHelper.writeResponse(params, response);
-
+        }
+        catch (Exception ex)
+        {
+        	
+        }
     }
 
     private int getLayerId(final String layer_id) {
-
-        // WFS layer, myplaces or analysis layer
-        if (layer_id.indexOf(MYPLACES_PREFIX) > -1) {
-            return ConversionHelper.getInt(myplacesBaseLayerId, -1);
-        } else if (layer_id.indexOf(USERLAYER_PREFIX) > -1) {
-            return ConversionHelper.getInt(userlayerBaseLayerId, -1);
-        }
         // Wfs layer id
         return ConversionHelper.getInt(layer_id, -1);
     }
