@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.36
+
+### control-base
+
+WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
+ 
+    oskari.transport.domain=http://localhost:9090
+    oskari.transport.url=/mytransport
+
+These will write the host and contextPath to the plugins config if they are not configured in database view.
+
 ## 1.35
 
 ### service-search-nls

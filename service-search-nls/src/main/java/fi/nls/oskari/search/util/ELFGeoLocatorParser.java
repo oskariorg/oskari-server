@@ -53,6 +53,8 @@ public class ELFGeoLocatorParser {
     private Map<String, Double> elfScalesForType = null;
     private Map<String, Integer> elfLocationPriority = null;
 
+
+    private static final String PROPERTY_FORCEXY = "org.geotools.referencing.forceXY";
     private String serviceSrs = "EPSG:4258";
 
     public ELFGeoLocatorParser() {
@@ -174,7 +176,7 @@ public class ELFGeoLocatorParser {
                     log.debug("Original coordinates - x:", point.getX(), "y:", point.getY());
 
                     Point p2 = null;
-                    boolean forceXY = (System.getProperty("org.geotools.referencing.forceXY") != null && System.getProperty("org.geotools.referencing.forceXY").equals("true"));
+                    boolean forceXY = System.getProperty(PROPERTY_FORCEXY) != null && "true".equals(System.getProperty(PROPERTY_FORCEXY));
                     if (forceXY) {
                         p2 = ProjectionHelper.transformPoint(point.getX(), point.getY(), serviceSrs, epsg); //"EPSG:3067"
                         //forcexy == true and so isFirstAxisNorth false -> projectionhelper returns "wrong" order ->

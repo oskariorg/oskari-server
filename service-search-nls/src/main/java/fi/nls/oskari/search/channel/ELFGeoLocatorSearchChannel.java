@@ -177,6 +177,7 @@ public class ELFGeoLocatorSearchChannel extends SearchChannel {
             data = data.replace(RESPONSE_CLEAN, "");
         } catch(Exception e) {
             log.warn("Unable to fetch data "+buf.toString());
+            log.error(e);
             return new ChannelSearchResult();
         }
 
