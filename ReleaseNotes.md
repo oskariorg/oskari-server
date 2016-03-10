@@ -20,9 +20,22 @@ New extra request parameter  `&simple=true` is available for the earlier respons
 
 **WFS-T**  functionality is added to oskari-server package
 
-Look at oskari.org / Adding functionalities
+Look at oskari.org / Adding functionalities / 
 
+## 1.35.1
 
+### generic
+
+Apache commons-collections library upgraded 3.2.1 -> 3.2.2 for security reasons. 
+
+### service-search-nls
+
+Enabled reverse geocoding for ELFGeoLocatorSearchChannel.
+
+### control-base
+
+Openlayers3 sends WTMS-request parameters in camelCase while Openlayers2 always sends params in CAPS. 
+GetLayerTileHandler has been modified to accept wmts-parameters in any letter case.
 
 ## 1.35
 
@@ -37,12 +50,20 @@ Fixes an issue where user-generated my places with name containing non-ascii cha
 
 ### control-base
 
-MapfullHandler now gets the projection definition for map SRS and adds it to the mapfull config if it is not allready there. This is done to avoid openlayers trying to search the projection definition.
-The url where the projection definion is picked from can be configured to oskari-ext.properties:
+MapfullHandler now fills in missing projection configurations for mapfull bundle/proj4js when a view is loaded:
 
-    projectionDefs.url = http://spatialreference.org/ref/epsg/
+    {
+        "projectionDefs": {
+            "EPSG:4326": "+title=WGS 84 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        }
+    }
 
-The code is based on that url, so if using any other url you should see if the code is still valid.
+These can still be configured to the database as part of mapfull-bundles config and database are used when configured.
+The automation uses configurations from :
+
+    control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
+
+Missing ones can be added to the file or to the view in database.
 
 ### service-search
 
