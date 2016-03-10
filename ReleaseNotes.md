@@ -20,7 +20,7 @@ New extra request parameter  `&simple=true` is available for the earlier respons
 
 **WFS-T**  functionality is added to oskari-server package
 
-Look at ..\oskari-server\install.md
+Look at oskari.org / Adding functionalities
 
 
 
