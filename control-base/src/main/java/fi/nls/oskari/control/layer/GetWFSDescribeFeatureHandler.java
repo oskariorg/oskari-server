@@ -28,6 +28,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
 
     private static final String PARM_LAYER_ID = "layer_id";
+    private static final String PARM_SIMPLE = "simple";
 
     private static final String WPS_PARAMS = "wps_params";
     public static final String ANALYSIS_PREFIX = "analysis_";
@@ -46,6 +47,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
         final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
+        final Boolean simpleType = params.getHttpParam(PARM_SIMPLE, false);
         int id = getLayerId(layer_id);
         JSONObject response = new JSONObject();
 
@@ -55,7 +57,13 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
 	            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
 	            if (lc != null) {
 	                // Get wfs feature property names  (gml properties excluded)
-	                response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
+                    if(simpleType){
+                        // types are generalized to text or numeric
+                        response = getFeatureTypesTextOrNumeric(lc, layer_id);
+                    } else {
+                        // returns xsd types for properties
+                        response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
+                    }
 	                // Add WPS params
 	                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
 	            }

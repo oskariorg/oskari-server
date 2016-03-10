@@ -1,5 +1,29 @@
 # Release Notes
 
+## 1.36
+
+### control-base
+
+WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
+ 
+    oskari.transport.domain=http://localhost:9090
+    oskari.transport.url=/mytransport
+
+These will write the host and contextPath to the plugins config if they are not configured in database view.
+
+_GetWFSDescribeFeatureHandler_ returns now exact xsd types for feature properties
+
+Earlier version responsed generalized types (text or numeric).
+New extra request parameter  `&simple=true` is available for the earlier response behaviour
+
+### transport && control-base
+
+**WFS-T**  functionality is added to oskari-server package
+
+Look at ..\oskari-server\install.md
+
+
+
 ## 1.35
 
 ### service-search-nls
@@ -45,6 +69,13 @@ Added IOHelper convenience method for just adding one param to an URL:
 
     public static String addUrlParam(final String url, String key, String value)
     String url = IOHelper.addUrlParam("https://google.com", "q", "test");
+    
+### service-map
+
+Data import is improved
+
+1. Long files names do not break the import any more.
+2. There is no empty my data layer any more, if feature geometry import fails.
 
 ### service-search-opendata
 

@@ -61,17 +61,14 @@ public class SaveFeatureHandler extends ActionHandler {
 		permissionsService = new PermissionsServiceIbatisImpl();
 		layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
 		String featureData = params.getHttpParam("featureData");
-		String url = PropertyUtil.get("geoserver.wfs.url");
-		String user = (PropertyUtil.get("geoserver.wfs.user").equals("--geoserver.wfs.user--") ? "admin": PropertyUtil.get("geoserver.wfs.user"));
-		String pass = (PropertyUtil.get("geoserver.wfs.pass").equals("--geoserver.wfs.pass--") ? "geoserver": PropertyUtil.get("geoserver.wfs.pass"));
 
 		try {
 			JSONObject jsonObject = new JSONObject(featureData);
 			OskariLayer lay = layerService.find(jsonObject.getString("layerId"));
 			WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(lay.getId());
-			url = lc.getURL();
-			user = lc.getUsername();
-			pass = lc.getPassword();
+			String url = lc.getURL();
+			final String user = lc.getUsername();
+			final String pass = lc.getPassword();
 			geometryProperty = lc.getGMLGeometryProperty();
 			final Resource resource = permissionsService.findResource(new OskariLayerResource(lay));
             final boolean hasPermssion = resource.hasPermission(params.getUser(), Permissions.PERMISSION_TYPE_EDIT_LAYER_CONTENT);
