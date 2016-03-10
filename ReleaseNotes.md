@@ -37,19 +37,11 @@ MapfullHandler now fills in missing projection configurations for mapfull bundle
     }
 
 These can still be configured to the database as part of mapfull-bundles config and database are used when configured.
-The automation uses configurations from :
+The automation uses configurations from:
 
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
-    
- 
-MapfullHandler now gets the projection definition for map SRS and adds it to the mapfull config if it is not allready there. This is done to avoid openlayers trying to search the projection definition.
-The url where the projection definion is picked from can be configured to oskari-ext.properties:
 
-    projectionDefs.url = http://spatialreference.org/ref/epsg/
-
-The code is based on that url, so if using any other url you should see if the code is still valid.
-
-
+Missing configurations can be added to the file or to the view in database.
 
 ### service-search
 
