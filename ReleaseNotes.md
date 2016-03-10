@@ -59,11 +59,11 @@ MapfullHandler now fills in missing projection configurations for mapfull bundle
     }
 
 These can still be configured to the database as part of mapfull-bundles config and database are used when configured.
-The automation uses configurations from :
+The automation uses configurations from:
 
     control-base\src\main\resources\fi\nls\oskari\control\view\modifier\bundle\epsg_proj4_formats.json
 
-Missing ones can be added to the file or to the view in database.
+Missing configurations can be added to the file or to the view in database.
 
 ### service-search
 
