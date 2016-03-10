@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.layer;
 
+import org.json.JSONObject;
+
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -15,7 +17,6 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.wfs.WFSLayerConfigurationService;
 import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import fi.nls.oskari.wfs.util.WFSDescribeFeatureHelper;
-import org.json.JSONObject;
 
 /**
  * Get WMS capabilites and return JSON
@@ -27,6 +28,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
     private final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
 
     private static final String PARM_LAYER_ID = "layer_id";
+    private static final String PARM_SIMPLE = "simple";
 
     private static final String WPS_PARAMS = "wps_params";
     public static final String ANALYSIS_PREFIX = "analysis_";
@@ -45,22 +47,33 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
         final String layer_id = params.getHttpParam(PARM_LAYER_ID, "");
+        final Boolean simpleType = params.getHttpParam(PARM_SIMPLE, false);
         int id = getLayerId(layer_id);
         JSONObject response = new JSONObject();
 
-        if (id != -1) {
-            // Get wfs layer configuration ala Oskari
-            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
-            if (lc != null) {
-                // Get wfs feature property names  (gml properties excluded)
-                response = getFeatureTypesTextOrNumeric(lc, layer_id);
-                // Add WPS params
-                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
-            }
-
-        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
-            // Set analysis layer field types
-            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
+        try {
+	        if (id != -1) {
+	            // Get wfs layer configuration ala Oskari
+	            WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(id);
+	            if (lc != null) {
+	                // Get wfs feature property names  (gml properties excluded)
+                    if(simpleType){
+                        // types are generalized to text or numeric
+                        response = getFeatureTypesTextOrNumeric(lc, layer_id);
+                    } else {
+                        // returns xsd types for properties
+                        response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(lc, layer_id);
+                    }
+	                // Add WPS params
+	                JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(lc.getWps_params()));
+	            }
+	
+	        } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
+	            // Set analysis layer field types
+	            response = WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id);
+	        }
+        } catch (ServiceException ex) {
+        	
         }
 
         ResponseHelper.writeResponse(params, response);

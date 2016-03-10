@@ -11,6 +11,19 @@ WfsLayerPlugin config can now be configured with oskari-ext.properties if defaul
 
 These will write the host and contextPath to the plugins config if they are not configured in database view.
 
+_GetWFSDescribeFeatureHandler_ returns now exact xsd types for feature properties
+
+Earlier version responsed generalized types (text or numeric).
+New extra request parameter  `&simple=true` is available for the earlier response behaviour
+
+### transport && control-base
+
+**WFS-T**  functionality is added to oskari-server package
+
+Look at ..\oskari-server\install.md
+
+
+
 ## 1.35
 
 ### service-search-nls
