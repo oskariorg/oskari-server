@@ -2,6 +2,10 @@
 
 ## 1.35.1
 
+### generic
+
+Apache commons-collections library upgraded 3.2.1 -> 3.2.2 for security reasons. 
+
 ### service-search-nls
 
 Enabled reverse geocoding for ELFGeoLocatorSearchChannel.
