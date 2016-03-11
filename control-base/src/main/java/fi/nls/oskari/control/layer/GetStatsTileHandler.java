@@ -6,11 +6,13 @@ import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceIbatisImpl;
 import fi.nls.oskari.map.stats.VisualizationService;
-import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -37,15 +39,16 @@ public class GetStatsTileHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsTileHandler.class);
 
-    private final VisualizationService service = new VisualizationServiceIbatisImpl();
+    private final VisualizationService service = new VisualizationService();
+    private static final OskariLayerService mapLayerService = new OskariLayerServiceIbatisImpl();
 
+    final private static String PARAM_LAYER_ID = "LAYERID";
     final private static String PARAM_VISUALIZATION_ID = "VIS_ID";
     final private static String PARAM_VISUALIZATION_NAME = "VIS_NAME"; // name=ows:Kunnat2013
     final private static String PARAM_VISUALIZATION_FILTER_PROPERTY = "VIS_ATTR"; // attr=Kuntakoodi
     final private static String PARAM_VISUALIZATION_CLASSES = "VIS_CLASSES"; // classes=020,091|186,086,982|111,139,740
     final private static String PARAM_VISUALIZATION_VIS = "VIS_COLORS"; // vis=choro:ccffcc|99cc99|669966
 
-    private String geoserverUrl = null;
     private String geoserverUser = null;
     private String geoserverPass = null;
     private String sldServerUrl = null;
@@ -53,7 +56,6 @@ public class GetStatsTileHandler extends ActionHandler {
     @Override
     public void init() {
         super.init();
-        geoserverUrl = PropertyUtil.getOptional("statistics.geoserver.wms.url");
         geoserverUser = PropertyUtil.get("statistics.user");
         geoserverPass = PropertyUtil.get("statistics.password");
         sldServerUrl = PropertyUtil.getOptional("statistics.sld.server");
@@ -64,66 +66,34 @@ public class GetStatsTileHandler extends ActionHandler {
         if (log.isDebugEnabled()) {
             printParameters(params);
         }
-/*
-        // GetMap with post is horribly broken with hard coded GetMap xml.
-        // never use it before it's fixed!!
-        if (sldServerUrl == null) {
-            // if SLD server is not configured, use POSTing a GetMap XML-request
-            proxyWithGetMapPost(params);
-        } else {
-*/
-            final HttpURLConnection con = getConnection(params);
-            try {
-                // we should post complete GetMap XML with the custom SLD to geoserver so it doesn't need to fetch it again
-                // Check: http://geo-solutions.blogspot.fi/2012/04/dynamic-wms-styling-with-geoserver-sld.html
-                con.setRequestMethod("GET");
-
-                con.setDoOutput(false);
-                con.setDoInput(true);
-                HttpURLConnection.setFollowRedirects(false);
-                con.setUseCaches(false);
-                con.connect();
-                //IOHelper.writeToConnection(con, SLD_HANDLER.getSLD(params));
-
-                // read the image tile
-                final byte[] presponse = IOHelper.readBytes(con.getInputStream());
-
-                final HttpServletResponse response = params.getResponse();
-                response.setContentType(con.getContentType());
-                response.getOutputStream().write(presponse, 0, presponse.length);
-                response.getOutputStream().flush();
-                response.getOutputStream().close();
-            } catch (Exception e) {
-                throw new ActionException("Couldn't proxy request to geoserver",
-                        e);
-            } finally {
-                if (con != null) {
-                    con.disconnect();
-                }
-            }
-//        }
-    }
-
-    private void proxyWithGetMapPost(final ActionParameters params) throws ActionException {
-
+        final HttpURLConnection con = getConnection(params);
         try {
-            String xml = buildXML(params);
+            // we should post complete GetMap XML with the custom SLD to geoserver so it doesn't need to fetch it again
+            // Check: http://geo-solutions.blogspot.fi/2012/04/dynamic-wms-styling-with-geoserver-sld.html
+            con.setRequestMethod("GET");
 
-            HttpURLConnection con = IOHelper.getConnection(geoserverUrl, geoserverUser, geoserverPass);
-            IOHelper.writeHeader(con, "Content-type", "text/xml");
-            IOHelper.writeToConnection(con, xml);
-            byte[] presponse = IOHelper.readBytes(con);
+            con.setDoOutput(false);
+            con.setDoInput(true);
+            HttpURLConnection.setFollowRedirects(false);
+            con.setUseCaches(false);
+            con.connect();
+            //IOHelper.writeToConnection(con, SLD_HANDLER.getSLD(params));
 
-            log.debug("Image response length: " + presponse.length);
+            // read the image tile
+            final byte[] presponse = IOHelper.readBytes(con.getInputStream());
+
             final HttpServletResponse response = params.getResponse();
-            response.setContentType("image/png");
+            response.setContentType(con.getContentType());
             response.getOutputStream().write(presponse, 0, presponse.length);
             response.getOutputStream().flush();
             response.getOutputStream().close();
-
         } catch (Exception e) {
-            throw new ActionException("Couldn't post proxy request to geoserver",
+            throw new ActionException("Couldn't proxy request to geoserver",
                     e);
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
@@ -139,6 +109,7 @@ public class GetStatsTileHandler extends ActionHandler {
 
         ajaxUrl.append("&action_route=GetStatsLayerSLD");
 
+        final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
         StatsVisualization vis = getVisualization(params);
         if (vis == null) {
             log.info("Visualization couldn't be generated - parameters/db data missing", params);
@@ -184,9 +155,22 @@ public class GetStatsTileHandler extends ActionHandler {
             queryString.append(params.getHttpParam(keyStr));
         }
         try {
-            final String url = geoserverUrl + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
-            log.debug("Getting stats tile from url:", url);
-            return IOHelper.getConnection(url, geoserverUser, geoserverPass);
+            final OskariLayer layer = mapLayerService.find(layerId);
+            if (layer != null && layer.getType().equals("statslayer")) {
+                // Note: The tile URL is the WMS from the oskari_maplayer table, and the statistical features are fetched
+                // from the WFS URL given in the attributes JSON, for example:
+                //   {statistics:{featuresUrl:"http://localhost:8080/geoserver/oskari/wfs","regionIdTag":"kuntakoodi","nameIdTag":"kuntanimi"}}
+                // or:
+                //   {statistics:{featuresUrl:"http://localhost:8080/geoserver/oskari/wfs","regionIdTag":"erva_numero","nameIdTag":"erva"}}
+
+                // This could be for example: "http://localhost:8080/geoserver/wms"
+                final String geoserverUrl = layer.getUrl();
+                final String url = geoserverUrl + "?" + queryString + "&SLD=" + URLEncoder.encode(ajaxUrl.toString(), "UTF-8");
+                log.debug("Getting stats tile from url:", url);
+                return IOHelper.getConnection(url, geoserverUser, geoserverPass);
+            } else {
+                throw new Exception("Could not find statslayer URL for: " + vis.toString());
+            }
         } catch (Exception e) {
             throw new ActionException(
                     "Couldnt get connection to geoserver", e);

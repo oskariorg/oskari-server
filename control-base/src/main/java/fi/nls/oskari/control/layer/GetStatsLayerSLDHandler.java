@@ -9,7 +9,6 @@ import fi.nls.oskari.domain.map.stats.StatsVisualization;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.stats.VisualizationService;
-import fi.nls.oskari.map.stats.VisualizationServiceIbatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.apache.axiom.om.OMElement;
@@ -21,7 +20,7 @@ import java.util.Enumeration;
 public class GetStatsLayerSLDHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(GetStatsLayerSLDHandler.class);
-    final private VisualizationService service = new VisualizationServiceIbatisImpl();
+    final private VisualizationService service = new VisualizationService();
 
     // we need this
     final public static String PARAM_VISUALIZATION_ID = "visId";

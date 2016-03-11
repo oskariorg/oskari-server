@@ -33,21 +33,21 @@ public class StatisticalDatasourcePluginManager {
      */
     private static final Map<String, StatisticalDatasourcePlugin> plugins = new HashMap<>();
     /**
-     * Localization keys for plugin data sources to show to users in the frontend.
+     * Localizations with "name" keys for plugin data sources to show to users in the frontend.
      */
-    private static final Map<String, String> pluginLocalizationKeys = new HashMap<>();
+    private static final Map<String, String> pluginLocales = new HashMap<>();
 
     private List<StatisticalDatasource> pluginInfos;
 
     /**
      * Use this method to register plugins as data sources.
      * @param className The fully qualified name of the plugin class. Must be in the classpath.
-     * @param localizationKey The key for the localized text to show in the UI to resolve to the data source name for the plugin.
+     * @param locale The JSON locale with "name" key for the localized text to show in the UI to resolve to the data source name for the plugin.
      * @throws ClassNotFoundException If the class is not found in the classpath.
      * @throws IllegalAccessException If the class no-parameter constructor is not accessible.
      * @throws InstantiationException If there was an exception in instantiating the plugin.
      */
-    public void registerPlugin(String className, String localizationKey) throws
+    public void registerPlugin(String className, String locale) throws
     ClassNotFoundException, InstantiationException, IllegalAccessException {
         
         Class<? extends StatisticalDatasourcePlugin> pluginClass =
@@ -56,11 +56,11 @@ public class StatisticalDatasourcePluginManager {
         LOG.info("Registering a Statistical Datasource: " + className);
         plugin.init();
         plugins.put(className, plugin);
-        if (localizationKey == null || localizationKey.equals("")) {
+        if (locale == null || locale.equals("")) {
             // If the localization key was not defined, we will use the class name.
-            pluginLocalizationKeys.put(className, className);
+            pluginLocales.put(className, className);
         } else {
-            pluginLocalizationKeys.put(className, localizationKey);
+            pluginLocales.put(className, locale);
         }
     }
     
@@ -96,7 +96,7 @@ public class StatisticalDatasourcePluginManager {
         for (StatisticalDatasource pluginInfo: pluginInfos) {
             LOG.info("Adding plugin from database: " + String.valueOf(pluginInfo));
             try {
-                this.registerPlugin(pluginInfo.getClassName(), pluginInfo.getLocalizedNameId());
+                this.registerPlugin(pluginInfo.getClassName(), pluginInfo.getLocale());
             } catch (ClassNotFoundException e) {
                 LOG.error("Could not find the plugin class: " + pluginInfo.getClassName() + ". Skipping...");
             } catch (InstantiationException e) {
@@ -119,7 +119,7 @@ public class StatisticalDatasourcePluginManager {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public String getPluginLocalizationKey(Class<? extends StatisticalDatasourcePlugin> pluginClass) {
-        return pluginLocalizationKeys.get(pluginClass.getCanonicalName());
+    public String getPluginLocale(Class<? extends StatisticalDatasourcePlugin> pluginClass) {
+        return pluginLocales.get(pluginClass.getCanonicalName());
     }
 }

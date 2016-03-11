@@ -12,20 +12,19 @@ public class StatisticalDatasource {
      */
     private String className;
     /**
-     * Localization key for showing the name of the plugin in the UI. For example:
-     * 'fi.nls.oskari.control.statistics.plugins.sotka.plugin_name'
+     * Localized strings in JSON, specifically for "name".
      */
-    private String localizedNameId;
+    private String locale;
     public String getClassName() {
         return className;
     }
     public void setClassName(String className) {
         this.className = className;
     }
-    public String getLocalizedNameId() {
-        return localizedNameId;
+    public String getLocale() {
+        return locale;
     }
-    public void setLocalizedNameId(String localizedNameId) {
-        this.localizedNameId = localizedNameId;
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

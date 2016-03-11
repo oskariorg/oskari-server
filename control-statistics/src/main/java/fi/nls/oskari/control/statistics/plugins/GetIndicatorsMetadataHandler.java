@@ -87,10 +87,10 @@ public class GetIndicatorsMetadataHandler extends ActionHandler {
                     }
                 }
             }
-            String localizationKey = pluginManager.getPluginLocalizationKey(plugin.getClass());
+            String locale = pluginManager.getPluginLocale(plugin.getClass());
             JSONObject pluginMetadata = new JSONObject();
             try {
-                pluginMetadata.put("localizationKey", localizationKey);
+                pluginMetadata.put("locale", new JSONObject(locale));
                 JSONObject pluginIndicators = new JSONObject();
                 for (StatisticalIndicator indicator : plugin.getIndicators(user)) {
                     JSONObject pluginIndicatorJSON = toJSON(indicator);

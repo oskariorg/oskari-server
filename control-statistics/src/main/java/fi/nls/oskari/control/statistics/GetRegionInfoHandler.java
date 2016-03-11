@@ -5,7 +5,6 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.statistics.db.Layer;
 import fi.nls.oskari.control.statistics.db.LayerMetadata;
 import fi.nls.oskari.control.statistics.xml.RegionCodeNamePair;
 import fi.nls.oskari.control.statistics.xml.WfsXmlParser;
@@ -16,9 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -36,7 +33,6 @@ public class GetRegionInfoHandler extends ActionHandler {
 
     // TODO: With DI, this could be injected. Here, we just make an another instance.
     private GetLayerInfoHandler layerInfoHandler = new GetLayerInfoHandler();
-    private Map<Long, Layer> layerInfoMap;
     
     public void handleAction(ActionParameters ap) throws ActionException {
         final String layerId = ap.getRequiredParam("layer_id");
@@ -53,21 +49,30 @@ public class GetRegionInfoHandler extends ActionHandler {
      * @throws ActionException
      */
     public JSONObject getRegionInfoJSON(long layerId, String regionCode) throws ActionException {
-        final Layer layerInfo = this.layerInfoMap.get(layerId);
-        if (layerInfo == null) {
+        final LayerMetadata layerMetadata = layerInfoHandler.getLayerMetadata().get(layerId);
+        
+        if (layerMetadata == null) {
             return new JSONObject();
         }
-        final long id = layerInfo.getOskariLayerId();
-        final String nameTag = layerInfo.getOskariNameIdTag();
-        final String idTag = layerInfo.getOskariRegionIdTag();
-        LayerMetadata layerMetadata = layerInfoHandler.getLayerMetadata().get(id);
-        final String name = layerMetadata.getOskariLayerName();
-        final String urlBase = layerMetadata.getUrl();
-        JSONObject response = requestRegionInfoJSON(regionCode, id, name, nameTag, idTag, urlBase);
-        return response;
+        try {
+            final JSONObject attributes = new JSONObject(layerMetadata.getAttributes());
+            final JSONObject statistics = attributes.getJSONObject("statistics");
+
+            final String nameTag = statistics.getString("nameIdTag");
+            final String idTag = statistics.getString("regionIdTag");
+            final String name = layerMetadata.getOskariLayerName();
+            final String urlBase = layerMetadata.getUrl();
+            final String featuresUrl = statistics.getString("featuresUrl");
+            final JSONObject response = requestRegionInfoJSON(regionCode, layerId, name, nameTag, idTag, urlBase, featuresUrl);
+            return response;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new ActionException("Something went wrong creating RegionInfoJSON.", e);
+        }
     }
 
-    public JSONObject requestRegionInfoJSON(String regionCode, long id, String name, String nameTag, String idTag, String urlBase) throws ActionException {
+    public JSONObject requestRegionInfoJSON(String regionCode, long id, String name, String nameTag, String idTag,
+            String urlBase, String featuresUrl) throws ActionException {
         final String cacheKey = CACHE_KEY_PREFIX + id + ":" + regionCode;
         final String cachedData = JedisManager.get(cacheKey);
         if (cachedData != null && !cachedData.isEmpty()) {
@@ -79,7 +84,7 @@ public class GetRegionInfoHandler extends ActionHandler {
         }
         
         // For example: http://localhost:8080/geoserver/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=oskari:kunnat2013&propertyName=kuntakoodi,kuntanimi
-        String url = urlBase + "/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=" + name +
+        String url = featuresUrl + "?service=wfs&version=2.0.0&request=GetFeature&typeNames=" + name +
                 "&propertyName=" + idTag + "," + nameTag;
         final JSONObject response = new JSONObject();
 
@@ -108,9 +113,5 @@ public class GetRegionInfoHandler extends ActionHandler {
     @Override
     public void init() {
         this.layerInfoHandler.init();
-        this.layerInfoMap = new HashMap<>();
-        for (Layer layer : this.layerInfoHandler.getLayers()) {
-            this.layerInfoMap.put(layer.getOskariLayerId(), layer);
-        }
     }
 }

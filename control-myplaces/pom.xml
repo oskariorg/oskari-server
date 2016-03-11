@@ -23,6 +23,11 @@
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-myplaces</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

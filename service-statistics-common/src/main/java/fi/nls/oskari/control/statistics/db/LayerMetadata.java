@@ -19,6 +19,10 @@ public class LayerMetadata {
      * The base url to the data source, for example: .
      */
     private String url;
+
+    private String attributes;
+    
+    private String type;
     
     public long getOskariLayerId() {
         return oskariLayerId;
@@ -36,6 +40,14 @@ public class LayerMetadata {
         this.oskariLayerName = oskariLayerName;
     }
 
+    public String getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
+    
     public String getUrl() {
         if (url == null || url.trim().equals("")) {
             // Default value.
@@ -46,5 +58,13 @@ public class LayerMetadata {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getType() {
+        return type;
+    }
+    
+    public void setType(String type) {
+        this.type = type;
     }
 }
