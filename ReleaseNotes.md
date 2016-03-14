@@ -2,6 +2,10 @@
 
 ## 1.36
 
+### Database
+
+Added indexes for oskari_resource and oskari_permission tables.
+
 ### control-base
 
 #### MapfullHandler 
@@ -24,6 +28,18 @@ New extra request parameter  `&simple=true` is available for the earlier respons
 
 Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter. 
 The parameter in most action routes for transmitting projection information is "srs" so this is a consistency improvement.
+
+#### CoordinatesHandler
+
+New action route. Transforms point-coordinates from projection to another. 
+Transformation class can be configured with property `projection.library.class` (defaults to `fi.nls.oskari.map.geometry.ProjectionHelper`).
+Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject with transformed result:
+
+      {
+          lan: 123,
+          lot : 456,
+          srs : "EPSG:789"
+      }
 
 ### transport && control-base
 

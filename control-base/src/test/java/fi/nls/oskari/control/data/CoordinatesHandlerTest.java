@@ -4,6 +4,7 @@ import static fi.nls.oskari.control.ActionConstants.*;
 
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -11,13 +12,14 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by SMAKINEN on 14.3.2016.
- */
 public class CoordinatesHandlerTest extends JSONActionRouteTest {
 
     private CoordinatesHandler handler = new CoordinatesHandler();
 
+    @Before
+    public void setUp() throws Exception {
+        handler.init();
+    }
 
     private Map<String, String> getValidParams() {
         Map<String, String> params = new HashMap<>();
