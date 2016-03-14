@@ -79,6 +79,13 @@ public class WMSCapabilities implements WebMapService {
     }
 
     @Override
+    /**
+     * Defined here only to meet interface definition. Never supposed to be called
+     */
+    public String getLegendForStyle(String key) {
+        return null;
+    }
+    @Override
     public String getCapabilitiesUrl() {
         return capabilitiesURL;
     }
