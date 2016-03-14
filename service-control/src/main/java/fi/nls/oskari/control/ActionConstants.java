@@ -15,7 +15,9 @@ public interface ActionConstants {
     String PARAM_NAME_PREFIX = "name_";
 
     // projection
-    String PARAM_SRS = "epsg";
+    String PARAM_SRS = "srs";
+    String PARAM_LAT = "lat";
+    String PARAM_LON = "lon";
 
     // language
     String PARAM_LANGUAGE = "lang";
