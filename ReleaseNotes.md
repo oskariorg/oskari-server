@@ -2,6 +2,10 @@
 
 ## 1.36
 
+### service-map
+
+A bugfix to legend image parsing when there were multiple styles with the same name.
+
 ### Database
 
 Added indexes for oskari_resource and oskari_permission tables.
