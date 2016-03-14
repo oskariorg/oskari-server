@@ -2,7 +2,13 @@
 
 ## 1.36
 
+### Database
+
+Added indexes for oskari_resource and oskari_permission tables.
+
 ### control-base
+
+#### MapfullHandler 
 
 WfsLayerPlugin config can now be configured with oskari-ext.properties if defaults are not working for your environment:
  
@@ -11,10 +17,29 @@ WfsLayerPlugin config can now be configured with oskari-ext.properties if defaul
 
 These will write the host and contextPath to the plugins config if they are not configured in database view.
 
-_GetWFSDescribeFeatureHandler_ returns now exact xsd types for feature properties
+#### GetWFSDescribeFeatureHandler
+
+Now returns now exact xsd types for feature properties
 
 Earlier version responsed generalized types (text or numeric).
 New extra request parameter  `&simple=true` is available for the earlier response behaviour
+
+#### ActionConstants
+
+Changed PARAM_SRS value from "epsg" to "srs". This affects GetMapLayers which now assumes the projection is sent in srs-parameter. 
+The parameter in most action routes for transmitting projection information is "srs" so this is a consistency improvement.
+
+#### CoordinatesHandler
+
+New action route. Transforms point-coordinates from projection to another. 
+Transformation class can be configured with property `projection.library.class` (defaults to `fi.nls.oskari.map.geometry.ProjectionHelper`).
+Takes `lan`, `lot`, `srs` and `targetSRS` parameters and returns a JSONObject with transformed result:
+
+      {
+          lan: 123,
+          lot : 456,
+          srs : "EPSG:789"
+      }
 
 ### transport && control-base
 

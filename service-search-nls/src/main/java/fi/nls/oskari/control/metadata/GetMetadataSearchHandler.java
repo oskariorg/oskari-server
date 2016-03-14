@@ -14,6 +14,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.ServiceFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import static fi.nls.oskari.control.ActionConstants.*;
 
 /**
  * Forwards call to search service and returns results as JSON.
@@ -38,7 +39,6 @@ public class GetMetadataSearchHandler extends ActionHandler {
     private static final SearchService service = ServiceFactory.getSearchService();
 
     private static final String PARAM_USER_INPUT = "search";
-    private static final String PARAM_MAP_SRS = "srs";
 
     private static final String KEY_RESULTS = "results";
 
@@ -48,7 +48,7 @@ public class GetMetadataSearchHandler extends ActionHandler {
         final SearchCriteria sc = new SearchCriteria();
         final String language = params.getLocale().getLanguage();
         sc.setLocale(language);
-        sc.setSRS(params.getHttpParam(PARAM_MAP_SRS));
+        sc.setSRS(params.getHttpParam(PARAM_SRS));
         for(MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             field.getHandler().handleParam(params.getHttpParam(field.getName()), sc);
         }
