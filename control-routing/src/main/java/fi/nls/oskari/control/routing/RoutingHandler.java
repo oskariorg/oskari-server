@@ -39,6 +39,7 @@ public class RoutingHandler extends ActionHandler {
     private static final String PARAM_MODE = "mode";
     private static final String PARAM_MAX_WALK_DISTANCE = "maxwalkdistance";
     private static final String PARAM_WHEELCHAIR = "wheelchair";
+    public static final String PARAM_SHOW_INTERMEDIATE_STOPS = "showIntermediateStops";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -62,6 +63,7 @@ public class RoutingHandler extends ActionHandler {
         }
         routeparams.setIsArriveBy("true".equals(params.getHttpParam(PARAM_ARRIVEBY)));
         routeparams.setIsWheelChair("true".equals(params.getHttpParam(PARAM_WHEELCHAIR)));
+        routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
 
         routeparams.setSrs(params.getHttpParam(PARAM_SRS));
         routeparams.setLang(params.getHttpParam(PARAM_LANG));

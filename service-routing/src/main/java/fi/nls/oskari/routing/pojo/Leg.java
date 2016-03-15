@@ -29,6 +29,7 @@ import java.util.Map;
     "rentedBike",
     "transitLeg",
     "duration",
+    "intermediateStops",
     "steps",
     "agencyName",
     "agencyUrl",
@@ -77,6 +78,9 @@ public class Leg {
     private Boolean transitLeg;
     @JsonProperty("duration")
     private Long duration;
+    @JsonProperty("intermediateStops")
+    private List<IntermediateStop> intermediateStops = new ArrayList<IntermediateStop>();
+
     @JsonProperty("steps")
     private List<Object> steps = new ArrayList<Object>();
     @JsonProperty("agencyName")
@@ -440,6 +444,25 @@ public class Leg {
     @JsonProperty("duration")
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+    /**
+     *
+     * @return
+     * The intermediateStops
+     */
+    @JsonProperty("intermediateStops")
+    public List<IntermediateStop> getIntermediateStops() {
+        return intermediateStops;
+    }
+
+    /**
+     *
+     * @param intermediateStops
+     * The intermediateStops
+     */
+    @JsonProperty("intermediateStops")
+    public void setIntermediateStops(List<IntermediateStop> intermediateStops) {
+        this.intermediateStops = intermediateStops;
     }
 
     /**
